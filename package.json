@@ -24,6 +24,7 @@
     "@types/ejs": "^3.1.5",
     "@types/node": "^20.14.9",
     "@vitest/coverage-v8": "^1.6.0",
+    "change-case": "^5.4.4",
     "commander": "^12.1.0",
     "ejs": "^3.1.10",
     "esbuild": "^0.23.0",

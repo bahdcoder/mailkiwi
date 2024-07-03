@@ -1,0 +1,16 @@
+import { expect } from "vitest";
+import { container } from "tsyringe";
+<% if (actionExists) { %>
+import { <%= pascalCaseName %>Action } from "@/domains/<%= domain %>/actions/<%= snakeCaseName %>_action";
+<% } %>
+<% if (repositoryExists) { %>
+import { <%= pascalCaseName %>Repository } from "@/domains/<%= domain %>/repositories/<%= snakeCaseName %>_repository";
+<% } %>
+
+describe("<%= snakeCaseName %>", () => {
+  it("should pass", () => {
+    expect(true).toBe(true);
+  });
+
+  // Add more test cases here
+});
