@@ -8,25 +8,35 @@ import { AuthController } from "@/http/api/controllers/auth/auth_controller"
 import { UserController } from "@/http/api/controllers/auth/user_controller"
 import { MailerController } from "@/http/api/controllers/teams/mailer_controller"
 import { TeamController } from "@/http/api/controllers/teams/team_controller"
+import { MailerWebhooksContorller } from "@/http/api/controllers/webhooks/mailer_webhooks_controller"
 import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware"
 import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware"
 import { globalErrorHandler } from "@/http/responses/error_handler"
+import { InstallationSettings } from "@/infrastructure/boot/installation_settings"
 import { ContainerKey } from "@/infrastructure/container"
-import { env, EnvVariables } from "@/infrastructure/env"
+import {
+  config,
+  ConfigVariables,
+  env,
+  EnvVariables,
+} from "@/infrastructure/env"
 
 export class Ignitor {
   protected env: EnvVariables
+  protected config: ConfigVariables
   protected app: FastifyInstance
   protected database: PrismaClient
 
   boot() {
     this.env = env
+    this.config = config
 
     this.bootHttpServer()
     this.bootDatabaseConnector()
 
     container.registerInstance(ContainerKey.app, this.app)
     container.registerInstance(ContainerKey.env, this.env)
+    container.registerInstance(ContainerKey.config, this.config)
     container.registerInstance(ContainerKey.database, this.database)
 
     return this
@@ -74,6 +84,12 @@ export class Ignitor {
     return this
   }
 
+  async start() {
+    await container.resolve(InstallationSettings).ensureInstallationSettings()
+
+    await this.startHttpServer()
+  }
+
   async startHttpServer() {
     try {
       await this.app.listen({
@@ -96,6 +112,7 @@ export class Ignitor {
     container.resolve(ContactController)
     container.resolve(MailerController)
     container.resolve(TeamController)
+    container.resolve(MailerWebhooksContorller)
   }
 
   async shutdown() {

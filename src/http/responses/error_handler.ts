@@ -17,6 +17,6 @@ export function globalErrorHandler(
   request.log.error(error)
 
   return response.code(500).send({
-    message: "Internal Server Error.",
+    message: error?.message ?? "Internal server error.",
   })
 }

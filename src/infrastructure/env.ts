@@ -1,9 +1,10 @@
 import "dotenv/config"
 
 import { Secret } from "@poppinss/utils"
-import { cleanEnv, host, makeValidator,num, str, url } from "envalid"
+import { cleanEnv, host, makeValidator, num, str, url } from "envalid"
 
 export type EnvVariables = typeof env
+export type ConfigVariables = typeof config
 
 const appKey = makeValidator((value) => {
   if (value.length !== 32) {
@@ -23,3 +24,5 @@ export const env = cleanEnv(process.env, {
     default: "development",
   }),
 })
+
+export const config = { ...env, software: { shortName: "bamboomailer" } }

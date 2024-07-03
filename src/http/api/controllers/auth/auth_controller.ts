@@ -42,7 +42,7 @@ export class AuthController {
 
     const { user } = await action.handle(data)
 
-    return { user }
+    return user
   }
 
   async login(request: FastifyRequest, _: FastifyReply) {
@@ -73,7 +73,7 @@ export class AuthController {
     const accessToken = await this.accessTokenRepository.createAccessToken(user)
 
     return {
-      user,
+      ...user,
       accessToken: accessToken.toJSON(),
     }
   }

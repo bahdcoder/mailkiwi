@@ -5,6 +5,10 @@ export function E_UNAUTHORIZED(message = "Unauthorized."): never {
   throw Boom.unauthorized(message)
 }
 
+export function E_OPERATION_FAILED(message?: string) {
+  throw Boom.badRequest(message)
+}
+
 export function E_VALIDATION_FAILED(
   error: ZodError | { errors: { message: string; path: string[] }[] },
   message?: string,

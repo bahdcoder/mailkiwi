@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client"
+import { Prisma, PrismaClient, User } from "@prisma/client"
 import { compareSync, hashSync } from "bcrypt"
 import { inject, injectable } from "tsyringe"
 
@@ -35,19 +35,17 @@ export class UserRepository extends BaseRepository {
     })
   }
 
-  async findById(id?: string | null) {
+  async findById(
+    id?: string | null,
+    args?: Partial<Prisma.UserFindUniqueArgs>,
+  ) {
     if (!id) return null
 
     return this.database.user.findFirst({
       where: {
         id,
       },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        password: false,
-      },
+      ...args,
     })
   }
 

@@ -16,8 +16,20 @@ export class UserController {
   }
 
   async profile(request: FastifyRequest, _: FastifyReply) {
-    const user = await this.userRepository.findById(request.accessToken.userId)
+    const user = await this.userRepository.findById(
+      request.accessToken.userId,
+      {
+        include: {
+          teams: {
+            include: {
+              mailers: true,
+              members: true,
+            },
+          },
+        },
+      },
+    )
 
-    return { user }
+    return user
   }
 }

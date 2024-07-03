@@ -2,4 +2,4 @@ import "reflect-metadata"
 
 import { Ignitor } from "@/infrastructure/boot/ignitor"
 
-new Ignitor().boot().register().startHttpServer()
+new Ignitor().boot().register().start()

@@ -7,6 +7,16 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Setting {
+    id String @id @default(cuid())
+
+    url String? @unique
+
+    domain String @unique
+
+    installedSslCertificate Boolean @default(false)
+}
+
 model User {
     id String @id @default(cuid())
 
@@ -67,6 +77,9 @@ model Team {
 enum MailerStatus {
     READY
     PENDING
+    INSTALLING
+    CREATING_IDENTITIES
+    SENDING_TEST_EMAIL
     DISABLED
 }
 
@@ -87,6 +100,33 @@ model Mailer {
 
     team   Team   @relation(fields: [teamId], references: [id])
     teamId String
+
+    testEmailSentAt         DateTime?
+    installationCompletedAt DateTime?
+
+    identities MailerIdentity[]
+}
+
+enum MailerIdentityStatus {
+    PENDING
+    APPROVED
+    DENIED
+}
+
+model MailerIdentity {
+    id String @id @default(cuid())
+
+    email    String
+    domain   String
+    mailerId String?
+
+    status MailerIdentityStatus @default(PENDING)
+
+    configuration String?
+
+    mailer Mailer? @relation(fields: [mailerId], references: [id])
+
+    confirmedApprovalAt DateTime?
 }
 
 enum WebhookEvent {
