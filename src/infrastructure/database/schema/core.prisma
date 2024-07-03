@@ -1,0 +1,204 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgres"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id String @id @default(cuid())
+
+    email     String  @unique
+    name      String?
+    avatarUrl String?
+    password  String
+
+    teams        Team[]
+    accessTokens AccessToken[]
+    memberships  TeamMembership[]
+}
+
+model AccessToken {
+    id String @id @default(cuid())
+
+    user User? @relation(fields: [userId], references: [id])
+    team Team? @relation(fields: [teamId], references: [id])
+
+    type      String
+    name      String?
+    hash      String
+    abilities String[] @default([])
+
+    createdAt  DateTime @default(now())
+    lastUsedAt DateTime @default(now())
+    expiresAt  DateTime @default(now())
+    userId     String?
+    teamId     String?
+}
+
+enum BroadcastEditor {
+    DEFAULT
+    MARKDOWN
+}
+
+model Team {
+    id String @id @default(cuid())
+
+    name   String
+    owner  User   @relation(fields: [userId], references: [id])
+    userId String
+
+    trackClicks Boolean?
+    trackOpens  Boolean?
+
+    configurationKey String
+
+    broadcastEditor BroadcastEditor @default(DEFAULT)
+
+    members      TeamMembership[]
+    webhooks     Webhook[]
+    accessTokens AccessToken[]
+    audiences    Audience[]
+    mailers      Mailer[]
+}
+
+enum MailerStatus {
+    READY
+    PENDING
+    DISABLED
+}
+
+enum MailerProvider {
+    AWS_SES
+    POSTMARK
+    MAILGUN
+}
+
+model Mailer {
+    id String @id @default(cuid())
+
+    name          String
+    configuration String
+    default       Boolean?
+    provider      MailerProvider
+    status        MailerStatus   @default(PENDING)
+
+    team   Team   @relation(fields: [teamId], references: [id])
+    teamId String
+}
+
+enum WebhookEvent {
+    ALL_EVENTS
+
+    CONTACT_ADDED
+    CONTACT_REMOVED
+    CONTACT_TAG_ADDED
+    CONTACT_TAG_REMOVED
+
+    BROADCAST_SENT
+    BROADCAST_PAUSED
+    BROADCAST_EMAIL_OPENED
+    BROADCAST_EMAIL_LINK_CLICKED
+
+    AUDIENCE_ADDED
+
+    TAG_ADDED
+    TAG_REMOVED
+}
+
+model Webhook {
+    id   String @id @default(cuid())
+    name String
+    url  String
+
+    events WebhookEvent[] @default([ALL_EVENTS])
+
+    team   Team   @relation(fields: [teamId], references: [id])
+    teamId String
+}
+
+enum TeamRole {
+    ADMINISTRATOR
+    USER
+}
+
+enum MembershipStatus {
+    PENDING
+    ACTIVE
+}
+
+model TeamMembership {
+    id String @id @default(cuid())
+
+    user   User?   @relation(fields: [userId], references: [id])
+    userId String?
+
+    email String
+
+    team   Team   @relation(fields: [teamId], references: [id])
+    teamId String
+
+    role   TeamRole
+    status MembershipStatus
+
+    invitedAt DateTime @default(now())
+    expiresAt DateTime
+}
+
+model Audience {
+    id String @id @default(cuid())
+
+    name   String
+    teamId String
+
+    contacts Contact[]
+
+    team Team @relation(fields: [teamId], references: [id])
+}
+
+model Contact {
+    id String @id @default(cuid())
+
+    firstName String?
+    lastName  String?
+    email     String
+    avatarUrl String?
+
+    subscribedAt   DateTime?
+    unsubscribedAt DateTime?
+
+    audience   Audience @relation(fields: [audienceId], references: [id])
+    audienceId String
+
+    attributes Json?
+
+    tags TagsOnContacts[]
+
+    @@unique([email, audienceId])
+}
+
+model Tag {
+    id String @id @default(cuid())
+
+    name        String
+    description String?
+
+    contacts TagsOnContacts[]
+}
+
+model TagsOnContacts {
+    // @@id
+    tag   Tag    @relation(fields: [tagId], references: [id])
+    tagId String
+
+    contact   Contact @relation(fields: [contactId], references: [id])
+    contactId String
+
+    assignedAt DateTime?
+
+    @@id([tagId, contactId])
+    @@unique([tagId, contactId])
+    @@index([tagId, contactId])
+}

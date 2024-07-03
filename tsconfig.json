@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "es2018",
+    "module": "commonjs",
+    "outDir": "./build",
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "strictPropertyInitialization": false,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "rollup/parseAst": ["./node_modules/rollup/dist/parseAst"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,49 @@
+{
+  "name": "@buyonce/bamboomailer",
+  "version": "1.0.0",
+  "main": "src/main.ts",
+  "scripts": {
+    "dev": "tsx --watch src/main.ts",
+    "test": "vitest --run",
+    "start": "node build/main.js",
+    "test:coverage": "vitest --run --coverage",
+    "build": "tsx src/bin/build.ts",
+    "format": "prettier --write .",
+    "db:migrate:make": "prisma migrate dev",
+    "db:migrate:run": "prisma migrate deploy",
+    "db:migrate:reset": "prisma migrate reset",
+    "db:generate": "prisma generate"
+  },
+  "keywords": [],
+  "author": "Frantz Kati <hey@katifrantz.com>",
+  "license": "ISC",
+  "description": "Buyonce software: Bamboomailer.",
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^20.14.9",
+    "@vitest/coverage-v8": "^1.6.0",
+    "esbuild": "^0.23.0",
+    "prettier": "^3.3.2",
+    "prisma": "^5.16.1",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.3",
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@poppinss/utils": "^6.7.3",
+    "@prisma/client": "^5.16.1",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "envalid": "^8.0.0",
+    "fastify": "^4.28.1",
+    "reflect-metadata": "^0.2.2",
+    "tsyringe": "^4.8.0",
+    "zod": "^3.23.8"
+  },
+  "prisma": {
+    "schema": "src/infrastructure/database/schema/core.prisma"
+  }
+}

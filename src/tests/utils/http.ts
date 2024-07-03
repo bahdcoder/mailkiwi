@@ -1,0 +1,27 @@
+import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository"
+import { makeApp, makeDatabase } from "@/infrastructure/container"
+import { Team, User } from "@prisma/client"
+import { FastifyInstance, InjectOptions } from "fastify"
+import { container } from "tsyringe"
+
+export async function injectAsUser(
+  user: User,
+  injectOptions: InjectOptions,
+): Promise<ReturnType<FastifyInstance["inject"]>> {
+  const accessTokenRepository = container.resolve<AccessTokenRepository>(
+    AccessTokenRepository,
+  )
+
+  const app = makeApp()
+  const accessToken = await accessTokenRepository.createAccessToken(user)
+
+  return app.inject({
+    ...injectOptions,
+    headers: {
+      authorization: `Bearer ${accessToken.toJSON()["token"]}`,
+      "x-bamboomailer-team-id": (user as User & { teams: Team[] })?.teams?.[0]
+        ?.id,
+      ...injectOptions?.headers,
+    },
+  })
+}

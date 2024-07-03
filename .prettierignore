@@ -1,0 +1,5 @@
+build
+docs
+coverage
+*.html
+pnpm-lock.yaml
