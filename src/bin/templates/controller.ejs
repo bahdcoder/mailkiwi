@@ -3,12 +3,15 @@ import { inject } from "tsyringe";
 <% if (actionExists) { %>
 import { <%= pascalCaseName %>Action } from "@/domains/<%= domain %>/actions/<%= snakeCaseName %>_action";
 <% } %>
+<% if (repositoryExists) { %>
+import { <%= repositoryName %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository";
+<% } %>
 
 export class <%= pascalCaseName %>Controller {
-<% if (actionExists) { %>
+<% if (repositoryExists) { %>
   constructor(
-    @inject(<%= pascalCaseName %>Action)
-    private <%= camelCaseName %>Action: <%= pascalCaseName %>Action
+    @inject(<%= repositoryName %>Repository)
+    private <%= repositoryName.toLowerCase() %>Repository: <%= repositoryName %>Repository
   ) {}
 <% } %>
 

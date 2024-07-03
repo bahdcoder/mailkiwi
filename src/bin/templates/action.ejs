@@ -1,27 +1,27 @@
-import { container, inject, injectable } from "tsyringe";
-<% const repositoryImports = []; %>
-<% const dtoImports = []; %>
-<% if (!repositoryExists) { %>
-<%   repositoryImports.push(`import { ${pascalCaseName}Repository } from "../repositories/${snakeCaseName}_repository"`); %>
+import { inject, injectable } from "tsyringe";
+<% if (repositoryExists) { %>
+import { <%= repositoryName %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository";
 <% } %>
-<% if (dtoExists) { %>
-<%   dtoImports.push(`import { ${pascalCaseName}Dto } from "../dto/${snakeCaseName}_dto"`); %>
-<% } else { %>
-<%   dtoImports.push(`import { ${pascalCaseName}Dto } from "../dto/create_${snakeCaseName}_dto"`); %>
+<% if (generateDto) { %>
+import { <%= pascalCaseName %>Dto } from "@/domains/<%= domain %>/dto/<%= snakeCaseName %>_dto";
 <% } %>
-<%= repositoryImports.join('\n') %>
-<%= dtoImports.join('\n') %>
 
 @injectable()
 export class <%= pascalCaseName %>Action {
-  constructor(
 <% if (repositoryExists) { %>
-    @inject(<%= pascalCaseName %>Repository)
-    private <%= camelCaseName %>Repository: <%= pascalCaseName %>Repository,
-<% } %>
+  constructor(
+    @inject(<%= repositoryName %>Repository)
+    private <%= repositoryName.toLowerCase() %>Repository: <%= repositoryName %>Repository
   ) {}
+<% } %>
 
+<% if (generateDto) { %>
   handle = async (payload: <%= pascalCaseName %>Dto) => {
     // Implement action logic here
   };
+<% } else { %>
+  handle = async () => {
+    // Implement action logic here
+  };
+<% } %>
 }

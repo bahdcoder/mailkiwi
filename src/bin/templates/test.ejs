@@ -1,10 +1,9 @@
-import { expect } from "vitest";
-import { container } from "tsyringe";
+import { describe, it, expect } from "vitest";
 <% if (actionExists) { %>
 import { <%= pascalCaseName %>Action } from "@/domains/<%= domain %>/actions/<%= snakeCaseName %>_action";
 <% } %>
 <% if (repositoryExists) { %>
-import { <%= pascalCaseName %>Repository } from "@/domains/<%= domain %>/repositories/<%= snakeCaseName %>_repository";
+import { <%= repositoryName %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository";
 <% } %>
 
 describe("<%= snakeCaseName %>", () => {
