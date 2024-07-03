@@ -1,6 +1,6 @@
-import { container } from "tsyringe"
 import type { PrismaClient } from "@prisma/client"
 import { FastifyInstance } from "fastify"
+import { container } from "tsyringe"
 
 import { EnvVariables } from "@/infrastructure/env"
 

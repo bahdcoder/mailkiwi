@@ -1,12 +1,12 @@
+import { faker } from "@faker-js/faker"
+import { container } from "tsyringe"
+import { describe, test } from "vitest"
+
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
-import { TeamRepository } from "@/domains/teams/repositories/team_repository"
 import { makeDatabase } from "@/infrastructure/container"
 import { createUser } from "@/tests/mocks/auth/users"
 import { cleanMailers } from "@/tests/mocks/teams/teams"
 import { injectAsUser } from "@/tests/utils/http"
-import { faker } from "@faker-js/faker"
-import { container } from "tsyringe"
-import { test, describe } from "vitest"
 
 describe("Teams", () => {
   test("can create mailers", async ({ expect }) => {

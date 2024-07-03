@@ -1,13 +1,13 @@
-import { container, inject, injectable } from "tsyringe"
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import { container, inject, injectable } from "tsyringe"
 
-import { ContainerKey } from "@/infrastructure/container"
-import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository"
-import { CreateAudienceSchema } from "@/domains/audiences/dto/audiences/create_audience_dto"
 import { CreateAudienceAction } from "@/domains/audiences/actions/audiences/create_audience_action"
-import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy"
 import { UpdateAudienceAction } from "@/domains/audiences/actions/audiences/update_audience_action"
+import { CreateAudienceSchema } from "@/domains/audiences/dto/audiences/create_audience_dto"
+import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy"
+import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository"
 import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors"
+import { ContainerKey } from "@/infrastructure/container"
 
 @injectable()
 export class AudienceController {
@@ -30,7 +30,7 @@ export class AudienceController {
     return response.send([])
   }
 
-  async store(request: FastifyRequest, response: FastifyReply) {
+  async store(request: FastifyRequest, _: FastifyReply) {
     const { success, error, data } = CreateAudienceSchema.safeParse(
       request.body,
     )
@@ -59,7 +59,7 @@ export class AudienceController {
     return { data: audience }
   }
 
-  async update(request: FastifyRequest, response: FastifyReply) {
+  async update(request: FastifyRequest, _: FastifyReply) {
     const { success, error, data } = CreateAudienceSchema.safeParse(
       request.body,
     )

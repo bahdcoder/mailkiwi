@@ -1,9 +1,9 @@
-import { test, describe } from "vitest"
+import { faker } from "@faker-js/faker"
+import { describe, test } from "vitest"
 
 import { makeApp, makeDatabase } from "@/infrastructure/container"
 import { createUser } from "@/tests/mocks/auth/users"
 import { injectAsUser } from "@/tests/utils/http"
-import { faker } from "@faker-js/faker"
 
 describe("Audiences", () => {
   test("can create an audience only if authenticated", async ({ expect }) => {
@@ -73,7 +73,6 @@ describe("Audiences", () => {
 
 describe("Contacts", () => {
   test("can create a contact for an audience", async ({ expect }) => {
-    const app = makeApp()
     const { user, audience } = await createUser()
 
     const contactPayload = {
@@ -97,7 +96,6 @@ describe("Contacts", () => {
   })
 
   test("cannot create a contact with invalid data", async ({ expect }) => {
-    const app = makeApp()
     const { user, audience } = await createUser()
 
     const contactPayload = {

@@ -8,10 +8,11 @@
  */
 
 import { createHash } from "node:crypto"
-import { base64, safeEqual, Secret, RuntimeException } from "@poppinss/utils"
 
-import string from "@/domains/shared/utils/string"
+import { base64, RuntimeException,safeEqual, Secret } from "@poppinss/utils"
+
 import { CRC32 } from "@/domains/auth/acess_tokens/utils/crc32"
+import string from "@/domains/shared/utils/string"
 
 /**
  * Access token represents a token created for a user to authenticate
@@ -69,7 +70,7 @@ export class AccessToken {
    * layer.
    */
   static createTransientToken(
-    userId: string | number | BigInt,
+    userId: string | number | bigint,
     size: number,
     expiresIn?: number,
   ) {
@@ -103,13 +104,13 @@ export class AccessToken {
    * token within database. It should be the
    * primary/unique key
    */
-  identifier: string | number | BigInt
+  identifier: string | number | bigint
 
   /**
    * Reference to the user id for whom the token
    * is generated.
    */
-  tokenableId: string | number | BigInt
+  tokenableId: string | number | bigint
 
   /**
    * The value is a public representation of a token. It is created
@@ -161,8 +162,8 @@ export class AccessToken {
   abilities: string[]
 
   constructor(attributes: {
-    identifier: string | number | BigInt
-    tokenableId: string | number | BigInt
+    identifier: string | number | bigint
+    tokenableId: string | number | bigint
     type: string
     hash: string
     createdAt: Date

@@ -4,14 +4,14 @@ import { inject } from "tsyringe";
 import { <%= pascalCaseName %>Action } from "@/domains/<%= domain %>/actions/<%= snakeCaseName %>_action";
 <% } %>
 <% if (repositoryExists) { %>
-import { <%= repositoryName %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository";
+import { <%= repositoryNamePascalCase %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository";
 <% } %>
 
 export class <%= pascalCaseName %>Controller {
 <% if (repositoryExists) { %>
   constructor(
-    @inject(<%= repositoryName %>Repository)
-    private <%= repositoryName.toLowerCase() %>Repository: <%= repositoryName %>Repository
+    @inject(<%= repositoryNamePascalCase %>Repository)
+    private <%= repositoryName.toLowerCase() %>Repository: <%= repositoryNamePascalCase %>Repository
   ) {}
 <% } %>
 

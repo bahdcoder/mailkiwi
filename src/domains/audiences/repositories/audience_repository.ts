@@ -1,7 +1,8 @@
-import { inject, injectable } from "tsyringe"
 import { PrismaClient } from "@prisma/client"
+import { inject, injectable } from "tsyringe"
 
 import { ContainerKey } from "@/infrastructure/container"
+
 import { CreateAudienceDto } from "../dto/audiences/create_audience_dto"
 
 @injectable()

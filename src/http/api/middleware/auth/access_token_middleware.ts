@@ -1,7 +1,8 @@
-import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository"
 import { Secret } from "@poppinss/utils"
-import { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from "fastify"
+import { FastifyReply, FastifyRequest } from "fastify"
 import { inject, injectable } from "tsyringe"
+
+import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository"
 
 @injectable()
 export class AccessTokenMiddleware {

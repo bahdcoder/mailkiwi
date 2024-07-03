@@ -1,6 +1,7 @@
-import { Secret } from "@poppinss/utils"
 import "dotenv/config"
-import { cleanEnv, str, num, host, url, makeValidator } from "envalid"
+
+import { Secret } from "@poppinss/utils"
+import { cleanEnv, host, makeValidator,num, str, url } from "envalid"
 
 export type EnvVariables = typeof env
 

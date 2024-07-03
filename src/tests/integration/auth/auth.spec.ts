@@ -1,5 +1,6 @@
-import { test, describe } from "vitest"
 import { faker } from "@faker-js/faker"
+import { describe, test } from "vitest"
+
 import { makeApp, makeDatabase } from "@/infrastructure/container"
 import { createUser } from "@/tests/mocks/auth/users"
 
@@ -63,8 +64,6 @@ describe("User registration", () => {
     expect,
   }) => {
     const app = makeApp()
-
-    const email = faker.internet.exampleEmail()
 
     const { user } = await createUser()
 

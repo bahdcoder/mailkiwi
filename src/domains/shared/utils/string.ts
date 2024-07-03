@@ -1,4 +1,5 @@
 import { randomBytes } from "node:crypto"
+
 import { base64 } from "@poppinss/utils"
 
 export default {

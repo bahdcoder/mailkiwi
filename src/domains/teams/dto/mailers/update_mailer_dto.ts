@@ -1,5 +1,4 @@
 import { z } from "zod"
-import { $Enums } from "@prisma/client"
 
 export const UpdateMailerSchema = z.object({
   configuration: z.object({

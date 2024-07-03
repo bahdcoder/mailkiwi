@@ -1,8 +1,9 @@
+import { faker } from "@faker-js/faker"
+import { describe,test } from "vitest"
+
 import { createUser } from "@/tests/mocks/auth/users"
 import { cleanMailers } from "@/tests/mocks/teams/teams"
 import { injectAsUser } from "@/tests/utils/http"
-import { faker } from "@faker-js/faker"
-import { test, describe } from "vitest"
 
 describe("Teams", () => {
   test("can fetch a single team", async ({ expect }) => {

@@ -1,9 +1,10 @@
+import { PrismaClient, User } from "@prisma/client"
 import { compareSync, hashSync } from "bcrypt"
 import { inject, injectable } from "tsyringe"
-import { PrismaClient, User } from "@prisma/client"
-import { ContainerKey } from "@/infrastructure/container"
+
 import { CreateUserDto } from "@/domains/auth/users/dto/create_user_dto"
 import { BaseRepository } from "@/domains/shared/repositories/base_repository"
+import { ContainerKey } from "@/infrastructure/container"
 
 @injectable()
 export class UserRepository extends BaseRepository {

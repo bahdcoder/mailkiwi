@@ -1,8 +1,8 @@
-import { inject, injectable } from "tsyringe"
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import { inject, injectable } from "tsyringe"
 
-import { ContainerKey } from "@/infrastructure/container"
 import { UserRepository } from "@/domains/auth/users/repositories/user_repository"
+import { ContainerKey } from "@/infrastructure/container"
 
 @injectable()
 export class UserController {
@@ -15,7 +15,7 @@ export class UserController {
     })
   }
 
-  async profile(request: FastifyRequest, response: FastifyReply) {
+  async profile(request: FastifyRequest, _: FastifyReply) {
     const user = await this.userRepository.findById(request.accessToken.userId)
 
     return { user }

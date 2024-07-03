@@ -1,7 +1,8 @@
-import { TeamRepository } from "@/domains/teams/repositories/team_repository"
-
 import { FastifyReply, FastifyRequest } from "fastify"
 import { inject, injectable } from "tsyringe"
+
+import { TeamWithMembers } from "@/domains/shared/types/team"
+import { TeamRepository } from "@/domains/teams/repositories/team_repository"
 
 @injectable()
 export class TeamMiddleware {
@@ -10,7 +11,7 @@ export class TeamMiddleware {
     private teamRepository: TeamRepository,
   ) {}
 
-  handle = async (request: FastifyRequest, response: FastifyReply) => {
+  handle = async (request: FastifyRequest, _: FastifyReply) => {
     const teamHeader = request.headers["x-bamboomailer-team-id"] as string
 
     if (!teamHeader) {
@@ -20,7 +21,7 @@ export class TeamMiddleware {
     const team = await this.teamRepository.findById(teamHeader)
 
     if (team) {
-      request.team = team
+      request.team = team as TeamWithMembers
     }
   }
 }

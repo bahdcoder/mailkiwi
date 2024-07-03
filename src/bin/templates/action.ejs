@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 <% if (repositoryExists) { %>
-import { <%= repositoryName %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository";
+import { <%= repositoryNamePascalCase %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository";
 <% } %>
 <% if (generateDto) { %>
 import { <%= pascalCaseName %>Dto } from "@/domains/<%= domain %>/dto/<%= snakeCaseName %>_dto";
@@ -10,8 +10,8 @@ import { <%= pascalCaseName %>Dto } from "@/domains/<%= domain %>/dto/<%= snakeC
 export class <%= pascalCaseName %>Action {
 <% if (repositoryExists) { %>
   constructor(
-    @inject(<%= repositoryName %>Repository)
-    private <%= repositoryName.toLowerCase() %>Repository: <%= repositoryName %>Repository
+    @inject(<%= repositoryNamePascalCase %>Repository)
+    private <%= repositoryName.toLowerCase() %>Repository: <%= repositoryNamePascalCase %>Repository
   ) {}
 <% } %>
 

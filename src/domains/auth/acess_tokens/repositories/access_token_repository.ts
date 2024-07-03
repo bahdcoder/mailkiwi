@@ -1,10 +1,9 @@
-import { compareSync, hashSync } from "bcrypt"
-import { inject, injectable } from "tsyringe"
-import { PrismaClient, User } from "@prisma/client"
-import { ContainerKey } from "@/infrastructure/container"
-import { CreateUserDto } from "@/domains/auth/users/dto/create_user_dto"
-import { AccessToken } from "@/domains/auth/acess_tokens/utils/access_token"
 import { Secret } from "@poppinss/utils"
+import { PrismaClient, User } from "@prisma/client"
+import { inject, injectable } from "tsyringe"
+
+import { AccessToken } from "@/domains/auth/acess_tokens/utils/access_token"
+import { ContainerKey } from "@/infrastructure/container"
 
 @injectable()
 export class AccessTokenRepository {

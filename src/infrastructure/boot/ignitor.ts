@@ -1,18 +1,18 @@
-import { container } from "tsyringe"
 import { PrismaClient } from "@prisma/client"
 import Fastify, { FastifyInstance } from "fastify"
-import { env, EnvVariables } from "@/infrastructure/env"
-import { ContainerKey } from "@/infrastructure/container"
+import { container } from "tsyringe"
 
 import { AudienceController } from "@/http/api/controllers/audiences/audience_controller"
+import { ContactController } from "@/http/api/controllers/audiences/contact_controller"
 import { AuthController } from "@/http/api/controllers/auth/auth_controller"
 import { UserController } from "@/http/api/controllers/auth/user_controller"
-import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware"
-import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware"
-import { ContactController } from "@/http/api/controllers/audiences/contact_controller"
-import { globalErrorHandler } from "@/http/responses/error_handler"
 import { MailerController } from "@/http/api/controllers/teams/mailer_controller"
 import { TeamController } from "@/http/api/controllers/teams/team_controller"
+import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware"
+import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware"
+import { globalErrorHandler } from "@/http/responses/error_handler"
+import { ContainerKey } from "@/infrastructure/container"
+import { env, EnvVariables } from "@/infrastructure/env"
 
 export class Ignitor {
   protected env: EnvVariables

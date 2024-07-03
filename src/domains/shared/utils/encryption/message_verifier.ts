@@ -1,14 +1,7 @@
-/*
- * @adonisjs/encryption
- *
- * (c) AdonisJS
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 import { createHash } from "node:crypto"
+
 import { base64, MessageBuilder, RuntimeException } from "@poppinss/utils"
+
 import { Hmac } from "./hmac"
 
 /**
@@ -49,6 +42,7 @@ export class MessageVerifier {
    * You can optionally define a purpose for which the value was signed and
    * mentioning a different purpose/no purpose during unsign will fail.
    */
+  // eslint-disable-next-line
   sign(payload: any, expiresIn?: string | number, purpose?: string) {
     if (payload === null || payload === undefined) {
       throw new RuntimeException(`Cannot sign "${payload}" value`)
@@ -63,6 +57,7 @@ export class MessageVerifier {
   /**
    * Unsign a previously signed value with an optional purpose
    */
+  // eslint-disable-next-line
   unsign<T extends any>(payload: string, purpose?: string): T | null {
     if (typeof payload !== "string") {
       return null

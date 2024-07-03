@@ -1,3 +1,3 @@
-import { TeamRepository } from "@/domains/teams/repositories/team_repository"
+import { Team, TeamMembership } from "@prisma/client"
 
-export type TeamWithMembers = Awaited<ReturnType<TeamRepository["findById"]>>
+export type TeamWithMembers = Team & { members: TeamMembership[] }

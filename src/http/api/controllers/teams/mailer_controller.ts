@@ -1,21 +1,19 @@
-import { container, inject, injectable } from "tsyringe"
 import {
   FastifyInstance,
   FastifyReply,
   FastifyRequest,
   RouteHandlerMethod,
 } from "fastify"
+import { container, inject, injectable } from "tsyringe"
 
-import { ContainerKey } from "@/infrastructure/container"
-import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy"
-import { CreateContactAction } from "@/domains/audiences/actions/contacts/create_contact_action"
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
-import { CreateMailerSchema } from "@/domains/teams/dto/mailers/create_mailer_dto"
 import { TeamPolicy } from "@/domains/audiences/policies/team_policy"
 import { CreateMailerAction } from "@/domains/teams/actions/mailers/create_mailer_action"
-import { UpdateMailerSchema } from "@/domains/teams/dto/mailers/update_mailer_dto"
 import { UpdateMailerAction } from "@/domains/teams/actions/mailers/update_mailer_action"
+import { CreateMailerSchema } from "@/domains/teams/dto/mailers/create_mailer_dto"
+import { UpdateMailerSchema } from "@/domains/teams/dto/mailers/update_mailer_dto"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors"
+import { ContainerKey } from "@/infrastructure/container"
 
 @injectable()
 export class MailerController {
@@ -34,7 +32,7 @@ export class MailerController {
     )
   }
 
-  async store(request: FastifyRequest, response: FastifyReply) {
+  async store(request: FastifyRequest, _: FastifyReply) {
     const { success, error, data } = CreateMailerSchema.safeParse(
       request.body ?? {},
     )
@@ -55,7 +53,7 @@ export class MailerController {
 
   async update(
     request: FastifyRequest<{ Params: { mailerId: string } }>,
-    response: FastifyReply,
+    _: FastifyReply,
   ) {
     const { success, error, data } = UpdateMailerSchema.safeParse(
       request.body ?? {},

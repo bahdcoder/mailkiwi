@@ -1,6 +1,6 @@
-import { TeamWithMembers } from "@/domains/shared/types/team"
-import { Team, User } from "@prisma/client"
 import { injectable } from "tsyringe"
+
+import { TeamWithMembers } from "@/domains/shared/types/team"
 
 @injectable()
 export class AudiencePolicy {

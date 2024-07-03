@@ -1,4 +1,4 @@
-import { test, describe } from "vitest"
+import { describe,test } from "vitest"
 
 describe("Example", () => {
   test("can add two numbers", ({ expect }) => {

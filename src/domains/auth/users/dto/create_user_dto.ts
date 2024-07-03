@@ -1,5 +1,6 @@
-import { makeDatabase } from "@/infrastructure/container"
 import { z } from "zod"
+
+import { makeDatabase } from "@/infrastructure/container"
 
 export const CreateUserSchema = z.object({
   email: z

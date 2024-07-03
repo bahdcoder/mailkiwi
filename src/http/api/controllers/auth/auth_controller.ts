@@ -1,14 +1,14 @@
-import { container, inject, injectable } from "tsyringe"
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import { container, inject, injectable } from "tsyringe"
 
-import { ContainerKey } from "@/infrastructure/container"
-import { UserRepository } from "@/domains/auth/users/repositories/user_repository"
+import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository"
+import { RegisterUserAction } from "@/domains/auth/actions/register_user_action"
 import { CreateUserSchema } from "@/domains/auth/users/dto/create_user_dto"
 import { LoginUserSchema } from "@/domains/auth/users/dto/login_user_dto"
-import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository"
-import { E_VALIDATION_FAILED } from "@/http/responses/errors"
+import { UserRepository } from "@/domains/auth/users/repositories/user_repository"
 import { TeamRepository } from "@/domains/teams/repositories/team_repository"
-import { RegisterUserAction } from "@/domains/auth/actions/register_user_action"
+import { E_VALIDATION_FAILED } from "@/http/responses/errors"
+import { ContainerKey } from "@/infrastructure/container"
 
 @injectable()
 export class AuthController {
@@ -31,7 +31,7 @@ export class AuthController {
     )
   }
 
-  async register(request: FastifyRequest, response: FastifyReply) {
+  async register(request: FastifyRequest, _: FastifyReply) {
     const { success, error, data } = await CreateUserSchema.safeParseAsync(
       request.body,
     )
@@ -45,7 +45,7 @@ export class AuthController {
     return { user }
   }
 
-  async login(request: FastifyRequest, response: FastifyReply) {
+  async login(request: FastifyRequest, _: FastifyReply) {
     const { success, error, data } = await LoginUserSchema.safeParseAsync(
       request.body,
     )

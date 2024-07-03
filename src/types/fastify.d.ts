@@ -1,11 +1,12 @@
-import type { TeamWithMembers } from "@/domains/shared/types/team"
 import type { AccessToken, User } from "@prisma/client"
 import {
-  RegisterOptions,
-  RouteHandlerMethod,
   HTTPMethods,
   onRequestHookHandler,
+  RegisterOptions,
+  RouteHandlerMethod,
 } from "fastify"
+
+import type { TeamWithMembers } from "@/domains/shared/types/team"
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -19,7 +20,7 @@ declare module "fastify" {
 
   interface FastifyRequest {
     accessToken: AccessToken
-    team: NonNullable<TeamWithMembers>
+    team: TeamWithMembers
     user: User
   }
 }

@@ -1,10 +1,12 @@
-import string from "@/domains/shared/utils/string"
+import { createCipheriv, createDecipheriv, createHash } from "node:crypto"
+
 import { base64, MessageBuilder } from "@poppinss/utils"
-import { createHash, createCipheriv, createDecipheriv } from "node:crypto"
+
+import string from "@/domains/shared/utils/string"
 
 import { Hmac } from "./hmac"
-import type { EncryptionOptions } from "./types"
 import { MessageVerifier } from "./message_verifier"
+import type { EncryptionOptions } from "./types"
 
 export class Encryption {
   #options: Required<EncryptionOptions>
@@ -81,6 +83,7 @@ export class Encryption {
    * You can optionally define a purpose for which the value was encrypted and
    * mentioning a different purpose/no purpose during decrypt will fail.
    */
+  // eslint-disable-next-line
   encrypt(payload: any, expiresIn?: string | number, purpose?: string) {
     /**
      * Using a random string as the iv for generating unpredictable values
@@ -123,6 +126,7 @@ export class Encryption {
   /**
    * Decrypt value and verify it against a purpose
    */
+  // eslint-disable-next-line
   decrypt<T extends any>(value: unknown, purpose?: string): T | null {
     if (typeof value !== "string") {
       return null

@@ -1,8 +1,9 @@
+import { faker } from "@faker-js/faker"
+import { container } from "tsyringe"
+
 import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository"
 import { RegisterUserAction } from "@/domains/auth/actions/register_user_action"
 import { makeDatabase } from "@/infrastructure/container"
-import { faker } from "@faker-js/faker"
-import { container } from "tsyringe"
 
 export const createUser = async () => {
   const database = makeDatabase()

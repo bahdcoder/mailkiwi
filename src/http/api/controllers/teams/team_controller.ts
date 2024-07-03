@@ -1,19 +1,15 @@
-import { container, inject, injectable } from "tsyringe"
 import {
   FastifyInstance,
   FastifyReply,
   FastifyRequest,
   RouteHandlerMethod,
 } from "fastify"
+import { container, inject, injectable } from "tsyringe"
 
-import { ContainerKey } from "@/infrastructure/container"
-import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy"
-import { ContactRepository } from "@/domains/audiences/repositories/contact_repository"
-import { CreateContactSchema } from "@/domains/audiences/dto/contacts/create_contact_dto"
-import { CreateContactAction } from "@/domains/audiences/actions/contacts/create_contact_action"
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors"
-import { TeamRepository } from "@/domains/teams/repositories/team_repository"
 import { TeamPolicy } from "@/domains/audiences/policies/team_policy"
+import { TeamRepository } from "@/domains/teams/repositories/team_repository"
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors"
+import { ContainerKey } from "@/infrastructure/container"
 
 @injectable()
 export class TeamController {
@@ -31,11 +27,11 @@ export class TeamController {
 
   async show(
     request: FastifyRequest<{ Params: { teamId: string } }>,
-    response: FastifyReply,
+    _: FastifyReply,
   ) {
     const teamId = request.params.teamId
 
-    let team = await this.teamRepository.findById(teamId, {
+    const team = await this.teamRepository.findById(teamId, {
       include: {
         members: {
           select: {

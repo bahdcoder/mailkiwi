@@ -1,11 +1,11 @@
+import { PrismaClient } from "@prisma/client"
 import { container, inject, injectable } from "tsyringe"
-import { ContactRepository } from "@/domains/audiences/repositories/contact_repository"
-import { CreateContactDto } from "@/domains/audiences/dto/contacts/create_contact_dto"
-import { CreateUserDto } from "../users/dto/create_user_dto"
-import { UserRepository } from "../users/repositories/user_repository"
+
 import { TeamRepository } from "@/domains/teams/repositories/team_repository"
 import { ContainerKey } from "@/infrastructure/container"
-import { PrismaClient } from "@prisma/client"
+
+import { CreateUserDto } from "../users/dto/create_user_dto"
+import { UserRepository } from "../users/repositories/user_repository"
 
 @injectable()
 export class RegisterUserAction {

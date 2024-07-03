@@ -1,5 +1,5 @@
-import { z } from "zod"
 import { $Enums } from "@prisma/client"
+import { z } from "zod"
 
 export const CreateMailerSchema = z.object({
   name: z.string(),
