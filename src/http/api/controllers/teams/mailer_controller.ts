@@ -24,16 +24,16 @@ import { ContainerKey } from "@/infrastructure/container"
 @injectable()
 export class MailerController {
   constructor(
-    @inject(MailerRepository) private mailerRepository: MailerRepository,
-    @inject(ContainerKey.app) private app: FastifyInstance,
+    @inject(MailerRepository) protected mailerRepository: MailerRepository,
+    @inject(ContainerKey.app) protected app: FastifyInstance,
   ) {
     this.app.defineRoutes(
       [
         ["POST", "/", this.store.bind(this)],
-        ["PATCH", "/:mailer", this.update.bind(this) as RouteHandlerMethod],
+        ["PATCH", "/:mailerId", this.update.bind(this) as RouteHandlerMethod],
         [
           "POST",
-          "/:mailer/install",
+          "/:mailerId/install",
           this.install.bind(this) as RouteHandlerMethod,
         ],
       ],
@@ -107,7 +107,7 @@ export class MailerController {
     return mailer
   }
 
-  private async ensureMailerExists(
+  protected async ensureMailerExists(
     request: FastifyRequest<{ Params: { mailerId: string } }>,
   ) {
     const mailer = await this.mailerRepository.findById(
@@ -128,7 +128,7 @@ export class MailerController {
     return mailer
   }
 
-  private async ensureHasPermissions(request: FastifyRequest) {
+  protected async ensureHasPermissions(request: FastifyRequest) {
     const policy = container.resolve<TeamPolicy>(TeamPolicy)
 
     if (!policy.canAdministrate(request.team, request.accessToken.userId!))

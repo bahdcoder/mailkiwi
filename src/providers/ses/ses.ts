@@ -1,12 +1,21 @@
 import {
+  BehaviorOnMXFailure,
   CreateConfigurationSetCommand,
   CreateConfigurationSetEventDestinationCommand,
   DeleteConfigurationSetCommand,
   DescribeConfigurationSetCommand,
+  GetIdentityDkimAttributesCommand,
+  GetIdentityMailFromDomainAttributesCommand,
+  GetIdentityVerificationAttributesCommand,
   GetSendQuotaCommand,
+  IdentityDkimAttributes,
+  IdentityMailFromDomainAttributes,
+  IdentityVerificationAttributes,
   ListIdentitiesCommand,
   SESClient,
+  SetIdentityMailFromDomainCommand,
 } from "@aws-sdk/client-ses"
+import { CreateEmailIdentityCommand } from "@aws-sdk/client-sesv2"
 import { Secret } from "@poppinss/utils"
 
 export class SESService {
@@ -126,6 +135,81 @@ export class SESService {
         ConfigurationSetName: configurationSetName,
       }),
     )
+  }
+
+  async getIdentities() {
+    const response = await this.ses.send(new ListIdentitiesCommand({}))
+
+    return response.Identities
+  }
+
+  async getIdentitiesAttributes(identities: string[]) {
+    const [
+      { DkimAttributes },
+      { VerificationAttributes },
+      { MailFromDomainAttributes },
+    ] = await Promise.all([
+      this.ses.send(
+        new GetIdentityDkimAttributesCommand({
+          Identities: identities,
+        }),
+      ),
+      this.ses.send(
+        new GetIdentityVerificationAttributesCommand({
+          Identities: identities,
+        }),
+      ),
+      this.ses.send(
+        new GetIdentityMailFromDomainAttributesCommand({
+          Identities: identities,
+        }),
+      ),
+    ])
+
+    const attributes: Record<
+      string,
+      Partial<
+        IdentityDkimAttributes &
+          IdentityVerificationAttributes &
+          IdentityMailFromDomainAttributes
+      >
+    > = {}
+
+    identities.forEach((identity) => {
+      attributes[identity] = {
+        ...DkimAttributes?.[identity],
+        ...VerificationAttributes?.[identity],
+        ...MailFromDomainAttributes?.[identity],
+      }
+    })
+
+    return attributes
+  }
+
+  async createIdentity(configurationSetName: string, identityValue: string) {
+    const identity = await this.ses.send(
+      new CreateEmailIdentityCommand({
+        EmailIdentity: identityValue,
+        ConfigurationSetName: configurationSetName,
+        DkimSigningAttributes: {
+          // Todo: Provide private key.
+          DomainSigningPrivateKey: "",
+          DomainSigningSelector: "",
+        },
+      }),
+    )
+
+    if (identity.IdentityType === "EMAIL_ADDRESS") return identity
+
+    await this.ses.send(
+      new SetIdentityMailFromDomainCommand({
+        Identity: identityValue,
+        MailFromDomain: `send.${identityValue}`,
+        BehaviorOnMXFailure: BehaviorOnMXFailure.UseDefaultValue,
+      }),
+    )
+
+    return identity
   }
 }
 

@@ -23,8 +23,8 @@ describe("User registration", () => {
     const json = await response.json()
 
     expect(response.statusCode).toBe(200)
-    expect(json.user.name).toEqual(payload.name)
-    expect(json.user.email).toEqual(payload.email)
+    expect(json.name).toEqual(payload.name)
+    expect(json.email).toEqual(payload.email)
   })
 
   test("registering a new user account automatically creates a team for that user.", async ({
@@ -121,9 +121,9 @@ describe("User login", () => {
 
     const profile = await profileResponse.json()
 
-    expect(profile.user.id).toBe(user.id)
-    expect(profile.user.name).toBe(user.name)
-    expect(profile.user.email).toBe(user.email)
+    expect(profile.id).toBe(user.id)
+    expect(profile.name).toBe(user.name)
+    expect(profile.email).toBe(user.email)
   })
 
   test("a user cannot login with wrong credentials.", async ({ expect }) => {

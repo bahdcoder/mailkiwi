@@ -13,7 +13,6 @@ export class UpdateMailerAction {
   ) {}
 
   handle = async (mailer: Mailer, payload: UpdateMailerDto, team: Team) => {
-    console.log({ payload })
     const configurationKeysAreValid =
       await this.authenticateProviderCredentials(mailer, payload)
 

@@ -3,6 +3,7 @@ import { inject, injectable } from "tsyringe"
 
 import { TeamWithMembers } from "@/domains/shared/types/team"
 import { TeamRepository } from "@/domains/teams/repositories/team_repository"
+import { makeConfig } from "@/infrastructure/container"
 
 @injectable()
 export class TeamMiddleware {
@@ -12,7 +13,9 @@ export class TeamMiddleware {
   ) {}
 
   handle = async (request: FastifyRequest, _: FastifyReply) => {
-    const teamHeader = request.headers["x-bamboomailer-team-id"] as string
+    const teamHeader = request.headers[
+      makeConfig().software.teamHeader
+    ] as string
 
     if (!teamHeader) {
       return

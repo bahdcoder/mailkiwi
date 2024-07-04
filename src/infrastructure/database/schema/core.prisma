@@ -111,18 +111,26 @@ enum MailerIdentityStatus {
     PENDING
     APPROVED
     DENIED
+    FAILED
+    TEMPORARILY_FAILED
+}
+
+enum MailerIdentityType {
+    EMAIL
+    DOMAIN
 }
 
 model MailerIdentity {
     id String @id @default(cuid())
 
-    email    String
-    domain   String
     mailerId String?
+
+    value String
+    type  MailerIdentityType
 
     status MailerIdentityStatus @default(PENDING)
 
-    configuration String?
+    configuration Json?
 
     mailer Mailer? @relation(fields: [mailerId], references: [id])
 

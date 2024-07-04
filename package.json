@@ -15,7 +15,7 @@
     "db:migrate:run": "prisma migrate deploy",
     "db:migrate:reset": "prisma migrate reset",
     "db:generate": "prisma generate",
-    "make:files": "tsx src/bin/cli.ts make:files"
+    "make:files": "tsx src/bin/cli/cli.ts make:files"
   },
   "keywords": [],
   "author": "Frantz Kati <hey@katifrantz.com>",
@@ -50,6 +50,7 @@
     "@aws-sdk/client-sesv2": "^3.609.0",
     "@aws-sdk/client-sns": "^3.609.0",
     "@hapi/boom": "^10.0.1",
+    "@phc/format": "^1.0.0",
     "@poppinss/utils": "^6.7.3",
     "@prisma/client": "^5.16.1",
     "@sendgrid/mail": "^8.1.3",

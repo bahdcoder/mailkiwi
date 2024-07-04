@@ -23,6 +23,9 @@ importers:
       '@hapi/boom':
         specifier: ^10.0.1
         version: 10.0.1
+      '@phc/format':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@poppinss/utils':
         specifier: ^6.7.3
         version: 6.7.3
@@ -657,6 +660,10 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@phc/format@1.0.0':
+    resolution: {integrity: sha512-m7X9U6BG2+J+R1lSOdCiITLLrxm+cWlNI3HUFA92oLO77ObGNzaKdh8pMLqdZcshtkKuV84olNNXDfMc4FezBQ==}
+    engines: {node: '>=10'}
 
   '@poppinss/utils@6.7.3':
     resolution: {integrity: sha512-zQnhVG4Q+n6+V1vrL/TF1Oy8ZcVVGUs49Sj5OBgoari/q42UiG/rht1DRvoeWd9bT1BBDwxO2vcfxj6C0u/Dgg==}
@@ -3165,6 +3172,8 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
+
+  '@phc/format@1.0.0': {}
 
   '@poppinss/utils@6.7.3':
     dependencies:

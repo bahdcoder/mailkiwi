@@ -22,7 +22,11 @@ export class UserController {
         include: {
           teams: {
             include: {
-              mailers: true,
+              mailers: {
+                include: {
+                  identities: true,
+                },
+              },
               members: true,
             },
           },

@@ -3,7 +3,7 @@ import { FastifyInstance, InjectOptions } from "fastify"
 import { container } from "tsyringe"
 
 import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository"
-import { makeApp } from "@/infrastructure/container"
+import { makeApp, makeConfig } from "@/infrastructure/container"
 
 export async function injectAsUser(
   user: User,
@@ -20,8 +20,8 @@ export async function injectAsUser(
     ...injectOptions,
     headers: {
       authorization: `Bearer ${accessToken.toJSON()["token"]}`,
-      "x-bamboomailer-team-id": (user as User & { teams: Team[] })?.teams?.[0]
-        ?.id,
+      [makeConfig().software.teamHeader]: (user as User & { teams: Team[] })
+        ?.teams?.[0]?.id,
       ...injectOptions?.headers,
     },
   })

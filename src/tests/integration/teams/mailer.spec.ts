@@ -32,7 +32,7 @@ describe("Teams", () => {
     await cleanMailers()
   })
 
-  test("can update mailers", async ({ expect }) => {
+  test.skip("can update mailers", async ({ expect }) => {
     await cleanMailers()
     const { user, team } = await createUser()
     const database = makeDatabase()

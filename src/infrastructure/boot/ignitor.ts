@@ -7,6 +7,7 @@ import { ContactController } from "@/http/api/controllers/audiences/contact_cont
 import { AuthController } from "@/http/api/controllers/auth/auth_controller"
 import { UserController } from "@/http/api/controllers/auth/user_controller"
 import { MailerController } from "@/http/api/controllers/teams/mailer_controller"
+import { MailerIdentityController } from "@/http/api/controllers/teams/mailer_identity_controller"
 import { TeamController } from "@/http/api/controllers/teams/team_controller"
 import { MailerWebhooksContorller } from "@/http/api/controllers/webhooks/mailer_webhooks_controller"
 import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware"
@@ -52,6 +53,10 @@ export class Ignitor {
     this.app = Fastify({ logger: !this.env.isTest })
 
     const app = this.app
+
+    this.app.addHook("onRoute", ({ path, method }) => {
+      console.log(`${method} ${path}`)
+    })
 
     this.app.defineRoutes = function defineRoutes(routes, routeOptions) {
       app.register(function register(currentApp, opts, done) {
@@ -113,6 +118,7 @@ export class Ignitor {
     container.resolve(MailerController)
     container.resolve(TeamController)
     container.resolve(MailerWebhooksContorller)
+    container.resolve(MailerIdentityController)
   }
 
   async shutdown() {

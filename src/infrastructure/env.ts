@@ -25,4 +25,9 @@ export const env = cleanEnv(process.env, {
   }),
 })
 
-export const config = { ...env, software: { shortName: "bamboomailer" } }
+const SHORT_NAME = "bamboomailer"
+
+export const config = {
+  ...env,
+  software: { shortName: SHORT_NAME, teamHeader: `x-${SHORT_NAME}-team-id` },
+}

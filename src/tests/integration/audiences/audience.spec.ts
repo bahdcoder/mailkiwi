@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker"
 import { describe, test } from "vitest"
 
-import { makeApp, makeDatabase } from "@/infrastructure/container"
+import { makeApp, makeConfig, makeDatabase } from "@/infrastructure/container"
 import { createUser } from "@/tests/mocks/auth/users"
 import { injectAsUser } from "@/tests/utils/http"
 
@@ -63,7 +63,7 @@ describe("Audiences", () => {
         name: "Newsletter",
       },
       headers: {
-        "x-bamboomailer-team-id": unauthorizedUser?.teams?.[0]?.id,
+        [makeConfig().software.teamHeader]: unauthorizedUser?.teams?.[0]?.id,
       },
     })
 
