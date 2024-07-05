@@ -2,6 +2,7 @@ import { Secret } from "@poppinss/utils"
 import { Mailer, Prisma, PrismaClient, Team } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
+import { MailerConfiguration } from "@/domains/shared/types/mailer"
 import { Encryption } from "@/domains/shared/utils/encryption/encryption"
 import { CreateMailerDto } from "@/domains/teams/dto/mailers/create_mailer_dto"
 import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto"
@@ -9,10 +10,10 @@ import { ContainerKey, makeEnv } from "@/infrastructure/container"
 
 @injectable()
 export class MailerRepository {
-  defaultConfigurationPayload: UpdateMailerDto["configuration"] = {
+  defaultConfigurationPayload: MailerConfiguration = {
     accessKey: new Secret(""),
     accessSecret: new Secret(""),
-    region: undefined,
+    region: "" as MailerConfiguration["region"],
     domain: "",
     email: "",
     maximumMailsPerSecond: 1,
@@ -55,20 +56,31 @@ export class MailerRepository {
     return this.database.mailer.findMany(args)
   }
 
+  async setMailerStatus(mailer: Mailer, status: Mailer["status"]) {
+    return this.database.mailer.update({
+      where: {
+        id: mailer.id,
+      },
+      data: {
+        status,
+      },
+    })
+  }
+
   async update(
     mailer: Mailer,
-    {
-      configuration: payloadConfiguration,
-      ...payload
-    }: Partial<UpdateMailerDto> &
+    updatePayload: Partial<UpdateMailerDto> &
       Omit<Prisma.MailerUpdateInput, "configuration">,
     team: Team,
   ) {
+    const { configuration: payloadConfiguration, ...payload } = updatePayload
+    const decryptedConfiguration = this.getDecryptedConfiguration(
+      mailer.configuration,
+      team.configurationKey,
+    )
+
     const configuration = {
-      ...this.getDecryptedConfiguration(
-        mailer.configuration,
-        team.configurationKey,
-      ),
+      ...decryptedConfiguration,
       ...(payloadConfiguration ?? {}),
     }
 
@@ -119,7 +131,7 @@ export class MailerRepository {
   }
 
   getEncryptedConfigurationPayload(
-    configurationPayload: UpdateMailerDto["configuration"],
+    configurationPayload: MailerConfiguration,
     encryptedConfigurationKey: string,
   ) {
     const configurationKey = new Secret(

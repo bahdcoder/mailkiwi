@@ -10,7 +10,7 @@ import { container, inject, injectable } from "tsyringe"
 import { TeamPolicy } from "@/domains/audiences/policies/team_policy"
 import { InstallMailerAction } from "@/domains/teams/actions/install_mailer_action"
 import { CreateMailerAction } from "@/domains/teams/actions/mailers/create_mailer_action"
-import { GetMailersAction } from "@/domains/teams/actions/mailers/get_mailers_action"
+import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action"
 import { UpdateMailerAction } from "@/domains/teams/actions/mailers/update_mailer_action"
 import { CreateMailerSchema } from "@/domains/teams/dto/mailers/create_mailer_dto"
 import { UpdateMailerSchema } from "@/domains/teams/dto/mailers/update_mailer_dto"
@@ -34,6 +34,11 @@ export class MailerController {
         ["GET", "/", this.index.bind(this)],
         ["PATCH", "/:mailerId", this.update.bind(this) as RouteHandlerMethod],
         [
+          "PATCH",
+          "/:mailerId/reconnect",
+          this.reconnect.bind(this) as RouteHandlerMethod,
+        ],
+        [
           "POST",
           "/:mailerId/install",
           this.install.bind(this) as RouteHandlerMethod,
@@ -48,11 +53,11 @@ export class MailerController {
   async index(request: FastifyRequest, _: FastifyReply) {
     await this.ensureHasPermissions(request)
 
-    const action = container.resolve(GetMailersAction)
+    const action = container.resolve(GetMailerAction)
 
-    const mailers = await action.handle(request.team)
+    const mailer = await action.handle(request.team)
 
-    return mailers
+    return mailer
   }
 
   async store(request: FastifyRequest, _: FastifyReply) {
@@ -117,6 +122,51 @@ export class MailerController {
     if (!success) throw E_OPERATION_FAILED("Failed to install mailer.")
 
     return mailer
+  }
+
+  async reconnect(
+    request: FastifyRequest<{ Params: { mailerId: string } }>,
+    _: FastifyReply,
+  ) {
+    const mailer = await this.ensureMailerExists(request)
+
+    await this.ensureHasPermissions(request)
+
+    const configuration = this.mailerRepository.getDecryptedConfiguration(
+      mailer.configuration,
+      request.team.configurationKey,
+    )
+
+    const { success, error, data } = UpdateMailerSchema.safeParse(
+      request.body ?? {},
+    )
+
+    if (!success) throw E_VALIDATION_FAILED(error)
+
+    if (data?.configuration.region !== configuration.region) {
+      throw E_VALIDATION_FAILED({
+        errors: [
+          {
+            message:
+              "Cannot update region when reconnecting. To change the region of your mailer, please create a new mailer instead.",
+            path: ["configuration"],
+          },
+        ],
+      })
+    }
+
+    await container
+      .resolve<UpdateMailerAction>(UpdateMailerAction)
+      .reconnecting()
+      .handle(mailer, data, request.team)
+
+    const updatedMailer = (await this.mailerRepository.findById(mailer.id))!
+
+    await container
+      .resolve<InstallMailerAction>(InstallMailerAction)
+      .handle(updatedMailer, request.team)
+
+    return this.mailerRepository.findById(mailer.id)
   }
 
   protected async ensureMailerExists(

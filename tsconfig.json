@@ -11,8 +11,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {
-      "@/*": ["./src/*"],
-      "rollup/parseAst": ["./node_modules/rollup/dist/parseAst"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*.ts"],

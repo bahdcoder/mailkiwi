@@ -26,6 +26,28 @@ export class TeamRepository extends BaseRepository {
     return team
   }
 
+  async findUserDefaultTeam(userId: string) {
+    return this.database.team.findFirst({
+      where: {
+        userId: userId,
+      },
+      include: {
+        members: {
+          select: {
+            userId: true,
+            role: true,
+            status: true,
+          },
+        },
+        mailer: {
+          include: {
+            identities: true,
+          },
+        },
+      },
+    })
+  }
+
   async findById(teamId: string, args?: Prisma.TeamFindFirstArgs) {
     const team = await this.database.team.findFirst({
       where: {
@@ -37,6 +59,11 @@ export class TeamRepository extends BaseRepository {
             userId: true,
             role: true,
             status: true,
+          },
+        },
+        mailer: {
+          include: {
+            identities: true,
           },
         },
       },

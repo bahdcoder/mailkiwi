@@ -47,7 +47,6 @@ export class SESService {
 
       return true
     } catch (error) {
-      console.error("Error checking SES access:", error)
       return false
     }
   }
@@ -80,13 +79,17 @@ export class SESService {
   }
 
   async getSendingStatus() {
-    const [{ Enabled }, { Max24HourSend, MaxSendRate, SentLast24Hours }] =
-      await Promise.all([
-        this.ses.send(new GetAccountSendingEnabledCommand({})),
-        this.ses.send(new GetSendQuotaCommand({})),
-      ])
+    const [accountSending, sendQuota] = await Promise.all([
+      this.ses.send(new GetAccountSendingEnabledCommand({})),
+      this.ses.send(new GetSendQuotaCommand({})),
+    ])
 
-    return { Enabled, Max24HourSend, MaxSendRate, SentLast24Hours }
+    return {
+      Enabled: accountSending?.Enabled,
+      Max24HourSend: sendQuota.Max24HourSend,
+      MaxSendRate: sendQuota.MaxSendRate,
+      SentLast24Hours: sendQuota.SentLast24Hours,
+    }
   }
 
   async createConfigurationSetEventsDestination(

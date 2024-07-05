@@ -1,5 +1,5 @@
 import tsconfigPaths from "vite-tsconfig-paths"
-import { configDefaults,defineConfig } from "vitest/config"
+import { configDefaults, defineConfig } from "vitest/config"
 
 export default defineConfig({
   test: {
@@ -8,6 +8,7 @@ export default defineConfig({
     },
     setupFiles: ["src/tests/setup.ts"],
     exclude: [...configDefaults.exclude, "**/build/**"],
+    reporters: ["verbose"],
   },
   plugins: [tsconfigPaths()],
 })

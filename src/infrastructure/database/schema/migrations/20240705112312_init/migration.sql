@@ -2,45 +2,19 @@
 CREATE TYPE "BroadcastEditor" AS ENUM ('DEFAULT', 'MARKDOWN');
 
 -- CreateEnum
-CREATE TYPE "MailerStatus" AS ENUM (
-    'READY',
-    'PENDING',
-    'INSTALLING',
-    'CREATING_IDENTITIES',
-    'SENDING_TEST_EMAIL',
-    'DISABLED'
-);
+CREATE TYPE "MailerStatus" AS ENUM ('READY', 'PENDING', 'INSTALLING', 'CREATING_IDENTITIES', 'SENDING_TEST_EMAIL', 'DISABLED', 'ACCESS_KEYS_LOST_PROVIDER_ACCESS');
 
 -- CreateEnum
 CREATE TYPE "MailerProvider" AS ENUM ('AWS_SES', 'POSTMARK', 'MAILGUN');
 
 -- CreateEnum
-CREATE TYPE "MailerIdentityStatus" AS ENUM (
-    'PENDING',
-    'APPROVED',
-    'DENIED',
-    'FAILED',
-    'TEMPORARILY_FAILED'
-);
+CREATE TYPE "MailerIdentityStatus" AS ENUM ('PENDING', 'APPROVED', 'DENIED', 'FAILED', 'TEMPORARILY_FAILED');
 
 -- CreateEnum
 CREATE TYPE "MailerIdentityType" AS ENUM ('EMAIL', 'DOMAIN');
 
 -- CreateEnum
-CREATE TYPE "WebhookEvent" AS ENUM (
-    'ALL_EVENTS',
-    'CONTACT_ADDED',
-    'CONTACT_REMOVED',
-    'CONTACT_TAG_ADDED',
-    'CONTACT_TAG_REMOVED',
-    'BROADCAST_SENT',
-    'BROADCAST_PAUSED',
-    'BROADCAST_EMAIL_OPENED',
-    'BROADCAST_EMAIL_LINK_CLICKED',
-    'AUDIENCE_ADDED',
-    'TAG_ADDED',
-    'TAG_REMOVED'
-);
+CREATE TYPE "WebhookEvent" AS ENUM ('ALL_EVENTS', 'CONTACT_ADDED', 'CONTACT_REMOVED', 'CONTACT_TAG_ADDED', 'CONTACT_TAG_REMOVED', 'BROADCAST_SENT', 'BROADCAST_PAUSED', 'BROADCAST_EMAIL_OPENED', 'BROADCAST_EMAIL_LINK_CLICKED', 'AUDIENCE_ADDED', 'TAG_ADDED', 'TAG_REMOVED');
 
 -- CreateEnum
 CREATE TYPE "TeamRole" AS ENUM ('ADMINISTRATOR', 'USER');
@@ -54,6 +28,7 @@ CREATE TABLE "Setting" (
     "url" TEXT,
     "domain" TEXT NOT NULL,
     "installedSslCertificate" BOOLEAN NOT NULL DEFAULT false,
+
     CONSTRAINT "Setting_pkey" PRIMARY KEY ("id")
 );
 
@@ -64,6 +39,7 @@ CREATE TABLE "User" (
     "name" TEXT,
     "avatarUrl" TEXT,
     "password" TEXT NOT NULL,
+
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
@@ -73,12 +49,13 @@ CREATE TABLE "AccessToken" (
     "type" TEXT NOT NULL,
     "name" TEXT,
     "hash" TEXT NOT NULL,
-    "abilities" TEXT [] DEFAULT ARRAY [] :: TEXT [],
+    "abilities" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "lastUsedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "expiresAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT,
     "teamId" TEXT,
+
     CONSTRAINT "AccessToken_pkey" PRIMARY KEY ("id")
 );
 
@@ -91,6 +68,7 @@ CREATE TABLE "Team" (
     "trackOpens" BOOLEAN,
     "configurationKey" TEXT NOT NULL,
     "broadcastEditor" "BroadcastEditor" NOT NULL DEFAULT 'DEFAULT',
+
     CONSTRAINT "Team_pkey" PRIMARY KEY ("id")
 );
 
@@ -103,8 +81,14 @@ CREATE TABLE "Mailer" (
     "provider" "MailerProvider" NOT NULL,
     "status" "MailerStatus" NOT NULL DEFAULT 'PENDING',
     "teamId" TEXT NOT NULL,
+    "sendingEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "inSandboxMode" BOOLEAN NOT NULL DEFAULT true,
+    "max24HourSend" INTEGER,
+    "maxSendRate" INTEGER,
+    "sentLast24Hours" INTEGER,
     "testEmailSentAt" TIMESTAMP(3),
     "installationCompletedAt" TIMESTAMP(3),
+
     CONSTRAINT "Mailer_pkey" PRIMARY KEY ("id")
 );
 
@@ -117,6 +101,7 @@ CREATE TABLE "MailerIdentity" (
     "status" "MailerIdentityStatus" NOT NULL DEFAULT 'PENDING',
     "configuration" JSONB,
     "confirmedApprovalAt" TIMESTAMP(3),
+
     CONSTRAINT "MailerIdentity_pkey" PRIMARY KEY ("id")
 );
 
@@ -125,8 +110,9 @@ CREATE TABLE "Webhook" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "url" TEXT NOT NULL,
-    "events" "WebhookEvent" [] DEFAULT ARRAY ['ALL_EVENTS'] :: "WebhookEvent" [],
+    "events" "WebhookEvent"[] DEFAULT ARRAY['ALL_EVENTS']::"WebhookEvent"[],
     "teamId" TEXT NOT NULL,
+
     CONSTRAINT "Webhook_pkey" PRIMARY KEY ("id")
 );
 
@@ -140,6 +126,7 @@ CREATE TABLE "TeamMembership" (
     "status" "MembershipStatus" NOT NULL,
     "invitedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "expiresAt" TIMESTAMP(3) NOT NULL,
+
     CONSTRAINT "TeamMembership_pkey" PRIMARY KEY ("id")
 );
 
@@ -148,6 +135,7 @@ CREATE TABLE "Audience" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "teamId" TEXT NOT NULL,
+
     CONSTRAINT "Audience_pkey" PRIMARY KEY ("id")
 );
 
@@ -162,6 +150,7 @@ CREATE TABLE "Contact" (
     "unsubscribedAt" TIMESTAMP(3),
     "audienceId" TEXT NOT NULL,
     "attributes" JSONB,
+
     CONSTRAINT "Contact_pkey" PRIMARY KEY ("id")
 );
 
@@ -170,6 +159,7 @@ CREATE TABLE "Tag" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
+
     CONSTRAINT "Tag_pkey" PRIMARY KEY ("id")
 );
 
@@ -178,7 +168,8 @@ CREATE TABLE "TagsOnContacts" (
     "tagId" TEXT NOT NULL,
     "contactId" TEXT NOT NULL,
     "assignedAt" TIMESTAMP(3),
-    CONSTRAINT "TagsOnContacts_pkey" PRIMARY KEY ("tagId", "contactId")
+
+    CONSTRAINT "TagsOnContacts_pkey" PRIMARY KEY ("tagId","contactId")
 );
 
 -- CreateIndex
@@ -191,6 +182,9 @@ CREATE UNIQUE INDEX "Setting_domain_key" ON "Setting"("domain");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Mailer_teamId_key" ON "Mailer"("teamId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Contact_email_audienceId_key" ON "Contact"("email", "audienceId");
 
 -- CreateIndex
@@ -200,81 +194,37 @@ CREATE INDEX "TagsOnContacts_tagId_contactId_idx" ON "TagsOnContacts"("tagId", "
 CREATE UNIQUE INDEX "TagsOnContacts_tagId_contactId_key" ON "TagsOnContacts"("tagId", "contactId");
 
 -- AddForeignKey
-ALTER TABLE
-    "AccessToken"
-ADD
-    CONSTRAINT "AccessToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE
-SET
-    NULL ON UPDATE CASCADE;
+ALTER TABLE "AccessToken" ADD CONSTRAINT "AccessToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "AccessToken"
-ADD
-    CONSTRAINT "AccessToken_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE
-SET
-    NULL ON UPDATE CASCADE;
+ALTER TABLE "AccessToken" ADD CONSTRAINT "AccessToken_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "Team"
-ADD
-    CONSTRAINT "Team_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Team" ADD CONSTRAINT "Team_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "Mailer"
-ADD
-    CONSTRAINT "Mailer_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Mailer" ADD CONSTRAINT "Mailer_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "MailerIdentity"
-ADD
-    CONSTRAINT "MailerIdentity_mailerId_fkey" FOREIGN KEY ("mailerId") REFERENCES "Mailer"("id") ON DELETE
-SET
-    NULL ON UPDATE CASCADE;
+ALTER TABLE "MailerIdentity" ADD CONSTRAINT "MailerIdentity_mailerId_fkey" FOREIGN KEY ("mailerId") REFERENCES "Mailer"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "Webhook"
-ADD
-    CONSTRAINT "Webhook_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Webhook" ADD CONSTRAINT "Webhook_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "TeamMembership"
-ADD
-    CONSTRAINT "TeamMembership_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE
-SET
-    NULL ON UPDATE CASCADE;
+ALTER TABLE "TeamMembership" ADD CONSTRAINT "TeamMembership_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "TeamMembership"
-ADD
-    CONSTRAINT "TeamMembership_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TeamMembership" ADD CONSTRAINT "TeamMembership_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "Audience"
-ADD
-    CONSTRAINT "Audience_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Audience" ADD CONSTRAINT "Audience_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "Contact"
-ADD
-    CONSTRAINT "Contact_audienceId_fkey" FOREIGN KEY ("audienceId") REFERENCES "Audience"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Contact" ADD CONSTRAINT "Contact_audienceId_fkey" FOREIGN KEY ("audienceId") REFERENCES "Audience"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "TagsOnContacts"
-ADD
-    CONSTRAINT "TagsOnContacts_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "Tag"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TagsOnContacts" ADD CONSTRAINT "TagsOnContacts_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "Tag"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    "TagsOnContacts"
-ADD
-    CONSTRAINT "TagsOnContacts_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TagsOnContacts" ADD CONSTRAINT "TagsOnContacts_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

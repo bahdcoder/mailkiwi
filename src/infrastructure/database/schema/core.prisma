@@ -71,7 +71,8 @@ model Team {
     webhooks     Webhook[]
     accessTokens AccessToken[]
     audiences    Audience[]
-    mailers      Mailer[]
+
+    mailer Mailer?
 }
 
 enum MailerStatus {
@@ -100,9 +101,14 @@ model Mailer {
     status        MailerStatus   @default(PENDING)
 
     team   Team   @relation(fields: [teamId], references: [id])
-    teamId String
+    teamId String @unique
 
     sendingEnabled Boolean @default(false)
+    inSandboxMode  Boolean @default(true)
+
+    max24HourSend   Int?
+    maxSendRate     Int?
+    sentLast24Hours Int?
 
     testEmailSentAt         DateTime?
     installationCompletedAt DateTime?

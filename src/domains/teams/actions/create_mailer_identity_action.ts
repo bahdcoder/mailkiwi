@@ -5,6 +5,7 @@ import { MailerConfiguration } from "@/domains/shared/types/mailer"
 import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto"
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
+import { E_VALIDATION_FAILED } from "@/http/responses/errors"
 import { makeConfig } from "@/infrastructure/container"
 import { AwsSdk } from "@/providers/ses/sdk"
 
@@ -26,6 +27,21 @@ export class CreateMailerIdentityAction {
       mailer.configuration,
       team.configurationKey,
     ) as MailerConfiguration
+
+    if (
+      !configuration.accessKey ||
+      !configuration.accessSecret ||
+      !configuration.region
+    ) {
+      throw E_VALIDATION_FAILED({
+        errors: [
+          {
+            path: ["mailer.configuration"],
+            message: "Mailer is not correctly configured.",
+          },
+        ],
+      })
+    }
 
     let identity = await this.mailerIdentityRepository.create(payload, mailer)
 

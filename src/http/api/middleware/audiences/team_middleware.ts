@@ -21,7 +21,13 @@ export class TeamMiddleware {
       return
     }
 
-    const team = await this.teamRepository.findById(teamHeader)
+    let team = await this.teamRepository.findById(teamHeader)
+
+    if (!team && request.accessToken.userId) {
+      team = await this.teamRepository.findUserDefaultTeam(
+        request.accessToken.userId,
+      )
+    }
 
     if (team) {
       request.team = team as TeamWithMembers

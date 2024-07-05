@@ -1,4 +1,7 @@
+import { SESClient } from "@aws-sdk/client-ses"
+import { SNSClient } from "@aws-sdk/client-sns"
 import { faker } from "@faker-js/faker"
+import { mockClient } from "aws-sdk-client-mock"
 import { container } from "tsyringe"
 
 import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository"
@@ -12,6 +15,18 @@ export const createUser = async ({
   createMailerWithIdentity?: boolean
 } = {}) => {
   const database = makeDatabase()
+
+  const setting = await database.setting.upsert({
+    where: {
+      domain: "marketing.example.com",
+    },
+    create: {
+      url: "https://marketing.example.com",
+      domain: "marketing.example.com",
+    },
+    update: {},
+  })
+
   const audienceRepository = container.resolve(AudienceRepository)
 
   const registerUserAction = container.resolve(RegisterUserAction)
@@ -44,13 +59,16 @@ export const createUser = async ({
       },
     })
 
+    mockClient(SESClient).onAnyCommand().resolves({})
+    mockClient(SNSClient).onAnyCommand().resolves({})
+
     await injectAsUser(freshUser!, {
       method: "PATCH",
       path: `/mailers/${(await response.json()).id}`,
       body: {
         configuration: {
-          accessKey: faker.string.alphanumeric({ length: 16 }),
-          accessSecret: faker.string.alphanumeric({ length: 16 }),
+          accessKey: faker.string.alphanumeric({ length: 24 }),
+          accessSecret: faker.string.alphanumeric({ length: 24 }),
           region: "us-east-1",
           domain: "newsletter.example.com",
         },
@@ -58,5 +76,5 @@ export const createUser = async ({
     })
   }
 
-  return { user: freshUser!, team, audience }
+  return { user: freshUser!, team, audience, setting }
 }

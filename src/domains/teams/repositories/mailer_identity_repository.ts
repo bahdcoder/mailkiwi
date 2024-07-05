@@ -53,7 +53,7 @@ export class MailerIdentityRepository {
     const encryption = new Encryption({ secret: decryptedConfigurationKey })
 
     return {
-      privateKey: new Secret(encryption.decrypt(privateKey)),
+      privateKey: new Secret(encryption.decrypt<string>(privateKey)!),
     }
   }
 

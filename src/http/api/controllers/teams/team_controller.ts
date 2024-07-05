@@ -40,7 +40,7 @@ export class TeamController {
             status: true,
           },
         },
-        mailers: {
+        mailer: {
           select: {
             id: true,
             name: true,

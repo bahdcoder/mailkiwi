@@ -4,9 +4,10 @@ import {
   FastifyRequest,
   RouteHandlerMethod,
 } from "fastify"
-import { inject, injectable } from "tsyringe"
+import { container, inject, injectable } from "tsyringe"
 
 import { UserRepository } from "@/domains/auth/users/repositories/user_repository"
+import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action"
 import { ContainerKey } from "@/infrastructure/container"
 
 @injectable()
@@ -24,13 +25,22 @@ export class UserController {
   }
 
   async profile(request: FastifyRequest, _: FastifyReply) {
+    const getMailerAction = container.resolve(GetMailerAction)
+
+    // Sync mailer identity statuses from AWS.
+    try {
+      await getMailerAction.handle(request.team)
+    } catch (error) {
+      //
+    }
+
     const user = await this.userRepository.findById(
       request.accessToken.userId,
       {
         include: {
           teams: {
             include: {
-              mailers: {
+              mailer: {
                 include: {
                   identities: true,
                 },

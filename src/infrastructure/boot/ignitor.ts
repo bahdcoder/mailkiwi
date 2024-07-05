@@ -1,3 +1,5 @@
+import "./globals"
+
 import { PrismaClient } from "@prisma/client"
 import Fastify, { FastifyInstance } from "fastify"
 import { container } from "tsyringe"
@@ -54,9 +56,11 @@ export class Ignitor {
 
     const app = this.app
 
-    this.app.addHook("onRoute", ({ path, method }) => {
-      console.log(`${method} ${path}`)
-    })
+    if (this.env.isDevelopment) {
+      this.app.addHook("onRoute", ({ path, method }) => {
+        console.log(`${method} ${path}`)
+      })
+    }
 
     this.app.defineRoutes = function defineRoutes(routes, routeOptions) {
       app.register(function register(currentApp, opts, done) {

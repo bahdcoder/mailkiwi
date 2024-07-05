@@ -1,23 +1,32 @@
 import { Mailer, Team } from "@prisma/client"
 import { container, inject, injectable } from "tsyringe"
 
+import { MailerConfiguration } from "@/domains/shared/types/mailer"
+import { CreateMailerIdentityAction } from "@/domains/teams/actions/create_mailer_identity_action"
+import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto"
 import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto"
+import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
-import { AwsSdk } from "@/providers/ses/sdk"
-
-import { CreateMailerIdentityDto } from "../../dto/create_mailer_identity_dto"
-import { CreateMailerIdentityAction } from "../create_mailer_identity_action"
 
 @injectable()
 export class UpdateMailerAction {
+  protected isReconnecting = false
   constructor(
     @inject(MailerRepository)
     private mailerRepository: MailerRepository,
   ) {}
 
+  reconnecting() {
+    this.isReconnecting = true
+
+    return this
+  }
+
   handle = async (mailer: Mailer, payload: UpdateMailerDto, team: Team) => {
-    const configurationKeysAreValid =
-      await this.authenticateProviderCredentials(mailer, payload)
+    const configurationKeysAreValid = await new CheckProviderCredentials(
+      mailer,
+      payload.configuration as MailerConfiguration,
+    ).execute()
 
     if (!configurationKeysAreValid) {
       return null
@@ -29,7 +38,10 @@ export class UpdateMailerAction {
       team,
     )
 
-    if (payload.configuration.domain || payload.configuration.email) {
+    if (
+      payload.configuration.domain ||
+      (payload.configuration.email && !this.isReconnecting)
+    ) {
       const mailerIdentityAction = container.resolve(CreateMailerIdentityAction)
 
       const mailerIdentityPayload: CreateMailerIdentityDto = {
@@ -37,46 +49,13 @@ export class UpdateMailerAction {
         type: payload.configuration.domain ? "DOMAIN" : "EMAIL",
       }
 
-      try {
-        await mailerIdentityAction.handle(
-          mailerIdentityPayload,
-          updatedMailer,
-          team,
-        )
-      } catch (error) {
-        await this.mailerRepository.delete(updatedMailer)
-
-        throw error
-      }
+      await mailerIdentityAction.handle(
+        mailerIdentityPayload,
+        updatedMailer,
+        team,
+      )
     }
 
     return updatedMailer
-  }
-
-  private async authenticateProviderCredentials(
-    mailer: Mailer,
-    payload: UpdateMailerDto,
-  ) {
-    const { configuration } = payload
-
-    switch (mailer.provider) {
-      case "AWS_SES":
-        if (
-          !configuration.accessKey ||
-          !configuration.accessSecret ||
-          !configuration.region
-        ) {
-          return false
-        }
-        return await new AwsSdk(
-          configuration.accessKey,
-          configuration.accessSecret,
-          configuration.region,
-        )
-          .permissionsChecker()
-          .checkAllAccess()
-      default:
-        return false
-    }
   }
 }
