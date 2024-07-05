@@ -81,6 +81,7 @@ enum MailerStatus {
     CREATING_IDENTITIES
     SENDING_TEST_EMAIL
     DISABLED
+    ACCESS_KEYS_LOST_PROVIDER_ACCESS
 }
 
 enum MailerProvider {

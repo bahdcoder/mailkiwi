@@ -1,4 +1,9 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import {
+  FastifyInstance,
+  FastifyReply,
+  FastifyRequest,
+  RouteHandlerMethod,
+} from "fastify"
 import { inject, injectable } from "tsyringe"
 
 import { UserRepository } from "@/domains/auth/users/repositories/user_repository"
@@ -10,9 +15,12 @@ export class UserController {
     @inject(UserRepository) private userRepository: UserRepository,
     @inject(ContainerKey.app) private app: FastifyInstance,
   ) {
-    this.app.defineRoutes([["GET", "/profile", this.profile.bind(this)]], {
-      prefix: "auth",
-    })
+    this.app.defineRoutes(
+      [["GET", "/profile", this.profile.bind(this) as RouteHandlerMethod]],
+      {
+        prefix: "auth",
+      },
+    )
   }
 
   async profile(request: FastifyRequest, _: FastifyReply) {

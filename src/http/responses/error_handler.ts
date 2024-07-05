@@ -14,6 +14,8 @@ export function globalErrorHandler(
     return response.code(statusCode).send(error.data)
   }
 
+  console.error(error)
+
   request.log.error(error)
 
   return response.code(500).send({

@@ -35,8 +35,6 @@ export class GetMailerIdentitiesAction {
         configuration,
       )
 
-      console.dir(attributes, { depth: null })
-
       if (!attributes) {
         return identities
       }

@@ -1,5 +1,8 @@
 import {
   BehaviorOnMXFailure,
+  GetIdentityDkimAttributesCommand,
+  GetIdentityMailFromDomainAttributesCommand,
+  GetIdentityVerificationAttributesCommand,
   GetSendQuotaCommand,
   ListIdentitiesCommand,
   SESClient,
@@ -22,7 +25,7 @@ import { injectAsUser } from "@/tests/utils/http"
 const SESMock = mockClient(SESClient)
 const SNSMock = mockClient(SNSClient)
 
-describe("Teams", () => {
+describe("Teams / Mailers", () => {
   beforeEach(() => {
     SNSMock.reset()
     SESMock.reset()
@@ -313,5 +316,51 @@ describe("Teams", () => {
     // make sure keys were not saved and config was not updated.
     expect(decryptedConfiguration.accessKey.release()).toBe("")
     expect(decryptedConfiguration.accessSecret.release()).toBe("")
+  })
+
+  test("can fetch all mailers and see sending domain approval status", async ({
+    expect,
+  }) => {
+    const { user } = await createUser({ createMailerWithIdentity: true })
+
+    SESMock.on(GetIdentityDkimAttributesCommand).resolves({
+      DkimAttributes: {
+        "newsletter.example.com": {
+          DkimEnabled: true,
+          DkimVerificationStatus: "Success",
+          DkimTokens: [],
+        },
+      },
+    })
+
+    SESMock.on(GetIdentityVerificationAttributesCommand).resolves({
+      VerificationAttributes: {
+        "newsletter.example.com": {
+          VerificationStatus: "Success",
+          VerificationToken: faker.string.alphanumeric(),
+        },
+      },
+    })
+
+    SESMock.on(GetIdentityMailFromDomainAttributesCommand).resolves({
+      MailFromDomainAttributes: {
+        "newsletter.example.com": {
+          BehaviorOnMXFailure: BehaviorOnMXFailure.UseDefaultValue,
+          MailFromDomain: "send.newsletter.example.com",
+          MailFromDomainStatus: "Success",
+        },
+      },
+    })
+
+    const response = await injectAsUser(user, {
+      method: "GET",
+      path: "/mailers",
+    })
+
+    const json = await response.json()
+
+    expect(json.length).toBe(1)
+    expect(json[0].status).toBe("READY")
+    expect(json[0].identities[0].status).toBe("APPROVED")
   })
 })

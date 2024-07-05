@@ -51,6 +51,10 @@ export class MailerRepository {
     })
   }
 
+  async findMany(args?: Prisma.MailerFindManyArgs) {
+    return this.database.mailer.findMany(args)
+  }
+
   async update(
     mailer: Mailer,
     {

@@ -10,6 +10,7 @@ import { container, inject, injectable } from "tsyringe"
 import { TeamPolicy } from "@/domains/audiences/policies/team_policy"
 import { InstallMailerAction } from "@/domains/teams/actions/install_mailer_action"
 import { CreateMailerAction } from "@/domains/teams/actions/mailers/create_mailer_action"
+import { GetMailersAction } from "@/domains/teams/actions/mailers/get_mailers_action"
 import { UpdateMailerAction } from "@/domains/teams/actions/mailers/update_mailer_action"
 import { CreateMailerSchema } from "@/domains/teams/dto/mailers/create_mailer_dto"
 import { UpdateMailerSchema } from "@/domains/teams/dto/mailers/update_mailer_dto"
@@ -30,6 +31,7 @@ export class MailerController {
     this.app.defineRoutes(
       [
         ["POST", "/", this.store.bind(this)],
+        ["GET", "/", this.index.bind(this)],
         ["PATCH", "/:mailerId", this.update.bind(this) as RouteHandlerMethod],
         [
           "POST",
@@ -41,6 +43,16 @@ export class MailerController {
         prefix: "mailers",
       },
     )
+  }
+
+  async index(request: FastifyRequest, _: FastifyReply) {
+    await this.ensureHasPermissions(request)
+
+    const action = container.resolve(GetMailersAction)
+
+    const mailers = await action.handle(request.team)
+
+    return mailers
   }
 
   async store(request: FastifyRequest, _: FastifyReply) {
