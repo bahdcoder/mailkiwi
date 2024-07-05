@@ -43,6 +43,20 @@ export class MailerIdentityRepository {
     })
   }
 
+  async decryptRsaPrivateKey(teamConfigurationKey: string, privateKey: string) {
+    const decryptedConfigurationKey = new Secret(
+      new Encryption({
+        secret: makeEnv().APP_KEY,
+      }).decrypt<string>(teamConfigurationKey)!,
+    )
+
+    const encryption = new Encryption({ secret: decryptedConfigurationKey })
+
+    return {
+      privateKey: new Secret(encryption.decrypt(privateKey)),
+    }
+  }
+
   async encryptRsaPrivateKey(
     teamConfigurationKey: string,
     privateKey: Secret<string>,

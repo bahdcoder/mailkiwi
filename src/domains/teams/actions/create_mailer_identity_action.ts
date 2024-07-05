@@ -33,13 +33,13 @@ export class CreateMailerIdentityAction {
 
     if (mailer.provider === "AWS_SES") {
       try {
-        if (identity.type === "DOMAIN") {
-          const { privateKey, publicKey } = await this.createSesMailerIdentity(
-            identity,
-            configurationSetName,
-            configuration,
-          )
+        const { privateKey, publicKey } = await this.createSesMailerIdentity(
+          identity,
+          configurationSetName,
+          configuration,
+        )
 
+        if (identity.type === "DOMAIN") {
           const encryptedKeyPair =
             await this.mailerIdentityRepository.encryptRsaPrivateKey(
               team.configurationKey,

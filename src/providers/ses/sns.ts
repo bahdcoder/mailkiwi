@@ -34,7 +34,6 @@ export class SNSService {
 
       return true
     } catch (error) {
-      console.error("Error checking SNS access:", error)
       return false
     }
   }

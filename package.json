@@ -4,7 +4,8 @@
   "main": "src/main.ts",
   "scripts": {
     "dev": "tsx --watch src/main.ts",
-    "test": "vitest --run",
+    "test": "pnpm test:watch --run",
+    "test:watch": "pnpm db:migrate:run && vitest",
     "types:check": "tsc --noEmit",
     "start": "node build/main.js",
     "test:coverage": "vitest --run --coverage",
@@ -30,6 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
     "@vitest/coverage-v8": "^1.6.0",
+    "aws-sdk-client-mock": "^4.0.1",
     "change-case": "^5.4.4",
     "commander": "^12.1.0",
     "ejs": "^3.1.10",

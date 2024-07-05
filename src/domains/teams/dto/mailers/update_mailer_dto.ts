@@ -36,6 +36,16 @@ export const UpdateMailerSchema = z.object({
       email: z.string().optional(),
       maximumMailsPerSecond: z.number().optional(),
     })
+    .superRefine((data, ctx) => {
+      if (!data.domain && !data.email) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Either domain or email must be provided to enable sending emails.",
+          path: ["domain", "email"],
+        })
+      }
+    })
     .transform((value) => ({
       ...value,
       accessKey: new Secret(value.accessKey ?? ""),

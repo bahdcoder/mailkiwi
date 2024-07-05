@@ -29,11 +29,11 @@ export class UpdateMailerAction {
       team,
     )
 
-    if (payload.configuration.domain || payload.configuration.domain) {
+    if (payload.configuration.domain || payload.configuration.email) {
       const mailerIdentityAction = container.resolve(CreateMailerIdentityAction)
 
       const mailerIdentityPayload: CreateMailerIdentityDto = {
-        value: payload.configuration.domain ?? payload.configuration.email,
+        value: (payload.configuration.domain ?? payload.configuration.email)!,
         type: payload.configuration.domain ? "DOMAIN" : "EMAIL",
       }
 
