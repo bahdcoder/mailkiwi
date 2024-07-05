@@ -4,6 +4,7 @@ import {
   CreateConfigurationSetEventDestinationCommand,
   DeleteConfigurationSetCommand,
   DescribeConfigurationSetCommand,
+  GetAccountSendingEnabledCommand,
   GetIdentityDkimAttributesCommand,
   GetIdentityMailFromDomainAttributesCommand,
   GetIdentityVerificationAttributesCommand,
@@ -76,6 +77,16 @@ export class SESService {
     return configurationSet?.EventDestinations?.find(
       (destination) => destination.Name === destinationName,
     )
+  }
+
+  async getSendingStatus() {
+    const [{ Enabled }, { Max24HourSend, MaxSendRate, SentLast24Hours }] =
+      await Promise.all([
+        this.ses.send(new GetAccountSendingEnabledCommand({})),
+        this.ses.send(new GetSendQuotaCommand({})),
+      ])
+
+    return { Enabled, Max24HourSend, MaxSendRate, SentLast24Hours }
   }
 
   async createConfigurationSetEventsDestination(

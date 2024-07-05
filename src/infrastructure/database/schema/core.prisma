@@ -102,6 +102,8 @@ model Mailer {
     team   Team   @relation(fields: [teamId], references: [id])
     teamId String
 
+    sendingEnabled Boolean @default(false)
+
     testEmailSentAt         DateTime?
     installationCompletedAt DateTime?
 
