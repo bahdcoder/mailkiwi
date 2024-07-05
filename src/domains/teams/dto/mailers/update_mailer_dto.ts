@@ -33,6 +33,7 @@ export const UpdateMailerSchema = z.object({
         ])
         .optional(),
       domain: z.string().optional(),
+      email: z.string().optional(),
       maximumMailsPerSecond: z.number().optional(),
     })
     .transform((value) => ({

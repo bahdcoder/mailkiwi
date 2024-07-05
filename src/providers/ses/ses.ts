@@ -18,6 +18,8 @@ import {
 import { CreateEmailIdentityCommand } from "@aws-sdk/client-sesv2"
 import { Secret } from "@poppinss/utils"
 
+import { RsaKeyPair } from "@/domains/shared/utils/ssl/rsa"
+
 export class SESService {
   private ses: SESClient
 
@@ -186,30 +188,46 @@ export class SESService {
     return attributes
   }
 
-  async createIdentity(configurationSetName: string, identityValue: string) {
+  async createIdentity(
+    configurationSetName: string,
+    identityValue: string,
+    identityType: "DOMAIN" | "EMAIL",
+    DomainSigningSelector: string,
+  ) {
+    const rsaKeyPair = new RsaKeyPair()
+
+    if (identityType === "DOMAIN") {
+      rsaKeyPair.generate()
+    }
+
     const identity = await this.ses.send(
       new CreateEmailIdentityCommand({
         EmailIdentity: identityValue,
         ConfigurationSetName: configurationSetName,
-        DkimSigningAttributes: {
-          // Todo: Provide private key.
-          DomainSigningPrivateKey: "",
-          DomainSigningSelector: "",
-        },
+        ...(identityType === "DOMAIN" && {
+          DkimSigningAttributes: {
+            DomainSigningPrivateKey: rsaKeyPair.clean().privateKey,
+            DomainSigningSelector,
+          },
+        }),
       }),
     )
 
-    if (identity.IdentityType === "EMAIL_ADDRESS") return identity
+    if (identityType === "DOMAIN") {
+      await this.ses.send(
+        new SetIdentityMailFromDomainCommand({
+          Identity: identityValue,
+          MailFromDomain: `send.${identityValue}`,
+          BehaviorOnMXFailure: BehaviorOnMXFailure.UseDefaultValue,
+        }),
+      )
+    }
 
-    await this.ses.send(
-      new SetIdentityMailFromDomainCommand({
-        Identity: identityValue,
-        MailFromDomain: `send.${identityValue}`,
-        BehaviorOnMXFailure: BehaviorOnMXFailure.UseDefaultValue,
-      }),
-    )
-
-    return identity
+    return {
+      identity,
+      publicKey: new Secret(rsaKeyPair.clean().publicKey),
+      privateKey: new Secret(rsaKeyPair.clean().privateKey),
+    }
   }
 }
 

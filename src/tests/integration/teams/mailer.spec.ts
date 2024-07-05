@@ -1,12 +1,34 @@
 import { faker } from "@faker-js/faker"
 import { container } from "tsyringe"
-import { describe, test } from "vitest"
+import { describe, test, vi } from "vitest"
 
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
 import { makeDatabase } from "@/infrastructure/container"
 import { createUser } from "@/tests/mocks/auth/users"
 import { cleanMailers } from "@/tests/mocks/teams/teams"
 import { injectAsUser } from "@/tests/utils/http"
+
+vi.mock("@aws-sdk/client-ses", () => {
+  const sesActual = vi.importActual("@aws-sdk/client-ses")
+
+  return {
+    ...sesActual,
+    SESClient: class {
+      send = vi.fn()
+    },
+  }
+})
+
+vi.mock("@aws-sdk/client-sns", () => {
+  const snsActual = vi.importActual("@aws-sdk/client-sns")
+
+  return {
+    ...snsActual,
+    SNSClient: class {
+      send = vi.fn()
+    },
+  }
+})
 
 describe("Teams", () => {
   test("can create mailers", async ({ expect }) => {
@@ -32,7 +54,7 @@ describe("Teams", () => {
     await cleanMailers()
   })
 
-  test.skip("can update mailers", async ({ expect }) => {
+  test.only("can update mailers", async ({ expect }) => {
     await cleanMailers()
     const { user, team } = await createUser()
     const database = makeDatabase()

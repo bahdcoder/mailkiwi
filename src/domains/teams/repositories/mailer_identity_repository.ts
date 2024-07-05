@@ -1,8 +1,10 @@
+import { Secret } from "@poppinss/utils"
 import { Mailer, MailerIdentity, Prisma, PrismaClient } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
+import { Encryption } from "@/domains/shared/utils/encryption/encryption"
 import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto"
-import { ContainerKey } from "@/infrastructure/container"
+import { ContainerKey, makeEnv } from "@/infrastructure/container"
 
 @injectable()
 export class MailerIdentityRepository {
@@ -39,5 +41,22 @@ export class MailerIdentityRepository {
         id: identity.id,
       },
     })
+  }
+
+  async encryptRsaPrivateKey(
+    teamConfigurationKey: string,
+    privateKey: Secret<string>,
+  ) {
+    const decryptedConfigurationKey = new Secret(
+      new Encryption({
+        secret: makeEnv().APP_KEY,
+      }).decrypt<string>(teamConfigurationKey)!,
+    )
+
+    const encryption = new Encryption({ secret: decryptedConfigurationKey })
+
+    return {
+      privateKey: new Secret(encryption.encrypt(privateKey.release())),
+    }
   }
 }

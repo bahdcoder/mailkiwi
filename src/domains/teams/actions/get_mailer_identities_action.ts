@@ -3,6 +3,7 @@ import {
   Mailer,
   MailerIdentity,
   MailerIdentityStatus,
+  Prisma,
   Team,
 } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
@@ -52,6 +53,7 @@ export class GetMailerIdentitiesAction {
               : attribute.DkimVerificationStatus ?? "Pending",
           ),
           configuration: {
+            ...(identity.configuration as Prisma.JsonObject),
             VerificationToken: attribute.VerificationToken,
             dkimTokens: attribute.DkimTokens,
             MailFromDomainStatus: attribute.MailFromDomainStatus,

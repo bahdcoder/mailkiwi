@@ -14,6 +14,7 @@ export class MailerRepository {
     accessSecret: new Secret(""),
     region: undefined,
     domain: "",
+    email: "",
     maximumMailsPerSecond: 1,
   }
 
@@ -41,6 +42,12 @@ export class MailerRepository {
         id: mailerId,
       },
       ...args,
+    })
+  }
+
+  async delete(mailer: Mailer) {
+    return this.database.mailer.delete({
+      where: { id: mailer.id },
     })
   }
 

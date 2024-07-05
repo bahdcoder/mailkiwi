@@ -1,9 +1,12 @@
 import { Mailer, Team } from "@prisma/client"
-import { inject, injectable } from "tsyringe"
+import { container, inject, injectable } from "tsyringe"
 
 import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
 import { AwsSdk } from "@/providers/ses/sdk"
+
+import { CreateMailerIdentityDto } from "../../dto/create_mailer_identity_dto"
+import { CreateMailerIdentityAction } from "../create_mailer_identity_action"
 
 @injectable()
 export class UpdateMailerAction {
@@ -25,6 +28,27 @@ export class UpdateMailerAction {
       payload,
       team,
     )
+
+    if (payload.configuration.domain || payload.configuration.domain) {
+      const mailerIdentityAction = container.resolve(CreateMailerIdentityAction)
+
+      const mailerIdentityPayload: CreateMailerIdentityDto = {
+        value: payload.configuration.domain ?? payload.configuration.email,
+        type: payload.configuration.domain ? "DOMAIN" : "EMAIL",
+      }
+
+      try {
+        await mailerIdentityAction.handle(
+          mailerIdentityPayload,
+          updatedMailer,
+          team,
+        )
+      } catch (error) {
+        await this.mailerRepository.delete(updatedMailer)
+
+        throw error
+      }
+    }
 
     return updatedMailer
   }
