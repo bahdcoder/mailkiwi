@@ -1,6 +1,7 @@
 {
   "name": "@buyonce/bamboomailer",
   "version": "1.0.0",
+  "type": "module",
   "main": "src/main.ts",
   "scripts": {
     "dev": "tsx --watch src/main.ts",
@@ -10,7 +11,8 @@
     "start": "node build/main.js",
     "test:coverage": "vitest --run --coverage",
     "lint": "eslint .",
-    "build": "pnpm test && pnpm types:check && pnpm lint && tsx src/bin/build.ts",
+    "build": "pnpm test && pnpm types:check && pnpm lint && pnpm quick:build",
+    "quick:build": "tsx src/bin/build.ts",
     "format": "prettier --write .",
     "db:migrate:make": "prisma migrate dev",
     "db:migrate:run": "prisma migrate deploy",
@@ -23,6 +25,7 @@
   "license": "ISC",
   "description": "Buyonce software: Bamboomailer.",
   "devDependencies": {
+    "@eslint/js": "^9.6.0",
     "@faker-js/faker": "^8.4.1",
     "@types/bcrypt": "^5.0.2",
     "@types/ejs": "^3.1.5",
@@ -36,13 +39,15 @@
     "commander": "^12.1.0",
     "ejs": "^3.1.10",
     "esbuild": "^0.23.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.6.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^15.8.0",
     "inquirer": "^9.3.2",
     "prettier": "^3.3.2",
     "prisma": "^5.16.1",
     "tsx": "^4.16.0",
     "typescript": "^5.5.3",
+    "typescript-eslint": "^7.15.0",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.6.0"
   },
@@ -66,5 +71,8 @@
   },
   "prisma": {
     "schema": "src/infrastructure/database/schema/core.prisma"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

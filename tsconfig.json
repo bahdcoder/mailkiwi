@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "strict": true,
-    "target": "es2018",
-    "module": "commonjs",
+    "target": "ES2018",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "outDir": "./build",
     "sourceMap": true,
     "skipLibCheck": true,
@@ -10,6 +11,7 @@
     "declaration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }

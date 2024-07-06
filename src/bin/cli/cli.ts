@@ -13,7 +13,11 @@ class FileGenerator {
     // eslint-disable-next-line
     data: any,
   ): Promise<string> {
-    const templatePath = path.join(__dirname, "templates", `${templateName}`)
+    const templatePath = path.join(
+      import.meta.dirname,
+      "templates",
+      `${templateName}`,
+    )
     const template = await fs.readFile(templatePath, "utf-8")
     const renderedContent = ejs.render(template, data)
     return renderedContent
