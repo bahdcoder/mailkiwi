@@ -100,8 +100,14 @@ export class Ignitor {
     await this.startHttpServer()
   }
 
+  async startSinglePageApplication() {
+    // no implementation in prod. Only in dev.
+  }
+
   async startHttpServer() {
     try {
+      await this.startSinglePageApplication()
+
       await this.app.listen({
         port: this.env.PORT,
         host: this.env.HOST,

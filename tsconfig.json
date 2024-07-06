@@ -9,6 +9,8 @@
     "skipLibCheck": true,
     "strictPropertyInitialization": false,
     "declaration": true,
+    "jsx": "react",
+    "allowImportingTsExtensions": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
@@ -16,6 +18,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/http/views/app/main.tsx"],
   "exclude": ["node_modules"]
 }

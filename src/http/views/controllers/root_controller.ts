@@ -13,6 +13,7 @@ export class RootController {
   }
 
   async index(_: FastifyRequest, reply: FastifyReply) {
+    return reply.html()
     return reply
       .type("text/html")
       .send("<h1>Hello World from the other side.</h1>")
