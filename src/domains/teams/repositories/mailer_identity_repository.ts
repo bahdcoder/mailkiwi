@@ -14,6 +14,18 @@ export class MailerIdentityRepository {
     return this.database.mailerIdentity.findMany(args)
   }
 
+  async findById(
+    mailerIdentityId: string,
+    args?: Partial<Prisma.MailerIdentityFindUniqueArgs>,
+  ) {
+    return this.database.mailerIdentity.findUnique({
+      where: {
+        id: mailerIdentityId,
+      },
+      ...args,
+    })
+  }
+
   async create(payload: CreateMailerIdentityDto, mailer: Mailer) {
     return this.database.mailerIdentity.create({
       data: {

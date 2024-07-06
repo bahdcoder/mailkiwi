@@ -11,10 +11,10 @@ export function globalErrorHandler(
   if (isBoomError) {
     const { statusCode } = error.output
 
-    return response.code(statusCode).send(error.data)
+    return response
+      .code(statusCode)
+      .send(error.data ?? { message: error.output.payload.message })
   }
-
-  console.error(error)
 
   request.log.error(error)
 

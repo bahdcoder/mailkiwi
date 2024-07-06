@@ -4,7 +4,6 @@ import { container, inject, injectable } from "tsyringe"
 import { MailerConfiguration } from "@/domains/shared/types/mailer"
 import { TeamWithMembers } from "@/domains/shared/types/team"
 import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_identities_action"
-import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
 import { AwsSdk } from "@/providers/ses/sdk"
 
@@ -13,8 +12,6 @@ import { CheckProviderCredentials } from "../../helpers/check_provider_credentia
 @injectable()
 export class GetMailerAction {
   constructor(
-    @inject(MailerIdentityRepository)
-    private mailerIdentityRepository: MailerIdentityRepository,
     @inject(MailerRepository)
     private mailerRepository: MailerRepository,
   ) {}

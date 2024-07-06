@@ -24,13 +24,14 @@
 - User aws credentials lose access 🟢
     - On dashboard, user sees warning that mailer has lost access.
         - Possible action: reconnect mailer by providing new AWS access and secret key. This is a new flow that allows for reconnecting the mailer without deleting mailer. 🟢
-        - Possible action: deleting mailer and starting with new mailer. This is risky as it will have to delete all sender identities also. 🔴
     - User can no longer use mailer to send broadcasts. User sees no errors when fetching mailers or mailer identities via api. 🟡
 
 - User domain/email verification fails
-    - Display retry action on dashboard. This action will delete the identity, recreate it so user has a chance to retry verification again. 🔴
-    - Display action to replace with a different mailer identity (email or domain). This deletes the old mailer and adds a new one and waits for verification. 🔴
-    - User cannot use mailer to send broadcasts. User sees no errors when fetching mailers or mailer identities via api. 🔴
+    - Display retry action on dashboard. This action will delete the identity, recreate it so user has a chance to retry verification again. 🟢
+    - Can delete a mailer identity. 🟢
+    - Can create a new mailer identity. 🟢
+    - Flexibility to select mailer identity for sending emails. 🟢
+    - User cannot use mailer to send broadcasts. User sees no errors when fetching mailers or mailer identities via api. 🟡
 
 # Constraints
 

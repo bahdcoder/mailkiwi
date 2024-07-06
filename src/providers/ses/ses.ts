@@ -3,6 +3,7 @@ import {
   CreateConfigurationSetCommand,
   CreateConfigurationSetEventDestinationCommand,
   DeleteConfigurationSetCommand,
+  DeleteIdentityCommand,
   DescribeConfigurationSetCommand,
   GetAccountSendingEnabledCommand,
   GetIdentityDkimAttributesCommand,
@@ -86,9 +87,9 @@ export class SESService {
 
     return {
       Enabled: accountSending?.Enabled,
-      Max24HourSend: sendQuota.Max24HourSend,
-      MaxSendRate: sendQuota.MaxSendRate,
-      SentLast24Hours: sendQuota.SentLast24Hours,
+      Max24HourSend: sendQuota?.Max24HourSend,
+      MaxSendRate: sendQuota?.MaxSendRate,
+      SentLast24Hours: sendQuota?.SentLast24Hours,
     }
   }
 
@@ -161,9 +162,9 @@ export class SESService {
 
   async getIdentitiesAttributes(identities: string[]) {
     const [
-      { DkimAttributes },
-      { VerificationAttributes },
-      { MailFromDomainAttributes },
+      identityDkimAttributes,
+      identityVerificationAttributes,
+      identityMailFromAttributes,
     ] = await Promise.all([
       this.ses.send(
         new GetIdentityDkimAttributesCommand({
@@ -193,13 +194,21 @@ export class SESService {
 
     identities.forEach((identity) => {
       attributes[identity] = {
-        ...DkimAttributes?.[identity],
-        ...VerificationAttributes?.[identity],
-        ...MailFromDomainAttributes?.[identity],
+        ...identityDkimAttributes?.DkimAttributes?.[identity],
+        ...identityVerificationAttributes?.VerificationAttributes?.[identity],
+        ...identityMailFromAttributes?.MailFromDomainAttributes?.[identity],
       }
     })
 
     return attributes
+  }
+
+  async deleteIdentity(value: string) {
+    return this.ses.send(
+      new DeleteIdentityCommand({
+        Identity: value,
+      }),
+    )
   }
 
   async createIdentity(

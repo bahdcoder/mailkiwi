@@ -2,6 +2,7 @@ import {
   BehaviorOnMXFailure,
   CreateConfigurationSetCommand,
   CreateConfigurationSetEventDestinationCommand,
+  DeleteIdentityCommand,
   GetAccountSendingEnabledCommand,
   GetIdentityDkimAttributesCommand,
   GetIdentityMailFromDomainAttributesCommand,
@@ -11,7 +12,10 @@ import {
   SESClient,
   SetIdentityMailFromDomainCommand,
 } from "@aws-sdk/client-ses"
-import { CreateEmailIdentityCommand } from "@aws-sdk/client-sesv2"
+import {
+  CreateEmailIdentityCommand,
+  DeleteEmailIdentityCommand,
+} from "@aws-sdk/client-sesv2"
 import {
   ListSubscriptionsByTopicCommand,
   ListTopicsCommand,
@@ -778,5 +782,173 @@ describe("Mailer identities", () => {
       EmailIdentity: mailerIdentityPayload.value,
       ConfigurationSetName: configurationName,
     })
+  })
+
+  test("can delete a mailer identity", async ({ expect }) => {
+    await cleanMailers()
+
+    const { user, team } = await createUser({ createMailerWithIdentity: true })
+
+    SESMock.reset()
+    SESMock.resetHistory()
+
+    SESMock.on(DeleteEmailIdentityCommand).resolves({})
+
+    const database = makeDatabase()
+
+    const mailer = (await database.mailer.findFirst({
+      where: {
+        teamId: team.id,
+      },
+      include: {
+        identities: true,
+      },
+    }))!
+
+    const identity = mailer.identities[0]
+
+    const deleteIdentityResponse = await injectAsUser(user, {
+      method: "DELETE",
+      path: `/mailers/${mailer.id}/identities/${identity.id}`,
+      body: {
+        deleteOnProvider: true,
+      },
+    })
+
+    expect(deleteIdentityResponse.statusCode).toBe(200)
+
+    const deletedMailerIdentity = await database.mailerIdentity.findUnique({
+      where: { id: identity.id },
+    })
+
+    expect(deletedMailerIdentity).toBeNull()
+
+    const SESCalls = SESMock.calls()
+
+    const deleteEmailIdentityCall = SESCalls[2]
+
+    expect(deleteEmailIdentityCall.args[0]).toBeInstanceOf(
+      DeleteIdentityCommand,
+    )
+    expect(deleteEmailIdentityCall.args[0].input).toEqual({
+      Identity: identity.value,
+    })
+  })
+
+  test("sees a clear message if deleting a mailer identity fails on provider", async ({
+    expect,
+  }) => {
+    await cleanMailers()
+
+    const { user, team } = await createUser({ createMailerWithIdentity: true })
+
+    SESMock.reset()
+    SESMock.resetHistory()
+
+    const providerErrorMessage = "Your account payments are overdue."
+
+    SESMock.on(DeleteIdentityCommand).rejects({
+      message: providerErrorMessage,
+    })
+
+    const database = makeDatabase()
+
+    const mailer = (await database.mailer.findFirst({
+      where: {
+        teamId: team.id,
+      },
+      include: {
+        identities: true,
+      },
+    }))!
+
+    const identity = mailer.identities[0]
+
+    const deleteIdentityResponse = await injectAsUser(user, {
+      method: "DELETE",
+      path: `/mailers/${mailer.id}/identities/${identity.id}`,
+      body: {
+        deleteOnProvider: true,
+      },
+    })
+
+    expect(deleteIdentityResponse.statusCode).toBe(400)
+    const json = await deleteIdentityResponse.json()
+
+    expect(json.message).toContain(providerErrorMessage)
+
+    const deletedMailerIdentity = await database.mailerIdentity.findUnique({
+      where: { id: identity.id },
+    })
+
+    expect(deletedMailerIdentity).not.toBeNull()
+  })
+
+  test("can refresh a mailer identity if verification failed", async ({
+    expect,
+  }) => {
+    await cleanMailers()
+
+    const { user, team } = await createUser({ createMailerWithIdentity: true })
+
+    SESMock.reset()
+    SESMock.resetHistory()
+
+    const database = makeDatabase()
+
+    const mailer = (await database.mailer.findFirst({
+      where: {
+        teamId: team.id,
+      },
+      include: {
+        identities: true,
+      },
+    }))!
+
+    const identity = mailer.identities[0]
+
+    SESMock.on(GetIdentityDkimAttributesCommand).resolves({
+      DkimAttributes: {
+        "newsletter.example.com": {
+          DkimEnabled: true,
+          DkimVerificationStatus: "Failed",
+          DkimTokens: [],
+        },
+      },
+    })
+
+    // refresh
+    await injectAsUser(user, {
+      method: "GET",
+      path: "/auth/profile",
+    })
+
+    SESMock.reset()
+    SESMock.resetHistory()
+
+    const refreshIdentityResponse = await injectAsUser(user, {
+      method: "POST",
+      path: `/mailers/${mailer.id}/identities/${identity.id}/refresh`,
+    })
+
+    const deleteIdentityCall = SESMock.calls()[2]
+    const createIdentityCall = SESMock.calls()[3]
+    const setIdentityMailFromCall = SESMock.calls()[4]
+
+    expect(deleteIdentityCall.args[0]).toBeInstanceOf(DeleteIdentityCommand)
+    expect(createIdentityCall.args[0]).toBeInstanceOf(
+      CreateEmailIdentityCommand,
+    )
+    expect(setIdentityMailFromCall.args[0]).toBeInstanceOf(
+      SetIdentityMailFromDomainCommand,
+    )
+
+    expect(
+      (createIdentityCall.args[0].input as Record<string, string>)[
+        "EmailIdentity"
+      ],
+    ).toEqual(identity.value)
+
+    expect(refreshIdentityResponse.statusCode).toBe(200)
   })
 })

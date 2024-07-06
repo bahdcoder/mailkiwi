@@ -31,6 +31,7 @@ export class UserController {
     try {
       await getMailerAction.handle(request.team)
     } catch (error) {
+      d({ error })
       //
     }
 
