@@ -1,13 +1,13 @@
 import { Mailer, MailerIdentity, Prisma, Team } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
-import { MailerConfiguration } from "@/domains/shared/types/mailer"
-import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto"
-import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
-import { E_VALIDATION_FAILED } from "@/http/responses/errors"
-import { makeConfig } from "@/infrastructure/container"
-import { AwsSdk } from "@/providers/ses/sdk"
+import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
+import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto.js"
+import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { makeConfig } from "@/infrastructure/container.js"
+import { AwsSdk } from "@/providers/ses/sdk.js"
 
 @injectable()
 export class CreateMailerIdentityAction {

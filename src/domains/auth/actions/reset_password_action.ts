@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe"
 
-import { ResetPasswordDto } from "@/domains/auth/dto/reset_password_dto"
-import { UserRepository } from "@/domains/auth/users/repositories/user_repository"
+import { ResetPasswordDto } from "@/domains/auth/dto/reset_password_dto.js"
+import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
 
 @injectable()
 export class ResetPasswordAction {

@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe"
 
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 
 @injectable()
 export class DeleteMailerAction {

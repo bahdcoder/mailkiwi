@@ -4,26 +4,26 @@ import { PrismaClient } from "@prisma/client"
 import Fastify, { FastifyInstance } from "fastify"
 import { container } from "tsyringe"
 
-import { AudienceController } from "@/http/api/controllers/audiences/audience_controller"
-import { ContactController } from "@/http/api/controllers/audiences/contact_controller"
-import { AuthController } from "@/http/api/controllers/auth/auth_controller"
-import { UserController } from "@/http/api/controllers/auth/user_controller"
-import { MailerController } from "@/http/api/controllers/teams/mailer_controller"
-import { MailerIdentityController } from "@/http/api/controllers/teams/mailer_identity_controller"
-import { TeamController } from "@/http/api/controllers/teams/team_controller"
-import { MailerWebhooksContorller } from "@/http/api/controllers/webhooks/mailer_webhooks_controller"
-import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware"
-import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware"
-import { globalErrorHandler } from "@/http/responses/error_handler"
-import { RootController } from "@/http/views/controllers/root_controller"
-import { InstallationSettings } from "@/infrastructure/boot/installation_settings"
-import { ContainerKey } from "@/infrastructure/container"
+import { AudienceController } from "@/http/api/controllers/audiences/audience_controller.js"
+import { ContactController } from "@/http/api/controllers/audiences/contact_controller.js"
+import { AuthController } from "@/http/api/controllers/auth/auth_controller.js"
+import { UserController } from "@/http/api/controllers/auth/user_controller.js"
+import { MailerController } from "@/http/api/controllers/teams/mailer_controller.js"
+import { MailerIdentityController } from "@/http/api/controllers/teams/mailer_identity_controller.js"
+import { TeamController } from "@/http/api/controllers/teams/team_controller.js"
+import { MailerWebhooksContorller } from "@/http/api/controllers/webhooks/mailer_webhooks_controller.js"
+import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware.js"
+import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware.js"
+import { globalErrorHandler } from "@/http/responses/error_handler.js"
+import { RootController } from "@/http/views/controllers/root_controller.js"
+import { InstallationSettings } from "@/infrastructure/boot/installation_settings.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 import {
   config,
   ConfigVariables,
   env,
   EnvVariables,
-} from "@/infrastructure/env"
+} from "@/infrastructure/env.js"
 
 export class Ignitor {
   protected env: EnvVariables

@@ -1,16 +1,16 @@
 import { FastifyInstance, FastifyRequest, RouteHandlerMethod } from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
-import { TeamPolicy } from "@/domains/audiences/policies/team_policy"
-import { CreateMailerIdentityAction } from "@/domains/teams/actions/create_mailer_identity_action"
-import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_identities_action"
-import { DeleteMailerIdentityAction } from "@/domains/teams/actions/mailers/delete_mailer_identity_action"
-import { CreateMailerIdentitySchema } from "@/domains/teams/dto/create_mailer_identity_dto"
-import { DeleteMailerIdentitySchema } from "@/domains/teams/dto/delete_mailer_identity_dto"
-import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors"
-import { ContainerKey } from "@/infrastructure/container"
+import { TeamPolicy } from "@/domains/audiences/policies/team_policy.js"
+import { CreateMailerIdentityAction } from "@/domains/teams/actions/create_mailer_identity_action.js"
+import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_identities_action.js"
+import { DeleteMailerIdentityAction } from "@/domains/teams/actions/mailers/delete_mailer_identity_action.js"
+import { CreateMailerIdentitySchema } from "@/domains/teams/dto/create_mailer_identity_dto.js"
+import { DeleteMailerIdentitySchema } from "@/domains/teams/dto/delete_mailer_identity_dto.js"
+import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class MailerIdentityController {

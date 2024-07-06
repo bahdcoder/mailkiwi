@@ -28,13 +28,13 @@ import { mockClient } from "aws-sdk-client-mock"
 import { container } from "tsyringe"
 import { beforeEach, describe, test, vi } from "vitest"
 
-import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
-import { makeConfig, makeDatabase } from "@/infrastructure/container"
-import { createUser } from "@/tests/mocks/auth/users"
-import { cleanMailers } from "@/tests/mocks/teams/teams"
-import { injectAsUser } from "@/tests/utils/http"
-import * as sleepUtils from "@/utils/sleep"
+import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
+import { makeConfig, makeDatabase } from "@/infrastructure/container.js"
+import { createUser } from "@/tests/mocks/auth/users.js"
+import { cleanMailers } from "@/tests/mocks/teams/teams.js"
+import { injectAsUser } from "@/tests/utils/http.js"
+import * as sleepUtils from "@/utils/sleep.js"
 
 const SESMock = mockClient(SESClient)
 const SNSMock = mockClient(SNSClient)

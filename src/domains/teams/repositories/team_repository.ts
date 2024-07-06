@@ -1,12 +1,12 @@
 import { Prisma, PrismaClient } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
-import { BaseRepository } from "@/domains/shared/repositories/base_repository"
-import { Encryption } from "@/domains/shared/utils/encryption/encryption"
-import string from "@/domains/shared/utils/string"
-import { ContainerKey, makeEnv } from "@/infrastructure/container"
+import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
+import { Encryption } from "@/domains/shared/utils/encryption/encryption.js"
+import string from "@/domains/shared/utils/string.js"
+import { ContainerKey, makeEnv } from "@/infrastructure/container.js"
 
-import { CreateTeamDto } from "../dto/create_team_dto"
+import { CreateTeamDto } from "../dto/create_team_dto.js"
 
 @injectable()
 export class TeamRepository extends BaseRepository {

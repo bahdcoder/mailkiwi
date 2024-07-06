@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { inject } from "tsyringe";
 <% if (actionExists) { %>
-import { <%= pascalCaseName %>Action } from "@/domains/<%= domain %>/actions/<%= snakeCaseName %>_action";
+import { <%= pascalCaseName %>Action } from "@/domains/<%= domain %>/actions/<%= snakeCaseName %>_action.js";
 <% } %>
 <% if (repositoryExists) { %>
-import { <%= repositoryNamePascalCase %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository";
+import { <%= repositoryNamePascalCase %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository.js";
 <% } %>
 
 export class <%= pascalCaseName %>Controller {

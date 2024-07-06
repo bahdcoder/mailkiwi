@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe"
 
-import { TeamWithMembers } from "@/domains/shared/types/team"
+import { TeamWithMembers } from "@/domains/shared/types/team.js"
 
 @injectable()
 export class TeamPolicy {

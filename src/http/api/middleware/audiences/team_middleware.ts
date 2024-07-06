@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify"
 import { inject, injectable } from "tsyringe"
 
-import { TeamWithMembers } from "@/domains/shared/types/team"
-import { TeamRepository } from "@/domains/teams/repositories/team_repository"
-import { makeConfig } from "@/infrastructure/container"
+import { TeamWithMembers } from "@/domains/shared/types/team.js"
+import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
+import { makeConfig } from "@/infrastructure/container.js"
 
 @injectable()
 export class TeamMiddleware {

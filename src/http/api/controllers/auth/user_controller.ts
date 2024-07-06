@@ -6,9 +6,9 @@ import {
 } from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
-import { UserRepository } from "@/domains/auth/users/repositories/user_repository"
-import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action"
-import { ContainerKey } from "@/infrastructure/container"
+import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
+import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class UserController {

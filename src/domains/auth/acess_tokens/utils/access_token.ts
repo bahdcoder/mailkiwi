@@ -9,10 +9,10 @@
 
 import { createHash } from "node:crypto"
 
-import { base64, RuntimeException,safeEqual, Secret } from "@poppinss/utils"
+import { base64, RuntimeException, safeEqual, Secret } from "@poppinss/utils"
 
-import { CRC32 } from "@/domains/auth/acess_tokens/utils/crc32"
-import string from "@/domains/shared/utils/string"
+import { CRC32 } from "@/domains/auth/acess_tokens/utils/crc32.js"
+import string from "@/domains/shared/utils/string.js"
 
 /**
  * Access token represents a token created for a user to authenticate

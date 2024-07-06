@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe"
 
-import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository"
+import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
 
 @injectable()
 export class GetMailerIdentityStatusFromProviderAction {

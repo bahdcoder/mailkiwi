@@ -2,13 +2,13 @@ import { Exception } from "@poppinss/utils"
 import { Mailer, MailerIdentity, Team } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
-import { MailerConfiguration } from "@/domains/shared/types/mailer"
-import { DeleteMailerIdentityDto } from "@/domains/teams/dto/delete_mailer_identity_dto"
-import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials"
-import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
-import { E_OPERATION_FAILED } from "@/http/responses/errors"
-import { AwsSdk } from "@/providers/ses/sdk"
+import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
+import { DeleteMailerIdentityDto } from "@/domains/teams/dto/delete_mailer_identity_dto.js"
+import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials.js"
+import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
+import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
+import { AwsSdk } from "@/providers/ses/sdk.js"
 
 @injectable()
 export class DeleteMailerIdentityAction {

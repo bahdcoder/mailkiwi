@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
-import { ContainerKey } from "@/infrastructure/container"
+import { ContainerKey } from "@/infrastructure/container.js"
 
-import { CreateAudienceDto } from "../dto/audiences/create_audience_dto"
+import { CreateAudienceDto } from "../dto/audiences/create_audience_dto.js"
 
 @injectable()
 export class AudienceRepository {

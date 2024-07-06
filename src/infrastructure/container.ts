@@ -2,7 +2,7 @@ import type { PrismaClient } from "@prisma/client"
 import { FastifyInstance } from "fastify"
 import { container } from "tsyringe"
 
-import { ConfigVariables, EnvVariables } from "@/infrastructure/env"
+import { ConfigVariables, EnvVariables } from "@/infrastructure/env.js"
 
 export enum ContainerKey {
   app = "app",

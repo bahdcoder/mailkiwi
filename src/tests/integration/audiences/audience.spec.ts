@@ -1,9 +1,13 @@
 import { faker } from "@faker-js/faker"
 import { describe, test } from "vitest"
 
-import { makeApp, makeConfig, makeDatabase } from "@/infrastructure/container"
-import { createUser } from "@/tests/mocks/auth/users"
-import { injectAsUser } from "@/tests/utils/http"
+import {
+  makeApp,
+  makeConfig,
+  makeDatabase,
+} from "@/infrastructure/container.js"
+import { createUser } from "@/tests/mocks/auth/users.js"
+import { injectAsUser } from "@/tests/utils/http.js"
 
 describe("Audiences", () => {
   test("can create an audience only if authenticated", async ({ expect }) => {

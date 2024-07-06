@@ -8,11 +8,11 @@ import {
 } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
-import { MailerConfiguration } from "@/domains/shared/types/mailer"
-import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository"
-import { AwsSdk } from "@/providers/ses/sdk"
+import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
+import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
+import { AwsSdk } from "@/providers/ses/sdk.js"
 
-import { MailerRepository } from "../repositories/mailer_repository"
+import { MailerRepository } from "../repositories/mailer_repository.js"
 
 @injectable()
 export class GetMailerIdentitiesAction {

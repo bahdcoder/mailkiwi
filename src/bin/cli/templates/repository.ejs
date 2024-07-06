@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { PrismaClient } from "@prisma/client";
-import { ContainerKey } from "@/infrastructure/container";
-import { <%= pascalCaseName %>Dto } from "../dto/<%= snakeCaseName %>_dto";
+import { ContainerKey } from "@/infrastructure/container.js";
+import { <%= pascalCaseName %>Dto } from "../dto/<%= snakeCaseName %>_dto.js";
 
 @injectable()
 export class <%= pascalCaseName %>Repository {

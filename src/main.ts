@@ -1,5 +1,5 @@
 import "reflect-metadata"
 
-import { Ignitor } from "@/infrastructure/boot/ignitor"
+import { Ignitor } from "@/infrastructure/boot/ignitor.js"
 
 new Ignitor().boot().register().start()

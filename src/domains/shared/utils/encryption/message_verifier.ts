@@ -2,7 +2,7 @@ import { createHash } from "node:crypto"
 
 import { base64, MessageBuilder, RuntimeException } from "@poppinss/utils"
 
-import { Hmac } from "./hmac"
+import { Hmac } from "./hmac.js"
 
 /**
  * Message verifier is similar to the encryption. However, the actual payload

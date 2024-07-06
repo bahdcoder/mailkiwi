@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client"
 import { container, inject, injectable } from "tsyringe"
 
-import { TeamRepository } from "@/domains/teams/repositories/team_repository"
-import { ContainerKey } from "@/infrastructure/container"
+import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 
-import { CreateUserDto } from "../users/dto/create_user_dto"
-import { UserRepository } from "../users/repositories/user_repository"
+import { CreateUserDto } from "../users/dto/create_user_dto.js"
+import { UserRepository } from "../users/repositories/user_repository.js"
 
 @injectable()
 export class RegisterUserAction {

@@ -1,9 +1,9 @@
 import { Secret } from "@poppinss/utils"
 
-import SESService from "@/providers/ses/ses"
-import { PermissionsChecker } from "@/providers/ses/ses_permission_checker"
-import { SNSService } from "@/providers/ses/sns"
-import { E_INTERNAL_PROCESSING_ERROR } from "@/utils/errors"
+import SESService from "@/providers/ses/ses.js"
+import { PermissionsChecker } from "@/providers/ses/ses_permission_checker.js"
+import { SNSService } from "@/providers/ses/sns.js"
+import { E_INTERNAL_PROCESSING_ERROR } from "@/utils/errors.js"
 
 export class AwsSdk {
   constructor(

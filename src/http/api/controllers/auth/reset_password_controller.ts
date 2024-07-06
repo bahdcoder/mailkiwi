@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify"
 import { inject } from "tsyringe"
 
-import { UserRepository } from "@/domains/auth/users/repositories/user_repository"
+import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
 
 export class ResetPasswordController {
   constructor(

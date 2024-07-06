@@ -20,7 +20,7 @@ import {
 import { CreateEmailIdentityCommand } from "@aws-sdk/client-sesv2"
 import { Secret } from "@poppinss/utils"
 
-import { RsaKeyPair } from "@/domains/shared/utils/ssl/rsa"
+import { RsaKeyPair } from "@/domains/shared/utils/ssl/rsa.js"
 
 export class SESService {
   private ses: SESClient

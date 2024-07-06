@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe"
 
-import { CreateContactDto } from "@/domains/audiences/dto/contacts/create_contact_dto"
-import { ContactRepository } from "@/domains/audiences/repositories/contact_repository"
+import { CreateContactDto } from "@/domains/audiences/dto/contacts/create_contact_dto.js"
+import { ContactRepository } from "@/domains/audiences/repositories/contact_repository.js"
 
 @injectable()
 export class CreateContactAction {

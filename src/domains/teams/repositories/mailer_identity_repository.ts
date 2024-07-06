@@ -2,9 +2,9 @@ import { Secret } from "@poppinss/utils"
 import { Mailer, MailerIdentity, Prisma, PrismaClient } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
-import { Encryption } from "@/domains/shared/utils/encryption/encryption"
-import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto"
-import { ContainerKey, makeEnv } from "@/infrastructure/container"
+import { Encryption } from "@/domains/shared/utils/encryption/encryption.js"
+import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto.js"
+import { ContainerKey, makeEnv } from "@/infrastructure/container.js"
 
 @injectable()
 export class MailerIdentityRepository {

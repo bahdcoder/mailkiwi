@@ -1,12 +1,12 @@
 import { Mailer, PrismaClient, Team } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
-import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
-import { E_VALIDATION_FAILED } from "@/http/responses/errors"
-import { ContainerKey, makeConfig } from "@/infrastructure/container"
-import { AwsSdk } from "@/providers/ses/sdk"
-import { E_INTERNAL_PROCESSING_ERROR } from "@/utils/errors"
+import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { ContainerKey, makeConfig } from "@/infrastructure/container.js"
+import { AwsSdk } from "@/providers/ses/sdk.js"
+import { E_INTERNAL_PROCESSING_ERROR } from "@/utils/errors.js"
 
 @injectable()
 export class InstallMailerAction {

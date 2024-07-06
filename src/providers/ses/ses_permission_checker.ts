@@ -1,7 +1,7 @@
 import { Secret } from "@poppinss/utils"
 
-import { SESService } from "./ses"
-import { SNSService } from "./sns"
+import { SESService } from "./ses.js"
+import { SNSService } from "./sns.js"
 
 export class PermissionsChecker {
   private sesService: SESService

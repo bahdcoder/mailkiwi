@@ -1,8 +1,8 @@
 import { Team } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
-import { CreateMailerDto } from "@/domains/teams/dto/mailers/create_mailer_dto"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
+import { CreateMailerDto } from "@/domains/teams/dto/mailers/create_mailer_dto.js"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 
 @injectable()
 export class CreateMailerAction {

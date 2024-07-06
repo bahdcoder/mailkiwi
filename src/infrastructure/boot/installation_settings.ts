@@ -3,7 +3,7 @@ import inquirer from "inquirer"
 import { inject, injectable } from "tsyringe"
 import { z } from "zod"
 
-import { ContainerKey } from "@/infrastructure/container"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class InstallationSettings {

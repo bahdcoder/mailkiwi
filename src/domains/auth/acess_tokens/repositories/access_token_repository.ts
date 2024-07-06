@@ -2,8 +2,8 @@ import { Secret } from "@poppinss/utils"
 import { PrismaClient, User } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
-import { AccessToken } from "@/domains/auth/acess_tokens/utils/access_token"
-import { ContainerKey } from "@/infrastructure/container"
+import { AccessToken } from "@/domains/auth/acess_tokens/utils/access_token.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class AccessTokenRepository {

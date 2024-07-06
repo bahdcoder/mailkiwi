@@ -1,9 +1,9 @@
 import { inject, injectable } from "tsyringe";
 <% if (repositoryExists) { %>
-import { <%= repositoryNamePascalCase %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository";
+import { <%= repositoryNamePascalCase %>Repository } from "@/domains/<%= domain %>/repositories/<%= repositoryName %>_repository.js";
 <% } %>
 <% if (generateDto) { %>
-import { <%= pascalCaseName %>Dto } from "@/domains/<%= domain %>/dto/<%= snakeCaseName %>_dto";
+import { <%= pascalCaseName %>Dto } from "@/domains/<%= domain %>/dto/<%= snakeCaseName %>_dto.js";
 <% } %>
 
 @injectable()

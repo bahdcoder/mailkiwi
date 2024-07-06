@@ -1,14 +1,14 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
-import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository"
-import { RegisterUserAction } from "@/domains/auth/actions/register_user_action"
-import { CreateUserSchema } from "@/domains/auth/users/dto/create_user_dto"
-import { LoginUserSchema } from "@/domains/auth/users/dto/login_user_dto"
-import { UserRepository } from "@/domains/auth/users/repositories/user_repository"
-import { TeamRepository } from "@/domains/teams/repositories/team_repository"
-import { E_VALIDATION_FAILED } from "@/http/responses/errors"
-import { ContainerKey } from "@/infrastructure/container"
+import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository.js"
+import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.js"
+import { CreateUserSchema } from "@/domains/auth/users/dto/create_user_dto.js"
+import { LoginUserSchema } from "@/domains/auth/users/dto/login_user_dto.js"
+import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
+import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class AuthController {

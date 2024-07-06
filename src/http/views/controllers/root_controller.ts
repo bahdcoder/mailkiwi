@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { inject, injectable } from "tsyringe"
 
-import { ContainerKey } from "@/infrastructure/container"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class RootController {

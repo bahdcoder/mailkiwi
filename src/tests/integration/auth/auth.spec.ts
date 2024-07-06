@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker"
 import { describe, test } from "vitest"
 
-import { makeApp, makeDatabase } from "@/infrastructure/container"
-import { createUser } from "@/tests/mocks/auth/users"
-import { injectAsUser } from "@/tests/utils/http"
+import { makeApp, makeDatabase } from "@/infrastructure/container.js"
+import { createUser } from "@/tests/mocks/auth/users.js"
+import { injectAsUser } from "@/tests/utils/http.js"
 
 describe("User registration", () => {
   test("can register a new user account", async ({ expect }) => {

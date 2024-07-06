@@ -1,13 +1,13 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
-import { CreateAudienceAction } from "@/domains/audiences/actions/audiences/create_audience_action"
-import { UpdateAudienceAction } from "@/domains/audiences/actions/audiences/update_audience_action"
-import { CreateAudienceSchema } from "@/domains/audiences/dto/audiences/create_audience_dto"
-import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy"
-import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository"
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors"
-import { ContainerKey } from "@/infrastructure/container"
+import { CreateAudienceAction } from "@/domains/audiences/actions/audiences/create_audience_action.js"
+import { UpdateAudienceAction } from "@/domains/audiences/actions/audiences/update_audience_action.js"
+import { CreateAudienceSchema } from "@/domains/audiences/dto/audiences/create_audience_dto.js"
+import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy.js"
+import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository.js"
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class AudienceController {

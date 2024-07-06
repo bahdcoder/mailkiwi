@@ -2,11 +2,11 @@ import { createCipheriv, createDecipheriv, createHash } from "node:crypto"
 
 import { base64, MessageBuilder } from "@poppinss/utils"
 
-import string from "@/domains/shared/utils/string"
+import string from "@/domains/shared/utils/string.js"
 
-import { Hmac } from "./hmac"
-import { MessageVerifier } from "./message_verifier"
-import type { EncryptionOptions } from "./types"
+import { Hmac } from "./hmac.js"
+import { MessageVerifier } from "./message_verifier.js"
+import type { EncryptionOptions } from "./types.js"
 
 export class Encryption {
   #options: Required<EncryptionOptions>

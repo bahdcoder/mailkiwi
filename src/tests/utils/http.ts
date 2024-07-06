@@ -2,8 +2,8 @@ import { Team, User } from "@prisma/client"
 import { FastifyInstance, InjectOptions } from "fastify"
 import { container } from "tsyringe"
 
-import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository"
-import { makeApp, makeConfig } from "@/infrastructure/container"
+import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository.js"
+import { makeApp, makeConfig } from "@/infrastructure/container.js"
 
 export async function injectAsUser(
   user: User,

@@ -4,10 +4,10 @@ import { faker } from "@faker-js/faker"
 import { mockClient } from "aws-sdk-client-mock"
 import { container } from "tsyringe"
 
-import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository"
-import { RegisterUserAction } from "@/domains/auth/actions/register_user_action"
-import { makeDatabase } from "@/infrastructure/container"
-import { injectAsUser } from "@/tests/utils/http"
+import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository.js"
+import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.js"
+import { makeDatabase } from "@/infrastructure/container.js"
+import { injectAsUser } from "@/tests/utils/http.js"
 
 export const createUser = async ({
   createMailerWithIdentity,

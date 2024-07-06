@@ -1,8 +1,8 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { inject, injectable } from "tsyringe"
 
-import { TeamRepository } from "@/domains/teams/repositories/team_repository"
-import { ContainerKey } from "@/infrastructure/container"
+import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class MailerWebhooksContorller {

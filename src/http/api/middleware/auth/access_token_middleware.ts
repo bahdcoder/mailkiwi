@@ -2,7 +2,7 @@ import { Secret } from "@poppinss/utils"
 import { FastifyReply, FastifyRequest } from "fastify"
 import { inject, injectable } from "tsyringe"
 
-import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository"
+import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository.js"
 
 @injectable()
 export class AccessTokenMiddleware {

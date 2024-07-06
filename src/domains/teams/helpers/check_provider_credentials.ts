@@ -1,8 +1,8 @@
 import { Mailer } from "@prisma/client"
 
-import { MailerConfiguration } from "@/domains/shared/types/mailer"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
-import { AwsSdk } from "@/providers/ses/sdk"
+import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
+import { AwsSdk } from "@/providers/ses/sdk.js"
 
 export class CheckProviderCredentials {
   constructor(

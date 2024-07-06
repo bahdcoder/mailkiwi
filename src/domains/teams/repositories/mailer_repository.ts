@@ -2,11 +2,11 @@ import { Secret } from "@poppinss/utils"
 import { Mailer, Prisma, PrismaClient, Team } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
-import { MailerConfiguration } from "@/domains/shared/types/mailer"
-import { Encryption } from "@/domains/shared/utils/encryption/encryption"
-import { CreateMailerDto } from "@/domains/teams/dto/mailers/create_mailer_dto"
-import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto"
-import { ContainerKey, makeEnv } from "@/infrastructure/container"
+import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
+import { Encryption } from "@/domains/shared/utils/encryption/encryption.js"
+import { CreateMailerDto } from "@/domains/teams/dto/mailers/create_mailer_dto.js"
+import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
+import { ContainerKey, makeEnv } from "@/infrastructure/container.js"
 
 @injectable()
 export class MailerRepository {

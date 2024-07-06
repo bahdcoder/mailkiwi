@@ -7,20 +7,20 @@ import {
 } from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
-import { TeamPolicy } from "@/domains/audiences/policies/team_policy"
-import { InstallMailerAction } from "@/domains/teams/actions/install_mailer_action"
-import { CreateMailerAction } from "@/domains/teams/actions/mailers/create_mailer_action"
-import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action"
-import { UpdateMailerAction } from "@/domains/teams/actions/mailers/update_mailer_action"
-import { CreateMailerSchema } from "@/domains/teams/dto/mailers/create_mailer_dto"
-import { UpdateMailerSchema } from "@/domains/teams/dto/mailers/update_mailer_dto"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
+import { TeamPolicy } from "@/domains/audiences/policies/team_policy.js"
+import { InstallMailerAction } from "@/domains/teams/actions/install_mailer_action.js"
+import { CreateMailerAction } from "@/domains/teams/actions/mailers/create_mailer_action.js"
+import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action.js"
+import { UpdateMailerAction } from "@/domains/teams/actions/mailers/update_mailer_action.js"
+import { CreateMailerSchema } from "@/domains/teams/dto/mailers/create_mailer_dto.js"
+import { UpdateMailerSchema } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 import {
   E_OPERATION_FAILED,
   E_UNAUTHORIZED,
   E_VALIDATION_FAILED,
-} from "@/http/responses/errors"
-import { ContainerKey } from "@/infrastructure/container"
+} from "@/http/responses/errors.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class MailerController {

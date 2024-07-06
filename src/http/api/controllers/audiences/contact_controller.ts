@@ -1,12 +1,12 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
-import { CreateContactAction } from "@/domains/audiences/actions/contacts/create_contact_action"
-import { CreateContactSchema } from "@/domains/audiences/dto/contacts/create_contact_dto"
-import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy"
-import { ContactRepository } from "@/domains/audiences/repositories/contact_repository"
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors"
-import { ContainerKey } from "@/infrastructure/container"
+import { CreateContactAction } from "@/domains/audiences/actions/contacts/create_contact_action.js"
+import { CreateContactSchema } from "@/domains/audiences/dto/contacts/create_contact_dto.js"
+import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy.js"
+import { ContactRepository } from "@/domains/audiences/repositories/contact_repository.js"
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class ContactController {

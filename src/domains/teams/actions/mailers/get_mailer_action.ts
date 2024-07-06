@@ -1,13 +1,13 @@
 import { Mailer, MailerIdentity } from "@prisma/client"
 import { container, inject, injectable } from "tsyringe"
 
-import { MailerConfiguration } from "@/domains/shared/types/mailer"
-import { TeamWithMembers } from "@/domains/shared/types/team"
-import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_identities_action"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository"
-import { AwsSdk } from "@/providers/ses/sdk"
+import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
+import { TeamWithMembers } from "@/domains/shared/types/team.js"
+import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_identities_action.js"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
+import { AwsSdk } from "@/providers/ses/sdk.js"
 
-import { CheckProviderCredentials } from "../../helpers/check_provider_credentials"
+import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials.js"
 
 @injectable()
 export class GetMailerAction {
