@@ -4,10 +4,9 @@ import { container, inject, injectable } from "tsyringe"
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
 import { TeamWithMembers } from "@/domains/shared/types/team.js"
 import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_identities_action.js"
+import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials.js"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 import { AwsSdk } from "@/providers/ses/sdk.js"
-
-import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials.js"
 
 @injectable()
 export class GetMailerAction {
