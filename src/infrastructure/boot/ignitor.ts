@@ -15,6 +15,7 @@ import { MailerWebhooksContorller } from "@/http/api/controllers/webhooks/mailer
 import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware"
 import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware"
 import { globalErrorHandler } from "@/http/responses/error_handler"
+import { RootController } from "@/http/views/controllers/root_controller"
 import { InstallationSettings } from "@/infrastructure/boot/installation_settings"
 import { ContainerKey } from "@/infrastructure/container"
 import {
@@ -123,6 +124,7 @@ export class Ignitor {
     container.resolve(TeamController)
     container.resolve(MailerWebhooksContorller)
     container.resolve(MailerIdentityController)
+    container.resolve(RootController)
   }
 
   async shutdown() {
