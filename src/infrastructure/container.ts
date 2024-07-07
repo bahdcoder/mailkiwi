@@ -1,8 +1,8 @@
-import type { PrismaClient } from "@prisma/client"
 import { FastifyInstance } from "fastify"
 import { container } from "tsyringe"
 
 import { ConfigVariables, EnvVariables } from "@/infrastructure/env.js"
+
 import { DrizzleClient } from "./database/client.ts"
 
 export enum ContainerKey {

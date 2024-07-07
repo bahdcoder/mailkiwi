@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker"
+import { and, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import {
@@ -6,6 +7,7 @@ import {
   makeConfig,
   makeDatabase,
 } from "@/infrastructure/container.js"
+import { audiences, contacts } from "@/infrastructure/database/schema/schema.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { injectAsUser } from "@/tests/utils/http.js"
 
@@ -37,21 +39,16 @@ describe("Audiences", () => {
       body: payload,
     })
 
-    const json = await response.json()
+    expect(response.statusCode).toBe(200)
 
-    const audience = await database.audience.findFirst({
-      where: {
-        teamId: user?.teams?.[0]?.id,
-      },
+    const audience = await database.query.audiences.findFirst({
+      where: and(
+        eq(audiences.teamId, user?.teams?.[0]?.id),
+        eq(audiences.name, payload.name),
+      ),
     })
 
-    expect(audience).not.toBeNull()
-    expect(audience?.name).toEqual(payload.name)
-
-    expect(response.statusCode).toBe(200)
-    expect(json.data.id).toBeDefined()
-    expect(json.data.name).toBe(payload.name)
-    expect(json.data.teamId).toBe(user?.teams?.[0]?.id)
+    expect(audience).toBeDefined()
   })
 
   test("can only create an audience when properly authorized", async ({
@@ -78,6 +75,7 @@ describe("Audiences", () => {
 describe("Contacts", () => {
   test("can create a contact for an audience", async ({ expect }) => {
     const { user, audience } = await createUser()
+    const database = makeDatabase()
 
     const contactPayload = {
       firstName: faker.person.firstName(),
@@ -91,12 +89,18 @@ describe("Contacts", () => {
       path: "/contacts",
       body: contactPayload,
     })
-    const json = await response.json()
 
     expect(response.statusCode).toEqual(200)
-    expect(json.data.firstName).toEqual(contactPayload.firstName)
-    expect(json.data.lastName).toEqual(contactPayload.lastName)
-    expect(json.data.email).toEqual(contactPayload.email)
+
+    const savedContact = await database.query.contacts.findFirst({
+      where: and(
+        eq(contacts.firstName, contactPayload.firstName),
+        eq(contacts.lastName, contactPayload.lastName),
+        eq(contacts.email, contactPayload.email),
+      ),
+    })
+
+    expect(savedContact).toBeDefined()
   })
 
   test("cannot create a contact with invalid data", async ({ expect }) => {

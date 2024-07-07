@@ -1,4 +1,6 @@
+import cuid2 from "@paralleldrive/cuid2"
 import { Prisma, PrismaClient, User } from "@prisma/client"
+import { eq } from "drizzle-orm"
 import { inject, injectable } from "tsyringe"
 
 import { CreateUserDto } from "@/domains/auth/users/dto/create_user_dto.js"
@@ -7,8 +9,7 @@ import { scrypt } from "@/domains/shared/utils/hash/scrypt.ts"
 import { ContainerKey } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
 import { users } from "@/infrastructure/database/schema/schema.ts"
-import { eq } from "drizzle-orm"
-import cuid2 from "@paralleldrive/cuid2"
+import { FindUserByIdArgs } from "@/infrastructure/database/schema/types.ts"
 
 @injectable()
 export class UserRepository extends BaseRepository {
@@ -39,15 +40,12 @@ export class UserRepository extends BaseRepository {
     })
   }
 
-  async findById(
-    id?: string | null,
-    args?: Partial<Prisma.UserFindUniqueArgs>,
-  ) {
+  async findById(id?: string | null, args?: FindUserByIdArgs) {
     if (!id) return null
 
     return this.database.query.users.findFirst({
       where: eq(users.id, id),
-      // ...args,
+      ...args,
     })
   }
 

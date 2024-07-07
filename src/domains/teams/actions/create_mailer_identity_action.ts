@@ -1,4 +1,3 @@
-import { Mailer, MailerIdentity, Prisma, Team } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
@@ -7,6 +6,11 @@ import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_id
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 import { makeConfig } from "@/infrastructure/container.js"
+import {
+  Mailer,
+  MailerIdentity,
+  Team,
+} from "@/infrastructure/database/schema/types.ts"
 import { AwsSdk } from "@/providers/ses/sdk.js"
 
 @injectable()
@@ -43,45 +47,47 @@ export class CreateMailerIdentityAction {
       })
     }
 
-    let identity = await this.mailerIdentityRepository.create(payload, mailer)
+    const { id: identityId } = await this.mailerIdentityRepository.create(
+      payload,
+      mailer.id,
+    )
 
     const configurationSetName = `${makeConfig().software.shortName}_${mailer.id}`
 
     if (mailer.provider === "AWS_SES") {
       try {
         const { privateKey, publicKey } = await this.createSesMailerIdentity(
-          identity,
+          { ...payload, id: identityId },
           configurationSetName,
           configuration,
         )
 
-        if (identity.type === "DOMAIN") {
+        if (payload.type === "DOMAIN") {
           const encryptedKeyPair =
             await this.mailerIdentityRepository.encryptRsaPrivateKey(
               team.configurationKey,
               privateKey,
             )
 
-          identity = await this.mailerIdentityRepository.update(identity, {
+          await this.mailerIdentityRepository.update(identityId, {
             configuration: {
-              ...(identity.configuration as Prisma.JsonObject),
               privateKey: encryptedKeyPair.privateKey.release(),
               publicKey: publicKey.release(),
             },
           })
         }
       } catch (error) {
-        await this.mailerIdentityRepository.delete(identity)
+        await this.mailerIdentityRepository.delete(identityId)
 
         throw error
       }
     }
 
-    return identity
+    return { id: identityId }
   }
 
   async createSesMailerIdentity(
-    identity: MailerIdentity,
+    identity: Pick<MailerIdentity, "id" | "value" | "type">,
     configurationSetName: string,
     configuration: MailerConfiguration,
   ) {
@@ -94,7 +100,7 @@ export class CreateMailerIdentityAction {
       .createIdentity(
         configurationSetName,
         identity.value,
-        identity.type,
+        identity.type!,
         makeConfig().software.shortName,
       )
   }

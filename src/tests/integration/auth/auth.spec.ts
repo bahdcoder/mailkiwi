@@ -1,12 +1,11 @@
 import { faker } from "@faker-js/faker"
+import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { makeApp, makeDatabase } from "@/infrastructure/container.js"
+import { users } from "@/infrastructure/database/schema/schema.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { injectAsUser } from "@/tests/utils/http.js"
-import { cleanMailers } from "@/tests/mocks/teams/teams.ts"
-import { eq } from "drizzle-orm"
-import { users } from "@/infrastructure/database/schema/schema.ts"
 
 describe("User registration", () => {
   test("can register a new user account", async ({ expect }) => {
@@ -24,8 +23,6 @@ describe("User registration", () => {
       path: "/auth/register",
       body: payload,
     })
-
-    const json = await response.json()
 
     const userFromDatabase = await database.query.users.findFirst({
       where: eq(users.email, payload.email),
@@ -68,7 +65,7 @@ describe("User registration", () => {
     expect(user?.teams?.[0]?.configurationKey).toBeDefined()
   })
 
-  test.only("can only register with an email once and not twice", async ({
+  test("can only register with an email once and not twice", async ({
     expect,
   }) => {
     const app = makeApp()

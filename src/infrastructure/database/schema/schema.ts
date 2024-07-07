@@ -1,19 +1,17 @@
-import {
-  mysqlTable,
-  varchar,
-  boolean,
-  timestamp,
-  mysqlEnum,
-  json,
-  uniqueIndex,
-  int,
-  index,
-} from "drizzle-orm/mysql-core"
 import { relations } from "drizzle-orm"
-import { createId } from "@paralleldrive/cuid2"
+import {
+  boolean,
+  index,
+  int,
+  json,
+  mysqlEnum,
+  mysqlTable,
+  timestamp,
+  uniqueIndex,
+  varchar,
+} from "drizzle-orm/mysql-core"
 
-// Function to generate CUID
-const generateCuid = () => createId()
+import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
 
 // Enums
 export const BroadcastEditor = mysqlEnum("BroadcastEditor", [
@@ -68,10 +66,7 @@ export const MembershipStatus = mysqlEnum("MembershipStatus", [
 
 // Tables
 export const settings = mysqlTable("settings", {
-  id: varchar("id", { length: 32 })
-    .primaryKey()
-    .notNull()
-    .$defaultFn(generateCuid),
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   url: varchar("url", { length: 256 }).unique(),
   domain: varchar("domain", { length: 50 }).unique().notNull(),
   installedSslCertificate: boolean("installedSslCertificate")
@@ -80,10 +75,7 @@ export const settings = mysqlTable("settings", {
 })
 
 export const users = mysqlTable("users", {
-  id: varchar("id", { length: 32 })
-    .primaryKey()
-    .notNull()
-    .$defaultFn(generateCuid),
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   email: varchar("email", { length: 50 }).unique().notNull(),
   name: varchar("name", { length: 50 }),
   avatarUrl: varchar("avatarUrl", { length: 256 }),
@@ -91,10 +83,7 @@ export const users = mysqlTable("users", {
 })
 
 export const accessTokens = mysqlTable("accessTokens", {
-  id: varchar("id", { length: 32 })
-    .primaryKey()
-    .notNull()
-    .$defaultFn(generateCuid),
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   userId: varchar("userId", { length: 32 }).references(() => users.id),
   teamId: varchar("teamId", { length: 32 }).references(() => teams.id),
   type: varchar("type", { length: 16 }).notNull(),
@@ -107,10 +96,7 @@ export const accessTokens = mysqlTable("accessTokens", {
 })
 
 export const teams = mysqlTable("teams", {
-  id: varchar("id", { length: 32 })
-    .primaryKey()
-    .notNull()
-    .$defaultFn(generateCuid),
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   name: varchar("name", { length: 100 }).notNull(),
   userId: varchar("userId", { length: 32 })
     .notNull()
@@ -122,15 +108,12 @@ export const teams = mysqlTable("teams", {
 })
 
 export const mailers = mysqlTable("mailers", {
-  id: varchar("id", { length: 32 })
-    .primaryKey()
-    .notNull()
-    .$defaultFn(generateCuid),
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   name: varchar("name", { length: 50 }).notNull(),
   configuration: varchar("configuration", { length: 512 }).notNull(),
   default: boolean("default"),
-  provider: MailerProvider,
-  status: MailerStatus,
+  provider: MailerProvider.notNull(),
+  status: MailerStatus.default("PENDING").notNull(),
   teamId: varchar("teamId", { length: 512 })
     .references(() => teams.id)
     .unique()
@@ -145,23 +128,17 @@ export const mailers = mysqlTable("mailers", {
 })
 
 export const mailerIdentities = mysqlTable("mailerIdentities", {
-  id: varchar("id", { length: 32 })
-    .primaryKey()
-    .notNull()
-    .$defaultFn(generateCuid),
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   mailerId: varchar("mailerId", { length: 32 }).references(() => mailers.id),
   value: varchar("value", { length: 50 }).notNull(),
-  type: MailerIdentityType,
-  status: MailerIdentityStatus,
+  type: MailerIdentityType.notNull(),
+  status: MailerIdentityStatus.default("PENDING").notNull(),
   configuration: json("configuration"),
   confirmedApprovalAt: timestamp("confirmedApprovalAt"),
 })
 
 export const webhooks = mysqlTable("webhooks", {
-  id: varchar("id", { length: 32 })
-    .primaryKey()
-    .notNull()
-    .$defaultFn(generateCuid),
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   name: varchar("name", { length: 50 }).notNull(),
   url: varchar("url", { length: 256 }).notNull(),
   events: WebhookEvent,
@@ -171,10 +148,7 @@ export const webhooks = mysqlTable("webhooks", {
 })
 
 export const teamMemberships = mysqlTable("teamMemberships", {
-  id: varchar("id", { length: 32 })
-    .primaryKey()
-    .notNull()
-    .$defaultFn(generateCuid),
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   userId: varchar("userId", { length: 32 }).references(() => users.id),
   email: varchar("email", { length: 50 }).notNull(),
   teamId: varchar("teamId", { length: 32 })
@@ -187,10 +161,7 @@ export const teamMemberships = mysqlTable("teamMemberships", {
 })
 
 export const audiences = mysqlTable("audiences", {
-  id: varchar("id", { length: 32 })
-    .primaryKey()
-    .notNull()
-    .$defaultFn(generateCuid),
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   name: varchar("name", { length: 50 }).notNull(),
   teamId: varchar("teamId", { length: 32 })
     .references(() => teams.id)
@@ -200,10 +171,7 @@ export const audiences = mysqlTable("audiences", {
 export const contacts = mysqlTable(
   "Contact",
   {
-    id: varchar("id", { length: 32 })
-      .primaryKey()
-      .notNull()
-      .$defaultFn(generateCuid),
+    id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
     firstName: varchar("firstName", { length: 50 }),
     lastName: varchar("lastName", { length: 50 }),
     email: varchar("email", { length: 50 }).notNull(),
@@ -223,10 +191,7 @@ export const contacts = mysqlTable(
 )
 
 export const tags = mysqlTable("Tag", {
-  id: varchar("id", { length: 32 })
-    .primaryKey()
-    .notNull()
-    .$defaultFn(generateCuid),
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   name: varchar("name", { length: 256 }).notNull(),
   description: varchar("description", { length: 256 }),
 })

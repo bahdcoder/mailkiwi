@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "1fa70fad-a006-4d50-9268-a73c8a05710d",
+  "id": "bb437372-231f-4a74-a696-f0160825fac9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accessTokens": {
@@ -302,7 +302,8 @@
           "type": "enum('PENDING','APPROVED','DENIED','FAILED','TEMPORARILY_FAILED')",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "'PENDING'"
         },
         "configuration": {
           "name": "configuration",
@@ -388,7 +389,8 @@
           "type": "enum('READY','PENDING','INSTALLING','CREATING_IDENTITIES','SENDING_TEST_EMAIL','DISABLED','ACCESS_KEYS_LOST_PROVIDER_ACCESS')",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "'PENDING'"
         },
         "teamId": {
           "name": "teamId",

@@ -1,6 +1,7 @@
-import { env } from "@/infrastructure/env.ts"
 import { defineConfig } from "drizzle-kit"
 import { resolve } from "path"
+
+import { env } from "@/infrastructure/env.ts"
 
 export default defineConfig({
   dialect: "mysql",

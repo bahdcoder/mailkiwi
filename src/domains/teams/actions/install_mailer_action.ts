@@ -1,10 +1,11 @@
-import { Mailer, PrismaClient, Team } from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
 import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 import { ContainerKey, makeConfig } from "@/infrastructure/container.js"
+import { DrizzleClient } from "@/infrastructure/database/client.ts"
+import { Mailer, Team } from "@/infrastructure/database/schema/types.ts"
 import { AwsSdk } from "@/providers/ses/sdk.js"
 import { E_INTERNAL_PROCESSING_ERROR } from "@/utils/errors.js"
 
@@ -13,7 +14,7 @@ export class InstallMailerAction {
   constructor(
     @inject(MailerRepository)
     private mailerRepository: MailerRepository,
-    @inject(ContainerKey.database) private database: PrismaClient,
+    @inject(ContainerKey.database) private database: DrizzleClient,
   ) {}
 
   handle = async (mailer: Mailer, team: Team) => {
@@ -35,7 +36,7 @@ export class InstallMailerAction {
 
     let installed = false
 
-    const applicationSettings = await this.database.setting.findFirst()
+    const applicationSettings = await this.database.query.settings.findFirst()
 
     if (!applicationSettings || !applicationSettings.url)
       throw E_INTERNAL_PROCESSING_ERROR(
@@ -58,9 +59,7 @@ export class InstallMailerAction {
       await this.mailerRepository.update(
         mailer,
         {
-          status: {
-            set: "CREATING_IDENTITIES",
-          },
+          status: "CREATING_IDENTITIES",
           installationCompletedAt: new Date(),
         },
         team,

@@ -1,4 +1,5 @@
 import { Mailer } from "@prisma/client"
+import { eq } from "drizzle-orm"
 import {
   FastifyInstance,
   FastifyReply,
@@ -21,6 +22,7 @@ import {
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
 import { ContainerKey } from "@/infrastructure/container.js"
+import { mailers } from "@/infrastructure/database/schema/schema.ts"
 
 @injectable()
 export class MailerController {
@@ -86,25 +88,15 @@ export class MailerController {
 
     if (!success) throw E_VALIDATION_FAILED(error)
 
-    let mailer: Mailer | null = await this.ensureMailerExists(request)
+    const mailer = await this.ensureMailerExists(request)
 
     await this.ensureHasPermissions(request)
 
     const action = container.resolve<UpdateMailerAction>(UpdateMailerAction)
 
-    mailer = await action.handle(mailer, data, request.team)
+    await action.handle(mailer, data, request.team)
 
-    if (mailer === null)
-      throw E_VALIDATION_FAILED({
-        errors: [
-          {
-            message: "The provided configuration is invalid.",
-            path: ["configuration"],
-          },
-        ],
-      })
-
-    return mailer
+    return { id: mailer.id }
   }
 
   async install(
@@ -160,11 +152,11 @@ export class MailerController {
       .reconnecting()
       .handle(mailer, data, request.team)
 
-    const updatedMailer = (await this.mailerRepository.findById(mailer.id))!
+    const updatedMailer = await this.mailerRepository.findById(mailer.id)
 
     await container
       .resolve<InstallMailerAction>(InstallMailerAction)
-      .handle(updatedMailer, request.team)
+      .handle(updatedMailer!, request.team)
 
     return this.mailerRepository.findById(mailer.id)
   }
@@ -174,12 +166,10 @@ export class MailerController {
   ) {
     const mailer = await this.mailerRepository.findById(
       request.params.mailerId,
-      {
-        where: {
-          teamId: request.team.id,
-          id: request.params.mailerId,
-        },
-      },
+      [
+        eq(mailers.teamId, request.team.id),
+        eq(mailers.id, request.params.mailerId),
+      ],
     )
 
     if (!mailer)
@@ -187,7 +177,7 @@ export class MailerController {
         errors: [{ message: "Unknown mailer.", path: ["mailerId"] }],
       })
 
-    return mailer
+    return mailer as Mailer
   }
 
   protected async ensureHasPermissions(request: FastifyRequest) {

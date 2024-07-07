@@ -1,58 +1,66 @@
 import { Secret } from "@poppinss/utils"
-import { Mailer, MailerIdentity, Prisma, PrismaClient } from "@prisma/client"
+import { and, eq, SQLWrapper } from "drizzle-orm"
 import { inject, injectable } from "tsyringe"
 
+import { BaseRepository } from "@/domains/shared/repositories/base_repository.ts"
 import { Encryption } from "@/domains/shared/utils/encryption/encryption.js"
 import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto.js"
 import { ContainerKey, makeEnv } from "@/infrastructure/container.js"
+import { DrizzleClient } from "@/infrastructure/database/client.ts"
+import { mailerIdentities } from "@/infrastructure/database/schema/schema.ts"
+import {
+  FindManyMailerIdentityArgs,
+  UpdateSetMailerIdentityInput,
+} from "@/infrastructure/database/schema/types.ts"
 
 @injectable()
-export class MailerIdentityRepository {
-  constructor(@inject(ContainerKey.database) private database: PrismaClient) {}
-
-  async findMany(args?: Partial<Prisma.MailerIdentityFindManyArgs>) {
-    return this.database.mailerIdentity.findMany(args)
+export class MailerIdentityRepository extends BaseRepository {
+  constructor(
+    @inject(ContainerKey.database) protected database: DrizzleClient,
+  ) {
+    super()
   }
 
-  async findById(
-    mailerIdentityId: string,
-    args?: Partial<Prisma.MailerIdentityFindUniqueArgs>,
-  ) {
-    return this.database.mailerIdentity.findUnique({
-      where: {
-        id: mailerIdentityId,
-      },
-      ...args,
+  async findMany(args: FindManyMailerIdentityArgs) {
+    return this.database.query.mailerIdentities.findMany(args)
+  }
+
+  async findById(mailerIdentityId: string, args?: SQLWrapper[]) {
+    return this.database.query.mailerIdentities.findFirst({
+      where: and(eq(mailerIdentities.id, mailerIdentityId), ...(args ?? [])),
     })
   }
 
-  async create(payload: CreateMailerIdentityDto, mailer: Mailer) {
-    return this.database.mailerIdentity.create({
-      data: {
+  async create(payload: CreateMailerIdentityDto, mailerId: string) {
+    const id = this.cuid()
+
+    await this.database.insert(mailerIdentities).values({
+      id,
+      ...payload,
+      mailerId,
+    })
+
+    return { id }
+  }
+
+  async update(identityId: string, payload: UpdateSetMailerIdentityInput) {
+    await this.database
+      .update(mailerIdentities)
+      .set({
         ...payload,
-        mailerId: mailer.id,
-      },
-    })
+      })
+      .where(eq(mailerIdentities.id, identityId))
+      .execute()
+
+    return { id: identityId }
   }
 
-  async update(
-    identity: MailerIdentity,
-    payload: Prisma.MailerIdentityUpdateInput,
-  ) {
-    return this.database.mailerIdentity.update({
-      where: {
-        id: identity.id,
-      },
-      data: payload,
-    })
-  }
+  async delete(identityId: string) {
+    await this.database
+      .delete(mailerIdentities)
+      .where(eq(mailerIdentities.id, identityId))
 
-  async delete(identity: MailerIdentity) {
-    await this.database.mailerIdentity.delete({
-      where: {
-        id: identity.id,
-      },
-    })
+    return { id: identityId }
   }
 
   async decryptRsaPrivateKey(teamConfigurationKey: string, privateKey: string) {

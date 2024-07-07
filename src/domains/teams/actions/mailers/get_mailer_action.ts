@@ -1,4 +1,3 @@
-import { Mailer, MailerIdentity } from "@prisma/client"
 import { container, inject, injectable } from "tsyringe"
 
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
@@ -65,13 +64,14 @@ export class GetMailerAction {
     )
 
     if (atLeastOneApproved) {
-      mailer = (await this.mailerRepository.update(
+      await this.mailerRepository.update(
         mailer,
         {
           status: "READY",
         },
         team,
-      )) as Mailer & { identities: MailerIdentity[] }
+      )
+      mailer.status = "READY"
     }
 
     mailer.identities = updatedIdentities

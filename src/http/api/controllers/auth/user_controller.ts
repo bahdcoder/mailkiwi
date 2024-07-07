@@ -38,11 +38,11 @@ export class UserController {
     const user = await this.userRepository.findById(
       request.accessToken.userId,
       {
-        include: {
+        with: {
           teams: {
-            include: {
+            with: {
               mailer: {
-                include: {
+                with: {
                   identities: true,
                 },
               },

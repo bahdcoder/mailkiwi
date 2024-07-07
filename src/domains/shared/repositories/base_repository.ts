@@ -1,7 +1,7 @@
-import { DrizzleClient } from "@/infrastructure/database/client.ts"
-import { Prisma, PrismaClient } from "@prisma/client"
-import { DefaultArgs } from "@prisma/client/runtime/library"
 import { injectable } from "tsyringe"
+
+import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
+import { DrizzleClient } from "@/infrastructure/database/client.ts"
 
 @injectable()
 export class BaseRepository {
@@ -11,5 +11,9 @@ export class BaseRepository {
     this.database = transaction as DrizzleClient
 
     return this
+  }
+
+  cuid() {
+    return cuid()
   }
 }

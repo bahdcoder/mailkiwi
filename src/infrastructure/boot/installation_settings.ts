@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client"
 import inquirer from "inquirer"
 import { inject, injectable } from "tsyringe"
 import { z } from "zod"

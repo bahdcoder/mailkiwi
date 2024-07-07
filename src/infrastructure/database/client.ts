@@ -1,8 +1,9 @@
 import { drizzle } from "drizzle-orm/mysql2"
 import { migrate } from "drizzle-orm/mysql2/migrator"
-import * as schema from "./schema/schema.ts"
-import { resolve } from "path"
 import mysql from "mysql2/promise"
+import { resolve } from "path"
+
+import * as schema from "./schema/schema.ts"
 
 export const createDatabaseClient = (databaseConnectionUrl: string) =>
   mysql.createConnection(databaseConnectionUrl)

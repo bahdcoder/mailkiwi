@@ -1,15 +1,13 @@
 import { VerificationStatus } from "@aws-sdk/client-ses"
-import {
-  Mailer,
-  MailerIdentity,
-  MailerIdentityStatus,
-  Prisma,
-  Team,
-} from "@prisma/client"
 import { inject, injectable } from "tsyringe"
 
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
+import {
+  Mailer,
+  MailerIdentity,
+  Team,
+} from "@/infrastructure/database/schema/types.ts"
 import { AwsSdk } from "@/providers/ses/sdk.js"
 
 import { MailerRepository } from "../repositories/mailer_repository.js"
@@ -41,26 +39,28 @@ export class GetMailerIdentitiesAction {
 
       const updatedIdentities: MailerIdentity[] = []
 
-      for (let identity of identities) {
+      for (const identity of identities) {
         const attribute = attributes[identity.value]
 
-        identity = await this.mailerIdentityRepository.update(identity, {
+        const updated = {
           status: this.parseDkimStatusToDatabaseStatus(
             identity.type === "EMAIL"
               ? attribute.VerificationStatus ?? "Pending"
               : attribute.DkimVerificationStatus ?? "Pending",
           ),
           configuration: {
-            ...(identity.configuration as Prisma.JsonObject),
+            ...(identity.configuration as object),
             VerificationToken: attribute.VerificationToken,
             dkimTokens: attribute.DkimTokens,
             MailFromDomainStatus: attribute.MailFromDomainStatus,
             MailFromDomain: attribute.MailFromDomain,
             BehaviorOnMXFailure: attribute.BehaviorOnMXFailure,
           },
-        })
+        }
 
-        updatedIdentities.push(identity)
+        await this.mailerIdentityRepository.update(identity.id, updated)
+
+        updatedIdentities.push({ ...identity, ...updated })
       }
 
       return updatedIdentities
@@ -82,7 +82,7 @@ export class GetMailerIdentitiesAction {
 
   private parseDkimStatusToDatabaseStatus(
     dkimVerificationStatus: VerificationStatus,
-  ): MailerIdentityStatus {
+  ): Required<MailerIdentity["status"]> {
     switch (dkimVerificationStatus) {
       case "Success":
         return "APPROVED"

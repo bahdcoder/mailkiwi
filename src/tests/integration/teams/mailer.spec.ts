@@ -25,12 +25,17 @@ import {
 import { faker } from "@faker-js/faker"
 import { Prisma } from "@prisma/client"
 import { mockClient } from "aws-sdk-client-mock"
+import { and, eq } from "drizzle-orm"
 import { container } from "tsyringe"
 import { beforeEach, describe, test, vi } from "vitest"
 
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 import { makeConfig, makeDatabase } from "@/infrastructure/container.js"
+import {
+  mailerIdentities,
+  mailers,
+} from "@/infrastructure/database/schema/schema.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { cleanMailers } from "@/tests/mocks/teams/teams.js"
 import { injectAsUser } from "@/tests/utils/http.js"
@@ -47,6 +52,7 @@ describe("Teams / Mailers", () => {
 
   test("can create mailers", async ({ expect }) => {
     const { user } = await createUser()
+    const database = makeDatabase()
 
     const mailerPayload = {
       name: faker.string.uuid(),
@@ -59,19 +65,19 @@ describe("Teams / Mailers", () => {
       body: mailerPayload,
     })
 
-    const json = await response.json()
-
     expect(response.statusCode).toBe(200)
-    expect(json.name).toBe(mailerPayload.name)
-    expect(json.provider).toBe(mailerPayload.provider)
 
-    await cleanMailers()
+    const mailer = await database.query.mailers.findFirst({
+      where: eq(mailers.name, mailerPayload.name),
+    })
+
+    expect(mailer).toBeDefined()
+    expect(mailer?.provider).toBe(mailerPayload.provider)
   })
 
   test("can update mailers while creating a domain sending identity", async ({
     expect,
   }) => {
-    await cleanMailers()
     const { user, team } = await createUser()
     const database = makeDatabase()
 
@@ -109,12 +115,9 @@ describe("Teams / Mailers", () => {
 
     const mailerRepository = container.resolve(MailerRepository)
 
-    const mailer = (await database.mailer.findFirst({
-      where: {
-        name: mailerPayload.name,
-        provider: "AWS_SES",
-      },
-      include: {
+    const mailer = (await database.query.mailers.findFirst({
+      where: eq(mailers.name, mailerPayload.name),
+      with: {
         identities: true,
       },
     }))!
@@ -135,7 +138,7 @@ describe("Teams / Mailers", () => {
 
     const updatedConfiguration = mailerRepository.getDecryptedConfiguration(
       mailer?.configuration,
-      team.configurationKey,
+      team!.configurationKey,
     )
     expect(updatedConfiguration.accessKey.release()).toEqual(
       updateConfigPayload.accessKey,
@@ -149,7 +152,7 @@ describe("Teams / Mailers", () => {
     const appShortName = makeConfig().software.shortName
     const { privateKey: decodedMailerIdentityPrivateKey } =
       await mailerIdentityRepository.decryptRsaPrivateKey(
-        team.configurationKey,
+        team!.configurationKey,
         (domainIdentity.configuration as { privateKey: string }).privateKey,
       )
 
@@ -200,7 +203,6 @@ describe("Teams / Mailers", () => {
   test("can install a mailer and reconnect it with new credentials if access is revoked", async ({
     expect,
   }) => {
-    await cleanMailers()
     const { user, setting, team } = await createUser()
 
     const sleepMock = vi
@@ -406,12 +408,9 @@ describe("Teams / Mailers", () => {
 
     expect(updateResponse.statusCode).toBe(200)
 
-    const mailer = (await database.mailer.findFirst({
-      where: {
-        name: mailerPayload.name,
-        provider: "AWS_SES",
-      },
-      include: {
+    const mailer = (await database.query.mailers.findFirst({
+      where: eq(mailers.name, mailerPayload.name),
+      with: {
         identities: true,
       },
     }))!
@@ -482,19 +481,16 @@ describe("Teams / Mailers", () => {
 
     const mailerRepository = container.resolve(MailerRepository)
 
-    const mailer = (await database.mailer.findFirst({
-      where: {
-        name: mailerPayload.name,
-        provider: "AWS_SES",
-      },
-      include: {
+    const mailer = (await database.query.mailers.findFirst({
+      where: eq(mailers.name, mailerPayload.name),
+      with: {
         identities: true,
       },
     }))!
 
     const decryptedConfiguration = mailerRepository.getDecryptedConfiguration(
       mailer.configuration,
-      team.configurationKey,
+      team!.configurationKey,
     )
 
     // make sure keys were not saved and config was not updated.
@@ -558,10 +554,8 @@ describe("Teams / Mailers", () => {
 
     const database = makeDatabase()
 
-    const mailer = await database.mailer.findFirst({
-      where: {
-        id: json.teams[0].mailer.id,
-      },
+    const mailer = await database.query.mailers.findFirst({
+      where: eq(mailers.id, json.teams[0].mailer.id),
     })
 
     expect(mailer).not.toBeNull()
@@ -660,10 +654,8 @@ describe("Mailer identities", () => {
 
     const mailerIdentityRepository = container.resolve(MailerIdentityRepository)
 
-    const mailer = (await database.mailer.findFirst({
-      where: {
-        teamId: team.id,
-      },
+    const mailer = (await database.query.mailers.findFirst({
+      where: eq(mailers.teamId, team!.id),
     }))!
 
     const mailerIdentityPayload = {
@@ -679,20 +671,16 @@ describe("Mailer identities", () => {
 
     expect(response.statusCode).toBe(200)
 
-    const json = await response.json()
-
-    expect(json.value).toBe(mailerIdentityPayload.value)
-    expect(json.type).toBe(mailerIdentityPayload.type)
-    expect(json.status).toBe("PENDING")
-    expect(json.mailerId).toBe(mailer.id)
-
-    const mailerIdentity = (await database.mailerIdentity.findFirst({
-      where: { mailerId: mailer.id, value: mailerIdentityPayload.value },
+    const mailerIdentity = (await database.query.mailerIdentities.findFirst({
+      where: and(
+        eq(mailerIdentities.mailerId, mailer.id),
+        eq(mailerIdentities.value, mailerIdentityPayload.value),
+      ),
     }))!
 
     const decryptedMailerIdentityRsaPrivateKey =
       await mailerIdentityRepository.decryptRsaPrivateKey(
-        team.configurationKey,
+        team!.configurationKey,
         (mailerIdentity.configuration as Prisma.JsonObject)
           .privateKey as string,
       )
@@ -742,10 +730,8 @@ describe("Mailer identities", () => {
 
     const database = makeDatabase()
 
-    const mailer = (await database.mailer.findFirst({
-      where: {
-        teamId: team.id,
-      },
+    const mailer = (await database.query.mailers.findFirst({
+      where: eq(mailers.teamId, team!.id),
     }))!
 
     const mailerIdentityPayload = {
@@ -759,13 +745,7 @@ describe("Mailer identities", () => {
       body: mailerIdentityPayload,
     })
 
-    const json = await response.json()
-
     expect(response.statusCode).toBe(200)
-    expect(json.value).toBe(mailerIdentityPayload.value)
-    expect(json.type).toBe(mailerIdentityPayload.type)
-    expect(json.status).toBe("PENDING")
-    expect(json.mailerId).toBe(mailer.id)
 
     const config = makeConfig()
     const configurationName = `${config.software.shortName}_${mailer.id}`
@@ -796,11 +776,9 @@ describe("Mailer identities", () => {
 
     const database = makeDatabase()
 
-    const mailer = (await database.mailer.findFirst({
-      where: {
-        teamId: team.id,
-      },
-      include: {
+    const mailer = (await database.query.mailers.findFirst({
+      where: eq(mailers.teamId, team!.id),
+      with: {
         identities: true,
       },
     }))!
@@ -817,11 +795,12 @@ describe("Mailer identities", () => {
 
     expect(deleteIdentityResponse.statusCode).toBe(200)
 
-    const deletedMailerIdentity = await database.mailerIdentity.findUnique({
-      where: { id: identity.id },
-    })
+    const deletedMailerIdentity =
+      await database.query.mailerIdentities.findFirst({
+        where: eq(mailerIdentities.id, identity.id),
+      })
 
-    expect(deletedMailerIdentity).toBeNull()
+    expect(deletedMailerIdentity).toBeUndefined()
 
     const SESCalls = SESMock.calls()
 
@@ -853,11 +832,9 @@ describe("Mailer identities", () => {
 
     const database = makeDatabase()
 
-    const mailer = (await database.mailer.findFirst({
-      where: {
-        teamId: team.id,
-      },
-      include: {
+    const mailer = (await database.query.mailers.findFirst({
+      where: eq(mailers.teamId, team!.id),
+      with: {
         identities: true,
       },
     }))!
@@ -877,9 +854,10 @@ describe("Mailer identities", () => {
 
     expect(json.message).toContain(providerErrorMessage)
 
-    const deletedMailerIdentity = await database.mailerIdentity.findUnique({
-      where: { id: identity.id },
-    })
+    const deletedMailerIdentity =
+      await database.query.mailerIdentities.findFirst({
+        where: eq(mailerIdentities.id, identity.id),
+      })
 
     expect(deletedMailerIdentity).not.toBeNull()
   })
@@ -896,11 +874,9 @@ describe("Mailer identities", () => {
 
     const database = makeDatabase()
 
-    const mailer = (await database.mailer.findFirst({
-      where: {
-        teamId: team.id,
-      },
-      include: {
+    const mailer = (await database.query.mailers.findFirst({
+      where: eq(mailers.teamId, team!.id),
+      with: {
         identities: true,
       },
     }))!

@@ -1,15 +1,8 @@
 import "./globals"
 
-import { PrismaClient } from "@prisma/client"
 import Fastify, { FastifyInstance } from "fastify"
 import { container } from "tsyringe"
-import {
-  createDatabaseClient,
-  createDrizzleDatabase,
-  DrizzleClient,
-  runDatabaseMigrations,
-} from "@/infrastructure/database/client.js"
-import { count } from "drizzle-orm"
+
 import { AudienceController } from "@/http/api/controllers/audiences/audience_controller.js"
 import { ContactController } from "@/http/api/controllers/audiences/contact_controller.js"
 import { AuthController } from "@/http/api/controllers/auth/auth_controller.js"
@@ -24,6 +17,12 @@ import { globalErrorHandler } from "@/http/responses/error_handler.js"
 import { RootController } from "@/http/views/controllers/root_controller.js"
 import { InstallationSettings } from "@/infrastructure/boot/installation_settings.js"
 import { ContainerKey } from "@/infrastructure/container.js"
+import {
+  createDatabaseClient,
+  createDrizzleDatabase,
+  DrizzleClient,
+  runDatabaseMigrations,
+} from "@/infrastructure/database/client.js"
 import {
   config,
   ConfigVariables,
@@ -105,6 +104,8 @@ export class Ignitor {
   }
 
   async startDatabaseConnector() {
+    if (this.database) return this
+
     const connection = await createDatabaseClient(this.env.DATABASE_URL)
 
     this.database = createDrizzleDatabase(connection)

@@ -2,13 +2,15 @@ import { SESClient } from "@aws-sdk/client-ses"
 import { SNSClient } from "@aws-sdk/client-sns"
 import { faker } from "@faker-js/faker"
 import { mockClient } from "aws-sdk-client-mock"
+import { eq } from "drizzle-orm"
 import { container } from "tsyringe"
 
 import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository.js"
 import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.js"
+import { TeamRepository } from "@/domains/teams/repositories/team_repository.ts"
 import { makeDatabase } from "@/infrastructure/container.js"
+import { users } from "@/infrastructure/database/schema/schema.ts"
 import { injectAsUser } from "@/tests/utils/http.js"
-import { settings } from "@/infrastructure/database/schema/schema.ts"
 
 export const createUser = async ({
   createMailerWithIdentity,
@@ -17,14 +19,7 @@ export const createUser = async ({
 } = {}) => {
   const database = makeDatabase()
 
-  const setting = await database
-    .insert(settings)
-    .values({
-      url: "https://marketing.example.com",
-      domain: "marketing.example.com",
-    })
-    .onDuplicateKeyUpdate({ set: { domain: "marketing.example.com" } })
-
+  const setting = await database.query.settings.findFirst()
   const audienceRepository = container.resolve(AudienceRepository)
 
   const registerUserAction = container.resolve(RegisterUserAction)
@@ -35,14 +30,16 @@ export const createUser = async ({
     password: "password",
   })
 
+  const teamRepository = container.resolve(TeamRepository)
+
   const audience = await audienceRepository.createAudience(
     { name: "Newsletter" },
     team!.id,
   )
 
-  const freshUser = await database.user.findFirst({
-    where: { email: user.email },
-    include: {
+  const freshUser = await database.query.users.findFirst({
+    where: eq(users.id, user.id),
+    with: {
       teams: true,
     },
   })
@@ -74,5 +71,10 @@ export const createUser = async ({
     })
   }
 
-  return { user: freshUser!, team, audience, setting }
+  return {
+    user: freshUser!,
+    team: (await teamRepository.findById(team.id))!,
+    audience,
+    setting: setting!,
+  }
 }
