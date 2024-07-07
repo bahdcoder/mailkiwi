@@ -4,11 +4,13 @@ build({
   entryPoints: ["src/main.ts"],
   bundle: true,
   platform: "node",
-  target: "node18",
+  target: "node20",
   outfile: "build/main.js",
   sourcemap: true,
   minify: false,
-  format: "esm",
+  logOverride: {
+    "empty-import-meta": "silent",
+  },
 }).catch((error) => {
   console.error(error)
   process.exit(1)

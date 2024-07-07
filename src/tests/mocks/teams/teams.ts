@@ -16,7 +16,7 @@ export const cleanMailers = async () => {
   await database.delete(mailers)
   await database.delete(contacts)
   await database.delete(audiences)
-  await database.delete(teams)
   await database.delete(accessTokens)
+  await database.delete(teams)
   await database.delete(users)
 }

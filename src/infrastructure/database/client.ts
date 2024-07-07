@@ -10,7 +10,11 @@ export const createDatabaseClient = (databaseConnectionUrl: string) =>
 
 export const runDatabaseMigrations = async (client: DrizzleClient) => {
   await migrate(client, {
-    migrationsFolder: resolve(import.meta.dirname, "schema", "migrations"),
+    migrationsFolder: resolve(
+      import.meta.dirname ?? __dirname,
+      "schema",
+      "migrations",
+    ),
   })
 }
 

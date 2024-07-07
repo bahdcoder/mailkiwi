@@ -7,6 +7,7 @@ import { injectAsUser } from "@/tests/utils/http.js"
 
 describe("Teams", () => {
   test("can fetch a single team", async ({ expect }) => {
+    await cleanMailers()
     const { user, team } = await createUser()
 
     const mailerPayload = {
