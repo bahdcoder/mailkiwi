@@ -8,7 +8,6 @@ build({
   outfile: "build/main.js",
   sourcemap: true,
   minify: false,
-  external: ["bcrypt"],
 }).catch((error) => {
   console.error(error)
   process.exit(1)

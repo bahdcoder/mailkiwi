@@ -1,8 +1,8 @@
-import { resolve, dirname } from "node:path"
+import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
+
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite"
 
 const path = fileURLToPath(import.meta.url)
 const root = resolve(dirname(path), "src/http/views/app")

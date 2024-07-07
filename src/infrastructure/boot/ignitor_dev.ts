@@ -1,4 +1,5 @@
 import Vite from "@fastify/vite"
+
 import { Ignitor } from "./ignitor.js"
 
 export class IgnitorDev extends Ignitor {

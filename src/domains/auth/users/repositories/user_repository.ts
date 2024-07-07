@@ -1,9 +1,9 @@
 import { Prisma, PrismaClient, User } from "@prisma/client"
-import { compareSync, hashSync } from "bcrypt"
 import { inject, injectable } from "tsyringe"
 
 import { CreateUserDto } from "@/domains/auth/users/dto/create_user_dto.js"
 import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
+import { scrypt } from "@/domains/shared/utils/hash/scrypt.ts"
 import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
@@ -16,7 +16,7 @@ export class UserRepository extends BaseRepository {
     return this.database.user.create({
       data: {
         ...user,
-        password: hashSync(user.password, 10),
+        password: await scrypt().make(user.password),
       },
       select: {
         id: true,
@@ -54,6 +54,6 @@ export class UserRepository extends BaseRepository {
       return null
     }
 
-    return compareSync(password, user.password)
+    return scrypt().verify(user.password, password)
   }
 }

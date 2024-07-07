@@ -1,14 +1,14 @@
-import React, { StrictMode } from "react"
-import ReactDOM from "react-dom/client"
 import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Link,
   Outlet,
   RouterProvider,
-  Link,
-  createRouter,
-  createRoute,
-  createRootRoute,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtools } from "@tanstack/router-devtools"
+import React, { StrictMode } from "react"
+import ReactDOM from "react-dom/client"
 
 const rootRoute = createRootRoute({
   component: () => (

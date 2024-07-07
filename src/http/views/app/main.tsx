@@ -1,13 +1,13 @@
-import React, { StrictMode } from "react"
-import ReactDOM from "react-dom/client"
 import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Link,
   Outlet,
   RouterProvider,
-  Link,
-  createRouter,
-  createRoute,
-  createRootRoute,
 } from "@tanstack/react-router"
+import React, { StrictMode } from "react"
+import ReactDOM from "react-dom/client"
 
 const Index = React.lazy(() => import("./pages/Index.tsx"))
 const About = React.lazy(() => import("./pages/About.tsx"))
