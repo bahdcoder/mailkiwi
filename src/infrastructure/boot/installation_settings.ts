@@ -4,6 +4,8 @@ import { inject, injectable } from "tsyringe"
 import { z } from "zod"
 
 import { ContainerKey } from "@/infrastructure/container.js"
+import { DrizzleClient } from "@/infrastructure/database/client.ts"
+import { settings } from "@/infrastructure/database/schema/schema.ts"
 
 @injectable()
 export class InstallationSettings {
@@ -11,10 +13,10 @@ export class InstallationSettings {
     domain: z.string().url(),
   })
 
-  constructor(@inject(ContainerKey.database) private database: PrismaClient) {}
+  constructor(@inject(ContainerKey.database) private database: DrizzleClient) {}
 
   async ensureInstallationSettings() {
-    const setting = await this.database.setting.findFirst()
+    const setting = await this.database.query.settings.findFirst({})
 
     if (setting) {
       return true
@@ -39,12 +41,9 @@ export class InstallationSettings {
       },
     })
 
-    await this.database.setting.create({
-      data: {
-        domain,
-        url: `https://${domain}`,
-      },
-    })
+    await this.database
+      .insert(settings)
+      .values({ domain, url: `https://${domain}` })
 
     return true
   }

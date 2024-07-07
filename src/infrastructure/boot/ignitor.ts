@@ -3,7 +3,13 @@ import "./globals"
 import { PrismaClient } from "@prisma/client"
 import Fastify, { FastifyInstance } from "fastify"
 import { container } from "tsyringe"
-
+import {
+  createDatabaseClient,
+  createDrizzleDatabase,
+  DrizzleClient,
+  runDatabaseMigrations,
+} from "@/infrastructure/database/client.js"
+import { count } from "drizzle-orm"
 import { AudienceController } from "@/http/api/controllers/audiences/audience_controller.js"
 import { ContactController } from "@/http/api/controllers/audiences/contact_controller.js"
 import { AuthController } from "@/http/api/controllers/auth/auth_controller.js"
@@ -29,7 +35,7 @@ export class Ignitor {
   protected env: EnvVariables
   protected config: ConfigVariables
   protected app: FastifyInstance
-  protected database: PrismaClient
+  protected database: DrizzleClient
 
   boot() {
     this.env = env
@@ -41,13 +47,6 @@ export class Ignitor {
     container.registerInstance(ContainerKey.app, this.app)
     container.registerInstance(ContainerKey.env, this.env)
     container.registerInstance(ContainerKey.config, this.config)
-    container.registerInstance(ContainerKey.database, this.database)
-
-    return this
-  }
-
-  register() {
-    this.registerHttpControllers()
 
     return this
   }
@@ -89,12 +88,13 @@ export class Ignitor {
   }
 
   bootDatabaseConnector() {
-    this.database = new PrismaClient()
-
     return this
   }
 
   async start() {
+    await this.startDatabaseConnector()
+    await this.startSinglePageApplication()
+
     await container.resolve(InstallationSettings).ensureInstallationSettings()
 
     await this.startHttpServer()
@@ -104,9 +104,24 @@ export class Ignitor {
     // no implementation in prod. Only in dev.
   }
 
+  async startDatabaseConnector() {
+    const connection = await createDatabaseClient(this.env.DATABASE_URL)
+
+    this.database = createDrizzleDatabase(connection)
+
+    container.registerInstance(ContainerKey.database, this.database)
+
+    try {
+      await runDatabaseMigrations(this.database)
+    } catch (error) {
+      d({ error })
+      throw error
+    }
+  }
+
   async startHttpServer() {
     try {
-      await this.startSinglePageApplication()
+      this.registerHttpControllers()
 
       await this.app.listen({
         port: this.env.PORT,

@@ -16,6 +16,8 @@ export function globalErrorHandler(
       .send(error.data ?? { message: error.output.payload.message })
   }
 
+  d({ error })
+
   request.log.error(error)
 
   return response.code(500).send({
