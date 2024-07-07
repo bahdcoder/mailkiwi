@@ -6,6 +6,7 @@ import { ContainerKey } from "@/infrastructure/container.js"
 
 import { CreateUserDto } from "../users/dto/create_user_dto.js"
 import { UserRepository } from "../users/repositories/user_repository.js"
+import { DrizzleClient } from "@/infrastructure/database/client.ts"
 
 @injectable()
 export class RegisterUserAction {
@@ -14,20 +15,19 @@ export class RegisterUserAction {
     private userRepository: UserRepository,
     @inject(TeamRepository)
     private teamRepository: TeamRepository,
+    @inject(ContainerKey.database)
+    private database: DrizzleClient,
   ) {}
 
   handle = async (payload: CreateUserDto) => {
-    const database = container.resolve<PrismaClient>(ContainerKey.database)
+    const user = await this.userRepository.create(payload)
 
-    const { user, team } = await database.$transaction(async (tx) => {
-      const user = await this.userRepository.transaction(tx).create(payload)
+    const allUsers = await this.database.query.users.findMany()
 
-      const team = await this.teamRepository
-        .transaction(tx)
-        .create({ name: payload.name }, user.id)
-
-      return { user, team }
-    })
+    const team = await this.teamRepository.create(
+      { name: payload.name },
+      user.id,
+    )
 
     return { user, team }
   }

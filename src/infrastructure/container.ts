@@ -3,6 +3,7 @@ import { FastifyInstance } from "fastify"
 import { container } from "tsyringe"
 
 import { ConfigVariables, EnvVariables } from "@/infrastructure/env.js"
+import { DrizzleClient } from "./database/client.ts"
 
 export enum ContainerKey {
   app = "app",
@@ -21,4 +22,4 @@ export const makeConfig = () =>
   container.resolve<ConfigVariables>(ContainerKey["config"])
 
 export const makeDatabase = () =>
-  container.resolve<PrismaClient>(ContainerKey["database"])
+  container.resolve<DrizzleClient>(ContainerKey["database"])

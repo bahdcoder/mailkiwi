@@ -1,6 +1,8 @@
 import { z } from "zod"
 
 import { makeDatabase } from "@/infrastructure/container.js"
+import { eq } from "drizzle-orm"
+import { users } from "@/infrastructure/database/schema/schema.ts"
 
 export const CreateUserSchema = z.object({
   email: z
@@ -9,13 +11,11 @@ export const CreateUserSchema = z.object({
     .refine(async (email) => {
       const database = makeDatabase()
 
-      const userWithEmailExists = await database.user.findFirst({
-        where: {
-          email,
-        },
+      const userWithEmailExists = await database.query.users.findFirst({
+        where: eq(users.email, email),
       })
 
-      return userWithEmailExists === null
+      return userWithEmailExists === undefined
     }, "A user with this email already exists."),
   name: z.string().min(2).max(32),
   password: z

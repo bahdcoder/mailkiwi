@@ -117,11 +117,17 @@ export class Ignitor {
       d({ error })
       throw error
     }
+
+    return this
   }
 
   async startHttpServer() {
     try {
       this.registerHttpControllers()
+
+      if (this.env.isTest) {
+        return this
+      }
 
       await this.app.listen({
         port: this.env.PORT,

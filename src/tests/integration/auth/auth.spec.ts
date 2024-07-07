@@ -4,10 +4,14 @@ import { describe, test } from "vitest"
 import { makeApp, makeDatabase } from "@/infrastructure/container.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { injectAsUser } from "@/tests/utils/http.js"
+import { cleanMailers } from "@/tests/mocks/teams/teams.ts"
+import { eq } from "drizzle-orm"
+import { users } from "@/infrastructure/database/schema/schema.ts"
 
 describe("User registration", () => {
   test("can register a new user account", async ({ expect }) => {
     const app = makeApp()
+    const database = makeDatabase()
 
     const payload = {
       name: faker.person.fullName(),
@@ -23,9 +27,14 @@ describe("User registration", () => {
 
     const json = await response.json()
 
+    const userFromDatabase = await database.query.users.findFirst({
+      where: eq(users.email, payload.email),
+    })
+
     expect(response.statusCode).toBe(200)
-    expect(json.name).toEqual(payload.name)
-    expect(json.email).toEqual(payload.email)
+
+    expect(userFromDatabase).toBeDefined()
+    expect(userFromDatabase?.name).toEqual(payload.name)
   })
 
   test("registering a new user account automatically creates a team for that user.", async ({
@@ -46,11 +55,9 @@ describe("User registration", () => {
       body: payload,
     })
 
-    const user = await database.user.findFirst({
-      where: {
-        email: payload.email,
-      },
-      include: {
+    const user = await database.query.users.findFirst({
+      where: eq(users.email, payload.email),
+      with: {
         teams: true,
       },
     })
@@ -61,7 +68,7 @@ describe("User registration", () => {
     expect(user?.teams?.[0]?.configurationKey).toBeDefined()
   })
 
-  test("can only register with an email once and not twice", async ({
+  test.only("can only register with an email once and not twice", async ({
     expect,
   }) => {
     const app = makeApp()

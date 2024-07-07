@@ -8,6 +8,7 @@ import { AudienceRepository } from "@/domains/audiences/repositories/audience_re
 import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.js"
 import { makeDatabase } from "@/infrastructure/container.js"
 import { injectAsUser } from "@/tests/utils/http.js"
+import { settings } from "@/infrastructure/database/schema/schema.ts"
 
 export const createUser = async ({
   createMailerWithIdentity,
@@ -16,16 +17,13 @@ export const createUser = async ({
 } = {}) => {
   const database = makeDatabase()
 
-  const setting = await database.setting.upsert({
-    where: {
-      domain: "marketing.example.com",
-    },
-    create: {
+  const setting = await database
+    .insert(settings)
+    .values({
       url: "https://marketing.example.com",
       domain: "marketing.example.com",
-    },
-    update: {},
-  })
+    })
+    .onDuplicateKeyUpdate({ set: { domain: "marketing.example.com" } })
 
   const audienceRepository = container.resolve(AudienceRepository)
 

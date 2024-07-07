@@ -7,7 +7,7 @@
     "dev": "tsx src/dev.ts --watch --ignore src/http/views/app",
     "test": "pnpm test:watch --run",
     "build:clean": "del-cli build",
-    "test:watch": "pnpm db:migrate:run && vitest",
+    "test:watch": "vitest",
     "types:check": "tsc --noEmit",
     "start": "node build/main.js",
     "build:client": "vite build",

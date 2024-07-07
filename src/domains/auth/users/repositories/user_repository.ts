@@ -5,33 +5,37 @@ import { CreateUserDto } from "@/domains/auth/users/dto/create_user_dto.js"
 import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
 import { scrypt } from "@/domains/shared/utils/hash/scrypt.ts"
 import { ContainerKey } from "@/infrastructure/container.js"
+import { DrizzleClient } from "@/infrastructure/database/client.ts"
+import { users } from "@/infrastructure/database/schema/schema.ts"
+import { eq } from "drizzle-orm"
+import cuid2 from "@paralleldrive/cuid2"
 
 @injectable()
 export class UserRepository extends BaseRepository {
-  constructor(@inject(ContainerKey.database) protected database: PrismaClient) {
+  constructor(
+    @inject(ContainerKey.database) protected database: DrizzleClient,
+  ) {
     super()
   }
 
   async create(user: CreateUserDto) {
-    return this.database.user.create({
-      data: {
+    const id = cuid2.createId()
+
+    await this.database
+      .insert(users)
+      .values({
         ...user,
+        id,
         password: await scrypt().make(user.password),
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        password: false,
-      },
-    })
+      })
+      .execute()
+
+    return { id }
   }
 
   async findByEmail(email: string) {
-    return this.database.user.findFirst({
-      where: {
-        email,
-      },
+    return this.database.query.users.findFirst({
+      where: eq(users.email, email),
     })
   }
 
@@ -41,11 +45,9 @@ export class UserRepository extends BaseRepository {
   ) {
     if (!id) return null
 
-    return this.database.user.findFirst({
-      where: {
-        id,
-      },
-      ...args,
+    return this.database.query.users.findFirst({
+      where: eq(users.id, id),
+      // ...args,
     })
   }
 
