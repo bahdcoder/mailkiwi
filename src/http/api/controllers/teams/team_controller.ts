@@ -31,25 +31,7 @@ export class TeamController {
   ) {
     const teamId = request.params.teamId
 
-    const team = await this.teamRepository.findById(teamId, {
-      include: {
-        members: {
-          select: {
-            userId: true,
-            role: true,
-            status: true,
-          },
-        },
-        mailer: {
-          select: {
-            id: true,
-            name: true,
-            provider: true,
-            status: true,
-          },
-        },
-      },
-    })
+    const team = await this.teamRepository.findById(teamId)
 
     if (!team)
       throw E_VALIDATION_FAILED({

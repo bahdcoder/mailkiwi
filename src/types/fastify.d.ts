@@ -1,4 +1,3 @@
-import type { AccessToken, User } from "@prisma/client"
 import {
   HTTPMethods,
   onRequestHookHandler,
@@ -7,6 +6,7 @@ import {
 } from "fastify"
 
 import type { TeamWithMembers } from "@/domains/shared/types/team"
+import { AccessToken, User } from "@/infrastructure/database/schema/types.ts"
 
 declare module "fastify" {
   interface FastifyInstance {

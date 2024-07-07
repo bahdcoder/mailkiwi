@@ -8,6 +8,7 @@ build({
   outfile: "build/main.js",
   sourcemap: true,
   minify: false,
+  format: "esm",
 }).catch((error) => {
   console.error(error)
   process.exit(1)

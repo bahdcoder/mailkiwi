@@ -3,11 +3,20 @@ import { MySqlUpdateSetSource } from "drizzle-orm/mysql-core"
 
 import { makeDatabase } from "@/infrastructure/container.ts"
 
-import { mailerIdentities, mailers, teams, users } from "./schema.ts"
+import {
+  accessTokens,
+  mailerIdentities,
+  mailers,
+  teamMemberships,
+  teams,
+  users,
+} from "./schema.ts"
 
 export type User = InferSelectModel<typeof users>
+export type AccessToken = InferSelectModel<typeof accessTokens>
 export type Mailer = InferSelectModel<typeof mailers>
 export type Team = InferSelectModel<typeof teams>
+export type TeamMembership = InferSelectModel<typeof teamMemberships>
 export type MailerIdentity = InferSelectModel<typeof mailerIdentities>
 
 export type FindMailerByIdArgs = Parameters<

@@ -1,4 +1,3 @@
-import { Mailer } from "@prisma/client"
 import { eq } from "drizzle-orm"
 import {
   FastifyInstance,
@@ -23,6 +22,7 @@ import {
 } from "@/http/responses/errors.js"
 import { ContainerKey } from "@/infrastructure/container.js"
 import { mailers } from "@/infrastructure/database/schema/schema.ts"
+import { Mailer } from "@/infrastructure/database/schema/types.ts"
 
 @injectable()
 export class MailerController {

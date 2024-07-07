@@ -1,10 +1,9 @@
-import { MailerIdentityType } from "@prisma/client"
 import { z } from "zod"
 
 export const CreateMailerIdentitySchema = z
   .object({
     value: z.string(),
-    type: z.enum([MailerIdentityType.DOMAIN, MailerIdentityType.EMAIL]),
+    type: z.enum(["EMAIL", "DOMAIN"]),
   })
   .superRefine((data, ctx) => {
     if (data.type === "EMAIL") {

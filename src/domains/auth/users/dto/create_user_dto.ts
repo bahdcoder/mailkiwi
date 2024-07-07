@@ -1,7 +1,7 @@
+import { eq } from "drizzle-orm"
 import { z } from "zod"
 
 import { makeDatabase } from "@/infrastructure/container.js"
-import { eq } from "drizzle-orm"
 import { users } from "@/infrastructure/database/schema/schema.ts"
 
 export const CreateUserSchema = z.object({

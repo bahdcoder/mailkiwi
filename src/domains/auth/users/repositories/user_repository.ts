@@ -1,5 +1,4 @@
 import cuid2 from "@paralleldrive/cuid2"
-import { Prisma, PrismaClient, User } from "@prisma/client"
 import { eq } from "drizzle-orm"
 import { inject, injectable } from "tsyringe"
 
@@ -9,7 +8,10 @@ import { scrypt } from "@/domains/shared/utils/hash/scrypt.ts"
 import { ContainerKey } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
 import { users } from "@/infrastructure/database/schema/schema.ts"
-import { FindUserByIdArgs } from "@/infrastructure/database/schema/types.ts"
+import {
+  FindUserByIdArgs,
+  User,
+} from "@/infrastructure/database/schema/types.ts"
 
 @injectable()
 export class UserRepository extends BaseRepository {
@@ -49,7 +51,7 @@ export class UserRepository extends BaseRepository {
     })
   }
 
-  async authenticateUserPassword(user: User | null, password: string) {
+  async authenticateUserPassword(user: User | undefined, password: string) {
     if (!user) {
       return null
     }

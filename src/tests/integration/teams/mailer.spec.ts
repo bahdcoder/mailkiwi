@@ -23,7 +23,6 @@ import {
   SubscribeCommand,
 } from "@aws-sdk/client-sns"
 import { faker } from "@faker-js/faker"
-import { Prisma } from "@prisma/client"
 import { mockClient } from "aws-sdk-client-mock"
 import { and, eq } from "drizzle-orm"
 import { container } from "tsyringe"
@@ -681,8 +680,7 @@ describe("Mailer identities", () => {
     const decryptedMailerIdentityRsaPrivateKey =
       await mailerIdentityRepository.decryptRsaPrivateKey(
         team!.configurationKey,
-        (mailerIdentity.configuration as Prisma.JsonObject)
-          .privateKey as string,
+        (mailerIdentity.configuration as Record<string, string>).privateKey,
       )
 
     const config = makeConfig()
