@@ -1,0 +1,1 @@
+ALTER TABLE `journey_points` ADD `branchIndex` int;

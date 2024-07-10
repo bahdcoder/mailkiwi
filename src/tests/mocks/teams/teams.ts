@@ -3,6 +3,8 @@ import {
   accessTokens,
   audiences,
   contacts,
+  journeyPoints,
+  journeys,
   mailerIdentities,
   mailers,
   teams,
@@ -15,6 +17,8 @@ export const cleanMailers = async () => {
   await database.delete(mailerIdentities)
   await database.delete(mailers)
   await database.delete(contacts)
+  await database.delete(journeyPoints)
+  await database.delete(journeys)
   await database.delete(audiences)
   await database.delete(accessTokens)
   await database.delete(teams)

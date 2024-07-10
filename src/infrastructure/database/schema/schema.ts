@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm"
 import {
+  AnyMySqlColumn,
   boolean,
   index,
   int,
@@ -217,6 +218,75 @@ export const tagsOnContacts = mysqlTable(
   }),
 )
 
+export const journeys = mysqlTable("journeys", {
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  name: varchar("name", { length: 50 }).notNull(),
+  description: varchar("description", { length: 512 }),
+  audienceId: varchar("audienceId", { length: 32 })
+    .references(() => audiences.id, { onDelete: "cascade" })
+    .notNull(),
+})
+
+const JourneyPointType = mysqlEnum("JourneyPointType", [
+  "TRIGGER",
+  "ACTION",
+  "RULE",
+  "END",
+])
+
+const JourneyPointStatus = mysqlEnum("JourneyPointStatus", [
+  "DRAFT",
+  "ACTIVE",
+  "PAUSED",
+  "ARCHIVED",
+])
+
+const JourneyPointSubtype = mysqlEnum("JourneyPointSubtype", [
+  // TRIGGERS
+  "TRIGGER_CONTACT_SUBSCRIBED",
+  "TRIGGER_CONTACT_UNSUBSCRIBED",
+  "TRIGGER_CONTACT_TAG_ADDED",
+  "TRIGGER_CONTACT_TAG_REMOVED",
+  "TRIGGER_API_MANUAL",
+
+  // ACTIONS
+  "ACTION_SEND_EMAIL",
+  "ACTION_ADD_TAG",
+  "ACTION_REMOVE_TAG",
+  "ACTION_SUBSCRIBE_TO_LIST",
+  "ACTION_UNSUBSCRIBE_FROM_LIST",
+  "ACTION_UPDATE_CONTACT",
+  "ACTION_UPDATE_CONTACT_ATTRIBUTES",
+  "ACTION_UPDATE_CONTACT_TAGS",
+
+  // RULES
+  "RULE_IF_ELSE",
+  "RULE_WAIT_FOR_DURATION",
+  "RULE_PERCENTAGE_SPLIT",
+  "RULE_WAIT_FOR_TRIGGER",
+
+  // END
+  "END", // end of the journey for the contact.
+])
+
+export const journeyPoints = mysqlTable("journey_points", {
+  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  journeyId: varchar("journeyId", { length: 32 })
+    .references(() => journeys.id)
+    .notNull(),
+  name: varchar("name", { length: 50 }).notNull(),
+  description: varchar("description", { length: 512 }),
+  type: JourneyPointType.notNull(),
+  status: JourneyPointStatus.notNull().default("DRAFT"),
+  subtype: JourneyPointSubtype.notNull(),
+  parentId: varchar("parentId", { length: 32 }).references(
+    (): AnyMySqlColumn => journeyPoints.id,
+    { onDelete: "cascade" },
+  ),
+  branchIndex: int("branchIndex"), // used for if / else or split or branch journey point types.
+  configuration: json("configuration").notNull(),
+})
+
 // Relations
 export const userRelations = relations(users, ({ many }) => ({
   teams: many(teams),
@@ -295,3 +365,29 @@ export const TagsOnContactsRelations = relations(tagsOnContacts, ({ one }) => ({
     references: [contacts.id],
   }),
 }))
+
+export const journeyRelations = relations(journeys, ({ one, many }) => ({
+  audience: one(audiences, {
+    fields: [journeys.audienceId],
+    references: [audiences.id],
+  }),
+  points: many(journeyPoints),
+}))
+
+export const journeyPointsRelations = relations(
+  journeyPoints,
+  ({ one, many }) => ({
+    journey: one(journeys, {
+      fields: [journeyPoints.journeyId],
+      references: [journeys.id],
+    }),
+    parent: one(journeyPoints, {
+      fields: [journeyPoints.parentId],
+      references: [journeyPoints.id],
+      relationName: "pointsInPath",
+    }),
+    points: many(journeyPoints, {
+      relationName: "pointsInPath",
+    }),
+  }),
+)

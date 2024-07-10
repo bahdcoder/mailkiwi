@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "580cdcef-21c8-4e07-9c28-66ba7df9512c",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "bf8fc1ce-7442-4e09-b49f-73c4450a089a",
+  "prevId": "580cdcef-21c8-4e07-9c28-66ba7df9512c",
   "tables": {
     "accessTokens": {
       "name": "accessTokens",
@@ -322,6 +322,13 @@
         "parentId": {
           "name": "parentId",
           "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "branchIndex": {
+          "name": "branchIndex",
+          "type": "int",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
