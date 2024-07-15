@@ -9,6 +9,7 @@ import {
 } from "@/infrastructure/container.js"
 import { audiences, contacts } from "@/infrastructure/database/schema/schema.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
 import { injectAsUser } from "@/tests/utils/http.js"
 
 describe("Audiences", () => {
@@ -26,11 +27,13 @@ describe("Audiences", () => {
   test("can create an audience when properly authenticated and authorized", async ({
     expect,
   }) => {
+    await refreshDatabase()
+
     const { user } = await createUser()
     const database = makeDatabase()
 
     const payload = {
-      name: "Newsletter",
+      name: faker.commerce.productName(),
     }
 
     const response = await injectAsUser(user, {
@@ -49,6 +52,7 @@ describe("Audiences", () => {
     })
 
     expect(audience).toBeDefined()
+    expect(audience?.name).toEqual(payload.name)
   })
 
   test("can only create an audience when properly authorized", async ({
@@ -56,7 +60,6 @@ describe("Audiences", () => {
   }) => {
     const { user } = await createUser()
 
-    return
     const { user: unauthorizedUser } = await createUser()
 
     const response = await injectAsUser(user, {

@@ -8,11 +8,11 @@ import {
   journeys,
 } from "@/infrastructure/database/schema/schema.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { cleanMailers } from "@/tests/mocks/teams/teams.ts"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
 
 describe("Contact journeys", () => {
   test("experimenting with journeys", async () => {
-    await cleanMailers()
+    await refreshDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -256,6 +256,6 @@ describe("Contact journeys", () => {
       },
     })
 
-    d(journeyFetch)
+    // d(journeyFetch)
   })
 })

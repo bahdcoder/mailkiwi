@@ -9,6 +9,11 @@ export default defineConfig({
     setupFiles: ["src/tests/setup.ts"],
     exclude: [...configDefaults.exclude, "**/build/**"],
     reporters: ["verbose"],
+    poolOptions: {
+      threads: {
+        singleThread: true,
+      },
+    },
   },
   plugins: [tsconfigPaths()],
 })

@@ -2,12 +2,12 @@ import { faker } from "@faker-js/faker"
 import { describe, test } from "vitest"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { cleanMailers } from "@/tests/mocks/teams/teams.js"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { injectAsUser } from "@/tests/utils/http.js"
 
 describe("Teams", () => {
   test("can fetch a single team", async ({ expect }) => {
-    await cleanMailers()
+    await refreshDatabase()
     const { user, team } = await createUser()
 
     const mailerPayload = {
@@ -45,6 +45,6 @@ describe("Teams", () => {
 
     expect(json.name).toBe(team.name)
 
-    await cleanMailers()
+    await refreshDatabase()
   })
 })

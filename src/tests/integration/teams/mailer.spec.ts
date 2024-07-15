@@ -36,7 +36,7 @@ import {
   mailers,
 } from "@/infrastructure/database/schema/schema.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { cleanMailers } from "@/tests/mocks/teams/teams.js"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
 import { injectAsUser } from "@/tests/utils/http.js"
 import * as sleepUtils from "@/utils/sleep.js"
 
@@ -371,7 +371,7 @@ describe("Teams / Mailers", () => {
   test("can update mailers while creating an email sending identity", async ({
     expect,
   }) => {
-    await cleanMailers()
+    await refreshDatabase()
     const { user } = await createUser()
     const database = makeDatabase()
 
@@ -439,7 +439,7 @@ describe("Teams / Mailers", () => {
   test("cannot update mailer without providing a sender identity, either a domain or email", async ({
     expect,
   }) => {
-    await cleanMailers()
+    await refreshDatabase()
     const { user, team } = await createUser()
     const database = makeDatabase()
 
@@ -717,7 +717,7 @@ describe("Mailer identities", () => {
   })
 
   test("can create an email mailer identity", async ({ expect }) => {
-    await cleanMailers()
+    await refreshDatabase()
     const { user, team } = await createUser({ createMailerWithIdentity: true })
 
     SESMock.reset()
@@ -763,7 +763,7 @@ describe("Mailer identities", () => {
   })
 
   test("can delete a mailer identity", async ({ expect }) => {
-    await cleanMailers()
+    await refreshDatabase()
 
     const { user, team } = await createUser({ createMailerWithIdentity: true })
 
@@ -815,7 +815,7 @@ describe("Mailer identities", () => {
   test("sees a clear message if deleting a mailer identity fails on provider", async ({
     expect,
   }) => {
-    await cleanMailers()
+    await refreshDatabase()
 
     const { user, team } = await createUser({ createMailerWithIdentity: true })
 
@@ -863,7 +863,7 @@ describe("Mailer identities", () => {
   test("can refresh a mailer identity if verification failed", async ({
     expect,
   }) => {
-    await cleanMailers()
+    await refreshDatabase()
 
     const { user, team } = await createUser({ createMailerWithIdentity: true })
 
