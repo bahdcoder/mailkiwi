@@ -218,7 +218,7 @@ export const tagsOnContacts = mysqlTable(
   }),
 )
 
-export const journeys = mysqlTable("journeys", {
+export const automations = mysqlTable("automations", {
   id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
   name: varchar("name", { length: 50 }).notNull(),
   description: varchar("description", { length: 512 }),
@@ -227,21 +227,21 @@ export const journeys = mysqlTable("journeys", {
     .notNull(),
 })
 
-const JourneyPointType = mysqlEnum("JourneyPointType", [
+const automationStepType = mysqlEnum("automationStepType", [
   "TRIGGER",
   "ACTION",
   "RULE",
   "END",
 ])
 
-const JourneyPointStatus = mysqlEnum("JourneyPointStatus", [
+const automationStepStatus = mysqlEnum("automationStepStatus", [
   "DRAFT",
   "ACTIVE",
   "PAUSED",
   "ARCHIVED",
 ])
 
-const JourneyPointSubtype = mysqlEnum("JourneyPointSubtype", [
+const automationStepSubtype = mysqlEnum("automationStepSubtype", [
   // TRIGGERS
   "TRIGGER_CONTACT_SUBSCRIBED",
   "TRIGGER_CONTACT_UNSUBSCRIBED",
@@ -266,24 +266,24 @@ const JourneyPointSubtype = mysqlEnum("JourneyPointSubtype", [
   "RULE_WAIT_FOR_TRIGGER",
 
   // END
-  "END", // end of the journey for the contact.
+  "END", // end of the automation for the contact.
 ])
 
-export const journeyPoints = mysqlTable("journey_points", {
+export const automationSteps = mysqlTable("automation_steps", {
   id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
-  journeyId: varchar("journeyId", { length: 32 })
-    .references(() => journeys.id)
+  automationId: varchar("automationId", { length: 32 })
+    .references(() => automations.id)
     .notNull(),
   name: varchar("name", { length: 50 }).notNull(),
   description: varchar("description", { length: 512 }),
-  type: JourneyPointType.notNull(),
-  status: JourneyPointStatus.notNull().default("DRAFT"),
-  subtype: JourneyPointSubtype.notNull(),
+  type: automationStepType.notNull(),
+  status: automationStepStatus.notNull().default("DRAFT"),
+  subtype: automationStepSubtype.notNull(),
   parentId: varchar("parentId", { length: 32 }).references(
-    (): AnyMySqlColumn => journeyPoints.id,
+    (): AnyMySqlColumn => automationSteps.id,
     { onDelete: "cascade" },
   ),
-  branchIndex: int("branchIndex"), // used for if / else or split or branch journey point types.
+  branchIndex: int("branchIndex"), // used for if / else or split or branch automation point types.
   configuration: json("configuration").notNull(),
 })
 
@@ -366,28 +366,28 @@ export const TagsOnContactsRelations = relations(tagsOnContacts, ({ one }) => ({
   }),
 }))
 
-export const journeyRelations = relations(journeys, ({ one, many }) => ({
+export const automationRelations = relations(automations, ({ one, many }) => ({
   audience: one(audiences, {
-    fields: [journeys.audienceId],
+    fields: [automations.audienceId],
     references: [audiences.id],
   }),
-  points: many(journeyPoints),
+  steps: many(automationSteps),
 }))
 
-export const journeyPointsRelations = relations(
-  journeyPoints,
+export const automationStepsRelations = relations(
+  automationSteps,
   ({ one, many }) => ({
-    journey: one(journeys, {
-      fields: [journeyPoints.journeyId],
-      references: [journeys.id],
+    automation: one(automations, {
+      fields: [automationSteps.automationId],
+      references: [automations.id],
     }),
-    parent: one(journeyPoints, {
-      fields: [journeyPoints.parentId],
-      references: [journeyPoints.id],
-      relationName: "pointsInPath",
+    parent: one(automationSteps, {
+      fields: [automationSteps.parentId],
+      references: [automationSteps.id],
+      relationName: "steps",
     }),
-    points: many(journeyPoints, {
-      relationName: "pointsInPath",
+    steps: many(automationSteps, {
+      relationName: "steps",
     }),
   }),
 )

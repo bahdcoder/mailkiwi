@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "f9df11c9-038e-4f68-9e85-0747bb261ca2",
+  "id": "23943e89-d8c6-45bd-a25d-9bd98e077074",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accessTokens": {
@@ -164,6 +164,178 @@
       },
       "uniqueConstraints": {}
     },
+    "automation_steps": {
+      "name": "automation_steps",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "automationId": {
+          "name": "automationId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(512)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "automationStepType": {
+          "name": "automationStepType",
+          "type": "enum('TRIGGER','ACTION','RULE','END')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "automationStepStatus": {
+          "name": "automationStepStatus",
+          "type": "enum('DRAFT','ACTIVE','PAUSED','ARCHIVED')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'DRAFT'"
+        },
+        "automationStepSubtype": {
+          "name": "automationStepSubtype",
+          "type": "enum('TRIGGER_CONTACT_SUBSCRIBED','TRIGGER_CONTACT_UNSUBSCRIBED','TRIGGER_CONTACT_TAG_ADDED','TRIGGER_CONTACT_TAG_REMOVED','TRIGGER_API_MANUAL','ACTION_SEND_EMAIL','ACTION_ADD_TAG','ACTION_REMOVE_TAG','ACTION_SUBSCRIBE_TO_AUDIENCE','ACTION_UNSUBSCRIBE_FROM_AUDIENCE','ACTION_UPDATE_CONTACT','ACTION_UPDATE_CONTACT_ATTRIBUTES','ACTION_UPDATE_CONTACT_TAGS','RULE_IF_ELSE','RULE_WAIT_FOR_DURATION','RULE_PERCENTAGE_SPLIT','RULE_WAIT_FOR_TRIGGER','END')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "parentId": {
+          "name": "parentId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "branchIndex": {
+          "name": "branchIndex",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "configuration": {
+          "name": "configuration",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "automation_steps_automationId_automations_id_fk": {
+          "name": "automation_steps_automationId_automations_id_fk",
+          "tableFrom": "automation_steps",
+          "tableTo": "automations",
+          "columnsFrom": [
+            "automationId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "automation_steps_parentId_automation_steps_id_fk": {
+          "name": "automation_steps_parentId_automation_steps_id_fk",
+          "tableFrom": "automation_steps",
+          "tableTo": "automation_steps",
+          "columnsFrom": [
+            "parentId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "automation_steps_id": {
+          "name": "automation_steps_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "automations": {
+      "name": "automations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(512)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "audienceId": {
+          "name": "audienceId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "automations_audienceId_audiences_id_fk": {
+          "name": "automations_audienceId_audiences_id_fk",
+          "tableFrom": "automations",
+          "tableTo": "audiences",
+          "columnsFrom": [
+            "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "automations_id": {
+          "name": "automations_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "Contact": {
       "name": "Contact",
       "columns": {
@@ -259,178 +431,6 @@
       "compositePrimaryKeys": {
         "Contact_id": {
           "name": "Contact_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
-    "journey_points": {
-      "name": "journey_points",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "journeyId": {
-          "name": "journeyId",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(512)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "JourneyPointType": {
-          "name": "JourneyPointType",
-          "type": "enum('TRIGGER','ACTION','RULE','END')",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "JourneyPointStatus": {
-          "name": "JourneyPointStatus",
-          "type": "enum('DRAFT','ACTIVE','PAUSED','ARCHIVED')",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'DRAFT'"
-        },
-        "JourneyPointSubtype": {
-          "name": "JourneyPointSubtype",
-          "type": "enum('TRIGGER_CONTACT_SUBSCRIBED','TRIGGER_CONTACT_UNSUBSCRIBED','TRIGGER_CONTACT_TAG_ADDED','TRIGGER_CONTACT_TAG_REMOVED','TRIGGER_API_MANUAL','ACTION_SEND_EMAIL','ACTION_ADD_TAG','ACTION_REMOVE_TAG','ACTION_SUBSCRIBE_TO_AUDIENCE','ACTION_UNSUBSCRIBE_FROM_AUDIENCE','ACTION_UPDATE_CONTACT','ACTION_UPDATE_CONTACT_ATTRIBUTES','ACTION_UPDATE_CONTACT_TAGS','RULE_IF_ELSE','RULE_WAIT_FOR_DURATION','RULE_PERCENTAGE_SPLIT','RULE_WAIT_FOR_TRIGGER','END')",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "parentId": {
-          "name": "parentId",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "branchIndex": {
-          "name": "branchIndex",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "configuration": {
-          "name": "configuration",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "journey_points_journeyId_journeys_id_fk": {
-          "name": "journey_points_journeyId_journeys_id_fk",
-          "tableFrom": "journey_points",
-          "tableTo": "journeys",
-          "columnsFrom": [
-            "journeyId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "journey_points_parentId_journey_points_id_fk": {
-          "name": "journey_points_parentId_journey_points_id_fk",
-          "tableFrom": "journey_points",
-          "tableTo": "journey_points",
-          "columnsFrom": [
-            "parentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "journey_points_id": {
-          "name": "journey_points_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
-    "journeys": {
-      "name": "journeys",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(512)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "audienceId": {
-          "name": "audienceId",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "journeys_audienceId_audiences_id_fk": {
-          "name": "journeys_audienceId_audiences_id_fk",
-          "tableFrom": "journeys",
-          "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "journeys_id": {
-          "name": "journeys_id",
           "columns": [
             "id"
           ]

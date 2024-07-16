@@ -8,13 +8,15 @@ import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy.js"
 import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository.js"
 import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 import { ContainerKey } from "@/infrastructure/container.js"
+import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
 
 @injectable()
-export class AudienceController {
+export class AudienceController extends BaseController {
   constructor(
     @inject(AudienceRepository) private audienceRepository: AudienceRepository,
     @inject(ContainerKey.app) private app: FastifyInstance,
   ) {
+    super()
     this.app.defineRoutes(
       [
         ["GET", "/", this.index.bind(this)],
@@ -31,21 +33,9 @@ export class AudienceController {
   }
 
   async store(request: FastifyRequest, _: FastifyReply) {
-    const { success, error, data } = CreateAudienceSchema.safeParse(
-      request.body,
-    )
+    const data = this.validate(request, CreateAudienceSchema)
 
-    if (!success) throw E_VALIDATION_FAILED(error)
-
-    if (!request.team)
-      throw E_VALIDATION_FAILED({
-        errors: [
-          {
-            message: "The team is required to create an audience.",
-            path: ["email"],
-          },
-        ],
-      })
+    this.ensureTeam(request)
 
     const policy = container.resolve<AudiencePolicy>(AudiencePolicy)
 
@@ -56,15 +46,11 @@ export class AudienceController {
 
     const audience = await action.handle(data, request.team.id)
 
-    return { data: audience }
+    return audience
   }
 
   async update(request: FastifyRequest, _: FastifyReply) {
-    const { success, error, data } = CreateAudienceSchema.safeParse(
-      request.body,
-    )
-
-    if (!success) throw E_VALIDATION_FAILED(error)
+    const data = this.validate(request, CreateAudienceSchema)
 
     const policy = container.resolve<AudiencePolicy>(AudiencePolicy)
 
@@ -75,6 +61,6 @@ export class AudienceController {
 
     const audience = await action.handle(data, request.team.id)
 
-    return { data: audience }
+    return audience
   }
 }

@@ -4,36 +4,38 @@ import { describe, test } from "vitest"
 import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
 import { makeDatabase } from "@/infrastructure/container.js"
 import {
-  journeyPoints,
-  journeys,
+  automations,
+  automationSteps,
 } from "@/infrastructure/database/schema/schema.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
+import { injectAsUser } from "@/tests/utils/http.ts"
+import { faker } from "@faker-js/faker"
 
-describe("Contact journeys", () => {
-  test("experimenting with journeys", async ({ expect }) => {
+describe("Contact automations", () => {
+  test("experimenting with automations", async ({ expect }) => {
     await refreshDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()
 
-    const journeyId = cuid()
+    const automationId = cuid()
 
-    await database.insert(journeys).values({
-      id: journeyId,
+    await database.insert(automations).values({
+      id: automationId,
       name: "Book launch",
       audienceId: audience.id,
       description: "Launch a book for the December End of Year Sales.",
     })
 
-    // Now create sample data for a journey that looks like this:
-    const startingTriggerJourneyPointId = cuid()
+    // Now create sample data for a automation that looks like this:
+    const startingTriggerautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: startingTriggerJourneyPointId,
-        journeyId,
+        id: startingTriggerautomationStepId,
+        automationId,
         name: "User subscribes to email list",
         description: "User subscribes to email list",
         type: "TRIGGER",
@@ -42,14 +44,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const receiveWelcomeEmailJourneyPointId = cuid()
+    const receiveWelcomeEmailautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: receiveWelcomeEmailJourneyPointId,
-        journeyId,
-        parentId: startingTriggerJourneyPointId,
+        id: receiveWelcomeEmailautomationStepId,
+        automationId,
+        parentId: startingTriggerautomationStepId,
         name: "Receive a Welcome email",
         type: "ACTION",
         subtype: "ACTION_SEND_EMAIL",
@@ -57,14 +59,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const waitsTwoDaysJourneyPointId = cuid()
+    const waitsTwoDaysautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: waitsTwoDaysJourneyPointId,
-        journeyId,
-        parentId: receiveWelcomeEmailJourneyPointId,
+        id: waitsTwoDaysautomationStepId,
+        automationId,
+        parentId: receiveWelcomeEmailautomationStepId,
         name: "Waits two days",
         type: "RULE",
         subtype: "RULE_WAIT_FOR_DURATION",
@@ -72,14 +74,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const receiveSecondEmailEmailJourneyPointId = cuid()
+    const receiveSecondEmailEmailautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: receiveSecondEmailEmailJourneyPointId,
-        journeyId,
-        parentId: waitsTwoDaysJourneyPointId,
+        id: receiveSecondEmailEmailautomationStepId,
+        automationId,
+        parentId: waitsTwoDaysautomationStepId,
         name: "Receive a second email",
         type: "ACTION",
         subtype: "ACTION_SEND_EMAIL",
@@ -87,14 +89,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const waitsOneDayJourneyPointId = cuid()
+    const waitsOneDayautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: waitsOneDayJourneyPointId,
-        journeyId,
-        parentId: receiveSecondEmailEmailJourneyPointId,
+        id: waitsOneDayautomationStepId,
+        automationId,
+        parentId: receiveSecondEmailEmailautomationStepId,
         name: "Waits one day",
         type: "RULE",
         subtype: "RULE_WAIT_FOR_DURATION",
@@ -102,14 +104,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const ifElseBranchJourneyPointId = cuid()
+    const ifElseBranchautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: ifElseBranchJourneyPointId,
-        journeyId,
-        parentId: waitsOneDayJourneyPointId,
+        id: ifElseBranchautomationStepId,
+        automationId,
+        parentId: waitsOneDayautomationStepId,
         name: "If / Else",
         type: "RULE",
         subtype: "RULE_IF_ELSE",
@@ -127,14 +129,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const hasTagReceivesThankYouJourneyPointId = cuid()
+    const hasTagReceivesThankYouautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: hasTagReceivesThankYouJourneyPointId,
-        journeyId,
-        parentId: ifElseBranchJourneyPointId,
+        id: hasTagReceivesThankYouautomationStepId,
+        automationId,
+        parentId: ifElseBranchautomationStepId,
         name: "Receives thank you email",
         type: "ACTION",
         subtype: "ACTION_SEND_EMAIL",
@@ -145,14 +147,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const hasTagWait4DaysJourneyPointId = cuid()
+    const hasTagWait4DaysautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: hasTagWait4DaysJourneyPointId,
-        journeyId,
-        parentId: hasTagReceivesThankYouJourneyPointId,
+        id: hasTagWait4DaysautomationStepId,
+        automationId,
+        parentId: hasTagReceivesThankYouautomationStepId,
         name: "Waits 4 days",
         type: "RULE",
         subtype: "RULE_WAIT_FOR_DURATION",
@@ -160,14 +162,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const hasTagAddToAudienceJourneyId = cuid()
+    const hasTagAddToAudienceautomationId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: hasTagAddToAudienceJourneyId,
-        journeyId,
-        parentId: hasTagWait4DaysJourneyPointId,
+        id: hasTagAddToAudienceautomationId,
+        automationId,
+        parentId: hasTagWait4DaysautomationStepId,
         name: "Subscribe to list",
         type: "ACTION",
         subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
@@ -175,14 +177,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const hasTagWait1DayJourneyPointId = cuid()
+    const hasTagWait1DayautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: hasTagWait1DayJourneyPointId,
-        journeyId,
-        parentId: hasTagAddToAudienceJourneyId,
+        id: hasTagWait1DayautomationStepId,
+        automationId,
+        parentId: hasTagAddToAudienceautomationId,
         name: "Waits 1 day",
         type: "RULE",
         subtype: "RULE_WAIT_FOR_DURATION",
@@ -190,14 +192,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const hasTagSendDiscountJourneyPointId = cuid()
+    const hasTagSendDiscountautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: hasTagSendDiscountJourneyPointId,
-        journeyId,
-        parentId: hasTagWait1DayJourneyPointId,
+        id: hasTagSendDiscountautomationStepId,
+        automationId,
+        parentId: hasTagWait1DayautomationStepId,
         name: "Send discount",
         type: "ACTION",
         subtype: "ACTION_SEND_EMAIL",
@@ -205,29 +207,29 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const hasTagEndJourneyPointId = cuid()
+    const hasTagEndautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: hasTagEndJourneyPointId,
-        journeyId,
-        parentId: hasTagSendDiscountJourneyPointId,
-        name: "End journey",
+        id: hasTagEndautomationStepId,
+        automationId,
+        parentId: hasTagSendDiscountautomationStepId,
+        name: "End automation",
         type: "END",
         subtype: "END",
         configuration: JSON.stringify({}),
       })
       .execute()
 
-    const notHasTagReceives80PercentDiscountEmailJourneyPointId = cuid()
+    const notHasTagReceives80PercentDiscountEmailautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: notHasTagReceives80PercentDiscountEmailJourneyPointId,
-        journeyId,
-        parentId: ifElseBranchJourneyPointId,
+        id: notHasTagReceives80PercentDiscountEmailautomationStepId,
+        automationId,
+        parentId: ifElseBranchautomationStepId,
         name: "80% discount email",
         type: "ACTION",
         subtype: "ACTION_SEND_EMAIL",
@@ -238,14 +240,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const notHasTagWait3DaysJourneyPointId = cuid()
+    const notHasTagWait3DaysautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: notHasTagWait3DaysJourneyPointId,
-        journeyId,
-        parentId: notHasTagReceives80PercentDiscountEmailJourneyPointId,
+        id: notHasTagWait3DaysautomationStepId,
+        automationId,
+        parentId: notHasTagReceives80PercentDiscountEmailautomationStepId,
         name: "Wait 3 Days",
         type: "RULE",
         subtype: "RULE_WAIT_FOR_DURATION",
@@ -256,14 +258,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const secondIfElseBranchJourneyPointId = cuid()
+    const secondIfElseBranchautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: secondIfElseBranchJourneyPointId,
-        journeyId,
-        parentId: notHasTagWait3DaysJourneyPointId,
+        id: secondIfElseBranchautomationStepId,
+        automationId,
+        parentId: notHasTagWait3DaysautomationStepId,
         name: "Second If / Else",
         type: "RULE",
         subtype: "RULE_IF_ELSE",
@@ -281,14 +283,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const isGmailJourneyPointId = cuid()
+    const isGmailautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: isGmailJourneyPointId,
-        journeyId,
-        parentId: secondIfElseBranchJourneyPointId,
+        id: isGmailautomationStepId,
+        automationId,
+        parentId: secondIfElseBranchautomationStepId,
         name: "Remove contact from audience.",
         type: "ACTION",
         subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
@@ -297,14 +299,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const isNotGmailGetDiscountJourneyPointId = cuid()
+    const isNotGmailGetDiscountautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: isNotGmailGetDiscountJourneyPointId,
-        journeyId,
-        parentId: secondIfElseBranchJourneyPointId,
+        id: isNotGmailGetDiscountautomationStepId,
+        automationId,
+        parentId: secondIfElseBranchautomationStepId,
         name: "Here's a 90% discount for the course.",
         type: "ACTION",
         subtype: "ACTION_SEND_EMAIL",
@@ -315,14 +317,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const isNotGmailWait5DaysJourneyPointId = cuid()
+    const isNotGmailWait5DaysautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: isNotGmailWait5DaysJourneyPointId,
-        journeyId,
-        parentId: isNotGmailGetDiscountJourneyPointId,
+        id: isNotGmailWait5DaysautomationStepId,
+        automationId,
+        parentId: isNotGmailGetDiscountautomationStepId,
         name: "Wait 5 Days",
         type: "RULE",
         subtype: "RULE_WAIT_FOR_DURATION",
@@ -331,14 +333,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const thirdIfElseBranchJourneyPointId = cuid()
+    const thirdIfElseBranchautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: thirdIfElseBranchJourneyPointId,
-        journeyId,
-        parentId: isNotGmailWait5DaysJourneyPointId,
+        id: thirdIfElseBranchautomationStepId,
+        automationId,
+        parentId: isNotGmailWait5DaysautomationStepId,
         name: "Third If / Else",
         type: "RULE",
         subtype: "RULE_IF_ELSE",
@@ -356,14 +358,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const purchasedBookJourneyPointId = cuid()
+    const purchasedBookautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: purchasedBookJourneyPointId,
-        journeyId,
-        parentId: thirdIfElseBranchJourneyPointId,
+        id: purchasedBookautomationStepId,
+        automationId,
+        parentId: thirdIfElseBranchautomationStepId,
         name: "Subscribe to list",
         type: "ACTION",
         subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
@@ -372,14 +374,14 @@ describe("Contact journeys", () => {
       })
       .execute()
 
-    const notPurchasedBookJourneyPointId = cuid()
+    const notPurchasedBookautomationStepId = cuid()
 
     await database
-      .insert(journeyPoints)
+      .insert(automationSteps)
       .values({
-        id: notPurchasedBookJourneyPointId,
-        journeyId,
-        parentId: thirdIfElseBranchJourneyPointId,
+        id: notPurchasedBookautomationStepId,
+        automationId,
+        parentId: thirdIfElseBranchautomationStepId,
         name: "Unsubscribe from list",
         type: "ACTION",
         subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
@@ -388,34 +390,34 @@ describe("Contact journeys", () => {
       })
       .execute()
     // Starting point: User subscribes to email list ✅
-    // Next journey point: Receives a welcome email ✅
-    // Next journey point: Waits 2 days ✅
-    // Next journey point: Receives a second email about my book ✅
-    // Next journey point: Waits 1 day ✅
-    // Next journey point: A branch, if / else statement checking if the subscriber has a tag "purchased-book" or not ✅
-    // Journey for If has tag purchased book, journey is:
+    // Next automation point: Receives a welcome email ✅
+    // Next automation point: Waits 2 days ✅
+    // Next automation point: Receives a second email about my book ✅
+    // Next automation point: Waits 1 day ✅
+    // Next automation point: A branch, if / else statement checking if the subscriber has a tag "purchased-book" or not ✅
+    // automation for If has tag purchased book, automation is:
     // 1. Receives thank you email for purchasing ✅
     // 2. wait 4 days. ✅
     // 3. Add user to new email list "Purchasers" ✅
     // 4. Wait 1 day ✅
     // 5. Send discount for purchasing online course ✅
-    // 6. End journey. ✅
+    // 6. End automation. ✅
 
-    // Journey for if subscriber does not have the "purchased-book" tag:
+    // automation for if subscriber does not have the "purchased-book" tag:
 
     // 1. Receives email with an 80% discount ✅
     // 2. wait 3 days ✅
-    // 3. Journey splits again with if / else statement, checking if subscriber has email ending with "@gmail.com". ✅
+    // 3. automation splits again with if / else statement, checking if subscriber has email ending with "@gmail.com". ✅
 
-    // If email ends with "@gmail.com", subscriber should get removed from the email list. End journey.
+    // If email ends with "@gmail.com", subscriber should get removed from the email list. End automation.
 
     // If not ends with "@gmail.com", subscriber should:
 
     // 1. Receive another email with 90% discount ✅
     // 2. wait 5 days ✅
-    // 3. Check if subscriber has "purchased-book" tag. If yes, add them to list "Purchasers". End journey. If no, remove them from email list. End journey. ✅
+    // 3. Check if subscriber has "purchased-book" tag. If yes, add them to list "Purchasers". End automation. If no, remove them from email list. End automation. ✅
 
-    // Provide sample api responses for each of the endpoints related to journeys . all journey points must be their own database rows to allow for full flexibility to allow for features like drag and drop and reordering of journey points
+    // Provide sample api responses for each of the endpoints related to automations . all automation points must be their own database rows to allow for full flexibility to allow for features like drag and drop and reordering of automation points
 
     interface AutomationStep {
       id: string
@@ -473,15 +475,15 @@ describe("Contact journeys", () => {
       return flatTree
     }
 
-    const journeyFetch = await database.query.journeys.findFirst({
-      where: eq(journeys.id, journeyId),
+    const automationFetch = await database.query.automations.findFirst({
+      where: eq(automations.id, automationId),
       with: {
-        points: true,
+        steps: true,
       },
     })
 
     const tree = createFlatAutomationTree(
-      journeyFetch?.points ?? [],
+      automationFetch?.steps ?? [],
     ) as FlatTreeNode[]
 
     expect(
@@ -489,5 +491,29 @@ describe("Contact journeys", () => {
         "1"
       ]?.[0]?.["subtype"],
     ).toEqual("ACTION_UNSUBSCRIBE_FROM_AUDIENCE")
+  })
+
+  test("can create an automation", async ({ expect }) => {
+    await refreshDatabase()
+    const { user, audience } = await createUser()
+
+    const database = makeDatabase()
+
+    const payload = {
+      name: faker.string.uuid(),
+    }
+
+    const response = await injectAsUser(user, {
+      payload,
+      method: "POST",
+      path: `/audiences/${audience.id}/automations`,
+    })
+
+    const savedAutomation = await database.query.automations.findFirst({
+      where: eq(automations.name, payload.name),
+    })
+
+    expect(savedAutomation).toBeDefined()
+    expect(savedAutomation?.id).toEqual((await response.json()).id)
   })
 })

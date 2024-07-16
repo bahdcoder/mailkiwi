@@ -31,6 +31,10 @@ export type FindUserByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>["query"]["users"]["findFirst"]
 >[0]
 
+export type FindAutomationByIdArgs = Parameters<
+  ReturnType<typeof makeDatabase>["query"]["automations"]["findFirst"]
+>[0]
+
 export type UpdateSetMailerIdentityInput = MySqlUpdateSetSource<
   typeof mailerIdentities
 >

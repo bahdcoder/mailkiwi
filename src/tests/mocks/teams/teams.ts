@@ -4,9 +4,9 @@ import { makeDatabase } from "@/infrastructure/container.js"
 import {
   accessTokens,
   audiences,
+  automations,
+  automationSteps,
   contacts,
-  journeyPoints,
-  journeys,
   mailerIdentities,
   mailers,
   teams,
@@ -21,8 +21,8 @@ export const refreshDatabase = async () => {
   await database.delete(mailerIdentities)
   await database.delete(mailers)
   await database.delete(contacts)
-  await database.delete(journeyPoints)
-  await database.delete(journeys)
+  await database.delete(automationSteps)
+  await database.delete(automations)
   await database.delete(audiences)
   await database.delete(accessTokens)
   await database.delete(teams)
