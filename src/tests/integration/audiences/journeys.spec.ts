@@ -11,7 +11,7 @@ import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
 
 describe("Contact journeys", () => {
-  test("experimenting with journeys", async () => {
+  test("experimenting with journeys", async ({ expect }) => {
     await refreshDatabase()
     const { audience } = await createUser()
 
@@ -134,7 +134,7 @@ describe("Contact journeys", () => {
       .values({
         id: hasTagReceivesThankYouJourneyPointId,
         journeyId,
-        parentId: waitsOneDayJourneyPointId,
+        parentId: ifElseBranchJourneyPointId,
         name: "Receives thank you email",
         type: "ACTION",
         subtype: "ACTION_SEND_EMAIL",
@@ -170,7 +170,7 @@ describe("Contact journeys", () => {
         parentId: hasTagWait4DaysJourneyPointId,
         name: "Subscribe to list",
         type: "ACTION",
-        subtype: "ACTION_SUBSCRIBE_TO_LIST",
+        subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
         configuration: JSON.stringify({ listId: "akc34b1k27xrgy0c6qygcefe" }),
       })
       .execute()
@@ -219,6 +219,174 @@ describe("Contact journeys", () => {
         configuration: JSON.stringify({}),
       })
       .execute()
+
+    const notHasTagReceives80PercentDiscountEmailJourneyPointId = cuid()
+
+    await database
+      .insert(journeyPoints)
+      .values({
+        id: notHasTagReceives80PercentDiscountEmailJourneyPointId,
+        journeyId,
+        parentId: ifElseBranchJourneyPointId,
+        name: "80% discount email",
+        type: "ACTION",
+        subtype: "ACTION_SEND_EMAIL",
+        configuration: JSON.stringify({
+          subject: "Enjoy this 80% discount for the course.",
+        }),
+        branchIndex: 1,
+      })
+      .execute()
+
+    const notHasTagWait3DaysJourneyPointId = cuid()
+
+    await database
+      .insert(journeyPoints)
+      .values({
+        id: notHasTagWait3DaysJourneyPointId,
+        journeyId,
+        parentId: notHasTagReceives80PercentDiscountEmailJourneyPointId,
+        name: "Wait 3 Days",
+        type: "RULE",
+        subtype: "RULE_WAIT_FOR_DURATION",
+        configuration: JSON.stringify({
+          subject: "Pause for 3 days to see user behaviour.",
+        }),
+        branchIndex: 1,
+      })
+      .execute()
+
+    const secondIfElseBranchJourneyPointId = cuid()
+
+    await database
+      .insert(journeyPoints)
+      .values({
+        id: secondIfElseBranchJourneyPointId,
+        journeyId,
+        parentId: notHasTagWait3DaysJourneyPointId,
+        name: "Second If / Else",
+        type: "RULE",
+        subtype: "RULE_IF_ELSE",
+        configuration: JSON.stringify({
+          conditions: [
+            [
+              {
+                field: "email",
+                operator: "ENDS_WITH",
+                value: ["@gmail.com"],
+              },
+            ],
+          ],
+        }),
+      })
+      .execute()
+
+    const isGmailJourneyPointId = cuid()
+
+    await database
+      .insert(journeyPoints)
+      .values({
+        id: isGmailJourneyPointId,
+        journeyId,
+        parentId: secondIfElseBranchJourneyPointId,
+        name: "Remove contact from audience.",
+        type: "ACTION",
+        subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
+        configuration: JSON.stringify({}),
+        branchIndex: 0,
+      })
+      .execute()
+
+    const isNotGmailGetDiscountJourneyPointId = cuid()
+
+    await database
+      .insert(journeyPoints)
+      .values({
+        id: isNotGmailGetDiscountJourneyPointId,
+        journeyId,
+        parentId: secondIfElseBranchJourneyPointId,
+        name: "Here's a 90% discount for the course.",
+        type: "ACTION",
+        subtype: "ACTION_SEND_EMAIL",
+        configuration: JSON.stringify({
+          subject: "Here's a 90% discount for the course.",
+        }),
+        branchIndex: 1,
+      })
+      .execute()
+
+    const isNotGmailWait5DaysJourneyPointId = cuid()
+
+    await database
+      .insert(journeyPoints)
+      .values({
+        id: isNotGmailWait5DaysJourneyPointId,
+        journeyId,
+        parentId: isNotGmailGetDiscountJourneyPointId,
+        name: "Wait 5 Days",
+        type: "RULE",
+        subtype: "RULE_WAIT_FOR_DURATION",
+        configuration: JSON.stringify({}),
+        branchIndex: 1,
+      })
+      .execute()
+
+    const thirdIfElseBranchJourneyPointId = cuid()
+
+    await database
+      .insert(journeyPoints)
+      .values({
+        id: thirdIfElseBranchJourneyPointId,
+        journeyId,
+        parentId: isNotGmailWait5DaysJourneyPointId,
+        name: "Third If / Else",
+        type: "RULE",
+        subtype: "RULE_IF_ELSE",
+        configuration: JSON.stringify({
+          conditions: [
+            [
+              {
+                field: "tags",
+                operator: "CONTAINS",
+                value: ["brkkbrxhehqq0msk3jn8e02e"],
+              },
+            ],
+          ],
+        }),
+      })
+      .execute()
+
+    const purchasedBookJourneyPointId = cuid()
+
+    await database
+      .insert(journeyPoints)
+      .values({
+        id: purchasedBookJourneyPointId,
+        journeyId,
+        parentId: thirdIfElseBranchJourneyPointId,
+        name: "Subscribe to list",
+        type: "ACTION",
+        subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
+        configuration: JSON.stringify({ listId: "akc34b1k27xrgy0c6qygcefe" }),
+        branchIndex: 0,
+      })
+      .execute()
+
+    const notPurchasedBookJourneyPointId = cuid()
+
+    await database
+      .insert(journeyPoints)
+      .values({
+        id: notPurchasedBookJourneyPointId,
+        journeyId,
+        parentId: thirdIfElseBranchJourneyPointId,
+        name: "Unsubscribe from list",
+        type: "ACTION",
+        subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
+        configuration: JSON.stringify({ listId: "akc34b1k27xrgy0c6qygcefe" }),
+        branchIndex: 1,
+      })
+      .execute()
     // Starting point: User subscribes to email list ✅
     // Next journey point: Receives a welcome email ✅
     // Next journey point: Waits 2 days ✅
@@ -235,19 +403,75 @@ describe("Contact journeys", () => {
 
     // Journey for if subscriber does not have the "purchased-book" tag:
 
-    // 1. Receives email with an 80% discount
-    // 2. wait 3 days
-    // 3. Journey splits again with if / else statement, checking if subscriber has email ending with "@gmail.com".
+    // 1. Receives email with an 80% discount ✅
+    // 2. wait 3 days ✅
+    // 3. Journey splits again with if / else statement, checking if subscriber has email ending with "@gmail.com". ✅
 
     // If email ends with "@gmail.com", subscriber should get removed from the email list. End journey.
 
     // If not ends with "@gmail.com", subscriber should:
 
-    // 1. Receive another email with 90% discount
-    // 2. wait 5 days
-    // 3. Check if subscriber has "purchased-book" tag. If yes, add them to list "Purchasers". End journey. If no, remove them from email list. End journey.
+    // 1. Receive another email with 90% discount ✅
+    // 2. wait 5 days ✅
+    // 3. Check if subscriber has "purchased-book" tag. If yes, add them to list "Purchasers". End journey. If no, remove them from email list. End journey. ✅
 
     // Provide sample api responses for each of the endpoints related to journeys . all journey points must be their own database rows to allow for full flexibility to allow for features like drag and drop and reordering of journey points
+
+    interface AutomationStep {
+      id: string
+      parentId: string | null
+      subtype: string
+      branchIndex: number | null
+    }
+
+    interface FlatTreeNode extends AutomationStep {
+      branches?: { [key: number]: FlatTreeNode[] }
+    }
+
+    function createFlatAutomationTree(steps: AutomationStep[]): FlatTreeNode[] {
+      const nodeMap: { [key: string]: FlatTreeNode } = {}
+
+      // Create nodes for all steps
+      steps.forEach((step) => {
+        nodeMap[step.id] = { ...step }
+      })
+
+      function processNode(nodeId: string): FlatTreeNode[] {
+        const node = nodeMap[nodeId]
+        const result: FlatTreeNode[] = [node]
+
+        if (node.subtype === "RULE_IF_ELSE") {
+          node.branches = {}
+          steps.forEach((step) => {
+            if (step.parentId === node.id) {
+              const branchIndex =
+                step.branchIndex !== null ? step.branchIndex : 0
+              if (!node.branches![branchIndex]) {
+                node.branches![branchIndex] = []
+              }
+              node.branches![branchIndex] = node.branches![branchIndex].concat(
+                processNode(step.id),
+              )
+            }
+          })
+        } else {
+          const children = steps.filter((step) => step.parentId === node.id)
+          children.forEach((child) => {
+            result.push(...processNode(child.id))
+          })
+        }
+
+        return result
+      }
+
+      const rootNodes = steps.filter((step) => step.parentId === null)
+      let flatTree: FlatTreeNode[] = []
+      rootNodes.forEach((rootNode) => {
+        flatTree = flatTree.concat(processNode(rootNode.id))
+      })
+
+      return flatTree
+    }
 
     const journeyFetch = await database.query.journeys.findFirst({
       where: eq(journeys.id, journeyId),
@@ -256,6 +480,14 @@ describe("Contact journeys", () => {
       },
     })
 
-    // d(journeyFetch)
+    const tree = createFlatAutomationTree(
+      journeyFetch?.points ?? [],
+    ) as FlatTreeNode[]
+
+    expect(
+      tree[5]?.branches?.["1"]?.[2]?.branches?.["1"]?.[2]?.branches?.[
+        "1"
+      ]?.[0]?.["subtype"],
+    ).toEqual("ACTION_UNSUBSCRIBE_FROM_AUDIENCE")
   })
 })
