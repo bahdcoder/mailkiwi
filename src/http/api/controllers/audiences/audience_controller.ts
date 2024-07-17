@@ -6,9 +6,9 @@ import { UpdateAudienceAction } from "@/domains/audiences/actions/audiences/upda
 import { CreateAudienceSchema } from "@/domains/audiences/dto/audiences/create_audience_dto.js"
 import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy.js"
 import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository.js"
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
-import { ContainerKey } from "@/infrastructure/container.js"
 import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
+import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 
 @injectable()
 export class AudienceController extends BaseController {

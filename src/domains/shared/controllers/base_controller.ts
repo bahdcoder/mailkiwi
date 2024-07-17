@@ -6,6 +6,7 @@ import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
 
 @injectable()
 export class BaseController {
+  // eslint-disable-next-line
   protected validate<T extends z.ZodObject<any>>(
     request: FastifyRequest,
     schema: T,

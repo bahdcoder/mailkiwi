@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "23943e89-d8c6-45bd-a25d-9bd98e077074",
+  "id": "e29f13b5-f1d3-4a84-83fa-28e860770bc0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accessTokens": {
@@ -336,6 +336,105 @@
       },
       "uniqueConstraints": {}
     },
+    "contact_automation_steps": {
+      "name": "contact_automation_steps",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "automationStepId": {
+          "name": "automationStepId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "contactId": {
+          "name": "contactId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "haltedAt": {
+          "name": "haltedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "failedAt": {
+          "name": "failedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "startedAt": {
+          "name": "startedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "completedAt": {
+          "name": "completedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "output": {
+          "name": "output",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "contact_automation_steps_automationStepId_automation_steps_id_fk": {
+          "name": "contact_automation_steps_automationStepId_automation_steps_id_fk",
+          "tableFrom": "contact_automation_steps",
+          "tableTo": "automation_steps",
+          "columnsFrom": [
+            "automationStepId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "contact_automation_steps_contactId_Contact_id_fk": {
+          "name": "contact_automation_steps_contactId_Contact_id_fk",
+          "tableFrom": "contact_automation_steps",
+          "tableTo": "Contact",
+          "columnsFrom": [
+            "contactId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "contact_automation_steps_id": {
+          "name": "contact_automation_steps_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "Contact": {
       "name": "Contact",
       "columns": {
@@ -362,7 +461,7 @@
         },
         "email": {
           "name": "email",
-          "type": "varchar(50)",
+          "type": "varchar(80)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1016,14 +1115,14 @@
         },
         "email": {
           "name": "email",
-          "type": "varchar(50)",
+          "type": "varchar(80)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "name": {
           "name": "name",
-          "type": "varchar(50)",
+          "type": "varchar(80)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

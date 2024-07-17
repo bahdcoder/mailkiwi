@@ -40,11 +40,23 @@ CREATE TABLE `automations` (
 	CONSTRAINT `automations_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `contact_automation_steps` (
+	`id` varchar(32) NOT NULL,
+	`automationStepId` varchar(32) NOT NULL,
+	`contactId` varchar(32) NOT NULL,
+	`haltedAt` timestamp,
+	`failedAt` timestamp,
+	`startedAt` timestamp,
+	`completedAt` timestamp,
+	`output` json,
+	CONSTRAINT `contact_automation_steps_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `Contact` (
 	`id` varchar(32) NOT NULL,
 	`firstName` varchar(50),
 	`lastName` varchar(50),
-	`email` varchar(50) NOT NULL,
+	`email` varchar(80) NOT NULL,
 	`avatarUrl` varchar(256),
 	`subscribedAt` timestamp,
 	`unsubscribedAt` timestamp,
@@ -133,8 +145,8 @@ CREATE TABLE `teams` (
 --> statement-breakpoint
 CREATE TABLE `users` (
 	`id` varchar(32) NOT NULL,
-	`email` varchar(50) NOT NULL,
-	`name` varchar(50),
+	`email` varchar(80) NOT NULL,
+	`name` varchar(80),
 	`avatarUrl` varchar(256),
 	`password` varchar(256) NOT NULL,
 	CONSTRAINT `users_id` PRIMARY KEY(`id`),
@@ -156,6 +168,8 @@ ALTER TABLE `audiences` ADD CONSTRAINT `audiences_teamId_teams_id_fk` FOREIGN KE
 ALTER TABLE `automation_steps` ADD CONSTRAINT `automation_steps_automationId_automations_id_fk` FOREIGN KEY (`automationId`) REFERENCES `automations`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `automation_steps` ADD CONSTRAINT `automation_steps_parentId_automation_steps_id_fk` FOREIGN KEY (`parentId`) REFERENCES `automation_steps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `automations` ADD CONSTRAINT `automations_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contact_automation_steps` ADD CONSTRAINT `contact_automation_steps_automationStepId_automation_steps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automation_steps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contact_automation_steps` ADD CONSTRAINT `contact_automation_steps_contactId_Contact_id_fk` FOREIGN KEY (`contactId`) REFERENCES `Contact`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `Contact` ADD CONSTRAINT `Contact_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `mailerIdentities` ADD CONSTRAINT `mailerIdentities_mailerId_mailers_id_fk` FOREIGN KEY (`mailerId`) REFERENCES `mailers`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `mailers` ADD CONSTRAINT `mailers_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint

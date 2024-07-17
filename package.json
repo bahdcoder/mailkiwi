@@ -17,8 +17,9 @@
     "build": "pnpm test && pnpm types:check && pnpm lint && pnpm pnpm quick:build",
     "quick:build": "pnpm build:clean && pnpm build:client && pnpm build:server",
     "format": "prettier --write .",
+    "db:seed": "tsx src/bin/seed.ts",
+    "db:migrate": "pnpm tsx src/bin/migrate.ts",
     "db:migrate:make": "pnpm drizzle-kit generate --schema=./src/infrastructure/database/schema/schema.ts --out=./src/infrastructure/database/schema/migrations --dialect=mysql",
-    "db:migrate:run": "pnpm tsx src/bin/migrate.ts",
     "db:studio": "pnpm drizzle-kit studio --config=./src/infrastructure/database/drizzle.config.ts",
     "make:files": "tsx src/bin/cli/cli.ts make:files"
   },

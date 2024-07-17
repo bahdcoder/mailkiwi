@@ -1,11 +1,10 @@
 import { inject, injectable } from "tsyringe"
 
+import { CreateUserDto } from "@/domains/auth/users/dto/create_user_dto.js"
+import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
 import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
 import { ContainerKey } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
-
-import { CreateUserDto } from "../users/dto/create_user_dto.js"
-import { UserRepository } from "../users/repositories/user_repository.js"
 
 @injectable()
 export class RegisterUserAction {

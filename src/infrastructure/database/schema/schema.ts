@@ -14,6 +14,10 @@ import {
 
 import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
 
+function id() {
+  return varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid)
+}
+
 // Enums
 export const BroadcastEditor = mysqlEnum("BroadcastEditor", [
   "DEFAULT",
@@ -65,9 +69,14 @@ export const MembershipStatus = mysqlEnum("MembershipStatus", [
   "ACTIVE",
 ])
 
+export const ContactAutomationAutomationStep = mysqlEnum(
+  "ContactAutomationAutomationStep",
+  ["NOT_STARTED", "RUNNING", "FAILED", "COMPLETED"],
+)
+
 // Tables
 export const settings = mysqlTable("settings", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   url: varchar("url", { length: 256 }).unique(),
   domain: varchar("domain", { length: 50 }).unique().notNull(),
   installedSslCertificate: boolean("installedSslCertificate")
@@ -76,15 +85,15 @@ export const settings = mysqlTable("settings", {
 })
 
 export const users = mysqlTable("users", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
-  email: varchar("email", { length: 50 }).unique().notNull(),
-  name: varchar("name", { length: 50 }),
+  id: id(),
+  email: varchar("email", { length: 80 }).unique().notNull(),
+  name: varchar("name", { length: 80 }),
   avatarUrl: varchar("avatarUrl", { length: 256 }),
   password: varchar("password", { length: 256 }).notNull(),
 })
 
 export const accessTokens = mysqlTable("accessTokens", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   userId: varchar("userId", { length: 32 }).references(() => users.id),
   teamId: varchar("teamId", { length: 32 }).references(() => teams.id),
   type: varchar("type", { length: 16 }).notNull(),
@@ -97,7 +106,7 @@ export const accessTokens = mysqlTable("accessTokens", {
 })
 
 export const teams = mysqlTable("teams", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   name: varchar("name", { length: 100 }).notNull(),
   userId: varchar("userId", { length: 32 })
     .notNull()
@@ -109,7 +118,7 @@ export const teams = mysqlTable("teams", {
 })
 
 export const mailers = mysqlTable("mailers", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   name: varchar("name", { length: 50 }).notNull(),
   configuration: varchar("configuration", { length: 512 }).notNull(),
   default: boolean("default"),
@@ -129,7 +138,7 @@ export const mailers = mysqlTable("mailers", {
 })
 
 export const mailerIdentities = mysqlTable("mailerIdentities", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   mailerId: varchar("mailerId", { length: 32 }).references(() => mailers.id),
   value: varchar("value", { length: 50 }).notNull(),
   type: MailerIdentityType.notNull(),
@@ -139,7 +148,7 @@ export const mailerIdentities = mysqlTable("mailerIdentities", {
 })
 
 export const webhooks = mysqlTable("webhooks", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   name: varchar("name", { length: 50 }).notNull(),
   url: varchar("url", { length: 256 }).notNull(),
   events: WebhookEvent,
@@ -149,7 +158,7 @@ export const webhooks = mysqlTable("webhooks", {
 })
 
 export const teamMemberships = mysqlTable("teamMemberships", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   userId: varchar("userId", { length: 32 }).references(() => users.id),
   email: varchar("email", { length: 50 }).notNull(),
   teamId: varchar("teamId", { length: 32 })
@@ -162,7 +171,7 @@ export const teamMemberships = mysqlTable("teamMemberships", {
 })
 
 export const audiences = mysqlTable("audiences", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   name: varchar("name", { length: 50 }).notNull(),
   teamId: varchar("teamId", { length: 32 })
     .references(() => teams.id)
@@ -172,10 +181,10 @@ export const audiences = mysqlTable("audiences", {
 export const contacts = mysqlTable(
   "Contact",
   {
-    id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+    id: id(),
     firstName: varchar("firstName", { length: 50 }),
     lastName: varchar("lastName", { length: 50 }),
-    email: varchar("email", { length: 50 }).notNull(),
+    email: varchar("email", { length: 80 }).notNull(),
     avatarUrl: varchar("avatarUrl", { length: 256 }),
     subscribedAt: timestamp("subscribedAt"),
     unsubscribedAt: timestamp("unsubscribedAt"),
@@ -192,7 +201,7 @@ export const contacts = mysqlTable(
 )
 
 export const tags = mysqlTable("Tag", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   name: varchar("name", { length: 256 }).notNull(),
   description: varchar("description", { length: 256 }),
 })
@@ -219,7 +228,7 @@ export const tagsOnContacts = mysqlTable(
 )
 
 export const automations = mysqlTable("automations", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   name: varchar("name", { length: 50 }).notNull(),
   description: varchar("description", { length: 512 }),
   audienceId: varchar("audienceId", { length: 32 })
@@ -270,7 +279,7 @@ const automationStepSubtype = mysqlEnum("automationStepSubtype", [
 ])
 
 export const automationSteps = mysqlTable("automation_steps", {
-  id: varchar("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid),
+  id: id(),
   automationId: varchar("automationId", { length: 32 })
     .references(() => automations.id)
     .notNull(),
@@ -285,6 +294,58 @@ export const automationSteps = mysqlTable("automation_steps", {
   ),
   branchIndex: int("branchIndex"), // used for if / else or split or branch automation point types.
   configuration: json("configuration").notNull(),
+})
+
+/*
+
+This table stores a user's progress through the automation.
+
+Automation run is triggered every 10 minutes.
+
+When triggered, automation fetches all contacts that match the trigger conditions.
+    OR -> Automation run is manually triggered by an event happening in the system, such as a contact getting a tag.
+-> Loop through each contact pass in the contact , automation (with its steps), contact_automation steps progress to the automation executor.
+
+-> The executor figures out if the contact is eligible for any actions at that time, then executes. 
+-> If not, skips the automation process for that user. 
+-> It also updates the state of the contact: halted, waiting, completed, failed, etc.
+
+-> Generates automation summary after execution.
+
+*/
+
+// say user completed 5 of 9
+
+// i delete number 4. now user has completed 4 of 8
+
+// but how do we proceed ?
+
+// simple. we get latest known completed step for contact, and find next based on new automation flow.
+
+// if they were waiting somewhere and that step is deleted, sure no problem.
+
+// to run automation step, we run a paginated query to fetch all contacts that match the trigger conditions.
+// then cursor through the contacts. for each contact, we execute the automation. we can execute maybe 4 contacts at a time or similar.
+
+// we can also execute the automation in series. but that will be slow. we can also execute the automation in parallel. but that will be fast but will require more resources. so we can have a hybrid approach. we can execute the automation in parallel but limit the number of parallel executions.
+
+export const contactAutomationStep = mysqlTable("contact_automation_steps", {
+  id: id(),
+
+  automationStepId: varchar("automationStepId", { length: 32 })
+    .references(() => automationSteps.id, { onDelete: "cascade" })
+    .notNull(),
+
+  contactId: varchar("contactId", { length: 32 })
+    .references(() => contacts.id, { onDelete: "cascade" })
+    .notNull(),
+
+  haltedAt: timestamp("haltedAt"),
+  failedAt: timestamp("failedAt"),
+  startedAt: timestamp("startedAt"), // for wait steps, this will be start of wait
+  completedAt: timestamp("completedAt"), // for wait steps, this will be end of wait
+
+  output: json("output"),
 })
 
 // Relations
