@@ -179,7 +179,7 @@ export const audiences = mysqlTable("audiences", {
 })
 
 export const contacts = mysqlTable(
-  "Contact",
+  "contacts",
   {
     id: id(),
     firstName: varchar("firstName", { length: 50 }),
@@ -200,14 +200,17 @@ export const contacts = mysqlTable(
   }),
 )
 
-export const tags = mysqlTable("Tag", {
+export const tags = mysqlTable("tags", {
   id: id(),
   name: varchar("name", { length: 256 }).notNull(),
   description: varchar("description", { length: 256 }),
+  audienceId: varchar("audienceId", { length: 32 })
+    .references(() => audiences.id)
+    .notNull(),
 })
 
 export const tagsOnContacts = mysqlTable(
-  "TagsOnContacts",
+  "tagsOnContacts",
   {
     tagId: varchar("tagId", { length: 32 })
       .references(() => tags.id)
@@ -218,11 +221,11 @@ export const tagsOnContacts = mysqlTable(
     assignedAt: timestamp("assignedAt"),
   },
   (table) => ({
-    TagsOnContacts_tagId_contactId_key: uniqueIndex(
-      "TagsOnContacts_tagId_contactId_key",
+    tagsOnContactsTagIdContactIdKey: uniqueIndex(
+      "tagsOnContactsTagIdContactIdKey",
     ).on(table.tagId, table.contactId),
-    TagsOnContacts_tagId_contactId_idx: index(
-      "TagsOnContacts_tagId_contactId_idx",
+    tagsOnContactsTagIdContactIdIdx: index(
+      "tagsOnContactsTagIdContactIdIdx",
     ).on(table.tagId, table.contactId),
   }),
 )
@@ -329,7 +332,7 @@ When triggered, automation fetches all contacts that match the trigger condition
 
 // we can also execute the automation in series. but that will be slow. we can also execute the automation in parallel. but that will be fast but will require more resources. so we can have a hybrid approach. we can execute the automation in parallel but limit the number of parallel executions.
 
-export const contactAutomationStep = mysqlTable("contact_automation_steps", {
+export const contactAutomationStep = mysqlTable("contactAutomationSteps", {
   id: id(),
 
   automationStepId: varchar("automationStepId", { length: 32 })
