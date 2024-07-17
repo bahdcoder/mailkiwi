@@ -1,7 +1,0 @@
-import { z } from "zod";
-
-export const <%= pascalCaseName %>Schema = z.object({
-  // Define schema properties here
-});
-
-export type <%= pascalCaseName %>Dto = z.infer<typeof <%= pascalCaseName %>Schema>;
