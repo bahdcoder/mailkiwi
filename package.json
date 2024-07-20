@@ -4,7 +4,7 @@
   "type": "module",
   "main": "src/main.ts",
   "scripts": {
-    "dev": "tsx src/dev.ts --watch --ignore src/http/views/app",
+    "dev": "tsx watch src/dev.ts --clear-screen=false --ignore src/http/views/app",
     "test": "pnpm test:watch --run",
     "build:clean": "del-cli build",
     "test:watch": "pnpm db:migrate && vitest",
@@ -31,6 +31,7 @@
     "@eslint/js": "^9.6.0",
     "@faker-js/faker": "^8.4.1",
     "@fastify/vite": "^6.0.6",
+    "@hono/node-server": "^1.12.0",
     "@tanstack/react-router": "^1.43.12",
     "@tanstack/router-devtools": "^1.43.12",
     "@tanstack/router-plugin": "^1.43.12",

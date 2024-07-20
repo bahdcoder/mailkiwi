@@ -72,6 +72,9 @@ importers:
       '@fastify/vite':
         specifier: ^6.0.6
         version: 6.0.6(@types/node@20.14.9)
+      '@hono/node-server':
+        specifier: ^1.12.0
+        version: 1.12.0
       '@tanstack/react-router':
         specifier: ^1.43.12
         version: 1.43.12(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1041,6 +1044,10 @@ packages:
 
   '@hapi/hoek@11.0.4':
     resolution: {integrity: sha512-PnsP5d4q7289pS2T2EgGz147BFJ2Jpb4yrEdkpz2IhgEUzos1S7HTl7ezWh1yfYzYlj89KzLdCRkqsP6SIryeQ==}
+
+  '@hono/node-server@1.12.0':
+    resolution: {integrity: sha512-e6oHjNiErRxsZRZBmc2KucuvY3btlO/XPncIpP2X75bRdTilF9GLjm3NHvKKunpJbbJJj31/FoPTksTf8djAVw==}
+    engines: {node: '>=18.14.1'}
 
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
@@ -4409,6 +4416,8 @@ snapshots:
       '@hapi/hoek': 11.0.4
 
   '@hapi/hoek@11.0.4': {}
+
+  '@hono/node-server@1.12.0': {}
 
   '@humanwhocodes/module-importer@1.0.1': {}
 

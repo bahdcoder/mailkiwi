@@ -53,8 +53,6 @@ export class Ignitor {
 
     this.app.defineErrorHandler()
 
-    // this.app.setErrorHandler(globalErrorHandler)
-
     return this
   }
 
@@ -65,6 +63,8 @@ export class Ignitor {
   async start() {
     await this.startDatabaseConnector()
     await this.startSinglePageApplication()
+
+    this.registerHttpControllers()
 
     await container.resolve(InstallationSettings).ensureInstallationSettings()
 
@@ -94,27 +94,7 @@ export class Ignitor {
     return this
   }
 
-  async startHttpServer() {
-    try {
-      this.registerHttpControllers()
-
-      if (this.env.isTest) {
-        return this
-      }
-
-      // await this.app.listen({
-      //   port: this.env.PORT,
-      //   host: this.env.HOST,
-      // })
-
-      return this
-    } catch (error) {
-      d({ error })
-      // this.app.log.error(error)
-
-      process.exit(1)
-    }
-  }
+  async startHttpServer() {}
 
   registerHttpControllers() {
     container.resolve(AudienceController)

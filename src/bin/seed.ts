@@ -10,7 +10,7 @@ import {
   createDatabaseClient,
   createDrizzleDatabase,
 } from "@/infrastructure/database/client.js"
-import { contacts } from "@/infrastructure/database/schema/schema.ts"
+import { contacts, settings } from "@/infrastructure/database/schema/schema.ts"
 import { env } from "@/infrastructure/env.js"
 import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.ts"
 const connection = await createDatabaseClient(env.DATABASE_URL)
@@ -29,6 +29,11 @@ const registerUserAction = container.resolve(RegisterUserAction)
 const createAudienceAction = container.resolve(CreateAudienceAction)
 
 await refreshDatabase()
+
+await database.insert(settings).values({
+  domain: "bamboomail.a.pinggy.link",
+  url: "https://bamboomail.a.pinggy.link",
+})
 
 for (let userIndex = 0; userIndex < 5; userIndex++) {
   console.log(`\nCreating user: ${userIndex + 1}\n`)
