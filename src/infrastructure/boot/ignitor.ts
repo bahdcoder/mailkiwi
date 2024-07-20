@@ -23,13 +23,13 @@ import {
   env,
   EnvVariables,
 } from "@/infrastructure/env.js"
-import { ExtendedHono } from "@/infrastructure/server/hono.js"
+import { Hono } from "@/infrastructure/server/hono.js"
 import { container } from "@/utils/typi.js"
 
 export class Ignitor {
   protected env: EnvVariables
   protected config: ConfigVariables
-  protected app: ExtendedHono<{ Bindings: { _: boolean } }>
+  protected app: Hono<{ Bindings: { _: boolean } }>
   protected database: DrizzleClient
 
   boot() {
@@ -47,7 +47,7 @@ export class Ignitor {
   }
 
   bootHttpServer() {
-    this.app = new ExtendedHono()
+    this.app = new Hono()
 
     this.app.defineErrorHandler()
 
@@ -59,8 +59,8 @@ export class Ignitor {
   }
 
   async start() {
-    await this.startDatabaseConnector()
-    await this.startSinglePageApplication()
+    this.startDatabaseConnector()
+    this.startSinglePageApplication()
 
     this.registerHttpControllers()
 
@@ -73,21 +73,14 @@ export class Ignitor {
     // no implementation in prod. Only in dev.
   }
 
-  async startDatabaseConnector() {
+  startDatabaseConnector() {
     if (this.database) return this
 
-    const connection = await createDatabaseClient(this.env.DATABASE_URL)
+    const connection = createDatabaseClient(this.env.DATABASE_URL)
 
     this.database = createDrizzleDatabase(connection)
 
     container.registerInstance(ContainerKey.database, this.database)
-
-    try {
-      // await runDatabaseMigrations(this.database)
-    } catch (error) {
-      d({ error })
-      throw error
-    }
 
     return this
   }

@@ -1,4 +1,4 @@
-import { Env, Hono, MiddlewareHandler } from "hono"
+import { Env, Hono as BaseHono, MiddlewareHandler } from "hono"
 import { HonoOptions } from "hono/hono-base"
 
 import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware.js"
@@ -8,15 +8,15 @@ import { container } from "@/utils/typi.js"
 
 import { HonoRouteDefinition } from "./types.js"
 
-export type HonoInstance<E extends Env = object> = Hono<E> & {
+export type HonoInstance<E extends Env = object> = BaseHono<E> & {
   defineRoutes: (
     routes: HonoRouteDefinition[],
     routeOptions?: { middleware?: MiddlewareHandler[]; prefix?: string },
   ) => void
 }
 
-export class ExtendedHono<E extends Env>
-  extends Hono<E>
+export class Hono<E extends Env>
+  extends BaseHono<E>
   implements HonoInstance<E>
 {
   constructor(options?: HonoOptions<E>) {
@@ -34,6 +34,8 @@ export class ExtendedHono<E extends Env>
 
       return ctx.json({ message: error?.message }, 500)
     })
+
+    return this
   }
 
   defineRoutes(
