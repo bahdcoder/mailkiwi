@@ -1,35 +1,25 @@
-import {
-  FastifyInstance,
-  FastifyReply,
-  FastifyRequest,
-  RouteHandlerMethod,
-} from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
 import { TeamPolicy } from "@/domains/audiences/policies/team_policy.js"
 import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
 import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 import { ContainerKey } from "@/infrastructure/container.js"
+import { HonoInstance } from "@/infrastructure/server/hono.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
 export class TeamController {
   constructor(
     @inject(TeamRepository) private teamRepository: TeamRepository,
-    @inject(ContainerKey.app) private app: FastifyInstance,
+    @inject(ContainerKey.app) private app: HonoInstance,
   ) {
-    this.app.defineRoutes(
-      [["GET", "/:teamId", this.show.bind(this) as RouteHandlerMethod]],
-      {
-        prefix: "teams",
-      },
-    )
+    this.app.defineRoutes([["GET", "/:teamId", this.show.bind(this)]], {
+      prefix: "teams",
+    })
   }
 
-  async show(
-    request: FastifyRequest<{ Params: { teamId: string } }>,
-    _: FastifyReply,
-  ) {
-    const teamId = request.params.teamId
+  async show(ctx: HonoContext) {
+    const teamId = ctx.req.param("teamId")
 
     const team = await this.teamRepository.findById(teamId)
 
@@ -40,9 +30,9 @@ export class TeamController {
 
     const policy = container.resolve<TeamPolicy>(TeamPolicy)
 
-    if (!policy.canView(request.team, request.accessToken.userId!))
+    if (!policy.canView(ctx.get("team"), ctx.get("accessToken").userId!))
       throw E_UNAUTHORIZED()
 
-    return team
+    return ctx.json(team)
   }
 }

@@ -1,4 +1,3 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
 import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository.js"
@@ -6,19 +5,24 @@ import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.
 import { CreateUserSchema } from "@/domains/auth/users/dto/create_user_dto.js"
 import { LoginUserSchema } from "@/domains/auth/users/dto/login_user_dto.js"
 import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
+import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
 import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 import { ContainerKey } from "@/infrastructure/container.js"
+import { HonoInstance } from "@/infrastructure/server/hono.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
-export class AuthController {
+export class AuthController extends BaseController {
   constructor(
     @inject(UserRepository) private userRepository: UserRepository,
     @inject(AccessTokenRepository)
     private accessTokenRepository: AccessTokenRepository,
     @inject(TeamRepository) private teamRepository: TeamRepository,
-    @inject(ContainerKey.app) private app: FastifyInstance,
+    @inject(ContainerKey.app) private app: HonoInstance,
   ) {
+    super()
+
     this.app.defineRoutes(
       [
         ["POST", "/login", this.login.bind(this)],
@@ -26,31 +30,23 @@ export class AuthController {
       ],
       {
         prefix: "auth",
-        onRequestHooks: [],
+        middleware: [],
       },
     )
   }
 
-  async register(request: FastifyRequest, _: FastifyReply) {
-    const { success, error, data } = await CreateUserSchema.safeParseAsync(
-      request.body,
-    )
-
-    if (!success) throw E_VALIDATION_FAILED(error)
+  async register(ctx: HonoContext) {
+    const data = await this.validate(ctx, CreateUserSchema)
 
     const action = container.resolve<RegisterUserAction>(RegisterUserAction)
 
     const { user } = await action.handle(data)
 
-    return user
+    return ctx.json(user)
   }
 
-  async login(request: FastifyRequest, _: FastifyReply) {
-    const { success, error, data } = await LoginUserSchema.safeParseAsync(
-      request.body,
-    )
-
-    if (!success) throw E_VALIDATION_FAILED(error)
+  async login(ctx: HonoContext) {
+    const data = await this.validate(ctx, LoginUserSchema)
 
     const user = await this.userRepository.findByEmail(data.email)
 
@@ -72,9 +68,9 @@ export class AuthController {
 
     const accessToken = await this.accessTokenRepository.createAccessToken(user)
 
-    return {
+    return ctx.json({
       ...user,
       accessToken: accessToken.toJSON(),
-    }
+    })
   }
 }

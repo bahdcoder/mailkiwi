@@ -1,6 +1,8 @@
-import { build } from "esbuild"
+import fs from "node:fs/promises"
+import path from "node:path"
 
-build({
+import { build } from "esbuild"
+const output = await build({
   entryPoints: ["src/main.ts"],
   bundle: true,
   platform: "node",
@@ -8,10 +10,13 @@ build({
   outfile: "build/main.js",
   sourcemap: true,
   minify: false,
+  metafile: true,
   logOverride: {
     "empty-import-meta": "silent",
   },
-}).catch((error) => {
-  console.error(error)
-  process.exit(1)
 })
+
+await fs.writeFile(
+  path.resolve(process.cwd(), "build", "meta.json"),
+  JSON.stringify(output.metafile),
+)

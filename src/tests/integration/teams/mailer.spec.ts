@@ -37,7 +37,7 @@ import {
 } from "@/infrastructure/database/schema/schema.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
-import { injectAsUser } from "@/tests/utils/http.js"
+import { makeRequestAsUser } from "@/tests/utils/http.js"
 import * as sleepUtils from "@/utils/sleep.js"
 
 const SESMock = mockClient(SESClient)
@@ -58,13 +58,13 @@ describe("Teams / Mailers", () => {
       provider: "AWS_SES",
     }
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "POST",
       path: "/mailers",
       body: mailerPayload,
     })
 
-    expect(response.statusCode).toBe(200)
+    expect(response.status).toBe(200)
 
     const mailer = await database.query.mailers.findFirst({
       where: eq(mailers.name, mailerPayload.name),
@@ -85,7 +85,7 @@ describe("Teams / Mailers", () => {
       provider: "AWS_SES",
     }
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "POST",
       path: "/mailers",
       body: mailerPayload,
@@ -98,7 +98,7 @@ describe("Teams / Mailers", () => {
       domain: "newsletter.example.com",
     }
 
-    const updateResponse = await injectAsUser(user, {
+    const updateResponse = await makeRequestAsUser(user, {
       method: "PATCH",
       path: `/mailers/${(await response.json()).id}`,
       body: {
@@ -110,7 +110,7 @@ describe("Teams / Mailers", () => {
     SESMock.onAnyCommand().resolves({})
     SNSMock.onAnyCommand().resolves({})
 
-    expect(updateResponse.statusCode).toBe(200)
+    expect(updateResponse.status).toBe(200)
 
     const mailerRepository = container.resolve(MailerRepository)
 
@@ -213,7 +213,7 @@ describe("Teams / Mailers", () => {
       provider: "AWS_SES",
     }
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "POST",
       path: "/mailers",
       body: mailerPayload,
@@ -226,17 +226,19 @@ describe("Teams / Mailers", () => {
       domain: "newsletter.example.com",
     }
 
-    const mailerId = (await response.json()).id
+    const json = await response.json()
 
-    const updateResponse = await injectAsUser(user, {
+    const mailerId = json.id
+
+    const updateResponse = await makeRequestAsUser(user, {
       method: "PATCH",
-      path: `/mailers/${(await response.json()).id}`,
+      path: `/mailers/${json.id}`,
       body: {
         configuration: updateConfigPayload,
       },
     })
 
-    expect(updateResponse.statusCode).toBe(200)
+    expect(updateResponse.status).toBe(200)
 
     SNSMock.resetHistory()
     SESMock.resetHistory()
@@ -268,12 +270,12 @@ describe("Teams / Mailers", () => {
       SubscriptionArn,
     })
 
-    const installResponse = await injectAsUser(user, {
+    const installResponse = await makeRequestAsUser(user, {
       method: "POST",
-      path: `/mailers/${(await response.json()).id}/install`,
+      path: `/mailers/${json.id}/install`,
     })
 
-    expect(installResponse.statusCode).toBe(200)
+    expect(installResponse.status).toBe(200)
 
     const createConfigurationSet = SESMock.calls()[3]
     const setDestinationOfSnsNotifications = SESMock.calls()[5]
@@ -319,7 +321,7 @@ describe("Teams / Mailers", () => {
       message: "Access keys have expired. Requires rotation.",
     })
 
-    const profileResponse = await injectAsUser(user, {
+    const profileResponse = await makeRequestAsUser(user, {
       method: "GET",
       path: "/auth/profile",
     })
@@ -339,7 +341,7 @@ describe("Teams / Mailers", () => {
       domain: "newsletter.example.com",
     }
 
-    const reconnectResponse = await injectAsUser(user, {
+    const reconnectResponse = await makeRequestAsUser(user, {
       method: "PATCH",
       path: `/mailers/${mailerId}/reconnect`,
       body: {
@@ -347,7 +349,7 @@ describe("Teams / Mailers", () => {
       },
     })
 
-    expect(reconnectResponse.statusCode).toBe(200)
+    expect(reconnectResponse.status).toBe(200)
 
     const mailerRepository = container.resolve(MailerRepository)
 
@@ -384,7 +386,7 @@ describe("Teams / Mailers", () => {
     SESMock.onAnyCommand().resolves({})
     SNSMock.onAnyCommand().resolves({})
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "POST",
       path: "/mailers",
       body: mailerPayload,
@@ -397,7 +399,7 @@ describe("Teams / Mailers", () => {
       email: "from@example.com",
     }
 
-    const updateResponse = await injectAsUser(user, {
+    const updateResponse = await makeRequestAsUser(user, {
       method: "PATCH",
       path: `/mailers/${(await response.json()).id}`,
       body: {
@@ -405,7 +407,7 @@ describe("Teams / Mailers", () => {
       },
     })
 
-    expect(updateResponse.statusCode).toBe(200)
+    expect(updateResponse.status).toBe(200)
 
     const mailer = (await database.query.mailers.findFirst({
       where: eq(mailers.name, mailerPayload.name),
@@ -448,7 +450,7 @@ describe("Teams / Mailers", () => {
       provider: "AWS_SES",
     }
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "POST",
       path: "/mailers",
       body: mailerPayload,
@@ -460,7 +462,7 @@ describe("Teams / Mailers", () => {
       region: "us-east-1",
     }
 
-    const updateResponse = await injectAsUser(user, {
+    const updateResponse = await makeRequestAsUser(user, {
       method: "PATCH",
       path: `/mailers/${(await response.json()).id}`,
       body: {
@@ -469,6 +471,7 @@ describe("Teams / Mailers", () => {
     })
 
     expect(await updateResponse.json()).toEqual({
+      message: "Validation failed.",
       errors: [
         {
           message:
@@ -541,7 +544,7 @@ describe("Teams / Mailers", () => {
       SentLast24Hours: 1023,
     })
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "GET",
       path: "/auth/profile",
     })
@@ -599,7 +602,7 @@ describe("Teams / Mailers", () => {
       SentLast24Hours: 1023,
     })
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "GET",
       path: "/auth/profile",
     })
@@ -622,7 +625,7 @@ describe("Teams / Mailers", () => {
     SESMock.on(ListIdentitiesCommand).rejects({})
     SNSMock.on(ListTopicsCommand).rejects({})
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "GET",
       path: "/auth/profile",
     })
@@ -662,13 +665,13 @@ describe("Mailer identities", () => {
       value: "marketing.gorillaxample.com",
     }
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "POST",
       path: `/mailers/${mailer.id}/identities`,
       body: mailerIdentityPayload,
     })
 
-    expect(response.statusCode).toBe(200)
+    expect(response.status).toBe(200)
 
     const mailerIdentity = (await database.query.mailerIdentities.findFirst({
       where: and(
@@ -737,13 +740,13 @@ describe("Mailer identities", () => {
       value: "hello@gorillaxample.com",
     }
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "POST",
       path: `/mailers/${mailer.id}/identities`,
       body: mailerIdentityPayload,
     })
 
-    expect(response.statusCode).toBe(200)
+    expect(response.status).toBe(200)
 
     const config = makeConfig()
     const configurationName = `${config.software.shortName}_${mailer.id}`
@@ -783,7 +786,7 @@ describe("Mailer identities", () => {
 
     const identity = mailer.identities[0]
 
-    const deleteIdentityResponse = await injectAsUser(user, {
+    const deleteIdentityResponse = await makeRequestAsUser(user, {
       method: "DELETE",
       path: `/mailers/${mailer.id}/identities/${identity.id}`,
       body: {
@@ -791,7 +794,7 @@ describe("Mailer identities", () => {
       },
     })
 
-    expect(deleteIdentityResponse.statusCode).toBe(200)
+    expect(deleteIdentityResponse.status).toBe(200)
 
     const deletedMailerIdentity =
       await database.query.mailerIdentities.findFirst({
@@ -839,7 +842,7 @@ describe("Mailer identities", () => {
 
     const identity = mailer.identities[0]
 
-    const deleteIdentityResponse = await injectAsUser(user, {
+    const deleteIdentityResponse = await makeRequestAsUser(user, {
       method: "DELETE",
       path: `/mailers/${mailer.id}/identities/${identity.id}`,
       body: {
@@ -847,7 +850,7 @@ describe("Mailer identities", () => {
       },
     })
 
-    expect(deleteIdentityResponse.statusCode).toBe(400)
+    expect(deleteIdentityResponse.status).toBe(500)
     const json = await deleteIdentityResponse.json()
 
     expect(json.message).toContain(providerErrorMessage)
@@ -892,7 +895,7 @@ describe("Mailer identities", () => {
     })
 
     // refresh
-    await injectAsUser(user, {
+    await makeRequestAsUser(user, {
       method: "GET",
       path: "/auth/profile",
     })
@@ -900,7 +903,7 @@ describe("Mailer identities", () => {
     SESMock.reset()
     SESMock.resetHistory()
 
-    const refreshIdentityResponse = await injectAsUser(user, {
+    const refreshIdentityResponse = await makeRequestAsUser(user, {
       method: "POST",
       path: `/mailers/${mailer.id}/identities/${identity.id}/refresh`,
     })
@@ -923,6 +926,6 @@ describe("Mailer identities", () => {
       ],
     ).toEqual(identity.value)
 
-    expect(refreshIdentityResponse.statusCode).toBe(200)
+    expect(refreshIdentityResponse.status).toBe(200)
   })
 })

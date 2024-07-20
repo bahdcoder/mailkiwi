@@ -1,4 +1,3 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
 import { CreateAudienceAction } from "@/domains/audiences/actions/audiences/create_audience_action.js"
@@ -9,14 +8,17 @@ import { AudienceRepository } from "@/domains/audiences/repositories/audience_re
 import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
 import { ContainerKey } from "@/infrastructure/container.js"
+import { HonoInstance } from "@/infrastructure/server/hono.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
 export class AudienceController extends BaseController {
   constructor(
     @inject(AudienceRepository) private audienceRepository: AudienceRepository,
-    @inject(ContainerKey.app) private app: FastifyInstance,
+    @inject(ContainerKey.app) private app: HonoInstance,
   ) {
     super()
+
     this.app.defineRoutes(
       [
         ["GET", "/", this.index.bind(this)],
@@ -28,39 +30,42 @@ export class AudienceController extends BaseController {
     )
   }
 
-  async index(request: FastifyRequest, response: FastifyReply) {
-    return response.send([])
+  async index(ctx: HonoContext) {
+    ctx.json([])
   }
 
-  async store(request: FastifyRequest, _: FastifyReply) {
-    const data = this.validate(request, CreateAudienceSchema)
+  async store(ctx: HonoContext) {
+    const data = await this.validate(ctx, CreateAudienceSchema)
 
-    this.ensureTeam(request)
+    const team = this.ensureTeam(ctx)
+
+    const userId = ctx.get("accessToken")?.userId
 
     const policy = container.resolve<AudiencePolicy>(AudiencePolicy)
 
-    if (!policy.canCreate(request.team, request.accessToken.userId!))
-      throw E_UNAUTHORIZED()
+    if (!policy.canCreate(team, userId!)) throw E_UNAUTHORIZED()
 
     const action = container.resolve<CreateAudienceAction>(CreateAudienceAction)
 
-    const audience = await action.handle(data, request.team.id)
+    const audience = await action.handle(data, team.id)
 
-    return audience
+    return ctx.json(audience)
   }
 
-  async update(request: FastifyRequest, _: FastifyReply) {
-    const data = this.validate(request, CreateAudienceSchema)
+  async update(ctx: HonoContext) {
+    const data = await this.validate(ctx, CreateAudienceSchema)
+
+    const team = this.ensureTeam(ctx)
+    const accessToken = ctx.get("accessToken")
 
     const policy = container.resolve<AudiencePolicy>(AudiencePolicy)
 
-    if (!policy.canCreate(request.team, request.accessToken.userId!))
-      throw E_UNAUTHORIZED()
+    if (!policy.canCreate(team, accessToken.userId!)) throw E_UNAUTHORIZED()
 
     const action = container.resolve<UpdateAudienceAction>(UpdateAudienceAction)
 
-    const audience = await action.handle(data, request.team.id)
+    const audience = await action.handle(data, team.id)
 
-    return audience
+    return ctx.json(audience)
   }
 }

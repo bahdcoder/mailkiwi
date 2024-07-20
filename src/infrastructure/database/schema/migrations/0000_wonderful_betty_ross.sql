@@ -40,7 +40,7 @@ CREATE TABLE `automations` (
 	CONSTRAINT `automations_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `contact_automation_steps` (
+CREATE TABLE `contactAutomationSteps` (
 	`id` varchar(32) NOT NULL,
 	`automationStepId` varchar(32) NOT NULL,
 	`contactId` varchar(32) NOT NULL,
@@ -49,10 +49,10 @@ CREATE TABLE `contact_automation_steps` (
 	`startedAt` timestamp,
 	`completedAt` timestamp,
 	`output` json,
-	CONSTRAINT `contact_automation_steps_id` PRIMARY KEY(`id`)
+	CONSTRAINT `contactAutomationSteps_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `Contact` (
+CREATE TABLE `contacts` (
 	`id` varchar(32) NOT NULL,
 	`firstName` varchar(50),
 	`lastName` varchar(50),
@@ -62,7 +62,7 @@ CREATE TABLE `Contact` (
 	`unsubscribedAt` timestamp,
 	`audienceId` varchar(32) NOT NULL,
 	`attributes` json,
-	CONSTRAINT `Contact_id` PRIMARY KEY(`id`),
+	CONSTRAINT `contacts_id` PRIMARY KEY(`id`),
 	CONSTRAINT `Contact_email_audienceId_key` UNIQUE(`email`,`audienceId`)
 );
 --> statement-breakpoint
@@ -106,18 +106,19 @@ CREATE TABLE `settings` (
 	CONSTRAINT `settings_domain_unique` UNIQUE(`domain`)
 );
 --> statement-breakpoint
-CREATE TABLE `Tag` (
+CREATE TABLE `tags` (
 	`id` varchar(32) NOT NULL,
 	`name` varchar(256) NOT NULL,
 	`description` varchar(256),
-	CONSTRAINT `Tag_id` PRIMARY KEY(`id`)
+	`audienceId` varchar(32) NOT NULL,
+	CONSTRAINT `tags_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `TagsOnContacts` (
+CREATE TABLE `tagsOnContacts` (
 	`tagId` varchar(32) NOT NULL,
 	`contactId` varchar(32) NOT NULL,
 	`assignedAt` timestamp,
-	CONSTRAINT `TagsOnContacts_tagId_contactId_key` UNIQUE(`tagId`,`contactId`)
+	CONSTRAINT `tagsOnContactsTagIdContactIdKey` UNIQUE(`tagId`,`contactId`)
 );
 --> statement-breakpoint
 CREATE TABLE `teamMemberships` (
@@ -168,15 +169,16 @@ ALTER TABLE `audiences` ADD CONSTRAINT `audiences_teamId_teams_id_fk` FOREIGN KE
 ALTER TABLE `automation_steps` ADD CONSTRAINT `automation_steps_automationId_automations_id_fk` FOREIGN KEY (`automationId`) REFERENCES `automations`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `automation_steps` ADD CONSTRAINT `automation_steps_parentId_automation_steps_id_fk` FOREIGN KEY (`parentId`) REFERENCES `automation_steps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `automations` ADD CONSTRAINT `automations_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `contact_automation_steps` ADD CONSTRAINT `contact_automation_steps_automationStepId_automation_steps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automation_steps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `contact_automation_steps` ADD CONSTRAINT `contact_automation_steps_contactId_Contact_id_fk` FOREIGN KEY (`contactId`) REFERENCES `Contact`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `Contact` ADD CONSTRAINT `Contact_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_automationStepId_automation_steps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automation_steps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `mailerIdentities` ADD CONSTRAINT `mailerIdentities_mailerId_mailers_id_fk` FOREIGN KEY (`mailerId`) REFERENCES `mailers`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `mailers` ADD CONSTRAINT `mailers_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `TagsOnContacts` ADD CONSTRAINT `TagsOnContacts_tagId_Tag_id_fk` FOREIGN KEY (`tagId`) REFERENCES `Tag`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `TagsOnContacts` ADD CONSTRAINT `TagsOnContacts_contactId_Contact_id_fk` FOREIGN KEY (`contactId`) REFERENCES `Contact`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `tags` ADD CONSTRAINT `tags_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `tagsOnContacts` ADD CONSTRAINT `tagsOnContacts_tagId_tags_id_fk` FOREIGN KEY (`tagId`) REFERENCES `tags`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `tagsOnContacts` ADD CONSTRAINT `tagsOnContacts_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `teamMemberships` ADD CONSTRAINT `teamMemberships_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `teamMemberships` ADD CONSTRAINT `teamMemberships_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `teams` ADD CONSTRAINT `teams_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `webhooks` ADD CONSTRAINT `webhooks_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX `TagsOnContacts_tagId_contactId_idx` ON `TagsOnContacts` (`tagId`,`contactId`);
+CREATE INDEX `tagsOnContactsTagIdContactIdIdx` ON `tagsOnContacts` (`tagId`,`contactId`);

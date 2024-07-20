@@ -1,8 +1,10 @@
 import { Secret } from "@poppinss/utils"
-import { FastifyReply, FastifyRequest } from "fastify"
+import { Next } from "hono"
 import { inject, injectable } from "tsyringe"
 
 import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository.js"
+import { E_UNAUTHORIZED } from "@/http/responses/errors.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
 export class AccessTokenMiddleware {
@@ -11,13 +13,11 @@ export class AccessTokenMiddleware {
     private accessTokenRepository: AccessTokenRepository,
   ) {}
 
-  handle = async (request: FastifyRequest, response: FastifyReply) => {
-    const tokenHeader = (request.headers["authorization"] as string)?.split(
-      "Bearer ",
-    )?.[1]
+  handle = async (ctx: HonoContext, next: Next) => {
+    const tokenHeader = ctx.req.header("authorization")?.split("Bearer ")?.[1]
 
     if (!tokenHeader) {
-      return response.status(400).send({ message: "Unauthenticated." })
+      throw E_UNAUTHORIZED()
     }
 
     const accessToken = await this.accessTokenRepository.verifyToken(
@@ -25,9 +25,11 @@ export class AccessTokenMiddleware {
     )
 
     if (!accessToken) {
-      return response.status(400).send({ message: "Unauthenticated." })
+      throw E_UNAUTHORIZED()
     }
 
-    request.accessToken = accessToken.accessToken
+    ctx.set("accessToken", accessToken.accessToken)
+
+    await next()
   }
 }

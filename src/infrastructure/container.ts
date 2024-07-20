@@ -1,9 +1,9 @@
-import { FastifyInstance } from "fastify"
 import { container } from "tsyringe"
 
 import { ConfigVariables, EnvVariables } from "@/infrastructure/env.js"
 
 import { DrizzleClient } from "./database/client.ts"
+import { HonoInstance } from "./server/hono.ts"
 
 export enum ContainerKey {
   app = "app",
@@ -13,7 +13,7 @@ export enum ContainerKey {
 }
 
 export const makeApp = () =>
-  container.resolve<FastifyInstance>(ContainerKey["app"])
+  container.resolve<HonoInstance>(ContainerKey["app"])
 
 export const makeEnv = () =>
   container.resolve<EnvVariables>(ContainerKey["env"])

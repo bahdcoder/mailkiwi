@@ -1,42 +1,46 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
 import { CreateContactAction } from "@/domains/audiences/actions/contacts/create_contact_action.js"
 import { CreateContactSchema } from "@/domains/audiences/dto/contacts/create_contact_dto.js"
 import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy.js"
 import { ContactRepository } from "@/domains/audiences/repositories/contact_repository.js"
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
+import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
 import { ContainerKey } from "@/infrastructure/container.js"
+import { HonoInstance } from "@/infrastructure/server/hono.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
-export class ContactController {
+export class ContactController extends BaseController {
   constructor(
     @inject(ContactRepository) private contactRepository: ContactRepository,
-    @inject(ContainerKey.app) private app: FastifyInstance,
+    @inject(ContainerKey.app) private app: HonoInstance,
   ) {
+    super()
+
     this.app.defineRoutes([["POST", "/", this.store.bind(this)]], {
       prefix: "contacts",
     })
   }
 
-  async index(request: FastifyRequest, response: FastifyReply) {
-    return response.send([])
+  async index(ctx: HonoContext) {
+    return ctx.json([])
   }
 
-  async store(request: FastifyRequest, _: FastifyReply) {
-    const { success, error, data } = CreateContactSchema.safeParse(request.body)
+  async store(ctx: HonoContext) {
+    const data = await this.validate(ctx, CreateContactSchema)
 
-    if (!success) throw E_VALIDATION_FAILED(error)
+    const team = this.ensureTeam(ctx)
 
     const policy = container.resolve<AudiencePolicy>(AudiencePolicy)
 
-    if (!policy.canCreate(request.team, request.accessToken.userId!))
+    if (!policy.canCreate(team, ctx.get("accessToken").userId!))
       throw E_UNAUTHORIZED()
 
     const action = container.resolve<CreateContactAction>(CreateContactAction)
 
     const audience = await action.handle(data)
 
-    return { data: audience }
+    return ctx.json(audience)
   }
 }

@@ -1,44 +1,40 @@
 import { eq } from "drizzle-orm"
-import { FastifyInstance, FastifyRequest, RouteHandlerMethod } from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
+import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
 import { CreateMailerIdentityAction } from "@/domains/teams/actions/create_mailer_identity_action.js"
 import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_identities_action.js"
 import { DeleteMailerIdentityAction } from "@/domains/teams/actions/mailers/delete_mailer_identity_action.js"
 import { CreateMailerIdentitySchema } from "@/domains/teams/dto/create_mailer_identity_dto.js"
 import { DeleteMailerIdentitySchema } from "@/domains/teams/dto/delete_mailer_identity_dto.js"
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 import { MailerValidationAndAuthorizationConcern } from "@/http/api/concerns/mailer_validation_concern.ts"
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 import { ContainerKey } from "@/infrastructure/container.js"
 import { mailerIdentities } from "@/infrastructure/database/schema/schema.ts"
 import { MailerIdentity } from "@/infrastructure/database/schema/types.ts"
+import { HonoInstance } from "@/infrastructure/server/hono.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
-export class MailerIdentityController {
+export class MailerIdentityController extends BaseController {
   constructor(
-    @inject(MailerRepository)
-    private mailerRepository: MailerRepository,
     @inject(MailerIdentityRepository)
     private mailerIdentityRepository: MailerIdentityRepository,
-    @inject(ContainerKey.app) private app: FastifyInstance,
+    @inject(ContainerKey.app) private app: HonoInstance,
     @inject(MailerValidationAndAuthorizationConcern)
     private mailerValidationAndAuthorizationConcern: MailerValidationAndAuthorizationConcern,
   ) {
+    super()
     this.app.defineRoutes(
       [
-        ["GET", "/identities", this.index.bind(this) as RouteHandlerMethod],
-        ["POST", "/identities", this.create.bind(this) as RouteHandlerMethod],
-        [
-          "DELETE",
-          "/identities/:mailerIdentityId",
-          this.delete.bind(this) as RouteHandlerMethod,
-        ],
+        ["GET", "/identities", this.index.bind(this)],
+        ["POST", "/identities", this.create.bind(this)],
+        ["DELETE", "/identities/:mailerIdentityId", this.delete.bind(this)],
         [
           "POST",
           "/identities/:mailerIdentityId/refresh",
-          this.refresh.bind(this) as RouteHandlerMethod,
+          this.refresh.bind(this),
         ],
       ],
       {
@@ -47,11 +43,9 @@ export class MailerIdentityController {
     )
   }
 
-  async index(request: FastifyRequest<{ Params: { mailerId: string } }>) {
+  async index(ctx: HonoContext) {
     const mailer =
-      await this.mailerValidationAndAuthorizationConcern.ensureMailerExists(
-        request,
-      )
+      await this.mailerValidationAndAuthorizationConcern.ensureMailerExists(ctx)
 
     const identities = await this.mailerIdentityRepository.findMany({
       where: eq(mailerIdentities.mailerId, mailer.id),
@@ -61,48 +55,32 @@ export class MailerIdentityController {
       GetMailerIdentitiesAction,
     )
 
-    return action.handle(identities, mailer, request.team)
+    return action.handle(identities, mailer, ctx.get("team"))
   }
 
-  async create(request: FastifyRequest<{ Params: { mailerId: string } }>) {
+  async create(ctx: HonoContext) {
     const mailer =
-      await this.mailerValidationAndAuthorizationConcern.ensureMailerExists(
-        request,
-      )
+      await this.mailerValidationAndAuthorizationConcern.ensureMailerExists(ctx)
 
-    await this.mailerValidationAndAuthorizationConcern.ensureHasPermissions(
-      request,
-    )
+    await this.mailerValidationAndAuthorizationConcern.ensureHasPermissions(ctx)
 
-    const { data, success, error } = CreateMailerIdentitySchema.safeParse(
-      request.body ?? {},
-    )
-
-    if (!success) throw E_VALIDATION_FAILED(error)
+    const data = await this.validate(ctx, CreateMailerIdentitySchema)
 
     const action = container.resolve<CreateMailerIdentityAction>(
       CreateMailerIdentityAction,
     )
 
-    const identity = await action.handle(data, mailer, request.team)
+    const identity = await action.handle(data, mailer, ctx.get("team"))
 
-    return identity
+    return ctx.json({ id: identity.id })
   }
 
-  async refresh(
-    request: FastifyRequest<{
-      Params: { mailerId: string; mailerIdentityId: string }
-    }>,
-  ) {
-    await this.mailerValidationAndAuthorizationConcern.ensureHasPermissions(
-      request,
-    )
+  async refresh(ctx: HonoContext) {
+    await this.mailerValidationAndAuthorizationConcern.ensureHasPermissions(ctx)
 
     const mailer =
-      await this.mailerValidationAndAuthorizationConcern.ensureMailerExists(
-        request,
-      )
-    const mailerIdentity = await this.ensureMailerIdentityExists(request)
+      await this.mailerValidationAndAuthorizationConcern.ensureMailerExists(ctx)
+    const mailerIdentity = await this.ensureMailerIdentityExists(ctx)
 
     if (
       mailerIdentity.status !== "FAILED" &&
@@ -126,7 +104,7 @@ export class MailerIdentityController {
       mailer,
       mailerIdentity,
       { deleteOnProvider: true },
-      request.team,
+      ctx.get("team"),
     )
 
     const identity = await createIdentityAction.handle(
@@ -135,48 +113,32 @@ export class MailerIdentityController {
         value: mailerIdentity.value,
       },
       mailer,
-      request.team,
+      ctx.get("team"),
     )
 
-    return identity
+    return ctx.json(identity)
   }
 
-  async delete(
-    request: FastifyRequest<{
-      Params: { mailerId: string; mailerIdentityId: string }
-    }>,
-  ) {
-    await this.mailerValidationAndAuthorizationConcern.ensureHasPermissions(
-      request,
-    )
+  async delete(ctx: HonoContext) {
+    await this.mailerValidationAndAuthorizationConcern.ensureHasPermissions(ctx)
 
     const mailer =
-      await this.mailerValidationAndAuthorizationConcern.ensureMailerExists(
-        request,
-      )
-    const mailerIdentity = await this.ensureMailerIdentityExists(request)
+      await this.mailerValidationAndAuthorizationConcern.ensureMailerExists(ctx)
+    const mailerIdentity = await this.ensureMailerIdentityExists(ctx)
 
-    const { data, success, error } = DeleteMailerIdentitySchema.safeParse(
-      request.body ?? {},
-    )
-
-    if (!success) throw E_VALIDATION_FAILED(error)
+    const data = await this.validate(ctx, DeleteMailerIdentitySchema)
 
     const action = container.resolve(DeleteMailerIdentityAction)
 
-    await action.handle(mailer, mailerIdentity, data, request.team)
+    await action.handle(mailer, mailerIdentity, data, ctx.get("team"))
 
-    return { id: mailerIdentity.id }
+    return ctx.json({ id: mailerIdentity.id })
   }
 
-  protected async ensureMailerIdentityExists(
-    request: FastifyRequest<{
-      Params: { mailerId: string; mailerIdentityId: string }
-    }>,
-  ) {
+  protected async ensureMailerIdentityExists(ctx: HonoContext) {
     const mailerIdentity = await this.mailerIdentityRepository.findById(
-      request.params.mailerIdentityId,
-      [eq(mailerIdentities.mailerId, request.params.mailerId)],
+      ctx.req.param("mailerIdentityId"),
+      [eq(mailerIdentities.mailerId, ctx.req.param("mailerId"))],
     )
 
     if (!mailerIdentity)

@@ -1,13 +1,8 @@
 import { eq } from "drizzle-orm"
-import {
-  FastifyInstance,
-  FastifyReply,
-  FastifyRequest,
-  RouteHandlerMethod,
-} from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
 import { TeamPolicy } from "@/domains/audiences/policies/team_policy.js"
+import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
 import { InstallMailerAction } from "@/domains/teams/actions/install_mailer_action.js"
 import { CreateMailerAction } from "@/domains/teams/actions/mailers/create_mailer_action.js"
 import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action.js"
@@ -22,29 +17,23 @@ import {
 } from "@/http/responses/errors.js"
 import { ContainerKey } from "@/infrastructure/container.js"
 import { mailers } from "@/infrastructure/database/schema/schema.ts"
-import { Mailer } from "@/infrastructure/database/schema/types.ts"
+import { HonoInstance } from "@/infrastructure/server/hono.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
-export class MailerController {
+export class MailerController extends BaseController {
   constructor(
     @inject(MailerRepository) protected mailerRepository: MailerRepository,
-    @inject(ContainerKey.app) protected app: FastifyInstance,
+    @inject(ContainerKey.app) protected app: HonoInstance,
   ) {
+    super()
     this.app.defineRoutes(
       [
         ["POST", "/", this.store.bind(this)],
         ["GET", "/", this.index.bind(this)],
-        ["PATCH", "/:mailerId", this.update.bind(this) as RouteHandlerMethod],
-        [
-          "PATCH",
-          "/:mailerId/reconnect",
-          this.reconnect.bind(this) as RouteHandlerMethod,
-        ],
-        [
-          "POST",
-          "/:mailerId/install",
-          this.install.bind(this) as RouteHandlerMethod,
-        ],
+        ["PATCH", "/:mailerId", this.update.bind(this)],
+        ["PATCH", "/:mailerId/reconnect", this.reconnect.bind(this)],
+        ["POST", "/:mailerId/install", this.install.bind(this)],
       ],
       {
         prefix: "mailers",
@@ -52,88 +41,67 @@ export class MailerController {
     )
   }
 
-  async index(request: FastifyRequest, _: FastifyReply) {
-    await this.ensureHasPermissions(request)
+  async index(ctx: HonoContext) {
+    await this.ensureHasPermissions(ctx)
 
     const action = container.resolve(GetMailerAction)
 
-    const mailer = await action.handle(request.team)
+    const mailer = await action.handle(ctx.get("team"))
 
     return mailer
   }
 
-  async store(request: FastifyRequest, _: FastifyReply) {
-    const { success, error, data } = CreateMailerSchema.safeParse(
-      request.body ?? {},
-    )
+  async store(ctx: HonoContext) {
+    const data = await this.validate(ctx, CreateMailerSchema)
 
-    if (!success) throw E_VALIDATION_FAILED(error)
-
-    await this.ensureHasPermissions(request)
+    await this.ensureHasPermissions(ctx)
 
     const action = container.resolve<CreateMailerAction>(CreateMailerAction)
 
-    const mailer = await action.handle(data, request.team)
+    const mailer = await action.handle(data, ctx.get("team"))
 
-    return mailer
+    return ctx.json(mailer)
   }
 
-  async update(
-    request: FastifyRequest<{ Params: { mailerId: string } }>,
-    _: FastifyReply,
-  ) {
-    const { success, error, data } = UpdateMailerSchema.safeParse(
-      request.body ?? {},
-    )
+  async update(ctx: HonoContext) {
+    const data = await this.validate(ctx, UpdateMailerSchema)
 
-    if (!success) throw E_VALIDATION_FAILED(error)
+    const mailer = await this.ensureMailerExists(ctx)
 
-    const mailer = await this.ensureMailerExists(request)
-
-    await this.ensureHasPermissions(request)
+    await this.ensureHasPermissions(ctx)
 
     const action = container.resolve<UpdateMailerAction>(UpdateMailerAction)
 
-    await action.handle(mailer, data, request.team)
+    await action.handle(mailer, data, ctx.get("team"))
 
-    return { id: mailer.id }
+    return ctx.json({ id: mailer.id })
   }
 
-  async install(
-    request: FastifyRequest<{ Params: { mailerId: string } }>,
-    _: FastifyReply,
-  ) {
-    const mailer = await this.ensureMailerExists(request)
+  async install(ctx: HonoContext) {
+    const mailer = await this.ensureMailerExists(ctx)
 
-    await this.ensureHasPermissions(request)
+    await this.ensureHasPermissions(ctx)
 
     const action = container.resolve<InstallMailerAction>(InstallMailerAction)
 
-    const success = await action.handle(mailer, request.team)
+    const success = await action.handle(mailer, ctx.get("team"))
 
     if (!success) throw E_OPERATION_FAILED("Failed to install mailer.")
 
-    return mailer
+    return ctx.json({ id: mailer.id })
   }
 
-  async reconnect(
-    request: FastifyRequest<{ Params: { mailerId: string } }>,
-    _: FastifyReply,
-  ) {
-    const mailer = await this.ensureMailerExists(request)
+  async reconnect(ctx: HonoContext) {
+    const mailer = await this.ensureMailerExists(ctx)
 
-    await this.ensureHasPermissions(request)
+    await this.ensureHasPermissions(ctx)
 
     const configuration = this.mailerRepository.getDecryptedConfiguration(
       mailer.configuration,
-      request.team.configurationKey,
+      ctx.get("team").configurationKey,
     )
 
-    const { success, error, data } = UpdateMailerSchema.safeParse(
-      request.body ?? {},
-    )
-
-    if (!success) throw E_VALIDATION_FAILED(error)
+    const data = await this.validate(ctx, UpdateMailerSchema)
 
     if (data?.configuration.region !== configuration.region) {
       throw E_VALIDATION_FAILED({
@@ -150,25 +118,23 @@ export class MailerController {
     await container
       .resolve<UpdateMailerAction>(UpdateMailerAction)
       .reconnecting()
-      .handle(mailer, data, request.team)
+      .handle(mailer, data, ctx.get("team"))
 
     const updatedMailer = await this.mailerRepository.findById(mailer.id)
 
     await container
       .resolve<InstallMailerAction>(InstallMailerAction)
-      .handle(updatedMailer!, request.team)
+      .handle(updatedMailer!, ctx.get("team"))
 
-    return this.mailerRepository.findById(mailer.id)
+    return ctx.json({ id: mailer.id })
   }
 
-  protected async ensureMailerExists(
-    request: FastifyRequest<{ Params: { mailerId: string } }>,
-  ) {
+  protected async ensureMailerExists(ctx: HonoContext) {
     const mailer = await this.mailerRepository.findById(
-      request.params.mailerId,
+      ctx.req.param("mailerId"),
       [
-        eq(mailers.teamId, request.team.id),
-        eq(mailers.id, request.params.mailerId),
+        eq(mailers.teamId, ctx.get("team").id),
+        eq(mailers.id, ctx.req.param("mailerId")),
       ],
     )
 
@@ -177,13 +143,15 @@ export class MailerController {
         errors: [{ message: "Unknown mailer.", path: ["mailerId"] }],
       })
 
-    return mailer as Mailer
+    return mailer
   }
 
-  protected async ensureHasPermissions(request: FastifyRequest) {
+  protected async ensureHasPermissions(ctx: HonoContext) {
     const policy = container.resolve<TeamPolicy>(TeamPolicy)
 
-    if (!policy.canAdministrate(request.team, request.accessToken.userId!))
+    if (
+      !policy.canAdministrate(ctx.get("team"), ctx.get("accessToken").userId!)
+    )
       throw E_UNAUTHORIZED()
   }
 }

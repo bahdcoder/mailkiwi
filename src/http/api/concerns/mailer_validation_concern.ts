@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm"
-import { FastifyRequest } from "fastify"
 import { inject, injectable } from "tsyringe"
 
 import { TeamPolicy } from "@/domains/audiences/policies/team_policy.ts"
@@ -7,6 +6,7 @@ import { MailerRepository } from "@/domains/teams/repositories/mailer_repository
 import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
 import { mailers } from "@/infrastructure/database/schema/schema.ts"
 import { Mailer } from "@/infrastructure/database/schema/types.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
 export class MailerValidationAndAuthorizationConcern {
@@ -17,14 +17,12 @@ export class MailerValidationAndAuthorizationConcern {
     private teamPolicy: TeamPolicy,
   ) {}
 
-  public async ensureMailerExists(
-    request: FastifyRequest<{ Params: { mailerId: string } }>,
-  ) {
+  public async ensureMailerExists(ctx: HonoContext) {
     const mailer = await this.mailerRepository.findById(
-      request.params.mailerId,
+      ctx.req.param("mailerId"),
       [
-        eq(mailers.teamId, request.team.id),
-        eq(mailers.id, request.params.mailerId),
+        eq(mailers.teamId, ctx.get("team").id),
+        eq(mailers.id, ctx.req.param("mailerId")),
       ],
     )
 
@@ -36,11 +34,11 @@ export class MailerValidationAndAuthorizationConcern {
     return mailer as Mailer
   }
 
-  public async ensureHasPermissions(request: FastifyRequest) {
+  public async ensureHasPermissions(ctx: HonoContext) {
     if (
       !this.teamPolicy.canAdministrate(
-        request.team,
-        request.accessToken.userId!,
+        ctx.get("team"),
+        ctx.get("accessToken").userId!,
       )
     )
       throw E_UNAUTHORIZED()

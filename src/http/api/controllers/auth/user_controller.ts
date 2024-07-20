@@ -1,42 +1,35 @@
-import {
-  FastifyInstance,
-  FastifyReply,
-  FastifyRequest,
-  RouteHandlerMethod,
-} from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
 import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
 import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action.js"
 import { ContainerKey } from "@/infrastructure/container.js"
+import { HonoInstance } from "@/infrastructure/server/hono.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
 export class UserController {
   constructor(
     @inject(UserRepository) private userRepository: UserRepository,
-    @inject(ContainerKey.app) private app: FastifyInstance,
+    @inject(ContainerKey.app) private app: HonoInstance,
   ) {
-    this.app.defineRoutes(
-      [["GET", "/profile", this.profile.bind(this) as RouteHandlerMethod]],
-      {
-        prefix: "auth",
-      },
-    )
+    this.app.defineRoutes([["GET", "/profile", this.profile.bind(this)]], {
+      prefix: "auth",
+    })
   }
 
-  async profile(request: FastifyRequest, _: FastifyReply) {
+  async profile(ctx: HonoContext) {
     const getMailerAction = container.resolve(GetMailerAction)
 
     // Sync mailer identity statuses from AWS.
     try {
-      await getMailerAction.handle(request.team)
+      await getMailerAction.handle(ctx.get("team"))
     } catch (error) {
       d({ error })
       //
     }
 
     const user = await this.userRepository.findById(
-      request.accessToken.userId,
+      ctx.get("accessToken").userId,
       {
         with: {
           teams: {
@@ -53,6 +46,6 @@ export class UserController {
       },
     )
 
-    return user
+    return ctx.json(user)
   }
 }

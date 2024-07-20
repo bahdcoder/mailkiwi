@@ -3,7 +3,7 @@ import { describe, test } from "vitest"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
-import { injectAsUser } from "@/tests/utils/http.js"
+import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 describe("Teams", () => {
   test("can fetch a single team", async ({ expect }) => {
@@ -15,7 +15,7 @@ describe("Teams", () => {
       provider: "AWS_SES",
     }
 
-    const response = await injectAsUser(user, {
+    const response = await makeRequestAsUser(user, {
       method: "POST",
       path: "/mailers",
       body: mailerPayload,
@@ -26,7 +26,7 @@ describe("Teams", () => {
       accessSecret: faker.string.alphanumeric({ length: 16 }),
     }
 
-    await injectAsUser(user, {
+    await makeRequestAsUser(user, {
       method: "PATCH",
       path: `/mailers/${(await response.json()).id}`,
       body: {
@@ -34,16 +34,15 @@ describe("Teams", () => {
       },
     })
 
-    const showTeamResponse = await injectAsUser(user, {
+    const showTeamResponse = await makeRequestAsUser(user, {
       method: "GET",
       path: `/teams/${team.id}`,
     })
 
-    expect(showTeamResponse.statusCode).toBe(200)
-
     const json = await showTeamResponse.json()
 
     expect(json.name).toBe(team.name)
+    expect(showTeamResponse.status).toBe(200)
 
     await refreshDatabase()
   })

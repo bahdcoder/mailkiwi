@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "e29f13b5-f1d3-4a84-83fa-28e860770bc0",
+  "id": "a9c20ee0-310a-4991-b802-5aad461caa10",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accessTokens": {
@@ -336,8 +336,8 @@
       },
       "uniqueConstraints": {}
     },
-    "contact_automation_steps": {
-      "name": "contact_automation_steps",
+    "contactAutomationSteps": {
+      "name": "contactAutomationSteps",
       "columns": {
         "id": {
           "name": "id",
@@ -398,9 +398,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "contact_automation_steps_automationStepId_automation_steps_id_fk": {
-          "name": "contact_automation_steps_automationStepId_automation_steps_id_fk",
-          "tableFrom": "contact_automation_steps",
+        "contactAutomationSteps_automationStepId_automation_steps_id_fk": {
+          "name": "contactAutomationSteps_automationStepId_automation_steps_id_fk",
+          "tableFrom": "contactAutomationSteps",
           "tableTo": "automation_steps",
           "columnsFrom": [
             "automationStepId"
@@ -411,10 +411,10 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "contact_automation_steps_contactId_Contact_id_fk": {
-          "name": "contact_automation_steps_contactId_Contact_id_fk",
-          "tableFrom": "contact_automation_steps",
-          "tableTo": "Contact",
+        "contactAutomationSteps_contactId_contacts_id_fk": {
+          "name": "contactAutomationSteps_contactId_contacts_id_fk",
+          "tableFrom": "contactAutomationSteps",
+          "tableTo": "contacts",
           "columnsFrom": [
             "contactId"
           ],
@@ -426,8 +426,8 @@
         }
       },
       "compositePrimaryKeys": {
-        "contact_automation_steps_id": {
-          "name": "contact_automation_steps_id",
+        "contactAutomationSteps_id": {
+          "name": "contactAutomationSteps_id",
           "columns": [
             "id"
           ]
@@ -435,8 +435,8 @@
       },
       "uniqueConstraints": {}
     },
-    "Contact": {
-      "name": "Contact",
+    "contacts": {
+      "name": "contacts",
       "columns": {
         "id": {
           "name": "id",
@@ -513,9 +513,9 @@
         }
       },
       "foreignKeys": {
-        "Contact_audienceId_audiences_id_fk": {
-          "name": "Contact_audienceId_audiences_id_fk",
-          "tableFrom": "Contact",
+        "contacts_audienceId_audiences_id_fk": {
+          "name": "contacts_audienceId_audiences_id_fk",
+          "tableFrom": "contacts",
           "tableTo": "audiences",
           "columnsFrom": [
             "audienceId"
@@ -528,8 +528,8 @@
         }
       },
       "compositePrimaryKeys": {
-        "Contact_id": {
-          "name": "Contact_id",
+        "contacts_id": {
+          "name": "contacts_id",
           "columns": [
             "id"
           ]
@@ -813,8 +813,8 @@
         }
       }
     },
-    "Tag": {
-      "name": "Tag",
+    "tags": {
+      "name": "tags",
       "columns": {
         "id": {
           "name": "id",
@@ -836,13 +836,34 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "audienceId": {
+          "name": "audienceId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "tags_audienceId_audiences_id_fk": {
+          "name": "tags_audienceId_audiences_id_fk",
+          "tableFrom": "tags",
+          "tableTo": "audiences",
+          "columnsFrom": [
+            "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
-        "Tag_id": {
-          "name": "Tag_id",
+        "tags_id": {
+          "name": "tags_id",
           "columns": [
             "id"
           ]
@@ -850,8 +871,8 @@
       },
       "uniqueConstraints": {}
     },
-    "TagsOnContacts": {
-      "name": "TagsOnContacts",
+    "tagsOnContacts": {
+      "name": "tagsOnContacts",
       "columns": {
         "tagId": {
           "name": "tagId",
@@ -876,16 +897,16 @@
         }
       },
       "indexes": {
-        "TagsOnContacts_tagId_contactId_key": {
-          "name": "TagsOnContacts_tagId_contactId_key",
+        "tagsOnContactsTagIdContactIdKey": {
+          "name": "tagsOnContactsTagIdContactIdKey",
           "columns": [
             "tagId",
             "contactId"
           ],
           "isUnique": true
         },
-        "TagsOnContacts_tagId_contactId_idx": {
-          "name": "TagsOnContacts_tagId_contactId_idx",
+        "tagsOnContactsTagIdContactIdIdx": {
+          "name": "tagsOnContactsTagIdContactIdIdx",
           "columns": [
             "tagId",
             "contactId"
@@ -894,10 +915,10 @@
         }
       },
       "foreignKeys": {
-        "TagsOnContacts_tagId_Tag_id_fk": {
-          "name": "TagsOnContacts_tagId_Tag_id_fk",
-          "tableFrom": "TagsOnContacts",
-          "tableTo": "Tag",
+        "tagsOnContacts_tagId_tags_id_fk": {
+          "name": "tagsOnContacts_tagId_tags_id_fk",
+          "tableFrom": "tagsOnContacts",
+          "tableTo": "tags",
           "columnsFrom": [
             "tagId"
           ],
@@ -907,10 +928,10 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "TagsOnContacts_contactId_Contact_id_fk": {
-          "name": "TagsOnContacts_contactId_Contact_id_fk",
-          "tableFrom": "TagsOnContacts",
-          "tableTo": "Contact",
+        "tagsOnContacts_contactId_contacts_id_fk": {
+          "name": "tagsOnContacts_contactId_contacts_id_fk",
+          "tableFrom": "tagsOnContacts",
+          "tableTo": "contacts",
           "columnsFrom": [
             "contactId"
           ],

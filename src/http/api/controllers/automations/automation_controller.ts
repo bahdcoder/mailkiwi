@@ -1,9 +1,3 @@
-import {
-  FastifyInstance,
-  FastifyReply,
-  FastifyRequest,
-  RouteHandlerMethod,
-} from "fastify"
 import { container, inject, injectable } from "tsyringe"
 
 import { CreateAutomationAction } from "@/domains/automations/actions/create_automation_action.js"
@@ -11,20 +5,22 @@ import { CreateAutomationSchema } from "@/domains/automations/dto/create_automat
 import { AutomationRepository } from "@/domains/automations/repositories/automation_repository.js"
 import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
 import { ContainerKey } from "@/infrastructure/container.js"
+import { HonoInstance } from "@/infrastructure/server/hono.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
 export class AutomationController extends BaseController {
   constructor(
     @inject(AutomationRepository)
     private AutomationRepository: AutomationRepository,
-    @inject(ContainerKey.app) private app: FastifyInstance,
+    @inject(ContainerKey.app) private app: HonoInstance,
   ) {
     super()
 
     this.app.defineRoutes(
       [
         ["GET", "/", this.index.bind(this)],
-        ["POST", "/", this.store.bind(this) as RouteHandlerMethod],
+        ["POST", "/", this.store.bind(this)],
       ],
       {
         prefix: "audiences/:audienceId/automations",
@@ -32,22 +28,19 @@ export class AutomationController extends BaseController {
     )
   }
 
-  async index(request: FastifyRequest, response: FastifyReply) {
-    return response.send([])
+  async index(ctx: HonoContext) {
+    return ctx.json([])
   }
 
-  async store(
-    request: FastifyRequest<{ Params: { audienceId: string } }>,
-    _: FastifyReply,
-  ) {
-    const data = this.validate(request, CreateAutomationSchema)
+  async store(ctx: HonoContext) {
+    const data = await this.validate(ctx, CreateAutomationSchema)
 
     const action = container.resolve<CreateAutomationAction>(
       CreateAutomationAction,
     )
 
-    const automation = await action.handle(data, request.params.audienceId)
+    const automation = await action.handle(data, ctx.req.param("audienceId"))
 
-    return automation
+    return ctx.json(automation)
   }
 }

@@ -1,21 +1,19 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { inject, injectable } from "tsyringe"
 
 import { ContainerKey } from "@/infrastructure/container.js"
+import { HonoInstance } from "@/infrastructure/server/hono.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
 export class RootController {
-  constructor(@inject(ContainerKey.app) private app: FastifyInstance) {
+  constructor(@inject(ContainerKey.app) private app: HonoInstance) {
     this.app.defineRoutes([["GET", "*", this.index.bind(this)]], {
       prefix: "p",
-      onRequestHooks: [],
+      middleware: [],
     })
   }
 
-  async index(_: FastifyRequest, reply: FastifyReply) {
-    return reply.html()
-    return reply
-      .type("text/html")
-      .send("<h1>Hello World from the other side.</h1>")
+  async index(ctx: HonoContext) {
+    return ctx.html("<h1>Hello World from the root controller.</h1>")
   }
 }

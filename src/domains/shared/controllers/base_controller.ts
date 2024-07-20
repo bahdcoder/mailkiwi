@@ -1,25 +1,29 @@
-import { FastifyRequest } from "fastify"
 import { injectable } from "tsyringe"
 import { z } from "zod"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
 export class BaseController {
   // eslint-disable-next-line
-  protected validate<T extends z.ZodObject<any>>(
-    request: FastifyRequest,
+  protected async validate<T extends z.ZodType<any>>(
+    ctx: HonoContext,
     schema: T,
-  ): z.infer<T> {
-    const { success, error, data } = schema.safeParse(request.body)
+  ): Promise<z.infer<T>> {
+    const { success, error, data } = await schema.safeParseAsync(
+      await ctx.req.json(),
+    )
 
     if (!success) throw E_VALIDATION_FAILED(error)
 
     return data
   }
 
-  protected ensureTeam(request: FastifyRequest) {
-    if (!request.team)
+  protected ensureTeam(ctx: HonoContext) {
+    const team = ctx.get("team")
+
+    if (!team)
       throw E_VALIDATION_FAILED({
         errors: [
           {
@@ -29,6 +33,6 @@ export class BaseController {
         ],
       })
 
-    return this
+    return team
   }
 }

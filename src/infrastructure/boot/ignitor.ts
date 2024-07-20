@@ -1,6 +1,5 @@
 import "./globals"
 
-import Fastify, { FastifyInstance } from "fastify"
 import { container } from "tsyringe"
 
 import { AudienceController } from "@/http/api/controllers/audiences/audience_controller.js"
@@ -12,9 +11,6 @@ import { MailerController } from "@/http/api/controllers/teams/mailer_controller
 import { MailerIdentityController } from "@/http/api/controllers/teams/mailer_identity_controller.js"
 import { TeamController } from "@/http/api/controllers/teams/team_controller.js"
 import { MailerWebhooksContorller } from "@/http/api/controllers/webhooks/mailer_webhooks_controller.js"
-import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware.js"
-import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware.js"
-import { globalErrorHandler } from "@/http/responses/error_handler.js"
 import { RootController } from "@/http/views/controllers/root_controller.js"
 import { InstallationSettings } from "@/infrastructure/boot/installation_settings.js"
 import { ContainerKey } from "@/infrastructure/container.js"
@@ -30,11 +26,12 @@ import {
   env,
   EnvVariables,
 } from "@/infrastructure/env.js"
+import { ExtendedHono } from "@/infrastructure/server/hono.js"
 
 export class Ignitor {
   protected env: EnvVariables
   protected config: ConfigVariables
-  protected app: FastifyInstance
+  protected app: ExtendedHono<{ Bindings: { _: boolean } }>
   protected database: DrizzleClient
 
   boot() {
@@ -52,37 +49,11 @@ export class Ignitor {
   }
 
   bootHttpServer() {
-    this.app = Fastify({ logger: !this.env.isTest })
+    this.app = new ExtendedHono()
 
-    const app = this.app
+    this.app.defineErrorHandler()
 
-    if (this.env.isDevelopment) {
-      this.app.addHook("onRoute", ({ path, method }) => {
-        console.log(`${method} ${path}`)
-      })
-    }
-
-    this.app.defineRoutes = function defineRoutes(routes, routeOptions) {
-      app.register(function register(currentApp, opts, done) {
-        const defaultRequestHooks = routeOptions?.onRequestHooks ?? [
-          container.resolve<AccessTokenMiddleware>(AccessTokenMiddleware)
-            .handle,
-          container.resolve<TeamMiddleware>(TeamMiddleware).handle,
-        ]
-
-        defaultRequestHooks.forEach((onRequestHook) => {
-          currentApp.addHook("onRequest", onRequestHook)
-        })
-
-        routes.forEach(([method, url, handler]) =>
-          currentApp.route({ method, url, handler }),
-        )
-
-        done()
-      }, routeOptions)
-    }
-
-    this.app.setErrorHandler(globalErrorHandler)
+    // this.app.setErrorHandler(globalErrorHandler)
 
     return this
   }
@@ -131,14 +102,15 @@ export class Ignitor {
         return this
       }
 
-      await this.app.listen({
-        port: this.env.PORT,
-        host: this.env.HOST,
-      })
+      // await this.app.listen({
+      //   port: this.env.PORT,
+      //   host: this.env.HOST,
+      // })
 
       return this
     } catch (error) {
-      this.app.log.error(error)
+      d({ error })
+      // this.app.log.error(error)
 
       process.exit(1)
     }
@@ -158,6 +130,6 @@ export class Ignitor {
   }
 
   async shutdown() {
-    await this.app.close()
+    // await this.app.close()
   }
 }

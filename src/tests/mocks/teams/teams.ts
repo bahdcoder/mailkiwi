@@ -437,4 +437,6 @@ export const seedAutomation = async (automation: {
   // 3. Check if subscriber has "purchased-book" tag. If yes, add them to list "Purchasers". End automation. If no, remove them from email list. End automation. ✅
 
   // Provide sample api responses for each of the endpoints related to automations . all automation points must be their own database rows to allow for full flexibility to allow for features like drag and drop and reordering of automation points
+
+  return { id: automationId }
 }

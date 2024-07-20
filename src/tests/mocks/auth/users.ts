@@ -10,7 +10,7 @@ import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.
 import { TeamRepository } from "@/domains/teams/repositories/team_repository.ts"
 import { makeDatabase } from "@/infrastructure/container.js"
 import { users } from "@/infrastructure/database/schema/schema.ts"
-import { injectAsUser } from "@/tests/utils/http.js"
+import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 export const createUser = async ({
   createMailerWithIdentity,
@@ -45,7 +45,7 @@ export const createUser = async ({
   })
 
   if (createMailerWithIdentity) {
-    const response = await injectAsUser(freshUser!, {
+    const response = await makeRequestAsUser(freshUser!, {
       method: "POST",
       path: "/mailers",
       body: {
@@ -57,7 +57,7 @@ export const createUser = async ({
     mockClient(SESClient).onAnyCommand().resolves({})
     mockClient(SNSClient).onAnyCommand().resolves({})
 
-    await injectAsUser(freshUser!, {
+    await makeRequestAsUser(freshUser!, {
       method: "PATCH",
       path: `/mailers/${(await response.json()).id}`,
       body: {

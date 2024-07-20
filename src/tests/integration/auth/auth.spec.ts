@@ -5,11 +5,10 @@ import { describe, test } from "vitest"
 import { makeApp, makeDatabase } from "@/infrastructure/container.js"
 import { users } from "@/infrastructure/database/schema/schema.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { injectAsUser } from "@/tests/utils/http.js"
+import { makeRequest } from "@/tests/utils/http.js"
 
 describe("User registration", () => {
   test("can register a new user account", async ({ expect }) => {
-    const app = makeApp()
     const database = makeDatabase()
 
     const payload = {
@@ -18,9 +17,8 @@ describe("User registration", () => {
       password: "@Dx93opPisxYee#$%^",
     }
 
-    const response = await app.inject({
+    const response = await makeRequest("/auth/register", {
       method: "POST",
-      path: "/auth/register",
       body: payload,
     })
 
@@ -28,7 +26,7 @@ describe("User registration", () => {
       where: eq(users.email, payload.email),
     })
 
-    expect(response.statusCode).toBe(200)
+    expect(response.status).toBe(200)
 
     expect(userFromDatabase).toBeDefined()
     expect(userFromDatabase?.name).toEqual(payload.name)
@@ -37,7 +35,6 @@ describe("User registration", () => {
   test("registering a new user account automatically creates a team for that user.", async ({
     expect,
   }) => {
-    const app = makeApp()
     const database = makeDatabase()
 
     const payload = {
@@ -46,9 +43,8 @@ describe("User registration", () => {
       password: "@Dx93opPisxYee#$%^",
     }
 
-    await app.inject({
+    await makeRequest("/auth/register", {
       method: "POST",
-      path: "/auth/register",
       body: payload,
     })
 
@@ -72,19 +68,18 @@ describe("User registration", () => {
 
     const { user } = await createUser()
 
-    const response = await app.inject({
+    const response = await app.request("/auth/register", {
       method: "POST",
-      path: "/auth/register",
-      body: {
+      body: JSON.stringify({
         name: faker.person.fullName(),
         email: user.email,
         password: "@Dx93opPisxYee#$%^",
-      },
+      }),
     })
 
-    const json = response.json()
+    const json = await response.json()
 
-    expect(response.statusCode).toEqual(400)
+    expect(response.status).toEqual(422)
     expect(json.errors).toMatchObject([
       {
         message: "A user with this email already exists.",
@@ -98,11 +93,9 @@ describe("User login", () => {
     expect,
   }) => {
     const { user } = await createUser()
-    const app = makeApp()
 
-    const response = await app.inject({
+    const response = await makeRequest("/auth/login", {
       method: "POST",
-      path: "/auth/login",
       body: {
         email: user.email,
         password: "password",
@@ -111,20 +104,21 @@ describe("User login", () => {
 
     const json = await response.json()
 
-    expect(response.statusCode).toBe(200)
+    expect(response.status).toBe(200)
     expect(json.accessToken.type).toBe("bearer")
     expect(json.accessToken.token).toBeDefined()
     expect(() => new Date(json.accessToken.expiresAt)).not.toThrowError()
 
-    const profileResponse = await injectAsUser(user, {
+    const profileResponse = await makeRequest("/auth/profile", {
       method: "GET",
-      path: "/auth/profile",
       headers: {
         authorization: `Bearer ${json.accessToken.token}`,
       },
     })
 
     const profile = await profileResponse.json()
+
+    // d({ profile })
 
     expect(profile.id).toBe(user.id)
     expect(profile.name).toBe(user.name)
@@ -135,18 +129,17 @@ describe("User login", () => {
     const { user } = await createUser()
     const app = makeApp()
 
-    const response = await app.inject({
-      method: "POST",
-      path: "/auth/login",
-      body: {
+    const response = await app.request("/auth/login", {
+      method: "post",
+      body: JSON.stringify({
         email: user.email,
         password: "invalid-password",
-      },
+      }),
     })
 
     const json = await response.json()
 
-    expect(response.statusCode).toBe(400)
+    expect(response.status).toBe(422)
     expect(json.errors[0].message).toBe(
       "These credentials do not match our records.",
     )

@@ -1,9 +1,9 @@
-import { FastifyReply, FastifyRequest } from "fastify"
+import { Next } from "hono"
 import { inject, injectable } from "tsyringe"
 
-import { TeamWithMembers } from "@/domains/shared/types/team.js"
 import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
 import { makeConfig } from "@/infrastructure/container.js"
+import { HonoContext } from "@/infrastructure/server/types.ts"
 
 @injectable()
 export class TeamMiddleware {
@@ -12,25 +12,23 @@ export class TeamMiddleware {
     private teamRepository: TeamRepository,
   ) {}
 
-  handle = async (request: FastifyRequest, _: FastifyReply) => {
-    const teamHeader = request.headers[
-      makeConfig().software.teamHeader
-    ] as string
+  handle = async (ctx: HonoContext, next: Next) => {
+    const teamHeader = ctx.req.header(makeConfig().software.teamHeader)
 
-    if (!teamHeader) {
-      return
-    }
+    let team = teamHeader
+      ? await this.teamRepository.findById(teamHeader)
+      : undefined
 
-    let team = await this.teamRepository.findById(teamHeader)
+    const accessToken = ctx.get("accessToken")
 
-    if (!team && request.accessToken.userId) {
-      team = await this.teamRepository.findUserDefaultTeam(
-        request.accessToken.userId,
-      )
+    if (!team && accessToken.userId) {
+      team = await this.teamRepository.findUserDefaultTeam(accessToken.userId)
     }
 
     if (team) {
-      request.team = team as TeamWithMembers
+      ctx.set("team", team)
     }
+
+    await next()
   }
 }

@@ -6,7 +6,7 @@ import { makeDatabase } from "@/infrastructure/container.js"
 import { automations } from "@/infrastructure/database/schema/schema.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.ts"
-import { injectAsUser } from "@/tests/utils/http.ts"
+import { makeRequestAsUser } from "@/tests/utils/http.ts"
 
 describe("Contact automations", () => {
   test("experimenting with automations", async ({ expect }) => {
@@ -15,7 +15,7 @@ describe("Contact automations", () => {
 
     const database = makeDatabase()
 
-    await seedAutomation({
+    const automation = await seedAutomation({
       audienceId: audience.id,
       name: "Book launch",
       description: "Launch your book with these automated steps.",
@@ -78,7 +78,7 @@ describe("Contact automations", () => {
     }
 
     const automationFetch = await database.query.automations.findFirst({
-      where: eq(automations.id, automationId),
+      where: eq(automations.id, automation.id),
       with: {
         steps: true,
       },
@@ -105,8 +105,8 @@ describe("Contact automations", () => {
       name: faker.string.uuid(),
     }
 
-    const response = await injectAsUser(user, {
-      payload,
+    const response = await makeRequestAsUser(user, {
+      body: payload,
       method: "POST",
       path: `/audiences/${audience.id}/automations`,
     })
