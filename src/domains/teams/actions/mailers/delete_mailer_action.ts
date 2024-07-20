@@ -1,12 +1,11 @@
-import { inject, injectable } from "tsyringe"
-
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class DeleteMailerAction {
   constructor(
-    @inject(MailerRepository)
-    private mailerRepository: MailerRepository,
+    private mailerRepository: MailerRepository = container.make(
+      MailerRepository,
+    ),
   ) {}
 
   handle = async () => {

@@ -1,20 +1,13 @@
-import { container, inject, injectable } from "tsyringe"
-
 import { CreateAutomationAction } from "@/domains/automations/actions/create_automation_action.js"
 import { CreateAutomationSchema } from "@/domains/automations/dto/create_automation_dto.js"
-import { AutomationRepository } from "@/domains/automations/repositories/automation_repository.js"
 import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeApp } from "@/infrastructure/container.js"
 import { HonoInstance } from "@/infrastructure/server/hono.ts"
 import { HonoContext } from "@/infrastructure/server/types.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class AutomationController extends BaseController {
-  constructor(
-    @inject(AutomationRepository)
-    private AutomationRepository: AutomationRepository,
-    @inject(ContainerKey.app) private app: HonoInstance,
-  ) {
+  constructor(private app: HonoInstance = makeApp()) {
     super()
 
     this.app.defineRoutes(
@@ -35,9 +28,7 @@ export class AutomationController extends BaseController {
   async store(ctx: HonoContext) {
     const data = await this.validate(ctx, CreateAutomationSchema)
 
-    const action = container.resolve<CreateAutomationAction>(
-      CreateAutomationAction,
-    )
+    const action = container.make(CreateAutomationAction)
 
     const automation = await action.handle(data, ctx.req.param("audienceId"))
 

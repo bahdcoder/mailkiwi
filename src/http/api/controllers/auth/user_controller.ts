@@ -1,16 +1,14 @@
-import { container, inject, injectable } from "tsyringe"
-
 import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
 import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action.js"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeApp } from "@/infrastructure/container.js"
 import { HonoInstance } from "@/infrastructure/server/hono.ts"
 import { HonoContext } from "@/infrastructure/server/types.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class UserController {
   constructor(
-    @inject(UserRepository) private userRepository: UserRepository,
-    @inject(ContainerKey.app) private app: HonoInstance,
+    private userRepository: UserRepository = container.make(UserRepository),
+    private app: HonoInstance = makeApp(),
   ) {
     this.app.defineRoutes([["GET", "/profile", this.profile.bind(this)]], {
       prefix: "auth",

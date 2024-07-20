@@ -1,5 +1,3 @@
-import { sql } from "drizzle-orm"
-
 import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
 import { makeDatabase } from "@/infrastructure/container.js"
 import {
@@ -17,8 +15,6 @@ import {
 export const refreshDatabase = async () => {
   const database = makeDatabase()
 
-  await database.execute(sql`SET FOREIGN_KEY_CHECKS=0;`)
-
   await database.delete(mailerIdentities)
   await database.delete(mailers)
   await database.delete(contacts)
@@ -28,8 +24,6 @@ export const refreshDatabase = async () => {
   await database.delete(accessTokens)
   await database.delete(teams)
   await database.delete(users)
-
-  await database.execute(sql`SET FOREIGN_KEY_CHECKS=1;`)
 }
 
 export const seedAutomation = async (automation: {

@@ -1,12 +1,9 @@
-import { inject, injectable } from "tsyringe"
-
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeApp } from "@/infrastructure/container.js"
 import { HonoInstance } from "@/infrastructure/server/hono.ts"
 import { HonoContext } from "@/infrastructure/server/types.ts"
 
-@injectable()
 export class RootController {
-  constructor(@inject(ContainerKey.app) private app: HonoInstance) {
+  constructor(private app: HonoInstance = makeApp()) {
     this.app.defineRoutes([["GET", "*", this.index.bind(this)]], {
       prefix: "p",
       middleware: [],

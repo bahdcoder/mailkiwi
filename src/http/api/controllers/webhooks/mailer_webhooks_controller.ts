@@ -1,15 +1,13 @@
-import { inject, injectable } from "tsyringe"
-
 import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeApp } from "@/infrastructure/container.js"
 import { HonoInstance } from "@/infrastructure/server/hono.ts"
 import { HonoContext } from "@/infrastructure/server/types.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class MailerWebhooksContorller {
   constructor(
-    @inject(TeamRepository) private teamRepository: TeamRepository,
-    @inject(ContainerKey.app) private app: HonoInstance,
+    private teamRepository: TeamRepository = container.make(TeamRepository),
+    private app: HonoInstance = makeApp(),
   ) {
     this.app.defineRoutes(
       [

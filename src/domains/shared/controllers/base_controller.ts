@@ -1,10 +1,8 @@
-import { injectable } from "tsyringe"
 import { z } from "zod"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
 import { HonoContext } from "@/infrastructure/server/types.ts"
 
-@injectable()
 export class BaseController {
   // eslint-disable-next-line
   protected async validate<T extends z.ZodType<any>>(

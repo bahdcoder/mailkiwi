@@ -1,7 +1,7 @@
 {
-  "version": "5",
-  "dialect": "mysql",
-  "id": "a9c20ee0-310a-4991-b802-5aad461caa10",
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "f5a17c2c-e7ad-400c-9cad-f4230ed6d06d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accessTokens": {
@@ -9,69 +9,69 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "userId": {
           "name": "userId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "type": {
           "name": "type",
-          "type": "varchar(16)",
+          "type": "text(16)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "name": {
           "name": "name",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "hash": {
           "name": "hash",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(now())"
+          "default": "(cast((julianday('now') - 2440587.5)*86400000 as integer))"
         },
         "lastUsedAt": {
           "name": "lastUsedAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(now())"
+          "default": "(cast((julianday('now') - 2440587.5)*86400000 as integer))"
         },
         "expiresAt": {
           "name": "expiresAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(now())"
+          "default": "(cast((julianday('now') - 2440587.5)*86400000 as integer))"
         }
       },
       "indexes": {},
@@ -103,14 +103,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "accessTokens_id": {
-          "name": "accessTokens_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "audiences": {
@@ -118,21 +111,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "name": {
           "name": "name",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -154,86 +147,79 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "audiences_id": {
-          "name": "audiences_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "automation_steps": {
-      "name": "automation_steps",
+    "automationSteps": {
+      "name": "automationSteps",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "automationId": {
           "name": "automationId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "name": {
           "name": "name",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "description": {
           "name": "description",
-          "type": "varchar(512)",
+          "type": "text(512)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "automationStepType": {
-          "name": "automationStepType",
-          "type": "enum('TRIGGER','ACTION','RULE','END')",
+        "type": {
+          "name": "type",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "automationStepStatus": {
-          "name": "automationStepStatus",
-          "type": "enum('DRAFT','ACTIVE','PAUSED','ARCHIVED')",
+        "status": {
+          "name": "status",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": "'DRAFT'"
         },
-        "automationStepSubtype": {
-          "name": "automationStepSubtype",
-          "type": "enum('TRIGGER_CONTACT_SUBSCRIBED','TRIGGER_CONTACT_UNSUBSCRIBED','TRIGGER_CONTACT_TAG_ADDED','TRIGGER_CONTACT_TAG_REMOVED','TRIGGER_API_MANUAL','ACTION_SEND_EMAIL','ACTION_ADD_TAG','ACTION_REMOVE_TAG','ACTION_SUBSCRIBE_TO_AUDIENCE','ACTION_UNSUBSCRIBE_FROM_AUDIENCE','ACTION_UPDATE_CONTACT','ACTION_UPDATE_CONTACT_ATTRIBUTES','ACTION_UPDATE_CONTACT_TAGS','RULE_IF_ELSE','RULE_WAIT_FOR_DURATION','RULE_PERCENTAGE_SPLIT','RULE_WAIT_FOR_TRIGGER','END')",
+        "subtype": {
+          "name": "subtype",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "parentId": {
           "name": "parentId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "branchIndex": {
           "name": "branchIndex",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "configuration": {
           "name": "configuration",
-          "type": "json",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -241,9 +227,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "automation_steps_automationId_automations_id_fk": {
-          "name": "automation_steps_automationId_automations_id_fk",
-          "tableFrom": "automation_steps",
+        "automationSteps_automationId_automations_id_fk": {
+          "name": "automationSteps_automationId_automations_id_fk",
+          "tableFrom": "automationSteps",
           "tableTo": "automations",
           "columnsFrom": [
             "automationId"
@@ -254,10 +240,10 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "automation_steps_parentId_automation_steps_id_fk": {
-          "name": "automation_steps_parentId_automation_steps_id_fk",
-          "tableFrom": "automation_steps",
-          "tableTo": "automation_steps",
+        "automationSteps_parentId_automationSteps_id_fk": {
+          "name": "automationSteps_parentId_automationSteps_id_fk",
+          "tableFrom": "automationSteps",
+          "tableTo": "automationSteps",
           "columnsFrom": [
             "parentId"
           ],
@@ -268,14 +254,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "automation_steps_id": {
-          "name": "automation_steps_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "automations": {
@@ -283,28 +262,28 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "name": {
           "name": "name",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "description": {
           "name": "description",
-          "type": "varchar(512)",
+          "type": "text(512)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -326,14 +305,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "automations_id": {
-          "name": "automations_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "contactAutomationSteps": {
@@ -341,56 +313,56 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "automationStepId": {
           "name": "automationStepId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "contactId": {
           "name": "contactId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "haltedAt": {
           "name": "haltedAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "failedAt": {
           "name": "failedAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "startedAt": {
           "name": "startedAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "completedAt": {
           "name": "completedAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "output": {
           "name": "output",
-          "type": "json",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -398,10 +370,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "contactAutomationSteps_automationStepId_automation_steps_id_fk": {
-          "name": "contactAutomationSteps_automationStepId_automation_steps_id_fk",
+        "contactAutomationSteps_automationStepId_automationSteps_id_fk": {
+          "name": "contactAutomationSteps_automationStepId_automationSteps_id_fk",
           "tableFrom": "contactAutomationSteps",
-          "tableTo": "automation_steps",
+          "tableTo": "automationSteps",
           "columnsFrom": [
             "automationStepId"
           ],
@@ -425,14 +397,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "contactAutomationSteps_id": {
-          "name": "contactAutomationSteps_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "contacts": {
@@ -440,63 +405,63 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "firstName": {
           "name": "firstName",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "lastName": {
           "name": "lastName",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "email": {
           "name": "email",
-          "type": "varchar(80)",
+          "type": "text(80)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "avatarUrl": {
           "name": "avatarUrl",
-          "type": "varchar(256)",
+          "type": "text(256)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "subscribedAt": {
           "name": "subscribedAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "unsubscribedAt": {
           "name": "unsubscribedAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "attributes": {
           "name": "attributes",
-          "type": "json",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -527,14 +492,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "contacts_id": {
-          "name": "contacts_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "mailerIdentities": {
@@ -542,35 +500,35 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "mailerId": {
           "name": "mailerId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "value": {
           "name": "value",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "MailerIdentityType": {
-          "name": "MailerIdentityType",
-          "type": "enum('EMAIL','DOMAIN')",
+        "type": {
+          "name": "type",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "MailerIdentityStatus": {
-          "name": "MailerIdentityStatus",
-          "type": "enum('PENDING','APPROVED','DENIED','FAILED','TEMPORARILY_FAILED')",
+        "status": {
+          "name": "status",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -578,14 +536,14 @@
         },
         "configuration": {
           "name": "configuration",
-          "type": "json",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "confirmedApprovalAt": {
           "name": "confirmedApprovalAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -607,14 +565,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "mailerIdentities_id": {
-          "name": "mailerIdentities_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "mailers": {
@@ -622,42 +573,42 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "name": {
           "name": "name",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "configuration": {
           "name": "configuration",
-          "type": "varchar(512)",
+          "type": "text(512)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "default": {
           "name": "default",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "MailerProvider": {
-          "name": "MailerProvider",
-          "type": "enum('AWS_SES','POSTMARK','MAILGUN')",
+        "provider": {
+          "name": "provider",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "MailerStatus": {
-          "name": "MailerStatus",
-          "type": "enum('READY','PENDING','INSTALLING','CREATING_IDENTITIES','SENDING_TEST_EMAIL','DISABLED','ACCESS_KEYS_LOST_PROVIDER_ACCESS')",
+        "status": {
+          "name": "status",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -665,14 +616,14 @@
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(512)",
+          "type": "text(512)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "sendingEnabled": {
           "name": "sendingEnabled",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -680,7 +631,7 @@
         },
         "inSandboxMode": {
           "name": "inSandboxMode",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -688,41 +639,49 @@
         },
         "max24HourSend": {
           "name": "max24HourSend",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "maxSendRate": {
           "name": "maxSendRate",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "sentLast24Hours": {
           "name": "sentLast24Hours",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "testEmailSentAt": {
           "name": "testEmailSentAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "installationCompletedAt": {
           "name": "installationCompletedAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "mailers_teamId_unique": {
+          "name": "mailers_teamId_unique",
+          "columns": [
+            "teamId"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "mailers_teamId_teams_id_fk": {
           "name": "mailers_teamId_teams_id_fk",
@@ -738,108 +697,89 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "mailers_id": {
-          "name": "mailers_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
-        "mailers_teamId_unique": {
-          "name": "mailers_teamId_unique",
-          "columns": [
-            "teamId"
-          ]
-        }
-      }
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     },
     "settings": {
       "name": "settings",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "url": {
           "name": "url",
-          "type": "varchar(256)",
+          "type": "text(256)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "domain": {
           "name": "domain",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "installedSslCertificate": {
           "name": "installedSslCertificate",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": false
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "settings_id": {
-          "name": "settings_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
+      "indexes": {
         "settings_url_unique": {
           "name": "settings_url_unique",
           "columns": [
             "url"
-          ]
+          ],
+          "isUnique": true
         },
         "settings_domain_unique": {
           "name": "settings_domain_unique",
           "columns": [
             "domain"
-          ]
+          ],
+          "isUnique": true
         }
-      }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     },
     "tags": {
       "name": "tags",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "name": {
           "name": "name",
-          "type": "varchar(256)",
+          "type": "text(256)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "description": {
           "name": "description",
-          "type": "varchar(256)",
+          "type": "text(256)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -861,14 +801,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "tags_id": {
-          "name": "tags_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "tagsOnContacts": {
@@ -876,21 +809,21 @@
       "columns": {
         "tagId": {
           "name": "tagId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "contactId": {
           "name": "contactId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "assignedAt": {
           "name": "assignedAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -950,57 +883,50 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "userId": {
           "name": "userId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "email": {
           "name": "email",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "TeamRole": {
-          "name": "TeamRole",
-          "type": "enum('ADMINISTRATOR','USER')",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "MembershipStatus": {
-          "name": "MembershipStatus",
-          "type": "enum('PENDING','ACTIVE')",
+        "role": {
+          "name": "role",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "invitedAt": {
           "name": "invitedAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(now())"
+          "default": "(cast((julianday('now') - 2440587.5)*86400000 as integer))"
         },
         "expiresAt": {
           "name": "expiresAt",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1035,14 +961,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "teamMemberships_id": {
-          "name": "teamMemberships_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "teams": {
@@ -1050,49 +969,49 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "name": {
           "name": "name",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "userId": {
           "name": "userId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "trackClicks": {
           "name": "trackClicks",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "trackOpens": {
           "name": "trackOpens",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "configurationKey": {
           "name": "configurationKey",
-          "type": "varchar(512)",
+          "type": "text(512)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "BroadcastEditor": {
-          "name": "BroadcastEditor",
-          "type": "enum('DEFAULT','MARKDOWN')",
+        "broadcastEditor": {
+          "name": "broadcastEditor",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1114,14 +1033,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "teams_id": {
-          "name": "teams_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "users": {
@@ -1129,93 +1041,87 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "email": {
           "name": "email",
-          "type": "varchar(80)",
+          "type": "text(80)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "name": {
           "name": "name",
-          "type": "varchar(80)",
+          "type": "text(80)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "avatarUrl": {
           "name": "avatarUrl",
-          "type": "varchar(256)",
+          "type": "text(256)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "password": {
           "name": "password",
-          "type": "varchar(256)",
+          "type": "text(256)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "users_id": {
-          "name": "users_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
+      "indexes": {
         "users_email_unique": {
           "name": "users_email_unique",
           "columns": [
             "email"
-          ]
+          ],
+          "isUnique": true
         }
-      }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     },
     "webhooks": {
       "name": "webhooks",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(32)",
-          "primaryKey": false,
+          "type": "text(32)",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
         "name": {
           "name": "name",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "url": {
           "name": "url",
-          "type": "varchar(256)",
+          "type": "text(256)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "WebhookEvent": {
-          "name": "WebhookEvent",
-          "type": "enum('ALL_EVENTS','CONTACT_ADDED','CONTACT_REMOVED','CONTACT_TAG_ADDED','CONTACT_TAG_REMOVED','BROADCAST_SENT','BROADCAST_PAUSED','BROADCAST_EMAIL_OPENED','BROADCAST_EMAIL_LINK_CLICKED','AUDIENCE_ADDED','TAG_ADDED','TAG_REMOVED')",
+        "webhookEvent": {
+          "name": "webhookEvent",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(32)",
+          "type": "text(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1237,24 +1143,17 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "webhooks_id": {
-          "name": "webhooks_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     }
   },
+  "enums": {},
   "_meta": {
     "schemas": {},
     "tables": {},
     "columns": {}
   },
   "internal": {
-    "tables": {},
     "indexes": {}
   }
 }

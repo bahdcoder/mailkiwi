@@ -1,22 +1,15 @@
-import { container, inject, injectable } from "tsyringe"
-
 import { CreateAudienceAction } from "@/domains/audiences/actions/audiences/create_audience_action.js"
 import { UpdateAudienceAction } from "@/domains/audiences/actions/audiences/update_audience_action.js"
 import { CreateAudienceSchema } from "@/domains/audiences/dto/audiences/create_audience_dto.js"
 import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy.js"
-import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository.js"
-import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
+import { BaseController } from "@/domains/shared/controllers/base_controller.js"
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
-import { ContainerKey } from "@/infrastructure/container.js"
-import { HonoInstance } from "@/infrastructure/server/hono.ts"
-import { HonoContext } from "@/infrastructure/server/types.ts"
+import { makeApp } from "@/infrastructure/container.js"
+import { HonoContext } from "@/infrastructure/server/types.js"
+import { container } from "@/utils/typi.js"
 
-@injectable()
 export class AudienceController extends BaseController {
-  constructor(
-    @inject(AudienceRepository) private audienceRepository: AudienceRepository,
-    @inject(ContainerKey.app) private app: HonoInstance,
-  ) {
+  constructor(private app = makeApp()) {
     super()
 
     this.app.defineRoutes(
@@ -41,11 +34,11 @@ export class AudienceController extends BaseController {
 
     const userId = ctx.get("accessToken")?.userId
 
-    const policy = container.resolve<AudiencePolicy>(AudiencePolicy)
+    const policy = container.make(AudiencePolicy)
 
     if (!policy.canCreate(team, userId!)) throw E_UNAUTHORIZED()
 
-    const action = container.resolve<CreateAudienceAction>(CreateAudienceAction)
+    const action = container.make(CreateAudienceAction)
 
     const audience = await action.handle(data, team.id)
 
@@ -58,11 +51,11 @@ export class AudienceController extends BaseController {
     const team = this.ensureTeam(ctx)
     const accessToken = ctx.get("accessToken")
 
-    const policy = container.resolve<AudiencePolicy>(AudiencePolicy)
+    const policy = container.resolve(AudiencePolicy)
 
     if (!policy.canCreate(team, accessToken.userId!)) throw E_UNAUTHORIZED()
 
-    const action = container.resolve<UpdateAudienceAction>(UpdateAudienceAction)
+    const action = container.resolve(UpdateAudienceAction)
 
     const audience = await action.handle(data, team.id)
 

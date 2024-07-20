@@ -1,20 +1,15 @@
-import { inject, injectable } from "tsyringe"
-
 import { CreateUserDto } from "@/domains/auth/users/dto/create_user_dto.js"
 import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
 import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeDatabase } from "@/infrastructure/container.ts"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class RegisterUserAction {
   constructor(
-    @inject(UserRepository)
-    private userRepository: UserRepository,
-    @inject(TeamRepository)
-    private teamRepository: TeamRepository,
-    @inject(ContainerKey.database)
-    private database: DrizzleClient,
+    private userRepository: UserRepository = container.make(UserRepository),
+    private teamRepository: TeamRepository = container.make(TeamRepository),
+    private database: DrizzleClient = makeDatabase(),
   ) {}
 
   handle = async (payload: CreateUserDto) => {

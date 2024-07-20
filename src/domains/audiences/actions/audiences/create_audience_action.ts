@@ -1,13 +1,10 @@
-import { inject, injectable } from "tsyringe"
-
 import { CreateAudienceDto } from "@/domains/audiences/dto/audiences/create_audience_dto.js"
 import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository.js"
+import { container } from "@/utils/typi.js"
 
-@injectable()
 export class CreateAudienceAction {
   constructor(
-    @inject(AudienceRepository)
-    private audienceRepository: AudienceRepository,
+    private audienceRepository = container.make(AudienceRepository),
   ) {}
 
   handle = async (payload: CreateAudienceDto, teamId: string) => {

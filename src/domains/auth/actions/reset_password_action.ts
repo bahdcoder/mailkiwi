@@ -1,13 +1,10 @@
-import { inject, injectable } from "tsyringe"
-
 import { ResetPasswordDto } from "@/domains/auth/dto/reset_password_dto.js"
 import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class ResetPasswordAction {
   constructor(
-    @inject(UserRepository)
-    private userRepository: UserRepository,
+    private userRepository: UserRepository = container.make(UserRepository),
   ) {}
 
   handle = async (_: ResetPasswordDto) => {

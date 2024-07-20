@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm"
-import { container, inject, injectable } from "tsyringe"
 
 import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
 import { CreateMailerIdentityAction } from "@/domains/teams/actions/create_mailer_identity_action.js"
@@ -10,20 +9,22 @@ import { DeleteMailerIdentitySchema } from "@/domains/teams/dto/delete_mailer_id
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
 import { MailerValidationAndAuthorizationConcern } from "@/http/api/concerns/mailer_validation_concern.ts"
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeApp } from "@/infrastructure/container.js"
 import { mailerIdentities } from "@/infrastructure/database/schema/schema.ts"
 import { MailerIdentity } from "@/infrastructure/database/schema/types.ts"
 import { HonoInstance } from "@/infrastructure/server/hono.ts"
 import { HonoContext } from "@/infrastructure/server/types.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class MailerIdentityController extends BaseController {
   constructor(
-    @inject(MailerIdentityRepository)
-    private mailerIdentityRepository: MailerIdentityRepository,
-    @inject(ContainerKey.app) private app: HonoInstance,
-    @inject(MailerValidationAndAuthorizationConcern)
-    private mailerValidationAndAuthorizationConcern: MailerValidationAndAuthorizationConcern,
+    private mailerIdentityRepository: MailerIdentityRepository = container.make(
+      MailerIdentityRepository,
+    ),
+    private app: HonoInstance = makeApp(),
+    private mailerValidationAndAuthorizationConcern: MailerValidationAndAuthorizationConcern = container.make(
+      MailerValidationAndAuthorizationConcern,
+    ),
   ) {
     super()
     this.app.defineRoutes(
@@ -51,9 +52,7 @@ export class MailerIdentityController extends BaseController {
       where: eq(mailerIdentities.mailerId, mailer.id),
     })
 
-    const action = container.resolve<GetMailerIdentitiesAction>(
-      GetMailerIdentitiesAction,
-    )
+    const action = container.resolve(GetMailerIdentitiesAction)
 
     return action.handle(identities, mailer, ctx.get("team"))
   }

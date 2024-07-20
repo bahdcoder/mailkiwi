@@ -1,8 +1,5 @@
-import { injectable } from "tsyringe"
-
 import { TeamWithMembers } from "@/domains/shared/types/team.js"
 
-@injectable()
 export class TeamPolicy {
   canAdministrate(team: TeamWithMembers, userId: string) {
     return (

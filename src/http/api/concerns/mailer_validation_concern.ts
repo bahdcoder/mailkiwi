@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm"
-import { inject, injectable } from "tsyringe"
 
 import { TeamPolicy } from "@/domains/audiences/policies/team_policy.ts"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.ts"
@@ -7,14 +6,14 @@ import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
 import { mailers } from "@/infrastructure/database/schema/schema.ts"
 import { Mailer } from "@/infrastructure/database/schema/types.ts"
 import { HonoContext } from "@/infrastructure/server/types.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class MailerValidationAndAuthorizationConcern {
   constructor(
-    @inject(MailerRepository)
-    private mailerRepository: MailerRepository,
-    @inject(TeamPolicy)
-    private teamPolicy: TeamPolicy,
+    private mailerRepository: MailerRepository = container.make(
+      MailerRepository,
+    ),
+    private teamPolicy: TeamPolicy = container.make(TeamPolicy),
   ) {}
 
   public async ensureMailerExists(ctx: HonoContext) {

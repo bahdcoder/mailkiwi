@@ -1,6 +1,5 @@
-import { container } from "tsyringe"
-
 import { ConfigVariables, EnvVariables } from "@/infrastructure/env.js"
+import { container } from "@/utils/typi.js"
 
 import { DrizzleClient } from "./database/client.ts"
 import { HonoInstance } from "./server/hono.ts"
@@ -12,14 +11,12 @@ export enum ContainerKey {
   database = "database",
 }
 
-export const makeApp = () =>
-  container.resolve<HonoInstance>(ContainerKey["app"])
+export const makeApp = () => container.make<HonoInstance>(ContainerKey["app"])
 
-export const makeEnv = () =>
-  container.resolve<EnvVariables>(ContainerKey["env"])
+export const makeEnv = () => container.make<EnvVariables>(ContainerKey["env"])
 
 export const makeConfig = () =>
-  container.resolve<ConfigVariables>(ContainerKey["config"])
+  container.make<ConfigVariables>(ContainerKey["config"])
 
 export const makeDatabase = () =>
-  container.resolve<DrizzleClient>(ContainerKey["database"])
+  container.singleton<DrizzleClient>(ContainerKey["database"])

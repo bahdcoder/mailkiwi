@@ -1,5 +1,5 @@
 import { InferSelectModel } from "drizzle-orm"
-import { MySqlUpdateSetSource } from "drizzle-orm/mysql-core"
+import { SQLiteUpdateSetSource } from "drizzle-orm/sqlite-core"
 
 import { makeDatabase } from "@/infrastructure/container.ts"
 
@@ -35,8 +35,8 @@ export type FindAutomationByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>["query"]["automations"]["findFirst"]
 >[0]
 
-export type UpdateSetMailerIdentityInput = MySqlUpdateSetSource<
+export type UpdateSetMailerIdentityInput = SQLiteUpdateSetSource<
   typeof mailerIdentities
 >
 
-export type UpdateSetMailerInput = MySqlUpdateSetSource<typeof mailers>
+export type UpdateSetMailerInput = SQLiteUpdateSetSource<typeof mailers>

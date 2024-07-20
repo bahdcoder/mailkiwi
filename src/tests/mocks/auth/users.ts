@@ -3,7 +3,6 @@ import { SNSClient } from "@aws-sdk/client-sns"
 import { faker } from "@faker-js/faker"
 import { mockClient } from "aws-sdk-client-mock"
 import { eq } from "drizzle-orm"
-import { container } from "tsyringe"
 
 import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository.js"
 import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.js"
@@ -11,6 +10,7 @@ import { TeamRepository } from "@/domains/teams/repositories/team_repository.ts"
 import { makeDatabase } from "@/infrastructure/container.js"
 import { users } from "@/infrastructure/database/schema/schema.ts"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
+import { container } from "@/utils/typi.ts"
 
 export const createUser = async ({
   createMailerWithIdentity,

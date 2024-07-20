@@ -1,5 +1,3 @@
-import "reflect-metadata"
-
 import { Ignitor } from "@/infrastructure/boot/ignitor.js"
 import { makeDatabase } from "@/infrastructure/container.ts"
 import { settings } from "@/infrastructure/database/schema/schema.ts"

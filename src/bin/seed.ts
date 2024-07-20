@@ -1,7 +1,4 @@
-import "reflect-metadata"
-
 import { faker } from "@faker-js/faker"
-import { container } from "tsyringe"
 
 import { CreateAudienceAction } from "@/domains/audiences/actions/audiences/create_audience_action.ts"
 import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.ts"
@@ -13,15 +10,10 @@ import {
 import { contacts, settings } from "@/infrastructure/database/schema/schema.ts"
 import { env } from "@/infrastructure/env.js"
 import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.ts"
-const connection = await createDatabaseClient(env.DATABASE_URL)
+import { container } from "@/utils/typi.ts"
 
-const database = createDrizzleDatabase(connection)
+const database = createDrizzleDatabase(createDatabaseClient(env.DATABASE_URL))
 
-// create 100 users with 2 team each
-
-// create 100_000 contacts for each team (so 200 * 100,000) = 20_000_000 records
-
-//
 container.registerInstance(ContainerKey.env, env)
 container.registerInstance(ContainerKey.database, database)
 
@@ -63,10 +55,10 @@ for (let userIndex = 0; userIndex < 5; userIndex++) {
       description: faker.commerce.productDescription(),
     })
 
-    for (let times = 0; times < 10; times++) {
+    for (let times = 0; times < 50; times++) {
       const mockContacts = faker.helpers
         .multiple(faker.person.firstName, {
-          count: faker.helpers.rangeToNumber({ min: 7_000, max: 10_000 }),
+          count: faker.helpers.rangeToNumber({ min: 700, max: 1000 }),
         })
         .map((firstName) => ({
           firstName,
@@ -78,7 +70,7 @@ for (let userIndex = 0; userIndex < 5; userIndex++) {
             .toLowerCase(),
           lastName: faker.person.lastName(),
           audienceId: audience.id,
-          subscribedAt: faker.date.past(),
+          subscribedAt: faker.date.past().getTime(),
           avatarUrl: faker.image.avatarGitHub(),
         }))
 
@@ -91,5 +83,3 @@ for (let userIndex = 0; userIndex < 5; userIndex++) {
     }
   }
 }
-
-await connection.end()

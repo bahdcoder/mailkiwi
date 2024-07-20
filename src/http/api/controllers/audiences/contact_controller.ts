@@ -1,21 +1,15 @@
-import { container, inject, injectable } from "tsyringe"
-
 import { CreateContactAction } from "@/domains/audiences/actions/contacts/create_contact_action.js"
 import { CreateContactSchema } from "@/domains/audiences/dto/contacts/create_contact_dto.js"
 import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy.js"
-import { ContactRepository } from "@/domains/audiences/repositories/contact_repository.js"
 import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeApp } from "@/infrastructure/container.js"
 import { HonoInstance } from "@/infrastructure/server/hono.ts"
 import { HonoContext } from "@/infrastructure/server/types.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class ContactController extends BaseController {
-  constructor(
-    @inject(ContactRepository) private contactRepository: ContactRepository,
-    @inject(ContainerKey.app) private app: HonoInstance,
-  ) {
+  constructor(private app: HonoInstance = makeApp()) {
     super()
 
     this.app.defineRoutes([["POST", "/", this.store.bind(this)]], {
@@ -32,12 +26,12 @@ export class ContactController extends BaseController {
 
     const team = this.ensureTeam(ctx)
 
-    const policy = container.resolve<AudiencePolicy>(AudiencePolicy)
+    const policy = container.resolve(AudiencePolicy)
 
     if (!policy.canCreate(team, ctx.get("accessToken").userId!))
       throw E_UNAUTHORIZED()
 
-    const action = container.resolve<CreateContactAction>(CreateContactAction)
+    const action = container.resolve(CreateContactAction)
 
     const audience = await action.handle(data)
 

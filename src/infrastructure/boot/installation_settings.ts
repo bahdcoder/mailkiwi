@@ -1,16 +1,17 @@
-import { inject, injectable } from "tsyringe"
 import { z } from "zod"
 
 import { ContainerKey } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class InstallationSettings {
   protected settingsSchema = z.object({
     domain: z.string().url(),
   })
 
-  constructor(@inject(ContainerKey.database) private database: DrizzleClient) {}
+  constructor(
+    private database: DrizzleClient = container.make(ContainerKey.database),
+  ) {}
 
   async ensureInstallationSettings() {
     const setting = await this.database.query.settings.findFirst({})

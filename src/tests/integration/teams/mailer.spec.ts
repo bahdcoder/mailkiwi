@@ -25,7 +25,6 @@ import {
 import { faker } from "@faker-js/faker"
 import { mockClient } from "aws-sdk-client-mock"
 import { and, eq } from "drizzle-orm"
-import { container } from "tsyringe"
 import { beforeEach, describe, test, vi } from "vitest"
 
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
@@ -39,6 +38,7 @@ import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 import * as sleepUtils from "@/utils/sleep.js"
+import { container } from "@/utils/typi.ts"
 
 const SESMock = mockClient(SESClient)
 const SNSMock = mockClient(SNSClient)

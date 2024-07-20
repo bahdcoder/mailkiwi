@@ -1,11 +1,10 @@
 import { Secret } from "@poppinss/utils"
 import { and, eq, SQLWrapper } from "drizzle-orm"
-import { inject, injectable } from "tsyringe"
 
 import { BaseRepository } from "@/domains/shared/repositories/base_repository.ts"
 import { Encryption } from "@/domains/shared/utils/encryption/encryption.js"
 import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto.js"
-import { ContainerKey, makeEnv } from "@/infrastructure/container.js"
+import { makeDatabase, makeEnv } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
 import { mailerIdentities } from "@/infrastructure/database/schema/schema.ts"
 import {
@@ -13,11 +12,8 @@ import {
   UpdateSetMailerIdentityInput,
 } from "@/infrastructure/database/schema/types.ts"
 
-@injectable()
 export class MailerIdentityRepository extends BaseRepository {
-  constructor(
-    @inject(ContainerKey.database) protected database: DrizzleClient,
-  ) {
+  constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 

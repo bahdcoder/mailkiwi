@@ -1,12 +1,11 @@
-import { inject, injectable } from "tsyringe"
-
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class GetMailerIdentityStatusFromProviderAction {
   constructor(
-    @inject(MailerIdentityRepository)
-    private mailerIdentityRepository: MailerIdentityRepository,
+    private mailerIdentityRepository: MailerIdentityRepository = container.make(
+      MailerIdentityRepository,
+    ),
   ) {}
 
   handle = async () => {

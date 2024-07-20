@@ -1,13 +1,12 @@
-import { inject, injectable } from "tsyringe"
-
 import { CreateAutomationDto } from "@/domains/automations//dto/create_automation_dto.ts"
 import { AutomationRepository } from "@/domains/automations/repositories/automation_repository.ts"
+import { container } from "@/utils/typi.js"
 
-@injectable()
 export class CreateAutomationAction {
   constructor(
-    @inject(AutomationRepository)
-    private automationRepository: AutomationRepository,
+    private automationRepository: AutomationRepository = container.make(
+      AutomationRepository,
+    ),
   ) {}
 
   handle = async (payload: CreateAutomationDto, audienceId: string) => {

@@ -1,9 +1,8 @@
-import { container } from "tsyringe"
-
 import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository.js"
 import { makeApp, makeConfig } from "@/infrastructure/container.js"
 import { Team, User } from "@/infrastructure/database/schema/types.ts"
 import { HTTPMethods } from "@/infrastructure/server/types.ts"
+import { container } from "@/utils/typi.ts"
 
 export async function makeRequest(
   path: string,

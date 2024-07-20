@@ -1,5 +1,3 @@
-import { container, inject, injectable } from "tsyringe"
-
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
 import { CreateMailerIdentityAction } from "@/domains/teams/actions/create_mailer_identity_action.js"
 import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto.js"
@@ -8,13 +6,14 @@ import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
 import { Mailer, Team } from "@/infrastructure/database/schema/types.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class UpdateMailerAction {
   protected isReconnecting = false
   constructor(
-    @inject(MailerRepository)
-    private mailerRepository: MailerRepository,
+    private mailerRepository: MailerRepository = container.make(
+      MailerRepository,
+    ),
   ) {}
 
   reconnecting() {

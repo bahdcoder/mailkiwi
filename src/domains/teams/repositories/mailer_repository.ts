@@ -1,13 +1,12 @@
 import { Secret } from "@poppinss/utils"
 import { and, eq, SQLWrapper } from "drizzle-orm"
-import { inject, injectable } from "tsyringe"
 
 import { BaseRepository } from "@/domains/shared/repositories/base_repository.ts"
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
 import { Encryption } from "@/domains/shared/utils/encryption/encryption.js"
 import { CreateMailerDto } from "@/domains/teams/dto/mailers/create_mailer_dto.js"
 import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
-import { ContainerKey, makeEnv } from "@/infrastructure/container.js"
+import { makeDatabase, makeEnv } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
 import { mailers } from "@/infrastructure/database/schema/schema.ts"
 import {
@@ -16,7 +15,6 @@ import {
   UpdateSetMailerInput,
 } from "@/infrastructure/database/schema/types.ts"
 
-@injectable()
 export class MailerRepository extends BaseRepository {
   defaultConfigurationPayload: MailerConfiguration = {
     accessKey: new Secret(""),
@@ -27,9 +25,7 @@ export class MailerRepository extends BaseRepository {
     maximumMailsPerSecond: 1,
   }
 
-  constructor(
-    @inject(ContainerKey.database) protected database: DrizzleClient,
-  ) {
+  constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 

@@ -1,13 +1,10 @@
-import { inject, injectable } from "tsyringe"
-
 import { CreateTagDto } from "@/domains/audiences/dto/tags/create_tag_dto.js"
 import { TagRepository } from "@/domains/audiences/repositories/tag_repository.js"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class CreateTagAction {
   constructor(
-    @inject(TagRepository)
-    private tagRepository: TagRepository,
+    private tagRepository: TagRepository = container.make(TagRepository),
   ) {}
 
   handle = async (payload: CreateTagDto, audienceId: string) => {

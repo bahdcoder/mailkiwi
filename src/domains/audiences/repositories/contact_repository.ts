@@ -1,17 +1,12 @@
-import { inject, injectable } from "tsyringe"
-
 import { BaseRepository } from "@/domains/shared/repositories/base_repository.ts"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeDatabase } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
 import { contacts } from "@/infrastructure/database/schema/schema.ts"
 
 import { CreateContactDto } from "../dto/contacts/create_contact_dto.js"
 
-@injectable()
 export class ContactRepository extends BaseRepository {
-  constructor(
-    @inject(ContainerKey.database) protected database: DrizzleClient,
-  ) {
+  constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 

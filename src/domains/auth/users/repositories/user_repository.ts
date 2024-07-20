@@ -1,11 +1,10 @@
 import cuid2 from "@paralleldrive/cuid2"
 import { eq } from "drizzle-orm"
-import { inject, injectable } from "tsyringe"
 
 import { CreateUserDto } from "@/domains/auth/users/dto/create_user_dto.js"
 import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
 import { scrypt } from "@/domains/shared/utils/hash/scrypt.ts"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeDatabase } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
 import { users } from "@/infrastructure/database/schema/schema.ts"
 import {
@@ -13,11 +12,8 @@ import {
   User,
 } from "@/infrastructure/database/schema/types.ts"
 
-@injectable()
 export class UserRepository extends BaseRepository {
-  constructor(
-    @inject(ContainerKey.database) protected database: DrizzleClient,
-  ) {
+  constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 

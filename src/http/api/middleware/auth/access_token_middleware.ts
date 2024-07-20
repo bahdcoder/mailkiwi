@@ -1,16 +1,16 @@
 import { Secret } from "@poppinss/utils"
 import { Next } from "hono"
-import { inject, injectable } from "tsyringe"
 
 import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository.js"
 import { E_UNAUTHORIZED } from "@/http/responses/errors.ts"
 import { HonoContext } from "@/infrastructure/server/types.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class AccessTokenMiddleware {
   constructor(
-    @inject(AccessTokenRepository)
-    private accessTokenRepository: AccessTokenRepository,
+    private accessTokenRepository: AccessTokenRepository = container.make(
+      AccessTokenRepository,
+    ),
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {

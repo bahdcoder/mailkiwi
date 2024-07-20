@@ -1,5 +1,3 @@
-import { inject, injectable } from "tsyringe"
-
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
 import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto.js"
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
@@ -12,14 +10,16 @@ import {
   Team,
 } from "@/infrastructure/database/schema/types.ts"
 import { AwsSdk } from "@/providers/ses/sdk.js"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class CreateMailerIdentityAction {
   constructor(
-    @inject(MailerIdentityRepository)
-    private mailerIdentityRepository: MailerIdentityRepository,
-    @inject(MailerRepository)
-    private mailerRepository: MailerRepository,
+    private mailerIdentityRepository: MailerIdentityRepository = container.make(
+      MailerIdentityRepository,
+    ),
+    private mailerRepository: MailerRepository = container.make(
+      MailerRepository,
+    ),
   ) {}
 
   handle = async (

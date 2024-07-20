@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm"
-import { container, inject, injectable } from "tsyringe"
 
 import { TeamPolicy } from "@/domains/audiences/policies/team_policy.js"
 import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
@@ -15,16 +14,18 @@ import {
   E_UNAUTHORIZED,
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeApp } from "@/infrastructure/container.js"
 import { mailers } from "@/infrastructure/database/schema/schema.ts"
 import { HonoInstance } from "@/infrastructure/server/hono.ts"
 import { HonoContext } from "@/infrastructure/server/types.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class MailerController extends BaseController {
   constructor(
-    @inject(MailerRepository) protected mailerRepository: MailerRepository,
-    @inject(ContainerKey.app) protected app: HonoInstance,
+    protected mailerRepository: MailerRepository = container.make(
+      MailerRepository,
+    ),
+    protected app: HonoInstance = makeApp(),
   ) {
     super()
     this.app.defineRoutes(
@@ -56,7 +57,7 @@ export class MailerController extends BaseController {
 
     await this.ensureHasPermissions(ctx)
 
-    const action = container.resolve<CreateMailerAction>(CreateMailerAction)
+    const action = container.resolve(CreateMailerAction)
 
     const mailer = await action.handle(data, ctx.get("team"))
 
@@ -70,7 +71,7 @@ export class MailerController extends BaseController {
 
     await this.ensureHasPermissions(ctx)
 
-    const action = container.resolve<UpdateMailerAction>(UpdateMailerAction)
+    const action = container.resolve(UpdateMailerAction)
 
     await action.handle(mailer, data, ctx.get("team"))
 
@@ -82,7 +83,7 @@ export class MailerController extends BaseController {
 
     await this.ensureHasPermissions(ctx)
 
-    const action = container.resolve<InstallMailerAction>(InstallMailerAction)
+    const action = container.resolve(InstallMailerAction)
 
     const success = await action.handle(mailer, ctx.get("team"))
 
@@ -116,14 +117,14 @@ export class MailerController extends BaseController {
     }
 
     await container
-      .resolve<UpdateMailerAction>(UpdateMailerAction)
+      .resolve(UpdateMailerAction)
       .reconnecting()
       .handle(mailer, data, ctx.get("team"))
 
     const updatedMailer = await this.mailerRepository.findById(mailer.id)
 
     await container
-      .resolve<InstallMailerAction>(InstallMailerAction)
+      .resolve(InstallMailerAction)
       .handle(updatedMailer!, ctx.get("team"))
 
     return ctx.json({ id: mailer.id })

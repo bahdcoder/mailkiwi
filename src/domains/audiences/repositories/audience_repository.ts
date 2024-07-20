@@ -1,17 +1,16 @@
 import { eq } from "drizzle-orm"
-import { inject, injectable } from "tsyringe"
 
 import { BaseRepository } from "@/domains/shared/repositories/base_repository.ts"
 import { ContainerKey } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
 import { audiences } from "@/infrastructure/database/schema/schema.ts"
+import { container } from "@/utils/typi.js"
 
 import { CreateAudienceDto } from "../dto/audiences/create_audience_dto.js"
 
-@injectable()
 export class AudienceRepository extends BaseRepository {
   constructor(
-    @inject(ContainerKey.database) protected database: DrizzleClient,
+    protected database: DrizzleClient = container.make(ContainerKey.database),
   ) {
     super()
   }

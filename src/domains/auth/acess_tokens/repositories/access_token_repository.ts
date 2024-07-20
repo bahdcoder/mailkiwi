@@ -1,23 +1,19 @@
 import { Secret } from "@poppinss/utils"
 import { eq } from "drizzle-orm"
-import { inject, injectable } from "tsyringe"
 
 import { AccessToken } from "@/domains/auth/acess_tokens/utils/access_token.js"
 import { BaseRepository } from "@/domains/shared/repositories/base_repository.ts"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeDatabase } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
 import { accessTokens, users } from "@/infrastructure/database/schema/schema.ts"
 import { User } from "@/infrastructure/database/schema/types.ts"
 
-@injectable()
 export class AccessTokenRepository extends BaseRepository {
   protected tokenSecretLength = 40
   protected tokenExpiresIn = 1000 * 60
   protected opaqueAccessTokenPrefix = "oat_"
 
-  constructor(
-    @inject(ContainerKey.database) protected database: DrizzleClient,
-  ) {
+  constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 

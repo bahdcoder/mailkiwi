@@ -1,5 +1,4 @@
 import { VerificationStatus } from "@aws-sdk/client-ses"
-import { inject, injectable } from "tsyringe"
 
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
@@ -9,16 +8,19 @@ import {
   Team,
 } from "@/infrastructure/database/schema/types.ts"
 import { AwsSdk } from "@/providers/ses/sdk.js"
+import { container } from "@/utils/typi.ts"
 
 import { MailerRepository } from "../repositories/mailer_repository.js"
 
-@injectable()
 export class GetMailerIdentitiesAction {
   constructor(
-    @inject(MailerIdentityRepository)
-    private mailerIdentityRepository: MailerIdentityRepository,
-    @inject(MailerRepository)
-    private mailerRepository: MailerRepository,
+    private mailerIdentityRepository: MailerIdentityRepository = container.make(
+      MailerIdentityRepository,
+    ),
+
+    private mailerRepository: MailerRepository = container.make(
+      MailerRepository,
+    ),
   ) {}
 
   handle = async (identities: MailerIdentity[], mailer: Mailer, team: Team) => {

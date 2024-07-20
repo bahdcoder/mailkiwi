@@ -1,15 +1,13 @@
 import { Next } from "hono"
-import { inject, injectable } from "tsyringe"
 
 import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
 import { makeConfig } from "@/infrastructure/container.js"
 import { HonoContext } from "@/infrastructure/server/types.ts"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class TeamMiddleware {
   constructor(
-    @inject(TeamRepository)
-    private teamRepository: TeamRepository,
+    private teamRepository: TeamRepository = container.make(TeamRepository),
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {

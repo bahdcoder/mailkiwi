@@ -1,10 +1,10 @@
 import { Env, Hono, MiddlewareHandler } from "hono"
 import { HonoOptions } from "hono/hono-base"
-import { container } from "tsyringe"
 
 import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware.ts"
 import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware.ts"
 import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.ts"
+import { container } from "@/utils/typi.ts"
 
 import { HonoRouteDefinition } from "./types.ts"
 

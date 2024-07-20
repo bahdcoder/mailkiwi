@@ -1,12 +1,12 @@
 {
   "version": "7",
-  "dialect": "mysql",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1721425261877,
-      "tag": "0000_wonderful_betty_ross",
+      "version": "6",
+      "when": 1721477302629,
+      "tag": "0000_mighty_felicia_hardy",
       "breakpoints": true
     }
   ]

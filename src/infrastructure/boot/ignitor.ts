@@ -1,7 +1,5 @@
 import "./globals"
 
-import { container } from "tsyringe"
-
 import { AudienceController } from "@/http/api/controllers/audiences/audience_controller.js"
 import { ContactController } from "@/http/api/controllers/audiences/contact_controller.js"
 import { AuthController } from "@/http/api/controllers/auth/auth_controller.js"
@@ -18,7 +16,6 @@ import {
   createDatabaseClient,
   createDrizzleDatabase,
   DrizzleClient,
-  runDatabaseMigrations,
 } from "@/infrastructure/database/client.js"
 import {
   config,
@@ -27,6 +24,7 @@ import {
   EnvVariables,
 } from "@/infrastructure/env.js"
 import { ExtendedHono } from "@/infrastructure/server/hono.js"
+import { container } from "@/utils/typi.ts"
 
 export class Ignitor {
   protected env: EnvVariables
@@ -41,9 +39,9 @@ export class Ignitor {
     this.bootHttpServer()
     this.bootDatabaseConnector()
 
-    container.registerInstance(ContainerKey.app, this.app)
-    container.registerInstance(ContainerKey.env, this.env)
-    container.registerInstance(ContainerKey.config, this.config)
+    container.register(ContainerKey.app, this.app)
+    container.register(ContainerKey.env, this.env)
+    container.register(ContainerKey.config, this.config)
 
     return this
   }
@@ -85,7 +83,7 @@ export class Ignitor {
     container.registerInstance(ContainerKey.database, this.database)
 
     try {
-      await runDatabaseMigrations(this.database)
+      // await runDatabaseMigrations(this.database)
     } catch (error) {
       d({ error })
       throw error

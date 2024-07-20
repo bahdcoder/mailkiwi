@@ -1,5 +1,4 @@
 import { Exception } from "@poppinss/utils"
-import { inject, injectable } from "tsyringe"
 
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
 import { DeleteMailerIdentityDto } from "@/domains/teams/dto/delete_mailer_identity_dto.js"
@@ -13,14 +12,16 @@ import {
   Team,
 } from "@/infrastructure/database/schema/types.ts"
 import { AwsSdk } from "@/providers/ses/sdk.js"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class DeleteMailerIdentityAction {
   constructor(
-    @inject(MailerIdentityRepository)
-    private mailerIdentityRepository: MailerIdentityRepository,
-    @inject(MailerRepository)
-    private mailerRepository: MailerRepository,
+    private mailerIdentityRepository: MailerIdentityRepository = container.make(
+      MailerIdentityRepository,
+    ),
+    private mailerRepository: MailerRepository = container.make(
+      MailerRepository,
+    ),
   ) {}
 
   handle = async (

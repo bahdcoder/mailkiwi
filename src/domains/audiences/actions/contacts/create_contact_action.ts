@@ -1,13 +1,12 @@
-import { inject, injectable } from "tsyringe"
-
 import { CreateContactDto } from "@/domains/audiences/dto/contacts/create_contact_dto.js"
 import { ContactRepository } from "@/domains/audiences/repositories/contact_repository.js"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class CreateContactAction {
   constructor(
-    @inject(ContactRepository)
-    private contactRepository: ContactRepository,
+    private contactRepository: ContactRepository = container.make(
+      ContactRepository,
+    ),
   ) {}
 
   handle = async (payload: CreateContactDto) => {

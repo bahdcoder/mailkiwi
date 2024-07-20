@@ -1,18 +1,14 @@
 import { eq } from "drizzle-orm"
-import { inject, injectable } from "tsyringe"
 
 import { CreateAutomationDto } from "@/domains/automations/dto/create_automation_dto.js"
 import { BaseRepository } from "@/domains/shared/repositories/base_repository.ts"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { makeDatabase } from "@/infrastructure/container.ts"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
 import { automations } from "@/infrastructure/database/schema/schema.ts"
 import { FindAutomationByIdArgs } from "@/infrastructure/database/schema/types.ts"
 
-@injectable()
 export class AutomationRepository extends BaseRepository {
-  constructor(
-    @inject(ContainerKey.database) protected database: DrizzleClient,
-  ) {
+  constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 

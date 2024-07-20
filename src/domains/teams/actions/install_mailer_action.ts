@@ -1,20 +1,19 @@
-import { inject, injectable } from "tsyringe"
-
 import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
-import { ContainerKey, makeConfig } from "@/infrastructure/container.js"
+import { makeConfig, makeDatabase } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.ts"
 import { Mailer, Team } from "@/infrastructure/database/schema/types.ts"
 import { AwsSdk } from "@/providers/ses/sdk.js"
 import { E_INTERNAL_PROCESSING_ERROR } from "@/utils/errors.js"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class InstallMailerAction {
   constructor(
-    @inject(MailerRepository)
-    private mailerRepository: MailerRepository,
-    @inject(ContainerKey.database) private database: DrizzleClient,
+    private mailerRepository: MailerRepository = container.make(
+      MailerRepository,
+    ),
+    private database: DrizzleClient = makeDatabase(),
   ) {}
 
   handle = async (mailer: Mailer, team: Team) => {
@@ -60,7 +59,7 @@ export class InstallMailerAction {
         mailer,
         {
           status: "CREATING_IDENTITIES",
-          installationCompletedAt: new Date(),
+          installationCompletedAt: Date.now(),
         },
         team,
       )

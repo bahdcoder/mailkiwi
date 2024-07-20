@@ -1,17 +1,16 @@
-import { container, inject, injectable } from "tsyringe"
-
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
 import { TeamWithMembers } from "@/domains/shared/types/team.js"
 import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_identities_action.js"
 import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials.js"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 import { AwsSdk } from "@/providers/ses/sdk.js"
+import { container } from "@/utils/typi.ts"
 
-@injectable()
 export class GetMailerAction {
   constructor(
-    @inject(MailerRepository)
-    private mailerRepository: MailerRepository,
+    private mailerRepository: MailerRepository = container.make(
+      MailerRepository,
+    ),
   ) {}
 
   handle = async (team: TeamWithMembers) => {
