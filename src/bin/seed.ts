@@ -1,16 +1,16 @@
 import { faker } from "@faker-js/faker"
 
-import { CreateAudienceAction } from "@/domains/audiences/actions/audiences/create_audience_action.ts"
-import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.ts"
-import { ContainerKey } from "@/infrastructure/container.ts"
+import { CreateAudienceAction } from "@/domains/audiences/actions/audiences/create_audience_action.js"
+import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.js"
+import { ContainerKey } from "@/infrastructure/container.js"
 import {
   createDatabaseClient,
   createDrizzleDatabase,
 } from "@/infrastructure/database/client.js"
-import { contacts, settings } from "@/infrastructure/database/schema/schema.ts"
+import { contacts, settings } from "@/infrastructure/database/schema/schema.js"
 import { env } from "@/infrastructure/env.js"
-import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.ts"
-import { container } from "@/utils/typi.ts"
+import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
+import { container } from "@/utils/typi.js"
 
 const database = createDrizzleDatabase(createDatabaseClient(env.DATABASE_URL))
 

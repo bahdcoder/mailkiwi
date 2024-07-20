@@ -1,9 +1,9 @@
 import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
 import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action.js"
 import { makeApp } from "@/infrastructure/container.js"
-import { HonoInstance } from "@/infrastructure/server/hono.ts"
-import { HonoContext } from "@/infrastructure/server/types.ts"
-import { container } from "@/utils/typi.ts"
+import { HonoInstance } from "@/infrastructure/server/hono.js"
+import { HonoContext } from "@/infrastructure/server/types.js"
+import { container } from "@/utils/typi.js"
 
 export class UserController {
   constructor(

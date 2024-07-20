@@ -1,7 +1,7 @@
-import { z } from "zod"
+import * as v from "valibot"
 
-export const CreateTagSchema = z.object({
-  name: z.string(),
+export const CreateTagSchema = v.object({
+  name: v.string(),
 })
 
-export type CreateTagDto = z.infer<typeof CreateTagSchema>
+export type CreateTagDto = v.InferInput<typeof CreateTagSchema>

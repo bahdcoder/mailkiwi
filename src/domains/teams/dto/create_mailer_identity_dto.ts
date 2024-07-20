@@ -1,30 +1,39 @@
-import { z } from "zod"
+import {
+  check,
+  email,
+  InferInput,
+  object,
+  picklist,
+  pipe,
+  regex,
+  safeParse,
+  string,
+} from "valibot"
 
-export const CreateMailerIdentitySchema = z
-  .object({
-    value: z.string(),
-    type: z.enum(["EMAIL", "DOMAIN"]),
-  })
-  .superRefine((data, ctx) => {
-    if (data.type === "EMAIL") {
-      if (!z.string().email().safeParse(data.value).success) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Value must be a valid email.",
-          path: ["value"],
-        })
-      }
-    } else if (data.type === "DOMAIN") {
-      if (
-        !/^(?!:\/\/)([a-zA-Z0-9-_]+(\.[a-zA-Z0-9-_]+)+.*)$/.test(data.value)
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Value must be a valid domain.",
-          path: ["value"],
-        })
-      }
+export const CreateMailerIdentitySchema = pipe(
+  object({
+    value: string(),
+    type: picklist(["EMAIL", "DOMAIN"] as const),
+  }),
+  check((input) => {
+    if (input.type === "EMAIL") {
+      return safeParse(pipe(string(), email()), input.value).success
     }
-  })
 
-export type CreateMailerIdentityDto = z.infer<typeof CreateMailerIdentitySchema>
+    if (input.type === "DOMAIN") {
+      return safeParse(
+        pipe(
+          string(),
+          regex(/^(?!:\/\/)([a-zA-Z0-9-_]+(\.[a-zA-Z0-9-_]+)+.*)$/),
+        ),
+        input.value,
+      ).success
+    }
+
+    return false
+  }, "Value must be a valid email or domain."),
+)
+
+export type CreateMailerIdentityDto = InferInput<
+  typeof CreateMailerIdentitySchema
+>

@@ -1,12 +1,12 @@
 import { eq } from "drizzle-orm"
 
-import { TeamPolicy } from "@/domains/audiences/policies/team_policy.ts"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.ts"
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
-import { mailers } from "@/infrastructure/database/schema/schema.ts"
-import { Mailer } from "@/infrastructure/database/schema/types.ts"
-import { HonoContext } from "@/infrastructure/server/types.ts"
-import { container } from "@/utils/typi.ts"
+import { TeamPolicy } from "@/domains/audiences/policies/team_policy.js"
+import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { mailers } from "@/infrastructure/database/schema/schema.js"
+import { Mailer } from "@/infrastructure/database/schema/types.js"
+import { HonoContext } from "@/infrastructure/server/types.js"
+import { container } from "@/utils/typi.js"
 
 export class MailerValidationAndAuthorizationConcern {
   constructor(
@@ -26,9 +26,9 @@ export class MailerValidationAndAuthorizationConcern {
     )
 
     if (!mailer)
-      throw E_VALIDATION_FAILED({
-        errors: [{ message: "Unknown mailer.", path: ["mailerId"] }],
-      })
+      throw E_VALIDATION_FAILED([
+        { message: "Unknown mailer.", field: "mailerId" },
+      ])
 
     return mailer as Mailer
   }

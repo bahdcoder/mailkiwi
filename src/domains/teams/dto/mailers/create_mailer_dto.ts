@@ -1,8 +1,8 @@
-import { z } from "zod"
+import { InferInput, object, picklist, string } from "valibot"
 
-export const CreateMailerSchema = z.object({
-  name: z.string(),
-  provider: z.enum(["AWS_SES", "MAILGUN", "POSTMARK"]),
+export const CreateMailerSchema = object({
+  name: string(),
+  provider: picklist(["AWS_SES", "MAILGUN", "POSTMARK"] as const),
 })
 
-export type CreateMailerDto = z.infer<typeof CreateMailerSchema>
+export type CreateMailerDto = InferInput<typeof CreateMailerSchema>

@@ -1,12 +1,12 @@
 import { CreateContactAction } from "@/domains/audiences/actions/contacts/create_contact_action.js"
 import { CreateContactSchema } from "@/domains/audiences/dto/contacts/create_contact_dto.js"
 import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy.js"
-import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
+import { BaseController } from "@/domains/shared/controllers/base_controller.js"
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
 import { makeApp } from "@/infrastructure/container.js"
-import { HonoInstance } from "@/infrastructure/server/hono.ts"
-import { HonoContext } from "@/infrastructure/server/types.ts"
-import { container } from "@/utils/typi.ts"
+import { HonoInstance } from "@/infrastructure/server/hono.js"
+import { HonoContext } from "@/infrastructure/server/types.js"
+import { container } from "@/utils/typi.js"
 
 export class ContactController extends BaseController {
   constructor(private app: HonoInstance = makeApp()) {

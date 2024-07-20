@@ -1,20 +1,20 @@
 import { eq } from "drizzle-orm"
 
-import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
+import { BaseController } from "@/domains/shared/controllers/base_controller.js"
 import { CreateMailerIdentityAction } from "@/domains/teams/actions/create_mailer_identity_action.js"
 import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_identities_action.js"
 import { DeleteMailerIdentityAction } from "@/domains/teams/actions/mailers/delete_mailer_identity_action.js"
 import { CreateMailerIdentitySchema } from "@/domains/teams/dto/create_mailer_identity_dto.js"
 import { DeleteMailerIdentitySchema } from "@/domains/teams/dto/delete_mailer_identity_dto.js"
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
-import { MailerValidationAndAuthorizationConcern } from "@/http/api/concerns/mailer_validation_concern.ts"
+import { MailerValidationAndAuthorizationConcern } from "@/http/api/concerns/mailer_validation_concern.js"
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 import { makeApp } from "@/infrastructure/container.js"
-import { mailerIdentities } from "@/infrastructure/database/schema/schema.ts"
-import { MailerIdentity } from "@/infrastructure/database/schema/types.ts"
-import { HonoInstance } from "@/infrastructure/server/hono.ts"
-import { HonoContext } from "@/infrastructure/server/types.ts"
-import { container } from "@/utils/typi.ts"
+import { mailerIdentities } from "@/infrastructure/database/schema/schema.js"
+import { MailerIdentity } from "@/infrastructure/database/schema/types.js"
+import { HonoInstance } from "@/infrastructure/server/hono.js"
+import { HonoContext } from "@/infrastructure/server/types.js"
+import { container } from "@/utils/typi.js"
 
 export class MailerIdentityController extends BaseController {
   constructor(
@@ -86,14 +86,12 @@ export class MailerIdentityController extends BaseController {
       mailerIdentity.status !== "TEMPORARILY_FAILED" &&
       mailerIdentity.status !== "DENIED"
     ) {
-      throw E_VALIDATION_FAILED({
-        errors: [
-          {
-            message: "Only failed mailer identities can restart verification.",
-            path: ["mailerIdentityId"],
-          },
-        ],
-      })
+      throw E_VALIDATION_FAILED([
+        {
+          message: "Only failed mailer identities can restart verification.",
+          path: "mailerIdentityId",
+        },
+      ])
     }
 
     const deleteIdentityAction = container.resolve(DeleteMailerIdentityAction)
@@ -141,11 +139,9 @@ export class MailerIdentityController extends BaseController {
     )
 
     if (!mailerIdentity)
-      throw E_VALIDATION_FAILED({
-        errors: [
-          { message: "Unknown mailer identity.", path: ["mailerIdentityId"] },
-        ],
-      })
+      throw E_VALIDATION_FAILED([
+        { message: "Unknown mailer identity.", field: "mailerIdentityId" },
+      ])
 
     return mailerIdentity
   }

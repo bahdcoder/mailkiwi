@@ -1,5 +1,5 @@
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class DeleteMailerAction {
   constructor(

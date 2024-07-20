@@ -2,11 +2,11 @@ import { Secret } from "@poppinss/utils"
 import { eq } from "drizzle-orm"
 
 import { AccessToken } from "@/domains/auth/acess_tokens/utils/access_token.js"
-import { BaseRepository } from "@/domains/shared/repositories/base_repository.ts"
+import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
 import { makeDatabase } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.ts"
-import { accessTokens, users } from "@/infrastructure/database/schema/schema.ts"
-import { User } from "@/infrastructure/database/schema/types.ts"
+import { DrizzleClient } from "@/infrastructure/database/client.js"
+import { accessTokens, users } from "@/infrastructure/database/schema/schema.js"
+import { User } from "@/infrastructure/database/schema/types.js"
 
 export class AccessTokenRepository extends BaseRepository {
   protected tokenSecretLength = 40

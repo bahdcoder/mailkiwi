@@ -8,9 +8,9 @@ import {
   Mailer,
   MailerIdentity,
   Team,
-} from "@/infrastructure/database/schema/types.ts"
+} from "@/infrastructure/database/schema/types.js"
 import { AwsSdk } from "@/providers/ses/sdk.js"
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class CreateMailerIdentityAction {
   constructor(
@@ -37,14 +37,12 @@ export class CreateMailerIdentityAction {
       !configuration.accessSecret ||
       !configuration.region
     ) {
-      throw E_VALIDATION_FAILED({
-        errors: [
-          {
-            path: ["mailer.configuration"],
-            message: "Mailer is not correctly configured.",
-          },
-        ],
-      })
+      throw E_VALIDATION_FAILED([
+        {
+          field: "mailer.configuration",
+          message: "Mailer is not correctly configured.",
+        },
+      ])
     }
 
     const { id: identityId } = await this.mailerIdentityRepository.create(

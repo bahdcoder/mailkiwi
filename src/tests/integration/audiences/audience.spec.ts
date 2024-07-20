@@ -3,9 +3,9 @@ import { and, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { makeConfig, makeDatabase } from "@/infrastructure/container.js"
-import { audiences, contacts } from "@/infrastructure/database/schema/schema.ts"
+import { audiences, contacts } from "@/infrastructure/database/schema/schema.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
 
 describe("Audiences", () => {

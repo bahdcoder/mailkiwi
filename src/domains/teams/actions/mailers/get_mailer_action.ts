@@ -4,7 +4,7 @@ import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_id
 import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials.js"
 import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
 import { AwsSdk } from "@/providers/ses/sdk.js"
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class GetMailerAction {
   constructor(

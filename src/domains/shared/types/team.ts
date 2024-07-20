@@ -3,7 +3,7 @@ import {
   MailerIdentity,
   Team,
   TeamMembership,
-} from "@/infrastructure/database/schema/types.ts"
+} from "@/infrastructure/database/schema/types.js"
 
 export type TeamWithMembers = Team & {
   members: TeamMembership[]

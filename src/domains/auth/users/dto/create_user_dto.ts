@@ -1,40 +1,41 @@
 import { eq } from "drizzle-orm"
-import { z } from "zod"
+import {
+  checkAsync,
+  email,
+  InferInput,
+  maxLength,
+  objectAsync,
+  pipe,
+  pipeAsync,
+  regex,
+  string,
+} from "valibot"
 
 import { makeDatabase } from "@/infrastructure/container.js"
-import { users } from "@/infrastructure/database/schema/schema.ts"
+import { users } from "@/infrastructure/database/schema/schema.js"
 
-export const CreateUserSchema = z.object({
-  email: z
-    .string()
-    .email()
-    .refine(async (email) => {
+export const CreateUserSchema = objectAsync({
+  email: pipeAsync(
+    string(),
+    email(),
+    checkAsync(async (input) => {
       const database = makeDatabase()
 
-      const userWithEmailExists = await database.query.users.findFirst({
-        where: eq(users.email, email),
+      const userExists = await database.query.users.findFirst({
+        where: eq(users.email, input),
       })
 
-      return userWithEmailExists === undefined
+      return userExists === undefined
     }, "A user with this email already exists."),
-  name: z.string().min(2).max(32),
-  password: z
-    .string()
-    .min(8)
-    .max(32)
-    .refine(
-      (password) => /[A-Z]/.test(password),
-      "Must contain capital letter.",
-    )
-    .refine(
-      (password) => /[a-z]/.test(password),
-      "Must contain lowercase letter.",
-    )
-    .refine((password) => /[0-9]/.test(password), "Must contain a number.")
-    .refine(
-      (password) => /[!@#$%^&*]/.test(password),
-      "Must contain a special character.",
-    ),
+  ),
+  name: pipe(string(), maxLength(50)),
+  password: pipe(
+    string(),
+    regex(/[A-Z]/, "Must contain capital letter."),
+    regex(/[a-z]/, "Must contain lowercase letter."),
+    regex(/[0-9]/, "Must contain a number."),
+    regex(/[!@#$%^&*]/, "Must contain a special character."),
+  ),
 })
 
-export type CreateUserDto = z.infer<typeof CreateUserSchema>
+export type CreateUserDto = InferInput<typeof CreateUserSchema>

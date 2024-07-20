@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm"
 
 import { TeamPolicy } from "@/domains/audiences/policies/team_policy.js"
-import { BaseController } from "@/domains/shared/controllers/base_controller.ts"
+import { BaseController } from "@/domains/shared/controllers/base_controller.js"
 import { InstallMailerAction } from "@/domains/teams/actions/install_mailer_action.js"
 import { CreateMailerAction } from "@/domains/teams/actions/mailers/create_mailer_action.js"
 import { GetMailerAction } from "@/domains/teams/actions/mailers/get_mailer_action.js"
@@ -15,10 +15,10 @@ import {
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
 import { makeApp } from "@/infrastructure/container.js"
-import { mailers } from "@/infrastructure/database/schema/schema.ts"
-import { HonoInstance } from "@/infrastructure/server/hono.ts"
-import { HonoContext } from "@/infrastructure/server/types.ts"
-import { container } from "@/utils/typi.ts"
+import { mailers } from "@/infrastructure/database/schema/schema.js"
+import { HonoInstance } from "@/infrastructure/server/hono.js"
+import { HonoContext } from "@/infrastructure/server/types.js"
+import { container } from "@/utils/typi.js"
 
 export class MailerController extends BaseController {
   constructor(
@@ -105,15 +105,13 @@ export class MailerController extends BaseController {
     const data = await this.validate(ctx, UpdateMailerSchema)
 
     if (data?.configuration.region !== configuration.region) {
-      throw E_VALIDATION_FAILED({
-        errors: [
-          {
-            message:
-              "Cannot update region when reconnecting. To change the region of your mailer, please create a new mailer instead.",
-            path: ["configuration"],
-          },
-        ],
-      })
+      throw E_VALIDATION_FAILED([
+        {
+          message:
+            "Cannot update region when reconnecting. To change the region of your mailer, please create a new mailer instead.",
+          field: "configuration",
+        },
+      ])
     }
 
     await container
@@ -140,9 +138,9 @@ export class MailerController extends BaseController {
     )
 
     if (!mailer)
-      throw E_VALIDATION_FAILED({
-        errors: [{ message: "Unknown mailer.", path: ["mailerId"] }],
-      })
+      throw E_VALIDATION_FAILED([
+        { message: "Unknown mailer.", field: "mailerId" },
+      ])
 
     return mailer
   }

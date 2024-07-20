@@ -9,7 +9,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/sqlite-core"
 
-import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
+import { cuid } from "@/domains/shared/utils/cuid/cuid.js"
 
 const id = text("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid)
 

@@ -1,5 +1,5 @@
-import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
-import { DrizzleClient } from "@/infrastructure/database/client.ts"
+import { cuid } from "@/domains/shared/utils/cuid/cuid.js"
+import { DrizzleClient } from "@/infrastructure/database/client.js"
 
 export class BaseRepository {
   protected database: DrizzleClient

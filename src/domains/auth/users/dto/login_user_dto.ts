@@ -1,8 +1,8 @@
-import { z } from "zod"
+import { type InferInput, object, string } from "valibot"
 
-export const LoginUserSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
+export const LoginUserSchema = object({
+  email: string(),
+  password: string(),
 })
 
-export type LoginUserDto = z.infer<typeof LoginUserSchema>
+export type LoginUserDto = InferInput<typeof LoginUserSchema>

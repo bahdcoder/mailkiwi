@@ -4,7 +4,7 @@ import type { TeamWithMembers } from "@/domains/shared/types/team"
 import type {
   AccessToken,
   User,
-} from "@/infrastructure/database/schema/types.ts"
+} from "@/infrastructure/database/schema/types.js"
 
 declare module "hono" {
   interface ContextVariableMap {

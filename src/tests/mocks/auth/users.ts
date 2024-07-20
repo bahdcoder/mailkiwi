@@ -6,11 +6,11 @@ import { eq } from "drizzle-orm"
 
 import { AudienceRepository } from "@/domains/audiences/repositories/audience_repository.js"
 import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.js"
-import { TeamRepository } from "@/domains/teams/repositories/team_repository.ts"
+import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
 import { makeDatabase } from "@/infrastructure/container.js"
-import { users } from "@/infrastructure/database/schema/schema.ts"
+import { users } from "@/infrastructure/database/schema/schema.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export const createUser = async ({
   createMailerWithIdentity,

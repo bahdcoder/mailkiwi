@@ -1,12 +1,12 @@
-import { z } from "zod"
+import { object, pipe, string, url } from "valibot"
 
 import { ContainerKey } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.ts"
-import { container } from "@/utils/typi.ts"
+import { DrizzleClient } from "@/infrastructure/database/client.js"
+import { container } from "@/utils/typi.js"
 
 export class InstallationSettings {
-  protected settingsSchema = z.object({
-    domain: z.string().url(),
+  protected settingsSchema = object({
+    domain: pipe(string(), url()),
   })
 
   constructor(

@@ -1,5 +1,5 @@
 import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class GetMailerIdentityStatusFromProviderAction {
   constructor(

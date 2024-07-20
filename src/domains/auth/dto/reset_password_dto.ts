@@ -1,7 +1,7 @@
-import { z } from "zod"
+import * as v from "valibot"
 
-export const ResetPasswordSchema = z.object({
+export const ResetPasswordSchema = v.object({
   // Define schema properties here
 })
 
-export type ResetPasswordDto = z.infer<typeof ResetPasswordSchema>
+export type ResetPasswordDto = v.InferInput<typeof ResetPasswordSchema>

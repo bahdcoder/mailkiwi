@@ -2,9 +2,9 @@ import { TeamPolicy } from "@/domains/audiences/policies/team_policy.js"
 import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
 import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 import { makeApp } from "@/infrastructure/container.js"
-import { HonoInstance } from "@/infrastructure/server/hono.ts"
-import { HonoContext } from "@/infrastructure/server/types.ts"
-import { container } from "@/utils/typi.ts"
+import { HonoInstance } from "@/infrastructure/server/hono.js"
+import { HonoContext } from "@/infrastructure/server/types.js"
+import { container } from "@/utils/typi.js"
 
 export class TeamController {
   constructor(
@@ -22,9 +22,9 @@ export class TeamController {
     const team = await this.teamRepository.findById(teamId)
 
     if (!team)
-      throw E_VALIDATION_FAILED({
-        errors: [{ message: "Unknown team ID provided.", path: ["teamId"] }],
-      })
+      throw E_VALIDATION_FAILED([
+        { message: "Unknown team ID provided.", field: "teamId" },
+      ])
 
     const policy = container.resolve<TeamPolicy>(TeamPolicy)
 

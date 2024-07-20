@@ -1,7 +1,7 @@
-import { z } from "zod"
+import { type InferInput, object, string } from "valibot"
 
-export const CreateTeamDto = z.object({
-  name: z.string(),
+export const CreateTeamDto = object({
+  name: string(),
 })
 
-export type CreateTeamDto = z.infer<typeof CreateTeamDto>
+export type CreateTeamDto = InferInput<typeof CreateTeamDto>

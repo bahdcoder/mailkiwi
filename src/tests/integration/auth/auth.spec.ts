@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { makeApp, makeDatabase } from "@/infrastructure/container.js"
-import { users } from "@/infrastructure/database/schema/schema.ts"
+import { users } from "@/infrastructure/database/schema/schema.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequest } from "@/tests/utils/http.js"
 

@@ -1,6 +1,6 @@
 import { CreateTagDto } from "@/domains/audiences/dto/tags/create_tag_dto.js"
 import { TagRepository } from "@/domains/audiences/repositories/tag_repository.js"
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class CreateTagAction {
   constructor(

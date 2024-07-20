@@ -1,7 +1,7 @@
-import { z } from "zod"
+import * as v from "valibot"
 
-export const CreateAudienceSchema = z.object({
-  name: z.string(),
+export const CreateAudienceSchema = v.object({
+  name: v.string(),
 })
 
-export type CreateAudienceDto = z.infer<typeof CreateAudienceSchema>
+export type CreateAudienceDto = v.InferInput<typeof CreateAudienceSchema>

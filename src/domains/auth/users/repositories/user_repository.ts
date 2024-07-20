@@ -3,14 +3,14 @@ import { eq } from "drizzle-orm"
 
 import { CreateUserDto } from "@/domains/auth/users/dto/create_user_dto.js"
 import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
-import { scrypt } from "@/domains/shared/utils/hash/scrypt.ts"
+import { scrypt } from "@/domains/shared/utils/hash/scrypt.js"
 import { makeDatabase } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.ts"
-import { users } from "@/infrastructure/database/schema/schema.ts"
+import { DrizzleClient } from "@/infrastructure/database/client.js"
+import { users } from "@/infrastructure/database/schema/schema.js"
 import {
   FindUserByIdArgs,
   User,
-} from "@/infrastructure/database/schema/types.ts"
+} from "@/infrastructure/database/schema/types.js"
 
 export class UserRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

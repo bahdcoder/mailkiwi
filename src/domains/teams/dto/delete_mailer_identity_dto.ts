@@ -1,7 +1,9 @@
-import { z } from "zod"
+import { boolean, InferInput, object, optional } from "valibot"
 
-export const DeleteMailerIdentitySchema = z.object({
-  deleteOnProvider: z.boolean().optional().default(false),
+export const DeleteMailerIdentitySchema = object({
+  deleteOnProvider: optional(boolean()),
 })
 
-export type DeleteMailerIdentityDto = z.infer<typeof DeleteMailerIdentitySchema>
+export type DeleteMailerIdentityDto = InferInput<
+  typeof DeleteMailerIdentitySchema
+>

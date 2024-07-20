@@ -1,4 +1,4 @@
-import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
+import { cuid } from "@/domains/shared/utils/cuid/cuid.js"
 import { makeDatabase } from "@/infrastructure/container.js"
 import {
   accessTokens,
@@ -10,7 +10,7 @@ import {
   mailers,
   teams,
   users,
-} from "@/infrastructure/database/schema/schema.ts"
+} from "@/infrastructure/database/schema/schema.js"
 
 export const refreshDatabase = async () => {
   const database = makeDatabase()

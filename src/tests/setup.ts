@@ -1,8 +1,8 @@
 import { Ignitor } from "@/infrastructure/boot/ignitor.js"
-import { makeDatabase } from "@/infrastructure/container.ts"
-import { settings } from "@/infrastructure/database/schema/schema.ts"
+import { makeDatabase } from "@/infrastructure/container.js"
+import { settings } from "@/infrastructure/database/schema/schema.js"
 
-import { refreshDatabase } from "./mocks/teams/teams.ts"
+import { refreshDatabase } from "./mocks/teams/teams.js"
 
 process.env.NODE_ENV = "test"
 

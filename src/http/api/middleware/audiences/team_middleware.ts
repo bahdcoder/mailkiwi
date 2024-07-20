@@ -2,8 +2,8 @@ import { Next } from "hono"
 
 import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
 import { makeConfig } from "@/infrastructure/container.js"
-import { HonoContext } from "@/infrastructure/server/types.ts"
-import { container } from "@/utils/typi.ts"
+import { HonoContext } from "@/infrastructure/server/types.js"
+import { container } from "@/utils/typi.js"
 
 export class TeamMiddleware {
   constructor(

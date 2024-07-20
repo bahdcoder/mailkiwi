@@ -1,19 +1,19 @@
 import { Secret } from "@poppinss/utils"
 import { and, eq, SQLWrapper } from "drizzle-orm"
 
-import { BaseRepository } from "@/domains/shared/repositories/base_repository.ts"
+import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
 import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
 import { Encryption } from "@/domains/shared/utils/encryption/encryption.js"
 import { CreateMailerDto } from "@/domains/teams/dto/mailers/create_mailer_dto.js"
 import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
 import { makeDatabase, makeEnv } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.ts"
-import { mailers } from "@/infrastructure/database/schema/schema.ts"
+import { DrizzleClient } from "@/infrastructure/database/client.js"
+import { mailers } from "@/infrastructure/database/schema/schema.js"
 import {
   Mailer,
   Team,
   UpdateSetMailerInput,
-} from "@/infrastructure/database/schema/types.ts"
+} from "@/infrastructure/database/schema/types.js"
 
 export class MailerRepository extends BaseRepository {
   defaultConfigurationPayload: MailerConfiguration = {

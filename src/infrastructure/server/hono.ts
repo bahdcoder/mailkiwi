@@ -1,12 +1,12 @@
 import { Env, Hono, MiddlewareHandler } from "hono"
 import { HonoOptions } from "hono/hono-base"
 
-import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware.ts"
-import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware.ts"
-import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.ts"
-import { container } from "@/utils/typi.ts"
+import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware.js"
+import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware.js"
+import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js"
+import { container } from "@/utils/typi.js"
 
-import { HonoRouteDefinition } from "./types.ts"
+import { HonoRouteDefinition } from "./types.js"
 
 export type HonoInstance<E extends Env = object> = Hono<E> & {
   defineRoutes: (

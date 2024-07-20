@@ -1,10 +1,10 @@
-import { z } from "zod"
+import * as v from "valibot"
 
-export const CreateContactSchema = z.object({
-  email: z.string().email(),
-  audienceId: z.string(),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
+export const CreateContactSchema = v.object({
+  email: v.string(),
+  audienceId: v.string(),
+  firstName: v.optional(v.string()),
+  lastName: v.optional(v.string()),
 })
 
-export type CreateContactDto = z.infer<typeof CreateContactSchema>
+export type CreateContactDto = v.InferInput<typeof CreateContactSchema>

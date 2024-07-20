@@ -1,16 +1,16 @@
 import { Secret } from "@poppinss/utils"
 import { and, eq, SQLWrapper } from "drizzle-orm"
 
-import { BaseRepository } from "@/domains/shared/repositories/base_repository.ts"
+import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
 import { Encryption } from "@/domains/shared/utils/encryption/encryption.js"
 import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto.js"
 import { makeDatabase, makeEnv } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.ts"
-import { mailerIdentities } from "@/infrastructure/database/schema/schema.ts"
+import { DrizzleClient } from "@/infrastructure/database/client.js"
+import { mailerIdentities } from "@/infrastructure/database/schema/schema.js"
 import {
   FindManyMailerIdentityArgs,
   UpdateSetMailerIdentityInput,
-} from "@/infrastructure/database/schema/types.ts"
+} from "@/infrastructure/database/schema/types.js"
 
 export class MailerIdentityRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

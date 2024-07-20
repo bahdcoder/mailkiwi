@@ -1,7 +1,7 @@
 import { InferSelectModel } from "drizzle-orm"
 import { SQLiteUpdateSetSource } from "drizzle-orm/sqlite-core"
 
-import { makeDatabase } from "@/infrastructure/container.ts"
+import { makeDatabase } from "@/infrastructure/container.js"
 
 import {
   accessTokens,
@@ -10,7 +10,7 @@ import {
   teamMemberships,
   teams,
   users,
-} from "./schema.ts"
+} from "./schema.js"
 
 export type User = InferSelectModel<typeof users>
 export type AccessToken = InferSelectModel<typeof accessTokens>

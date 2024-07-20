@@ -10,9 +10,9 @@ import {
   Mailer,
   MailerIdentity,
   Team,
-} from "@/infrastructure/database/schema/types.ts"
+} from "@/infrastructure/database/schema/types.js"
 import { AwsSdk } from "@/providers/ses/sdk.js"
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class DeleteMailerIdentityAction {
   constructor(

@@ -1,8 +1,8 @@
 import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository.js"
 import { makeApp, makeConfig } from "@/infrastructure/container.js"
-import { Team, User } from "@/infrastructure/database/schema/types.ts"
-import { HTTPMethods } from "@/infrastructure/server/types.ts"
-import { container } from "@/utils/typi.ts"
+import { Team, User } from "@/infrastructure/database/schema/types.js"
+import { HTTPMethods } from "@/infrastructure/server/types.js"
+import { container } from "@/utils/typi.js"
 
 export async function makeRequest(
   path: string,

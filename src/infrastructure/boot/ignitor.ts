@@ -4,7 +4,7 @@ import { AudienceController } from "@/http/api/controllers/audiences/audience_co
 import { ContactController } from "@/http/api/controllers/audiences/contact_controller.js"
 import { AuthController } from "@/http/api/controllers/auth/auth_controller.js"
 import { UserController } from "@/http/api/controllers/auth/user_controller.js"
-import { AutomationController } from "@/http/api/controllers/automations/automation_controller.ts"
+import { AutomationController } from "@/http/api/controllers/automations/automation_controller.js"
 import { MailerController } from "@/http/api/controllers/teams/mailer_controller.js"
 import { MailerIdentityController } from "@/http/api/controllers/teams/mailer_identity_controller.js"
 import { TeamController } from "@/http/api/controllers/teams/team_controller.js"
@@ -24,7 +24,7 @@ import {
   EnvVariables,
 } from "@/infrastructure/env.js"
 import { ExtendedHono } from "@/infrastructure/server/hono.js"
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class Ignitor {
   protected env: EnvVariables

@@ -1,8 +1,8 @@
 import { ConfigVariables, EnvVariables } from "@/infrastructure/env.js"
 import { container } from "@/utils/typi.js"
 
-import { DrizzleClient } from "./database/client.ts"
-import { HonoInstance } from "./server/hono.ts"
+import { DrizzleClient } from "./database/client.js"
+import { HonoInstance } from "./server/hono.js"
 
 export enum ContainerKey {
   app = "app",

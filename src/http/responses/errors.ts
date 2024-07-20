@@ -1,6 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { HTTPException } from "hono/http-exception"
 import { StatusCode } from "hono/utils/http-status"
-import { ZodError } from "zod"
+import { BaseSchema, BaseSchemaAsync, InferIssue } from "valibot"
+
+type ValibotValidationError =
+  | InferIssue<BaseSchema<any, any, any>>
+  | InferIssue<BaseSchemaAsync<any, any, any>>
+  | { message?: string; field?: string }
 
 export class E_REQUEST_EXCEPTION extends Error {
   constructor(
@@ -11,15 +18,13 @@ export class E_REQUEST_EXCEPTION extends Error {
     super(message ?? "An error occurred.")
   }
 
-  public static E_VALIDATION_FAILED(
-    errors: ZodError | { errors: { message: string; path: string[] }[] },
-  ) {
+  public static E_VALIDATION_FAILED(errors: ValibotValidationError[]) {
     return new E_REQUEST_EXCEPTION(
       "Validation failed.",
       {
-        errors: errors?.errors?.map((error) => ({
-          message: error.message,
-          field: error.path?.[0],
+        errors: errors?.map((error) => ({
+          message: error?.message,
+          field: error?.path?.[0]?.["key"] ?? error?.field,
         })),
       },
       422,
@@ -39,8 +44,6 @@ export function E_OPERATION_FAILED(message?: string) {
   throw new HTTPException(400, { message })
 }
 
-export function E_VALIDATION_FAILED(
-  error: ZodError | { errors: { message: string; path: string[] }[] },
-): never {
+export function E_VALIDATION_FAILED(error: ValibotValidationError[]): never {
   throw E_REQUEST_EXCEPTION.E_VALIDATION_FAILED(error)
 }

@@ -33,12 +33,12 @@ import { makeConfig, makeDatabase } from "@/infrastructure/container.js"
 import {
   mailerIdentities,
   mailers,
-} from "@/infrastructure/database/schema/schema.ts"
+} from "@/infrastructure/database/schema/schema.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 import * as sleepUtils from "@/utils/sleep.js"
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 const SESMock = mockClient(SESClient)
 const SNSMock = mockClient(SNSClient)
@@ -476,7 +476,6 @@ describe("Teams / Mailers", () => {
         {
           message:
             "Either domain or email must be provided to enable sending emails.",
-          field: "configuration",
         },
       ],
     })

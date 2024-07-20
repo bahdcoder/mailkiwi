@@ -1,7 +1,7 @@
-import { z } from "zod"
+import { InferInput, object, string } from "valibot"
 
-export const CreateAutomationSchema = z.object({
-  name: z.string(),
+export const CreateAutomationSchema = object({
+  name: string(),
 })
 
-export type CreateAutomationDto = z.infer<typeof CreateAutomationSchema>
+export type CreateAutomationDto = InferInput<typeof CreateAutomationSchema>

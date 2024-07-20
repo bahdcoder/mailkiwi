@@ -1,35 +1,38 @@
-import { z } from "zod"
+import {
+  BaseSchema,
+  BaseSchemaAsync,
+  InferInput,
+  safeParseAsync,
+} from "valibot"
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
-import { HonoContext } from "@/infrastructure/server/types.ts"
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { HonoContext } from "@/infrastructure/server/types.js"
 
 export class BaseController {
-  // eslint-disable-next-line
-  protected async validate<T extends z.ZodType<any>>(
-    ctx: HonoContext,
-    schema: T,
-  ): Promise<z.infer<T>> {
-    const { success, error, data } = await schema.safeParseAsync(
+  protected async validate<
+    /* eslint-disable-next-line */
+    T extends BaseSchema<any, any, any> | BaseSchemaAsync<any, any, any>,
+  >(ctx: HonoContext, schema: T): Promise<InferInput<T>> {
+    const { success, issues, output } = await safeParseAsync(
+      schema,
       await ctx.req.json(),
     )
 
-    if (!success) throw E_VALIDATION_FAILED(error)
+    if (!success) throw E_VALIDATION_FAILED(issues)
 
-    return data
+    return output
   }
 
   protected ensureTeam(ctx: HonoContext) {
     const team = ctx.get("team")
 
     if (!team)
-      throw E_VALIDATION_FAILED({
-        errors: [
-          {
-            message: "The team is required to create an audience.",
-            path: ["email"],
-          },
-        ],
-      })
+      throw E_VALIDATION_FAILED([
+        {
+          message: "The team is required to create an audience.",
+          field: "email",
+        },
+      ])
 
     return team
   }

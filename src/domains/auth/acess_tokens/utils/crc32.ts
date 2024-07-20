@@ -6,7 +6,7 @@
  * article. https://github.blog/2021-04-05-behind-githubs-new-authentication-token-formats/
  *
  * Code taken from:
- * https://github.com/tsxper/crc32/blob/main/src/CRC32.ts
+ * https://github.com/tsxper/crc32/blob/main/src/CRC32.js
  */
 
 export class CRC32 {

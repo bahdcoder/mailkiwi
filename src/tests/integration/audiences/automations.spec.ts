@@ -3,10 +3,10 @@ import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { makeDatabase } from "@/infrastructure/container.js"
-import { automations } from "@/infrastructure/database/schema/schema.ts"
+import { automations } from "@/infrastructure/database/schema/schema.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.ts"
-import { makeRequestAsUser } from "@/tests/utils/http.ts"
+import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
+import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 describe("Contact automations", () => {
   test("experimenting with automations", async ({ expect }) => {
