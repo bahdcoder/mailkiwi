@@ -37,20 +37,27 @@ export const refreshDatabase = async () => {
   await database.delete(users)
 }
 
-export const seedAutomation = async (automation: {
-  audienceId: string
-  name: string
-  description: string
-}) => {
+export const seedAutomation = async (
+  automation: {
+    audienceId: string
+    name?: string
+    description?: string
+  },
+  createSteps = true,
+) => {
   const database = makeDatabase()
   const automationId = cuid()
 
   await database.insert(automations).values({
     id: automationId,
-    name: automation.name,
+    name: automation.name ?? "Book launch",
     audienceId: automation.audienceId,
-    description: automation.description,
+    description: automation.description ?? "Book launch",
   })
+
+  if (!createSteps) {
+    return { id: automationId }
+  }
 
   // Now create sample data for a automation that looks like this:
   const startingTriggerautomationStepId = cuid()
@@ -60,11 +67,9 @@ export const seedAutomation = async (automation: {
     .values({
       id: startingTriggerautomationStepId,
       automationId,
-      name: "User subscribes to email list",
-      description: "User subscribes to email list",
       type: "TRIGGER",
       subtype: "TRIGGER_CONTACT_SUBSCRIBED",
-      configuration: JSON.stringify({}),
+      configuration: {},
     })
     .execute()
 
@@ -76,10 +81,9 @@ export const seedAutomation = async (automation: {
       id: receiveWelcomeEmailautomationStepId,
       automationId,
       parentId: startingTriggerautomationStepId,
-      name: "Receive a Welcome email",
       type: "ACTION",
       subtype: "ACTION_SEND_EMAIL",
-      configuration: JSON.stringify({ subject: "Welcome to the company!" }),
+      configuration: { subject: "Welcome to the company!" },
     })
     .execute()
 
@@ -91,10 +95,9 @@ export const seedAutomation = async (automation: {
       id: waitsTwoDaysautomationStepId,
       automationId,
       parentId: receiveWelcomeEmailautomationStepId,
-      name: "Waits two days",
       type: "RULE",
       subtype: "RULE_WAIT_FOR_DURATION",
-      configuration: JSON.stringify({ delay: "2 days" }),
+      configuration: { delay: "2 days" },
     })
     .execute()
 
@@ -106,10 +109,9 @@ export const seedAutomation = async (automation: {
       id: receiveSecondEmailEmailautomationStepId,
       automationId,
       parentId: waitsTwoDaysautomationStepId,
-      name: "Receive a second email",
       type: "ACTION",
       subtype: "ACTION_SEND_EMAIL",
-      configuration: JSON.stringify({ subject: "Did you get my book?" }),
+      configuration: { subject: "Did you get my book?" },
     })
     .execute()
 
@@ -121,10 +123,9 @@ export const seedAutomation = async (automation: {
       id: waitsOneDayautomationStepId,
       automationId,
       parentId: receiveSecondEmailEmailautomationStepId,
-      name: "Waits one day",
       type: "RULE",
       subtype: "RULE_WAIT_FOR_DURATION",
-      configuration: JSON.stringify({ delay: "1 day" }),
+      configuration: { delay: "1 day" },
     })
     .execute()
 
@@ -136,10 +137,9 @@ export const seedAutomation = async (automation: {
       id: ifElseBranchautomationStepId,
       automationId,
       parentId: waitsOneDayautomationStepId,
-      name: "If / Else",
       type: "RULE",
       subtype: "RULE_IF_ELSE",
-      configuration: JSON.stringify({
+      configuration: {
         conditions: [
           [
             {
@@ -149,7 +149,7 @@ export const seedAutomation = async (automation: {
             },
           ],
         ],
-      }),
+      },
     })
     .execute()
 
@@ -161,12 +161,11 @@ export const seedAutomation = async (automation: {
       id: hasTagReceivesThankYouautomationStepId,
       automationId,
       parentId: ifElseBranchautomationStepId,
-      name: "Receives thank you email",
       type: "ACTION",
       subtype: "ACTION_SEND_EMAIL",
-      configuration: JSON.stringify({
+      configuration: {
         subject: "Thank you for your purchase.",
-      }),
+      },
       branchIndex: 0,
     })
     .execute()
@@ -179,10 +178,9 @@ export const seedAutomation = async (automation: {
       id: hasTagWait4DaysautomationStepId,
       automationId,
       parentId: hasTagReceivesThankYouautomationStepId,
-      name: "Waits 4 days",
       type: "RULE",
       subtype: "RULE_WAIT_FOR_DURATION",
-      configuration: JSON.stringify({ delay: "4 days" }),
+      configuration: { delay: "4 days" },
     })
     .execute()
 
@@ -194,10 +192,9 @@ export const seedAutomation = async (automation: {
       id: hasTagAddToAudienceautomationId,
       automationId,
       parentId: hasTagWait4DaysautomationStepId,
-      name: "Subscribe to list",
       type: "ACTION",
       subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
-      configuration: JSON.stringify({ listId: "akc34b1k27xrgy0c6qygcefe" }),
+      configuration: { listId: "akc34b1k27xrgy0c6qygcefe" },
     })
     .execute()
 
@@ -209,10 +206,9 @@ export const seedAutomation = async (automation: {
       id: hasTagWait1DayautomationStepId,
       automationId,
       parentId: hasTagAddToAudienceautomationId,
-      name: "Waits 1 day",
       type: "RULE",
       subtype: "RULE_WAIT_FOR_DURATION",
-      configuration: JSON.stringify({ delay: "1 day" }),
+      configuration: { delay: "1 day" },
     })
     .execute()
 
@@ -224,10 +220,9 @@ export const seedAutomation = async (automation: {
       id: hasTagSendDiscountautomationStepId,
       automationId,
       parentId: hasTagWait1DayautomationStepId,
-      name: "Send discount",
       type: "ACTION",
       subtype: "ACTION_SEND_EMAIL",
-      configuration: JSON.stringify({ subject: "Enjoy this discount." }),
+      configuration: { subject: "Enjoy this discount." },
     })
     .execute()
 
@@ -239,10 +234,9 @@ export const seedAutomation = async (automation: {
       id: hasTagEndautomationStepId,
       automationId,
       parentId: hasTagSendDiscountautomationStepId,
-      name: "End automation",
       type: "END",
       subtype: "END",
-      configuration: JSON.stringify({}),
+      configuration: {},
     })
     .execute()
 
@@ -254,12 +248,11 @@ export const seedAutomation = async (automation: {
       id: notHasTagReceives80PercentDiscountEmailautomationStepId,
       automationId,
       parentId: ifElseBranchautomationStepId,
-      name: "80% discount email",
       type: "ACTION",
       subtype: "ACTION_SEND_EMAIL",
-      configuration: JSON.stringify({
+      configuration: {
         subject: "Enjoy this 80% discount for the course.",
-      }),
+      },
       branchIndex: 1,
     })
     .execute()
@@ -272,12 +265,11 @@ export const seedAutomation = async (automation: {
       id: notHasTagWait3DaysautomationStepId,
       automationId,
       parentId: notHasTagReceives80PercentDiscountEmailautomationStepId,
-      name: "Wait 3 Days",
       type: "RULE",
       subtype: "RULE_WAIT_FOR_DURATION",
-      configuration: JSON.stringify({
+      configuration: {
         subject: "Pause for 3 days to see user behaviour.",
-      }),
+      },
       branchIndex: 1,
     })
     .execute()
@@ -290,10 +282,9 @@ export const seedAutomation = async (automation: {
       id: secondIfElseBranchautomationStepId,
       automationId,
       parentId: notHasTagWait3DaysautomationStepId,
-      name: "Second If / Else",
       type: "RULE",
       subtype: "RULE_IF_ELSE",
-      configuration: JSON.stringify({
+      configuration: {
         conditions: [
           [
             {
@@ -303,7 +294,7 @@ export const seedAutomation = async (automation: {
             },
           ],
         ],
-      }),
+      },
     })
     .execute()
 
@@ -315,10 +306,10 @@ export const seedAutomation = async (automation: {
       id: isGmailautomationStepId,
       automationId,
       parentId: secondIfElseBranchautomationStepId,
-      name: "Remove contact from audience.",
+
       type: "ACTION",
       subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
-      configuration: JSON.stringify({}),
+      configuration: {},
       branchIndex: 0,
     })
     .execute()
@@ -331,12 +322,11 @@ export const seedAutomation = async (automation: {
       id: isNotGmailGetDiscountautomationStepId,
       automationId,
       parentId: secondIfElseBranchautomationStepId,
-      name: "Here's a 90% discount for the course.",
       type: "ACTION",
       subtype: "ACTION_SEND_EMAIL",
-      configuration: JSON.stringify({
+      configuration: {
         subject: "Here's a 90% discount for the course.",
-      }),
+      },
       branchIndex: 1,
     })
     .execute()
@@ -349,10 +339,9 @@ export const seedAutomation = async (automation: {
       id: isNotGmailWait5DaysautomationStepId,
       automationId,
       parentId: isNotGmailGetDiscountautomationStepId,
-      name: "Wait 5 Days",
       type: "RULE",
       subtype: "RULE_WAIT_FOR_DURATION",
-      configuration: JSON.stringify({}),
+      configuration: {},
       branchIndex: 1,
     })
     .execute()
@@ -365,10 +354,9 @@ export const seedAutomation = async (automation: {
       id: thirdIfElseBranchautomationStepId,
       automationId,
       parentId: isNotGmailWait5DaysautomationStepId,
-      name: "Third If / Else",
       type: "RULE",
       subtype: "RULE_IF_ELSE",
-      configuration: JSON.stringify({
+      configuration: {
         conditions: [
           [
             {
@@ -378,7 +366,7 @@ export const seedAutomation = async (automation: {
             },
           ],
         ],
-      }),
+      },
     })
     .execute()
 
@@ -390,10 +378,9 @@ export const seedAutomation = async (automation: {
       id: purchasedBookautomationStepId,
       automationId,
       parentId: thirdIfElseBranchautomationStepId,
-      name: "Subscribe to list",
       type: "ACTION",
       subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
-      configuration: JSON.stringify({ listId: "akc34b1k27xrgy0c6qygcefe" }),
+      configuration: { listId: "akc34b1k27xrgy0c6qygcefe" },
       branchIndex: 0,
     })
     .execute()
@@ -406,10 +393,9 @@ export const seedAutomation = async (automation: {
       id: notPurchasedBookautomationStepId,
       automationId,
       parentId: thirdIfElseBranchautomationStepId,
-      name: "Unsubscribe from list",
       type: "ACTION",
       subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
-      configuration: JSON.stringify({ listId: "akc34b1k27xrgy0c6qygcefe" }),
+      configuration: { listId: "akc34b1k27xrgy0c6qygcefe" },
       branchIndex: 1,
     })
     .execute()

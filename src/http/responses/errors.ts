@@ -38,6 +38,14 @@ export class E_REQUEST_EXCEPTION extends Error {
       401,
     )
   }
+
+  public static E_OPERATION_FAILED(message?: string) {
+    return new E_REQUEST_EXCEPTION(
+      `Internal server error${message ? `: ${message}` : "."}`,
+      {},
+      500,
+    )
+  }
 }
 
 export function E_UNAUTHORIZED(message?: string): never {
@@ -45,7 +53,7 @@ export function E_UNAUTHORIZED(message?: string): never {
 }
 
 export function E_OPERATION_FAILED(message?: string) {
-  throw new HTTPException(400, { message })
+  throw E_REQUEST_EXCEPTION.E_OPERATION_FAILED(message)
 }
 
 export function E_VALIDATION_FAILED(error: ValibotValidationError[]): never {

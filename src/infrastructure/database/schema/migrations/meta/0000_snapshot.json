@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "f5a17c2c-e7ad-400c-9cad-f4230ed6d06d",
+  "id": "24234a55-f7d4-495b-93bd-18f84ae64ab8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accessTokens": {
@@ -167,20 +167,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "name": {
-          "name": "name",
-          "type": "text(50)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "description": {
-          "name": "description",
-          "type": "text(512)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "type": {
           "name": "type",
           "type": "text",
@@ -223,6 +209,27 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "emailId": {
+          "name": "emailId",
+          "type": "text(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tagId": {
+          "name": "tagId",
+          "type": "text(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "audienceId": {
+          "name": "audienceId",
+          "type": "text(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -251,6 +258,45 @@
             "id"
           ],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "automationSteps_emailId_emails_id_fk": {
+          "name": "automationSteps_emailId_emails_id_fk",
+          "tableFrom": "automationSteps",
+          "tableTo": "emails",
+          "columnsFrom": [
+            "emailId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "automationSteps_tagId_tags_id_fk": {
+          "name": "automationSteps_tagId_tags_id_fk",
+          "tableFrom": "automationSteps",
+          "tableTo": "tags",
+          "columnsFrom": [
+            "tagId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "automationSteps_audienceId_audiences_id_fk": {
+          "name": "automationSteps_audienceId_audiences_id_fk",
+          "tableFrom": "automationSteps",
+          "tableTo": "audiences",
+          "columnsFrom": [
+            "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
@@ -489,6 +535,78 @@
             "id"
           ],
           "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "emails": {
+      "name": "emails",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text(32)",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "subject": {
+          "name": "subject",
+          "type": "text(180)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "audienceId": {
+          "name": "audienceId",
+          "type": "text(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contentText": {
+          "name": "contentText",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "emails_audienceId_audiences_id_fk": {
+          "name": "emails_audienceId_audiences_id_fk",
+          "tableFrom": "emails",
+          "tableTo": "audiences",
+          "columnsFrom": [
+            "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },

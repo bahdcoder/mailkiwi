@@ -220,52 +220,89 @@ export const automations = sqliteTable("automations", {
     .notNull(),
 })
 
+export const emails = sqliteTable("emails", {
+  id,
+  type: text("type", { enum: ["AUTOMATION", "TRANSACTIONAL"] }).notNull(),
+  title: text("title", { length: 50 }).notNull(),
+  subject: text("subject", { length: 180 }),
+  audienceId: text("audienceId", { length: 32 })
+    .references(() => audiences.id, { onDelete: "cascade" })
+    .notNull(),
+  content: text("content", { mode: "json" }).$type<Record<string, any>>(),
+  contentText: text("contentText", { mode: "text" }),
+})
+
+export const automationStepSubtypesTrigger = [
+  "TRIGGER_CONTACT_SUBSCRIBED",
+  "TRIGGER_CONTACT_UNSUBSCRIBED",
+  "TRIGGER_CONTACT_TAG_ADDED",
+  "TRIGGER_CONTACT_TAG_REMOVED",
+  "TRIGGER_API_MANUAL",
+] as const
+
+export const automationStepSubtypesAction = [
+  "ACTION_SEND_EMAIL",
+  "ACTION_ADD_TAG",
+  "ACTION_REMOVE_TAG",
+  "ACTION_SUBSCRIBE_TO_AUDIENCE",
+  "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
+  "ACTION_UPDATE_CONTACT_ATTRIBUTES",
+] as const
+
+export const automationStepSubtypesRule = [
+  "RULE_IF_ELSE",
+  "RULE_WAIT_FOR_DURATION",
+  "RULE_PERCENTAGE_SPLIT",
+  "RULE_WAIT_FOR_TRIGGER",
+] as const
+
+export const automationStepSubtypesEnd = ["END"] as const
+
+export const automationStepSubtypes = [
+  // TRIGGERS
+  ...automationStepSubtypesTrigger,
+
+  // ACTIONS
+  ...automationStepSubtypesAction,
+
+  // RULES
+  ...automationStepSubtypesRule,
+
+  // END
+  ...automationStepSubtypesEnd,
+] as const
+
+export const automationStepTypes = ["TRIGGER", "ACTION", "RULE", "END"] as const
+
 export const automationSteps = sqliteTable("automationSteps", {
   id,
   automationId: text("automationId", { length: 32 })
     .references(() => automations.id)
     .notNull(),
-  name: text("name", { length: 50 }).notNull(),
-  description: text("description", { length: 512 }),
-  type: text("type", { enum: ["TRIGGER", "ACTION", "RULE", "END"] }).notNull(),
+  type: text("type", { enum: automationStepTypes }).notNull(),
   status: text("status", { enum: ["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"] })
     .notNull()
     .default("DRAFT"),
   subtype: text("subtype", {
-    enum: [
-      // TRIGGERS
-      "TRIGGER_CONTACT_SUBSCRIBED",
-      "TRIGGER_CONTACT_UNSUBSCRIBED",
-      "TRIGGER_CONTACT_TAG_ADDED",
-      "TRIGGER_CONTACT_TAG_REMOVED",
-      "TRIGGER_API_MANUAL",
-
-      // ACTIONS
-      "ACTION_SEND_EMAIL",
-      "ACTION_ADD_TAG",
-      "ACTION_REMOVE_TAG",
-      "ACTION_SUBSCRIBE_TO_AUDIENCE",
-      "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
-      "ACTION_UPDATE_CONTACT",
-      "ACTION_UPDATE_CONTACT_ATTRIBUTES",
-      "ACTION_UPDATE_CONTACT_TAGS",
-
-      // RULES
-      "RULE_IF_ELSE",
-      "RULE_WAIT_FOR_DURATION",
-      "RULE_PERCENTAGE_SPLIT",
-      "RULE_WAIT_FOR_TRIGGER",
-
-      // END
-      "END", // end of the automation for the contact.
-    ],
+    enum: automationStepSubtypes,
   }).notNull(),
   parentId: text("parentId", { length: 32 }).references(
     (): AnySQLiteColumn => automationSteps.id,
     { onDelete: "cascade" },
   ),
   branchIndex: int("branchIndex"), // used for if / else or split or branch automation point types.
-  configuration: text("configuration", { mode: "json" }).notNull(),
+  configuration: text("configuration", { mode: "json" })
+    .$type<Record<string, any>>()
+    .notNull(),
+
+  // an automation step of type SEND_EMAIL must have this emailId
+  emailId: text("emailId", { length: 32 }).references(() => emails.id),
+
+  // an automation step of type ADD_TAG OR REMOVE_TAG must have this tagId field
+  tagId: text("tagId", { length: 32 }).references(() => tags.id),
+
+  // an automation step of type ADD_AUDIENCE or REMOVE_FROM_AUDIENCE must have this audienceId field
+  audienceId: text("audienceId", { length: 32 }).references(() => audiences.id),
 })
 
 /*

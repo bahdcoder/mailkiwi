@@ -22,16 +22,20 @@ CREATE TABLE `audiences` (
 CREATE TABLE `automationSteps` (
 	`id` text(32) PRIMARY KEY NOT NULL,
 	`automationId` text(32) NOT NULL,
-	`name` text(50) NOT NULL,
-	`description` text(512),
 	`type` text NOT NULL,
 	`status` text DEFAULT 'DRAFT' NOT NULL,
 	`subtype` text NOT NULL,
 	`parentId` text(32),
 	`branchIndex` integer,
 	`configuration` text NOT NULL,
+	`emailId` text(32),
+	`tagId` text(32),
+	`audienceId` text(32),
 	FOREIGN KEY (`automationId`) REFERENCES `automations`(`id`) ON UPDATE no action ON DELETE no action,
-	FOREIGN KEY (`parentId`) REFERENCES `automationSteps`(`id`) ON UPDATE no action ON DELETE cascade
+	FOREIGN KEY (`parentId`) REFERENCES `automationSteps`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`emailId`) REFERENCES `emails`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`tagId`) REFERENCES `tags`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `automations` (
@@ -66,6 +70,17 @@ CREATE TABLE `contacts` (
 	`audienceId` text(32) NOT NULL,
 	`attributes` text,
 	FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
+CREATE TABLE `emails` (
+	`id` text(32) PRIMARY KEY NOT NULL,
+	`type` text NOT NULL,
+	`title` text(50) NOT NULL,
+	`subject` text(180),
+	`audienceId` text(32) NOT NULL,
+	`content` text,
+	`contentText` text,
+	FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `mailerIdentities` (

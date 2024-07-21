@@ -26,12 +26,15 @@ import {
 } from "@/infrastructure/env.js"
 import { Hono } from "@/infrastructure/server/hono.js"
 import { container } from "@/utils/typi.js"
+import { Queue } from "@/domains/shared/queue/queue.js"
+import { QueueDriver } from "@/domains/shared/queue/queue_driver_contact.js"
 
 export class Ignitor {
   protected env: EnvVariables
   protected config: ConfigVariables
   protected app: Hono<{ Bindings: { _: boolean } }>
   protected database: DrizzleClient
+  protected queue: QueueDriver
 
   boot() {
     this.env = env
@@ -51,6 +54,12 @@ export class Ignitor {
     this.app = new Hono()
 
     this.app.defineErrorHandler()
+
+    return this
+  }
+
+  queueDriver(driver: QueueDriver) {
+    Queue.setDriver(driver)
 
     return this
   }
