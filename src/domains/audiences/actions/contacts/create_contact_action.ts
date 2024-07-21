@@ -9,8 +9,11 @@ export class CreateContactAction {
     ),
   ) {}
 
-  handle = async (payload: CreateContactDto) => {
-    const audience = await this.contactRepository.createContact(payload)
+  handle = async (payload: CreateContactDto, audienceId: string) => {
+    const audience = await this.contactRepository.createContact(
+      { ...payload },
+      audienceId,
+    )
 
     return audience
   }

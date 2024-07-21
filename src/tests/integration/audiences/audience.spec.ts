@@ -84,7 +84,7 @@ describe("Contacts", () => {
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
-      path: "/contacts",
+      path: `/audiences/${audience.id}/contacts`,
       body: contactPayload,
     })
 
@@ -110,7 +110,7 @@ describe("Contacts", () => {
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
-      path: "/contacts",
+      path: `/audiences/${audience.id}/contacts`,
       body: contactPayload,
     })
 
@@ -118,5 +118,155 @@ describe("Contacts", () => {
 
     expect(response.status).toEqual(422)
     expect(json.errors[0].field).toEqual("email")
+  })
+})
+
+describe("Update contacts", () => {
+  test("can update the first name, last name, avatar and attributes of a contact", async ({
+    expect,
+  }) => {
+    await refreshDatabase()
+    const { user, audience } = await createUser()
+    const database = makeDatabase()
+
+    // Create a contact
+    const createContactResponse = await makeRequestAsUser(user, {
+      method: "POST",
+      path: `/audiences/${audience.id}/contacts`,
+      body: { email: faker.internet.email() },
+    })
+    const { id: contactId } = await createContactResponse.json()
+
+    const updateData = {
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      avatarUrl: faker.image.url(),
+      attributes: { hobby: "reading" },
+    }
+
+    const updateResponse = await makeRequestAsUser(user, {
+      method: "PATCH",
+      path: `/audiences/${audience.id}/contacts/${contactId}`,
+      body: updateData,
+    })
+
+    expect(updateResponse.status).toBe(200)
+    const { id: updatedContactId } = await updateResponse.json()
+
+    const updatedContact = await database.query.contacts.findFirst({
+      where: eq(contacts.id, updatedContactId),
+    })
+
+    expect(updatedContact).toMatchObject(updateData)
+  })
+
+  test("can override attributes", async ({ expect }) => {
+    await refreshDatabase()
+    const { user, audience } = await createUser()
+    const database = makeDatabase()
+
+    // Create a contact with initial attributes
+    const createContactResponse = await makeRequestAsUser(user, {
+      method: "POST",
+      path: `/audiences/${audience.id}/contacts`,
+      body: {
+        email: faker.internet.email(),
+        attributes: { hobby: "swimming", age: 25 },
+      },
+    })
+    const { id: contactId } = await createContactResponse.json()
+
+    const updateData = {
+      attributes: { hobby: "reading", favoriteColor: "blue" },
+    }
+
+    const updateResponse = await makeRequestAsUser(user, {
+      method: "PATCH",
+      path: `/audiences/${audience.id}/contacts/${contactId}`,
+      body: updateData,
+    })
+
+    expect(updateResponse.status).toBe(200)
+
+    const { id: updatedContactId } = await updateResponse.json()
+
+    const updatedContact = await database.query.contacts.findFirst({
+      where: eq(contacts.id, updatedContactId),
+    })
+
+    expect(updatedContact?.attributes).toEqual({
+      hobby: "reading",
+      age: 25,
+      favoriteColor: "blue",
+    })
+  })
+
+  test("can merge attributes without deleting existing attributes", async ({
+    expect,
+  }) => {
+    await refreshDatabase()
+    const { user, audience } = await createUser()
+    const database = makeDatabase()
+
+    // Create a contact with initial attributes
+    const createContactResponse = await makeRequestAsUser(user, {
+      method: "POST",
+      path: `/audiences/${audience.id}/contacts`,
+      body: {
+        email: faker.internet.email(),
+        attributes: { hobby: "swimming", age: 25 },
+      },
+    })
+    const { id: contactId } = await createContactResponse.json()
+
+    const updateData = {
+      attributes: { favoriteColor: "blue" },
+    }
+
+    const updateResponse = await makeRequestAsUser(user, {
+      method: "PATCH",
+      path: `/audiences/${audience.id}/contacts/${contactId}`,
+      body: updateData,
+    })
+
+    expect(updateResponse.status).toBe(200)
+    const { id: updatedContactId } = await updateResponse.json()
+
+    const updatedContact = await database.query.contacts.findFirst({
+      where: eq(contacts.id, updatedContactId),
+    })
+
+    expect(updatedContact?.attributes).toEqual({
+      hobby: "swimming",
+      age: 25,
+      favoriteColor: "blue",
+    })
+  })
+
+  test("cannot update without proper authorisation", async ({ expect }) => {
+    await refreshDatabase()
+    const { user, audience } = await createUser()
+    const { user: unauthorizedUser } = await createUser()
+    const database = makeDatabase()
+
+    // Create a contact
+    const createContactResponse = await makeRequestAsUser(user, {
+      method: "POST",
+      path: `/audiences/${audience.id}/contacts`,
+      body: { email: faker.internet.email() },
+    })
+    const { id: contactId } = await createContactResponse.json()
+
+    const updateData = {
+      firstName: faker.person.firstName(),
+    }
+
+    const updateResponse = await makeRequestAsUser(unauthorizedUser, {
+      method: "PATCH",
+      path: `/audiences/${audience.id}/contacts/${contactId}`,
+      body: updateData,
+    })
+
+    expect(updateResponse.status).toBe(401)
   })
 })

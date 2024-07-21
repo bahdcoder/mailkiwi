@@ -9,7 +9,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/sqlite-core"
 
-import { cuid } from "@/domains/shared/utils/cuid/cuid.js"
+import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
 
 const id = text("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid)
 
@@ -170,7 +170,9 @@ export const contacts = sqliteTable(
     audienceId: text("audienceId", { length: 32 })
       .references(() => audiences.id)
       .notNull(),
-    attributes: text("attributes", { mode: "json" }),
+    attributes: text("attributes", { mode: "json" }).$type<
+      Record<string, string | string[] | number[] | number>
+    >(),
   },
   (table) => ({
     Contact_email_audienceId_key: uniqueIndex(

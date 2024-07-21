@@ -1,4 +1,4 @@
-import "dotenv/config"
+// import "dotenv/config"
 
 import { Secret } from "@poppinss/utils"
 import { cleanEnv, host, makeValidator, num, str } from "envalid"
@@ -15,10 +15,10 @@ const appKey = makeValidator((value) => {
 })
 
 export const env = cleanEnv(process.env, {
-  PORT: num(),
-  HOST: host(),
+  PORT: num({ default: 5566 }),
+  HOST: host({ default: "0.0.0.0" }),
   APP_KEY: appKey({ desc: "Application key." }),
-  DATABASE_URL: str(),
+  DATABASE_URL: str({ default: "dev.db" }),
   NODE_ENV: str({
     choices: ["development", "test", "production"],
     default: "development",

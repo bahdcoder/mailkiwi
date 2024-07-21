@@ -10,8 +10,12 @@ import {
   teamMemberships,
   teams,
   users,
+  audiences,
+  contacts,
 } from "./schema.js"
 
+export type Audience = InferSelectModel<typeof audiences>
+export type Contact = InferSelectModel<typeof contacts>
 export type User = InferSelectModel<typeof users>
 export type AccessToken = InferSelectModel<typeof accessTokens>
 export type Mailer = InferSelectModel<typeof mailers>
@@ -40,3 +44,4 @@ export type UpdateSetMailerIdentityInput = SQLiteUpdateSetSource<
 >
 
 export type UpdateSetMailerInput = SQLiteUpdateSetSource<typeof mailers>
+export type UpdateSetContactInput = SQLiteUpdateSetSource<typeof contacts>

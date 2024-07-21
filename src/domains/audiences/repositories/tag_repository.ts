@@ -3,16 +3,31 @@ import { BaseRepository } from "@/domains/shared/repositories/base_repository.js
 import { makeDatabase } from "@/infrastructure/container.js"
 import { DrizzleClient } from "@/infrastructure/database/client.js"
 import { tags } from "@/infrastructure/database/schema/schema.js"
-
+import { eq, SQL, SQLWrapper } from "drizzle-orm"
 export class TagRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 
+  async findById(id: string) {
+    return this.database.query.tags.findFirst({
+      where: eq(tags.id, id),
+    })
+  }
+
+  async delete(id: string) {
+    await this.database.delete(tags).where(eq(tags.id, id))
+    return { id }
+  }
+
+  async findFirst(args: { where: SQL | undefined }) {
+    return this.database.query.tags.findFirst({ where: args.where })
+  }
+
   async create(payload: CreateTagDto, audienceId: string) {
     const id = this.cuid()
 
-    await this.database.insert(tags).values({ ...payload, audienceId })
+    await this.database.insert(tags).values({ ...payload, id, audienceId })
 
     return { id }
   }

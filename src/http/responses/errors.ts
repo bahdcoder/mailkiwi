@@ -31,13 +31,17 @@ export class E_REQUEST_EXCEPTION extends Error {
     )
   }
 
-  public static E_UNAUTHORIZED() {
-    return new E_REQUEST_EXCEPTION("Unauthorized.", {}, 401)
+  public static E_UNAUTHORIZED(message?: string) {
+    return new E_REQUEST_EXCEPTION(
+      `Unauthorized${message ? `: ${message}` : "."}`,
+      {},
+      401,
+    )
   }
 }
 
-export function E_UNAUTHORIZED(): never {
-  throw E_REQUEST_EXCEPTION.E_UNAUTHORIZED()
+export function E_UNAUTHORIZED(message?: string): never {
+  throw E_REQUEST_EXCEPTION.E_UNAUTHORIZED(message)
 }
 
 export function E_OPERATION_FAILED(message?: string) {

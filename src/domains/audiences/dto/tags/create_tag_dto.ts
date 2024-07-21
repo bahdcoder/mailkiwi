@@ -1,7 +1,7 @@
-import * as v from "valibot"
+import { string, nonEmpty, pipe, object, InferInput } from "valibot"
 
-export const CreateTagSchema = v.object({
-  name: v.string(),
+export const CreateTagSchema = object({
+  name: pipe(string(), nonEmpty()),
 })
 
-export type CreateTagDto = v.InferInput<typeof CreateTagSchema>
+export type CreateTagDto = InferInput<typeof CreateTagSchema>

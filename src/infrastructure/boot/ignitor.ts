@@ -2,6 +2,7 @@ import "./globals"
 
 import { AudienceController } from "@/http/api/controllers/audiences/audience_controller.js"
 import { ContactController } from "@/http/api/controllers/audiences/contact_controller.js"
+import { TagController } from "@/http/api/controllers/audiences/tag_controller.ts"
 import { AuthController } from "@/http/api/controllers/auth/auth_controller.js"
 import { UserController } from "@/http/api/controllers/auth/user_controller.js"
 import { AutomationController } from "@/http/api/controllers/automations/automation_controller.js"
@@ -89,6 +90,7 @@ export class Ignitor {
 
   registerHttpControllers() {
     container.resolve(AudienceController)
+    container.resolve(TagController)
     container.resolve(AutomationController)
     container.resolve(AuthController)
     container.resolve(UserController)

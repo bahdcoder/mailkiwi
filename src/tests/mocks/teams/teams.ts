@@ -1,3 +1,5 @@
+import Fs from "node:fs/promises"
+import Path from "node:path"
 import { cuid } from "@/domains/shared/utils/cuid/cuid.js"
 import { makeDatabase } from "@/infrastructure/container.js"
 import {
@@ -8,21 +10,30 @@ import {
   contacts,
   mailerIdentities,
   mailers,
+  settings,
+  tags,
+  tagsOnContacts,
+  teamMemberships,
   teams,
   users,
 } from "@/infrastructure/database/schema/schema.js"
+import { env } from "@/infrastructure/env.ts"
+import { createDatabaseClient } from "@/infrastructure/database/client.ts"
 
 export const refreshDatabase = async () => {
   const database = makeDatabase()
 
-  await database.delete(mailerIdentities)
-  await database.delete(mailers)
+  await database.delete(tagsOnContacts)
   await database.delete(contacts)
   await database.delete(automationSteps)
   await database.delete(automations)
+  await database.delete(mailerIdentities)
+  await database.delete(mailers)
+  await database.delete(tags)
   await database.delete(audiences)
   await database.delete(accessTokens)
   await database.delete(teams)
+  await database.delete(teamMemberships)
   await database.delete(users)
 }
 
