@@ -1,6 +1,7 @@
 import { Env, Hono as BaseHono, MiddlewareHandler } from "hono"
 import { HonoOptions } from "hono/hono-base"
-
+import { logger } from "hono/logger"
+import { timing } from "hono/timing"
 import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware.js"
 import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware.js"
 import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js"
@@ -21,6 +22,9 @@ export class Hono<E extends Env>
 {
   constructor(options?: HonoOptions<E>) {
     super(options)
+
+    this.use(timing())
+    this.use(logger())
   }
 
   defineErrorHandler() {

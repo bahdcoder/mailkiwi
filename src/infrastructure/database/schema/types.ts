@@ -12,11 +12,13 @@ import {
   users,
   audiences,
   contacts,
+  broadcasts,
 } from "./schema.js"
 
 export type Audience = InferSelectModel<typeof audiences>
 export type Contact = InferSelectModel<typeof contacts>
 export type User = InferSelectModel<typeof users>
+export type Broadcast = InferSelectModel<typeof broadcasts>
 export type AccessToken = InferSelectModel<typeof accessTokens>
 export type Mailer = InferSelectModel<typeof mailers>
 export type Team = InferSelectModel<typeof teams>

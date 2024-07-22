@@ -28,6 +28,7 @@ import { Hono } from "@/infrastructure/server/hono.js"
 import { container } from "@/utils/typi.js"
 import { Queue } from "@/domains/shared/queue/queue.js"
 import { QueueDriver } from "@/domains/shared/queue/queue_driver_contact.js"
+import { BroadcastController } from "@/http/api/controllers/broadcasts/broadcast_controller.ts"
 
 export class Ignitor {
   protected env: EnvVariables
@@ -90,6 +91,8 @@ export class Ignitor {
 
     this.database = createDrizzleDatabase(connection)
 
+    connection.pragma("journal_mode = WAL")
+
     container.registerInstance(ContainerKey.database, this.database)
 
     return this
@@ -99,6 +102,7 @@ export class Ignitor {
 
   registerHttpControllers() {
     container.resolve(AudienceController)
+    container.resolve(BroadcastController)
     container.resolve(TagController)
     container.resolve(AutomationController)
     container.resolve(AuthController)

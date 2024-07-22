@@ -274,6 +274,32 @@ export const automationStepSubtypes = [
 
 export const automationStepTypes = ["TRIGGER", "ACTION", "RULE", "END"] as const
 
+// src/infrastructure/database/schema/schema.ts
+
+export const broadcasts = sqliteTable("broadcasts", {
+  id,
+  name: text("name").notNull(),
+  fromName: text("fromName"),
+  fromEmail: text("fromEmail"),
+  replyToEmail: text("replyToEmail"),
+  replyToName: text("replyToName"),
+  audienceId: text("audienceId")
+    .references(() => audiences.id)
+    .notNull(),
+  teamId: text("teamId", { length: 32 })
+    .references(() => teams.id)
+    .notNull(),
+  trackClicks: integer("trackClicks", { mode: "boolean" }),
+  trackOpens: integer("trackOpens", { mode: "boolean" }),
+  contentJson: text("contentJson", { mode: "json" }),
+  contentText: text("contentText"),
+  contentHtml: text("contentHtml"),
+  subject: text("subject"),
+  previewText: text("previewText"),
+  status: text("status"),
+  sendAt: integer("sendAt", { mode: "timestamp" }),
+})
+
 export const automationSteps = sqliteTable("automationSteps", {
   id,
   automationId: text("automationId", { length: 32 })

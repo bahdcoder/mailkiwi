@@ -46,6 +46,28 @@ CREATE TABLE `automations` (
 	FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `broadcasts` (
+	`id` text(32) PRIMARY KEY NOT NULL,
+	`name` text NOT NULL,
+	`fromName` text,
+	`fromEmail` text,
+	`replyToEmail` text,
+	`replyToName` text,
+	`audienceId` text NOT NULL,
+	`teamId` text(32) NOT NULL,
+	`trackClicks` integer,
+	`trackOpens` integer,
+	`contentJson` text,
+	`contentText` text,
+	`contentHtml` text,
+	`subject` text,
+	`previewText` text,
+	`status` text,
+	`sendAt` integer,
+	FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
 CREATE TABLE `contactAutomationSteps` (
 	`id` text(32) PRIMARY KEY NOT NULL,
 	`automationStepId` text(32) NOT NULL,

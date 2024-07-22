@@ -1,7 +1,7 @@
-import * as v from "valibot"
+import { object, string, InferInput } from "valibot"
 
-export const CreateAudienceSchema = v.object({
-  name: v.string(),
+export const CreateAudienceSchema = object({
+  name: string(),
 })
 
-export type CreateAudienceDto = v.InferInput<typeof CreateAudienceSchema>
+export type CreateAudienceDto = InferInput<typeof CreateAudienceSchema>
