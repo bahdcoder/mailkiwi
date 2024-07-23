@@ -2,11 +2,10 @@ import { faker } from "@faker-js/faker"
 import { describe, test } from "vitest"
 import { makeDatabase } from "@/infrastructure/container.js"
 import { broadcasts } from "@/infrastructure/database/schema/schema.js"
-import { createUser } from "@/tests/mocks/auth/users.js"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 import { eq } from "drizzle-orm"
-import { User } from "@/infrastructure/database/schema/types.ts"
 
 describe("Create broadcasts", () => {
   test("can create a broadcast for an audience", async ({ expect }) => {
@@ -89,24 +88,11 @@ describe("Create broadcasts", () => {
 })
 
 describe("Update broadcasts", () => {
-  async function createBroadcast(user: User, audienceId: string) {
-    const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/broadcasts",
-      body: {
-        name: faker.lorem.words(3),
-        audienceId,
-      },
-    })
-    const { id } = await response.json()
-    return id
-  }
-
   test("can update a broadcast with valid data", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()
-    const broadcastId = await createBroadcast(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const updateData = {
       name: faker.lorem.words(3),
@@ -137,7 +123,7 @@ describe("Update broadcasts", () => {
   }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const broadcastId = await createBroadcast(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const response = await makeRequestAsUser(user, {
       method: "PUT",
@@ -163,7 +149,7 @@ describe("Update broadcasts", () => {
   }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const broadcastId = await createBroadcast(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const response = await makeRequestAsUser(user, {
       method: "PUT",
@@ -193,7 +179,7 @@ describe("Update broadcasts", () => {
     await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()
-    const broadcastId = await createBroadcast(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const updateData = {
       subject: faker.lorem.sentence(),
@@ -237,7 +223,7 @@ describe("Update broadcasts", () => {
     await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()
-    const broadcastId = await createBroadcast(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const sendAt = new Date(Date.now() + 86400000) // 24 hours from now
 
@@ -261,7 +247,7 @@ describe("Update broadcasts", () => {
   test("cannot update sendAt to a past timestamp", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const broadcastId = await createBroadcast(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const sendAt = new Date(Date.now() - 86400000) // 24 hours ago
 
@@ -281,26 +267,13 @@ describe("Update broadcasts", () => {
 })
 
 describe("Delete broadcasts", () => {
-  async function createBroadcast(user: User, audienceId: string) {
-    const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/broadcasts",
-      body: {
-        name: faker.lorem.words(3),
-        audienceId,
-      },
-    })
-    const { id } = await response.json()
-    return id
-  }
-
   test("cannot delete a broadcast from another team", async ({ expect }) => {
     await refreshDatabase()
 
     const { user: user1, audience: audience1 } = await createUser()
     const { user: user2 } = await createUser()
 
-    const broadcastId = await createBroadcast(user1, audience1.id)
+    const broadcastId = await createBroadcastForUser(user1, audience1.id)
 
     const response = await makeRequestAsUser(user2, {
       method: "DELETE",
@@ -321,7 +294,7 @@ describe("Delete broadcasts", () => {
     await refreshDatabase()
     const { user, audience } = await createUser()
 
-    const broadcastId = await createBroadcast(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const response = await makeRequestAsUser(user, {
       method: "DELETE",
@@ -339,26 +312,13 @@ describe("Delete broadcasts", () => {
 })
 
 describe("Send Broadcast", () => {
-  async function createBroadcast(user: User, audienceId: string) {
-    const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/broadcasts",
-      body: {
-        name: faker.lorem.words(3),
-        audienceId,
-      },
-    })
-    const { id } = await response.json()
-    return id
-  }
-
   test("can queue a broadcast for sending", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
 
     const database = makeDatabase()
 
-    const broadcastId = await createBroadcast(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",

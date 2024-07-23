@@ -11,6 +11,7 @@ import {
   contacts,
   mailerIdentities,
   mailers,
+  queueJobs,
   settings,
   tags,
   tagsOnContacts,
@@ -25,6 +26,7 @@ export const refreshDatabase = async () => {
   const database = makeDatabase()
 
   await database.delete(tagsOnContacts)
+  await database.delete(queueJobs)
   await database.delete(broadcasts)
   await database.delete(contacts)
   await database.delete(automationSteps)

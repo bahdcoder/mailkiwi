@@ -11,11 +11,27 @@ import { makeDatabase } from "@/infrastructure/container.js"
 import { users } from "@/infrastructure/database/schema/schema.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 import { container } from "@/utils/typi.js"
+import { User } from "@/infrastructure/database/schema/types.ts"
 
+export async function createBroadcastForUser(user: User, audienceId: string) {
+  const response = await makeRequestAsUser(user, {
+    method: "POST",
+    path: "/broadcasts",
+    body: {
+      name: faker.lorem.words(3),
+      audienceId,
+    },
+  })
+
+  const { id } = await response.json()
+  return id
+}
 export const createUser = async ({
   createMailerWithIdentity,
+  createBroadcast,
 }: {
   createMailerWithIdentity?: boolean
+  createBroadcast?: boolean
 } = {}) => {
   const database = makeDatabase()
 
@@ -71,10 +87,17 @@ export const createUser = async ({
     })
   }
 
+  let broadcastId: string | undefined = undefined
+
+  if (createBroadcast) {
+    broadcastId = await createBroadcastForUser(freshUser!, audience.id)
+  }
+
   return {
     user: freshUser!,
     team: (await teamRepository.findById(team.id))!,
     audience,
     setting: setting!,
+    broadcastId,
   }
 }
