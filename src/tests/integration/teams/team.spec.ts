@@ -1,23 +1,23 @@
-import { faker } from "@faker-js/faker"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { describe, test } from 'vitest'
 
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
-import { makeRequestAsUser } from "@/tests/utils/http.js"
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
+import { makeRequestAsUser } from '@/tests/utils/http.js'
 
-describe("Teams", () => {
-  test("can fetch a single team", async ({ expect }) => {
+describe('Teams', () => {
+  test('can fetch a single team', async ({ expect }) => {
     await refreshDatabase()
     const { user, team } = await createUser()
 
     const mailerPayload = {
       name: faker.string.uuid(),
-      provider: "AWS_SES",
+      provider: 'AWS_SES',
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/mailers",
+      method: 'POST',
+      path: '/mailers',
       body: mailerPayload,
     })
 
@@ -27,7 +27,7 @@ describe("Teams", () => {
     }
 
     await makeRequestAsUser(user, {
-      method: "PATCH",
+      method: 'PATCH',
       path: `/mailers/${(await response.json()).id}`,
       body: {
         configuration: updateConfigPayload,
@@ -35,7 +35,7 @@ describe("Teams", () => {
     })
 
     const showTeamResponse = await makeRequestAsUser(user, {
-      method: "GET",
+      method: 'GET',
       path: `/teams/${team.id}`,
     })
 

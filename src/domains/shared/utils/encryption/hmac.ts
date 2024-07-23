@@ -1,6 +1,6 @@
-import { createHmac } from "node:crypto"
+import { createHmac } from 'node:crypto'
 
-import { base64, safeEqual } from "@poppinss/utils"
+import { base64, safeEqual } from '@poppinss/utils'
 
 /**
  * A generic class for generating SHA-256 Hmac for verifying the value
@@ -18,7 +18,7 @@ export class Hmac {
    */
   generate(value: string) {
     return base64.urlEncode(
-      createHmac("sha256", this.#key).update(value).digest(),
+      createHmac('sha256', this.#key).update(value).digest(),
     )
   }
 

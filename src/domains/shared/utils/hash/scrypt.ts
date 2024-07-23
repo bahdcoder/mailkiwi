@@ -7,16 +7,11 @@
  * file that was distributed with this source code.
  */
 
-import { safeEqual } from "@poppinss/utils"
+import { safeEqual } from '@poppinss/utils'
 
-import {
-  MAX_UINT32,
-  randomBytesAsync,
-  RangeValidator,
-  scryptAsync,
-} from "./helpers.js"
-import { PhcFormatter } from "./phc_formatter.js"
-import type { HashDriverContract,ScryptConfig } from "./types.js"
+import { MAX_UINT32, randomBytesAsync, scryptAsync } from './helpers.js'
+import { PhcFormatter } from './phc_formatter.js'
+import type { HashDriverContract, ScryptConfig } from './types.js'
 
 export function scrypt() {
   return new Scrypt({})
@@ -60,32 +55,6 @@ export class Scrypt implements HashDriverContract {
       maxMemory: 32 * 1024 * 1024,
       ...config,
     }
-
-    this.#validateConfig()
-  }
-
-  /**
-   * Validate config
-   */
-  #validateConfig() {
-    RangeValidator.validate("blockSize", this.#config.blockSize, [
-      1,
-      MAX_UINT32,
-    ])
-    RangeValidator.validate("cost", this.#config.cost, [2, MAX_UINT32])
-    RangeValidator.validate("parallelization", this.#config.parallelization, [
-      1,
-      Math.floor(((Math.pow(2, 32) - 1) * 32) / (128 * this.#config.blockSize)),
-    ])
-
-    RangeValidator.validate("saltSize", this.#config.saltSize, [8, 1024])
-    RangeValidator.validate("keyLength", this.#config.keyLength, [64, 128])
-    RangeValidator.validate("maxMemory", this.#config.maxMemory, [
-      128 * this.#config.cost * this.#config.blockSize + 1,
-      MAX_UINT32,
-    ])
-
-    Object.freeze(this.#config)
   }
 
   /**
@@ -97,7 +66,7 @@ export class Scrypt implements HashDriverContract {
     /**
      * Validate top level properties to exist
      */
-    if (phcNode.id !== "scrypt") {
+    if (phcNode.id !== 'scrypt') {
       throw new TypeError(`Invalid "id" found in the phc string`)
     }
     if (!phcNode.params) {
@@ -109,34 +78,6 @@ export class Scrypt implements HashDriverContract {
     if (!phcNode.hash) {
       throw new TypeError(`No "hash" found in the phc string`)
     }
-    RangeValidator.validate(
-      "hash.byteLength",
-      phcNode.hash.byteLength,
-      [64, 128],
-    )
-    RangeValidator.validate(
-      "salt.byteLength",
-      phcNode.salt.byteLength,
-      [8, 1024],
-    )
-
-    /**
-     * blockSize
-     */
-    RangeValidator.validate("r", phcNode.params.r, [1, MAX_UINT32])
-
-    /**
-     * Cost
-     */
-    RangeValidator.validate("n", phcNode.params.n, [1, MAX_UINT32])
-
-    /**
-     * Parallelization
-     */
-    RangeValidator.validate("p", phcNode.params.p, [
-      1,
-      Math.floor(((Math.pow(2, 32) - 1) * 32) / (128 * phcNode.params.r)),
-    ])
 
     return {
       id: phcNode.id,
@@ -192,7 +133,7 @@ export class Scrypt implements HashDriverContract {
      * Serialize hash
      */
     return this.#phcFormatter.serialize(salt, hash, {
-      id: "scrypt",
+      id: 'scrypt',
       params: {
         n: this.#config.cost,
         r: this.#config.blockSize,
@@ -263,7 +204,7 @@ export class Scrypt implements HashDriverContract {
    */
   needsReHash(value: string): boolean {
     const phcNode = this.#phcFormatter.deserialize(value)
-    if (phcNode.id !== "scrypt") {
+    if (phcNode.id !== 'scrypt') {
       return true
     }
 

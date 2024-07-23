@@ -1,16 +1,16 @@
 import {
-  createRootRoute,
-  createRoute,
-  createRouter,
   Link,
   Outlet,
   RouterProvider,
-} from "@tanstack/react-router"
-import React, { StrictMode } from "react"
-import ReactDOM from "react-dom/client"
+  createRootRoute,
+  createRoute,
+  createRouter,
+} from '@tanstack/react-router'
+import React, { StrictMode } from 'react'
+import ReactDOM from 'react-dom/client'
 
-const Index = React.lazy(() => import("./pages/Index.tsx"))
-const About = React.lazy(() => import("./pages/About.tsx"))
+const Index = React.lazy(() => import('./pages/Index.tsx'))
+const About = React.lazy(() => import('./pages/About.tsx'))
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -18,7 +18,7 @@ const rootRoute = createRootRoute({
       <div className="p-2 flex gap-2">
         <Link to="/" className="[&.active]:font-bold">
           Home
-        </Link>{" "}
+        </Link>{' '}
         <Link to="/about" className="[&.active]:font-bold">
           About
         </Link>
@@ -31,29 +31,29 @@ const rootRoute = createRootRoute({
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/",
+  path: '/',
   component: Index,
 })
 
 const aboutRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/about",
+  path: '/about',
   component: About,
 })
 
 const routeTree = rootRoute.addChildren([indexRoute, aboutRoute])
 
-const router = createRouter({ routeTree, basepath: "/p" })
+const router = createRouter({ routeTree, basepath: '/p' })
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
   }
 }
 
-const rootElement = document.getElementById("root")!
+const rootElement = document.getElementById('root')
 
-if (!rootElement.innerHTML) {
+if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>

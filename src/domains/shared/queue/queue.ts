@@ -1,30 +1,27 @@
-import { E_OPERATION_FAILED } from "@/http/responses/errors.ts"
-import { AbstractJobType, BaseJob } from "./abstract_job.js"
-import { QueueDriver } from "./queue_driver_contact.js"
+import { E_OPERATION_FAILED } from '@/http/responses/errors.ts'
+import type { AbstractJobType, BaseJob } from './abstract_job.js'
+import type { QueueDriver } from './queue_driver_contact.js'
 
-export class Queue {
-  private static driver: QueueDriver
-  public static jobs: Map<string, new () => BaseJob> = new Map()
+class QueueClass {
+  private driver: QueueDriver
+  public jobs: Map<string, new () => BaseJob> = new Map()
 
-  static registerJob(id: string, job: new () => BaseJob<object>) {
+  registerJob(id: string, job: new () => BaseJob<object>) {
     this.jobs.set(id, job)
 
     return this
   }
 
-  static setDriver(driver: QueueDriver) {
+  setDriver(driver: QueueDriver) {
     this.driver = driver
 
     return this
   }
 
-  static async dispatch<T extends object>(
-    JobClass: new () => BaseJob<T>,
-    payload: T,
-  ) {
+  async dispatch<T extends object>(JobClass: new () => BaseJob<T>, payload: T) {
     if (!this.driver) {
       throw E_OPERATION_FAILED(
-        "Queue driver not set for this application instance.",
+        'Queue driver not set for this application instance.',
       )
     }
 
@@ -35,7 +32,9 @@ export class Queue {
     )
   }
 
-  static async process() {
+  async process() {
     this.driver.process(this.jobs)
   }
 }
+
+export const Queue = new QueueClass()

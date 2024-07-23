@@ -1,3 +1,3 @@
-import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
+import type { UpdateMailerDto } from '@/domains/teams/dto/mailers/update_mailer_dto.js'
 
-export type MailerConfiguration = Required<UpdateMailerDto["configuration"]>
+export type MailerConfiguration = Required<UpdateMailerDto['configuration']>

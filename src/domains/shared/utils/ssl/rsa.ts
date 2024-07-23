@@ -1,8 +1,8 @@
-import { generateKeyPairSync } from "crypto"
+import { generateKeyPairSync } from 'node:crypto'
 
 export class RsaKeyPair {
-  public publicKey: string = ""
-  public privateKey: string = ""
+  public publicKey = ''
+  public privateKey = ''
 
   public clean() {
     return {
@@ -12,25 +12,25 @@ export class RsaKeyPair {
   }
 
   private cleanupKey(key: string) {
-    const lines = key.split("\n")
+    const lines = key.split('\n')
 
     lines.shift() // remove start private key line
     lines.pop() // remove empty space at end of key
     lines.pop() // remove end private key line
 
-    return lines.join("")
+    return lines.join('')
   }
 
   public generate() {
-    const keyPair = generateKeyPairSync("rsa", {
+    const keyPair = generateKeyPairSync('rsa', {
       modulusLength: 1024, // 1024-bit RSA encryption
       publicKeyEncoding: {
-        type: "spki",
-        format: "pem",
+        type: 'spki',
+        format: 'pem',
       },
       privateKeyEncoding: {
-        type: "pkcs8", // PKCS #8 format
-        format: "pem",
+        type: 'pkcs8', // PKCS #8 format
+        format: 'pem',
       },
     })
 

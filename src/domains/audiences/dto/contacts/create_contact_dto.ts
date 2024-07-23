@@ -1,13 +1,13 @@
 import {
-  string,
-  object,
-  optional,
-  union,
+  type InferInput,
   array,
   number,
+  object,
+  optional,
   record,
-  InferInput,
-} from "valibot"
+  string,
+  union,
+} from 'valibot'
 
 export const CreateContactSchema = object({
   email: string(),

@@ -1,10 +1,10 @@
-import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
-import { TeamWithMembers } from "@/domains/shared/types/team.js"
-import { GetMailerIdentitiesAction } from "@/domains/teams/actions/get_mailer_identities_action.js"
-import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials.js"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
-import { AwsSdk } from "@/providers/ses/sdk.js"
-import { container } from "@/utils/typi.js"
+import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
+import type { TeamWithMembers } from '@/domains/shared/types/team.js'
+import { GetMailerIdentitiesAction } from '@/domains/teams/actions/get_mailer_identities_action.js'
+import { CheckProviderCredentials } from '@/domains/teams/helpers/check_provider_credentials.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
+import { AwsSdk } from '@/providers/ses/sdk.js'
+import { container } from '@/utils/typi.js'
 
 export class GetMailerAction {
   constructor(
@@ -34,7 +34,7 @@ export class GetMailerAction {
     ).execute(true)
 
     if (!credentialsAreValid) {
-      return { ...mailer, status: "ACCESS_KEYS_LOST_PROVIDER_ACCESS" }
+      return { ...mailer, status: 'ACCESS_KEYS_LOST_PROVIDER_ACCESS' }
     }
 
     const sendingStatus = await this.getAwsSenderStatus(configuration)
@@ -59,18 +59,18 @@ export class GetMailerAction {
 
     // if any of the identities is approved, let us set this mailer as ready for sending, but also we check the sandbox quota to make sure its not in sandbox.
     const atLeastOneApproved = updatedIdentities.some(
-      (identity) => identity.status === "APPROVED",
+      (identity) => identity.status === 'APPROVED',
     )
 
     if (atLeastOneApproved) {
       await this.mailerRepository.update(
         mailer,
         {
-          status: "READY",
+          status: 'READY',
         },
         team,
       )
-      mailer.status = "READY"
+      mailer.status = 'READY'
     }
 
     mailer.identities = updatedIdentities

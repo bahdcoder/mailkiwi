@@ -1,12 +1,12 @@
-import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
-import { makeConfig, makeDatabase } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.js"
-import { Mailer, Team } from "@/infrastructure/database/schema/types.js"
-import { AwsSdk } from "@/providers/ses/sdk.js"
-import { E_INTERNAL_PROCESSING_ERROR } from "@/utils/errors.js"
-import { container } from "@/utils/typi.js"
+import type { UpdateMailerDto } from '@/domains/teams/dto/mailers/update_mailer_dto.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { makeConfig, makeDatabase } from '@/infrastructure/container.js'
+import type { DrizzleClient } from '@/infrastructure/database/client.js'
+import type { Mailer, Team } from '@/infrastructure/database/schema/types.js'
+import { AwsSdk } from '@/providers/ses/sdk.js'
+import { E_INTERNAL_PROCESSING_ERROR } from '@/utils/errors.js'
+import { container } from '@/utils/typi.js'
 
 export class InstallMailerAction {
   constructor(
@@ -25,8 +25,8 @@ export class InstallMailerAction {
     if (!configuration.region) {
       throw E_VALIDATION_FAILED([
         {
-          message: "Region is not defined for this mailer.",
-          field: "configuration.region",
+          message: 'Region is not defined for this mailer.',
+          field: 'configuration.region',
         },
       ])
     }
@@ -37,11 +37,11 @@ export class InstallMailerAction {
 
     if (!applicationSettings || !applicationSettings.url)
       throw E_INTERNAL_PROCESSING_ERROR(
-        "Application settings not properly defined. Please contact an administrator.",
+        'Application settings not properly defined. Please contact an administrator.',
       )
 
     switch (mailer.provider) {
-      case "AWS_SES":
+      case 'AWS_SES':
         installed = await this.installSes(
           configuration,
           mailer,
@@ -56,7 +56,7 @@ export class InstallMailerAction {
       await this.mailerRepository.update(
         mailer,
         {
-          status: "CREATING_IDENTITIES",
+          status: 'CREATING_IDENTITIES',
           installationCompletedAt: Date.now(),
         },
         team,
@@ -67,7 +67,7 @@ export class InstallMailerAction {
   }
 
   private async installSes(
-    configuration: UpdateMailerDto["configuration"],
+    configuration: UpdateMailerDto['configuration'],
     mailer: Mailer,
     endpoint: string,
   ) {

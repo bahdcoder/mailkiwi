@@ -1,8 +1,8 @@
-import { object, pipe, string, url } from "valibot"
+import { url, object, pipe, string } from 'valibot'
 
-import { ContainerKey } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.js"
-import { container } from "@/utils/typi.js"
+import { ContainerKey } from '@/infrastructure/container.js'
+import type { DrizzleClient } from '@/infrastructure/database/client.js'
+import { container } from '@/utils/typi.js'
 
 export class InstallationSettings {
   protected settingsSchema = object({
@@ -20,6 +20,6 @@ export class InstallationSettings {
       return true
     }
 
-    throw new Error("Please seed setting into database before proceeding.")
+    throw new Error('Please seed setting into database before proceeding.')
   }
 }

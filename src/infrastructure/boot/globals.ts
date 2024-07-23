@@ -1,4 +1,4 @@
-global.dump = function (...values) {
+global.dump = (...values) => {
   console.dir([...values], { depth: null })
 }
 

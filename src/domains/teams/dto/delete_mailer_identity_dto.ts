@@ -1,4 +1,4 @@
-import { boolean, InferInput, object, optional } from "valibot"
+import { type InferInput, boolean, object, optional } from 'valibot'
 
 export const DeleteMailerIdentitySchema = object({
   deleteOnProvider: optional(boolean()),

@@ -1,16 +1,16 @@
-import { VerificationStatus } from "@aws-sdk/client-ses"
+import type { VerificationStatus } from '@aws-sdk/client-ses'
 
-import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
-import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
-import {
+import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.js'
+import type {
   Mailer,
   MailerIdentity,
   Team,
-} from "@/infrastructure/database/schema/types.js"
-import { AwsSdk } from "@/providers/ses/sdk.js"
-import { container } from "@/utils/typi.js"
+} from '@/infrastructure/database/schema/types.js'
+import { AwsSdk } from '@/providers/ses/sdk.js'
+import { container } from '@/utils/typi.js'
 
-import { MailerRepository } from "../repositories/mailer_repository.js"
+import { MailerRepository } from '../repositories/mailer_repository.js'
 
 export class GetMailerIdentitiesAction {
   constructor(
@@ -29,7 +29,7 @@ export class GetMailerIdentitiesAction {
       team.configurationKey,
     ) as MailerConfiguration
 
-    if (mailer.provider === "AWS_SES") {
+    if (mailer.provider === 'AWS_SES') {
       const attributes = await this.getAwsMailerIdentities(
         identities.map((identity) => identity.value),
         configuration,
@@ -46,9 +46,9 @@ export class GetMailerIdentitiesAction {
 
         const updated = {
           status: this.parseDkimStatusToDatabaseStatus(
-            identity.type === "EMAIL"
-              ? attribute.VerificationStatus ?? "Pending"
-              : attribute.DkimVerificationStatus ?? "Pending",
+            identity.type === 'EMAIL'
+              ? attribute.VerificationStatus ?? 'Pending'
+              : attribute.DkimVerificationStatus ?? 'Pending',
           ),
           configuration: {
             ...(identity.configuration as object),
@@ -84,19 +84,19 @@ export class GetMailerIdentitiesAction {
 
   private parseDkimStatusToDatabaseStatus(
     dkimVerificationStatus: VerificationStatus,
-  ): Required<MailerIdentity["status"]> {
+  ): Required<MailerIdentity['status']> {
     switch (dkimVerificationStatus) {
-      case "Success":
-        return "APPROVED"
-      case "Failed":
-        return "FAILED"
-      case "Pending":
-      case "NotStarted":
-        return "PENDING"
-      case "TemporaryFailure":
-        return "TEMPORARILY_FAILED"
+      case 'Success':
+        return 'APPROVED'
+      case 'Failed':
+        return 'FAILED'
+      case 'Pending':
+      case 'NotStarted':
+        return 'PENDING'
+      case 'TemporaryFailure':
+        return 'TEMPORARILY_FAILED'
       default:
-        return "PENDING"
+        return 'PENDING'
     }
   }
 }

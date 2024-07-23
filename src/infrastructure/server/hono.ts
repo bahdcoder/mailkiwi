@@ -1,13 +1,13 @@
-import { Env, Hono as BaseHono, MiddlewareHandler } from "hono"
-import { HonoOptions } from "hono/hono-base"
-import { logger } from "hono/logger"
-import { timing } from "hono/timing"
-import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware.js"
-import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware.js"
-import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js"
-import { container } from "@/utils/typi.js"
+import { TeamMiddleware } from '@/http/api/middleware/audiences/team_middleware.js'
+import { AccessTokenMiddleware } from '@/http/api/middleware/auth/access_token_middleware.js'
+import { E_REQUEST_EXCEPTION } from '@/http/responses/errors.js'
+import { container } from '@/utils/typi.js'
+import { Hono as BaseHono, type Env, type MiddlewareHandler } from 'hono'
+import type { HonoOptions } from 'hono/hono-base'
+import { logger } from 'hono/logger'
+import { timing } from 'hono/timing'
 
-import { HonoRouteDefinition } from "./types.js"
+import type { HonoRouteDefinition } from './types.js'
 
 export type HonoInstance<E extends Env = object> = BaseHono<E> & {
   defineRoutes: (
@@ -20,10 +20,6 @@ export class Hono<E extends Env>
   extends BaseHono<E>
   implements HonoInstance<E>
 {
-  constructor(options?: HonoOptions<E>) {
-    super(options)
-  }
-
   defineErrorHandler() {
     this.onError((error, ctx) => {
       if (error instanceof E_REQUEST_EXCEPTION) {
@@ -49,26 +45,26 @@ export class Hono<E extends Env>
     ]
 
     const getPath = (path: string) => {
-      return `${routeOptions?.prefix?.replace(/^\/|\/$/g, "")}${path === "/" ? "" : "/"}${path?.replace(/^\/|\/$/g, "")}`
+      return `${routeOptions?.prefix?.replace(/^\/|\/$/g, '')}${path === '/' ? '' : '/'}${path?.replace(/^\/|\/$/g, '')}`
     }
 
     for (const [method, path, handler] of routes) {
       const resolvedPath = getPath(path)
 
       switch (method) {
-        case "GET":
+        case 'GET':
           this.get(resolvedPath, ...middleware, handler)
           break
-        case "DELETE":
+        case 'DELETE':
           this.delete(resolvedPath, ...middleware, handler)
           break
-        case "PATCH":
+        case 'PATCH':
           this.patch(resolvedPath, ...middleware, handler)
           break
-        case "PUT":
+        case 'PUT':
           this.put(resolvedPath, ...middleware, handler)
           break
-        case "POST":
+        case 'POST':
           this.post(resolvedPath, ...middleware, handler)
           break
         default:

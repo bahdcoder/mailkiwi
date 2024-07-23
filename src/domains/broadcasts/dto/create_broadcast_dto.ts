@@ -1,17 +1,17 @@
+import { makeDatabase } from '@/infrastructure/container.ts'
+import { audiences } from '@/infrastructure/database/schema/schema.ts'
+import { eq } from 'drizzle-orm'
 import {
-  object,
-  string,
-  optional,
-  objectAsync,
-  pipeAsync,
+  type InferInput,
   checkAsync,
-  InferInput,
-  pipe,
   nonEmpty,
-} from "valibot"
-import { makeDatabase } from "@/infrastructure/container.ts"
-import { eq } from "drizzle-orm"
-import { audiences } from "@/infrastructure/database/schema/schema.ts"
+  object,
+  objectAsync,
+  optional,
+  pipe,
+  pipeAsync,
+  string,
+} from 'valibot'
 
 export const CreateBroadcastDto = objectAsync({
   name: pipe(string(), nonEmpty()),

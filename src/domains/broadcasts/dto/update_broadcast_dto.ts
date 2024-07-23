@@ -1,22 +1,22 @@
+import { makeDatabase } from '@/infrastructure/container.ts'
+import { audiences } from '@/infrastructure/database/schema/schema.ts'
+import { isDateInPast } from '@/utils/dates.ts'
+import { eq } from 'drizzle-orm'
 import {
-  object,
-  string,
+  type InferInput,
   boolean,
+  check,
+  checkAsync,
+  date,
+  email,
+  number,
+  object,
+  objectAsync,
   optional,
   pipe,
-  email,
-  date,
-  objectAsync,
   pipeAsync,
-  checkAsync,
-  InferInput,
-  check,
-  number,
-} from "valibot"
-import { makeDatabase } from "@/infrastructure/container.ts"
-import { eq } from "drizzle-orm"
-import { audiences } from "@/infrastructure/database/schema/schema.ts"
-import { isDateInPast } from "@/utils/dates.ts"
+  string,
+} from 'valibot'
 
 export const UpdateBroadcastDto = objectAsync({
   name: optional(string()),
@@ -58,13 +58,13 @@ export const UpdateBroadcastDto = objectAsync({
 
       const date = new Date(input)
 
-      return !isNaN(date.getTime())
+      return !Number.isNaN(date.getTime())
     }),
     checkAsync((input) => {
       if (!input) return true
 
       return isDateInPast(input) === false
-    }, "sendAt cannot be in the past."),
+    }, 'sendAt cannot be in the past.'),
   ),
 })
 

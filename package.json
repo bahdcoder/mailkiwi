@@ -4,7 +4,7 @@
   "type": "module",
   "main": "src/main.ts",
   "scripts": {
-    "dev": "tsx watch src/dev.ts --clear-screen=false --ignore src/http/views/app",
+    "dev": "tsx src/dev.ts --clear-screen=false --ignore src/http/views/app",
     "worker:dev": "tsx watch src/worker.ts",
     "test": "pnpm test:watch --run",
     "build:clean": "del-cli build",
@@ -16,7 +16,8 @@
     "test:coverage": "vitest --run --coverage",
     "build": "pnpm test && pnpm types:check && pnpm pnpm quick:build",
     "quick:build": "pnpm build:clean && pnpm build:client && pnpm build:server",
-    "format": "prettier --write .",
+    "format": "pnpm biome format --write .",
+    "lint": "pnpm biome check --write .",
     "db:seed": "del-cli dev.db && pnpm db:migrate && tsx src/bin/seed.ts",
     "db:migrate": "pnpm drizzle-kit migrate --config=./src/infrastructure/database/drizzle.config.ts",
     "db:migrate:make": "pnpm drizzle-kit generate --config=./src/infrastructure/database/drizzle.config.ts",
@@ -28,6 +29,7 @@
   "license": "ISC",
   "description": "Buyonce software: Bamboomailer.",
   "devDependencies": {
+    "@biomejs/biome": "1.8.3",
     "@faker-js/faker": "^8.4.1",
     "@fastify/vite": "^6.0.6",
     "@hono/node-server": "^1.12.0",

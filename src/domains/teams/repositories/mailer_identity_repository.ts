@@ -1,16 +1,16 @@
-import { Secret } from "@poppinss/utils"
-import { and, eq, SQLWrapper } from "drizzle-orm"
+import { Secret } from '@poppinss/utils'
+import { type SQLWrapper, and, eq } from 'drizzle-orm'
 
-import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
-import { Encryption } from "@/domains/shared/utils/encryption/encryption.js"
-import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto.js"
-import { makeDatabase, makeEnv } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.js"
-import { mailerIdentities } from "@/infrastructure/database/schema/schema.js"
-import {
+import { BaseRepository } from '@/domains/shared/repositories/base_repository.js'
+import { Encryption } from '@/domains/shared/utils/encryption/encryption.js'
+import type { CreateMailerIdentityDto } from '@/domains/teams/dto/create_mailer_identity_dto.js'
+import { makeDatabase, makeEnv } from '@/infrastructure/container.js'
+import type { DrizzleClient } from '@/infrastructure/database/client.js'
+import { mailerIdentities } from '@/infrastructure/database/schema/schema.js'
+import type {
   FindManyMailerIdentityArgs,
   UpdateSetMailerIdentityInput,
-} from "@/infrastructure/database/schema/types.js"
+} from '@/infrastructure/database/schema/types.js'
 
 export class MailerIdentityRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -63,13 +63,13 @@ export class MailerIdentityRepository extends BaseRepository {
     const decryptedConfigurationKey = new Secret(
       new Encryption({
         secret: makeEnv().APP_KEY,
-      }).decrypt<string>(teamConfigurationKey)!,
-    )
+      }).decrypt<string>(teamConfigurationKey),
+    ) as Secret<string>
 
     const encryption = new Encryption({ secret: decryptedConfigurationKey })
 
     return {
-      privateKey: new Secret(encryption.decrypt<string>(privateKey)!),
+      privateKey: new Secret(encryption.decrypt<string>(privateKey)),
     }
   }
 
@@ -80,8 +80,8 @@ export class MailerIdentityRepository extends BaseRepository {
     const decryptedConfigurationKey = new Secret(
       new Encryption({
         secret: makeEnv().APP_KEY,
-      }).decrypt<string>(teamConfigurationKey)!,
-    )
+      }).decrypt<string>(teamConfigurationKey),
+    ) as Secret<string>
 
     const encryption = new Encryption({ secret: decryptedConfigurationKey })
 

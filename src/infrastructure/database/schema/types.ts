@@ -1,20 +1,20 @@
-import { InferSelectModel } from "drizzle-orm"
-import { SQLiteUpdateSetSource } from "drizzle-orm/sqlite-core"
+import type { InferSelectModel } from 'drizzle-orm'
+import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core'
 
-import { makeDatabase } from "@/infrastructure/container.js"
+import type { makeDatabase } from '@/infrastructure/container.js'
 
-import {
+import type {
   accessTokens,
+  audiences,
+  broadcasts,
+  contacts,
   mailerIdentities,
   mailers,
+  queueJobs,
   teamMemberships,
   teams,
   users,
-  audiences,
-  contacts,
-  broadcasts,
-  queueJobs,
-} from "./schema.js"
+} from './schema.js'
 
 export type QueueJob = InferSelectModel<typeof queueJobs>
 export type Audience = InferSelectModel<typeof audiences>
@@ -28,19 +28,19 @@ export type TeamMembership = InferSelectModel<typeof teamMemberships>
 export type MailerIdentity = InferSelectModel<typeof mailerIdentities>
 
 export type FindMailerByIdArgs = Parameters<
-  ReturnType<typeof makeDatabase>["query"]["mailers"]["findFirst"]
+  ReturnType<typeof makeDatabase>['query']['mailers']['findFirst']
 >[0]
 
 export type FindManyMailerIdentityArgs = Parameters<
-  ReturnType<typeof makeDatabase>["query"]["mailerIdentities"]["findMany"]
+  ReturnType<typeof makeDatabase>['query']['mailerIdentities']['findMany']
 >[0]
 
 export type FindUserByIdArgs = Parameters<
-  ReturnType<typeof makeDatabase>["query"]["users"]["findFirst"]
+  ReturnType<typeof makeDatabase>['query']['users']['findFirst']
 >[0]
 
 export type FindAutomationByIdArgs = Parameters<
-  ReturnType<typeof makeDatabase>["query"]["automations"]["findFirst"]
+  ReturnType<typeof makeDatabase>['query']['automations']['findFirst']
 >[0]
 
 export type UpdateSetMailerIdentityInput = SQLiteUpdateSetSource<

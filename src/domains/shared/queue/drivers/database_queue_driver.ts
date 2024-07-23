@@ -1,13 +1,13 @@
-import { QueueDriver } from "@/domains/shared/queue/queue_driver_contact.js"
-import { makeDatabase } from "@/infrastructure/container.js"
-import { queueJobs } from "@/infrastructure/database/schema/schema.js"
-import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
-import { AVAILABLE_QUEUE_TYPE, AVAILABLE_QUEUES } from "../config.ts"
-import { sleep } from "@/utils/sleep.ts"
-import { and, asc, eq, inArray, isNull, lt, or, sql } from "drizzle-orm"
-import { addSecondsToDate } from "@/utils/dates.ts"
-import { BaseJob, JobHandlerResponse } from "../abstract_job.ts"
-import { QueueJob } from "@/infrastructure/database/schema/types.ts"
+import type { QueueDriver } from '@/domains/shared/queue/queue_driver_contact.js'
+import { cuid } from '@/domains/shared/utils/cuid/cuid.ts'
+import { makeDatabase } from '@/infrastructure/container.js'
+import { queueJobs } from '@/infrastructure/database/schema/schema.js'
+import type { QueueJob } from '@/infrastructure/database/schema/types.ts'
+import { addSecondsToDate } from '@/utils/dates.ts'
+import { sleep } from '@/utils/sleep.ts'
+import { and, asc, eq, inArray, isNull, lt, or, sql } from 'drizzle-orm'
+import type { BaseJob, JobHandlerResponse } from '../abstract_job.ts'
+import { AVAILABLE_QUEUES, type AVAILABLE_QUEUE_TYPE } from '../config.ts'
 
 export class DatabaseQueueDriver implements QueueDriver {
   constructor(private database = makeDatabase()) {}
@@ -42,7 +42,7 @@ export class DatabaseQueueDriver implements QueueDriver {
   }
 
   private async fetchAvailableJobs() {
-    let jobsPerQueue = []
+    const jobsPerQueue = []
     const queues = Object.keys(AVAILABLE_QUEUES)
 
     for (const queue of queues) {
@@ -61,7 +61,7 @@ export class DatabaseQueueDriver implements QueueDriver {
 
     const jobs = await Promise.all(jobsPerQueue)
 
-    return jobs.map((jobs, idx) => ({ queue: queues[idx], jobs })).flat() as {
+    return jobs.flatMap((jobs, idx) => ({ queue: queues[idx], jobs })) as {
       queue: AVAILABLE_QUEUE_TYPE
       jobs: QueueJob[]
     }[]
@@ -101,7 +101,7 @@ export class DatabaseQueueDriver implements QueueDriver {
     while (true) {
       const jobs = await this.fetchAvailableJobs()
 
-      const jobIds = jobs.map(({ jobs }) => jobs.map((job) => job.id)).flat()
+      const jobIds = jobs.flatMap(({ jobs }) => jobs.map((job) => job.id))
 
       // lock jobs by inserting into database (and setting job timeouts.).
       const locked = await this.lockJobs(jobIds)

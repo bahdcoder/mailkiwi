@@ -7,12 +7,12 @@
  * file that was distributed with this source code.
  */
 
-import { createHash } from "node:crypto"
+import { createHash } from 'node:crypto'
 
-import { base64, RuntimeException, safeEqual, Secret } from "@poppinss/utils"
+import { RuntimeException, Secret, base64, safeEqual } from '@poppinss/utils'
 
-import { CRC32 } from "@/domains/auth/acess_tokens/utils/crc32.js"
-import string from "@/domains/shared/utils/string.js"
+import { CRC32 } from '@/domains/auth/acess_tokens/utils/crc32.js'
+import string from '@/domains/shared/utils/string.js'
 
 /**
  * Access token represents a token created for a user to authenticate
@@ -36,25 +36,25 @@ export class AccessToken {
     /**
      * Ensure value is a string and starts with the prefix.
      */
-    if (typeof value !== "string" || !value.startsWith(`${prefix}`)) {
+    if (typeof value !== 'string' || !value.startsWith(`${prefix}`)) {
       return null
     }
 
     /**
      * Remove prefix from the rest of the token.
      */
-    const token = value.replace(new RegExp(`^${prefix}`), "")
+    const token = value.replace(new RegExp(`^${prefix}`), '')
     if (!token) {
       return null
     }
 
-    const [identifier, ...tokenValue] = token.split(".")
+    const [identifier, ...tokenValue] = token.split('.')
     if (!identifier || tokenValue.length === 0) {
       return null
     }
 
     const decodedIdentifier = base64.urlDecode(identifier)
-    const decodedSecret = base64.urlDecode(tokenValue.join("."))
+    const decodedSecret = base64.urlDecode(tokenValue.join('.'))
     if (!decodedIdentifier || !decodedSecret) {
       return null
     }
@@ -83,7 +83,7 @@ export class AccessToken {
     return {
       userId,
       expiresAt,
-      ...this.seed(size),
+      ...AccessToken.seed(size),
     }
   }
 
@@ -95,7 +95,7 @@ export class AccessToken {
   static seed(size: number) {
     const seed = string.random(size)
     const secret = new Secret(`${seed}${new CRC32().calculate(seed)}`)
-    const hash = createHash("sha256").update(secret.release()).digest("hex")
+    const hash = createHash('sha256').update(secret.release()).digest('hex')
     return { secret, hash }
   }
 
@@ -184,7 +184,7 @@ export class AccessToken {
     this.updatedAt = attributes.updatedAt
     this.expiresAt = attributes.expiresAt
     this.lastUsedAt = attributes.lastUsedAt
-    this.abilities = attributes.abilities || ["*"]
+    this.abilities = attributes.abilities || ['*']
 
     /**
      * Compute value when secret is provided
@@ -192,7 +192,7 @@ export class AccessToken {
     if (attributes.secret) {
       if (!attributes.prefix) {
         throw new RuntimeException(
-          "Cannot compute token value without the prefix",
+          'Cannot compute token value without the prefix',
         )
       }
       this.value = new Secret(
@@ -207,14 +207,14 @@ export class AccessToken {
    * Check if the token allows the given ability.
    */
   allows(ability: string) {
-    return this.abilities.includes(ability) || this.abilities.includes("*")
+    return this.abilities.includes(ability) || this.abilities.includes('*')
   }
 
   /**
    * Check if the token denies the ability.
    */
   denies(ability: string) {
-    return !this.abilities.includes(ability) && !this.abilities.includes("*")
+    return !this.abilities.includes(ability) && !this.abilities.includes('*')
   }
 
   /**
@@ -222,7 +222,7 @@ export class AccessToken {
    */
   authorize(ability: string) {
     if (this.denies(ability)) {
-      throw new RuntimeException("UNAUTHORIZED_ACCESS")
+      throw new RuntimeException('UNAUTHORIZED_ACCESS')
     }
   }
 
@@ -245,13 +245,13 @@ export class AccessToken {
    * Verifies the value of a token against the pre-defined hash
    */
   verify(secret: Secret<string>): boolean {
-    const newHash = createHash("sha256").update(secret.release()).digest("hex")
+    const newHash = createHash('sha256').update(secret.release()).digest('hex')
     return safeEqual(this.hash, newHash)
   }
 
   toJSON() {
     return {
-      type: "bearer",
+      type: 'bearer',
       name: this.name,
       token: this.value ? this.value.release() : undefined,
       abilities: this.abilities,

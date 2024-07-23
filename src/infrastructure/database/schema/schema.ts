@@ -1,279 +1,279 @@
-import { relations } from "drizzle-orm"
+import { relations } from 'drizzle-orm'
 import {
-  AnySQLiteColumn,
+  type AnySQLiteColumn,
   index,
   int,
   integer,
   sqliteTable,
   text,
   uniqueIndex,
-} from "drizzle-orm/sqlite-core"
+} from 'drizzle-orm/sqlite-core'
 
-import { cuid } from "@/domains/shared/utils/cuid/cuid.ts"
+import { cuid } from '@/domains/shared/utils/cuid/cuid.ts'
 
-const id = text("id", { length: 32 }).primaryKey().notNull().$defaultFn(cuid)
+const id = text('id', { length: 32 }).primaryKey().notNull().$defaultFn(cuid)
 
 // Tables
-export const settings = sqliteTable("settings", {
+export const settings = sqliteTable('settings', {
   id,
-  url: text("url", { length: 256 }).unique(),
-  domain: text("domain", { length: 50 }).unique().notNull(),
-  installedSslCertificate: integer("installedSslCertificate", {
-    mode: "boolean",
+  url: text('url', { length: 256 }).unique(),
+  domain: text('domain', { length: 50 }).unique().notNull(),
+  installedSslCertificate: integer('installedSslCertificate', {
+    mode: 'boolean',
   })
     .default(false)
     .notNull(),
 })
 
-export const users = sqliteTable("users", {
+export const users = sqliteTable('users', {
   id,
-  email: text("email", { length: 80 }).unique().notNull(),
-  name: text("name", { length: 80 }),
-  avatarUrl: text("avatarUrl", { length: 256 }),
-  password: text("password", { length: 256 }).notNull(),
+  email: text('email', { length: 80 }).unique().notNull(),
+  name: text('name', { length: 80 }),
+  avatarUrl: text('avatarUrl', { length: 256 }),
+  password: text('password', { length: 256 }).notNull(),
 })
 
-export const accessTokens = sqliteTable("accessTokens", {
+export const accessTokens = sqliteTable('accessTokens', {
   id,
-  userId: text("userId", { length: 32 }).references(() => users.id),
-  teamId: text("teamId", { length: 32 }).references(() => teams.id),
-  type: text("type", { length: 16 }).notNull(),
-  name: text("name", { length: 32 }),
-  hash: text("hash", { length: 100 }).notNull(),
-  createdAt: integer("createdAt", { mode: "timestamp" }).defaultNow().notNull(),
-  lastUsedAt: integer("lastUsedAt", { mode: "timestamp" })
+  userId: text('userId', { length: 32 }).references(() => users.id),
+  teamId: text('teamId', { length: 32 }).references(() => teams.id),
+  type: text('type', { length: 16 }).notNull(),
+  name: text('name', { length: 32 }),
+  hash: text('hash', { length: 100 }).notNull(),
+  createdAt: integer('createdAt', { mode: 'timestamp' }).defaultNow().notNull(),
+  lastUsedAt: integer('lastUsedAt', { mode: 'timestamp' })
     .defaultNow()
     .notNull(),
-  expiresAt: integer("expiresAt", { mode: "timestamp" }).defaultNow().notNull(),
+  expiresAt: integer('expiresAt', { mode: 'timestamp' }).defaultNow().notNull(),
 })
 
-export const teams = sqliteTable("teams", {
+export const teams = sqliteTable('teams', {
   id,
-  name: text("name", { length: 100 }).notNull(),
-  userId: text("userId", { length: 32 })
+  name: text('name', { length: 100 }).notNull(),
+  userId: text('userId', { length: 32 })
     .notNull()
     .references(() => users.id),
-  trackClicks: integer("trackClicks", { mode: "boolean" }),
-  trackOpens: integer("trackOpens", { mode: "boolean" }),
-  configurationKey: text("configurationKey", { length: 512 }).notNull(),
-  broadcastEditor: text("broadcastEditor", { enum: ["DEFAULT", "MARKDOWN"] }),
+  trackClicks: integer('trackClicks', { mode: 'boolean' }),
+  trackOpens: integer('trackOpens', { mode: 'boolean' }),
+  configurationKey: text('configurationKey', { length: 512 }).notNull(),
+  broadcastEditor: text('broadcastEditor', { enum: ['DEFAULT', 'MARKDOWN'] }),
 })
 
-export const mailers = sqliteTable("mailers", {
+export const mailers = sqliteTable('mailers', {
   id,
-  name: text("name", { length: 50 }).notNull(),
-  configuration: text("configuration", { length: 512 }).notNull(),
-  default: integer("default", { mode: "boolean" }),
-  provider: text("provider", {
-    enum: ["AWS_SES", "POSTMARK", "MAILGUN"],
+  name: text('name', { length: 50 }).notNull(),
+  configuration: text('configuration', { length: 512 }).notNull(),
+  default: integer('default', { mode: 'boolean' }),
+  provider: text('provider', {
+    enum: ['AWS_SES', 'POSTMARK', 'MAILGUN'],
   }).notNull(),
-  status: text("status", {
+  status: text('status', {
     enum: [
-      "READY",
-      "PENDING",
-      "INSTALLING",
-      "CREATING_IDENTITIES",
-      "SENDING_TEST_EMAIL",
-      "DISABLED",
-      "ACCESS_KEYS_LOST_PROVIDER_ACCESS",
+      'READY',
+      'PENDING',
+      'INSTALLING',
+      'CREATING_IDENTITIES',
+      'SENDING_TEST_EMAIL',
+      'DISABLED',
+      'ACCESS_KEYS_LOST_PROVIDER_ACCESS',
     ],
   })
-    .default("PENDING")
+    .default('PENDING')
     .notNull(),
-  teamId: text("teamId", { length: 512 })
+  teamId: text('teamId', { length: 512 })
     .references(() => teams.id)
     .unique()
     .notNull(),
-  sendingEnabled: integer("sendingEnabled", { mode: "boolean" })
+  sendingEnabled: integer('sendingEnabled', { mode: 'boolean' })
     .default(false)
     .notNull(),
-  inSandboxMode: integer("inSandboxMode", { mode: "boolean" })
+  inSandboxMode: integer('inSandboxMode', { mode: 'boolean' })
     .default(true)
     .notNull(),
-  max24HourSend: int("max24HourSend"),
-  maxSendRate: int("maxSendRate"),
-  sentLast24Hours: int("sentLast24Hours"),
-  testEmailSentAt: integer("testEmailSentAt"),
-  installationCompletedAt: integer("installationCompletedAt"),
+  max24HourSend: int('max24HourSend'),
+  maxSendRate: int('maxSendRate'),
+  sentLast24Hours: int('sentLast24Hours'),
+  testEmailSentAt: integer('testEmailSentAt'),
+  installationCompletedAt: integer('installationCompletedAt'),
 })
 
-export const mailerIdentities = sqliteTable("mailerIdentities", {
+export const mailerIdentities = sqliteTable('mailerIdentities', {
   id,
-  mailerId: text("mailerId", { length: 32 }).references(() => mailers.id),
-  value: text("value", { length: 50 }).notNull(),
-  type: text("type", { enum: ["EMAIL", "DOMAIN"] }).notNull(),
-  status: text("status", {
-    enum: ["PENDING", "APPROVED", "DENIED", "FAILED", "TEMPORARILY_FAILED"],
+  mailerId: text('mailerId', { length: 32 }).references(() => mailers.id),
+  value: text('value', { length: 50 }).notNull(),
+  type: text('type', { enum: ['EMAIL', 'DOMAIN'] }).notNull(),
+  status: text('status', {
+    enum: ['PENDING', 'APPROVED', 'DENIED', 'FAILED', 'TEMPORARILY_FAILED'],
   })
-    .default("PENDING")
+    .default('PENDING')
     .notNull(),
-  configuration: text("configuration", { mode: "json" }),
-  confirmedApprovalAt: integer("confirmedApprovalAt"),
+  configuration: text('configuration', { mode: 'json' }),
+  confirmedApprovalAt: integer('confirmedApprovalAt'),
 })
 
-export const webhooks = sqliteTable("webhooks", {
+export const webhooks = sqliteTable('webhooks', {
   id,
-  name: text("name", { length: 50 }).notNull(),
-  url: text("url", { length: 256 }).notNull(),
-  events: text("webhookEvent", {
+  name: text('name', { length: 50 }).notNull(),
+  url: text('url', { length: 256 }).notNull(),
+  events: text('webhookEvent', {
     enum: [
-      "ALL_EVENTS",
-      "CONTACT_ADDED",
-      "CONTACT_REMOVED",
-      "CONTACT_TAG_ADDED",
-      "CONTACT_TAG_REMOVED",
-      "BROADCAST_SENT",
-      "BROADCAST_PAUSED",
-      "BROADCAST_EMAIL_OPENED",
-      "BROADCAST_EMAIL_LINK_CLICKED",
-      "AUDIENCE_ADDED",
-      "TAG_ADDED",
-      "TAG_REMOVED",
+      'ALL_EVENTS',
+      'CONTACT_ADDED',
+      'CONTACT_REMOVED',
+      'CONTACT_TAG_ADDED',
+      'CONTACT_TAG_REMOVED',
+      'BROADCAST_SENT',
+      'BROADCAST_PAUSED',
+      'BROADCAST_EMAIL_OPENED',
+      'BROADCAST_EMAIL_LINK_CLICKED',
+      'AUDIENCE_ADDED',
+      'TAG_ADDED',
+      'TAG_REMOVED',
     ],
   }),
-  teamId: text("teamId", { length: 32 })
+  teamId: text('teamId', { length: 32 })
     .references(() => teams.id)
     .notNull(),
 })
 
-export const teamMemberships = sqliteTable("teamMemberships", {
+export const teamMemberships = sqliteTable('teamMemberships', {
   id,
-  userId: text("userId", { length: 32 }).references(() => users.id),
-  email: text("email", { length: 50 }).notNull(),
-  teamId: text("teamId", { length: 32 })
+  userId: text('userId', { length: 32 }).references(() => users.id),
+  email: text('email', { length: 50 }).notNull(),
+  teamId: text('teamId', { length: 32 })
     .references(() => teams.id)
     .notNull(),
-  role: text("role", { enum: ["ADMINISTRATOR", "USER"] }),
-  status: text("role", { enum: ["PENDING", "ACTIVE"] }),
-  invitedAt: integer("invitedAt", { mode: "timestamp" }).defaultNow().notNull(),
-  expiresAt: integer("expiresAt").notNull(),
+  role: text('role', { enum: ['ADMINISTRATOR', 'USER'] }),
+  status: text('role', { enum: ['PENDING', 'ACTIVE'] }),
+  invitedAt: integer('invitedAt', { mode: 'timestamp' }).defaultNow().notNull(),
+  expiresAt: integer('expiresAt').notNull(),
 })
 
-export const audiences = sqliteTable("audiences", {
+export const audiences = sqliteTable('audiences', {
   id,
-  name: text("name", { length: 50 }).notNull(),
-  teamId: text("teamId", { length: 32 })
+  name: text('name', { length: 50 }).notNull(),
+  teamId: text('teamId', { length: 32 })
     .references(() => teams.id)
     .notNull(),
 })
 
 export const contacts = sqliteTable(
-  "contacts",
+  'contacts',
   {
     id,
-    firstName: text("firstName", { length: 50 }),
-    lastName: text("lastName", { length: 50 }),
-    email: text("email", { length: 80 }).notNull(),
-    avatarUrl: text("avatarUrl", { length: 256 }),
-    subscribedAt: integer("subscribedAt"),
-    unsubscribedAt: integer("unsubscribedAt"),
-    audienceId: text("audienceId", { length: 32 })
+    firstName: text('firstName', { length: 50 }),
+    lastName: text('lastName', { length: 50 }),
+    email: text('email', { length: 80 }).notNull(),
+    avatarUrl: text('avatarUrl', { length: 256 }),
+    subscribedAt: integer('subscribedAt'),
+    unsubscribedAt: integer('unsubscribedAt'),
+    audienceId: text('audienceId', { length: 32 })
       .references(() => audiences.id)
       .notNull(),
-    attributes: text("attributes", { mode: "json" }).$type<
+    attributes: text('attributes', { mode: 'json' }).$type<
       Record<string, string | string[] | number[] | number>
     >(),
   },
   (table) => ({
     Contact_email_audienceId_key: uniqueIndex(
-      "Contact_email_audienceId_key",
+      'Contact_email_audienceId_key',
     ).on(table.email, table.audienceId),
   }),
 )
 
-export const tags = sqliteTable("tags", {
+export const tags = sqliteTable('tags', {
   id,
-  name: text("name", { length: 256 }).notNull(),
-  description: text("description", { length: 256 }),
-  audienceId: text("audienceId", { length: 32 })
+  name: text('name', { length: 256 }).notNull(),
+  description: text('description', { length: 256 }),
+  audienceId: text('audienceId', { length: 32 })
     .references(() => audiences.id)
     .notNull(),
 })
 
-export const queueJobs = sqliteTable("queueJobs", {
+export const queueJobs = sqliteTable('queueJobs', {
   id,
-  jobId: text("jobId").notNull(),
-  attemptsCount: integer("attemptsCount").notNull().default(0),
-  maxAttempts: integer("maxAttempts").notNull().default(3),
-  dispatchedAt: integer("dispatchedAt", { mode: "timestamp" }).notNull(),
-  lockedAt: integer("lockedAt", { mode: "timestamp" }),
-  processAt: integer("processAt", { mode: "timestamp" }),
-  timeoutAt: integer("timeoutAt", { mode: "timestamp" }),
-  completedAt: integer("completedAt", { mode: "timestamp" }),
-  payload: text("payload", { mode: "json" })
+  jobId: text('jobId').notNull(),
+  attemptsCount: integer('attemptsCount').notNull().default(0),
+  maxAttempts: integer('maxAttempts').notNull().default(3),
+  dispatchedAt: integer('dispatchedAt', { mode: 'timestamp' }).notNull(),
+  lockedAt: integer('lockedAt', { mode: 'timestamp' }),
+  processAt: integer('processAt', { mode: 'timestamp' }),
+  timeoutAt: integer('timeoutAt', { mode: 'timestamp' }),
+  completedAt: integer('completedAt', { mode: 'timestamp' }),
+  payload: text('payload', { mode: 'json' })
     .$type<Record<string, unknown>>()
     .notNull(),
-  queue: text("queue"),
-  attemptLogs: text("attemptLogs", { mode: "json" }).$type<string[]>(),
+  queue: text('queue'),
+  attemptLogs: text('attemptLogs', { mode: 'json' }).$type<string[]>(),
 })
 
 export const tagsOnContacts = sqliteTable(
-  "tagsOnContacts",
+  'tagsOnContacts',
   {
-    tagId: text("tagId", { length: 32 })
+    tagId: text('tagId', { length: 32 })
       .references(() => tags.id)
       .notNull(),
-    contactId: text("contactId", { length: 32 })
+    contactId: text('contactId', { length: 32 })
       .references(() => contacts.id)
       .notNull(),
-    assignedAt: integer("assignedAt"),
+    assignedAt: integer('assignedAt'),
   },
   (table) => ({
     tagsOnContactsTagIdContactIdKey: uniqueIndex(
-      "tagsOnContactsTagIdContactIdKey",
+      'tagsOnContactsTagIdContactIdKey',
     ).on(table.tagId, table.contactId),
     tagsOnContactsTagIdContactIdIdx: index(
-      "tagsOnContactsTagIdContactIdIdx",
+      'tagsOnContactsTagIdContactIdIdx',
     ).on(table.tagId, table.contactId),
   }),
 )
 
-export const automations = sqliteTable("automations", {
+export const automations = sqliteTable('automations', {
   id,
-  name: text("name", { length: 50 }).notNull(),
-  description: text("description", { length: 512 }),
-  audienceId: text("audienceId", { length: 32 })
-    .references(() => audiences.id, { onDelete: "cascade" })
+  name: text('name', { length: 50 }).notNull(),
+  description: text('description', { length: 512 }),
+  audienceId: text('audienceId', { length: 32 })
+    .references(() => audiences.id, { onDelete: 'cascade' })
     .notNull(),
 })
 
-export const emails = sqliteTable("emails", {
+export const emails = sqliteTable('emails', {
   id,
-  type: text("type", { enum: ["AUTOMATION", "TRANSACTIONAL"] }).notNull(),
-  title: text("title", { length: 50 }).notNull(),
-  subject: text("subject", { length: 180 }),
-  audienceId: text("audienceId", { length: 32 })
-    .references(() => audiences.id, { onDelete: "cascade" })
+  type: text('type', { enum: ['AUTOMATION', 'TRANSACTIONAL'] }).notNull(),
+  title: text('title', { length: 50 }).notNull(),
+  subject: text('subject', { length: 180 }),
+  audienceId: text('audienceId', { length: 32 })
+    .references(() => audiences.id, { onDelete: 'cascade' })
     .notNull(),
-  content: text("content", { mode: "json" }).$type<Record<string, any>>(),
-  contentText: text("contentText", { mode: "text" }),
+  content: text('content', { mode: 'json' }).$type<Record<string, unknown>>(),
+  contentText: text('contentText', { mode: 'text' }),
 })
 
 export const automationStepSubtypesTrigger = [
-  "TRIGGER_CONTACT_SUBSCRIBED",
-  "TRIGGER_CONTACT_UNSUBSCRIBED",
-  "TRIGGER_CONTACT_TAG_ADDED",
-  "TRIGGER_CONTACT_TAG_REMOVED",
-  "TRIGGER_API_MANUAL",
+  'TRIGGER_CONTACT_SUBSCRIBED',
+  'TRIGGER_CONTACT_UNSUBSCRIBED',
+  'TRIGGER_CONTACT_TAG_ADDED',
+  'TRIGGER_CONTACT_TAG_REMOVED',
+  'TRIGGER_API_MANUAL',
 ] as const
 
 export const automationStepSubtypesAction = [
-  "ACTION_SEND_EMAIL",
-  "ACTION_ADD_TAG",
-  "ACTION_REMOVE_TAG",
-  "ACTION_SUBSCRIBE_TO_AUDIENCE",
-  "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
-  "ACTION_UPDATE_CONTACT_ATTRIBUTES",
+  'ACTION_SEND_EMAIL',
+  'ACTION_ADD_TAG',
+  'ACTION_REMOVE_TAG',
+  'ACTION_SUBSCRIBE_TO_AUDIENCE',
+  'ACTION_UNSUBSCRIBE_FROM_AUDIENCE',
+  'ACTION_UPDATE_CONTACT_ATTRIBUTES',
 ] as const
 
 export const automationStepSubtypesRule = [
-  "RULE_IF_ELSE",
-  "RULE_WAIT_FOR_DURATION",
-  "RULE_PERCENTAGE_SPLIT",
-  "RULE_WAIT_FOR_TRIGGER",
+  'RULE_IF_ELSE',
+  'RULE_WAIT_FOR_DURATION',
+  'RULE_PERCENTAGE_SPLIT',
+  'RULE_WAIT_FOR_TRIGGER',
 ] as const
 
-export const automationStepSubtypesEnd = ["END"] as const
+export const automationStepSubtypesEnd = ['END'] as const
 
 export const automationStepSubtypes = [
   // TRIGGERS
@@ -289,63 +289,63 @@ export const automationStepSubtypes = [
   ...automationStepSubtypesEnd,
 ] as const
 
-export const automationStepTypes = ["TRIGGER", "ACTION", "RULE", "END"] as const
+export const automationStepTypes = ['TRIGGER', 'ACTION', 'RULE', 'END'] as const
 
 // src/infrastructure/database/schema/schema.ts
 
-export const broadcasts = sqliteTable("broadcasts", {
+export const broadcasts = sqliteTable('broadcasts', {
   id,
-  name: text("name").notNull(),
-  fromName: text("fromName"),
-  fromEmail: text("fromEmail"),
-  replyToEmail: text("replyToEmail"),
-  replyToName: text("replyToName"),
-  audienceId: text("audienceId")
+  name: text('name').notNull(),
+  fromName: text('fromName'),
+  fromEmail: text('fromEmail'),
+  replyToEmail: text('replyToEmail'),
+  replyToName: text('replyToName'),
+  audienceId: text('audienceId')
     .references(() => audiences.id)
     .notNull(),
-  teamId: text("teamId", { length: 32 })
+  teamId: text('teamId', { length: 32 })
     .references(() => teams.id)
     .notNull(),
-  trackClicks: integer("trackClicks", { mode: "boolean" }),
-  trackOpens: integer("trackOpens", { mode: "boolean" }),
-  contentJson: text("contentJson", { mode: "json" }),
-  contentText: text("contentText"),
-  contentHtml: text("contentHtml"),
-  subject: text("subject"),
-  previewText: text("previewText"),
-  status: text("status"),
-  sendAt: integer("sendAt", { mode: "timestamp" }),
+  trackClicks: integer('trackClicks', { mode: 'boolean' }),
+  trackOpens: integer('trackOpens', { mode: 'boolean' }),
+  contentJson: text('contentJson', { mode: 'json' }),
+  contentText: text('contentText'),
+  contentHtml: text('contentHtml'),
+  subject: text('subject'),
+  previewText: text('previewText'),
+  status: text('status'),
+  sendAt: integer('sendAt', { mode: 'timestamp' }),
 })
 
-export const automationSteps = sqliteTable("automationSteps", {
+export const automationSteps = sqliteTable('automationSteps', {
   id,
-  automationId: text("automationId", { length: 32 })
+  automationId: text('automationId', { length: 32 })
     .references(() => automations.id)
     .notNull(),
-  type: text("type", { enum: automationStepTypes }).notNull(),
-  status: text("status", { enum: ["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"] })
+  type: text('type', { enum: automationStepTypes }).notNull(),
+  status: text('status', { enum: ['DRAFT', 'ACTIVE', 'PAUSED', 'ARCHIVED'] })
     .notNull()
-    .default("DRAFT"),
-  subtype: text("subtype", {
+    .default('DRAFT'),
+  subtype: text('subtype', {
     enum: automationStepSubtypes,
   }).notNull(),
-  parentId: text("parentId", { length: 32 }).references(
+  parentId: text('parentId', { length: 32 }).references(
     (): AnySQLiteColumn => automationSteps.id,
-    { onDelete: "cascade" },
+    { onDelete: 'cascade' },
   ),
-  branchIndex: int("branchIndex"), // used for if / else or split or branch automation point types.
-  configuration: text("configuration", { mode: "json" })
-    .$type<Record<string, any>>()
+  branchIndex: int('branchIndex'), // used for if / else or split or branch automation point types.
+  configuration: text('configuration', { mode: 'json' })
+    .$type<Record<string, unknown>>()
     .notNull(),
 
   // an automation step of type SEND_EMAIL must have this emailId
-  emailId: text("emailId", { length: 32 }).references(() => emails.id),
+  emailId: text('emailId', { length: 32 }).references(() => emails.id),
 
   // an automation step of type ADD_TAG OR REMOVE_TAG must have this tagId field
-  tagId: text("tagId", { length: 32 }).references(() => tags.id),
+  tagId: text('tagId', { length: 32 }).references(() => tags.id),
 
   // an automation step of type ADD_AUDIENCE or REMOVE_FROM_AUDIENCE must have this audienceId field
-  audienceId: text("audienceId", { length: 32 }).references(() => audiences.id),
+  audienceId: text('audienceId', { length: 32 }).references(() => audiences.id),
 })
 
 /*
@@ -381,23 +381,23 @@ When triggered, automation fetches all contacts that match the trigger condition
 
 // we can also execute the automation in series. but that will be slow. we can also execute the automation in parallel. but that will be fast but will require more resources. so we can have a hybrid approach. we can execute the automation in parallel but limit the number of parallel executions.
 
-export const contactAutomationStep = sqliteTable("contactAutomationSteps", {
+export const contactAutomationStep = sqliteTable('contactAutomationSteps', {
   id,
 
-  automationStepId: text("automationStepId", { length: 32 })
-    .references(() => automationSteps.id, { onDelete: "cascade" })
+  automationStepId: text('automationStepId', { length: 32 })
+    .references(() => automationSteps.id, { onDelete: 'cascade' })
     .notNull(),
 
-  contactId: text("contactId", { length: 32 })
-    .references(() => contacts.id, { onDelete: "cascade" })
+  contactId: text('contactId', { length: 32 })
+    .references(() => contacts.id, { onDelete: 'cascade' })
     .notNull(),
 
-  haltedAt: integer("haltedAt"),
-  failedAt: integer("failedAt"),
-  startedAt: integer("startedAt"), // for wait steps, this will be start of wait
-  completedAt: integer("completedAt"), // for wait steps, this will be end of wait
+  haltedAt: integer('haltedAt'),
+  failedAt: integer('failedAt'),
+  startedAt: integer('startedAt'), // for wait steps, this will be start of wait
+  completedAt: integer('completedAt'), // for wait steps, this will be end of wait
 
-  output: text("output", { mode: "json" }),
+  output: text('output', { mode: 'json' }),
 })
 
 // Relations
@@ -497,10 +497,10 @@ export const automationStepsRelations = relations(
     parent: one(automationSteps, {
       fields: [automationSteps.parentId],
       references: [automationSteps.id],
-      relationName: "steps",
+      relationName: 'steps',
     }),
     steps: many(automationSteps, {
-      relationName: "steps",
+      relationName: 'steps',
     }),
   }),
 )

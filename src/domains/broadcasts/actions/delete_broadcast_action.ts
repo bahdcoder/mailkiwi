@@ -1,5 +1,5 @@
-import { BroadcastRepository } from "@/domains/broadcasts/repositories/broadcast_repository.js"
-import { container } from "@/utils/typi.ts"
+import { BroadcastRepository } from '@/domains/broadcasts/repositories/broadcast_repository.js'
+import { container } from '@/utils/typi.ts'
 
 export class DeleteBroadcastAction {
   constructor(

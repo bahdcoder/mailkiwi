@@ -1,27 +1,28 @@
-import { Secret } from "@poppinss/utils"
-import { and, eq, SQLWrapper } from "drizzle-orm"
+import { Secret } from '@poppinss/utils'
+import { type SQLWrapper, and, eq } from 'drizzle-orm'
 
-import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
-import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
-import { Encryption } from "@/domains/shared/utils/encryption/encryption.js"
-import { CreateMailerDto } from "@/domains/teams/dto/mailers/create_mailer_dto.js"
-import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
-import { makeDatabase, makeEnv } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.js"
-import { mailers } from "@/infrastructure/database/schema/schema.js"
-import {
+import { BaseRepository } from '@/domains/shared/repositories/base_repository.js'
+import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
+import { Encryption } from '@/domains/shared/utils/encryption/encryption.js'
+import type { CreateMailerDto } from '@/domains/teams/dto/mailers/create_mailer_dto.js'
+import type { UpdateMailerDto } from '@/domains/teams/dto/mailers/update_mailer_dto.js'
+import { makeDatabase, makeEnv } from '@/infrastructure/container.js'
+import type { DrizzleClient } from '@/infrastructure/database/client.js'
+import { mailers } from '@/infrastructure/database/schema/schema.js'
+import type {
   Mailer,
   Team,
   UpdateSetMailerInput,
-} from "@/infrastructure/database/schema/types.js"
+} from '@/infrastructure/database/schema/types.js'
+import { E_INTERNAL_PROCESSING_ERROR } from '@/utils/errors.ts'
 
 export class MailerRepository extends BaseRepository {
   defaultConfigurationPayload: MailerConfiguration = {
-    accessKey: new Secret(""),
-    accessSecret: new Secret(""),
-    region: "" as MailerConfiguration["region"],
-    domain: "",
-    email: "",
+    accessKey: new Secret(''),
+    accessSecret: new Secret(''),
+    region: '' as MailerConfiguration['region'],
+    domain: '',
+    email: '',
     maximumMailsPerSecond: 1,
   }
 
@@ -63,7 +64,7 @@ export class MailerRepository extends BaseRepository {
     return await this.database.query.mailers.findMany({})
   }
 
-  async setMailerStatus(mailer: Mailer, status: Mailer["status"]) {
+  async setMailerStatus(mailer: Mailer, status: Mailer['status']) {
     await this.database
       .update(mailers)
       .set({ status })
@@ -75,7 +76,7 @@ export class MailerRepository extends BaseRepository {
   async update(
     mailer: Mailer,
     updatePayload: Partial<UpdateMailerDto> &
-      Omit<UpdateSetMailerInput, "configuration">,
+      Omit<UpdateSetMailerInput, 'configuration'>,
     team: Team,
   ) {
     const { configuration: payloadConfiguration, ...payload } = updatePayload
@@ -112,8 +113,8 @@ export class MailerRepository extends BaseRepository {
     const configurationKey = new Secret(
       new Encryption({
         secret: makeEnv().APP_KEY,
-      }).decrypt<string>(encryptedConfigurationKey)!,
-    )
+      }).decrypt<string>(encryptedConfigurationKey),
+    ) as Secret<string>
 
     const decrypted = new Encryption({
       secret: configurationKey,
@@ -140,8 +141,8 @@ export class MailerRepository extends BaseRepository {
     const configurationKey = new Secret(
       new Encryption({
         secret: makeEnv().APP_KEY,
-      }).decrypt<string>(encryptedConfigurationKey)!,
-    )
+      }).decrypt<string>(encryptedConfigurationKey),
+    ) as Secret<string>
 
     const configuration = new Encryption({
       secret: configurationKey,

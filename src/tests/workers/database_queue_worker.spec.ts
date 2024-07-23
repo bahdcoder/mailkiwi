@@ -1,18 +1,21 @@
-import { describe, test, vi } from "vitest"
-import { createBroadcastForUser, createUser } from "../mocks/auth/users.ts"
-import { makeRequestAsUser } from "../utils/http.ts"
-import { makeDatabase } from "@/infrastructure/container.ts"
-import { WorkerIgnitor } from "@/infrastructure/worker/worker_ignitor.ts"
-import { refreshDatabase } from "../mocks/teams/teams.ts"
-import { gt, isNull, not } from "drizzle-orm"
-import { queueJobs } from "@/infrastructure/database/schema/schema.ts"
-import { sleep } from "@/utils/sleep.ts"
-import { Queue } from "@/domains/shared/queue/queue.ts"
-import { BaseJob, JobContext } from "@/domains/shared/queue/abstract_job.ts"
-import { AVAILABLE_QUEUES } from "@/domains/shared/queue/config.ts"
+import {
+  BaseJob,
+  type JobContext,
+} from '@/domains/shared/queue/abstract_job.ts'
+import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.ts'
+import { Queue } from '@/domains/shared/queue/queue.ts'
+import { makeDatabase } from '@/infrastructure/container.ts'
+import { queueJobs } from '@/infrastructure/database/schema/schema.ts'
+import { WorkerIgnitor } from '@/infrastructure/worker/worker_ignitor.ts'
+import { sleep } from '@/utils/sleep.ts'
+import { gt, isNull, not } from 'drizzle-orm'
+import { describe, test, vi } from 'vitest'
+import { createBroadcastForUser, createUser } from '../mocks/auth/users.ts'
+import { refreshDatabase } from '../mocks/teams/teams.ts'
+import { makeRequestAsUser } from '../utils/http.ts'
 
-describe("Database queue worker", () => {
-  test("can dispatch jobs to queue", async ({ expect }) => {
+describe('Database queue worker', () => {
+  test('can dispatch jobs to queue', async ({ expect }) => {
     const { user, audience, broadcastId } = await createUser({
       createBroadcast: true,
     })
@@ -20,24 +23,24 @@ describe("Database queue worker", () => {
     const database = makeDatabase()
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/broadcasts/${broadcastId}/send`,
     })
 
     expect(response.status).toBe(200)
     const queuedJob = await database.query.queueJobs.findFirst({})
 
-    expect(queuedJob?.jobId).toBe("BROADCASTS::SEND_BROADCAST")
+    expect(queuedJob?.jobId).toBe('BROADCASTS::SEND_BROADCAST')
   })
 
-  test("can complete jobs added to queue", async ({ expect }) => {
+  test('can complete jobs added to queue', async ({ expect }) => {
     await refreshDatabase()
 
-    let processedJobIds: number[] = []
+    const processedJobIds: number[] = []
 
     class FakeJob extends BaseJob<{ id: number }> {
       static get id() {
-        return "BROADCASTS::FAKE_JOB"
+        return 'BROADCASTS::FAKE_JOB'
       }
 
       static get queue() {
@@ -76,14 +79,14 @@ describe("Database queue worker", () => {
     expect(allQueuedJobsCompleted).toHaveLength(5)
   })
 
-  test("marks failed jobs as failed from the queue", async ({ expect }) => {
+  test('marks failed jobs as failed from the queue', async ({ expect }) => {
     await refreshDatabase()
 
-    let processedJobIds: number[] = []
+    const processedJobIds: number[] = []
 
     class FakeJob extends BaseJob<{ id: number }> {
       static get id() {
-        return "BROADCASTS::FAKE_JOB"
+        return 'BROADCASTS::FAKE_JOB'
       }
 
       static get queue() {
@@ -127,14 +130,14 @@ describe("Database queue worker", () => {
     expect(allAttemptedJobs).toHaveLength(5)
   })
 
-  test("gracefuly marks job as failed if it throws an error", async ({
+  test('gracefuly marks job as failed if it throws an error', async ({
     expect,
   }) => {
     await refreshDatabase()
 
     class FakeJob extends BaseJob<{ id: number }> {
       static get id() {
-        return "BROADCASTS::FAKE_JOB"
+        return 'BROADCASTS::FAKE_JOB'
       }
 
       static get queue() {
@@ -142,7 +145,7 @@ describe("Database queue worker", () => {
       }
 
       async handle(ctx: JobContext<{ id: number }>): Promise<any> {
-        throw new Error("Job failed for some reason.")
+        throw new Error('Job failed for some reason.')
       }
     }
 

@@ -1,8 +1,8 @@
-import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository.js"
-import { makeApp, makeConfig } from "@/infrastructure/container.js"
-import { Team, User } from "@/infrastructure/database/schema/types.js"
-import { HTTPMethods } from "@/infrastructure/server/types.js"
-import { container } from "@/utils/typi.js"
+import { AccessTokenRepository } from '@/domains/auth/acess_tokens/repositories/access_token_repository.js'
+import { makeApp, makeConfig } from '@/infrastructure/container.js'
+import type { Team, User } from '@/infrastructure/database/schema/types.js'
+import type { HTTPMethods } from '@/infrastructure/server/types.js'
+import { container } from '@/utils/typi.js'
 
 export async function makeRequest(
   path: string,
@@ -17,9 +17,9 @@ export async function makeRequest(
   return app.request(path, {
     method: options.method,
     body:
-      options.method !== "GET" ? JSON.stringify(options.body ?? {}) : undefined,
+      options.method !== 'GET' ? JSON.stringify(options.body ?? {}) : undefined,
     headers: new Headers({
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options?.headers,
     }),
   })
@@ -46,8 +46,8 @@ export async function makeRequestAsUser(
     method,
     body: injectOptions.body,
     headers: {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${accessToken.toJSON()["token"]}`,
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${accessToken.toJSON().token}`,
       [makeConfig().software.teamHeader]: (user as User & { teams: Team[] })
         ?.teams?.[0]?.id,
       ...restOfOptions.headers,

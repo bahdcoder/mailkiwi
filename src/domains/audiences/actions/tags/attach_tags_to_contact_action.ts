@@ -1,6 +1,6 @@
-import { ContactRepository } from "@/domains/audiences/repositories/contact_repository.js"
-import { AttachTagsToContactDto } from "@/domains/audiences/dto/tags/attach_tags_to_contact_dto.ts"
-import { container } from "@/utils/typi.js"
+import type { AttachTagsToContactDto } from '@/domains/audiences/dto/tags/attach_tags_to_contact_dto.ts'
+import { ContactRepository } from '@/domains/audiences/repositories/contact_repository.js'
+import { container } from '@/utils/typi.js'
 
 export class AttachTagsToContactAction {
   constructor(

@@ -10,17 +10,17 @@ import {
   GetIdentityMailFromDomainAttributesCommand,
   GetIdentityVerificationAttributesCommand,
   GetSendQuotaCommand,
-  IdentityDkimAttributes,
-  IdentityMailFromDomainAttributes,
-  IdentityVerificationAttributes,
+  type IdentityDkimAttributes,
+  type IdentityMailFromDomainAttributes,
+  type IdentityVerificationAttributes,
   ListIdentitiesCommand,
   SESClient,
   SetIdentityMailFromDomainCommand,
-} from "@aws-sdk/client-ses"
-import { CreateEmailIdentityCommand } from "@aws-sdk/client-sesv2"
-import { Secret } from "@poppinss/utils"
+} from '@aws-sdk/client-ses'
+import { CreateEmailIdentityCommand } from '@aws-sdk/client-sesv2'
+import { Secret } from '@poppinss/utils'
 
-import { RsaKeyPair } from "@/domains/shared/utils/ssl/rsa.js"
+import { RsaKeyPair } from '@/domains/shared/utils/ssl/rsa.js'
 
 export class SESService {
   private ses: SESClient
@@ -57,7 +57,7 @@ export class SESService {
       const response = await this.ses.send(
         new DescribeConfigurationSetCommand({
           ConfigurationSetName: configurationSetName,
-          ConfigurationSetAttributeNames: ["eventDestinations"],
+          ConfigurationSetAttributeNames: ['eventDestinations'],
         }),
       )
 
@@ -111,11 +111,11 @@ export class SESService {
           Enabled: true,
           Name: configurationSetName,
           MatchingEventTypes: [
-            "reject",
-            "bounce",
-            "complaint",
-            "click",
-            "open",
+            'reject',
+            'bounce',
+            'complaint',
+            'click',
+            'open',
           ],
           SNSDestination: {
             TopicARN: topicArn,
@@ -192,13 +192,13 @@ export class SESService {
       >
     > = {}
 
-    identities.forEach((identity) => {
+    for (const identity of identities) {
       attributes[identity] = {
         ...identityDkimAttributes?.DkimAttributes?.[identity],
         ...identityVerificationAttributes?.VerificationAttributes?.[identity],
         ...identityMailFromAttributes?.MailFromDomainAttributes?.[identity],
       }
-    })
+    }
 
     return attributes
   }
@@ -214,12 +214,12 @@ export class SESService {
   async createIdentity(
     configurationSetName: string,
     identityValue: string,
-    identityType: "DOMAIN" | "EMAIL",
+    identityType: 'DOMAIN' | 'EMAIL',
     DomainSigningSelector: string,
   ) {
     const rsaKeyPair = new RsaKeyPair()
 
-    if (identityType === "DOMAIN") {
+    if (identityType === 'DOMAIN') {
       rsaKeyPair.generate()
     }
 
@@ -227,7 +227,7 @@ export class SESService {
       new CreateEmailIdentityCommand({
         EmailIdentity: identityValue,
         ConfigurationSetName: configurationSetName,
-        ...(identityType === "DOMAIN" && {
+        ...(identityType === 'DOMAIN' && {
           DkimSigningAttributes: {
             DomainSigningPrivateKey: rsaKeyPair.clean().privateKey,
             DomainSigningSelector,
@@ -236,7 +236,7 @@ export class SESService {
       }),
     )
 
-    if (identityType === "DOMAIN") {
+    if (identityType === 'DOMAIN') {
       await this.ses.send(
         new SetIdentityMailFromDomainCommand({
           Identity: identityValue,

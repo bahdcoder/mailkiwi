@@ -1,9 +1,9 @@
-import { Secret } from "@poppinss/utils"
+import type { Secret } from '@poppinss/utils'
 
-import SESService from "@/providers/ses/ses.js"
-import { PermissionsChecker } from "@/providers/ses/ses_permission_checker.js"
-import { SNSService } from "@/providers/ses/sns.js"
-import { E_INTERNAL_PROCESSING_ERROR } from "@/utils/errors.js"
+import SESService from '@/providers/ses/ses.js'
+import { PermissionsChecker } from '@/providers/ses/ses_permission_checker.js'
+import { SNSService } from '@/providers/ses/sns.js'
+import { E_INTERNAL_PROCESSING_ERROR } from '@/utils/errors.js'
 
 export class AwsSdk {
   constructor(
@@ -33,7 +33,7 @@ export class AwsSdk {
 
     if (!hasPermissions) {
       throw E_INTERNAL_PROCESSING_ERROR(
-        "Your aws credentials do not have the right permissions to install this mailer.",
+        'Your aws credentials do not have the right permissions to install this mailer.',
       )
     }
 
@@ -50,7 +50,7 @@ export class AwsSdk {
       await this.snsService().getSnsTopic(configurationSetName)
 
     if (!snsTopicArn?.TopicArn)
-      throw E_INTERNAL_PROCESSING_ERROR(`Topic ARN does not exist.`)
+      throw E_INTERNAL_PROCESSING_ERROR('Topic ARN does not exist.')
 
     await this.sesService().createConfigurationSetEventsDestination(
       configurationSetName,

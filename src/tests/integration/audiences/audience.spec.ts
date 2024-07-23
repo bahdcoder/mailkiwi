@@ -1,23 +1,23 @@
-import { faker } from "@faker-js/faker"
-import { and, eq } from "drizzle-orm"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { and, eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
-import { makeConfig, makeDatabase } from "@/infrastructure/container.js"
-import { audiences, contacts } from "@/infrastructure/database/schema/schema.js"
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
-import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
+import { makeConfig, makeDatabase } from '@/infrastructure/container.js'
+import { audiences, contacts } from '@/infrastructure/database/schema/schema.js'
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
+import { makeRequest, makeRequestAsUser } from '@/tests/utils/http.js'
 
-describe("Audiences", () => {
-  test("can create an audience only if authenticated", async ({ expect }) => {
-    const response = await makeRequest("audiences", {
-      method: "POST",
+describe('Audiences', () => {
+  test('can create an audience only if authenticated', async ({ expect }) => {
+    const response = await makeRequest('audiences', {
+      method: 'POST',
     })
 
     expect(response.status).toBe(401)
   })
 
-  test("can create an audience when properly authenticated and authorized", async ({
+  test('can create an audience when properly authenticated and authorized', async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -30,8 +30,8 @@ describe("Audiences", () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/audiences",
+      method: 'POST',
+      path: '/audiences',
       body: payload,
     })
 
@@ -48,7 +48,7 @@ describe("Audiences", () => {
     expect(audience?.name).toEqual(payload.name)
   })
 
-  test("can only create an audience when properly authorized", async ({
+  test('can only create an audience when properly authorized', async ({
     expect,
   }) => {
     const { user } = await createUser()
@@ -56,10 +56,10 @@ describe("Audiences", () => {
     const { user: unauthorizedUser } = await createUser()
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/audiences",
+      method: 'POST',
+      path: '/audiences',
       body: {
-        name: "Newsletter",
+        name: 'Newsletter',
       },
       headers: {
         [makeConfig().software.teamHeader]: unauthorizedUser?.teams?.[0]?.id,
@@ -70,8 +70,8 @@ describe("Audiences", () => {
   })
 })
 
-describe("Contacts", () => {
-  test("can create a contact for an audience", async ({ expect }) => {
+describe('Contacts', () => {
+  test('can create a contact for an audience', async ({ expect }) => {
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
@@ -83,7 +83,7 @@ describe("Contacts", () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: contactPayload,
     })
@@ -101,7 +101,7 @@ describe("Contacts", () => {
     expect(savedContact).toBeDefined()
   })
 
-  test("cannot create a contact with invalid data", async ({ expect }) => {
+  test('cannot create a contact with invalid data', async ({ expect }) => {
     const { user, audience } = await createUser()
 
     const contactPayload = {
@@ -109,7 +109,7 @@ describe("Contacts", () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: contactPayload,
     })
@@ -117,12 +117,12 @@ describe("Contacts", () => {
     const json = await response.json()
 
     expect(response.status).toEqual(422)
-    expect(json.errors[0].field).toEqual("email")
+    expect(json.errors[0].field).toEqual('email')
   })
 })
 
-describe("Update contacts", () => {
-  test("can update the first name, last name, avatar and attributes of a contact", async ({
+describe('Update contacts', () => {
+  test('can update the first name, last name, avatar and attributes of a contact', async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -131,7 +131,7 @@ describe("Update contacts", () => {
 
     // Create a contact
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
@@ -141,11 +141,11 @@ describe("Update contacts", () => {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       avatarUrl: faker.image.url(),
-      attributes: { hobby: "reading" },
+      attributes: { hobby: 'reading' },
     }
 
     const updateResponse = await makeRequestAsUser(user, {
-      method: "PATCH",
+      method: 'PATCH',
       path: `/audiences/${audience.id}/contacts/${contactId}`,
       body: updateData,
     })
@@ -160,28 +160,28 @@ describe("Update contacts", () => {
     expect(updatedContact).toMatchObject(updateData)
   })
 
-  test("can override attributes", async ({ expect }) => {
+  test('can override attributes', async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
     // Create a contact with initial attributes
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: {
         email: faker.internet.email(),
-        attributes: { hobby: "swimming", age: 25 },
+        attributes: { hobby: 'swimming', age: 25 },
       },
     })
     const { id: contactId } = await createContactResponse.json()
 
     const updateData = {
-      attributes: { hobby: "reading", favoriteColor: "blue" },
+      attributes: { hobby: 'reading', favoriteColor: 'blue' },
     }
 
     const updateResponse = await makeRequestAsUser(user, {
-      method: "PATCH",
+      method: 'PATCH',
       path: `/audiences/${audience.id}/contacts/${contactId}`,
       body: updateData,
     })
@@ -195,13 +195,13 @@ describe("Update contacts", () => {
     })
 
     expect(updatedContact?.attributes).toEqual({
-      hobby: "reading",
+      hobby: 'reading',
       age: 25,
-      favoriteColor: "blue",
+      favoriteColor: 'blue',
     })
   })
 
-  test("can merge attributes without deleting existing attributes", async ({
+  test('can merge attributes without deleting existing attributes', async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -210,21 +210,21 @@ describe("Update contacts", () => {
 
     // Create a contact with initial attributes
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: {
         email: faker.internet.email(),
-        attributes: { hobby: "swimming", age: 25 },
+        attributes: { hobby: 'swimming', age: 25 },
       },
     })
     const { id: contactId } = await createContactResponse.json()
 
     const updateData = {
-      attributes: { favoriteColor: "blue" },
+      attributes: { favoriteColor: 'blue' },
     }
 
     const updateResponse = await makeRequestAsUser(user, {
-      method: "PATCH",
+      method: 'PATCH',
       path: `/audiences/${audience.id}/contacts/${contactId}`,
       body: updateData,
     })
@@ -237,13 +237,13 @@ describe("Update contacts", () => {
     })
 
     expect(updatedContact?.attributes).toEqual({
-      hobby: "swimming",
+      hobby: 'swimming',
       age: 25,
-      favoriteColor: "blue",
+      favoriteColor: 'blue',
     })
   })
 
-  test("cannot update without proper authorisation", async ({ expect }) => {
+  test('cannot update without proper authorisation', async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
     const { user: unauthorizedUser } = await createUser()
@@ -251,7 +251,7 @@ describe("Update contacts", () => {
 
     // Create a contact
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
@@ -262,7 +262,7 @@ describe("Update contacts", () => {
     }
 
     const updateResponse = await makeRequestAsUser(unauthorizedUser, {
-      method: "PATCH",
+      method: 'PATCH',
       path: `/audiences/${audience.id}/contacts/${contactId}`,
       body: updateData,
     })

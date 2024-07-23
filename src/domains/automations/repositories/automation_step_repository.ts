@@ -1,8 +1,8 @@
-import { automationSteps } from "@/infrastructure/database/schema/schema.js"
-import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
-import { CreateAutomationStepDto } from "@/domains/automations/dto/create_automation_step_dto.js"
-import { DrizzleClient } from "@/infrastructure/database/client.ts"
-import { makeDatabase } from "@/infrastructure/container.ts"
+import type { CreateAutomationStepDto } from '@/domains/automations/dto/create_automation_step_dto.js'
+import { BaseRepository } from '@/domains/shared/repositories/base_repository.js'
+import { makeDatabase } from '@/infrastructure/container.ts'
+import type { DrizzleClient } from '@/infrastructure/database/client.ts'
+import { automationSteps } from '@/infrastructure/database/schema/schema.js'
 
 export class AutomationStepRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

@@ -1,16 +1,16 @@
-import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
-import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto.js"
-import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
-import { makeConfig } from "@/infrastructure/container.js"
-import {
+import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
+import type { CreateMailerIdentityDto } from '@/domains/teams/dto/create_mailer_identity_dto.js'
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { makeConfig } from '@/infrastructure/container.js'
+import type {
   Mailer,
   MailerIdentity,
   Team,
-} from "@/infrastructure/database/schema/types.js"
-import { AwsSdk } from "@/providers/ses/sdk.js"
-import { container } from "@/utils/typi.js"
+} from '@/infrastructure/database/schema/types.js'
+import { AwsSdk } from '@/providers/ses/sdk.js'
+import { container } from '@/utils/typi.js'
 
 export class CreateMailerIdentityAction {
   constructor(
@@ -39,8 +39,8 @@ export class CreateMailerIdentityAction {
     ) {
       throw E_VALIDATION_FAILED([
         {
-          field: "mailer.configuration",
-          message: "Mailer is not correctly configured.",
+          field: 'mailer.configuration',
+          message: 'Mailer is not correctly configured.',
         },
       ])
     }
@@ -52,7 +52,7 @@ export class CreateMailerIdentityAction {
 
     const configurationSetName = `${makeConfig().software.shortName}_${mailer.id}`
 
-    if (mailer.provider === "AWS_SES") {
+    if (mailer.provider === 'AWS_SES') {
       try {
         const { privateKey, publicKey } = await this.createSesMailerIdentity(
           { ...payload, id: identityId },
@@ -60,7 +60,7 @@ export class CreateMailerIdentityAction {
           configuration,
         )
 
-        if (payload.type === "DOMAIN") {
+        if (payload.type === 'DOMAIN') {
           const encryptedKeyPair =
             await this.mailerIdentityRepository.encryptRsaPrivateKey(
               team.configurationKey,
@@ -85,7 +85,7 @@ export class CreateMailerIdentityAction {
   }
 
   async createSesMailerIdentity(
-    identity: Pick<MailerIdentity, "id" | "value" | "type">,
+    identity: Pick<MailerIdentity, 'id' | 'value' | 'type'>,
     configurationSetName: string,
     configuration: MailerConfiguration,
   ) {
@@ -98,7 +98,7 @@ export class CreateMailerIdentityAction {
       .createIdentity(
         configurationSetName,
         identity.value,
-        identity.type!,
+        identity.type,
         makeConfig().software.shortName,
       )
   }

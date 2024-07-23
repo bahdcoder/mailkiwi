@@ -1,12 +1,12 @@
-import { createCipheriv, createDecipheriv, createHash } from "node:crypto"
+import { createCipheriv, createDecipheriv, createHash } from 'node:crypto'
 
-import { base64, MessageBuilder } from "@poppinss/utils"
+import { MessageBuilder, base64 } from '@poppinss/utils'
 
-import string from "@/domains/shared/utils/string.js"
+import string from '@/domains/shared/utils/string.js'
 
-import { Hmac } from "./hmac.js"
-import { MessageVerifier } from "./message_verifier.js"
-import type { EncryptionOptions } from "./types.js"
+import { Hmac } from './hmac.js'
+import { MessageVerifier } from './message_verifier.js'
+import type { EncryptionOptions } from './types.js'
 
 export class Encryption {
   #options: Required<EncryptionOptions>
@@ -21,7 +21,7 @@ export class Encryption {
    * Use `dot` as a separator for joining encrypted value, iv and the
    * hmac hash. The idea is borrowed from JWTs.
    */
-  #separator = "."
+  #separator = '.'
 
   /**
    * Reference to the instance of message verifier for signing
@@ -37,21 +37,21 @@ export class Encryption {
   /**
    * The algorithm in use
    */
-  get algorithm(): "aes-256-cbc" {
+  get algorithm(): 'aes-256-cbc' {
     return this.#options.algorithm
   }
 
   constructor(options: EncryptionOptions) {
     const secretValue =
       options.secret &&
-      typeof options.secret === "object" &&
-      "release" in options.secret
+      typeof options.secret === 'object' &&
+      'release' in options.secret
         ? options.secret.release()
         : options.secret
 
-    this.#options = { algorithm: "aes-256-cbc", ...options }
+    this.#options = { algorithm: 'aes-256-cbc', ...options }
     this.#validateSecret(secretValue)
-    this.#cryptoKey = createHash("sha256").update(secretValue).digest()
+    this.#cryptoKey = createHash('sha256').update(secretValue).digest()
     this.verifier = new MessageVerifier(secretValue)
   }
 
@@ -59,9 +59,9 @@ export class Encryption {
    * Validates the app secret
    */
   #validateSecret(secret?: string) {
-    if (typeof secret !== "string") {
+    if (typeof secret !== 'string') {
       //   throw new errors.E_MISSING_APP_KEY()
-      throw new Error("")
+      throw new Error('')
     }
 
     if (secret.length < 16) {
@@ -104,7 +104,7 @@ export class Encryption {
      * Set final to the cipher instance and encrypt it
      */
     const encrypted = Buffer.concat([
-      cipher.update(encodedValue, "utf-8"),
+      cipher.update(encodedValue, 'utf-8'),
       cipher.final(),
     ])
 
@@ -127,8 +127,8 @@ export class Encryption {
    * Decrypt value and verify it against a purpose
    */
   // eslint-disable-next-line
-  decrypt<T extends any>(value: unknown, purpose?: string): T | null {
-    if (typeof value !== "string") {
+  decrypt<T>(value: unknown, purpose?: string): T | null {
+    if (typeof value !== 'string') {
       return null
     }
 
@@ -144,7 +144,7 @@ export class Encryption {
     /**
      * Make sure we are able to urlDecode the encrypted value
      */
-    const encrypted = this.base64.urlDecode(encryptedEncoded, "base64")
+    const encrypted = this.base64.urlDecode(encryptedEncoded, 'base64')
     if (!encrypted) {
       return null
     }
@@ -177,7 +177,7 @@ export class Encryption {
     try {
       const decipher = createDecipheriv(this.algorithm, this.#cryptoKey, iv)
       const decrypted =
-        decipher.update(encrypted, "base64", "utf8") + decipher.final("utf8")
+        decipher.update(encrypted, 'base64', 'utf8') + decipher.final('utf8')
       return new MessageBuilder().verify(decrypted, purpose)
     } catch {
       return null

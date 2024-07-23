@@ -1,16 +1,16 @@
-import { faker } from "@faker-js/faker"
+import { faker } from '@faker-js/faker'
 
-import { CreateAudienceAction } from "@/domains/audiences/actions/audiences/create_audience_action.js"
-import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.js"
-import { ContainerKey } from "@/infrastructure/container.js"
+import { CreateAudienceAction } from '@/domains/audiences/actions/audiences/create_audience_action.js'
+import { RegisterUserAction } from '@/domains/auth/actions/register_user_action.js'
+import { ContainerKey } from '@/infrastructure/container.js'
 import {
   createDatabaseClient,
   createDrizzleDatabase,
-} from "@/infrastructure/database/client.js"
-import { contacts, settings } from "@/infrastructure/database/schema/schema.js"
-import { env } from "@/infrastructure/env.js"
-import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
-import { container } from "@/utils/typi.js"
+} from '@/infrastructure/database/client.js'
+import { contacts, settings } from '@/infrastructure/database/schema/schema.js'
+import { env } from '@/infrastructure/env.js'
+import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
+import { container } from '@/utils/typi.js'
 
 const database = createDrizzleDatabase(createDatabaseClient(env.DATABASE_URL))
 
@@ -23,8 +23,8 @@ const createAudienceAction = container.resolve(CreateAudienceAction)
 await refreshDatabase()
 
 await database.insert(settings).values({
-  domain: "bamboomail.a.pinggy.link",
-  url: "https://bamboomail.a.pinggy.link",
+  domain: 'bamboomail.a.pinggy.link',
+  url: 'https://bamboomail.a.pinggy.link',
 })
 
 for (let userIndex = 0; userIndex < 5; userIndex++) {
@@ -36,14 +36,14 @@ for (let userIndex = 0; userIndex < 5; userIndex++) {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
     }),
-    password: "password",
+    password: 'password',
   })
 
   for (let audienceIndex = 0; audienceIndex < 1; audienceIndex++) {
     const audiencePayload = { name: faker.commerce.productName() }
 
     console.log(
-      "Creating audience: ",
+      'Creating audience: ',
       `${audienceIndex}: ${audiencePayload.name}`,
     )
 
@@ -75,7 +75,7 @@ for (let userIndex = 0; userIndex < 5; userIndex++) {
         }))
 
       console.log(
-        "Inserting contacts for audience:",
+        'Inserting contacts for audience:',
         `${mockContacts.length} mock contacts.`,
       )
 

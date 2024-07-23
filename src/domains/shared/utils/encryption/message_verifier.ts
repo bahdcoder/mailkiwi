@@ -1,8 +1,8 @@
-import { createHash } from "node:crypto"
+import { createHash } from 'node:crypto'
 
-import { base64, MessageBuilder, RuntimeException } from "@poppinss/utils"
+import { MessageBuilder, RuntimeException, base64 } from '@poppinss/utils'
 
-import { Hmac } from "./hmac.js"
+import { Hmac } from './hmac.js'
 
 /**
  * Message verifier is similar to the encryption. However, the actual payload
@@ -22,10 +22,10 @@ export class MessageVerifier {
    * hmac hash. The idea is borrowed from JWT's in which each part
    * of the payload is concatenated with a dot.
    */
-  #separator = "."
+  #separator = '.'
 
   constructor(secret: string) {
-    this.#cryptoKey = createHash("sha256").update(secret).digest()
+    this.#cryptoKey = createHash('sha256').update(secret).digest()
   }
 
   /**
@@ -58,8 +58,8 @@ export class MessageVerifier {
    * Unsign a previously signed value with an optional purpose
    */
   // eslint-disable-next-line
-  unsign<T extends any>(payload: string, purpose?: string): T | null {
-    if (typeof payload !== "string") {
+  unsign<T>(payload: string, purpose?: string): T | null {
+    if (typeof payload !== 'string') {
       return null
     }
 

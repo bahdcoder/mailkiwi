@@ -1,12 +1,12 @@
-import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
-import { CreateMailerIdentityAction } from "@/domains/teams/actions/create_mailer_identity_action.js"
-import { CreateMailerIdentityDto } from "@/domains/teams/dto/create_mailer_identity_dto.js"
-import { UpdateMailerDto } from "@/domains/teams/dto/mailers/update_mailer_dto.js"
-import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials.js"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
-import { Mailer, Team } from "@/infrastructure/database/schema/types.js"
-import { container } from "@/utils/typi.js"
+import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
+import { CreateMailerIdentityAction } from '@/domains/teams/actions/create_mailer_identity_action.js'
+import type { CreateMailerIdentityDto } from '@/domains/teams/dto/create_mailer_identity_dto.js'
+import type { UpdateMailerDto } from '@/domains/teams/dto/mailers/update_mailer_dto.js'
+import { CheckProviderCredentials } from '@/domains/teams/helpers/check_provider_credentials.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import type { Mailer, Team } from '@/infrastructure/database/schema/types.js'
+import { container } from '@/utils/typi.js'
 
 export class UpdateMailerAction {
   protected isReconnecting = false
@@ -31,8 +31,8 @@ export class UpdateMailerAction {
     if (!configurationKeysAreValid) {
       throw E_VALIDATION_FAILED([
         {
-          message: "The provided configuration is invalid.",
-          field: "configuration",
+          message: 'The provided configuration is invalid.',
+          field: 'configuration',
         },
       ])
     }
@@ -50,13 +50,14 @@ export class UpdateMailerAction {
       const mailerIdentityAction = container.resolve(CreateMailerIdentityAction)
 
       const mailerIdentityPayload: CreateMailerIdentityDto = {
-        value: (payload.configuration.domain ?? payload.configuration.email)!,
-        type: payload.configuration.domain ? "DOMAIN" : "EMAIL",
+        value:
+          payload.configuration.domain ?? payload.configuration.email ?? '',
+        type: payload.configuration.domain ? 'DOMAIN' : 'EMAIL',
       }
 
       await mailerIdentityAction.handle(
         mailerIdentityPayload,
-        updatedMailer!,
+        updatedMailer,
         team,
       )
     }

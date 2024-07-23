@@ -1,14 +1,14 @@
-import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
-import { makeDatabase } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.js"
+import { BaseRepository } from '@/domains/shared/repositories/base_repository.js'
+import { makeDatabase } from '@/infrastructure/container.js'
+import type { DrizzleClient } from '@/infrastructure/database/client.js'
 import {
   contacts,
   tagsOnContacts,
-} from "@/infrastructure/database/schema/schema.js"
+} from '@/infrastructure/database/schema/schema.js'
 
-import { CreateContactDto } from "../dto/contacts/create_contact_dto.js"
-import { and, eq, inArray } from "drizzle-orm"
-import { UpdateSetContactInput } from "@/infrastructure/database/schema/types.ts"
+import type { UpdateSetContactInput } from '@/infrastructure/database/schema/types.ts'
+import { and, eq, inArray } from 'drizzle-orm'
+import type { CreateContactDto } from '../dto/contacts/create_contact_dto.js'
 
 export class ContactRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

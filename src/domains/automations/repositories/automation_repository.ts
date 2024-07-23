@@ -1,11 +1,11 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 
-import { CreateAutomationDto } from "@/domains/automations/dto/create_automation_dto.js"
-import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
-import { makeDatabase } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.js"
-import { automations } from "@/infrastructure/database/schema/schema.js"
-import { FindAutomationByIdArgs } from "@/infrastructure/database/schema/types.js"
+import type { CreateAutomationDto } from '@/domains/automations/dto/create_automation_dto.js'
+import { BaseRepository } from '@/domains/shared/repositories/base_repository.js'
+import { makeDatabase } from '@/infrastructure/container.js'
+import type { DrizzleClient } from '@/infrastructure/database/client.js'
+import { automations } from '@/infrastructure/database/schema/schema.js'
+import type { FindAutomationByIdArgs } from '@/infrastructure/database/schema/types.js'
 
 export class AutomationRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

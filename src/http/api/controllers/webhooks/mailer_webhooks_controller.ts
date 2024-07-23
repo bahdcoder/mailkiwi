@@ -1,8 +1,8 @@
-import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
-import { makeApp } from "@/infrastructure/container.js"
-import { HonoInstance } from "@/infrastructure/server/hono.js"
-import { HonoContext } from "@/infrastructure/server/types.js"
-import { container } from "@/utils/typi.js"
+import { TeamRepository } from '@/domains/teams/repositories/team_repository.js'
+import { makeApp } from '@/infrastructure/container.js'
+import type { HonoInstance } from '@/infrastructure/server/hono.js'
+import type { HonoContext } from '@/infrastructure/server/types.js'
+import { container } from '@/utils/typi.js'
 
 export class MailerWebhooksContorller {
   constructor(
@@ -11,12 +11,12 @@ export class MailerWebhooksContorller {
   ) {
     this.app.defineRoutes(
       [
-        ["POST", "/ses", this.ses],
+        ['POST', '/ses', this.ses],
         // ["POST", "/postmark", this.process],
         // ["POST", "/sendgrid", this.process],
       ],
       {
-        prefix: "webhooks",
+        prefix: 'webhooks',
         middleware: [],
       },
     )
@@ -25,8 +25,8 @@ export class MailerWebhooksContorller {
   async ses(ctx: HonoContext) {
     const payload = JSON.parse(await ctx.req.text())
 
-    switch (ctx.req.header("x-amz-sns-message-type")) {
-      case "SubscriptionConfirmation":
+    switch (ctx.req.header('x-amz-sns-message-type')) {
+      case 'SubscriptionConfirmation':
         await fetch(payload.SubscribeURL)
         break
       default:

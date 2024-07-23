@@ -1,15 +1,15 @@
+import { makeDatabase } from '@/infrastructure/container.js'
+import { tags } from '@/infrastructure/database/schema/schema.js'
+import { eq, inArray } from 'drizzle-orm'
 import {
-  objectAsync,
+  type InferInput,
   array,
-  string,
   checkAsync,
+  objectAsync,
   pipe,
   pipeAsync,
-  InferInput,
-} from "valibot"
-import { makeDatabase } from "@/infrastructure/container.js"
-import { tags } from "@/infrastructure/database/schema/schema.js"
-import { eq, inArray } from "drizzle-orm"
+  string,
+} from 'valibot'
 
 export const AttachTagsToContactDto = objectAsync({
   tags: pipeAsync(
@@ -22,7 +22,7 @@ export const AttachTagsToContactDto = objectAsync({
       })
 
       return existingTags.length === input.length
-    }, "One or more of the provided tag IDs is invalid."),
+    }, 'One or more of the provided tag IDs is invalid.'),
   ),
 })
 

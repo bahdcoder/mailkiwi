@@ -1,19 +1,19 @@
-import { CreateContactAction } from "@/domains/audiences/actions/contacts/create_contact_action.js"
-import { CreateContactSchema } from "@/domains/audiences/dto/contacts/create_contact_dto.js"
-import { AttachTagsToContactDto } from "@/domains/audiences/dto/tags/attach_tags_to_contact_dto.ts"
-import { AudiencePolicy } from "@/domains/audiences/policies/audience_policy.js"
-import { BaseController } from "@/domains/shared/controllers/base_controller.js"
-import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
-import { makeApp } from "@/infrastructure/container.js"
-import { HonoInstance } from "@/infrastructure/server/hono.js"
-import { HonoContext } from "@/infrastructure/server/types.js"
-import { container } from "@/utils/typi.js"
-import { AttachTagsToContactAction } from "@/domains/audiences/actions/tags/attach_tags_to_contact_action.js"
-import { DetachTagsFromContactDto } from "@/domains/audiences/dto/tags/detach_tags_from_contact_dto.ts"
-import { DetachTagsFromContactAction } from "@/domains/audiences/actions/tags/detach_tags_from_contact_action.ts"
-import { AudienceValidationAndAuthorizationConcern } from "@/http/api/concerns/audience_validation_concern.ts"
-import { UpdateContactDto } from "@/domains/audiences/dto/contacts/update_contact_dto.ts"
-import { UpdateContactAction } from "@/domains/audiences/actions/contacts/update_contact_action.ts"
+import { CreateContactAction } from '@/domains/audiences/actions/contacts/create_contact_action.js'
+import { UpdateContactAction } from '@/domains/audiences/actions/contacts/update_contact_action.ts'
+import { AttachTagsToContactAction } from '@/domains/audiences/actions/tags/attach_tags_to_contact_action.js'
+import { DetachTagsFromContactAction } from '@/domains/audiences/actions/tags/detach_tags_from_contact_action.ts'
+import { CreateContactSchema } from '@/domains/audiences/dto/contacts/create_contact_dto.js'
+import { UpdateContactDto } from '@/domains/audiences/dto/contacts/update_contact_dto.ts'
+import { AttachTagsToContactDto } from '@/domains/audiences/dto/tags/attach_tags_to_contact_dto.ts'
+import { DetachTagsFromContactDto } from '@/domains/audiences/dto/tags/detach_tags_from_contact_dto.ts'
+import { AudiencePolicy } from '@/domains/audiences/policies/audience_policy.js'
+import { BaseController } from '@/domains/shared/controllers/base_controller.js'
+import { AudienceValidationAndAuthorizationConcern } from '@/http/api/concerns/audience_validation_concern.ts'
+import { E_UNAUTHORIZED } from '@/http/responses/errors.js'
+import { makeApp } from '@/infrastructure/container.js'
+import type { HonoInstance } from '@/infrastructure/server/hono.js'
+import type { HonoContext } from '@/infrastructure/server/types.js'
+import { container } from '@/utils/typi.js'
 
 export class ContactController extends BaseController {
   constructor(
@@ -26,13 +26,13 @@ export class ContactController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["POST", "/", this.store.bind(this)],
-        ["POST", "/:contactId/tags/attach", this.attachTags.bind(this)],
-        ["POST", "/:contactId/tags/detach", this.detachTags.bind(this)],
-        ["PATCH", "/:contactId", this.update.bind(this)],
+        ['POST', '/', this.store.bind(this)],
+        ['POST', '/:contactId/tags/attach', this.attachTags.bind(this)],
+        ['POST', '/:contactId/tags/detach', this.detachTags.bind(this)],
+        ['PATCH', '/:contactId', this.update.bind(this)],
       ],
       {
-        prefix: "audiences/:audienceId/contacts",
+        prefix: 'audiences/:audienceId/contacts',
       },
     )
   }
@@ -57,12 +57,12 @@ export class ContactController extends BaseController {
 
     const policy = container.resolve(AudiencePolicy)
 
-    if (!policy.canCreate(team, ctx.get("accessToken").userId!))
+    if (!policy.canCreate(team, ctx.get('accessToken').userId))
       throw E_UNAUTHORIZED()
 
     const action = container.resolve(CreateContactAction)
 
-    const contact = await action.handle(data, ctx.req.param("audienceId"))
+    const contact = await action.handle(data, ctx.req.param('audienceId'))
 
     return ctx.json(contact)
   }
@@ -77,7 +77,7 @@ export class ContactController extends BaseController {
       audience,
     )
 
-    const contactId = ctx.req.param("contactId")
+    const contactId = ctx.req.param('contactId')
     const data = await this.validate(ctx, UpdateContactDto)
 
     const action = container.resolve(UpdateContactAction)
@@ -97,7 +97,7 @@ export class ContactController extends BaseController {
       audience,
     )
 
-    const contactId = ctx.req.param("contactId")
+    const contactId = ctx.req.param('contactId')
 
     const data = await this.validate(ctx, AttachTagsToContactDto)
 
@@ -116,7 +116,7 @@ export class ContactController extends BaseController {
       audience,
     )
 
-    const contactId = ctx.req.param("contactId")
+    const contactId = ctx.req.param('contactId')
 
     const data = await this.validate(ctx, DetachTagsFromContactDto)
 

@@ -1,15 +1,15 @@
-import { AccessTokenRepository } from "@/domains/auth/acess_tokens/repositories/access_token_repository.js"
-import { RegisterUserAction } from "@/domains/auth/actions/register_user_action.js"
-import { CreateUserSchema } from "@/domains/auth/users/dto/create_user_dto.js"
-import { LoginUserSchema } from "@/domains/auth/users/dto/login_user_dto.js"
-import { UserRepository } from "@/domains/auth/users/repositories/user_repository.js"
-import { BaseController } from "@/domains/shared/controllers/base_controller.js"
-import { TeamRepository } from "@/domains/teams/repositories/team_repository.js"
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
-import { makeApp } from "@/infrastructure/container.js"
-import { HonoInstance } from "@/infrastructure/server/hono.js"
-import { HonoContext } from "@/infrastructure/server/types.js"
-import { container } from "@/utils/typi.js"
+import { AccessTokenRepository } from '@/domains/auth/acess_tokens/repositories/access_token_repository.js'
+import { RegisterUserAction } from '@/domains/auth/actions/register_user_action.js'
+import { CreateUserSchema } from '@/domains/auth/users/dto/create_user_dto.js'
+import { LoginUserSchema } from '@/domains/auth/users/dto/login_user_dto.js'
+import { UserRepository } from '@/domains/auth/users/repositories/user_repository.js'
+import { BaseController } from '@/domains/shared/controllers/base_controller.js'
+import { TeamRepository } from '@/domains/teams/repositories/team_repository.js'
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { makeApp } from '@/infrastructure/container.js'
+import type { HonoInstance } from '@/infrastructure/server/hono.js'
+import type { HonoContext } from '@/infrastructure/server/types.js'
+import { container } from '@/utils/typi.js'
 
 export class AuthController extends BaseController {
   constructor(
@@ -24,11 +24,11 @@ export class AuthController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["POST", "/login", this.login.bind(this)],
-        ["POST", "/register", this.register.bind(this)],
+        ['POST', '/login', this.login.bind(this)],
+        ['POST', '/register', this.register.bind(this)],
       ],
       {
-        prefix: "auth",
+        prefix: 'auth',
         middleware: [],
       },
     )
@@ -57,8 +57,8 @@ export class AuthController extends BaseController {
     if (!user || !passwordIsValid) {
       throw E_VALIDATION_FAILED([
         {
-          message: "These credentials do not match our records.",
-          field: "email",
+          message: 'These credentials do not match our records.',
+          field: 'email',
         },
       ])
     }

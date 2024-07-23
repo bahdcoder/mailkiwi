@@ -1,16 +1,16 @@
-import { BaseController } from "@/domains/shared/controllers/base_controller.js"
-import { CreateBroadcastAction } from "@/domains/broadcasts/actions/create_broadcast_action.js"
-import { DeleteBroadcastAction } from "@/domains/broadcasts/actions/delete_broadcast_action.js"
-import { UpdateBroadcastAction } from "@/domains/broadcasts/actions/update_broadcast_action.js"
-import { CreateBroadcastDto } from "@/domains/broadcasts/dto/create_broadcast_dto.js"
-import { UpdateBroadcastDto } from "@/domains/broadcasts/dto/update_broadcast_dto.js"
-import { HonoContext } from "@/infrastructure/server/types.js"
-import { container } from "@/utils/typi.js"
-import { HonoInstance } from "@/infrastructure/server/hono.ts"
-import { makeApp } from "@/infrastructure/container.ts"
-import { BroadcastValidationAndAuthorizationConcern } from "@/http/api/concerns/broadcast_validation_concern.js"
-import { SendBroadcastJob } from "@/domains/broadcasts/jobs/send_broadcast_job.ts"
-import { Queue } from "@/domains/shared/queue/queue.ts"
+import { CreateBroadcastAction } from '@/domains/broadcasts/actions/create_broadcast_action.js'
+import { DeleteBroadcastAction } from '@/domains/broadcasts/actions/delete_broadcast_action.js'
+import { UpdateBroadcastAction } from '@/domains/broadcasts/actions/update_broadcast_action.js'
+import { CreateBroadcastDto } from '@/domains/broadcasts/dto/create_broadcast_dto.js'
+import { UpdateBroadcastDto } from '@/domains/broadcasts/dto/update_broadcast_dto.js'
+import { SendBroadcastJob } from '@/domains/broadcasts/jobs/send_broadcast_job.ts'
+import { BaseController } from '@/domains/shared/controllers/base_controller.js'
+import { Queue } from '@/domains/shared/queue/queue.ts'
+import { BroadcastValidationAndAuthorizationConcern } from '@/http/api/concerns/broadcast_validation_concern.js'
+import { makeApp } from '@/infrastructure/container.ts'
+import type { HonoInstance } from '@/infrastructure/server/hono.ts'
+import type { HonoContext } from '@/infrastructure/server/types.js'
+import { container } from '@/utils/typi.js'
 
 export class BroadcastController extends BaseController {
   constructor(
@@ -23,12 +23,12 @@ export class BroadcastController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["POST", "/", this.create.bind(this)],
-        ["DELETE", "/:broadcastId", this.delete.bind(this)],
-        ["PUT", "/:broadcastId", this.update.bind(this)],
-        ["POST", "/:broadcastId/send", this.send.bind(this)],
+        ['POST', '/', this.create.bind(this)],
+        ['DELETE', '/:broadcastId', this.delete.bind(this)],
+        ['PUT', '/:broadcastId', this.update.bind(this)],
+        ['POST', '/:broadcastId/send', this.send.bind(this)],
       ],
-      { prefix: "broadcasts" },
+      { prefix: 'broadcasts' },
     )
   }
 
@@ -40,7 +40,7 @@ export class BroadcastController extends BaseController {
     const data = await this.validate(ctx, CreateBroadcastDto)
     const broadcast = await container
       .resolve(CreateBroadcastAction)
-      .handle(data, ctx.get("team").id)
+      .handle(data, ctx.get('team').id)
 
     return ctx.json(broadcast, 201)
   }
@@ -54,7 +54,7 @@ export class BroadcastController extends BaseController {
       ctx,
       broadcast,
     )
-    const id = ctx.req.param("broadcastId")
+    const id = ctx.req.param('broadcastId')
 
     await container.resolve(DeleteBroadcastAction).handle(id)
 
@@ -70,7 +70,7 @@ export class BroadcastController extends BaseController {
       ctx,
       broadcast,
     )
-    const broadcastId = ctx.req.param("broadcastId")
+    const broadcastId = ctx.req.param('broadcastId')
 
     const data = await this.validate(ctx, UpdateBroadcastDto)
 

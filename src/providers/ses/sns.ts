@@ -5,11 +5,11 @@ import {
   ListTopicsCommand,
   SNSClient,
   SubscribeCommand,
-} from "@aws-sdk/client-sns"
-import { Secret } from "@poppinss/utils"
+} from '@aws-sdk/client-sns'
+import type { Secret } from '@poppinss/utils'
 
-import { E_INTERNAL_PROCESSING_ERROR } from "@/utils/errors.js"
-import { sleep } from "@/utils/sleep.js"
+import { E_INTERNAL_PROCESSING_ERROR } from '@/utils/errors.js'
+import { sleep } from '@/utils/sleep.js'
 
 export class SNSService {
   private sns: SNSClient
@@ -70,7 +70,7 @@ export class SNSService {
     const subscriber = await this.sns.send(
       new SubscribeCommand({
         TopicArn: topic.TopicArn,
-        Protocol: "https",
+        Protocol: 'https',
         Endpoint: endpoint,
         Attributes: {
           DeliveryPolicy: JSON.stringify({
@@ -101,7 +101,7 @@ export class SNSService {
 
       if (
         subscription &&
-        subscription?.SubscriptionArn !== "PendingConfirmation"
+        subscription?.SubscriptionArn !== 'PendingConfirmation'
       ) {
         subscriptionConfirmed = true
       }

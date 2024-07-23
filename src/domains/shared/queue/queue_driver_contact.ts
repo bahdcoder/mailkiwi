@@ -1,5 +1,5 @@
-import { BaseJob } from "./abstract_job.ts"
-import { AVAILABLE_QUEUE_TYPE } from "./config.ts"
+import type { BaseJob } from './abstract_job.ts'
+import type { AVAILABLE_QUEUE_TYPE } from './config.ts'
 
 export interface QueueDriver {
   dispatch(

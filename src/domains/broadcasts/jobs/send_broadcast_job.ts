@@ -1,6 +1,9 @@
-import { BaseJob, JobContext } from "@/domains/shared/queue/abstract_job.ts"
-import { AVAILABLE_QUEUES } from "@/domains/shared/queue/config.ts"
-import { sleep } from "@/utils/sleep.ts"
+import {
+  BaseJob,
+  type JobContext,
+} from '@/domains/shared/queue/abstract_job.ts'
+import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.ts'
+import { sleep } from '@/utils/sleep.ts'
 
 export interface SendBroadcastJobPayload {
   broadcastId: string
@@ -8,7 +11,7 @@ export interface SendBroadcastJobPayload {
 
 export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
   static get id() {
-    return "BROADCASTS::SEND_BROADCAST"
+    return 'BROADCASTS::SEND_BROADCAST'
   }
 
   static get queue() {
@@ -25,6 +28,6 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
 
     await sleep(timeout)
 
-    return { success: true, output: "Success" }
+    return { success: true, output: 'Success' }
   }
 }

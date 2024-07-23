@@ -1,18 +1,18 @@
-import { Exception } from "@poppinss/utils"
+import type { Exception } from '@poppinss/utils'
 
-import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
-import { DeleteMailerIdentityDto } from "@/domains/teams/dto/delete_mailer_identity_dto.js"
-import { CheckProviderCredentials } from "@/domains/teams/helpers/check_provider_credentials.js"
-import { MailerIdentityRepository } from "@/domains/teams/repositories/mailer_identity_repository.js"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
-import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
-import {
+import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
+import type { DeleteMailerIdentityDto } from '@/domains/teams/dto/delete_mailer_identity_dto.js'
+import { CheckProviderCredentials } from '@/domains/teams/helpers/check_provider_credentials.js'
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import type {
   Mailer,
   MailerIdentity,
   Team,
-} from "@/infrastructure/database/schema/types.js"
-import { AwsSdk } from "@/providers/ses/sdk.js"
-import { container } from "@/utils/typi.js"
+} from '@/infrastructure/database/schema/types.js'
+import { AwsSdk } from '@/providers/ses/sdk.js'
+import { container } from '@/utils/typi.js'
 
 export class DeleteMailerIdentityAction {
   constructor(
@@ -42,7 +42,7 @@ export class DeleteMailerIdentityAction {
         configuration,
       ).execute(true)
 
-      if (mailer.provider === "AWS_SES" && credentialsAreValid) {
+      if (mailer.provider === 'AWS_SES' && credentialsAreValid) {
         try {
           await new AwsSdk(
             configuration.accessKey,
@@ -53,8 +53,7 @@ export class DeleteMailerIdentityAction {
             .deleteIdentity(mailerIdentity.value)
         } catch (error) {
           throw E_OPERATION_FAILED(
-            "Could not delete identity on provider. Reason from provider: " +
-              (error as Exception)?.message,
+            `Could not delete identity on provider. Reason from provider: ${(error as Exception)?.message}`,
           )
         }
       }

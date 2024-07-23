@@ -1,9 +1,9 @@
-import { CreateTagDto } from "@/domains/audiences/dto/tags/create_tag_dto.js"
-import { BaseRepository } from "@/domains/shared/repositories/base_repository.js"
-import { makeDatabase } from "@/infrastructure/container.js"
-import { DrizzleClient } from "@/infrastructure/database/client.js"
-import { tags } from "@/infrastructure/database/schema/schema.js"
-import { eq, SQL, SQLWrapper } from "drizzle-orm"
+import type { CreateTagDto } from '@/domains/audiences/dto/tags/create_tag_dto.js'
+import { BaseRepository } from '@/domains/shared/repositories/base_repository.js'
+import { makeDatabase } from '@/infrastructure/container.js'
+import type { DrizzleClient } from '@/infrastructure/database/client.js'
+import { tags } from '@/infrastructure/database/schema/schema.js'
+import { type SQL, SQLWrapper, eq } from 'drizzle-orm'
 export class TagRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()

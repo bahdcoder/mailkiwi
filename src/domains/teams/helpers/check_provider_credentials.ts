@@ -1,7 +1,7 @@
-import { MailerConfiguration } from "@/domains/shared/types/mailer.js"
-import { MailerRepository } from "@/domains/teams/repositories/mailer_repository.js"
-import { Mailer } from "@/infrastructure/database/schema/types.js"
-import { AwsSdk } from "@/providers/ses/sdk.js"
+import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
+import type { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
+import type { Mailer } from '@/infrastructure/database/schema/types.js'
+import { AwsSdk } from '@/providers/ses/sdk.js'
 
 export class CheckProviderCredentials {
   constructor(
@@ -11,7 +11,7 @@ export class CheckProviderCredentials {
   ) {}
 
   async execute(updateMailerStatus?: boolean) {
-    if (this.mailer.provider === "AWS_SES") {
+    if (this.mailer.provider === 'AWS_SES') {
       if (
         !this.configuration.accessKey ||
         !this.configuration.accessSecret ||
@@ -31,7 +31,7 @@ export class CheckProviderCredentials {
       if (!credentialsAreValid && updateMailerStatus && this.mailerRepository) {
         await this.mailerRepository.setMailerStatus(
           this.mailer,
-          "ACCESS_KEYS_LOST_PROVIDER_ACCESS",
+          'ACCESS_KEYS_LOST_PROVIDER_ACCESS',
         )
       }
 

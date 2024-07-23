@@ -1,14 +1,14 @@
 import {
-  createRootRoute,
-  createRoute,
-  createRouter,
   Link,
   Outlet,
   RouterProvider,
-} from "@tanstack/react-router"
-import { TanStackRouterDevtools } from "@tanstack/router-devtools"
-import React, { StrictMode } from "react"
-import ReactDOM from "react-dom/client"
+  createRootRoute,
+  createRoute,
+  createRouter,
+} from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import React, { StrictMode } from 'react'
+import ReactDOM from 'react-dom/client'
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -16,7 +16,7 @@ const rootRoute = createRootRoute({
       <div className="p-2 flex gap-2">
         <Link to="/" className="[&.active]:font-bold">
           Home
-        </Link>{" "}
+        </Link>{' '}
         <Link to="/about" className="[&.active]:font-bold">
           About
         </Link>
@@ -30,7 +30,7 @@ const rootRoute = createRootRoute({
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/",
+  path: '/',
   component: function Index() {
     return (
       <div className="p-2">
@@ -42,7 +42,7 @@ const indexRoute = createRoute({
 
 const aboutRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/about",
+  path: '/about',
   component: function About() {
     return <div className="p-2">Hello from About!</div>
   },
@@ -50,16 +50,17 @@ const aboutRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([indexRoute, aboutRoute])
 
-const router = createRouter({ routeTree, defaultPreload: "intent" })
+const router = createRouter({ routeTree, defaultPreload: 'intent' })
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
   }
 }
 
-const rootElement = document.getElementById("app")!
-if (!rootElement.innerHTML) {
+const rootElement = document.getElementById('app')
+
+if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>

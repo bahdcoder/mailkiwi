@@ -1,15 +1,15 @@
 import {
-  objectAsync,
-  string,
-  optional,
-  union,
+  url,
+  type InferInput,
   array,
   number,
-  record,
+  objectAsync,
+  optional,
   pipe,
-  url,
-  InferInput,
-} from "valibot"
+  record,
+  string,
+  union,
+} from 'valibot'
 
 export const UpdateContactDto = objectAsync({
   firstName: optional(string()),
