@@ -190,6 +190,23 @@ export const tags = sqliteTable("tags", {
     .notNull(),
 })
 
+export const queueJobs = sqliteTable("queueJobs", {
+  id,
+  jobId: text("jobId").notNull(),
+  attemptsCount: integer("attemptsCount").notNull().default(0),
+  maxAttempts: integer("maxAttempts").notNull().default(3),
+  dispatchedAt: integer("dispatchedAt", { mode: "timestamp" }).notNull(),
+  lockedAt: integer("lockedAt", { mode: "timestamp" }),
+  processAt: integer("processAt", { mode: "timestamp" }),
+  timeoutAt: integer("timeoutAt", { mode: "timestamp" }),
+  completedAt: integer("completedAt", { mode: "timestamp" }),
+  payload: text("payload", { mode: "json" })
+    .$type<Record<string, unknown>>()
+    .notNull(),
+  queue: text("queue"),
+  attemptLogs: text("attemptLogs", { mode: "json" }).$type<string[]>(),
+})
+
 export const tagsOnContacts = sqliteTable(
   "tagsOnContacts",
   {

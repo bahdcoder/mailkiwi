@@ -1,4 +1,11 @@
+import { BaseJob } from "./abstract_job.ts"
+import { AVAILABLE_QUEUE_TYPE } from "./config.ts"
+
 export interface QueueDriver {
-  dispatch(jobName: string, payload: object): Promise<void>
-  process(jobName: string, handler: (payload: object) => Promise<void>): void
+  dispatch(
+    jobName: string,
+    payload: object,
+    queue: AVAILABLE_QUEUE_TYPE,
+  ): Promise<{ id: string }>
+  process(jobs: Map<string, new () => BaseJob<object>>): void
 }

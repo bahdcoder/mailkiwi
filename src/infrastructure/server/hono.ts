@@ -22,9 +22,6 @@ export class Hono<E extends Env>
 {
   constructor(options?: HonoOptions<E>) {
     super(options)
-
-    this.use(timing())
-    this.use(logger())
   }
 
   defineErrorHandler() {

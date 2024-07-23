@@ -9,6 +9,8 @@ import { container } from "@/utils/typi.js"
 import { HonoInstance } from "@/infrastructure/server/hono.ts"
 import { makeApp } from "@/infrastructure/container.ts"
 import { BroadcastValidationAndAuthorizationConcern } from "@/http/api/concerns/broadcast_validation_concern.js"
+import { SendBroadcastJob } from "@/domains/broadcasts/jobs/send_broadcast_job.ts"
+import { Queue } from "@/domains/shared/queue/queue.ts"
 
 export class BroadcastController extends BaseController {
   constructor(
@@ -24,6 +26,7 @@ export class BroadcastController extends BaseController {
         ["POST", "/", this.create.bind(this)],
         ["DELETE", "/:broadcastId", this.delete.bind(this)],
         ["PUT", "/:broadcastId", this.update.bind(this)],
+        ["POST", "/:broadcastId/send", this.send.bind(this)],
       ],
       { prefix: "broadcasts" },
     )
@@ -76,5 +79,19 @@ export class BroadcastController extends BaseController {
       .handle(broadcastId, data)
 
     return ctx.json({ id })
+  }
+
+  async send(ctx: HonoContext) {
+    const broadcast =
+      await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
+        ctx,
+      )
+    await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
+      ctx,
+    )
+
+    await Queue.dispatch(SendBroadcastJob, { broadcastId: broadcast.id })
+
+    return ctx.json({ id: broadcast.id })
   }
 }

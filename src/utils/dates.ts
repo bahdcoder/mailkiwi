@@ -1,7 +1,7 @@
 export function isDateInPast(input: string | number): boolean {
-  const date = new Date(input)
+  return new Date(input) < new Date()
+}
 
-  const now = new Date()
-
-  return date < now
+export function addSecondsToDate(date: Date, seconds: number) {
+  return new Date(date.getTime() + seconds * 1000)
 }

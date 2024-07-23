@@ -8,12 +8,13 @@ import { Ignitor } from "@/infrastructure/boot/ignitor.js"
 import { makeDatabase } from "@/infrastructure/container.js"
 import { settings } from "@/infrastructure/database/schema/schema.js"
 import { refreshDatabase } from "./mocks/teams/teams.ts"
+import { DatabaseQueueDriver } from "@/domains/shared/queue/drivers/database_queue_driver.ts"
+import { container } from "@/utils/typi.ts"
 
 const ignitor = new Ignitor()
-
-ignitor.boot()
-
-ignitor.startDatabaseConnector()
+  .boot()
+  .startDatabaseConnector()
+  .queueDriver(container.make(DatabaseQueueDriver))
 
 const database = makeDatabase()
 

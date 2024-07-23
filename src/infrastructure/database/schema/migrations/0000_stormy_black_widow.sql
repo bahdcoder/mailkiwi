@@ -134,6 +134,21 @@ CREATE TABLE `mailers` (
 	FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
+CREATE TABLE `queueJobs` (
+	`id` text(32) PRIMARY KEY NOT NULL,
+	`jobId` text NOT NULL,
+	`attemptsCount` integer DEFAULT 0 NOT NULL,
+	`maxAttempts` integer DEFAULT 3 NOT NULL,
+	`dispatchedAt` integer NOT NULL,
+	`lockedAt` integer,
+	`processAt` integer,
+	`timeoutAt` integer,
+	`completedAt` integer,
+	`payload` text NOT NULL,
+	`queue` text,
+	`attemptLogs` text
+);
+--> statement-breakpoint
 CREATE TABLE `settings` (
 	`id` text(32) PRIMARY KEY NOT NULL,
 	`url` text(256),

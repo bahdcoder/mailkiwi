@@ -69,15 +69,13 @@ export class Ignitor {
     return this
   }
 
-  async start() {
+  start() {
     this.startDatabaseConnector()
     this.startSinglePageApplication()
 
     this.registerHttpControllers()
 
-    await container.resolve(InstallationSettings).ensureInstallationSettings()
-
-    await this.startHttpServer()
+    this.startHttpServer()
   }
 
   async startSinglePageApplication() {
@@ -98,7 +96,7 @@ export class Ignitor {
     return this
   }
 
-  async startHttpServer() {}
+  startHttpServer() {}
 
   registerHttpControllers() {
     container.resolve(AudienceController)

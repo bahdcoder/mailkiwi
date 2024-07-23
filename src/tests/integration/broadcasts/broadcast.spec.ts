@@ -1,10 +1,7 @@
 import { faker } from "@faker-js/faker"
 import { describe, test } from "vitest"
 import { makeDatabase } from "@/infrastructure/container.js"
-import {
-  audiences,
-  broadcasts,
-} from "@/infrastructure/database/schema/schema.js"
+import { broadcasts } from "@/infrastructure/database/schema/schema.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
@@ -338,5 +335,39 @@ describe("Delete broadcasts", () => {
       where: eq(broadcasts.id, broadcastId),
     })
     expect(broadcast).toBeUndefined()
+  })
+})
+
+describe("Send Broadcast", () => {
+  async function createBroadcast(user: User, audienceId: string) {
+    const response = await makeRequestAsUser(user, {
+      method: "POST",
+      path: "/broadcasts",
+      body: {
+        name: faker.lorem.words(3),
+        audienceId,
+      },
+    })
+    const { id } = await response.json()
+    return id
+  }
+
+  test("can queue a broadcast for sending", async ({ expect }) => {
+    await refreshDatabase()
+    const { user, audience } = await createUser()
+
+    const database = makeDatabase()
+
+    const broadcastId = await createBroadcast(user, audience.id)
+
+    const response = await makeRequestAsUser(user, {
+      method: "POST",
+      path: `/broadcasts/${broadcastId}/send`,
+    })
+
+    expect(response.status).toBe(200)
+    const queuedJob = await database.query.queueJobs.findFirst({})
+
+    expect(queuedJob?.jobId).toBe("BROADCASTS::SEND_BROADCAST")
   })
 })
