@@ -130,8 +130,6 @@ export class DatabaseQueueDriver implements QueueDriver {
 
     const locked = await this.lockJobs(jobIds)
 
-    d({ locked })
-
     if (!locked) {
       return
     }
@@ -158,6 +156,9 @@ export class DatabaseQueueDriver implements QueueDriver {
     queue: AVAILABLE_QUEUE_TYPE,
     jobs: QueueJob[],
   ) {
+    // batch queue jobs based on the concurrency defined in a config.
+    // at the moment its just processing everything.
+    // also possible to execute only one queue at a time.
     await Promise.all(jobs.map((job) => this.processJob(job)))
   }
 

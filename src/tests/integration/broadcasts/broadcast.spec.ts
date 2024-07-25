@@ -1,11 +1,25 @@
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.ts'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
 import { makeDatabase } from '@/infrastructure/container.js'
-import { broadcasts } from '@/infrastructure/database/schema/schema.js'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
+import { broadcasts, mailers } from '@/infrastructure/database/schema/schema.js'
+import {
+  createBroadcastForUser,
+  createMailerForTeam,
+  createUser,
+} from '@/tests/mocks/auth/users.js'
 import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { container } from '@/utils/typi.ts'
 import { faker } from '@faker-js/faker'
+import { Secret } from '@poppinss/utils'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
+import { GetAccountSendingEnabledCommand, SESClient } from '@aws-sdk/client-ses'
+import { SNSClient } from '@aws-sdk/client-sns'
+import { mockClient } from 'aws-sdk-client-mock'
+
+const SESMock = mockClient(SESClient)
+const SNSMock = mockClient(SNSClient)
 
 describe('Create broadcasts', () => {
   test('can create a broadcast for an audience', async ({ expect }) => {
@@ -314,6 +328,35 @@ describe('Delete broadcasts', () => {
 describe('Send Broadcast', () => {
   test('can queue a broadcast for sending', async ({ expect }) => {
     await refreshDatabase()
+    const { user, audience, team } = await createUser()
+
+    const database = makeDatabase()
+
+    await createMailerForTeam(team)
+
+    SESMock.on(GetAccountSendingEnabledCommand).resolves({
+      Enabled: true,
+    })
+
+    const broadcastId = await createBroadcastForUser(user, audience.id, {
+      updateWithValidContent: true,
+    })
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: `/broadcasts/${broadcastId}/send`,
+    })
+
+    expect(response.status).toBe(200)
+    const queuedJob = await database.query.queueJobs.findFirst({})
+
+    expect(queuedJob?.jobId).toBe('BROADCASTS::SEND_BROADCAST')
+  })
+
+  test('cannot queue a broadcast if all required information is not provided', async ({
+    expect,
+  }) => {
+    await refreshDatabase()
     const { user, audience } = await createUser()
 
     const database = makeDatabase()
@@ -325,9 +368,124 @@ describe('Send Broadcast', () => {
       path: `/broadcasts/${broadcastId}/send`,
     })
 
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(422)
+    expect(await response.json()).toMatchObject({
+      message: 'Validation failed.',
+      errors: [
+        {
+          message: 'Invalid type: Expected string but received null',
+          field: 'subject',
+        },
+        {
+          message: 'Invalid type: Expected string but received null',
+          field: 'fromName',
+        },
+        {
+          message: 'Invalid type: Expected string but received null',
+          field: 'fromEmail',
+        },
+        {
+          message: 'Invalid type: Expected string but received null',
+          field: 'replyToEmail',
+        },
+        {
+          message: 'Invalid type: Expected string but received null',
+          field: 'replyToName',
+        },
+        {
+          message: 'Invalid type: Expected string but received null',
+          field: 'contentText',
+        },
+        {
+          message: 'Invalid type: Expected string but received null',
+          field: 'contentHtml',
+        },
+      ],
+    })
     const queuedJob = await database.query.queueJobs.findFirst({})
 
-    expect(queuedJob?.jobId).toBe('BROADCASTS::SEND_BROADCAST')
+    expect(queuedJob).toBeUndefined()
+  })
+
+  test('cannot queue a broadcast if it is not in draft status', async ({
+    expect,
+  }) => {
+    await refreshDatabase()
+    const { user, audience, team } = await createUser()
+
+    const database = makeDatabase()
+
+    await createMailerForTeam(team)
+
+    SESMock.on(GetAccountSendingEnabledCommand).resolves({
+      Enabled: false,
+    })
+
+    // Could not verify AWS access. Please make sure your provider configuration is valid.
+
+    const broadcastId = await createBroadcastForUser(user, audience.id, {
+      updateWithValidContent: true,
+    })
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: `/broadcasts/${broadcastId}/send`,
+    })
+
+    expect(response.status).toBe(422)
+    expect(await response.json()).toMatchObject({
+      message: 'Validation failed.',
+      errors: [
+        {
+          message:
+            'Could not verify AWS access. Please make sure your provider configuration is valid.',
+        },
+      ],
+    })
+    const queuedJob = await database.query.queueJobs.findFirst({})
+    expect(queuedJob).toBeUndefined()
+
+    const mailer = await database.query.mailers.findFirst({
+      where: eq(mailers.teamId, team.id),
+    })
+
+    expect(mailer?.status).toEqual('ACCOUNT_SENDING_NOT_ENABLED')
+  })
+
+  test('cannot queue a broadcast if the aws account has sending disabled', async ({
+    expect,
+  }) => {
+    await refreshDatabase()
+    const { user, audience } = await createUser()
+
+    const database = makeDatabase()
+
+    const broadcastId = await createBroadcastForUser(user, audience.id, {
+      updateWithValidContent: true,
+    })
+
+    await database
+      .update(broadcasts)
+      .set({ status: 'SENDING_FAILED' })
+      .where(eq(broadcasts.id, broadcastId))
+      .execute()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: `/broadcasts/${broadcastId}/send`,
+    })
+
+    expect(response.status).toBe(422)
+    expect(await response.json()).toMatchObject({
+      message: 'Validation failed.',
+      errors: [
+        {
+          message: 'Only a draft broadcast can be sent.',
+          field: 'status',
+        },
+      ],
+    })
+    const queuedJob = await database.query.queueJobs.findFirst({})
+    expect(queuedJob).toBeUndefined()
   })
 })

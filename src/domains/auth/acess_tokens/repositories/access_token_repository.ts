@@ -17,14 +17,12 @@ export class AccessTokenRepository extends BaseRepository {
     super()
   }
 
-  async createAccessToken(user: User) {
+  async createAccessToken(user: { id: string }) {
     const transientAccessToken = AccessToken.createTransientToken(
       user.id,
       this.tokenSecretLength,
       this.tokenExpiresIn,
     )
-
-    users
 
     const id = this.cuid()
 

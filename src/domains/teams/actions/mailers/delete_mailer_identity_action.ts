@@ -39,7 +39,6 @@ export class DeleteMailerIdentityAction {
       // Implement provider-specific deletion logic here
       const credentialsAreValid = await new CheckProviderCredentials(
         configuration,
-        this.mailerRepository,
         mailer,
       ).execute(true)
 

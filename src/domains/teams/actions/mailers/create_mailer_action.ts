@@ -24,7 +24,6 @@ export class CreateMailerAction {
   handle = async (payload: CreateMailerDto, team: Team) => {
     const configurationKeysAreValid = await new CheckProviderCredentials(
       payload.configuration as MailerConfiguration,
-      this.mailerRepository,
     ).execute()
 
     if (!configurationKeysAreValid) {

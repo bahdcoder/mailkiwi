@@ -30,7 +30,6 @@ export class UpdateMailerAction {
   handle = async (mailer: Mailer, payload: UpdateMailerDto, team: Team) => {
     const configurationKeysAreValid = await new CheckProviderCredentials(
       payload.configuration as MailerConfiguration,
-      this.mailerRepository,
       mailer,
     ).execute()
 

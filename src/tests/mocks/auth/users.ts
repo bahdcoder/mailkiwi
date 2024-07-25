@@ -1,14 +1,14 @@
 import { SESClient } from '@aws-sdk/client-ses'
 import { SNSClient } from '@aws-sdk/client-sns'
-import { faker } from '@faker-js/faker'
 import { mockClient } from 'aws-sdk-client-mock'
+import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 
 import { AudienceRepository } from '@/domains/audiences/repositories/audience_repository.js'
 import { RegisterUserAction } from '@/domains/auth/actions/register_user_action.js'
 import { TeamRepository } from '@/domains/teams/repositories/team_repository.js'
 import { makeDatabase } from '@/infrastructure/container.js'
-import { users } from '@/infrastructure/database/schema/schema.js'
+import { mailers, users } from '@/infrastructure/database/schema/schema.js'
 import type {
   Setting,
   Team,
@@ -16,19 +16,79 @@ import type {
 } from '@/infrastructure/database/schema/types.ts'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
 import { container } from '@/utils/typi.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
+import { Secret } from '@poppinss/utils'
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.ts'
 
-export async function createBroadcastForUser(user: User, audienceId: string) {
+export async function createBroadcastForUser(
+  user: User,
+  audienceId: string,
+  options?: { updateWithValidContent?: boolean },
+) {
   const response = await makeRequestAsUser(user, {
     method: 'POST',
     path: '/broadcasts',
     body: {
       name: faker.lorem.words(3),
       audienceId,
+      fromName: faker.lorem.words(2),
+      fromEmail: faker.internet.email(),
+      replyToName: faker.lorem.words(2),
+      replyToEmail: faker.internet.email(),
     },
   })
-
   const { id } = await response.json()
+
+  if (options?.updateWithValidContent) {
+    await makeRequestAsUser(user, {
+      method: 'PUT',
+      path: `/broadcasts/${id}`,
+      body: {
+        fromName: faker.lorem.words(2),
+        fromEmail: faker.internet.email(),
+        replyToName: faker.lorem.words(2),
+        replyToEmail: faker.internet.email(),
+        subject: faker.lorem.words(4),
+        contentHtml: faker.lorem.paragraph(),
+        contentText: faker.lorem.paragraph(),
+      },
+    })
+  }
+
   return id
+}
+
+export const createMailerForTeam = async (team: Team) => {
+  const database = makeDatabase()
+
+  const { id: mailerId } = await container.make(MailerRepository).create(
+    {
+      name: faker.lorem.words(5),
+      provider: 'AWS_SES',
+      configuration: {
+        accessKey: new Secret(faker.string.uuid()),
+        accessSecret: new Secret(faker.string.uuid()),
+        region: 'us-east-2',
+        domain: 'newsletter.example.com',
+        email: undefined,
+      },
+    },
+    team,
+  )
+
+  await database
+    .update(mailers)
+    .set({ status: 'READY' })
+    .where(eq(mailers.id, mailerId))
+    .execute()
+
+  await container.make(MailerIdentityRepository).create(
+    {
+      value: 'newsletter.example.com',
+      type: 'DOMAIN',
+    },
+    mailerId,
+  )
 }
 
 export const createUser = async ({
@@ -88,7 +148,9 @@ export const createUser = async ({
   let broadcastId: string | undefined = undefined
 
   if (createBroadcast) {
-    broadcastId = await createBroadcastForUser(freshUser, audience.id)
+    broadcastId = await createBroadcastForUser(freshUser, audience.id, {
+      updateWithValidContent: true,
+    })
   }
 
   return {

@@ -4,6 +4,7 @@ import {
   type JobContext,
 } from '@/domains/shared/queue/abstract_job.ts'
 import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.ts'
+import { cuid } from '@/domains/shared/utils/cuid/cuid.ts'
 import type { DrizzleClient } from '@/infrastructure/database/client.ts'
 import {
   broadcasts,
@@ -14,6 +15,7 @@ import type {
   Broadcast,
   Contact,
 } from '@/infrastructure/database/schema/types.ts'
+import { addSecondsToDate } from '@/utils/dates.ts'
 import { sleep } from '@/utils/sleep.ts'
 import { eq, inArray } from 'drizzle-orm'
 
@@ -23,6 +25,8 @@ export interface SendBroadcastToContactsPayload {
 }
 
 export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayload> {
+  private MINIMUM_MILLISECONDS_PER_SEND = 1500
+
   static get id() {
     return 'BROADCASTS::SEND_BROADCAST_TO_CONTACTS'
   }
@@ -38,6 +42,9 @@ export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayl
   ) {
     d({ 'Sending email to:': contact.email })
 
+    // create send and leave it in draft
+
+    const start = performance.now()
     const [response, error] = await Mailer.from(
       contact.email,
       `${contact.firstName} ${contact.lastName}`,
@@ -46,6 +53,18 @@ export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayl
       .to(contact.email, `${contact.firstName} ${contact.lastName}`)
       .content(broadcast.contentHtml as string, broadcast.contentText as string)
       .send()
+    const end = performance.now()
+
+    const timeElapsed = end - start
+
+    const wait =
+      this.MINIMUM_MILLISECONDS_PER_SEND > timeElapsed
+        ? this.MINIMUM_MILLISECONDS_PER_SEND - timeElapsed
+        : 0
+
+    if (wait > 0) {
+      await sleep(wait)
+    }
 
     if (error) {
       d({ [`Failed to send to contact: ${contact.email}`]: error })
@@ -65,6 +84,30 @@ export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayl
       database,
       response.messageId,
     )
+  }
+
+  async createSendForContact(
+    contact: Contact,
+    broadcast: Broadcast,
+    database: DrizzleClient,
+    error: Error,
+  ) {
+    const id = cuid()
+
+    await database
+      .insert(sends)
+      .values({
+        id,
+        contactId: contact.id,
+        broadcastId: broadcast.id,
+        status: 'PENDING',
+        type: 'BROADCAST',
+        timeoutAt: addSecondsToDate(new Date(), 25), // if this send has not been processed in 25 seconds, other workers will pick it up and attempt sending it.
+        logs: JSON.stringify(error.message),
+      })
+      .execute()
+
+    return { id }
   }
 
   async markAsFailedToSendToContact(
@@ -121,7 +164,7 @@ export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayl
         async (error) =>
           this.markAsFailedToSendToContact(contact, broadcast, database, error),
       ]),
-      1, // send 3 emails at a time. this number will depend on the rate limit set on AWS.
+      1, // process 1 send at a time. this number will depend on the rate limit set on AWS.
     )
 
     return { success: true, output: 'Success' }

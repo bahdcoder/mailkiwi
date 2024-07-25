@@ -29,7 +29,6 @@ export class GetMailerAction {
 
     const credentialsAreValid = await new CheckProviderCredentials(
       configuration,
-      this.mailerRepository,
       mailer,
     ).execute(true)
 

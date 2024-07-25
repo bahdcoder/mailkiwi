@@ -79,9 +79,13 @@ export class SESService {
     )
   }
 
+  async getAccountSendingEnabled() {
+    return this.ses.send(new GetAccountSendingEnabledCommand({}))
+  }
+
   async getSendingStatus() {
     const [accountSending, sendQuota] = await Promise.all([
-      this.ses.send(new GetAccountSendingEnabledCommand({})),
+      this.getAccountSendingEnabled(),
       this.ses.send(new GetSendQuotaCommand({})),
     ])
 

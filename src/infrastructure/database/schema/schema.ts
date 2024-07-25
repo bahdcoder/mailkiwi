@@ -75,6 +75,7 @@ export const mailers = sqliteTable('mailers', {
       'CREATING_IDENTITIES',
       'SENDING_TEST_EMAIL',
       'DISABLED',
+      'ACCOUNT_SENDING_NOT_ENABLED',
       'ACCESS_KEYS_LOST_PROVIDER_ACCESS',
     ],
   })
@@ -269,6 +270,7 @@ export const sends = sqliteTable('sends', {
     { onDelete: 'cascade' },
   ),
   sentAt: integer('sendAt', { mode: 'timestamp' }),
+  timeoutAt: integer('timeoutAt', { mode: 'timestamp' }),
   messageId: text('messageId'),
   logs: text('logs', { mode: 'json' }).$type<any>(),
   automationStepId: text('automationStepId', { length: 32 }).references(
@@ -346,6 +348,7 @@ export const broadcasts = sqliteTable('broadcasts', {
       'SENT',
       'SENDING',
       'DRAFT',
+      'QUEUED_FOR_SENDING',
       'SENDING_FAILED',
       'DRAFT_ARCHIVED',
       'ARCHIVED',
