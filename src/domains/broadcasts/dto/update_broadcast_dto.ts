@@ -49,8 +49,6 @@ export const UpdateBroadcastDto = objectAsync({
 
   previewText: optional(string()),
 
-  status: optional(string()),
-
   sendAt: pipeAsync(
     optional(string()),
     check((input) => {

@@ -14,7 +14,6 @@ import type {
   Team,
   UpdateSetMailerInput,
 } from '@/infrastructure/database/schema/types.js'
-import { E_INTERNAL_PROCESSING_ERROR } from '@/utils/errors.ts'
 
 export class MailerRepository extends BaseRepository {
   defaultConfigurationPayload: MailerConfiguration = {
@@ -33,17 +32,25 @@ export class MailerRepository extends BaseRepository {
   async create(payload: CreateMailerDto, team: Team) {
     const id = this.cuid()
 
-    await this.database.insert(mailers).values({
-      ...payload,
-      id,
-      configuration: this.getEncryptedConfigurationPayload(
-        this.defaultConfigurationPayload,
-        team.configurationKey,
-      ),
-      teamId: team.id,
-    })
+    const { configuration, ...rest } = payload
 
-    return { id }
+    const [mailer] = await this.database
+      .insert(mailers)
+      .values({
+        ...rest,
+        id,
+        configuration: this.getEncryptedConfigurationPayload(
+          {
+            ...this.defaultConfigurationPayload,
+            ...configuration,
+          },
+          team.configurationKey,
+        ),
+        teamId: team.id,
+      })
+      .returning()
+
+    return mailer
   }
 
   async findById(mailerId: string, args?: SQLWrapper[]) {
@@ -95,15 +102,14 @@ export class MailerRepository extends BaseRepository {
       team.configurationKey,
     )
 
-    await this.database
+    return this.database
       .update(mailers)
       .set({
         configuration: encryptedConfiguration,
         ...payload,
       })
       .where(eq(mailers.id, mailer.id))
-
-    return this.findById(mailer.id)
+      .returning()
   }
 
   getDecryptedConfiguration(

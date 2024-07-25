@@ -3,23 +3,26 @@ import { AccessTokenMiddleware } from '@/http/api/middleware/auth/access_token_m
 import { E_REQUEST_EXCEPTION } from '@/http/responses/errors.js'
 import { container } from '@/utils/typi.js'
 import { Hono as BaseHono, type Env, type MiddlewareHandler } from 'hono'
-import type { HonoOptions } from 'hono/hono-base'
-import { logger } from 'hono/logger'
-import { timing } from 'hono/timing'
-
+import type { HttpBindings } from '@hono/node-server'
 import type { HonoRouteDefinition } from './types.js'
 
-export type HonoInstance<E extends Env = object> = BaseHono<E> & {
+export type HonoInstance = BaseHono<{ Bindings: HttpBindings }> & {
   defineRoutes: (
     routes: HonoRouteDefinition[],
     routeOptions?: { middleware?: MiddlewareHandler[]; prefix?: string },
   ) => void
 }
 
-export class Hono<E extends Env>
-  extends BaseHono<E>
-  implements HonoInstance<E>
+export class Hono
+  extends BaseHono<{ Bindings: HttpBindings }>
+  implements HonoInstance
 {
+  constructor() {
+    super()
+
+    this.defineErrorHandler()
+  }
+
   defineErrorHandler() {
     this.onError((error, ctx) => {
       if (error instanceof E_REQUEST_EXCEPTION) {

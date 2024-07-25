@@ -90,7 +90,11 @@ export class BroadcastController extends BaseController {
       ctx,
     )
 
-    await Queue.dispatch(SendBroadcastJob, { broadcastId: broadcast.id })
+    await Queue.dispatch(
+      SendBroadcastJob,
+      { broadcastId: broadcast.id },
+      { delay: 5 },
+    )
 
     return ctx.json({ id: broadcast.id })
   }

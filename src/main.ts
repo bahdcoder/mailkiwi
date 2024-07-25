@@ -1,3 +1,3 @@
-import { Ignitor } from '@/infrastructure/boot/ignitor.js'
+import { IgnitorProd } from "@/infrastructure/boot/ignitor_prod.js";
 
-new Ignitor().boot().start()
+new IgnitorProd().boot().start();

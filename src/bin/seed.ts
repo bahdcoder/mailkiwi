@@ -27,7 +27,7 @@ await database.insert(settings).values({
   url: 'https://bamboomail.a.pinggy.link',
 })
 
-for (let userIndex = 0; userIndex < 5; userIndex++) {
+for (let userIndex = 0; userIndex < 1; userIndex++) {
   console.log(`\nCreating user: ${userIndex + 1}\n`)
 
   const { team } = await registerUserAction.handle({

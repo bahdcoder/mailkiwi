@@ -27,6 +27,12 @@ export class MailerIdentityRepository extends BaseRepository {
     })
   }
 
+  async findManyByMailerId(mailerId: string) {
+    return this.database.query.mailerIdentities.findMany({
+      where: and(eq(mailerIdentities.mailerId, mailerId)),
+    })
+  }
+
   async create(payload: CreateMailerIdentityDto, mailerId: string) {
     const id = this.cuid()
 

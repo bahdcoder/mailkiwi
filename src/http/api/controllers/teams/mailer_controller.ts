@@ -34,7 +34,6 @@ export class MailerController extends BaseController {
         ['GET', '/', this.index.bind(this)],
         ['PATCH', '/:mailerId', this.update.bind(this)],
         ['PATCH', '/:mailerId/reconnect', this.reconnect.bind(this)],
-        ['POST', '/:mailerId/install', this.install.bind(this)],
       ],
       {
         prefix: 'mailers',
@@ -74,20 +73,6 @@ export class MailerController extends BaseController {
     const action = container.resolve(UpdateMailerAction)
 
     await action.handle(mailer, data, ctx.get('team'))
-
-    return ctx.json({ id: mailer.id })
-  }
-
-  async install(ctx: HonoContext) {
-    const mailer = await this.ensureMailerExists(ctx)
-
-    await this.ensureHasPermissions(ctx)
-
-    const action = container.resolve(InstallMailerAction)
-
-    const success = await action.handle(mailer, ctx.get('team'))
-
-    if (!success) throw E_OPERATION_FAILED('Failed to install mailer.')
 
     return ctx.json({ id: mailer.id })
   }

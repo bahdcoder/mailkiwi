@@ -62,7 +62,7 @@ CREATE TABLE `broadcasts` (
 	`contentHtml` text,
 	`subject` text,
 	`previewText` text,
-	`status` text,
+	`status` text DEFAULT 'DRAFT',
 	`sendAt` integer,
 	FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON UPDATE no action ON DELETE no action
@@ -147,6 +147,25 @@ CREATE TABLE `queueJobs` (
 	`payload` text NOT NULL,
 	`queue` text,
 	`attemptLogs` text
+);
+--> statement-breakpoint
+CREATE TABLE `sends` (
+	`id` text(32) PRIMARY KEY NOT NULL,
+	`type` text NOT NULL,
+	`status` text NOT NULL,
+	`email` text(80),
+	`content` text,
+	`contentJson` text,
+	`contentHtml` text,
+	`contactId` text(32) NOT NULL,
+	`broadcastId` text(32),
+	`sendAt` integer,
+	`messageId` text,
+	`logs` text,
+	`automationStepId` text(32),
+	FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`automationStepId`) REFERENCES `automationSteps`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `settings` (

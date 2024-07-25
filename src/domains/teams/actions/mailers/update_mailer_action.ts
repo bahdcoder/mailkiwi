@@ -7,12 +7,17 @@ import { MailerRepository } from '@/domains/teams/repositories/mailer_repository
 import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 import type { Mailer, Team } from '@/infrastructure/database/schema/types.js'
 import { container } from '@/utils/typi.js'
+import { DeleteMailerIdentityAction } from './delete_mailer_identity_action.ts'
+import { MailerIdentityRepository } from '../../repositories/mailer_identity_repository.ts'
 
 export class UpdateMailerAction {
   protected isReconnecting = false
   constructor(
     private mailerRepository: MailerRepository = container.make(
       MailerRepository,
+    ),
+    private mailerIdentityRepository: MailerIdentityRepository = container.make(
+      MailerIdentityRepository,
     ),
   ) {}
 
@@ -24,8 +29,9 @@ export class UpdateMailerAction {
 
   handle = async (mailer: Mailer, payload: UpdateMailerDto, team: Team) => {
     const configurationKeysAreValid = await new CheckProviderCredentials(
-      mailer,
       payload.configuration as MailerConfiguration,
+      this.mailerRepository,
+      mailer,
     ).execute()
 
     if (!configurationKeysAreValid) {
@@ -37,7 +43,23 @@ export class UpdateMailerAction {
       ])
     }
 
-    const updatedMailer = await this.mailerRepository.update(
+    const [existingMailerIdentity] =
+      await this.mailerIdentityRepository.findManyByMailerId(mailer.id)
+
+    if (existingMailerIdentity) {
+      const deletedMailerIdentityAction = container.make(
+        DeleteMailerIdentityAction,
+      )
+
+      await deletedMailerIdentityAction.handle(
+        mailer,
+        existingMailerIdentity,
+        { deleteOnProvider: true },
+        team,
+      )
+    }
+
+    const [updatedMailer] = await this.mailerRepository.update(
       mailer,
       payload,
       team,

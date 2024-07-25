@@ -5,7 +5,6 @@ import { CreateMailerIdentityAction } from '@/domains/teams/actions/create_maile
 import { GetMailerIdentitiesAction } from '@/domains/teams/actions/get_mailer_identities_action.js'
 import { DeleteMailerIdentityAction } from '@/domains/teams/actions/mailers/delete_mailer_identity_action.js'
 import { CreateMailerIdentitySchema } from '@/domains/teams/dto/create_mailer_identity_dto.js'
-import { DeleteMailerIdentitySchema } from '@/domains/teams/dto/delete_mailer_identity_dto.js'
 import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.js'
 import { MailerValidationAndAuthorizationConcern } from '@/http/api/concerns/mailer_validation_concern.js'
 import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
@@ -31,7 +30,6 @@ export class MailerIdentityController extends BaseController {
       [
         ['GET', '/identities', this.index.bind(this)],
         ['POST', '/identities', this.create.bind(this)],
-        ['DELETE', '/identities/:mailerIdentityId', this.delete.bind(this)],
         [
           'POST',
           '/identities/:mailerIdentityId/refresh',
@@ -114,22 +112,6 @@ export class MailerIdentityController extends BaseController {
     )
 
     return ctx.json(identity)
-  }
-
-  async delete(ctx: HonoContext) {
-    await this.mailerValidationAndAuthorizationConcern.ensureHasPermissions(ctx)
-
-    const mailer =
-      await this.mailerValidationAndAuthorizationConcern.ensureMailerExists(ctx)
-    const mailerIdentity = await this.ensureMailerIdentityExists(ctx)
-
-    const data = await this.validate(ctx, DeleteMailerIdentitySchema)
-
-    const action = container.resolve(DeleteMailerIdentityAction)
-
-    await action.handle(mailer, mailerIdentity, data, ctx.get('team'))
-
-    return ctx.json({ id: mailerIdentity.id })
   }
 
   protected async ensureMailerIdentityExists(ctx: HonoContext) {

@@ -1,11 +1,13 @@
 import type { UpdateMailerDto } from '@/domains/teams/dto/mailers/update_mailer_dto.js'
 import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import {
+  E_OPERATION_FAILED,
+  E_VALIDATION_FAILED,
+} from '@/http/responses/errors.js'
 import { makeConfig, makeDatabase } from '@/infrastructure/container.js'
 import type { DrizzleClient } from '@/infrastructure/database/client.js'
 import type { Mailer, Team } from '@/infrastructure/database/schema/types.js'
 import { AwsSdk } from '@/providers/ses/sdk.js'
-import { E_INTERNAL_PROCESSING_ERROR } from '@/utils/errors.js'
 import { container } from '@/utils/typi.js'
 
 export class InstallMailerAction {
@@ -36,7 +38,7 @@ export class InstallMailerAction {
     const applicationSettings = await this.database.query.settings.findFirst()
 
     if (!applicationSettings || !applicationSettings.url)
-      throw E_INTERNAL_PROCESSING_ERROR(
+      throw E_OPERATION_FAILED(
         'Application settings not properly defined. Please contact an administrator.',
       )
 

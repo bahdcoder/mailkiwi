@@ -28,13 +28,16 @@ export class GetMailerAction {
     ) as MailerConfiguration
 
     const credentialsAreValid = await new CheckProviderCredentials(
-      mailer,
       configuration,
       this.mailerRepository,
+      mailer,
     ).execute(true)
 
     if (!credentialsAreValid) {
-      return { ...mailer, status: 'ACCESS_KEYS_LOST_PROVIDER_ACCESS' }
+      return {
+        ...mailer,
+        status: 'ACCESS_KEYS_LOST_PROVIDER_ACCESS' as typeof mailer.status,
+      }
     }
 
     const sendingStatus = await this.getAwsSenderStatus(configuration)

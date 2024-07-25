@@ -9,7 +9,11 @@ import { RegisterUserAction } from '@/domains/auth/actions/register_user_action.
 import { TeamRepository } from '@/domains/teams/repositories/team_repository.js'
 import { makeDatabase } from '@/infrastructure/container.js'
 import { users } from '@/infrastructure/database/schema/schema.js'
-import type { Team, User } from '@/infrastructure/database/schema/types.ts'
+import type {
+  Setting,
+  Team,
+  User,
+} from '@/infrastructure/database/schema/types.ts'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
 import { container } from '@/utils/typi.js'
 
@@ -26,6 +30,7 @@ export async function createBroadcastForUser(user: User, audienceId: string) {
   const { id } = await response.json()
   return id
 }
+
 export const createUser = async ({
   createMailerWithIdentity,
   createBroadcast,
@@ -61,30 +66,23 @@ export const createUser = async ({
   })) as User & { teams: Team[] }
 
   if (createMailerWithIdentity) {
-    const response = await makeRequestAsUser(freshUser, {
+    await makeRequestAsUser(freshUser, {
       method: 'POST',
       path: '/mailers',
       body: {
         name: faker.string.uuid(),
         provider: 'AWS_SES',
-      },
-    })
-
-    mockClient(SESClient).onAnyCommand().resolves({})
-    mockClient(SNSClient).onAnyCommand().resolves({})
-
-    await makeRequestAsUser(freshUser, {
-      method: 'PATCH',
-      path: `/mailers/${(await response.json()).id}`,
-      body: {
         configuration: {
-          accessKey: faker.string.alphanumeric({ length: 24 }),
-          accessSecret: faker.string.alphanumeric({ length: 24 }),
+          accessKey: faker.string.alphanumeric({ length: 16 }),
+          accessSecret: faker.string.alphanumeric({ length: 16 }),
           region: 'us-east-1',
           domain: 'newsletter.example.com',
         },
       },
     })
+
+    mockClient(SESClient).onAnyCommand().resolves({})
+    mockClient(SNSClient).onAnyCommand().resolves({})
   }
 
   let broadcastId: string | undefined = undefined
@@ -97,7 +95,7 @@ export const createUser = async ({
     user: freshUser,
     team: (await teamRepository.findById(team.id)) as Team,
     audience,
-    setting: setting,
+    setting: setting as Setting,
     broadcastId,
   }
 }

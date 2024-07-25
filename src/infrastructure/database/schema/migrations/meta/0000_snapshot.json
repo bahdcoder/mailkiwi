@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "fc0c8d5d-25c0-4c91-b440-0561be466eec",
+  "id": "331e2ad0-3a4e-4bf7-9f71-8aa6fb1c7d5e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accessTokens": {
@@ -80,8 +80,12 @@
           "name": "accessTokens_userId_users_id_fk",
           "tableFrom": "accessTokens",
           "tableTo": "users",
-          "columnsFrom": ["userId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -89,8 +93,12 @@
           "name": "accessTokens_teamId_teams_id_fk",
           "tableFrom": "accessTokens",
           "tableTo": "teams",
-          "columnsFrom": ["teamId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -129,8 +137,12 @@
           "name": "audiences_teamId_teams_id_fk",
           "tableFrom": "audiences",
           "tableTo": "teams",
-          "columnsFrom": ["teamId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -226,8 +238,12 @@
           "name": "automationSteps_automationId_automations_id_fk",
           "tableFrom": "automationSteps",
           "tableTo": "automations",
-          "columnsFrom": ["automationId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "automationId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -235,8 +251,12 @@
           "name": "automationSteps_parentId_automationSteps_id_fk",
           "tableFrom": "automationSteps",
           "tableTo": "automationSteps",
-          "columnsFrom": ["parentId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "parentId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -244,8 +264,12 @@
           "name": "automationSteps_emailId_emails_id_fk",
           "tableFrom": "automationSteps",
           "tableTo": "emails",
-          "columnsFrom": ["emailId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "emailId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -253,8 +277,12 @@
           "name": "automationSteps_tagId_tags_id_fk",
           "tableFrom": "automationSteps",
           "tableTo": "tags",
-          "columnsFrom": ["tagId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "tagId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -262,8 +290,12 @@
           "name": "automationSteps_audienceId_audiences_id_fk",
           "tableFrom": "automationSteps",
           "tableTo": "audiences",
-          "columnsFrom": ["audienceId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -309,8 +341,12 @@
           "name": "automations_audienceId_audiences_id_fk",
           "tableFrom": "automations",
           "tableTo": "audiences",
-          "columnsFrom": ["audienceId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -431,7 +467,8 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "'DRAFT'"
         },
         "sendAt": {
           "name": "sendAt",
@@ -447,8 +484,12 @@
           "name": "broadcasts_audienceId_audiences_id_fk",
           "tableFrom": "broadcasts",
           "tableTo": "audiences",
-          "columnsFrom": ["audienceId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -456,8 +497,12 @@
           "name": "broadcasts_teamId_teams_id_fk",
           "tableFrom": "broadcasts",
           "tableTo": "teams",
-          "columnsFrom": ["teamId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -531,8 +576,12 @@
           "name": "contactAutomationSteps_automationStepId_automationSteps_id_fk",
           "tableFrom": "contactAutomationSteps",
           "tableTo": "automationSteps",
-          "columnsFrom": ["automationStepId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "automationStepId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -540,8 +589,12 @@
           "name": "contactAutomationSteps_contactId_contacts_id_fk",
           "tableFrom": "contactAutomationSteps",
           "tableTo": "contacts",
-          "columnsFrom": ["contactId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "contactId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -619,7 +672,10 @@
       "indexes": {
         "Contact_email_audienceId_key": {
           "name": "Contact_email_audienceId_key",
-          "columns": ["email", "audienceId"],
+          "columns": [
+            "email",
+            "audienceId"
+          ],
           "isUnique": true
         }
       },
@@ -628,8 +684,12 @@
           "name": "contacts_audienceId_audiences_id_fk",
           "tableFrom": "contacts",
           "tableTo": "audiences",
-          "columnsFrom": ["audienceId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -696,8 +756,12 @@
           "name": "emails_audienceId_audiences_id_fk",
           "tableFrom": "emails",
           "tableTo": "audiences",
-          "columnsFrom": ["audienceId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -765,8 +829,12 @@
           "name": "mailerIdentities_mailerId_mailers_id_fk",
           "tableFrom": "mailerIdentities",
           "tableTo": "mailers",
-          "columnsFrom": ["mailerId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "mailerId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -882,7 +950,9 @@
       "indexes": {
         "mailers_teamId_unique": {
           "name": "mailers_teamId_unique",
-          "columns": ["teamId"],
+          "columns": [
+            "teamId"
+          ],
           "isUnique": true
         }
       },
@@ -891,8 +961,12 @@
           "name": "mailers_teamId_teams_id_fk",
           "tableFrom": "mailers",
           "tableTo": "teams",
-          "columnsFrom": ["teamId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -995,6 +1069,146 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "sends": {
+      "name": "sends",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text(32)",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text(80)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contentJson": {
+          "name": "contentJson",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contentHtml": {
+          "name": "contentHtml",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contactId": {
+          "name": "contactId",
+          "type": "text(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "broadcastId": {
+          "name": "broadcastId",
+          "type": "text(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sendAt": {
+          "name": "sendAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "messageId": {
+          "name": "messageId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "logs": {
+          "name": "logs",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "automationStepId": {
+          "name": "automationStepId",
+          "type": "text(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sends_contactId_contacts_id_fk": {
+          "name": "sends_contactId_contacts_id_fk",
+          "tableFrom": "sends",
+          "tableTo": "contacts",
+          "columnsFrom": [
+            "contactId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "sends_broadcastId_broadcasts_id_fk": {
+          "name": "sends_broadcastId_broadcasts_id_fk",
+          "tableFrom": "sends",
+          "tableTo": "broadcasts",
+          "columnsFrom": [
+            "broadcastId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "sends_automationStepId_automationSteps_id_fk": {
+          "name": "sends_automationStepId_automationSteps_id_fk",
+          "tableFrom": "sends",
+          "tableTo": "automationSteps",
+          "columnsFrom": [
+            "automationStepId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "settings": {
       "name": "settings",
       "columns": {
@@ -1031,12 +1245,16 @@
       "indexes": {
         "settings_url_unique": {
           "name": "settings_url_unique",
-          "columns": ["url"],
+          "columns": [
+            "url"
+          ],
           "isUnique": true
         },
         "settings_domain_unique": {
           "name": "settings_domain_unique",
-          "columns": ["domain"],
+          "columns": [
+            "domain"
+          ],
           "isUnique": true
         }
       },
@@ -1082,8 +1300,12 @@
           "name": "tags_audienceId_audiences_id_fk",
           "tableFrom": "tags",
           "tableTo": "audiences",
-          "columnsFrom": ["audienceId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1119,12 +1341,18 @@
       "indexes": {
         "tagsOnContactsTagIdContactIdKey": {
           "name": "tagsOnContactsTagIdContactIdKey",
-          "columns": ["tagId", "contactId"],
+          "columns": [
+            "tagId",
+            "contactId"
+          ],
           "isUnique": true
         },
         "tagsOnContactsTagIdContactIdIdx": {
           "name": "tagsOnContactsTagIdContactIdIdx",
-          "columns": ["tagId", "contactId"],
+          "columns": [
+            "tagId",
+            "contactId"
+          ],
           "isUnique": false
         }
       },
@@ -1133,8 +1361,12 @@
           "name": "tagsOnContacts_tagId_tags_id_fk",
           "tableFrom": "tagsOnContacts",
           "tableTo": "tags",
-          "columnsFrom": ["tagId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "tagId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1142,8 +1374,12 @@
           "name": "tagsOnContacts_contactId_contacts_id_fk",
           "tableFrom": "tagsOnContacts",
           "tableTo": "contacts",
-          "columnsFrom": ["contactId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "contactId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1211,8 +1447,12 @@
           "name": "teamMemberships_userId_users_id_fk",
           "tableFrom": "teamMemberships",
           "tableTo": "users",
-          "columnsFrom": ["userId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1220,8 +1460,12 @@
           "name": "teamMemberships_teamId_teams_id_fk",
           "tableFrom": "teamMemberships",
           "tableTo": "teams",
-          "columnsFrom": ["teamId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1288,8 +1532,12 @@
           "name": "teams_userId_users_id_fk",
           "tableFrom": "teams",
           "tableTo": "users",
-          "columnsFrom": ["userId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1339,7 +1587,9 @@
       "indexes": {
         "users_email_unique": {
           "name": "users_email_unique",
-          "columns": ["email"],
+          "columns": [
+            "email"
+          ],
           "isUnique": true
         }
       },
@@ -1392,8 +1642,12 @@
           "name": "webhooks_teamId_teams_id_fk",
           "tableFrom": "webhooks",
           "tableTo": "teams",
-          "columnsFrom": ["teamId"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

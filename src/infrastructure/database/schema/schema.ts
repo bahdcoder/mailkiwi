@@ -249,6 +249,34 @@ export const emails = sqliteTable('emails', {
   contentText: text('contentText', { mode: 'text' }),
 })
 
+export const sends = sqliteTable('sends', {
+  id,
+  type: text('type', {
+    enum: ['AUTOMATION', 'TRANSACTIONAL', 'BROADCAST'],
+  }).notNull(),
+  status: text('status', { enum: ['PENDING', 'SENT', 'FAILED'] }).notNull(),
+  email: text('email', { length: 80 }),
+  contentText: text('content', { mode: 'json' }).$type<
+    Record<string, unknown>
+  >(),
+  contentJson: text('contentJson', { mode: 'text' }),
+  contentHtml: text('contentHtml', { mode: 'text' }),
+  contactId: text('contactId', { length: 32 })
+    .references(() => contacts.id, { onDelete: 'cascade' })
+    .notNull(),
+  broadcastId: text('broadcastId', { length: 32 }).references(
+    () => broadcasts.id,
+    { onDelete: 'cascade' },
+  ),
+  sentAt: integer('sendAt', { mode: 'timestamp' }),
+  messageId: text('messageId'),
+  logs: text('logs', { mode: 'json' }).$type<any>(),
+  automationStepId: text('automationStepId', { length: 32 }).references(
+    () => automationSteps.id,
+    { onDelete: 'cascade' },
+  ),
+})
+
 export const automationStepSubtypesTrigger = [
   'TRIGGER_CONTACT_SUBSCRIBED',
   'TRIGGER_CONTACT_UNSUBSCRIBED',
@@ -313,7 +341,16 @@ export const broadcasts = sqliteTable('broadcasts', {
   contentHtml: text('contentHtml'),
   subject: text('subject'),
   previewText: text('previewText'),
-  status: text('status'),
+  status: text('status', {
+    enum: [
+      'SENT',
+      'SENDING',
+      'DRAFT',
+      'SENDING_FAILED',
+      'DRAFT_ARCHIVED',
+      'ARCHIVED',
+    ],
+  }).default('DRAFT'),
   sendAt: integer('sendAt', { mode: 'timestamp' }),
 })
 
@@ -419,6 +456,31 @@ export const teamRelations = relations(teams, ({ one, many }) => ({
 export const accessTokenRelations = relations(accessTokens, ({ one }) => ({
   user: one(users, { fields: [accessTokens.userId], references: [users.id] }),
   team: one(teams, { fields: [accessTokens.teamId], references: [teams.id] }),
+}))
+
+export const broadcastRelations = relations(broadcasts, ({ one, many }) => ({
+  audience: one(audiences, {
+    fields: [broadcasts.audienceId],
+    references: [audiences.id],
+  }),
+  team: one(teams, { fields: [broadcasts.teamId], references: [teams.id] }),
+  sends: many(sends, { relationName: 'broadcastSends' }),
+}))
+
+export const sendsRelations = relations(sends, ({ one, many }) => ({
+  contact: one(contacts, {
+    fields: [sends.contactId],
+    references: [contacts.id],
+  }),
+  broadcast: one(broadcasts, {
+    fields: [sends.broadcastId],
+    references: [broadcasts.id],
+    relationName: 'broadcastSends',
+  }),
+  automationStep: one(automationSteps, {
+    fields: [sends.automationStepId],
+    references: [automationSteps.id],
+  }),
 }))
 
 export const mailerRelations = relations(mailers, ({ one, many }) => ({

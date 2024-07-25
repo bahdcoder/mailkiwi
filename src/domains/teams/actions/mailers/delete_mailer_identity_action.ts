@@ -38,8 +38,9 @@ export class DeleteMailerIdentityAction {
     if (payload.deleteOnProvider) {
       // Implement provider-specific deletion logic here
       const credentialsAreValid = await new CheckProviderCredentials(
-        mailer,
         configuration,
+        this.mailerRepository,
+        mailer,
       ).execute(true)
 
       if (mailer.provider === 'AWS_SES' && credentialsAreValid) {

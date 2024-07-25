@@ -1,3 +1,4 @@
+import { Queue } from '@/domains/shared/queue/queue.ts'
 import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
 import type { CreateMailerIdentityDto } from '@/domains/teams/dto/create_mailer_identity_dto.js'
 import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.js'
@@ -11,6 +12,7 @@ import type {
 } from '@/infrastructure/database/schema/types.js'
 import { AwsSdk } from '@/providers/ses/sdk.js'
 import { container } from '@/utils/typi.js'
+import { VerifyMailerIdentityJob } from '../jobs/verify_mailer_identity_job.ts'
 
 export class CreateMailerIdentityAction {
   constructor(
@@ -74,6 +76,13 @@ export class CreateMailerIdentityAction {
             },
           })
         }
+
+        await Queue.dispatch(
+          VerifyMailerIdentityJob,
+          { teamId: team.id },
+          // Check mailer status in 2.5 minutes
+          { delay: 2.5 * 60 },
+        )
       } catch (error) {
         await this.mailerIdentityRepository.delete(identityId)
 

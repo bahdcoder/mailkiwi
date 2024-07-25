@@ -4,10 +4,21 @@ import { Ignitor } from './ignitor.js'
 
 export class IgnitorDev extends Ignitor {
   async startSinglePageApplication() {
-    // createServer
-    const vite = await createViteServer({
-      // server: { middlewareMode: true },
+    const viteDevServer = await createViteServer({
+      server: { middlewareMode: true },
       appType: 'custom',
+    })
+
+    this.app.use(async (ctx, next) => {
+      await new Promise((resolve) => {
+        viteDevServer.middlewares.handle(
+          ctx.env.incoming,
+          ctx.env.outgoing,
+          async () => {
+            return resolve(next())
+          },
+        )
+      })
     })
   }
 
@@ -16,6 +27,7 @@ export class IgnitorDev extends Ignitor {
       fetch: this.app.fetch,
       port: this.env.PORT,
     })
-    console.log(`http://0.0.0.0:${this.env.PORT}`)
+
+    console.log(`🌐 http://127.0.0.1:${this.env.PORT}`)
   }
 }

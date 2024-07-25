@@ -3,7 +3,7 @@ import type { Secret } from '@poppinss/utils'
 import SESService from '@/providers/ses/ses.js'
 import { PermissionsChecker } from '@/providers/ses/ses_permission_checker.js'
 import { SNSService } from '@/providers/ses/sns.js'
-import { E_INTERNAL_PROCESSING_ERROR } from '@/utils/errors.js'
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 
 export class AwsSdk {
   constructor(
@@ -32,11 +32,10 @@ export class AwsSdk {
     const hasPermissions = await this.permissionsChecker().checkAllAccess()
 
     if (!hasPermissions) {
-      throw E_INTERNAL_PROCESSING_ERROR(
+      throw E_OPERATION_FAILED(
         'Your aws credentials do not have the right permissions to install this mailer.',
       )
     }
-
     await this.sesService().createConfigurationSet(configurationSetName)
 
     await this.snsService().createSnsTopic(configurationSetName)
@@ -50,7 +49,7 @@ export class AwsSdk {
       await this.snsService().getSnsTopic(configurationSetName)
 
     if (!snsTopicArn?.TopicArn)
-      throw E_INTERNAL_PROCESSING_ERROR('Topic ARN does not exist.')
+      throw E_OPERATION_FAILED('Topic ARN does not exist.')
 
     await this.sesService().createConfigurationSetEventsDestination(
       configurationSetName,

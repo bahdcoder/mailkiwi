@@ -1,6 +1,9 @@
 import { E_OPERATION_FAILED } from '@/http/responses/errors.ts'
 import type { AbstractJobType, BaseJob } from './abstract_job.js'
-import type { QueueDriver } from './queue_driver_contact.js'
+import type {
+  QueueDriver,
+  QueueJobConfiguration,
+} from './queue_driver_contact.js'
 
 class QueueClass {
   private driver: QueueDriver
@@ -18,7 +21,11 @@ class QueueClass {
     return this
   }
 
-  async dispatch<T extends object>(JobClass: new () => BaseJob<T>, payload: T) {
+  async dispatch<T extends object>(
+    JobClass: new () => BaseJob<T>,
+    payload: T,
+    configuration?: QueueJobConfiguration,
+  ) {
     if (!this.driver) {
       throw E_OPERATION_FAILED(
         'Queue driver not set for this application instance.',
@@ -29,6 +36,7 @@ class QueueClass {
       (JobClass as unknown as AbstractJobType<T>).id,
       payload,
       (JobClass as unknown as AbstractJobType<T>).queue,
+      configuration,
     )
   }
 

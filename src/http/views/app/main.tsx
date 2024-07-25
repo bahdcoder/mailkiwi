@@ -5,59 +5,54 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
-} from '@tanstack/react-router'
-import React, { StrictMode } from 'react'
-import ReactDOM from 'react-dom/client'
+} from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React, { StrictMode } from "react";
+import ReactDOM from "react-dom/client";
 
-const Index = React.lazy(() => import('./pages/Index.tsx'))
-const About = React.lazy(() => import('./pages/About.tsx'))
+import { Layout } from "./layouts/layout-default.tsx";
+import "./root.css";
+
+const Login = React.lazy(() => import("./pages/Login.tsx"));
+const Dashbaord = React.lazy(() => import("./pages/Dashboard.tsx"));
+
+const queryClient = new QueryClient();
 
 const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>{' '}
-        <Link to="/about" className="[&.active]:font-bold">
-          About
-        </Link>
-      </div>
-      <hr />
-      <Outlet />
-    </>
-  ),
-})
+  component: () => <Layout />,
+});
 
-const indexRoute = createRoute({
+const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
-  component: Index,
-})
+  path: "/",
+  component: Dashbaord,
+});
 
-const aboutRoute = createRoute({
+const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/about',
-  component: About,
-})
+  path: "/login",
+  component: Login,
+});
 
-const routeTree = rootRoute.addChildren([indexRoute, aboutRoute])
+const routeTree = rootRoute.addChildren([dashboardRoute, loginRoute]);
 
-const router = createRouter({ routeTree, basepath: '/p' })
+const router = createRouter({ routeTree, basepath: "/p" });
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
-    router: typeof router
+    router: typeof router;
   }
 }
 
-const rootElement = document.getElementById('root')
+const rootElement = document.getElementById("root");
 
 if (rootElement && !rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement)
+  const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </StrictMode>,
-  )
+  );
 }

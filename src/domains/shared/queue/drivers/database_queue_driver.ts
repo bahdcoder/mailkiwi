@@ -1,11 +1,17 @@
-import type { QueueDriver } from '@/domains/shared/queue/queue_driver_contact.js'
+import type {
+  QueueDriver,
+  QueueJobConfiguration,
+} from '@/domains/shared/queue/queue_driver_contact.js'
 import { cuid } from '@/domains/shared/utils/cuid/cuid.ts'
-import { makeDatabase } from '@/infrastructure/container.js'
+import {
+  makeDatabase,
+  makeDatabaseConnection,
+} from '@/infrastructure/container.js'
 import { queueJobs } from '@/infrastructure/database/schema/schema.js'
 import type { QueueJob } from '@/infrastructure/database/schema/types.ts'
 import { addSecondsToDate } from '@/utils/dates.ts'
 import { sleep } from '@/utils/sleep.ts'
-import { and, asc, eq, inArray, isNull, lt, or, sql } from 'drizzle-orm'
+import { and, asc, eq, inArray, isNull, lt, lte, or, sql } from 'drizzle-orm'
 import type { BaseJob, JobHandlerResponse } from '../abstract_job.ts'
 import { AVAILABLE_QUEUES, type AVAILABLE_QUEUE_TYPE } from '../config.ts'
 
@@ -14,6 +20,8 @@ export class DatabaseQueueDriver implements QueueDriver {
 
   private CONCURRENCY = 5
   private DEFAULT_TIMEOUT = 15 // 15 seconds
+  private QUEUE_CHECKS = 1 // 1 second
+  private intervalId: NodeJS.Timeout
   private jobExecutors: Map<string, new () => BaseJob<object>>
   private currentQueueJobs: Map<AVAILABLE_QUEUE_TYPE, number> = new Map()
 
@@ -21,6 +29,7 @@ export class DatabaseQueueDriver implements QueueDriver {
     jobId: string,
     payload: Record<string, unknown>,
     queue: AVAILABLE_QUEUE_TYPE,
+    configuration: QueueJobConfiguration,
   ) {
     const id = cuid()
 
@@ -30,6 +39,7 @@ export class DatabaseQueueDriver implements QueueDriver {
       queue: queue,
       payload,
       dispatchedAt: new Date(),
+      processAt: addSecondsToDate(new Date(), configuration?.delay ?? 0),
     })
 
     return { id }
@@ -38,7 +48,7 @@ export class DatabaseQueueDriver implements QueueDriver {
   async process(jobs: Map<string, new () => BaseJob<object>>) {
     this.jobExecutors = jobs
 
-    this.beginProcessing()
+    this.runProcessorAsync()
   }
 
   private async fetchAvailableJobs() {
@@ -53,6 +63,7 @@ export class DatabaseQueueDriver implements QueueDriver {
             or(isNull(queueJobs.lockedAt), lt(queueJobs.timeoutAt, new Date())),
             isNull(queueJobs.completedAt),
             eq(queueJobs.queue, queue),
+            lt(queueJobs.processAt, new Date()),
           ),
           orderBy: asc(queueJobs.dispatchedAt),
         }),
@@ -72,57 +83,75 @@ export class DatabaseQueueDriver implements QueueDriver {
       return false
     }
 
-    return this.database.transaction((tx) => {
-      const updates = tx
-        .update(queueJobs)
-        .set({
-          timeoutAt: addSecondsToDate(new Date(), this.DEFAULT_TIMEOUT),
-          lockedAt: new Date(),
-        })
-        .where(
-          and(
-            inArray(queueJobs.id, jobIds),
-            or(isNull(queueJobs.lockedAt), lt(queueJobs.timeoutAt, new Date())),
-          ),
-        )
-        .run()
+    const updateIfNotLocked = this.database
+      .update(queueJobs)
+      .set({
+        timeoutAt: addSecondsToDate(new Date(), this.DEFAULT_TIMEOUT),
+        lockedAt: new Date(),
+      })
+      .where(
+        and(
+          inArray(queueJobs.id, jobIds),
+          or(isNull(queueJobs.lockedAt), lt(queueJobs.timeoutAt, new Date())),
+          lt(queueJobs.processAt, new Date()),
+          lte(queueJobs.attemptsCount, queueJobs.maxAttempts),
+        ),
+      )
+      .toSQL()
 
-      if (updates.changes === jobIds.length) {
-        return true
+    const db = makeDatabaseConnection()
+
+    const updateIfNotLockedPrepared = db.prepare(updateIfNotLocked.sql)
+
+    const updateIfNotLockedTransaction = db.transaction((input) => {
+      const result = updateIfNotLockedPrepared.run(updateIfNotLocked.params)
+
+      if (result.changes !== jobIds.length) {
+        throw new Error('Jobs already locked.')
       }
 
-      tx.rollback()
-
-      return false
+      return true
     })
+
+    try {
+      const result = updateIfNotLockedTransaction(updateIfNotLocked.params)
+
+      return result
+    } catch (error) {
+      d('Job locked by another worker.')
+      return false
+    }
   }
 
-  private async beginProcessing() {
-    while (true) {
-      const jobs = await this.fetchAvailableJobs()
+  private async runProcessor() {
+    const jobs = await this.fetchAvailableJobs()
 
-      const jobIds = jobs.flatMap(({ jobs }) => jobs.map((job) => job.id))
+    const jobIds = jobs.flatMap(({ jobs }) => jobs.map((job) => job.id))
 
-      // lock jobs by inserting into database (and setting job timeouts.).
-      const locked = await this.lockJobs(jobIds)
+    const locked = await this.lockJobs(jobIds)
 
-      if (!locked) {
-        await sleep(1000)
+    d({ locked })
 
-        continue
-      }
-
-      // process jobs
-      // d({ jobs: jobs.map((job) => [job.id, job.lockedAt, job.timeoutAt]) })
-
-      // for each job, dispatch it for processing to the right queue.
-      // dispatch job to the right queue.
-      for (const { queue, jobs: queueJobs } of jobs) {
-        this.startProcessingQueue(queue, queueJobs)
-      }
-
-      await sleep(1000)
+    if (!locked) {
+      return
     }
+
+    for (const { queue, jobs: queueJobs } of jobs) {
+      this.startProcessingQueue(queue, queueJobs)
+    }
+  }
+
+  private runProcessorAsync() {
+    this.intervalId = setInterval(() => {
+      this.runProcessor()
+    }, this.QUEUE_CHECKS * 1000)
+  }
+
+  public shutdownProcessor() {
+    clearInterval(this.intervalId)
+
+    d('Queue processor stopped.')
+    process.exit(0)
   }
 
   private async startProcessingQueue(

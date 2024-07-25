@@ -1,5 +1,3 @@
-// import "dotenv/config"
-
 import { Secret } from '@poppinss/utils'
 import { cleanEnv, host, makeValidator, num, str } from 'envalid'
 
@@ -23,6 +21,7 @@ export const env = cleanEnv(process.env, {
     choices: ['development', 'test', 'production'],
     default: 'development',
   }),
+  MAILHOG_URL: str(),
 })
 
 const SHORT_NAME = 'bamboomailer'

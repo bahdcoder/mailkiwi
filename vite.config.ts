@@ -12,9 +12,15 @@ export default defineConfig({
   plugins: [react({ jsxRuntime: 'classic' })],
   build: {
     manifest: true,
+    assetsDir: '',
+    emptyOutDir: true,
+    assetsInlineLimit: 0,
     outDir: resolve(process.cwd(), 'build/client'),
     rollupOptions: {
       input: resolve(root, 'main.tsx'),
     },
+  },
+  server: {
+    cors: false,
   },
 })

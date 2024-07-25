@@ -8,8 +8,8 @@ import {
 } from '@aws-sdk/client-sns'
 import type { Secret } from '@poppinss/utils'
 
-import { E_INTERNAL_PROCESSING_ERROR } from '@/utils/errors.js'
 import { sleep } from '@/utils/sleep.js'
+import { E_OPERATION_FAILED } from '@/http/responses/errors.ts'
 
 export class SNSService {
   private sns: SNSClient
@@ -64,7 +64,7 @@ export class SNSService {
     const topic = await this.getSnsTopic(topicName)
 
     if (!topic) {
-      throw E_INTERNAL_PROCESSING_ERROR(`Topic ${topicName} does not exist.`)
+      throw E_OPERATION_FAILED(`Topic ${topicName} does not exist.`)
     }
 
     const subscriber = await this.sns.send(
@@ -87,8 +87,6 @@ export class SNSService {
     let subscriptionConfirmed = false
 
     while (subscriptionConfirmed === false && tries > 0) {
-      await sleep(1000)
-
       const subscribers = await this.sns.send(
         new ListSubscriptionsByTopicCommand({
           TopicArn: topic.TopicArn,
@@ -107,6 +105,12 @@ export class SNSService {
       }
 
       tries--
+    }
+
+    if (subscriptionConfirmed === false) {
+      throw E_OPERATION_FAILED(
+        'Could not confirm subscription on AWS email provider.. Please try creating the mailer again.',
+      )
     }
 
     return subscriber

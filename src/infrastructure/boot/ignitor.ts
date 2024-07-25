@@ -1,3 +1,4 @@
+import { MailerDriver } from '@/domains/shared/mailers/mailer_types.ts'
 import './globals'
 
 import { Queue } from '@/domains/shared/queue/queue.js'
@@ -27,15 +28,17 @@ import {
   config,
   env,
 } from '@/infrastructure/env.js'
-import { Hono } from '@/infrastructure/server/hono.js'
+import { Hono, type HonoInstance } from '@/infrastructure/server/hono.js'
 import { container } from '@/utils/typi.js'
+import { Mailer } from '@/domains/shared/mailers/mailer.ts'
 
 export class Ignitor {
   protected env: EnvVariables
   protected config: ConfigVariables
-  protected app: Hono<{ Bindings: { _: boolean } }>
+  protected app: HonoInstance
   protected database: DrizzleClient
   protected queue: QueueDriver
+  protected mailer: MailerDriver
 
   boot() {
     this.env = env
@@ -54,13 +57,17 @@ export class Ignitor {
   bootHttpServer() {
     this.app = new Hono()
 
-    this.app.defineErrorHandler()
-
     return this
   }
 
   queueDriver(driver: QueueDriver) {
     Queue.setDriver(driver)
+
+    return this
+  }
+
+  mailerDriver(makeDriver: (env: EnvVariables) => MailerDriver) {
+    Mailer.setDriver(makeDriver(this.env))
 
     return this
   }
@@ -76,6 +83,8 @@ export class Ignitor {
     this.registerHttpControllers()
 
     this.startHttpServer()
+
+    return this
   }
 
   async startSinglePageApplication() {
@@ -92,6 +101,7 @@ export class Ignitor {
     connection.pragma('journal_mode = WAL')
 
     container.registerInstance(ContainerKey.database, this.database)
+    container.registerInstance(ContainerKey.databaseConnection, connection)
 
     return this
   }

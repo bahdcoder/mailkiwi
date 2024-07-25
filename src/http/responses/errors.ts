@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { HTTPException } from 'hono/http-exception'
 import type { StatusCode } from 'hono/utils/http-status'
 import type { BaseSchema, BaseSchemaAsync, InferIssue } from 'valibot'
 
