@@ -1,14 +1,14 @@
 import type { SendBroadcastDto } from '@/domains/broadcasts/dto/send_broadcast_dto.js'
 import { BroadcastRepository } from '@/domains/broadcasts/repositories/broadcast_repository.js'
-import { Queue } from '@/domains/shared/queue/queue.ts'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.ts'
-import type { Broadcast } from '@/infrastructure/database/schema/types.ts'
-import { container } from '@/utils/typi.ts'
-import { SendBroadcastJob } from '../jobs/send_broadcast_job.ts'
-import { differenceInSeconds } from '@/utils/dates.ts'
-import { TeamRepository } from '@/domains/teams/repositories/team_repository.ts'
+import { BroadcastsQueue } from '@/domains/shared/queue/queue.ts'
 import { CheckProviderCredentials } from '@/domains/teams/helpers/check_provider_credentials.ts'
 import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
+import { TeamRepository } from '@/domains/teams/repositories/team_repository.ts'
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.ts'
+import type { Broadcast } from '@/infrastructure/database/schema/types.ts'
+import { differenceInSeconds } from '@/utils/dates.ts'
+import { container } from '@/utils/typi.ts'
+import { SendBroadcastJob } from '../jobs/send_broadcast_job.ts'
 
 export class SendBroadcastAction {
   constructor(
@@ -56,8 +56,8 @@ export class SendBroadcastAction {
         },
       ])
 
-    await Queue.dispatch(
-      SendBroadcastJob,
+    await BroadcastsQueue.add(
+      SendBroadcastJob.id,
       { broadcastId: broadcast.id },
       {
         delay: broadcast.sendAt

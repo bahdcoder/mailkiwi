@@ -20,8 +20,3 @@ await fs.writeFile(
   path.resolve(process.cwd(), 'build', 'meta.json'),
   JSON.stringify(output.metafile),
 )
-
-await fs.copyFile(
-  path.resolve('node_modules/better-sqlite3/build/Release/better_sqlite3.node'),
-  path.resolve('build/better_sqlite3.node'),
-)

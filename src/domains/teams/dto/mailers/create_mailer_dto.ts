@@ -1,7 +1,7 @@
 import {
   type BaseSchema,
-  check,
   type InferInput,
+  check,
   object,
   picklist,
   pipe,

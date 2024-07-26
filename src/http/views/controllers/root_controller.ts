@@ -1,7 +1,7 @@
 import { ContainerKey, makeApp, makeEnv } from '@/infrastructure/container.js'
+import type { EnvVariables } from '@/infrastructure/env.js'
 import type { HonoInstance } from '@/infrastructure/server/hono.js'
 import type { HonoContext } from '@/infrastructure/server/types.js'
-import type { EnvVariables } from '@/infrastructure/env.js'
 import { container } from '@/utils/typi.js'
 
 export class RootController {

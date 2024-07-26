@@ -7,8 +7,7 @@ import { SendBroadcastDto } from '@/domains/broadcasts/dto/send_broadcast_dto.ts
 import { UpdateBroadcastDto } from '@/domains/broadcasts/dto/update_broadcast_dto.js'
 import { SendBroadcastJob } from '@/domains/broadcasts/jobs/send_broadcast_job.ts'
 import { BaseController } from '@/domains/shared/controllers/base_controller.js'
-import { Queue } from '@/domains/shared/queue/queue.ts'
-import { CheckProviderCredentials } from '@/domains/teams/helpers/check_provider_credentials.ts'
+import { BroadcastsQueue } from '@/domains/shared/queue/queue.ts'
 import { BroadcastValidationAndAuthorizationConcern } from '@/http/api/concerns/broadcast_validation_concern.js'
 import { E_VALIDATION_FAILED } from '@/http/responses/errors.ts'
 import { makeApp } from '@/infrastructure/container.ts'
@@ -112,12 +111,12 @@ export class BroadcastController extends BaseController {
     // CheckProviderCredentials()
     await container.make(SendBroadcastAction).handle(broadcast)
 
-    await Queue.dispatch(
-      SendBroadcastJob,
+    await BroadcastsQueue.add(
+      SendBroadcastJob.id,
       { broadcastId: broadcast.id },
       {
         delay: broadcast.sendAt
-          ? differenceInSeconds(new Date(), broadcast.sendAt)
+          ? differenceInSeconds(new Date(), broadcast.sendAt) * 1000
           : 0,
       },
     )

@@ -3,10 +3,10 @@ import {
   type JobContext,
 } from '@/domains/shared/queue/abstract_job.ts'
 import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.ts'
+import { AccountsQueue } from '@/domains/shared/queue/queue.ts'
 import { GetMailerAction } from '@/domains/teams/actions/mailers/get_mailer_action.ts'
-import { container } from '@/utils/typi.ts'
 import { TeamRepository } from '@/domains/teams/repositories/team_repository.ts'
-import { Queue } from '@/domains/shared/queue/queue.ts'
+import { container } from '@/utils/typi.ts'
 
 export interface VerifyMailerIdentityJobPayload {
   teamId: string
@@ -44,8 +44,8 @@ export class VerifyMailerIdentityJob extends BaseJob<VerifyMailerIdentityJobPayl
 
     const payload = { teamId: team.id }
 
-    await Queue.dispatch(
-      VerifyMailerIdentityJob,
+    await AccountsQueue.add(
+      VerifyMailerIdentityJob.id,
       payload,
       // Retry in 2.5 minutes
       { delay: 2.5 * 60 },

@@ -59,7 +59,7 @@ export class InstallMailerAction {
         mailer,
         {
           status: 'CREATING_IDENTITIES',
-          installationCompletedAt: Date.now(),
+          installationCompletedAt: new Date(),
         },
         team,
       )

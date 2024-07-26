@@ -72,8 +72,11 @@
     "@phc/format": "^1.0.0",
     "@poppinss/utils": "^6.7.3",
     "better-sqlite3": "^11.1.2",
+    "bullmq": "^5.10.4",
     "envalid": "^8.0.0",
     "hono": "^4.5.0",
+    "mysql2": "^3.10.3",
+    "postgres": "^3.4.4",
     "valibot": "^0.36.0"
   },
   "prisma": {

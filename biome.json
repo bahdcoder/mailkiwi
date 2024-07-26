@@ -9,6 +9,7 @@
     "lineWidth": 80,
     "attributePosition": "auto",
     "ignore": [
+      "build/**/*",
       "**/build/**",
       "**/docs",
       "**/coverage",
@@ -29,7 +30,7 @@
       }
     },
     "ignore": [
-      "**/build/**",
+      "build/**/*",
       "**/docs",
       "**/coverage",
       "**/*.html",

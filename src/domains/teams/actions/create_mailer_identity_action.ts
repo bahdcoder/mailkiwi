@@ -1,4 +1,4 @@
-import { Queue } from '@/domains/shared/queue/queue.ts'
+import { AccountsQueue } from '@/domains/shared/queue/queue.ts'
 import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
 import type { CreateMailerIdentityDto } from '@/domains/teams/dto/create_mailer_identity_dto.js'
 import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.js'
@@ -77,8 +77,8 @@ export class CreateMailerIdentityAction {
           })
         }
 
-        await Queue.dispatch(
-          VerifyMailerIdentityJob,
+        await AccountsQueue.add(
+          VerifyMailerIdentityJob.id,
           { teamId: team.id },
           // Check mailer status in 2.5 minutes
           { delay: 2.5 * 60 },

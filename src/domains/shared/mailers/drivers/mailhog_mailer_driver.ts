@@ -1,9 +1,9 @@
 import { cuid } from '@/domains/shared/utils/cuid/cuid.js'
 import type {
+  MailObject,
   MailerDriver,
   MailerDriverError,
   MailerDriverResponse,
-  MailObject,
 } from '../mailer_types.ts'
 
 export interface MailhogDriverResponse {

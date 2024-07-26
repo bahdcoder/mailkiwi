@@ -1,7 +1,7 @@
 import type {
+  MailObject,
   MailerDriver,
   MailerDriverResponse,
-  MailObject,
 } from './mailer_types.ts'
 
 // Mailer class

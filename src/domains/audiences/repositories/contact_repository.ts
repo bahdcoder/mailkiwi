@@ -53,7 +53,7 @@ export class ContactRepository extends BaseRepository {
         newTagIds.map((tagId) => ({
           contactId,
           tagId,
-          assignedAt: Date.now(),
+          assignedAt: new Date(),
         })),
       )
     }

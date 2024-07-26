@@ -1,9 +1,9 @@
 import type { ConfigVariables, EnvVariables } from '@/infrastructure/env.js'
 import { container } from '@/utils/typi.js'
 
+import type { Connection } from 'mysql2'
 import type { DrizzleClient } from './database/client.js'
 import type { HonoInstance } from './server/hono.js'
-import type { Database } from 'better-sqlite3'
 
 export enum ContainerKey {
   app = 'app',
@@ -21,8 +21,8 @@ export const makeEnv = () => container.make<EnvVariables>(ContainerKey.env)
 export const makeConfig = () =>
   container.make<ConfigVariables>(ContainerKey.config)
 
-export const makeDatabase = () =>
+export const makeDatabase = (): DrizzleClient =>
   container.singleton<DrizzleClient>(ContainerKey.database)
 
-export const makeDatabaseConnection = (): Database =>
-  container.make<Database>(ContainerKey.databaseConnection)
+export const makeDatabaseConnection = () =>
+  container.make<Connection>(ContainerKey.databaseConnection)

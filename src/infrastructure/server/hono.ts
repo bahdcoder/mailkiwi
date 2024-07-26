@@ -2,8 +2,8 @@ import { TeamMiddleware } from '@/http/api/middleware/audiences/team_middleware.
 import { AccessTokenMiddleware } from '@/http/api/middleware/auth/access_token_middleware.js'
 import { E_REQUEST_EXCEPTION } from '@/http/responses/errors.js'
 import { container } from '@/utils/typi.js'
-import { Hono as BaseHono, type Env, type MiddlewareHandler } from 'hono'
 import type { HttpBindings } from '@hono/node-server'
+import { Hono as BaseHono, type Env, type MiddlewareHandler } from 'hono'
 import type { HonoRouteDefinition } from './types.js'
 
 export type HonoInstance = BaseHono<{ Bindings: HttpBindings }> & {

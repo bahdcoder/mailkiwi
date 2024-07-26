@@ -34,23 +34,20 @@ export class MailerRepository extends BaseRepository {
 
     const { configuration, ...rest } = payload
 
-    const [mailer] = await this.database
-      .insert(mailers)
-      .values({
-        ...rest,
-        id,
-        configuration: this.getEncryptedConfigurationPayload(
-          {
-            ...this.defaultConfigurationPayload,
-            ...configuration,
-          },
-          team.configurationKey,
-        ),
-        teamId: team.id,
-      })
-      .returning()
+    await this.database.insert(mailers).values({
+      ...rest,
+      id,
+      configuration: this.getEncryptedConfigurationPayload(
+        {
+          ...this.defaultConfigurationPayload,
+          ...configuration,
+        },
+        team.configurationKey,
+      ),
+      teamId: team.id,
+    })
 
-    return mailer
+    return this.findById(id)
   }
 
   async findById(mailerId: string, args?: SQLWrapper[]) {
@@ -102,14 +99,15 @@ export class MailerRepository extends BaseRepository {
       team.configurationKey,
     )
 
-    return this.database
+    await this.database
       .update(mailers)
       .set({
         configuration: encryptedConfiguration,
         ...payload,
       })
       .where(eq(mailers.id, mailer.id))
-      .returning()
+
+    return this.findById(mailer.id)
   }
 
   getDecryptedConfiguration(

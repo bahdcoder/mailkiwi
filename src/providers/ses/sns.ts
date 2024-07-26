@@ -8,8 +8,8 @@ import {
 } from '@aws-sdk/client-sns'
 import type { Secret } from '@poppinss/utils'
 
-import { sleep } from '@/utils/sleep.js'
 import { E_OPERATION_FAILED } from '@/http/responses/errors.ts'
+import { sleep } from '@/utils/sleep.js'
 
 export class SNSService {
   private sns: SNSClient

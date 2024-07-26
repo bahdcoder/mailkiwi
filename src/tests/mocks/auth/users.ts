@@ -1,11 +1,13 @@
 import { SESClient } from '@aws-sdk/client-ses'
 import { SNSClient } from '@aws-sdk/client-sns'
-import { mockClient } from 'aws-sdk-client-mock'
 import { faker } from '@faker-js/faker'
+import { mockClient } from 'aws-sdk-client-mock'
 import { eq } from 'drizzle-orm'
 
 import { AudienceRepository } from '@/domains/audiences/repositories/audience_repository.js'
 import { RegisterUserAction } from '@/domains/auth/actions/register_user_action.js'
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.ts'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
 import { TeamRepository } from '@/domains/teams/repositories/team_repository.js'
 import { makeDatabase } from '@/infrastructure/container.js'
 import { mailers, users } from '@/infrastructure/database/schema/schema.js'
@@ -16,9 +18,7 @@ import type {
 } from '@/infrastructure/database/schema/types.ts'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
 import { container } from '@/utils/typi.js'
-import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
 import { Secret } from '@poppinss/utils'
-import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.ts'
 
 export async function createBroadcastForUser(
   user: User,
@@ -100,7 +100,6 @@ export const createUser = async ({
 } = {}) => {
   const database = makeDatabase()
 
-  const setting = await database.query.settings.findFirst()
   const audienceRepository = container.resolve(AudienceRepository)
 
   const registerUserAction = container.resolve(RegisterUserAction)
@@ -157,7 +156,6 @@ export const createUser = async ({
     user: freshUser,
     team: (await teamRepository.findById(team.id)) as Team,
     audience,
-    setting: setting as Setting,
     broadcastId,
   }
 }

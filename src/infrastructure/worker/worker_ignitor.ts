@@ -1,18 +1,19 @@
 import { SendBroadcastJob } from '@/domains/broadcasts/jobs/send_broadcast_job.ts'
 import { SendBroadcastToContacts } from '@/domains/broadcasts/jobs/send_broadcast_to_contacts_job.ts'
 import { MailhogDriver } from '@/domains/shared/mailers/drivers/mailhog_mailer_driver.ts'
-import { DatabaseQueueDriver } from '@/domains/shared/queue/drivers/database_queue_driver.ts'
-import { Queue } from '@/domains/shared/queue/queue.ts'
+import type { BaseJob } from '@/domains/shared/queue/abstract_job.ts'
 import { VerifyMailerIdentityJob } from '@/domains/teams/jobs/verify_mailer_identity_job.ts'
 import { SendTransactionalEmailJob } from '@/domains/transactional/jobs/send_transactional_email_job.ts'
 import { Ignitor } from '@/infrastructure/boot/ignitor.ts'
-import { container } from '@/utils/typi.ts'
+import { Worker } from 'bullmq'
 
 export class WorkerIgnitor extends Ignitor {
-  start() {
-    this.startDatabaseConnector()
+  private workers: Worker<any, any, string>[] = []
+  private jobs: Map<string, new () => BaseJob<object>> = new Map()
 
-    this.queueDriver(container.make(DatabaseQueueDriver))
+  async start() {
+    await this.startDatabaseConnector()
+
     this.mailerDriver(({ MAILHOG_URL }) => new MailhogDriver(MAILHOG_URL))
     this.registerJobs()
 
@@ -20,15 +21,31 @@ export class WorkerIgnitor extends Ignitor {
   }
 
   registerJobs() {
-    Queue.registerJob(SendBroadcastJob.id, SendBroadcastJob)
-    Queue.registerJob(VerifyMailerIdentityJob.id, VerifyMailerIdentityJob)
-    Queue.registerJob(SendBroadcastToContacts.id, SendBroadcastToContacts)
-    Queue.registerJob(SendTransactionalEmailJob.id, SendTransactionalEmailJob)
+    this.registerJob(SendBroadcastJob.id, SendBroadcastJob)
+    this.registerJob(VerifyMailerIdentityJob.id, VerifyMailerIdentityJob)
+    this.registerJob(SendBroadcastToContacts.id, SendBroadcastToContacts)
+    this.registerJob(SendTransactionalEmailJob.id, SendTransactionalEmailJob)
   }
 
-  listen() {
-    Queue.process()
+  private registerJob(id: string, job: new () => BaseJob<object>) {
+    this.jobs.set(id, job)
 
-    d('Queue listening for jobs:')
+    return this
+  }
+
+  listen(queueNames: string[]) {
+    for (const [idx, queue] of queueNames.entries()) {
+      this.workers[idx] = new Worker(queue, async (job) => {}, {
+        connection: { host: 'localhost', port: 6379 },
+      })
+    }
+
+    d(`Queue listening for jobs on queues: ${queueNames.join(', ')}`)
+  }
+
+  async shutdown() {
+    for (const worker of this.workers) {
+      await worker.close()
+    }
   }
 }

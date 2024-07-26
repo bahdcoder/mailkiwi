@@ -1,28 +1,65 @@
-import { Secret } from '@poppinss/utils'
-import { cleanEnv, host, makeValidator, num, str } from 'envalid'
+import {
+  url,
+  ip,
+  maxLength,
+  minLength,
+  nonEmpty,
+  number,
+  object,
+  optional,
+  picklist,
+  pipe,
+  safeParse,
+  string,
+} from 'valibot'
 
-export type EnvVariables = typeof env
+export type EnvVariables = {
+  PORT: number
+  HOST: string
+  APP_KEY: string
+  DATABASE_URL: string
+  NODE_ENV: 'development' | 'test' | 'production'
+  MAILHOG_URL: string
+  isTest: boolean
+  isProd: boolean
+  isDev: boolean
+}
+
 export type ConfigVariables = typeof config
 
-const appKey = makeValidator((value) => {
-  if (value.length !== 32) {
-    throw new Error('APP_KEY must be 32 characters long.')
-  }
+const DEFAULT_PORT = '5566'
 
-  return new Secret(value)
+const envValidationSchema = object({
+  PORT: optional(string(), DEFAULT_PORT),
+  HOST: pipe(
+    optional(string(), `http://localhost:${DEFAULT_PORT}`),
+    nonEmpty(),
+    ip(),
+  ),
+  APP_KEY: pipe(string(), nonEmpty(), minLength(32), maxLength(32)),
+  APP_URL: pipe(
+    optional(string(), `http://localhost:${DEFAULT_PORT}`),
+    nonEmpty(),
+    url(),
+  ),
+  DATABASE_URL: pipe(string(), nonEmpty()),
+  NODE_ENV: picklist(['development', 'test', 'production']),
+  MAILHOG_URL: pipe(string(), nonEmpty(), url()),
 })
 
-export const env = cleanEnv(process.env, {
-  PORT: num({ default: 5566 }),
-  HOST: host({ default: '0.0.0.0' }),
-  APP_KEY: appKey({ desc: 'Application key.' }),
-  DATABASE_URL: str({ default: 'dev.db' }),
-  NODE_ENV: str({
-    choices: ['development', 'test', 'production'],
-    default: 'development',
-  }),
-  MAILHOG_URL: str(),
-})
+const parsed = safeParse(envValidationSchema, process.env)
+
+if (!parsed.success) {
+  console.dir({
+    '🟡 ENVIRONMENT_VARIABLES_VALIDATION_FAILED': parsed.issues,
+  })
+}
+
+export const env = parsed.output as EnvVariables
+
+env.isTest = env.NODE_ENV === 'test'
+env.isProd = env.NODE_ENV === 'production'
+env.isDev = env.NODE_ENV === 'development'
 
 const SHORT_NAME = 'bamboomailer'
 

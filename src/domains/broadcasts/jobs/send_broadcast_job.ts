@@ -4,16 +4,15 @@ import {
 } from '@/domains/shared/queue/abstract_job.ts'
 import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.ts'
 
-import { and, count, eq, sql } from 'drizzle-orm'
+import { BroadcastsQueue } from '@/domains/shared/queue/queue.ts'
 import {
   broadcasts,
   contacts,
   sends,
 } from '@/infrastructure/database/schema/schema.ts'
-import { Queue } from '@/domains/shared/queue/queue.ts'
+import { and, count, eq, sql } from 'drizzle-orm'
 import { SendBroadcastToContacts } from './send_broadcast_to_contacts_job.ts'
-import { DrizzleClient } from '@/infrastructure/database/client.ts'
-import { Broadcast } from '@/infrastructure/database/schema/types.ts'
+
 import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
 import { container } from '@/utils/typi.ts'
 
@@ -48,7 +47,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
     }
 
     const [{ count: totalContacts }] = await database
-      .select({ count: count(), id: contacts.id })
+      .select({ count: count() })
       .from(contacts)
       .leftJoin(
         sends,
@@ -95,7 +94,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
         .offset(batch * batchSize)
 
       // this job will send a maximum of 1 email every 1500 milliseconds
-      await Queue.dispatch(SendBroadcastToContacts, {
+      await BroadcastsQueue.add(SendBroadcastToContacts.id, {
         contactsIds: contactIds.map((contact) => contact.id),
         broadcastId: broadcast.id,
       })

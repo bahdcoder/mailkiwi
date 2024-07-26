@@ -9,17 +9,17 @@ import {
   checkAsync,
   date,
   email,
+  maxLength,
+  minLength,
+  nonEmpty,
+  nullable,
   number,
   object,
   objectAsync,
   optional,
   pipe,
   pipeAsync,
-  nonEmpty,
   string,
-  minLength,
-  maxLength,
-  nullable,
 } from 'valibot'
 
 export const SendBroadcastDto = objectAsync({

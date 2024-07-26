@@ -1,226 +1,202 @@
 import { relations } from 'drizzle-orm'
 import {
-  type AnySQLiteColumn,
+  type AnyMySqlColumn,
+  boolean,
   index,
   int,
-  integer,
-  sqliteTable,
+  json,
+  mysqlEnum,
+  mysqlTable,
   text,
-  uniqueIndex,
-} from 'drizzle-orm/sqlite-core'
+  timestamp,
+  unique,
+  varchar,
+} from 'drizzle-orm/mysql-core'
 
 import { cuid } from '@/domains/shared/utils/cuid/cuid.ts'
 
-const id = text('id', { length: 32 }).primaryKey().notNull().$defaultFn(cuid)
+const id = varchar('id', { length: 40 }).primaryKey().notNull().$defaultFn(cuid)
 
 // Tables
-export const settings = sqliteTable('settings', {
+export const settings = mysqlTable('settings', {
   id,
-  url: text('url', { length: 256 }).unique(),
-  domain: text('domain', { length: 50 }).unique().notNull(),
-  installedSslCertificate: integer('installedSslCertificate', {
-    mode: 'boolean',
-  })
+  url: varchar('url', { length: 256 }).unique(),
+  domain: varchar('domain', { length: 50 }).unique().notNull(),
+  installedSslCertificate: boolean('installedSslCertificate')
     .default(false)
     .notNull(),
 })
 
-export const users = sqliteTable('users', {
+export const users = mysqlTable('users', {
   id,
-  email: text('email', { length: 80 }).unique().notNull(),
-  name: text('name', { length: 80 }),
-  avatarUrl: text('avatarUrl', { length: 256 }),
-  password: text('password', { length: 256 }).notNull(),
+  email: varchar('email', { length: 80 }).unique().notNull(),
+  name: varchar('name', { length: 80 }),
+  avatarUrl: varchar('avatarUrl', { length: 256 }),
+  password: varchar('password', { length: 256 }).notNull(),
 })
 
-export const accessTokens = sqliteTable('accessTokens', {
+export const accessTokens = mysqlTable('accessTokens', {
   id,
-  userId: text('userId', { length: 32 }).references(() => users.id),
-  teamId: text('teamId', { length: 32 }).references(() => teams.id),
-  type: text('type', { length: 16 }).notNull(),
-  name: text('name', { length: 32 }),
-  hash: text('hash', { length: 100 }).notNull(),
-  createdAt: integer('createdAt', { mode: 'timestamp' }).defaultNow().notNull(),
-  lastUsedAt: integer('lastUsedAt', { mode: 'timestamp' })
-    .defaultNow()
-    .notNull(),
-  expiresAt: integer('expiresAt', { mode: 'timestamp' }).defaultNow().notNull(),
+  userId: varchar('userId', { length: 32 }).references(() => users.id),
+  teamId: varchar('teamId', { length: 32 }).references(() => teams.id),
+  type: varchar('type', { length: 16 }).notNull(),
+  name: varchar('name', { length: 32 }),
+  hash: varchar('hash', { length: 100 }).notNull(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  lastUsedAt: timestamp('lastUsedAt').defaultNow().notNull(),
+  expiresAt: timestamp('expiresAt').defaultNow().notNull(),
 })
 
-export const teams = sqliteTable('teams', {
+export const teams = mysqlTable('teams', {
   id,
-  name: text('name', { length: 100 }).notNull(),
-  userId: text('userId', { length: 32 })
+  name: varchar('name', { length: 100 }).notNull(),
+  userId: varchar('userId', { length: 32 })
     .notNull()
     .references(() => users.id),
-  trackClicks: integer('trackClicks', { mode: 'boolean' }),
-  trackOpens: integer('trackOpens', { mode: 'boolean' }),
-  configurationKey: text('configurationKey', { length: 512 }).notNull(),
-  broadcastEditor: text('broadcastEditor', { enum: ['DEFAULT', 'MARKDOWN'] }),
+  trackClicks: boolean('trackClicks'),
+  trackOpens: boolean('trackOpens'),
+  configurationKey: varchar('configurationKey', { length: 512 }).notNull(),
+  broadcastEditor: mysqlEnum('broadcastEditor', ['DEFAULT', 'MARKDOWN']),
 })
 
-export const mailers = sqliteTable('mailers', {
+export const mailers = mysqlTable('mailers', {
   id,
-  name: text('name', { length: 50 }).notNull(),
-  configuration: text('configuration', { length: 512 }).notNull(),
-  default: integer('default', { mode: 'boolean' }),
-  provider: text('provider', {
-    enum: ['AWS_SES', 'POSTMARK', 'MAILGUN'],
-  }).notNull(),
-  status: text('status', {
-    enum: [
-      'READY',
-      'PENDING',
-      'INSTALLING',
-      'CREATING_IDENTITIES',
-      'SENDING_TEST_EMAIL',
-      'DISABLED',
-      'ACCOUNT_SENDING_NOT_ENABLED',
-      'ACCESS_KEYS_LOST_PROVIDER_ACCESS',
-    ],
-  })
+  name: varchar('name', { length: 50 }).notNull(),
+  configuration: varchar('configuration', { length: 512 }).notNull(),
+  default: boolean('default'),
+  provider: mysqlEnum('provider', ['AWS_SES', 'POSTMARK', 'MAILGUN']).notNull(),
+  status: mysqlEnum('status', [
+    'READY',
+    'PENDING',
+    'INSTALLING',
+    'CREATING_IDENTITIES',
+    'SENDING_TEST_EMAIL',
+    'DISABLED',
+    'ACCOUNT_SENDING_NOT_ENABLED',
+    'ACCESS_KEYS_LOST_PROVIDER_ACCESS',
+  ])
     .default('PENDING')
     .notNull(),
-  teamId: text('teamId', { length: 512 })
+  teamId: varchar('teamId', { length: 512 })
     .references(() => teams.id)
     .unique()
     .notNull(),
-  sendingEnabled: integer('sendingEnabled', { mode: 'boolean' })
-    .default(false)
-    .notNull(),
-  inSandboxMode: integer('inSandboxMode', { mode: 'boolean' })
-    .default(true)
-    .notNull(),
+  sendingEnabled: boolean('sendingEnabled').default(false).notNull(),
+  inSandboxMode: boolean('inSandboxMode').default(true).notNull(),
   max24HourSend: int('max24HourSend'),
   maxSendRate: int('maxSendRate'),
   sentLast24Hours: int('sentLast24Hours'),
-  testEmailSentAt: integer('testEmailSentAt'),
-  installationCompletedAt: integer('installationCompletedAt'),
+  testEmailSentAt: timestamp('testEmailSentAt'),
+  installationCompletedAt: timestamp('installationCompletedAt'),
 })
 
-export const mailerIdentities = sqliteTable('mailerIdentities', {
+export const mailerIdentities = mysqlTable('mailerIdentities', {
   id,
-  mailerId: text('mailerId', { length: 32 }).references(() => mailers.id),
-  value: text('value', { length: 50 }).notNull(),
-  type: text('type', { enum: ['EMAIL', 'DOMAIN'] }).notNull(),
-  status: text('status', {
-    enum: ['PENDING', 'APPROVED', 'DENIED', 'FAILED', 'TEMPORARILY_FAILED'],
-  })
+  mailerId: varchar('mailerId', { length: 32 }).references(() => mailers.id),
+  value: varchar('value', { length: 50 }).notNull(),
+  type: mysqlEnum('type', ['EMAIL', 'DOMAIN']).notNull(),
+  status: mysqlEnum('status', [
+    'PENDING',
+    'APPROVED',
+    'DENIED',
+    'FAILED',
+    'TEMPORARILY_FAILED',
+  ])
     .default('PENDING')
     .notNull(),
-  configuration: text('configuration', { mode: 'json' }),
-  confirmedApprovalAt: integer('confirmedApprovalAt'),
+  configuration: json('configuration'),
+  confirmedApprovalAt: timestamp('confirmedApprovalAt'),
 })
 
-export const webhooks = sqliteTable('webhooks', {
+export const webhooks = mysqlTable('webhooks', {
   id,
-  name: text('name', { length: 50 }).notNull(),
-  url: text('url', { length: 256 }).notNull(),
-  events: text('webhookEvent', {
-    enum: [
-      'ALL_EVENTS',
-      'CONTACT_ADDED',
-      'CONTACT_REMOVED',
-      'CONTACT_TAG_ADDED',
-      'CONTACT_TAG_REMOVED',
-      'BROADCAST_SENT',
-      'BROADCAST_PAUSED',
-      'BROADCAST_EMAIL_OPENED',
-      'BROADCAST_EMAIL_LINK_CLICKED',
-      'AUDIENCE_ADDED',
-      'TAG_ADDED',
-      'TAG_REMOVED',
-    ],
-  }),
-  teamId: text('teamId', { length: 32 })
+  name: varchar('name', { length: 50 }).notNull(),
+  url: varchar('url', { length: 256 }).notNull(),
+  events: mysqlEnum('webhookEvent', [
+    'ALL_EVENTS',
+    'CONTACT_ADDED',
+    'CONTACT_REMOVED',
+    'CONTACT_TAG_ADDED',
+    'CONTACT_TAG_REMOVED',
+    'BROADCAST_SENT',
+    'BROADCAST_PAUSED',
+    'BROADCAST_EMAIL_OPENED',
+    'BROADCAST_EMAIL_LINK_CLICKED',
+    'AUDIENCE_ADDED',
+    'TAG_ADDED',
+    'TAG_REMOVED',
+  ]),
+  teamId: varchar('teamId', { length: 32 })
     .references(() => teams.id)
     .notNull(),
 })
 
-export const teamMemberships = sqliteTable('teamMemberships', {
+export const teamMemberships = mysqlTable('teamMemberships', {
   id,
-  userId: text('userId', { length: 32 }).references(() => users.id),
-  email: text('email', { length: 50 }).notNull(),
-  teamId: text('teamId', { length: 32 })
+  userId: varchar('userId', { length: 32 }).references(() => users.id),
+  email: varchar('email', { length: 50 }).notNull(),
+  teamId: varchar('teamId', { length: 32 })
     .references(() => teams.id)
     .notNull(),
-  role: text('role', { enum: ['ADMINISTRATOR', 'USER'] }),
-  status: text('role', { enum: ['PENDING', 'ACTIVE'] }),
-  invitedAt: integer('invitedAt', { mode: 'timestamp' }).defaultNow().notNull(),
-  expiresAt: integer('expiresAt').notNull(),
+  role: mysqlEnum('role', ['ADMINISTRATOR', 'USER']),
+  status: mysqlEnum('status', ['PENDING', 'ACTIVE']),
+  invitedAt: timestamp('invitedAt').defaultNow().notNull(),
+  expiresAt: timestamp('expiresAt').notNull(),
 })
 
-export const audiences = sqliteTable('audiences', {
+export const audiences = mysqlTable('audiences', {
   id,
-  name: text('name', { length: 50 }).notNull(),
-  teamId: text('teamId', { length: 32 })
+  name: varchar('name', { length: 50 }).notNull(),
+  teamId: varchar('teamId', { length: 32 })
     .references(() => teams.id)
     .notNull(),
 })
 
-export const contacts = sqliteTable(
+export const contacts = mysqlTable(
   'contacts',
   {
     id,
-    firstName: text('firstName', { length: 50 }),
-    lastName: text('lastName', { length: 50 }),
-    email: text('email', { length: 80 }).notNull(),
-    avatarUrl: text('avatarUrl', { length: 256 }),
-    subscribedAt: integer('subscribedAt'),
-    unsubscribedAt: integer('unsubscribedAt'),
-    audienceId: text('audienceId', { length: 32 })
+    firstName: varchar('firstName', { length: 50 }),
+    lastName: varchar('lastName', { length: 50 }),
+    email: varchar('email', { length: 80 }).notNull(),
+    avatarUrl: varchar('avatarUrl', { length: 256 }),
+    subscribedAt: timestamp('subscribedAt'),
+    unsubscribedAt: timestamp('unsubscribedAt'),
+    audienceId: varchar('audienceId', { length: 32 })
       .references(() => audiences.id)
       .notNull(),
-    attributes: text('attributes', { mode: 'json' }).$type<
-      Record<string, string | string[] | number[] | number>
-    >(),
+    attributes: json('attributes').$type<Record<string, any>>(),
   },
   (table) => ({
-    Contact_email_audienceId_key: uniqueIndex(
-      'Contact_email_audienceId_key',
-    ).on(table.email, table.audienceId),
+    ContactEmailAudienceIdKey: unique('ContactEmailAudienceIdKey').on(
+      table.email,
+      table.audienceId,
+    ),
   }),
 )
 
-export const tags = sqliteTable('tags', {
+export const tags = mysqlTable('tags', {
   id,
-  name: text('name', { length: 256 }).notNull(),
-  description: text('description', { length: 256 }),
-  audienceId: text('audienceId', { length: 32 })
+  name: varchar('name', { length: 256 }).notNull(),
+  description: varchar('description', { length: 256 }),
+  audienceId: varchar('audienceId', { length: 32 })
     .references(() => audiences.id)
     .notNull(),
 })
 
-export const queueJobs = sqliteTable('queueJobs', {
-  id,
-  jobId: text('jobId').notNull(),
-  attemptsCount: integer('attemptsCount').notNull().default(0),
-  maxAttempts: integer('maxAttempts').notNull().default(3),
-  dispatchedAt: integer('dispatchedAt', { mode: 'timestamp' }).notNull(),
-  lockedAt: integer('lockedAt', { mode: 'timestamp' }),
-  processAt: integer('processAt', { mode: 'timestamp' }),
-  timeoutAt: integer('timeoutAt', { mode: 'timestamp' }),
-  completedAt: integer('completedAt', { mode: 'timestamp' }),
-  payload: text('payload', { mode: 'json' })
-    .$type<Record<string, unknown>>()
-    .notNull(),
-  queue: text('queue'),
-  attemptLogs: text('attemptLogs', { mode: 'json' }).$type<string[]>(),
-})
-
-export const tagsOnContacts = sqliteTable(
+export const tagsOnContacts = mysqlTable(
   'tagsOnContacts',
   {
-    tagId: text('tagId', { length: 32 })
+    tagId: varchar('tagId', { length: 32 })
       .references(() => tags.id)
       .notNull(),
-    contactId: text('contactId', { length: 32 })
+    contactId: varchar('contactId', { length: 32 })
       .references(() => contacts.id)
       .notNull(),
-    assignedAt: integer('assignedAt'),
+    assignedAt: timestamp('assignedAt'),
   },
   (table) => ({
-    tagsOnContactsTagIdContactIdKey: uniqueIndex(
+    tagsOnContactsTagIdContactIdKey: unique(
       'tagsOnContactsTagIdContactIdKey',
     ).on(table.tagId, table.contactId),
     tagsOnContactsTagIdContactIdIdx: index(
@@ -229,54 +205,86 @@ export const tagsOnContacts = sqliteTable(
   }),
 )
 
-export const automations = sqliteTable('automations', {
+export const automations = mysqlTable('automations', {
   id,
-  name: text('name', { length: 50 }).notNull(),
-  description: text('description', { length: 512 }),
-  audienceId: text('audienceId', { length: 32 })
+  name: varchar('name', { length: 50 }).notNull(),
+  description: varchar('description', { length: 512 }),
+  audienceId: varchar('audienceId', { length: 32 })
     .references(() => audiences.id, { onDelete: 'cascade' })
     .notNull(),
 })
 
-export const emails = sqliteTable('emails', {
+export const emails = mysqlTable('emails', {
   id,
-  type: text('type', { enum: ['AUTOMATION', 'TRANSACTIONAL'] }).notNull(),
-  title: text('title', { length: 50 }).notNull(),
-  subject: text('subject', { length: 180 }),
-  audienceId: text('audienceId', { length: 32 })
+  type: mysqlEnum('type', ['AUTOMATION', 'TRANSACTIONAL']).notNull(),
+  title: varchar('title', { length: 50 }).notNull(),
+  subject: varchar('subject', { length: 180 }),
+  audienceId: varchar('audienceId', { length: 32 })
     .references(() => audiences.id, { onDelete: 'cascade' })
     .notNull(),
-  content: text('content', { mode: 'json' }).$type<Record<string, unknown>>(),
-  contentText: text('contentText', { mode: 'text' }),
+  content: json('content'),
+  contentText: text('contentText'),
 })
 
-export const sends = sqliteTable('sends', {
+export const sends = mysqlTable('sends', {
   id,
-  type: text('type', {
-    enum: ['AUTOMATION', 'TRANSACTIONAL', 'BROADCAST'],
-  }).notNull(),
-  status: text('status', { enum: ['PENDING', 'SENT', 'FAILED'] }).notNull(),
-  email: text('email', { length: 80 }),
-  contentText: text('content', { mode: 'json' }).$type<
-    Record<string, unknown>
-  >(),
-  contentJson: text('contentJson', { mode: 'text' }),
-  contentHtml: text('contentHtml', { mode: 'text' }),
-  contactId: text('contactId', { length: 32 })
+  type: mysqlEnum('type', [
+    'AUTOMATION',
+    'TRANSACTIONAL',
+    'BROADCAST',
+  ]).notNull(),
+  status: mysqlEnum('status', ['PENDING', 'SENT', 'FAILED']).notNull(),
+  email: varchar('email', { length: 80 }),
+  contentText: json('content'),
+  contentJson: text('contentJson'),
+  contentHtml: text('contentHtml'),
+  contactId: varchar('contactId', { length: 32 })
     .references(() => contacts.id, { onDelete: 'cascade' })
     .notNull(),
-  broadcastId: text('broadcastId', { length: 32 }).references(
+  broadcastId: varchar('broadcastId', { length: 32 }).references(
     () => broadcasts.id,
     { onDelete: 'cascade' },
   ),
-  sentAt: integer('sendAt', { mode: 'timestamp' }),
-  timeoutAt: integer('timeoutAt', { mode: 'timestamp' }),
-  messageId: text('messageId'),
-  logs: text('logs', { mode: 'json' }).$type<any>(),
-  automationStepId: text('automationStepId', { length: 32 }).references(
+  sentAt: timestamp('sentAt'),
+  timeoutAt: timestamp('timeoutAt'),
+  messageId: varchar('messageId', { length: 255 }),
+  logs: json('logs'),
+  automationStepId: varchar('automationStepId', { length: 32 }).references(
     () => automationSteps.id,
     { onDelete: 'cascade' },
   ),
+})
+
+export const broadcasts = mysqlTable('broadcasts', {
+  id,
+  name: varchar('name', { length: 255 }).notNull(),
+  fromName: varchar('fromName', { length: 255 }),
+  fromEmail: varchar('fromEmail', { length: 255 }),
+  replyToEmail: varchar('replyToEmail', { length: 255 }),
+  replyToName: varchar('replyToName', { length: 255 }),
+  audienceId: varchar('audienceId', { length: 32 })
+    .references(() => audiences.id)
+    .notNull(),
+  teamId: varchar('teamId', { length: 32 })
+    .references(() => teams.id)
+    .notNull(),
+  trackClicks: boolean('trackClicks'),
+  trackOpens: boolean('trackOpens'),
+  contentJson: json('contentJson'),
+  contentText: text('contentText'),
+  contentHtml: text('contentHtml'),
+  subject: varchar('subject', { length: 255 }),
+  previewText: varchar('previewText', { length: 255 }),
+  status: mysqlEnum('status', [
+    'SENT',
+    'SENDING',
+    'DRAFT',
+    'QUEUED_FOR_SENDING',
+    'SENDING_FAILED',
+    'DRAFT_ARCHIVED',
+    'ARCHIVED',
+  ]).default('DRAFT'),
+  sendAt: timestamp('sendAt'),
 })
 
 export const automationStepSubtypesTrigger = [
@@ -305,140 +313,53 @@ export const automationStepSubtypesRule = [
 
 export const automationStepSubtypesEnd = ['END'] as const
 
+export const automationStepTypes = ['TRIGGER', 'ACTION', 'RULE', 'END'] as const
 export const automationStepSubtypes = [
-  // TRIGGERS
   ...automationStepSubtypesTrigger,
-
-  // ACTIONS
   ...automationStepSubtypesAction,
-
-  // RULES
   ...automationStepSubtypesRule,
-
-  // END
   ...automationStepSubtypesEnd,
 ] as const
 
-export const automationStepTypes = ['TRIGGER', 'ACTION', 'RULE', 'END'] as const
-
-// src/infrastructure/database/schema/schema.ts
-
-export const broadcasts = sqliteTable('broadcasts', {
+export const automationSteps = mysqlTable('automationSteps', {
   id,
-  name: text('name').notNull(),
-  fromName: text('fromName'),
-  fromEmail: text('fromEmail'),
-  replyToEmail: text('replyToEmail'),
-  replyToName: text('replyToName'),
-  audienceId: text('audienceId')
-    .references(() => audiences.id)
-    .notNull(),
-  teamId: text('teamId', { length: 32 })
-    .references(() => teams.id)
-    .notNull(),
-  trackClicks: integer('trackClicks', { mode: 'boolean' }),
-  trackOpens: integer('trackOpens', { mode: 'boolean' }),
-  contentJson: text('contentJson', { mode: 'json' }),
-  contentText: text('contentText'),
-  contentHtml: text('contentHtml'),
-  subject: text('subject'),
-  previewText: text('previewText'),
-  status: text('status', {
-    enum: [
-      'SENT',
-      'SENDING',
-      'DRAFT',
-      'QUEUED_FOR_SENDING',
-      'SENDING_FAILED',
-      'DRAFT_ARCHIVED',
-      'ARCHIVED',
-    ],
-  }).default('DRAFT'),
-  sendAt: integer('sendAt', { mode: 'timestamp' }),
-})
-
-export const automationSteps = sqliteTable('automationSteps', {
-  id,
-  automationId: text('automationId', { length: 32 })
+  automationId: varchar('automationId', { length: 32 })
     .references(() => automations.id)
     .notNull(),
-  type: text('type', { enum: automationStepTypes }).notNull(),
-  status: text('status', { enum: ['DRAFT', 'ACTIVE', 'PAUSED', 'ARCHIVED'] })
+  type: mysqlEnum('type', automationStepTypes).notNull(),
+  status: mysqlEnum('status', ['DRAFT', 'ACTIVE', 'PAUSED', 'ARCHIVED'])
     .notNull()
     .default('DRAFT'),
-  subtype: text('subtype', {
-    enum: automationStepSubtypes,
-  }).notNull(),
-  parentId: text('parentId', { length: 32 }).references(
-    (): AnySQLiteColumn => automationSteps.id,
+  subtype: mysqlEnum('subtype', automationStepSubtypes).notNull(),
+  parentId: varchar('parentId', { length: 32 }).references(
+    (): AnyMySqlColumn => automationSteps.id,
     { onDelete: 'cascade' },
   ),
-  branchIndex: int('branchIndex'), // used for if / else or split or branch automation point types.
-  configuration: text('configuration', { mode: 'json' })
-    .$type<Record<string, unknown>>()
-    .notNull(),
-
-  // an automation step of type SEND_EMAIL must have this emailId
-  emailId: text('emailId', { length: 32 }).references(() => emails.id),
-
-  // an automation step of type ADD_TAG OR REMOVE_TAG must have this tagId field
-  tagId: text('tagId', { length: 32 }).references(() => tags.id),
-
-  // an automation step of type ADD_AUDIENCE or REMOVE_FROM_AUDIENCE must have this audienceId field
-  audienceId: text('audienceId', { length: 32 }).references(() => audiences.id),
+  branchIndex: int('branchIndex'),
+  configuration: json('configuration').notNull(),
+  emailId: varchar('emailId', { length: 32 }).references(() => emails.id),
+  tagId: varchar('tagId', { length: 32 }).references(() => tags.id),
+  audienceId: varchar('audienceId', { length: 32 }).references(
+    () => audiences.id,
+  ),
 })
 
-/*
-
-This table stores a user's progress through the automation.
-
-Automation run is triggered every 10 minutes.
-
-When triggered, automation fetches all contacts that match the trigger conditions.
-    OR -> Automation run is manually triggered by an event happening in the system, such as a contact getting a tag.
--> Loop through each contact pass in the contact , automation (with its steps), contact_automation steps progress to the automation executor.
-
--> The executor figures out if the contact is eligible for any actions at that time, then executes. 
--> If not, skips the automation process for that user. 
--> It also updates the state of the contact: halted, waiting, completed, failed, etc.
-
--> Generates automation summary after execution.
-
-*/
-
-// say user completed 5 of 9
-
-// i delete number 4. now user has completed 4 of 8
-
-// but how do we proceed ?
-
-// simple. we get latest known completed step for contact, and find next based on new automation flow.
-
-// if they were waiting somewhere and that step is deleted, sure no problem.
-
-// to run automation step, we run a paginated query to fetch all contacts that match the trigger conditions.
-// then cursor through the contacts. for each contact, we execute the automation. we can execute maybe 4 contacts at a time or similar.
-
-// we can also execute the automation in series. but that will be slow. we can also execute the automation in parallel. but that will be fast but will require more resources. so we can have a hybrid approach. we can execute the automation in parallel but limit the number of parallel executions.
-
-export const contactAutomationStep = sqliteTable('contactAutomationSteps', {
+export const contactAutomationStep = mysqlTable('contactAutomationSteps', {
   id,
-
-  automationStepId: text('automationStepId', { length: 32 })
+  automationStepId: varchar('automationStepId', { length: 32 })
     .references(() => automationSteps.id, { onDelete: 'cascade' })
     .notNull(),
-
-  contactId: text('contactId', { length: 32 })
+  contactId: varchar('contactId', { length: 32 })
     .references(() => contacts.id, { onDelete: 'cascade' })
     .notNull(),
-
-  haltedAt: integer('haltedAt'),
-  failedAt: integer('failedAt'),
-  startedAt: integer('startedAt'), // for wait steps, this will be start of wait
-  completedAt: integer('completedAt'), // for wait steps, this will be end of wait
-
-  output: text('output', { mode: 'json' }),
+  haltedAt: timestamp('haltedAt'),
+  failedAt: timestamp('failedAt'),
+  startedAt: timestamp('startedAt'),
+  completedAt: timestamp('completedAt'),
+  output: json('output'),
 })
+
+// Relations remain the same as in the original file
 
 // Relations
 export const userRelations = relations(users, ({ many }) => ({

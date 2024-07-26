@@ -10,14 +10,12 @@ import type {
   contacts,
   mailerIdentities,
   mailers,
-  queueJobs,
+  settings,
   teamMemberships,
   teams,
   users,
-  settings,
 } from './schema.js'
 
-export type QueueJob = InferSelectModel<typeof queueJobs>
 export type Setting = InferSelectModel<typeof settings>
 export type Audience = InferSelectModel<typeof audiences>
 export type Contact = InferSelectModel<typeof contacts>

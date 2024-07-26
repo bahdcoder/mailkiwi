@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker'
 
 import { CreateAudienceAction } from '@/domains/audiences/actions/audiences/create_audience_action.js'
+import { AccessTokenRepository } from '@/domains/auth/acess_tokens/repositories/access_token_repository.ts'
 import { RegisterUserAction } from '@/domains/auth/actions/register_user_action.js'
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.ts'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
 import { ContainerKey } from '@/infrastructure/container.js'
 import {
   createDatabaseClient,
@@ -10,20 +13,18 @@ import {
 import {
   contacts,
   mailers,
-  settings,
   teams,
 } from '@/infrastructure/database/schema/schema.js'
+import type { Team } from '@/infrastructure/database/schema/types.ts'
 import { env } from '@/infrastructure/env.js'
 import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
 import { container } from '@/utils/typi.js'
-import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
 import { Secret } from '@poppinss/utils'
 import { eq } from 'drizzle-orm'
-import { Team } from '@/infrastructure/database/schema/types.ts'
-import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.ts'
-import { AccessTokenRepository } from '@/domains/auth/acess_tokens/repositories/access_token_repository.ts'
 
-const database = createDrizzleDatabase(createDatabaseClient(env.DATABASE_URL))
+const database = createDrizzleDatabase(
+  await createDatabaseClient(env.DATABASE_URL),
+)
 
 container.registerInstance(ContainerKey.env, env)
 container.registerInstance(ContainerKey.database, database)
@@ -32,11 +33,6 @@ const registerUserAction = container.resolve(RegisterUserAction)
 const createAudienceAction = container.resolve(CreateAudienceAction)
 
 await refreshDatabase()
-
-await database.insert(settings).values({
-  domain: 'bamboomail.a.pinggy.link',
-  url: 'https://bamboomail.a.pinggy.link',
-})
 
 for (let userIndex = 0; userIndex < 1; userIndex++) {
   console.log(`\nCreating user: ${userIndex + 1}\n`)
@@ -119,7 +115,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
           .toLowerCase(),
         lastName: faker.person.lastName(),
         audienceId: audience.id,
-        subscribedAt: faker.date.past().getTime(),
+        subscribedAt: faker.date.past(),
         avatarUrl: faker.image.avatarGitHub(),
       }))
 

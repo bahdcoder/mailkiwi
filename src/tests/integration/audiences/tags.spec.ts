@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
+import { cuid } from '@/domains/shared/utils/cuid/cuid.ts'
 import { makeDatabase } from '@/infrastructure/container.js'
 import {
   tags,
@@ -114,7 +115,7 @@ describe('Create tags', () => {
     const tagName = faker.lorem.word()
     const database = makeDatabase()
     await database.insert(tags).values({
-      id: faker.string.uuid(),
+      id: cuid(),
       name: tagName,
       audienceId: audience.id,
     })

@@ -1,12 +1,12 @@
-import React from "react";
-import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import React from "react";
+import { useState } from "react";
 import {
-  ErrorResponse,
-  login,
-  LoginResponse,
+  type ErrorResponse,
   type LoginCredentials,
+  type LoginResponse,
+  login,
 } from "../api/auth.ts";
 
 export const LoginPage: React.FC = () => {

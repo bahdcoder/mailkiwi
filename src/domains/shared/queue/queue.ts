@@ -1,48 +1,20 @@
-import { E_OPERATION_FAILED } from '@/http/responses/errors.ts'
-import type { AbstractJobType, BaseJob } from './abstract_job.js'
-import type {
-  QueueDriver,
-  QueueJobConfiguration,
-} from './queue_driver_contact.js'
+import { Queue } from 'bullmq'
+import { AVAILABLE_QUEUES } from './config.ts'
 
-class QueueClass {
-  private driver: QueueDriver
-  public jobs: Map<string, new () => BaseJob> = new Map()
+const connection = { host: 'localhost', port: 6379 }
 
-  registerJob(id: string, job: new () => BaseJob<object>) {
-    this.jobs.set(id, job)
+export const BroadcastsQueue = new Queue(AVAILABLE_QUEUES.broadcasts, {
+  connection,
+})
 
-    return this
-  }
+export const AutomationsQueue = new Queue(AVAILABLE_QUEUES.automations, {
+  connection,
+})
 
-  setDriver(driver: QueueDriver) {
-    this.driver = driver
+export const AccountsQueue = new Queue(AVAILABLE_QUEUES.accounts, {
+  connection,
+})
 
-    return this
-  }
-
-  async dispatch<T extends object>(
-    JobClass: new () => BaseJob<T>,
-    payload: T,
-    configuration?: QueueJobConfiguration,
-  ) {
-    if (!this.driver) {
-      throw E_OPERATION_FAILED(
-        'Queue driver not set for this application instance.',
-      )
-    }
-
-    return this.driver.dispatch(
-      (JobClass as unknown as AbstractJobType<T>).id,
-      payload,
-      (JobClass as unknown as AbstractJobType<T>).queue,
-      configuration,
-    )
-  }
-
-  async process() {
-    this.driver.process(this.jobs)
-  }
-}
-
-export const Queue = new QueueClass()
+export const TransactionalQueue = new Queue(AVAILABLE_QUEUES.transactional, {
+  connection,
+})

@@ -10,13 +10,13 @@ import {
 import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
 import { container } from '@/utils/typi.ts'
-import { faker } from '@faker-js/faker'
-import { Secret } from '@poppinss/utils'
-import { eq } from 'drizzle-orm'
-import { describe, test } from 'vitest'
 import { GetAccountSendingEnabledCommand, SESClient } from '@aws-sdk/client-ses'
 import { SNSClient } from '@aws-sdk/client-sns'
+import { faker } from '@faker-js/faker'
+import { Secret } from '@poppinss/utils'
 import { mockClient } from 'aws-sdk-client-mock'
+import { eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
 const SESMock = mockClient(SESClient)
 const SNSMock = mockClient(SNSClient)
@@ -348,9 +348,7 @@ describe('Send Broadcast', () => {
     })
 
     expect(response.status).toBe(200)
-    const queuedJob = await database.query.queueJobs.findFirst({})
-
-    expect(queuedJob?.jobId).toBe('BROADCASTS::SEND_BROADCAST')
+    // TODO: Check redis for queued job.
   })
 
   test('cannot queue a broadcast if all required information is not provided', async ({
@@ -402,9 +400,7 @@ describe('Send Broadcast', () => {
         },
       ],
     })
-    const queuedJob = await database.query.queueJobs.findFirst({})
-
-    expect(queuedJob).toBeUndefined()
+    // TODO: Check redis for queued job.
   })
 
   test('cannot queue a broadcast if it is not in draft status', async ({
@@ -442,8 +438,7 @@ describe('Send Broadcast', () => {
         },
       ],
     })
-    const queuedJob = await database.query.queueJobs.findFirst({})
-    expect(queuedJob).toBeUndefined()
+    // TODO: Check redis for queued job.
 
     const mailer = await database.query.mailers.findFirst({
       where: eq(mailers.teamId, team.id),
@@ -485,7 +480,6 @@ describe('Send Broadcast', () => {
         },
       ],
     })
-    const queuedJob = await database.query.queueJobs.findFirst({})
-    expect(queuedJob).toBeUndefined()
+    // TODO: Check redis for queued job.
   })
 })

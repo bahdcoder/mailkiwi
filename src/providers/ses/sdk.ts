@@ -1,9 +1,9 @@
 import type { Secret } from '@poppinss/utils'
 
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 import SESService from '@/providers/ses/ses.js'
 import { PermissionsChecker } from '@/providers/ses/ses_permission_checker.js'
 import { SNSService } from '@/providers/ses/sns.js'
-import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 
 export class AwsSdk {
   constructor(

@@ -1,8 +1,7 @@
-import { MailerDriver } from '@/domains/shared/mailers/mailer_types.ts'
+import type { MailerDriver } from '@/domains/shared/mailers/mailer_types.ts'
 import './globals'
 
-import { Queue } from '@/domains/shared/queue/queue.js'
-import type { QueueDriver } from '@/domains/shared/queue/queue_driver_contact.js'
+import { Mailer } from '@/domains/shared/mailers/mailer.ts'
 import { AudienceController } from '@/http/api/controllers/audiences/audience_controller.js'
 import { ContactController } from '@/http/api/controllers/audiences/contact_controller.js'
 import { TagController } from '@/http/api/controllers/audiences/tag_controller.ts'
@@ -15,7 +14,6 @@ import { MailerIdentityController } from '@/http/api/controllers/teams/mailer_id
 import { TeamController } from '@/http/api/controllers/teams/team_controller.js'
 import { MailerWebhooksContorller } from '@/http/api/controllers/webhooks/mailer_webhooks_controller.js'
 import { RootController } from '@/http/views/controllers/root_controller.js'
-import { InstallationSettings } from '@/infrastructure/boot/installation_settings.js'
 import { ContainerKey } from '@/infrastructure/container.js'
 import {
   type DrizzleClient,
@@ -30,14 +28,12 @@ import {
 } from '@/infrastructure/env.js'
 import { Hono, type HonoInstance } from '@/infrastructure/server/hono.js'
 import { container } from '@/utils/typi.js'
-import { Mailer } from '@/domains/shared/mailers/mailer.ts'
 
 export class Ignitor {
   protected env: EnvVariables
   protected config: ConfigVariables
   protected app: HonoInstance
   protected database: DrizzleClient
-  protected queue: QueueDriver
   protected mailer: MailerDriver
 
   boot() {
@@ -45,7 +41,6 @@ export class Ignitor {
     this.config = config
 
     this.bootHttpServer()
-    this.bootDatabaseConnector()
 
     container.register(ContainerKey.app, this.app)
     container.register(ContainerKey.env, this.env)
@@ -60,24 +55,14 @@ export class Ignitor {
     return this
   }
 
-  queueDriver(driver: QueueDriver) {
-    Queue.setDriver(driver)
-
-    return this
-  }
-
   mailerDriver(makeDriver: (env: EnvVariables) => MailerDriver) {
     Mailer.setDriver(makeDriver(this.env))
 
     return this
   }
 
-  bootDatabaseConnector() {
-    return this
-  }
-
-  start() {
-    this.startDatabaseConnector()
+  async start() {
+    await this.startDatabaseConnector()
     this.startSinglePageApplication()
 
     this.registerHttpControllers()
@@ -91,14 +76,12 @@ export class Ignitor {
     // no implementation in prod. Only in dev.
   }
 
-  startDatabaseConnector() {
+  async startDatabaseConnector() {
     if (this.database) return this
 
-    const connection = createDatabaseClient(this.env.DATABASE_URL)
+    const connection = await createDatabaseClient(this.env.DATABASE_URL)
 
     this.database = createDrizzleDatabase(connection)
-
-    connection.pragma('journal_mode = WAL')
 
     container.registerInstance(ContainerKey.database, this.database)
     container.registerInstance(ContainerKey.databaseConnection, connection)

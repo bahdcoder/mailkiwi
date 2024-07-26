@@ -1,8 +1,8 @@
 import type {
+  MailObject,
   MailerDriver,
   MailerDriverError,
   MailerDriverResponse,
-  MailObject,
 } from '../mailer_types.ts'
 
 export class AWSSESDriver implements MailerDriver {
