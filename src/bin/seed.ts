@@ -21,10 +21,11 @@ import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
 import { container } from '@/utils/typi.js'
 import { Secret } from '@poppinss/utils'
 import { eq } from 'drizzle-orm'
+import type { ConfigurationObjectInput } from '@/domains/teams/dto/mailers/update_mailer_dto.ts'
 
-const database = createDrizzleDatabase(
-  await createDatabaseClient(env.DATABASE_URL),
-)
+const connection = await createDatabaseClient(env.DATABASE_URL)
+
+const database = createDrizzleDatabase(connection)
 
 container.registerInstance(ContainerKey.env, env)
 container.registerInstance(ContainerKey.database, database)
@@ -50,34 +51,37 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     where: eq(teams.id, team.id),
   })
 
-  const { id: mailerId } = await container.make(MailerRepository).create(
-    {
-      name: faker.lorem.words(5),
-      provider: 'AWS_SES',
-      configuration: {
-        accessKey: new Secret(faker.string.uuid()),
-        accessSecret: new Secret(faker.string.uuid()),
-        region: 'us-east-2',
-        domain: 'newsletter.example.com',
-        email: undefined,
-      },
-    },
-    teamObject as Team,
-  )
+  // await container.make(CreateMailerAction).handle()
 
-  await database
-    .update(mailers)
-    .set({ status: 'READY' })
-    .where(eq(mailers.id, mailerId))
-    .execute()
+  // const { id: mailerId } = await container.make(MailerRepository).create(
+  //   {
+  //     name: faker.lorem.words(5),
+  //     provider: 'AWS_SES',
+  //     configuration: {
+  //       accessKey: new Secret(env.TEST_AWS_KEY ?? faker.string.uuid()),
+  //       accessSecret: new Secret(env.TEST_AWS_SECRET ?? faker.string.uuid()),
+  //       region: (env.TEST_AWS_REGION ??
+  //         'us-east-1') as ConfigurationObjectInput['region'],
+  //       domain: 'newsletter.example.com',
+  //       email: undefined,
+  //     },
+  //   },
+  //   teamObject as Team,
+  // )
 
-  await container.make(MailerIdentityRepository).create(
-    {
-      value: 'newsletter.example.com',
-      type: 'DOMAIN',
-    },
-    mailerId,
-  )
+  // await database
+  //   .update(mailers)
+  //   .set({ status: 'READY' })
+  //   .where(eq(mailers.id, mailerId))
+  //   .execute()
+
+  // await container.make(MailerIdentityRepository).create(
+  //   {
+  //     value: 'newsletter.example.com',
+  //     type: 'DOMAIN',
+  //   },
+  //   mailerId,
+  // )
 
   const audienceIds = []
 
@@ -137,9 +141,11 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     [
       [{ userId: user.id, accessToken: accessToken.toJSON().token }],
       [{ teamId: team.id }],
-      [{ mailerId: mailerId }],
+      // [{ mailerId: mailerId }],
       audienceIds,
     ],
     { depth: null },
   )
 }
+
+connection.destroy()

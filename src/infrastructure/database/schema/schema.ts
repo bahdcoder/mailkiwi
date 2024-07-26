@@ -284,7 +284,7 @@ export const broadcasts = mysqlTable('broadcasts', {
     'DRAFT_ARCHIVED',
     'ARCHIVED',
   ]).default('DRAFT'),
-  sendAt: timestamp('sendAt'),
+  sendAt: timestamp('sendAt').$type<Date | undefined>(),
 })
 
 export const automationStepSubtypesTrigger = [

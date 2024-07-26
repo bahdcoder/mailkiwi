@@ -4,6 +4,7 @@ import { BaseRepository } from '@/domains/shared/repositories/base_repository.js
 import { makeDatabase } from '@/infrastructure/container.ts'
 import type { DrizzleClient } from '@/infrastructure/database/client.ts'
 import { broadcasts } from '@/infrastructure/database/schema/schema.js'
+import type { UpdateSetBroadcastInput } from '@/infrastructure/database/schema/types.ts'
 import { eq } from 'drizzle-orm'
 
 export class BroadcastRepository extends BaseRepository {
@@ -18,10 +19,16 @@ export class BroadcastRepository extends BaseRepository {
     return { id }
   }
 
-  async update(id: string, { sendAt, ...data }: UpdateBroadcastDto) {
+  async update(
+    id: string,
+    { sendAt, ...payload }: Partial<UpdateSetBroadcastInput>,
+  ) {
     await this.database
       .update(broadcasts)
-      .set({ ...data, sendAt: sendAt ? new Date(sendAt) : undefined })
+      .set({
+        ...payload,
+        ...(sendAt ? { sendAt: new Date(sendAt as string) } : {}),
+      })
       .where(eq(broadcasts.id, id))
     return { id }
   }

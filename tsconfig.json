@@ -15,7 +15,8 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@client/*": ["./src/http/views/app/*"]
     }
   },
   "include": ["src/**/*.ts", "src/http/views/app/main.tsx"],

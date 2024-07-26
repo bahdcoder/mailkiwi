@@ -7,7 +7,7 @@ import { makeDatabase, makeEnv } from '@/infrastructure/container.js'
 import type { DrizzleClient } from '@/infrastructure/database/client.js'
 import { teams } from '@/infrastructure/database/schema/schema.js'
 
-import type { CreateTeamDto } from '../dto/create_team_dto.js'
+import type { CreateTeamDto } from '@/domains/teams/dto/create_team_dto.js'
 
 export class TeamRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

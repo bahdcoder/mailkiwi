@@ -42,10 +42,9 @@ const regions = [
 export type ConfigurationObjectInput = {
   accessKey: Secret<string>
   accessSecret: Secret<string>
-  region: (typeof regions)[0]
+  region: (typeof regions)[number]
   domain: string | undefined
   email: string | undefined
-  maximumMailsPerSecond?: number
 }
 
 export type BaseSchemaConfiguration = BaseSchema<
@@ -99,7 +98,6 @@ export const ConfigurationSchema = object({
     pipe(string(), regex(/^(?!:\/\/)([a-zA-Z0-9-_]{1,63}\.)+[a-zA-Z]{2,6}$/)),
   ),
   email: optional(pipe(string(), email())),
-  maximumMailsPerSecond: optional(number()),
 })
 export const UpdateMailerSchema = pipe(
   object({
@@ -116,10 +114,9 @@ export const UpdateMailerSchema = pipe(
     configuration: {
       accessKey: Secret<string>
       accessSecret: Secret<string>
-      region: (typeof regions)[0]
+      region: (typeof regions)[number]
       domain: string | undefined
       email: string | undefined
-      maximumMailsPerSecond: number
     }
   },
   any,

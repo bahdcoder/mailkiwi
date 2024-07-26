@@ -14,7 +14,10 @@ import { MailerIdentityController } from '@/http/api/controllers/teams/mailer_id
 import { TeamController } from '@/http/api/controllers/teams/team_controller.js'
 import { MailerWebhooksContorller } from '@/http/api/controllers/webhooks/mailer_webhooks_controller.js'
 import { RootController } from '@/http/views/controllers/root_controller.js'
-import { ContainerKey } from '@/infrastructure/container.js'
+import {
+  ContainerKey,
+  makeDatabaseConnection,
+} from '@/infrastructure/container.js'
 import {
   type DrizzleClient,
   createDatabaseClient,
@@ -107,6 +110,10 @@ export class Ignitor {
   }
 
   async shutdown() {
-    // await this.app.close()
+    const connection = makeDatabaseConnection()
+
+    if (connection) {
+      connection.destroy()
+    }
   }
 }

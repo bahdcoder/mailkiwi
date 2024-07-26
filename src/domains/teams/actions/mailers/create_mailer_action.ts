@@ -1,17 +1,16 @@
-import type { MailerConfiguration } from '@/domains/shared/types/mailer.ts'
+import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
 import type { CreateMailerDto } from '@/domains/teams/dto/mailers/create_mailer_dto.js'
 import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
 import {
   E_OPERATION_FAILED,
   E_VALIDATION_FAILED,
-} from '@/http/responses/errors.ts'
+} from '@/http/responses/errors.js'
 import type { Team } from '@/infrastructure/database/schema/types.js'
 import { container } from '@/utils/typi.js'
-import type { CreateMailerIdentityDto } from '../../dto/create_mailer_identity_dto.ts'
-import { CheckProviderCredentials } from '../../helpers/check_provider_credentials.ts'
-import { VerifyMailerIdentityJob } from '../../jobs/verify_mailer_identity_job.ts'
-import { CreateMailerIdentityAction } from '../create_mailer_identity_action.ts'
-import { InstallMailerAction } from '../install_mailer_action.ts'
+import type { CreateMailerIdentityDto } from '@/domains/teams/dto/create_mailer_identity_dto.js'
+import { CheckProviderCredentials } from '@/domains/teams/helpers/check_provider_credentials.js'
+import { CreateMailerIdentityAction } from '@/domains/teams/actions/create_mailer_identity_action.js'
+import { InstallMailerAction } from '@/domains/teams/actions/install_mailer_action.js'
 
 export class CreateMailerAction {
   constructor(
@@ -44,11 +43,12 @@ export class CreateMailerAction {
       if (!installed) {
         throw new Error('Not installed.')
       }
-    } catch (error) {
+    } catch (error: any) {
       await this.mailerRepository.delete(mailer)
+      d({ error })
 
       throw E_OPERATION_FAILED(
-        'Could not install mailer. There might be something wrong with your AWS credentials. Please check and try again.',
+        `Could not install mailer. Reason: ${error?.message}`,
       )
     }
 

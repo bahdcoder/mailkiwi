@@ -4,7 +4,7 @@ import type {
   MailerDriver,
   MailerDriverError,
   MailerDriverResponse,
-} from '../mailer_types.ts'
+} from '@/domains/shared/mailers/mailer_types.ts'
 
 export interface MailhogDriverResponse {
   ok: boolean

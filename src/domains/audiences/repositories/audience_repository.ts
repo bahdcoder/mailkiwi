@@ -6,7 +6,7 @@ import type { DrizzleClient } from '@/infrastructure/database/client.js'
 import { audiences } from '@/infrastructure/database/schema/schema.js'
 import { container } from '@/utils/typi.js'
 
-import type { CreateAudienceDto } from '../dto/audiences/create_audience_dto.js'
+import type { CreateAudienceDto } from '@/domains/audiences/dto/audiences/create_audience_dto.js'
 
 export class AudienceRepository extends BaseRepository {
   constructor(

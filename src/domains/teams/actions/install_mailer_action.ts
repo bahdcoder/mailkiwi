@@ -4,7 +4,11 @@ import {
   E_OPERATION_FAILED,
   E_VALIDATION_FAILED,
 } from '@/http/responses/errors.js'
-import { makeConfig, makeDatabase } from '@/infrastructure/container.js'
+import {
+  makeConfig,
+  makeDatabase,
+  makeEnv,
+} from '@/infrastructure/container.js'
 import type { DrizzleClient } from '@/infrastructure/database/client.js'
 import type { Mailer, Team } from '@/infrastructure/database/schema/types.js'
 import { AwsSdk } from '@/providers/ses/sdk.js'
@@ -35,19 +39,12 @@ export class InstallMailerAction {
 
     let installed = false
 
-    const applicationSettings = await this.database.query.settings.findFirst()
-
-    if (!applicationSettings || !applicationSettings.url)
-      throw E_OPERATION_FAILED(
-        'Application settings not properly defined. Please contact an administrator.',
-      )
-
     switch (mailer.provider) {
       case 'AWS_SES':
         installed = await this.installSes(
           configuration,
           mailer,
-          `${applicationSettings.url}/webhooks/ses`,
+          `${makeEnv().APP_URL}/webhooks/ses`,
         )
         break
       default:

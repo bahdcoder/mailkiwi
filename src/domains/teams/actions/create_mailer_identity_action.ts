@@ -12,7 +12,7 @@ import type {
 } from '@/infrastructure/database/schema/types.js'
 import { AwsSdk } from '@/providers/ses/sdk.js'
 import { container } from '@/utils/typi.js'
-import { VerifyMailerIdentityJob } from '../jobs/verify_mailer_identity_job.ts'
+import { VerifyMailerIdentityJob } from '@/domains/teams/jobs/verify_mailer_identity_job.ts'
 
 export class CreateMailerIdentityAction {
   constructor(

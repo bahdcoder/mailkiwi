@@ -3,8 +3,9 @@ import { AccessTokenMiddleware } from '@/http/api/middleware/auth/access_token_m
 import { E_REQUEST_EXCEPTION } from '@/http/responses/errors.js'
 import { container } from '@/utils/typi.js'
 import type { HttpBindings } from '@hono/node-server'
-import { Hono as BaseHono, type Env, type MiddlewareHandler } from 'hono'
+import { Hono as BaseHono, type MiddlewareHandler } from 'hono'
 import type { HonoRouteDefinition } from './types.js'
+import { env } from '@/infrastructure/env.ts'
 
 export type HonoInstance = BaseHono<{ Bindings: HttpBindings }> & {
   defineRoutes: (
@@ -30,6 +31,10 @@ export class Hono
           { message: error?.message, ...(error.payload ?? {}) },
           error?.statusCode ?? 500,
         )
+      }
+
+      if (env.isDev) {
+        d({ error })
       }
 
       return ctx.json({ message: error?.message }, 500)

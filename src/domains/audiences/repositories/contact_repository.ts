@@ -8,7 +8,7 @@ import {
 
 import type { UpdateSetContactInput } from '@/infrastructure/database/schema/types.ts'
 import { and, eq, inArray } from 'drizzle-orm'
-import type { CreateContactDto } from '../dto/contacts/create_contact_dto.js'
+import type { CreateContactDto } from '@/domains/audiences/dto/contacts/create_contact_dto.js'
 
 export class ContactRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

@@ -10,7 +10,7 @@ import type {
 import { AwsSdk } from '@/providers/ses/sdk.js'
 import { container } from '@/utils/typi.js'
 
-import { MailerRepository } from '../repositories/mailer_repository.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
 
 export class GetMailerIdentitiesAction {
   constructor(

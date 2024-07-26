@@ -18,10 +18,10 @@
     "quick:build": "pnpm build:clean && pnpm build:client && pnpm build:server",
     "format": "pnpm biome format --write .",
     "lint": "pnpm biome check --write .",
-    "db:seed": "del-cli dev.db && pnpm db:migrate && tsx src/bin/seed.ts",
+    "db:seed": "env-cmd -e development --use-shell 'pnpm db:migrate && tsx src/bin/seed.ts'",
     "db:migrate": "pnpm drizzle-kit migrate --config=./src/infrastructure/database/drizzle.config.ts",
     "db:migrate:make": "pnpm drizzle-kit generate --config=./src/infrastructure/database/drizzle.config.ts",
-    "db:studio": "pnpm drizzle-kit studio --config=./src/infrastructure/database/drizzle.config.ts",
+    "db:studio": "env-cmd -e development pnpm drizzle-kit studio --config=./src/infrastructure/database/drizzle.config.ts",
     "make:files": "tsx src/bin/cli/cli.ts make:files"
   },
   "keywords": [],

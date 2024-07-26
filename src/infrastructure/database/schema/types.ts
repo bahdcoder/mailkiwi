@@ -49,3 +49,7 @@ export type UpdateSetMailerIdentityInput = SQLiteUpdateSetSource<
 
 export type UpdateSetMailerInput = SQLiteUpdateSetSource<typeof mailers>
 export type UpdateSetContactInput = SQLiteUpdateSetSource<typeof contacts>
+export type UpdateSetBroadcastInput = Omit<
+  SQLiteUpdateSetSource<typeof broadcasts>,
+  'sendAt'
+> & { sendAt: string | undefined }

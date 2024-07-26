@@ -17,12 +17,16 @@ export type EnvVariables = {
   PORT: number
   HOST: string
   APP_KEY: string
+  APP_URL: string
   DATABASE_URL: string
   NODE_ENV: 'development' | 'test' | 'production'
   SMTP_TEST_URL: string
   isTest: boolean
   isProd: boolean
   isDev: boolean
+  TEST_AWS_KEY: string
+  TEST_AWS_SECRET: string
+  TEST_AWS_REGION: string
 }
 
 export type ConfigVariables = typeof config
@@ -45,6 +49,9 @@ const envValidationSchema = object({
   DATABASE_URL: pipe(string(), nonEmpty()),
   NODE_ENV: picklist(['development', 'test', 'production']),
   SMTP_TEST_URL: pipe(string(), nonEmpty(), url()),
+  TEST_AWS_KEY: optional(string()),
+  TEST_AWS_SECRET: optional(string()),
+  TEST_AWS_REGION: optional(string()),
 })
 
 const parsed = safeParse(envValidationSchema, process.env)

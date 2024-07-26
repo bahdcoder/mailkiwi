@@ -9,7 +9,7 @@ export class UpdateBroadcastAction {
     ),
   ) {}
 
-  async handle(id: string, dto: UpdateBroadcastDto) {
-    return this.broadcastRepository.update(id, dto)
+  async handle(id: string, payload: UpdateBroadcastDto) {
+    return this.broadcastRepository.update(id, payload)
   }
 }

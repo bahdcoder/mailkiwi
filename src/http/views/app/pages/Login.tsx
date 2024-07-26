@@ -7,7 +7,7 @@ import {
   type LoginCredentials,
   type LoginResponse,
   login,
-} from "../api/auth.ts";
+} from "@client/api/auth.ts";
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");

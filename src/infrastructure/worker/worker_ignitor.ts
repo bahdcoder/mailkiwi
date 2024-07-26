@@ -5,8 +5,8 @@ import type { BaseJob } from '@/domains/shared/queue/abstract_job.ts'
 import { VerifyMailerIdentityJob } from '@/domains/teams/jobs/verify_mailer_identity_job.ts'
 import { SendTransactionalEmailJob } from '@/domains/transactional/jobs/send_transactional_email_job.ts'
 import { Ignitor } from '@/infrastructure/boot/ignitor.ts'
-import { Job, Worker } from 'bullmq'
-import { makeDatabase } from '../container.ts'
+import { type Job, Worker } from 'bullmq'
+import { makeDatabase } from '@/infrastructure/container.ts'
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<any, any, string>[] = []
@@ -50,9 +50,7 @@ export class WorkerIgnitor extends Ignitor {
     for (const [idx, queue] of queueNames.entries()) {
       this.workers[idx] = new Worker(
         queue,
-        async (job) => {
-          this.processJob(job)
-        },
+        async (job) => this.processJob(job),
         {
           connection: { host: 'localhost', port: 6379 },
         },
@@ -63,6 +61,8 @@ export class WorkerIgnitor extends Ignitor {
   }
 
   async shutdown() {
+    await super.shutdown()
+
     for (const worker of this.workers) {
       await worker.close()
     }

@@ -46,34 +46,15 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
       return this.fail('Broadcast or audience or team not properly provided.')
     }
 
-    const [{ count: totalContacts }] = await database
-      .select({ count: count() })
-      .from(contacts)
-      .leftJoin(
-        sends,
-        sql`${contacts.id} = ${sends.contactId} AND ${sends.broadcastId} = ${broadcast.id}`,
-      )
-      .where(
-        and(
-          eq(contacts.audienceId, broadcast.audience.id),
-          // in the case of segments, spread conditions here based on segment passed in by user.
-          sql`${sends.id} IS NULL`,
-        ),
-      )
-      .execute()
+    const maximumMailsPerSecond = broadcast.team.mailer.maxSendRate ?? 1
 
-    const maximumMailsPerSecond =
-      container
-        .make(MailerRepository)
-        .getDecryptedConfiguration(
-          broadcast.team.mailer.configuration,
-          broadcast.team.configurationKey,
-        )?.maximumMailsPerSecond ?? 1
+    // queue each email x amount of seconds apart. this is to make sure we don't run into any rate limits.
+    // if max send per second = 1, then queue emails 2 seconds apart.
+    // if max send per second > 1, then queue emails 1 seconds apart.
 
-    // EACH BATCH SENDS A MAXIMUM OF 1 EMAIL PER SECOND AND A HALF. SO IF WE ONLY HAVE 1 EMAIL PER SECOND QUOTA, THEN WE USE ONLY ONE BATCH. IF WE HAVE 14 EMAILS PER SECOND QUOTA, THEN WE USE 14 BATCHES.
     const totalBatches = maximumMailsPerSecond
 
-    const batchSize = 50
+    const batchSize = 75
 
     for (let batch = 0; batch <= totalBatches; batch++) {
       const contactIds = await database
@@ -93,10 +74,17 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
         .limit(batchSize)
         .offset(batch * batchSize)
 
+      const speedCoefficient = maximumMailsPerSecond === 1 ? 2.5 : 1.25
+
+      d({ batch, speedCoefficient, contactIds: contactIds.length })
+
       await BroadcastsQueue.addBulk(
-        contactIds.map((contact) => ({
+        contactIds.map((contact, idx) => ({
           name: SendBroadcastToContact.id,
           data: { contactId: contact.id, broadcastId: broadcast.id },
+          opts: {
+            delay: speedCoefficient * idx * 1000,
+          }, // delay sends x seconds into the future.
         })),
       )
     }

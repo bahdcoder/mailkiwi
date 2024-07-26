@@ -108,18 +108,7 @@ export class BroadcastController extends BaseController {
         { message: 'Only a draft broadcast can be sent.', field: 'status' },
       ])
 
-    // CheckProviderCredentials()
     await container.make(SendBroadcastAction).handle(broadcast)
-
-    await BroadcastsQueue.add(
-      SendBroadcastJob.id,
-      { broadcastId: broadcast.id },
-      {
-        delay: broadcast.sendAt
-          ? differenceInSeconds(new Date(), broadcast.sendAt) * 1000
-          : 0,
-      },
-    )
 
     return ctx.json({ id: broadcast.id })
   }

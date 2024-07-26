@@ -7,8 +7,8 @@ import { MailerRepository } from '@/domains/teams/repositories/mailer_repository
 import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 import type { Mailer, Team } from '@/infrastructure/database/schema/types.js'
 import { container } from '@/utils/typi.js'
-import { MailerIdentityRepository } from '../../repositories/mailer_identity_repository.ts'
-import { DeleteMailerIdentityAction } from './delete_mailer_identity_action.ts'
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.ts'
+import { DeleteMailerIdentityAction } from '@/domains/teams/actions/mailers/delete_mailer_identity_action.ts'
 
 export class UpdateMailerAction {
   protected isReconnecting = false

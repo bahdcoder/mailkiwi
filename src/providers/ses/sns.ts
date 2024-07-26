@@ -87,6 +87,8 @@ export class SNSService {
     let subscriptionConfirmed = false
 
     while (subscriptionConfirmed === false && tries > 0) {
+      await sleep(1500)
+
       const subscribers = await this.sns.send(
         new ListSubscriptionsByTopicCommand({
           TopicArn: topic.TopicArn,

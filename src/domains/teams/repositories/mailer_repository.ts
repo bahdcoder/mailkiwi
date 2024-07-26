@@ -22,7 +22,6 @@ export class MailerRepository extends BaseRepository {
     region: '' as MailerConfiguration['region'],
     domain: '',
     email: '',
-    maximumMailsPerSecond: 1,
   }
 
   constructor(protected database: DrizzleClient = makeDatabase()) {

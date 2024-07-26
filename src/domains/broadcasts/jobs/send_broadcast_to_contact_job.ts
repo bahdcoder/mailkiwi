@@ -63,6 +63,8 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       return
     }
 
+    d({ response })
+
     await this.markAsSentToContact(
       contact,
       broadcast,
@@ -99,7 +101,6 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     database: DrizzleClient,
     error: Error,
   ) {
-    d({ [`Failed to send to contact: ${contact.email}`]: error })
     await database
       .update(sends)
       .set({
@@ -108,7 +109,12 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
         logs: JSON.stringify(error.message),
       })
       .where(
-        and(eq(contactsTable.id, contact.id), eq(broadcasts.id, broadcast.id)),
+        and(
+          and(
+            eq(sends.contactId, contact.id),
+            eq(sends.broadcastId, broadcast.id),
+          ),
+        ),
       )
   }
 
@@ -118,14 +124,20 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     database: DrizzleClient,
     messageId: string,
   ) {
-    await database.insert(sends).values({
-      contactId: contact.id,
-      broadcastId: broadcast.id,
-      status: 'SENT',
-      type: 'BROADCAST',
-      sentAt: new Date(),
-      messageId,
-    })
+    d({ messageId, id: contact.id })
+    await database
+      .update(sends)
+      .set({
+        status: 'SENT',
+        messageId,
+        sentAt: new Date(),
+      })
+      .where(
+        and(
+          eq(sends.contactId, contact.id),
+          eq(sends.broadcastId, broadcast.id),
+        ),
+      )
   }
 
   async handle({
