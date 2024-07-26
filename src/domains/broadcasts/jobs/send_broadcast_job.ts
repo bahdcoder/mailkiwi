@@ -11,7 +11,7 @@ import {
   sends,
 } from '@/infrastructure/database/schema/schema.ts'
 import { and, count, eq, sql } from 'drizzle-orm'
-import { SendBroadcastToContacts } from './send_broadcast_to_contacts_job.ts'
+import { SendBroadcastToContact } from './send_broadcast_to_contact_job.ts'
 
 import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
 import { container } from '@/utils/typi.ts'
@@ -73,7 +73,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
     // EACH BATCH SENDS A MAXIMUM OF 1 EMAIL PER SECOND AND A HALF. SO IF WE ONLY HAVE 1 EMAIL PER SECOND QUOTA, THEN WE USE ONLY ONE BATCH. IF WE HAVE 14 EMAILS PER SECOND QUOTA, THEN WE USE 14 BATCHES.
     const totalBatches = maximumMailsPerSecond
 
-    const batchSize = Math.ceil(totalContacts / totalBatches)
+    const batchSize = 50
 
     for (let batch = 0; batch <= totalBatches; batch++) {
       const contactIds = await database
@@ -93,11 +93,12 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
         .limit(batchSize)
         .offset(batch * batchSize)
 
-      // this job will send a maximum of 1 email every 1500 milliseconds
-      await BroadcastsQueue.add(SendBroadcastToContacts.id, {
-        contactsIds: contactIds.map((contact) => contact.id),
-        broadcastId: broadcast.id,
-      })
+      await BroadcastsQueue.addBulk(
+        contactIds.map((contact) => ({
+          name: SendBroadcastToContact.id,
+          data: { contactId: contact.id, broadcastId: broadcast.id },
+        })),
+      )
     }
 
     return this.done()

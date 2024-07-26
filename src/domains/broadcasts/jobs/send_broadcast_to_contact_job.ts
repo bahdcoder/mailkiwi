@@ -17,16 +17,14 @@ import type {
 } from '@/infrastructure/database/schema/types.ts'
 import { addSecondsToDate } from '@/utils/dates.ts'
 import { sleep } from '@/utils/sleep.ts'
-import { eq, inArray } from 'drizzle-orm'
+import { and, eq, inArray } from 'drizzle-orm'
 
-export interface SendBroadcastToContactsPayload {
+export interface SendBroadcastToContactPayload {
   broadcastId: string
-  contactsIds: string[]
+  contactId: string
 }
 
-export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayload> {
-  private MINIMUM_MILLISECONDS_PER_SEND = 1500
-
+export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayload> {
   static get id() {
     return 'BROADCASTS::SEND_BROADCAST_TO_CONTACTS'
   }
@@ -42,9 +40,8 @@ export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayl
   ) {
     d({ 'Sending email to:': contact.email })
 
-    // create send and leave it in draft
+    await this.createSendForContact(contact, broadcast, database)
 
-    const start = performance.now()
     const [response, error] = await Mailer.from(
       contact.email,
       `${contact.firstName} ${contact.lastName}`,
@@ -53,18 +50,6 @@ export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayl
       .to(contact.email, `${contact.firstName} ${contact.lastName}`)
       .content(broadcast.contentHtml as string, broadcast.contentText as string)
       .send()
-    const end = performance.now()
-
-    const timeElapsed = end - start
-
-    const wait =
-      this.MINIMUM_MILLISECONDS_PER_SEND > timeElapsed
-        ? this.MINIMUM_MILLISECONDS_PER_SEND - timeElapsed
-        : 0
-
-    if (wait > 0) {
-      await sleep(wait)
-    }
 
     if (error) {
       d({ [`Failed to send to contact: ${contact.email}`]: error })
@@ -90,7 +75,6 @@ export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayl
     contact: Contact,
     broadcast: Broadcast,
     database: DrizzleClient,
-    error: Error,
   ) {
     const id = cuid()
 
@@ -102,8 +86,7 @@ export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayl
         broadcastId: broadcast.id,
         status: 'PENDING',
         type: 'BROADCAST',
-        timeoutAt: addSecondsToDate(new Date(), 25), // if this send has not been processed in 25 seconds, other workers will pick it up and attempt sending it.
-        logs: JSON.stringify(error.message),
+        timeoutAt: addSecondsToDate(new Date(), 25),
       })
       .execute()
 
@@ -117,13 +100,16 @@ export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayl
     error: Error,
   ) {
     d({ [`Failed to send to contact: ${contact.email}`]: error })
-    await database.insert(sends).values({
-      contactId: contact.id,
-      broadcastId: broadcast.id,
-      status: 'FAILED',
-      type: 'BROADCAST',
-      logs: JSON.stringify(error.message),
-    })
+    await database
+      .update(sends)
+      .set({
+        status: 'FAILED',
+        type: 'BROADCAST',
+        logs: JSON.stringify(error.message),
+      })
+      .where(
+        and(eq(contactsTable.id, contact.id), eq(broadcasts.id, broadcast.id)),
+      )
   }
 
   async markAsSentToContact(
@@ -145,27 +131,29 @@ export class SendBroadcastToContacts extends BaseJob<SendBroadcastToContactsPayl
   async handle({
     database,
     payload,
-  }: JobContext<SendBroadcastToContactsPayload>) {
-    const contacts = await database.query.contacts.findMany({
-      where: inArray(contactsTable.id, payload.contactsIds),
+  }: JobContext<SendBroadcastToContactPayload>) {
+    const contact = await database.query.contacts.findFirst({
+      where: eq(contactsTable.id, payload.contactId),
     })
 
     const broadcast = await database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, payload.broadcastId),
     })
 
-    if (!broadcast) {
-      return this.fail('Broadcast not found.')
+    if (!broadcast || !contact) {
+      return this.fail('Broadcast or contact not found.')
     }
 
-    await this.processPromises(
-      contacts.map((contact) => [
-        async () => this.sendEmailToContact(contact, broadcast, database),
-        async (error) =>
-          this.markAsFailedToSendToContact(contact, broadcast, database, error),
-      ]),
-      1, // process 1 send at a time. this number will depend on the rate limit set on AWS.
-    )
+    try {
+      await this.sendEmailToContact(contact, broadcast, database)
+    } catch (error) {
+      await this.markAsFailedToSendToContact(
+        contact,
+        broadcast,
+        database,
+        error as Error,
+      )
+    }
 
     return { success: true, output: 'Success' }
   }

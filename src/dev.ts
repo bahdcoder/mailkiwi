@@ -3,4 +3,4 @@ import { IgnitorDev } from '@/infrastructure/boot/ignitor_dev.js'
 
 const ignitor = await new IgnitorDev().boot().start()
 
-ignitor.mailerDriver(({ MAILHOG_URL }) => new MailhogDriver(MAILHOG_URL))
+ignitor.mailerDriver(({ SMTP_TEST_URL }) => new MailhogDriver(SMTP_TEST_URL))

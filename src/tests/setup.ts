@@ -6,6 +6,6 @@ import { refreshDatabase } from '@/tests/mocks/teams/teams.ts'
 
 const ignitor = await new Ignitor().boot().start()
 
-ignitor.mailerDriver(({ MAILHOG_URL }) => new MailhogDriver(MAILHOG_URL))
+ignitor.mailerDriver(({ SMTP_TEST_URL }) => new MailhogDriver(SMTP_TEST_URL))
 
 await refreshDatabase()

@@ -19,7 +19,7 @@ export type EnvVariables = {
   APP_KEY: string
   DATABASE_URL: string
   NODE_ENV: 'development' | 'test' | 'production'
-  MAILHOG_URL: string
+  SMTP_TEST_URL: string
   isTest: boolean
   isProd: boolean
   isDev: boolean
@@ -44,7 +44,7 @@ const envValidationSchema = object({
   ),
   DATABASE_URL: pipe(string(), nonEmpty()),
   NODE_ENV: picklist(['development', 'test', 'production']),
-  MAILHOG_URL: pipe(string(), nonEmpty(), url()),
+  SMTP_TEST_URL: pipe(string(), nonEmpty(), url()),
 })
 
 const parsed = safeParse(envValidationSchema, process.env)

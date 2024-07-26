@@ -1,11 +1,12 @@
 import { SendBroadcastJob } from '@/domains/broadcasts/jobs/send_broadcast_job.ts'
-import { SendBroadcastToContacts } from '@/domains/broadcasts/jobs/send_broadcast_to_contacts_job.ts'
+import { SendBroadcastToContact } from '@/domains/broadcasts/jobs/send_broadcast_to_contact_job.ts'
 import { MailhogDriver } from '@/domains/shared/mailers/drivers/mailhog_mailer_driver.ts'
 import type { BaseJob } from '@/domains/shared/queue/abstract_job.ts'
 import { VerifyMailerIdentityJob } from '@/domains/teams/jobs/verify_mailer_identity_job.ts'
 import { SendTransactionalEmailJob } from '@/domains/transactional/jobs/send_transactional_email_job.ts'
 import { Ignitor } from '@/infrastructure/boot/ignitor.ts'
-import { Worker } from 'bullmq'
+import { Job, Worker } from 'bullmq'
+import { makeDatabase } from '../container.ts'
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<any, any, string>[] = []
@@ -14,7 +15,7 @@ export class WorkerIgnitor extends Ignitor {
   async start() {
     await this.startDatabaseConnector()
 
-    this.mailerDriver(({ MAILHOG_URL }) => new MailhogDriver(MAILHOG_URL))
+    this.mailerDriver(({ SMTP_TEST_URL }) => new MailhogDriver(SMTP_TEST_URL))
     this.registerJobs()
 
     return this
@@ -23,7 +24,7 @@ export class WorkerIgnitor extends Ignitor {
   registerJobs() {
     this.registerJob(SendBroadcastJob.id, SendBroadcastJob)
     this.registerJob(VerifyMailerIdentityJob.id, VerifyMailerIdentityJob)
-    this.registerJob(SendBroadcastToContacts.id, SendBroadcastToContacts)
+    this.registerJob(SendBroadcastToContact.id, SendBroadcastToContact)
     this.registerJob(SendTransactionalEmailJob.id, SendTransactionalEmailJob)
   }
 
@@ -33,11 +34,29 @@ export class WorkerIgnitor extends Ignitor {
     return this
   }
 
+  private async processJob(job: Job) {
+    const Executor = this.jobs.get(job.name)
+
+    if (!Executor) {
+      d(['No handler defined for job name:', job.name])
+
+      return
+    }
+
+    await new Executor().handle({ payload: job.data, database: makeDatabase() })
+  }
+
   listen(queueNames: string[]) {
     for (const [idx, queue] of queueNames.entries()) {
-      this.workers[idx] = new Worker(queue, async (job) => {}, {
-        connection: { host: 'localhost', port: 6379 },
-      })
+      this.workers[idx] = new Worker(
+        queue,
+        async (job) => {
+          this.processJob(job)
+        },
+        {
+          connection: { host: 'localhost', port: 6379 },
+        },
+      )
     }
 
     d(`Queue listening for jobs on queues: ${queueNames.join(', ')}`)
