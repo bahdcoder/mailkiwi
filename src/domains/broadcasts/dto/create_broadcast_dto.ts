@@ -1,5 +1,5 @@
-import { makeDatabase } from '@/infrastructure/container.js'
-import { audiences } from '@/infrastructure/database/schema/schema.js'
+import { makeDatabase } from '@/infrastructure/container.ts'
+import { audiences } from '@/infrastructure/database/schema/schema.ts'
 import { eq } from 'drizzle-orm'
 import {
   type InferInput,

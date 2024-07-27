@@ -1,7 +1,7 @@
 import type { InferSelectModel } from 'drizzle-orm'
 import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core'
 
-import type { makeDatabase } from '@/infrastructure/container.js'
+import { makeDatabase } from '@/infrastructure/container.js'
 
 import type {
   accessTokens,
@@ -14,6 +14,7 @@ import type {
   teamMemberships,
   teams,
   users,
+  segments,
 } from './schema.js'
 
 export type Setting = InferSelectModel<typeof settings>
@@ -57,3 +58,6 @@ export type UpdateSetBroadcastInput = Omit<
   SQLiteUpdateSetSource<typeof broadcasts>,
   'sendAt'
 > & { sendAt: string | undefined }
+
+export type Segment = typeof segments.$inferSelect
+export type InsertSegment = typeof segments.$inferInsert

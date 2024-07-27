@@ -49,6 +49,7 @@ CREATE TABLE `broadcasts` (
 	`replyToEmail` varchar(255),
 	`replyToName` varchar(255),
 	`audienceId` varchar(32) NOT NULL,
+	`segmentId` varchar(32),
 	`teamId` varchar(32) NOT NULL,
 	`trackClicks` boolean,
 	`trackOpens` boolean,
@@ -129,6 +130,14 @@ CREATE TABLE `mailers` (
 	CONSTRAINT `mailers_teamId_unique` UNIQUE(`teamId`)
 );
 --> statement-breakpoint
+CREATE TABLE `segments` (
+	`id` varchar(40) NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`audienceId` varchar(32) NOT NULL,
+	`conditions` json NOT NULL,
+	CONSTRAINT `segments_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `sends` (
 	`id` varchar(40) NOT NULL,
 	`type` enum('AUTOMATION','TRANSACTIONAL','BROADCAST') NOT NULL,
@@ -166,9 +175,11 @@ CREATE TABLE `tags` (
 );
 --> statement-breakpoint
 CREATE TABLE `tagsOnContacts` (
+	`id` varchar(40) NOT NULL,
 	`tagId` varchar(32) NOT NULL,
 	`contactId` varchar(32) NOT NULL,
 	`assignedAt` timestamp,
+	CONSTRAINT `tagsOnContacts_id` PRIMARY KEY(`id`),
 	CONSTRAINT `tagsOnContactsTagIdContactIdKey` UNIQUE(`tagId`,`contactId`)
 );
 --> statement-breakpoint
@@ -224,6 +235,7 @@ ALTER TABLE `automationSteps` ADD CONSTRAINT `automationSteps_tagId_tags_id_fk` 
 ALTER TABLE `automationSteps` ADD CONSTRAINT `automationSteps_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `automations` ADD CONSTRAINT `automations_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_segmentId_segments_id_fk` FOREIGN KEY (`segmentId`) REFERENCES `segments`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_automationStepId_automationSteps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automationSteps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -231,6 +243,7 @@ ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FORE
 ALTER TABLE `emails` ADD CONSTRAINT `emails_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `mailerIdentities` ADD CONSTRAINT `mailerIdentities_mailerId_mailers_id_fk` FOREIGN KEY (`mailerId`) REFERENCES `mailers`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `mailers` ADD CONSTRAINT `mailers_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `segments` ADD CONSTRAINT `segments_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `sends` ADD CONSTRAINT `sends_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `sends` ADD CONSTRAINT `sends_broadcastId_broadcasts_id_fk` FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `sends` ADD CONSTRAINT `sends_automationStepId_automationSteps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automationSteps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

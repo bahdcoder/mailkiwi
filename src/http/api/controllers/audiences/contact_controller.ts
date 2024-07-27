@@ -1,4 +1,5 @@
 import { CreateContactAction } from '@/domains/audiences/actions/contacts/create_contact_action.js'
+import { GetContactsAction } from '@/domains/audiences/actions/contacts/get_contacts_action.ts'
 import { UpdateContactAction } from '@/domains/audiences/actions/contacts/update_contact_action.js'
 import { AttachTagsToContactAction } from '@/domains/audiences/actions/tags/attach_tags_to_contact_action.js'
 import { DetachTagsFromContactAction } from '@/domains/audiences/actions/tags/detach_tags_from_contact_action.js'
@@ -26,6 +27,7 @@ export class ContactController extends BaseController {
 
     this.app.defineRoutes(
       [
+        ['GET', '/', this.index.bind(this)],
         ['POST', '/', this.store.bind(this)],
         ['POST', '/:contactId/tags/attach', this.attachTags.bind(this)],
         ['POST', '/:contactId/tags/detach', this.detachTags.bind(this)],
@@ -38,7 +40,16 @@ export class ContactController extends BaseController {
   }
 
   async index(ctx: HonoContext) {
-    return ctx.json([])
+    const paginatedContacts = await container
+      .make(GetContactsAction)
+      .handle(
+        ctx.req.param('audienceId'),
+        ctx.req.query('segmentId'),
+        Number.parseInt(ctx.req.query('page') ?? '1'),
+        Number.parseInt(ctx.req.query('perPage') ?? '10'),
+      )
+
+    return ctx.json(paginatedContacts)
   }
 
   async store(ctx: HonoContext) {

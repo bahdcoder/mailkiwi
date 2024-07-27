@@ -10,11 +10,13 @@ import {
   contacts,
   sends,
 } from '@/infrastructure/database/schema/schema.js'
-import { and, count, eq, sql } from 'drizzle-orm'
+import { and, count, eq, SQL, sql, SQLWrapper } from 'drizzle-orm'
 import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
 
 import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
 import { container } from '@/utils/typi.js'
+import { SegmentBuilder } from '@/domains/audiences/utils/segment_builder/segment_builder.ts'
+import { CreateSegmentDto } from '@/domains/audiences/dto/segments/create_segment_dto.ts'
 
 export interface SendBroadcastJobPayload {
   broadcastId: string
@@ -39,6 +41,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
           },
         },
         audience: true,
+        segment: true,
       },
     })
 
@@ -54,6 +57,16 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
 
     const totalBatches = maximumMailsPerSecond
 
+    const segmentQueryConditions: SQLWrapper[] = []
+
+    if (broadcast.segment) {
+      segmentQueryConditions.push(
+        new SegmentBuilder(
+          broadcast.segment.conditions as CreateSegmentDto['conditions'],
+        ).build(),
+      )
+    }
+
     const batchSize = 75
 
     for (let batch = 0; batch <= totalBatches; batch++) {
@@ -67,7 +80,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
         .where(
           and(
             eq(contacts.audienceId, broadcast.audience.id),
-            // in the case of segments, spread conditions here based on segment passed in by user.
+            ...segmentQueryConditions,
             sql`${sends.id} IS NULL`,
           ),
         )
@@ -84,6 +97,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
           data: { contactId: contact.id, broadcastId: broadcast.id },
           opts: {
             delay: speedCoefficient * idx * 1000,
+            attempts: 3,
           }, // delay sends x seconds into the future.
         })),
       )

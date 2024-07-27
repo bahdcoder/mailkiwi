@@ -10,8 +10,8 @@ Mail Broadcasting Edge Cases
     1. Fetches all contacts that will receive the broadcast. ✅
         1. Only fetches those with no send. ✅
     2. Batches them into batches of 100. ✅
-        1. The larger the number of requests per second, the smaller the batch size, and the more concurrent senders we have, thus faster time to send entire campaign.
-        2. The smaller the number of requests per second, the larger the batch size, and the less concurrent senders we have, thus longer time to send entire campaign.
+        1. The larger the number of requests per second, the smaller the batch size, and the more concurrent senders we have, thus faster time to send entire campaign. ✅
+        2. The smaller the number of requests per second, the larger the batch size, and the less concurrent senders we have, thus longer time to send entire campaign. ✅
     3. Dispatches a SendBroadcastToContacts job for each batch. ✅
 3. SendBroadcastToContacts job:
     1. Loops through all contacts, and sends them the campaign. Can process contacts concurrently depending on sending limit per second. By default, it processes one contact after the other, so just one concurrently. ✅

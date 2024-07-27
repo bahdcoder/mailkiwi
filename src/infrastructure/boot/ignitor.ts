@@ -31,6 +31,7 @@ import {
 } from '@/infrastructure/env.js'
 import { Hono, type HonoInstance } from '@/infrastructure/server/hono.js'
 import { container } from '@/utils/typi.js'
+import { SegmentController } from '@/http/api/controllers/audiences/segment_controller.ts'
 
 export class Ignitor {
   protected env: EnvVariables
@@ -96,6 +97,7 @@ export class Ignitor {
 
   registerHttpControllers() {
     container.resolve(AudienceController)
+    container.resolve(SegmentController)
     container.resolve(BroadcastController)
     container.resolve(TagController)
     container.resolve(AutomationController)

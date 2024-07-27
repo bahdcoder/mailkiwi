@@ -9,6 +9,7 @@ import {
   contacts,
   mailerIdentities,
   mailers,
+  segments,
   tags,
   tagsOnContacts,
   teamMemberships,
@@ -19,6 +20,7 @@ import {
 export const refreshDatabase = async () => {
   const database = makeDatabase()
 
+  await database.delete(segments)
   await database.delete(tagsOnContacts)
   await database.delete(broadcasts)
   await database.delete(contacts)

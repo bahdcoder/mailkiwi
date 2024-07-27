@@ -187,6 +187,7 @@ export const tags = mysqlTable('tags', {
 export const tagsOnContacts = mysqlTable(
   'tagsOnContacts',
   {
+    id,
     tagId: varchar('tagId', { length: 32 })
       .references(() => tags.id)
       .notNull(),
@@ -265,6 +266,7 @@ export const broadcasts = mysqlTable('broadcasts', {
   audienceId: varchar('audienceId', { length: 32 })
     .references(() => audiences.id)
     .notNull(),
+  segmentId: varchar('segmentId', { length: 32 }).references(() => segments.id),
   teamId: varchar('teamId', { length: 32 })
     .references(() => teams.id)
     .notNull(),
@@ -344,6 +346,23 @@ export const automationSteps = mysqlTable('automationSteps', {
   ),
 })
 
+export const segments = mysqlTable('segments', {
+  id,
+  name: varchar('name', { length: 255 }).notNull(),
+  audienceId: varchar('audienceId', { length: 32 })
+    .references(() => audiences.id)
+    .notNull(),
+  conditions: json('conditions')
+    .$type<
+      {
+        field: string
+        operation: string
+        value: string | number | string[] | number[]
+      }[]
+    >()
+    .notNull(),
+})
+
 export const contactAutomationStep = mysqlTable('contactAutomationSteps', {
   id,
   automationStepId: varchar('automationStepId', { length: 32 })
@@ -389,6 +408,10 @@ export const broadcastRelations = relations(broadcasts, ({ one, many }) => ({
   }),
   team: one(teams, { fields: [broadcasts.teamId], references: [teams.id] }),
   sends: many(sends, { relationName: 'broadcastSends' }),
+  segment: one(segments, {
+    fields: [broadcasts.segmentId],
+    references: [segments.id],
+  }),
 }))
 
 export const sendsRelations = relations(sends, ({ one, many }) => ({
