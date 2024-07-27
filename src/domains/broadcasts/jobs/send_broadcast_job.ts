@@ -1,20 +1,20 @@
 import {
   BaseJob,
   type JobContext,
-} from '@/domains/shared/queue/abstract_job.ts'
-import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.ts'
+} from '@/domains/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.js'
 
-import { BroadcastsQueue } from '@/domains/shared/queue/queue.ts'
+import { BroadcastsQueue } from '@/domains/shared/queue/queue.js'
 import {
   broadcasts,
   contacts,
   sends,
-} from '@/infrastructure/database/schema/schema.ts'
+} from '@/infrastructure/database/schema/schema.js'
 import { and, count, eq, sql } from 'drizzle-orm'
-import { SendBroadcastToContact } from './send_broadcast_to_contact_job.ts'
+import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
 
-import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
-import { container } from '@/utils/typi.ts'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
+import { container } from '@/utils/typi.js'
 
 export interface SendBroadcastJobPayload {
   broadcastId: string

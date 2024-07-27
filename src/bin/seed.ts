@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker'
 
 import { CreateAudienceAction } from '@/domains/audiences/actions/audiences/create_audience_action.js'
-import { AccessTokenRepository } from '@/domains/auth/acess_tokens/repositories/access_token_repository.ts'
+import { AccessTokenRepository } from '@/domains/auth/acess_tokens/repositories/access_token_repository.js'
 import { RegisterUserAction } from '@/domains/auth/actions/register_user_action.js'
-import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.ts'
-import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
 import { ContainerKey } from '@/infrastructure/container.js'
 import {
   createDatabaseClient,
@@ -15,13 +15,13 @@ import {
   mailers,
   teams,
 } from '@/infrastructure/database/schema/schema.js'
-import type { Team } from '@/infrastructure/database/schema/types.ts'
+import type { Team } from '@/infrastructure/database/schema/types.js'
 import { env } from '@/infrastructure/env.js'
 import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
 import { container } from '@/utils/typi.js'
 import { Secret } from '@poppinss/utils'
 import { eq } from 'drizzle-orm'
-import type { ConfigurationObjectInput } from '@/domains/teams/dto/mailers/update_mailer_dto.ts'
+import type { ConfigurationObjectInput } from '@/domains/teams/dto/mailers/update_mailer_dto.js'
 
 const connection = await createDatabaseClient(env.DATABASE_URL)
 

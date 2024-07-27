@@ -1,7 +1,7 @@
 import { TeamPolicy } from '@/domains/audiences/policies/team_policy.js'
 import { BroadcastRepository } from '@/domains/broadcasts/repositories/broadcast_repository.js'
 import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '@/http/responses/errors.js'
-import type { Broadcast } from '@/infrastructure/database/schema/types.ts'
+import type { BroadcastWithoutContent } from '@/infrastructure/database/schema/types.js'
 import type { HonoContext } from '@/infrastructure/server/types.js'
 import { container } from '@/utils/typi.js'
 
@@ -27,7 +27,10 @@ export class BroadcastValidationAndAuthorizationConcern {
     return broadcast
   }
 
-  public async ensureHasPermissions(ctx: HonoContext, broadcast?: Broadcast) {
+  public async ensureHasPermissions(
+    ctx: HonoContext,
+    broadcast?: BroadcastWithoutContent,
+  ) {
     const team = ctx.get('team')
     const userId = ctx.get('accessToken').userId
 

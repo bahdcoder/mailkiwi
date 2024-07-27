@@ -1,22 +1,22 @@
-import { Mailer } from '@/domains/shared/mailers/mailer.ts'
+import { Mailer } from '@/domains/shared/mailers/mailer.js'
 import {
   BaseJob,
   type JobContext,
-} from '@/domains/shared/queue/abstract_job.ts'
-import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.ts'
-import { cuid } from '@/domains/shared/utils/cuid/cuid.ts'
-import type { DrizzleClient } from '@/infrastructure/database/client.ts'
+} from '@/domains/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.js'
+import { cuid } from '@/domains/shared/utils/cuid/cuid.js'
+import type { DrizzleClient } from '@/infrastructure/database/client.js'
 import {
   broadcasts,
   contacts as contactsTable,
   sends,
-} from '@/infrastructure/database/schema/schema.ts'
+} from '@/infrastructure/database/schema/schema.js'
 import type {
   Broadcast,
   Contact,
-} from '@/infrastructure/database/schema/types.ts'
-import { addSecondsToDate } from '@/utils/dates.ts'
-import { sleep } from '@/utils/sleep.ts'
+} from '@/infrastructure/database/schema/types.js'
+import { addSecondsToDate } from '@/utils/dates.js'
+import { sleep } from '@/utils/sleep.js'
 import { and, eq, inArray } from 'drizzle-orm'
 
 export interface SendBroadcastToContactPayload {

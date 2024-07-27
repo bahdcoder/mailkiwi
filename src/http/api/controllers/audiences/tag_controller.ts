@@ -1,5 +1,5 @@
 import { CreateTagAction } from '@/domains/audiences/actions/tags/create_tag_action.js'
-import { DeleteTagAction } from '@/domains/audiences/actions/tags/delete_tag_action.ts'
+import { DeleteTagAction } from '@/domains/audiences/actions/tags/delete_tag_action.js'
 import { CreateTagSchema } from '@/domains/audiences/dto/tags/create_tag_dto.js'
 import { BaseController } from '@/domains/shared/controllers/base_controller.js'
 import { AudienceValidationAndAuthorizationConcern } from '@/http/api/concerns/audience_validation_concern.js'

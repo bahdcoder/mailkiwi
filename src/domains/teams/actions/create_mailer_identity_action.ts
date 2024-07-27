@@ -1,4 +1,4 @@
-import { AccountsQueue } from '@/domains/shared/queue/queue.ts'
+import { AccountsQueue } from '@/domains/shared/queue/queue.js'
 import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
 import type { CreateMailerIdentityDto } from '@/domains/teams/dto/create_mailer_identity_dto.js'
 import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.js'
@@ -12,7 +12,7 @@ import type {
 } from '@/infrastructure/database/schema/types.js'
 import { AwsSdk } from '@/providers/ses/sdk.js'
 import { container } from '@/utils/typi.js'
-import { VerifyMailerIdentityJob } from '@/domains/teams/jobs/verify_mailer_identity_job.ts'
+import { VerifyMailerIdentityJob } from '@/domains/teams/jobs/verify_mailer_identity_job.js'
 
 export class CreateMailerIdentityAction {
   constructor(

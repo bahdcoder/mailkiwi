@@ -2,7 +2,7 @@ import type {
   MailObject,
   MailerDriver,
   MailerDriverResponse,
-} from './mailer_types.ts'
+} from './mailer_types.js'
 
 // Mailer class
 export class MailerClass {

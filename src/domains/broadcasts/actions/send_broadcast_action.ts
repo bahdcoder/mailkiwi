@@ -1,13 +1,16 @@
-import { BroadcastsQueue } from '@/domains/shared/queue/queue.ts'
-import { CheckProviderCredentials } from '@/domains/teams/helpers/check_provider_credentials.ts'
-import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
-import { TeamRepository } from '@/domains/teams/repositories/team_repository.ts'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.ts'
-import type { Broadcast } from '@/infrastructure/database/schema/types.ts'
-import { differenceInSeconds } from '@/utils/dates.ts'
-import { container } from '@/utils/typi.ts'
-import { SendBroadcastJob } from '@/domains/broadcasts/jobs/send_broadcast_job.ts'
-import { BroadcastRepository } from '@/domains/broadcasts/repositories/broadcast_repository.ts'
+import { BroadcastsQueue } from '@/domains/shared/queue/queue.js'
+import { CheckProviderCredentials } from '@/domains/teams/helpers/check_provider_credentials.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
+import { TeamRepository } from '@/domains/teams/repositories/team_repository.js'
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import type {
+  Broadcast,
+  BroadcastWithoutContent,
+} from '@/infrastructure/database/schema/types.js'
+import { differenceInSeconds } from '@/utils/dates.js'
+import { container } from '@/utils/typi.js'
+import { SendBroadcastJob } from '@/domains/broadcasts/jobs/send_broadcast_job.js'
+import { BroadcastRepository } from '@/domains/broadcasts/repositories/broadcast_repository.js'
 
 export class SendBroadcastAction {
   constructor(
@@ -20,7 +23,7 @@ export class SendBroadcastAction {
     private teamRepository: TeamRepository = container.make(TeamRepository),
   ) {}
 
-  async handle(broadcast: Broadcast) {
+  async handle(broadcast: BroadcastWithoutContent) {
     // return this.broadcastRepository.Send(id, dto)
     if (broadcast.status !== 'DRAFT')
       throw E_VALIDATION_FAILED([
@@ -55,7 +58,7 @@ export class SendBroadcastAction {
         },
       ])
 
-    await BroadcastsQueue.add(
+    const xx = await BroadcastsQueue.add(
       SendBroadcastJob.id,
       { broadcastId: broadcast.id },
       {

@@ -1,20 +1,21 @@
 import { CreateBroadcastAction } from '@/domains/broadcasts/actions/create_broadcast_action.js'
 import { DeleteBroadcastAction } from '@/domains/broadcasts/actions/delete_broadcast_action.js'
-import { SendBroadcastAction } from '@/domains/broadcasts/actions/send_broadcast_action.ts'
+import { GetBroadcastAction } from '@/domains/broadcasts/actions/get_broadcast_action.ts'
+import { SendBroadcastAction } from '@/domains/broadcasts/actions/send_broadcast_action.js'
 import { UpdateBroadcastAction } from '@/domains/broadcasts/actions/update_broadcast_action.js'
 import { CreateBroadcastDto } from '@/domains/broadcasts/dto/create_broadcast_dto.js'
-import { SendBroadcastDto } from '@/domains/broadcasts/dto/send_broadcast_dto.ts'
+import { SendBroadcastDto } from '@/domains/broadcasts/dto/send_broadcast_dto.js'
 import { UpdateBroadcastDto } from '@/domains/broadcasts/dto/update_broadcast_dto.js'
-import { SendBroadcastJob } from '@/domains/broadcasts/jobs/send_broadcast_job.ts'
+import { SendBroadcastJob } from '@/domains/broadcasts/jobs/send_broadcast_job.js'
 import { BaseController } from '@/domains/shared/controllers/base_controller.js'
-import { BroadcastsQueue } from '@/domains/shared/queue/queue.ts'
+import { BroadcastsQueue } from '@/domains/shared/queue/queue.js'
 import { BroadcastValidationAndAuthorizationConcern } from '@/http/api/concerns/broadcast_validation_concern.js'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.ts'
-import { makeApp } from '@/infrastructure/container.ts'
-import { Broadcast } from '@/infrastructure/database/schema/types.ts'
-import type { HonoInstance } from '@/infrastructure/server/hono.ts'
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { makeApp } from '@/infrastructure/container.js'
+import { Broadcast } from '@/infrastructure/database/schema/types.js'
+import type { HonoInstance } from '@/infrastructure/server/hono.js'
 import type { HonoContext } from '@/infrastructure/server/types.js'
-import { differenceInSeconds } from '@/utils/dates.ts'
+import { differenceInSeconds } from '@/utils/dates.js'
 import { container } from '@/utils/typi.js'
 import { safeParseAsync } from 'valibot'
 
@@ -31,6 +32,7 @@ export class BroadcastController extends BaseController {
       [
         ['POST', '/', this.create.bind(this)],
         ['DELETE', '/:broadcastId', this.delete.bind(this)],
+        ['GET', '/:broadcastId', this.get.bind(this)],
         ['PUT', '/:broadcastId', this.update.bind(this)],
         ['POST', '/:broadcastId/send', this.send.bind(this)],
       ],
@@ -49,6 +51,19 @@ export class BroadcastController extends BaseController {
       .handle(data, ctx.get('team').id)
 
     return ctx.json(broadcast, 201)
+  }
+
+  async get(ctx: HonoContext) {
+    const broadcast =
+      await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
+        ctx,
+      )
+    await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
+      ctx,
+      broadcast,
+    )
+
+    return ctx.json(await container.make(GetBroadcastAction).handle(broadcast))
   }
 
   async delete(ctx: HonoContext) {

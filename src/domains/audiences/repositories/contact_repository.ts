@@ -6,7 +6,7 @@ import {
   tagsOnContacts,
 } from '@/infrastructure/database/schema/schema.js'
 
-import type { UpdateSetContactInput } from '@/infrastructure/database/schema/types.ts'
+import type { UpdateSetContactInput } from '@/infrastructure/database/schema/types.js'
 import { and, eq, inArray } from 'drizzle-orm'
 import type { CreateContactDto } from '@/domains/audiences/dto/contacts/create_contact_dto.js'
 

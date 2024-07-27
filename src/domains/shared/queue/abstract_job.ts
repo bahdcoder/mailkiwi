@@ -1,5 +1,5 @@
 import type { DrizzleClient } from '@/infrastructure/database/client.js'
-import type { AVAILABLE_QUEUE_TYPE } from './config.ts'
+import type { AVAILABLE_QUEUE_TYPE } from './config.js'
 
 export interface JobHandlerResponse {
   success: boolean

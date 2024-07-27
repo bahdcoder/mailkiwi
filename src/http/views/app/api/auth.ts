@@ -1,4 +1,4 @@
-import { ZCall } from './z-call.ts'
+import { ZCall } from './z-call.js'
 
 const api = new ZCall()
 

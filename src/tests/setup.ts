@@ -1,8 +1,8 @@
-import { MailhogDriver } from '@/domains/shared/mailers/drivers/mailhog_mailer_driver.ts'
+import { MailhogDriver } from '@/domains/shared/mailers/drivers/mailhog_mailer_driver.js'
 
 import { Ignitor } from '@/infrastructure/boot/ignitor.js'
 
-import { refreshDatabase } from '@/tests/mocks/teams/teams.ts'
+import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
 
 const ignitor = await new Ignitor().boot().start()
 

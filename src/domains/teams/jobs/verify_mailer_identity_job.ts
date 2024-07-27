@@ -1,12 +1,12 @@
 import {
   BaseJob,
   type JobContext,
-} from '@/domains/shared/queue/abstract_job.ts'
-import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.ts'
-import { AccountsQueue } from '@/domains/shared/queue/queue.ts'
-import { GetMailerAction } from '@/domains/teams/actions/mailers/get_mailer_action.ts'
-import { TeamRepository } from '@/domains/teams/repositories/team_repository.ts'
-import { container } from '@/utils/typi.ts'
+} from '@/domains/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.js'
+import { AccountsQueue } from '@/domains/shared/queue/queue.js'
+import { GetMailerAction } from '@/domains/teams/actions/mailers/get_mailer_action.js'
+import { TeamRepository } from '@/domains/teams/repositories/team_repository.js'
+import { container } from '@/utils/typi.js'
 
 export interface VerifyMailerIdentityJobPayload {
   teamId: string

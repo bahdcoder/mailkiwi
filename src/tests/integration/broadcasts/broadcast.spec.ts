@@ -1,5 +1,5 @@
-import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.ts'
-import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
 import { makeDatabase } from '@/infrastructure/container.js'
 import { broadcasts, mailers } from '@/infrastructure/database/schema/schema.js'
 import {
@@ -9,7 +9,7 @@ import {
 } from '@/tests/mocks/auth/users.js'
 import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
-import { container } from '@/utils/typi.ts'
+import { container } from '@/utils/typi.js'
 import { GetAccountSendingEnabledCommand, SESClient } from '@aws-sdk/client-ses'
 import { SNSClient } from '@aws-sdk/client-sns'
 import { faker } from '@faker-js/faker'

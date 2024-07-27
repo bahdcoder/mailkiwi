@@ -5,7 +5,7 @@ import { container } from '@/utils/typi.js'
 import type { HttpBindings } from '@hono/node-server'
 import { Hono as BaseHono, type MiddlewareHandler } from 'hono'
 import type { HonoRouteDefinition } from './types.js'
-import { env } from '@/infrastructure/env.ts'
+import { env } from '@/infrastructure/env.js'
 
 export type HonoInstance = BaseHono<{ Bindings: HttpBindings }> & {
   defineRoutes: (

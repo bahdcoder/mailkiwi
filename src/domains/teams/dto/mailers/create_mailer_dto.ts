@@ -10,7 +10,7 @@ import {
 import {
   type ConfigurationObjectInput,
   ConfigurationSchema,
-} from './update_mailer_dto.ts'
+} from './update_mailer_dto.js'
 
 export const CreateMailerSchema = pipe(
   object({

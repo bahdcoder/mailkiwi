@@ -1,6 +1,6 @@
 import type { UpdateBroadcastDto } from '@/domains/broadcasts/dto/update_broadcast_dto.js'
 import { BroadcastRepository } from '@/domains/broadcasts/repositories/broadcast_repository.js'
-import { container } from '@/utils/typi.ts'
+import { container } from '@/utils/typi.js'
 
 export class UpdateBroadcastAction {
   constructor(

@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { cuid } from '@/domains/shared/utils/cuid/cuid.ts'
+import { cuid } from '@/domains/shared/utils/cuid/cuid.js'
 import { makeDatabase } from '@/infrastructure/container.js'
 import {
   tags,

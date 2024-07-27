@@ -6,8 +6,8 @@ import { eq } from 'drizzle-orm'
 
 import { AudienceRepository } from '@/domains/audiences/repositories/audience_repository.js'
 import { RegisterUserAction } from '@/domains/auth/actions/register_user_action.js'
-import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.ts'
-import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.ts'
+import { MailerIdentityRepository } from '@/domains/teams/repositories/mailer_identity_repository.js'
+import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
 import { TeamRepository } from '@/domains/teams/repositories/team_repository.js'
 import { makeDatabase } from '@/infrastructure/container.js'
 import { mailers, users } from '@/infrastructure/database/schema/schema.js'
@@ -15,7 +15,7 @@ import type {
   Setting,
   Team,
   User,
-} from '@/infrastructure/database/schema/types.ts'
+} from '@/infrastructure/database/schema/types.js'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
 import { container } from '@/utils/typi.js'
 import { Secret } from '@poppinss/utils'

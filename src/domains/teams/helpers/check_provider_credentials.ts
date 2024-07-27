@@ -2,7 +2,7 @@ import type { MailerConfiguration } from '@/domains/shared/types/mailer.js'
 import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
 import type { Mailer } from '@/infrastructure/database/schema/types.js'
 import { AwsSdk } from '@/providers/ses/sdk.js'
-import { container } from '@/utils/typi.ts'
+import { container } from '@/utils/typi.js'
 
 export class CheckProviderCredentials {
   private checkProviderSendingEnabled = false

@@ -1,11 +1,16 @@
 import type { CreateBroadcastDto } from '@/domains/broadcasts/dto/create_broadcast_dto.js'
 import type { UpdateBroadcastDto } from '@/domains/broadcasts/dto/update_broadcast_dto.js'
 import { BaseRepository } from '@/domains/shared/repositories/base_repository.js'
-import { makeDatabase } from '@/infrastructure/container.ts'
-import type { DrizzleClient } from '@/infrastructure/database/client.ts'
-import { broadcasts } from '@/infrastructure/database/schema/schema.js'
-import type { UpdateSetBroadcastInput } from '@/infrastructure/database/schema/types.ts'
-import { eq } from 'drizzle-orm'
+import { makeDatabase } from '@/infrastructure/container.js'
+import type { DrizzleClient } from '@/infrastructure/database/client.js'
+import { broadcasts, sends } from '@/infrastructure/database/schema/schema.js'
+import type { UpdateSetBroadcastInput } from '@/infrastructure/database/schema/types.js'
+import { eq, sql } from 'drizzle-orm'
+import {
+  MySql2QueryResultHKT,
+  MySqlQueryResult,
+  MySqlRawQueryResult,
+} from 'drizzle-orm/mysql2'
 
 export class BroadcastRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -17,6 +22,30 @@ export class BroadcastRepository extends BaseRepository {
     await this.database.insert(broadcasts).values({ ...data, id, teamId })
 
     return { id }
+  }
+
+  async summary(
+    broadcastId: string,
+  ): Promise<{ totalSent: number; totalFailed: number }> {
+    const query: any = await this.database.execute(sql`
+      SELECT
+      COUNT(
+        CASE
+          WHEN status = 'SENT' THEN 1
+        END
+      ) AS totalSent,
+      COUNT(
+        CASE 
+          WHEN status = 'FAILED' THEN 1
+        END
+      ) AS totalFailed
+    FROM
+      ${sends}
+    WHERE
+      broadcastId = ${broadcastId};
+  `)
+
+    return query?.[0]?.[0]
   }
 
   async update(

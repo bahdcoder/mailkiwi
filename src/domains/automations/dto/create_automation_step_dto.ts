@@ -1,4 +1,4 @@
-import { makeDatabase } from '@/infrastructure/container.ts'
+import { makeDatabase } from '@/infrastructure/container.js'
 import {
   audiences,
   automationStepSubtypes,
@@ -9,7 +9,7 @@ import {
   automationStepTypes,
   automationSteps,
   tags,
-} from '@/infrastructure/database/schema/schema.ts'
+} from '@/infrastructure/database/schema/schema.js'
 import { and, eq, isNull } from 'drizzle-orm'
 import {
   type InferInput,

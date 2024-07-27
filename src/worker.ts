@@ -1,6 +1,6 @@
-import { WorkerIgnitor } from '@/infrastructure/worker/worker_ignitor.ts'
-import { ArgParser } from '@/utils/args_parser.ts'
-import { AVAILABLE_QUEUES } from './domains/shared/queue/config.ts'
+import { WorkerIgnitor } from '@/infrastructure/worker/worker_ignitor.js'
+import { ArgParser } from '@/utils/args_parser.js'
+import { AVAILABLE_QUEUES } from './domains/shared/queue/config.js'
 
 const ignitor = await new WorkerIgnitor().boot().start()
 

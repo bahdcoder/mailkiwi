@@ -1,9 +1,9 @@
 import {
   BaseJob,
   type JobContext,
-} from '@/domains/shared/queue/abstract_job.ts'
-import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.ts'
-import { sleep } from '@/utils/sleep.ts'
+} from '@/domains/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.js'
+import { sleep } from '@/utils/sleep.js'
 
 export interface SendTransactionalEmailJobPayload {
   broadcastId: string

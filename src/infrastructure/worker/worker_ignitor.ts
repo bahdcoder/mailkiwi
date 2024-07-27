@@ -1,12 +1,12 @@
-import { SendBroadcastJob } from '@/domains/broadcasts/jobs/send_broadcast_job.ts'
-import { SendBroadcastToContact } from '@/domains/broadcasts/jobs/send_broadcast_to_contact_job.ts'
-import { MailhogDriver } from '@/domains/shared/mailers/drivers/mailhog_mailer_driver.ts'
-import type { BaseJob } from '@/domains/shared/queue/abstract_job.ts'
-import { VerifyMailerIdentityJob } from '@/domains/teams/jobs/verify_mailer_identity_job.ts'
-import { SendTransactionalEmailJob } from '@/domains/transactional/jobs/send_transactional_email_job.ts'
-import { Ignitor } from '@/infrastructure/boot/ignitor.ts'
+import { SendBroadcastJob } from '@/domains/broadcasts/jobs/send_broadcast_job.js'
+import { SendBroadcastToContact } from '@/domains/broadcasts/jobs/send_broadcast_to_contact_job.js'
+import { MailhogDriver } from '@/domains/shared/mailers/drivers/mailhog_mailer_driver.js'
+import type { BaseJob } from '@/domains/shared/queue/abstract_job.js'
+import { VerifyMailerIdentityJob } from '@/domains/teams/jobs/verify_mailer_identity_job.js'
+import { SendTransactionalEmailJob } from '@/domains/transactional/jobs/send_transactional_email_job.js'
+import { Ignitor } from '@/infrastructure/boot/ignitor.js'
 import { type Job, Worker } from 'bullmq'
-import { makeDatabase } from '@/infrastructure/container.ts'
+import { makeDatabase } from '@/infrastructure/container.js'
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<any, any, string>[] = []

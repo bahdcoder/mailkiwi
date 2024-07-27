@@ -1,5 +1,5 @@
 import { Queue } from 'bullmq'
-import { AVAILABLE_QUEUES } from './config.ts'
+import { AVAILABLE_QUEUES } from './config.js'
 
 const connection = { host: 'localhost', port: 6379 }
 

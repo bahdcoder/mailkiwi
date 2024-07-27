@@ -1,6 +1,6 @@
 import type { UpdateContactDto } from '@/domains/audiences/dto/contacts/update_contact_dto.js'
 import { ContactRepository } from '@/domains/audiences/repositories/contact_repository.js'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.ts'
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 import { container } from '@/utils/typi.js'
 
 export class UpdateContactAction {

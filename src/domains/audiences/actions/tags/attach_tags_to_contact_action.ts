@@ -1,4 +1,4 @@
-import type { AttachTagsToContactDto } from '@/domains/audiences/dto/tags/attach_tags_to_contact_dto.ts'
+import type { AttachTagsToContactDto } from '@/domains/audiences/dto/tags/attach_tags_to_contact_dto.js'
 import { ContactRepository } from '@/domains/audiences/repositories/contact_repository.js'
 import { container } from '@/utils/typi.js'
 
