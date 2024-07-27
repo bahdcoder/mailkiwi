@@ -20,9 +20,9 @@ import {
 export const refreshDatabase = async () => {
   const database = makeDatabase()
 
-  await database.delete(segments)
   await database.delete(tagsOnContacts)
   await database.delete(broadcasts)
+  await database.delete(segments)
   await database.delete(contacts)
   await database.delete(automationSteps)
   await database.delete(automations)

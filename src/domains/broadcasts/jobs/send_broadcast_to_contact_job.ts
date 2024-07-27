@@ -63,8 +63,6 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       return
     }
 
-    d({ response })
-
     await this.markAsSentToContact(
       contact,
       broadcast,

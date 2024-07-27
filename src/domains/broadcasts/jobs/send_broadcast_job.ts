@@ -10,13 +10,11 @@ import {
   contacts,
   sends,
 } from '@/infrastructure/database/schema/schema.js'
-import { and, count, eq, SQL, sql, SQLWrapper } from 'drizzle-orm'
+import { and, eq, sql, type SQLWrapper } from 'drizzle-orm'
 import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
 
-import { MailerRepository } from '@/domains/teams/repositories/mailer_repository.js'
-import { container } from '@/utils/typi.js'
 import { SegmentBuilder } from '@/domains/audiences/utils/segment_builder/segment_builder.ts'
-import { CreateSegmentDto } from '@/domains/audiences/dto/segments/create_segment_dto.ts'
+import type { CreateSegmentDto } from '@/domains/audiences/dto/segments/create_segment_dto.ts'
 
 export interface SendBroadcastJobPayload {
   broadcastId: string
@@ -88,8 +86,6 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
         .offset(batch * batchSize)
 
       const speedCoefficient = maximumMailsPerSecond === 1 ? 2.5 : 1.25
-
-      d({ batch, speedCoefficient, contactIds: contactIds.length })
 
       await BroadcastsQueue.addBulk(
         contactIds.map((contact, idx) => ({

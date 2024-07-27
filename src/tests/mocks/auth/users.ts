@@ -1,7 +1,4 @@
-import { SESClient } from '@aws-sdk/client-ses'
-import { SNSClient } from '@aws-sdk/client-sns'
 import { faker } from '@faker-js/faker'
-import { mockClient } from 'aws-sdk-client-mock'
 import { eq } from 'drizzle-orm'
 
 import { AudienceRepository } from '@/domains/audiences/repositories/audience_repository.js'
@@ -11,11 +8,7 @@ import { MailerRepository } from '@/domains/teams/repositories/mailer_repository
 import { TeamRepository } from '@/domains/teams/repositories/team_repository.js'
 import { makeDatabase } from '@/infrastructure/container.js'
 import { mailers, users } from '@/infrastructure/database/schema/schema.js'
-import type {
-  Setting,
-  Team,
-  User,
-} from '@/infrastructure/database/schema/types.js'
+import type { Team, User } from '@/infrastructure/database/schema/types.js'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
 import { container } from '@/utils/typi.js'
 import { Secret } from '@poppinss/utils'
@@ -111,6 +104,7 @@ export const createUser = async ({
   })
 
   const teamRepository = container.resolve(TeamRepository)
+  const teamObject = await teamRepository.findById(team.id)
 
   const audience = await audienceRepository.createAudience(
     { name: 'Newsletter' },
@@ -125,23 +119,7 @@ export const createUser = async ({
   })) as User & { teams: Team[] }
 
   if (createMailerWithIdentity) {
-    await makeRequestAsUser(freshUser, {
-      method: 'POST',
-      path: '/mailers',
-      body: {
-        name: faker.string.uuid(),
-        provider: 'AWS_SES',
-        configuration: {
-          accessKey: faker.string.alphanumeric({ length: 16 }),
-          accessSecret: faker.string.alphanumeric({ length: 16 }),
-          region: 'us-east-1',
-          domain: 'newsletter.example.com',
-        },
-      },
-    })
-
-    mockClient(SESClient).onAnyCommand().resolves({})
-    mockClient(SNSClient).onAnyCommand().resolves({})
+    await createMailerForTeam(teamObject as Team)
   }
 
   let broadcastId: string | undefined = undefined
@@ -154,7 +132,7 @@ export const createUser = async ({
 
   return {
     user: freshUser,
-    team: (await teamRepository.findById(team.id)) as Team,
+    team: teamObject as Team,
     audience,
     broadcastId,
   }
