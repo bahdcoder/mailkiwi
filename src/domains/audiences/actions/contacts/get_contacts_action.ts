@@ -66,11 +66,11 @@ export class GetContactsAction {
       )
     }
 
-    return new Paginator(contacts)
+    return new Paginator<Contact>(contacts)
       .queryConditions([...queryConditions])
       .size(perPage ?? 10)
       .page(page ?? 1)
-      .transformRows<Contact>(async (rows) => {
+      .transformRows(async (rows) => {
         const tagsForContacts = await this.database
           .selectDistinct()
           .from(tagsOnContacts)

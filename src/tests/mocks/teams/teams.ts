@@ -1,7 +1,7 @@
 import { cuid } from '@/domains/shared/utils/cuid/cuid.js'
 import { makeDatabase } from '@/infrastructure/container.js'
 import {
-  ContactFilterCondition,
+  type ContactFilterCondition,
   accessTokens,
   audiences,
   automationSteps,
