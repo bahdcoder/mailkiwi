@@ -14,6 +14,7 @@ export interface MailObject {
   from: MailerContact
   to: MailerContact
   content: MailContent
+  personalise?: Record<string, any>
 }
 
 export interface MailerDriverResponse {

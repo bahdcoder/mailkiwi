@@ -46,6 +46,7 @@ export class ContactRepository extends BaseRepository {
     })
 
     const existingTagIds = existingTags.map((t) => t.tagId)
+
     const newTagIds = tagIds.filter((id) => !existingTagIds.includes(id))
 
     if (newTagIds.length > 0) {

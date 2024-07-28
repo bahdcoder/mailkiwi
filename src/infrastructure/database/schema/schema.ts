@@ -14,8 +14,15 @@ import {
 } from 'drizzle-orm/mysql-core'
 
 import { cuid } from '@/domains/shared/utils/cuid/cuid.ts'
+import type { CreateSegmentDto } from '@/domains/audiences/dto/segments/create_segment_dto.ts'
 
 const id = varchar('id', { length: 40 }).primaryKey().notNull().$defaultFn(cuid)
+
+export type ContactFilterCondition = {
+  field: CreateSegmentDto['conditions'][number]['field']
+  operation: CreateSegmentDto['conditions'][number]['operation']
+  value: string | number | string[] | number[]
+}
 
 // Tables
 export const settings = mysqlTable('settings', {
@@ -165,7 +172,12 @@ export const contacts = mysqlTable(
     audienceId: varchar('audienceId', { length: 32 })
       .references(() => audiences.id)
       .notNull(),
+    emailVerificationToken: varchar('emailVerificationToken', { length: 100 }),
+    emailVerificationTokenExpiresAt: timestamp(
+      'emailVerificationTokenExpiresAt',
+    ),
     attributes: json('attributes').$type<Record<string, any>>(),
+    createdAt: timestamp('createdAt').defaultNow(),
   },
   (table) => ({
     ContactEmailAudienceIdKey: unique('ContactEmailAudienceIdKey').on(
@@ -256,6 +268,19 @@ export const sends = mysqlTable('sends', {
   ),
 })
 
+export const emailContents = mysqlTable('emailContents', {
+  id,
+  fromName: varchar('fromName', { length: 255 }),
+  fromEmail: varchar('fromEmail', { length: 255 }),
+  replyToEmail: varchar('replyToEmail', { length: 255 }),
+  replyToName: varchar('replyToName', { length: 255 }),
+  contentJson: json('contentJson'),
+  contentText: text('contentText'),
+  contentHtml: text('contentHtml'),
+  subject: varchar('subject', { length: 255 }),
+  previewText: varchar('previewText', { length: 255 }),
+})
+
 export const broadcasts = mysqlTable('broadcasts', {
   id,
   name: varchar('name', { length: 255 }).notNull(),
@@ -323,6 +348,41 @@ export const automationStepSubtypes = [
   ...automationStepSubtypesEnd,
 ] as const
 
+export type ACTION_ADD_TAG_CONFIGURATION = { tagIds: string[] }
+
+export type RULE_WAIT_FOR_DURATION_CONFIGURATION = {
+  delay: number
+}
+
+export type RULE_IF_ELSE_CONFIGURATION = {
+  conditions: ContactFilterCondition[]
+}
+
+export type ACTION_SEND_EMAIL_CONFIGURATION = {
+  emailId: string
+}
+
+export type TRIGGER_CONFIGURATION = {
+  conditions: ContactFilterCondition[]
+}
+
+export type END_CONFIGURATION = {
+  type: 'END'
+}
+
+export type ACTION_SUBSCRIBE_TO_AUDIENCE_CONFIGURATION = {
+  audienceId: string
+}
+
+export type AutomationStepConfiguration =
+  | TRIGGER_CONFIGURATION
+  | END_CONFIGURATION
+  | ACTION_ADD_TAG_CONFIGURATION
+  | ACTION_SEND_EMAIL_CONFIGURATION
+  | ACTION_SUBSCRIBE_TO_AUDIENCE_CONFIGURATION
+  | RULE_IF_ELSE_CONFIGURATION
+  | RULE_WAIT_FOR_DURATION_CONFIGURATION
+
 export const automationSteps = mysqlTable('automationSteps', {
   id,
   automationId: varchar('automationId', { length: 32 })
@@ -338,7 +398,9 @@ export const automationSteps = mysqlTable('automationSteps', {
     { onDelete: 'cascade' },
   ),
   branchIndex: int('branchIndex'),
-  configuration: json('configuration').notNull(),
+  configuration: json('configuration')
+    .$type<AutomationStepConfiguration>()
+    .notNull(),
   emailId: varchar('emailId', { length: 32 }).references(() => emails.id),
   tagId: varchar('tagId', { length: 32 }).references(() => tags.id),
   audienceId: varchar('audienceId', { length: 32 }).references(
@@ -352,18 +414,10 @@ export const segments = mysqlTable('segments', {
   audienceId: varchar('audienceId', { length: 32 })
     .references(() => audiences.id)
     .notNull(),
-  conditions: json('conditions')
-    .$type<
-      {
-        field: string
-        operation: string
-        value: string | number | string[] | number[]
-      }[]
-    >()
-    .notNull(),
+  conditions: json('conditions').$type<ContactFilterCondition[]>().notNull(),
 })
 
-export const contactAutomationStep = mysqlTable('contactAutomationSteps', {
+export const contactAutomationSteps = mysqlTable('contactAutomationSteps', {
   id,
   automationStepId: varchar('automationStepId', { length: 32 })
     .references(() => automationSteps.id, { onDelete: 'cascade' })
@@ -371,11 +425,19 @@ export const contactAutomationStep = mysqlTable('contactAutomationSteps', {
   contactId: varchar('contactId', { length: 32 })
     .references(() => contacts.id, { onDelete: 'cascade' })
     .notNull(),
+  status: mysqlEnum('status', [
+    'PENDING',
+    'ACTIVE',
+    'COMPLETED',
+    'FAILED',
+    'HALTED',
+  ]).default('PENDING'),
   haltedAt: timestamp('haltedAt'),
   failedAt: timestamp('failedAt'),
   startedAt: timestamp('startedAt'),
   completedAt: timestamp('completedAt'),
-  output: json('output'),
+  createdAt: timestamp('createdAt'),
+  output: json('output').$type<string[]>(),
 })
 
 // Relations remain the same as in the original file

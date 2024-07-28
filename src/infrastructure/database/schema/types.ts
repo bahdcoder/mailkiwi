@@ -15,6 +15,7 @@ import type {
   teams,
   users,
   segments,
+  automationSteps,
 } from './schema.js'
 
 export type Setting = InferSelectModel<typeof settings>
@@ -61,3 +62,5 @@ export type UpdateSetBroadcastInput = Omit<
 
 export type Segment = typeof segments.$inferSelect
 export type InsertSegment = typeof segments.$inferInsert
+
+export type AutomationStep = typeof automationSteps.$inferSelect

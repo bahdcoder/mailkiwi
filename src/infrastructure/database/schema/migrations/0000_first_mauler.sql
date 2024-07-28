@@ -25,6 +25,7 @@ CREATE TABLE `automationSteps` (
 	`status` enum('DRAFT','ACTIVE','PAUSED','ARCHIVED') NOT NULL DEFAULT 'DRAFT',
 	`subtype` enum('TRIGGER_CONTACT_SUBSCRIBED','TRIGGER_CONTACT_UNSUBSCRIBED','TRIGGER_CONTACT_TAG_ADDED','TRIGGER_CONTACT_TAG_REMOVED','TRIGGER_API_MANUAL','ACTION_SEND_EMAIL','ACTION_ADD_TAG','ACTION_REMOVE_TAG','ACTION_SUBSCRIBE_TO_AUDIENCE','ACTION_UNSUBSCRIBE_FROM_AUDIENCE','ACTION_UPDATE_CONTACT_ATTRIBUTES','RULE_IF_ELSE','RULE_WAIT_FOR_DURATION','RULE_PERCENTAGE_SPLIT','RULE_WAIT_FOR_TRIGGER','END') NOT NULL,
 	`parentId` varchar(32),
+	`conditions` json,
 	`branchIndex` int,
 	`configuration` json NOT NULL,
 	`emailId` varchar(32),
@@ -67,10 +68,12 @@ CREATE TABLE `contactAutomationSteps` (
 	`id` varchar(40) NOT NULL,
 	`automationStepId` varchar(32) NOT NULL,
 	`contactId` varchar(32) NOT NULL,
+	`status` enum('PENDING','ACTIVE','COMPLETED','FAILED','HALTED') DEFAULT 'PENDING',
 	`haltedAt` timestamp,
 	`failedAt` timestamp,
 	`startedAt` timestamp,
 	`completedAt` timestamp,
+	`createdAt` timestamp,
 	`output` json,
 	CONSTRAINT `contactAutomationSteps_id` PRIMARY KEY(`id`)
 );
@@ -84,7 +87,10 @@ CREATE TABLE `contacts` (
 	`subscribedAt` timestamp,
 	`unsubscribedAt` timestamp,
 	`audienceId` varchar(32) NOT NULL,
+	`emailVerificationToken` varchar(100),
+	`emailVerificationTokenExpiresAt` timestamp,
 	`attributes` json,
+	`createdAt` timestamp DEFAULT (now()),
 	CONSTRAINT `contacts_id` PRIMARY KEY(`id`),
 	CONSTRAINT `ContactEmailAudienceIdKey` UNIQUE(`email`,`audienceId`)
 );

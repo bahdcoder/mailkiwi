@@ -21,7 +21,7 @@ export class MailerClass {
 
 export const Mailer = new MailerClass()
 
-class MailBuilder {
+export class MailBuilder {
   private mail: Partial<MailObject> = {}
   private driver: MailerDriver
 
@@ -31,6 +31,7 @@ class MailBuilder {
 
   from(email: string, name?: string): this {
     this.mail.from = { email, name }
+
     return this
   }
 
@@ -42,6 +43,12 @@ class MailBuilder {
 
   to(email: string, name?: string): this {
     this.mail.to = { email, name }
+
+    return this
+  }
+
+  personalise(personalise: Record<string, any>) {
+    this.mail.personalise = personalise
 
     return this
   }
@@ -64,6 +71,8 @@ class MailBuilder {
         null,
       ]
     }
+
+    // Run function to personalise mail object content based on personalise object.
 
     return this.driver.send(this.mail as MailObject)
   }

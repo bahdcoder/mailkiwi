@@ -11,7 +11,7 @@ export class SubscribedAtSegmentBuilder extends FieldSegmentBuilder {
   ) {
     super(operation, value)
 
-    this.forField(contacts.email)
+    this.forField(contacts.subscribedAt)
   }
 
   build() {
@@ -25,17 +25,5 @@ export class SubscribedAtSegmentBuilder extends FieldSegmentBuilder {
     }
 
     // return queryConditions
-  }
-
-  buildEqualOperation() {
-    return eq(contacts.email, this.value as string)
-  }
-
-  buildStartsWithOperation() {
-    return like(contacts.email, `${this.value}%`)
-  }
-
-  buildEndsWithOperation() {
-    return like(contacts.email, `${this.value}%`)
   }
 }

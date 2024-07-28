@@ -1,10 +1,16 @@
+import { E_OPERATION_FAILED } from '@/http/responses/errors.ts'
 import { makeDatabase } from '@/infrastructure/container.ts'
-import { and, count, SelectedFields, type SQLWrapper } from 'drizzle-orm'
+import {
+  and,
+  count,
+  gt,
+  type SelectedFields,
+  type SQLWrapper,
+} from 'drizzle-orm'
 import type {
   AnyMySqlColumn,
   AnyMySqlTable,
   MySqlSelect,
-  MySqlSelectBuilder,
 } from 'drizzle-orm/mysql-core'
 
 type QueryModifierFn = (
@@ -15,13 +21,21 @@ type SelectFields = SelectedFields<AnyMySqlColumn, AnyMySqlTable>
 
 type RowTransformer<T = any> = (row: T[]) => Promise<T[]> | T[]
 
-export class Paginator {
-  //   public static paginate<T>(items: T[], page: number, perPage: number): T[] {
-  //     const offset = (page - 1) * perPage
-  //     return items.slice(offset, offset + perPage)
-  //   }
+export class Paginator<RowType extends object = any> {
   private conditions: SQLWrapper[] = []
   private $selectColumns: SelectFields
+
+  private cursorPagination: {
+    size: number
+    cursor: string | undefined
+    field: AnyMySqlColumn | undefined
+  } = { size: 10, field: undefined, cursor: undefined }
+
+  private offsetPagination: { size: number; page: number } = {
+    size: 10,
+    page: 1,
+  }
+
   private $modifyQuery: QueryModifierFn = (query) => query
   private $modifyWhereQuery: QueryModifierFn = (query) => query
   private $transformRows: RowTransformer = (rows) => rows
@@ -31,8 +45,8 @@ export class Paginator {
     private database = makeDatabase(),
   ) {}
 
-  queryConditions(conditions: SQLWrapper[]) {
-    this.conditions = conditions
+  queryConditions(conditions: (SQLWrapper | undefined)[]) {
+    this.conditions = conditions.filter((condition) => condition !== undefined)
 
     return this
   }
@@ -55,13 +69,80 @@ export class Paginator {
     return this
   }
 
-  transformRows<T>(transformer: RowTransformer<T>) {
+  transformRows(transformer: RowTransformer<RowType>) {
     this.$transformRows = transformer
 
     return this
   }
 
-  async paginate(page = 1, perPage = 10) {
+  field(field: AnyMySqlColumn) {
+    this.cursorPagination.field = field
+
+    return this
+  }
+
+  size(size: number) {
+    this.cursorPagination.size = size
+    this.offsetPagination.size = size
+
+    return this
+  }
+
+  page(page: number) {
+    this.offsetPagination.page = page
+
+    return this
+  }
+
+  cursor(cursor: string | undefined) {
+    this.cursorPagination.cursor = cursor
+
+    return this
+  }
+
+  async next(): Promise<{
+    data: RowType[]
+    next: string | undefined
+    finished: boolean
+  }> {
+    const selectSelect = this.$modifyQuery(
+      this.database
+        .selectDistinct(this.$selectColumns)
+        .from(this.table)
+        .$dynamic(),
+    )
+
+    if (!this.cursorPagination.field)
+      throw E_OPERATION_FAILED('Field is required for cursor pagination')
+
+    const selectQuery = this.$modifyWhereQuery(
+      selectSelect.where(
+        and(
+          ...this.conditions,
+          this.cursorPagination.cursor
+            ? gt(this.cursorPagination.field, this.cursorPagination.cursor)
+            : undefined,
+        ),
+      ),
+    )
+      .limit(this.cursorPagination.size + 1)
+      .orderBy(this.cursorPagination.field)
+      .$dynamic()
+
+    const result = await selectQuery.execute()
+
+    const finished = result.length <= this.cursorPagination.size
+
+    return {
+      next: result[this.cursorPagination.size - 1]?.[
+        this.cursorPagination.field.name
+      ],
+      finished,
+      data: await this.$transformRows(finished ? result : result.slice(0, -1)),
+    }
+  }
+
+  async paginate(): Promise<{ data: RowType[]; total: number }> {
     const countSelect = this.$modifyQuery(
       this.database.select({ count: count() }).from(this.table).$dynamic(),
     )
@@ -80,8 +161,8 @@ export class Paginator {
     const selectQuery = this.$modifyWhereQuery(
       selectSelect.where(and(...this.conditions)),
     )
-      .limit(perPage)
-      .offset((page - 1) * perPage)
+      .limit(this.offsetPagination.size)
+      .offset((this.offsetPagination.page - 1) * this.offsetPagination.size)
 
     const [countResult, selectResult] = await Promise.all([
       countQuery.execute(),
@@ -89,8 +170,6 @@ export class Paginator {
     ])
 
     return {
-      perPage,
-      page,
       data: await this.$transformRows(selectResult),
       total: countResult[0].count,
     }

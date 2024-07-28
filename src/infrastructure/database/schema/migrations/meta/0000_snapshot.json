@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "0b8db4a2-8336-43ba-9fba-8c3ecd56ed83",
+  "id": "4c943be2-20aa-41bf-b54f-c8fbf2122a97",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accessTokens": {
@@ -206,6 +206,13 @@
         "parentId": {
           "name": "parentId",
           "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "conditions": {
+          "name": "conditions",
+          "type": "json",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -589,6 +596,14 @@
           "notNull": true,
           "autoincrement": false
         },
+        "status": {
+          "name": "status",
+          "type": "enum('PENDING','ACTIVE','COMPLETED','FAILED','HALTED')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'PENDING'"
+        },
         "haltedAt": {
           "name": "haltedAt",
           "type": "timestamp",
@@ -612,6 +627,13 @@
         },
         "completedAt": {
           "name": "completedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
@@ -723,12 +745,34 @@
           "notNull": true,
           "autoincrement": false
         },
+        "emailVerificationToken": {
+          "name": "emailVerificationToken",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "emailVerificationTokenExpiresAt": {
+          "name": "emailVerificationTokenExpiresAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "attributes": {
           "name": "attributes",
           "type": "json",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
         }
       },
       "indexes": {},

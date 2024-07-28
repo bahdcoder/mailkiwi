@@ -19,8 +19,8 @@ export abstract class BaseJob<T extends object = object> {
     throw new Error('Queue is not defined for this job.')
   }
 
-  done() {
-    return { success: true }
+  done(output?: string) {
+    return { success: true, output }
   }
 
   fail(output?: string) {

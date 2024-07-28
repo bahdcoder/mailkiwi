@@ -1,12 +1,14 @@
 import { cuid } from '@/domains/shared/utils/cuid/cuid.js'
 import { makeDatabase } from '@/infrastructure/container.js'
 import {
+  ContactFilterCondition,
   accessTokens,
   audiences,
   automationSteps,
   automations,
   broadcasts,
   contacts,
+  emails,
   mailerIdentities,
   mailers,
   segments,
@@ -16,6 +18,7 @@ import {
   teams,
   users,
 } from '@/infrastructure/database/schema/schema.js'
+import { faker } from '@faker-js/faker'
 
 export const refreshDatabase = async () => {
   const database = makeDatabase()
@@ -41,6 +44,7 @@ export const seedAutomation = async (
     audienceId: string
     name?: string
     description?: string
+    triggerConditions?: ContactFilterCondition[]
   },
   createSteps = true,
 ) => {
@@ -58,17 +62,28 @@ export const seedAutomation = async (
     return { id: automationId }
   }
 
+  const emailId = cuid()
+
+  await database.insert(emails).values({
+    id: emailId,
+    title: faker.lorem.words(2),
+    subject: faker.lorem.sentence(),
+    contentText: faker.lorem.paragraph(),
+    type: 'AUTOMATION',
+    audienceId: automation.audienceId,
+  })
+
   // Now create sample data for a automation that looks like this:
-  const startingTriggerautomationStepId = cuid()
+  const startingTriggerAutomationStepId = cuid()
 
   await database
     .insert(automationSteps)
     .values({
-      id: startingTriggerautomationStepId,
+      id: startingTriggerAutomationStepId,
       automationId,
       type: 'TRIGGER',
       subtype: 'TRIGGER_CONTACT_SUBSCRIBED',
-      configuration: {},
+      configuration: { conditions: automation.triggerConditions ?? [] },
     })
     .execute()
 
@@ -79,24 +94,24 @@ export const seedAutomation = async (
     .values({
       id: receiveWelcomeEmailautomationStepId,
       automationId,
-      parentId: startingTriggerautomationStepId,
+      parentId: startingTriggerAutomationStepId,
       type: 'ACTION',
       subtype: 'ACTION_SEND_EMAIL',
-      configuration: { subject: 'Welcome to the company!' },
+      configuration: { emailId },
     })
     .execute()
 
-  const waitsTwoDaysautomationStepId = cuid()
+  const waitsTwoDaysAutomationStepId = cuid()
 
   await database
     .insert(automationSteps)
     .values({
-      id: waitsTwoDaysautomationStepId,
+      id: waitsTwoDaysAutomationStepId,
       automationId,
       parentId: receiveWelcomeEmailautomationStepId,
       type: 'RULE',
       subtype: 'RULE_WAIT_FOR_DURATION',
-      configuration: { delay: '2 days' },
+      configuration: { delay: 2880 },
     })
     .execute()
 
@@ -107,24 +122,24 @@ export const seedAutomation = async (
     .values({
       id: receiveSecondEmailEmailautomationStepId,
       automationId,
-      parentId: waitsTwoDaysautomationStepId,
+      parentId: waitsTwoDaysAutomationStepId,
       type: 'ACTION',
       subtype: 'ACTION_SEND_EMAIL',
-      configuration: { subject: 'Did you get my book?' },
+      configuration: { emailId },
     })
     .execute()
 
-  const waitsOneDayautomationStepId = cuid()
+  const waitsOneDayAutomationStepId = cuid()
 
   await database
     .insert(automationSteps)
     .values({
-      id: waitsOneDayautomationStepId,
+      id: waitsOneDayAutomationStepId,
       automationId,
       parentId: receiveSecondEmailEmailautomationStepId,
       type: 'RULE',
       subtype: 'RULE_WAIT_FOR_DURATION',
-      configuration: { delay: '1 day' },
+      configuration: { delay: 1440 }, // delay is in minutes
     })
     .execute()
 
@@ -135,18 +150,16 @@ export const seedAutomation = async (
     .values({
       id: ifElseBranchautomationStepId,
       automationId,
-      parentId: waitsOneDayautomationStepId,
+      parentId: waitsOneDayAutomationStepId,
       type: 'RULE',
       subtype: 'RULE_IF_ELSE',
       configuration: {
         conditions: [
-          [
-            {
-              field: 'tags',
-              operator: 'ONE_OF',
-              value: ['gjdbbgfyz6e9m3tk99ezp084'],
-            },
-          ],
+          {
+            field: 'tags',
+            operation: 'contains',
+            value: ['gjdbbgfyz6e9m3tk99ezp084'],
+          },
         ],
       },
     })
@@ -163,7 +176,7 @@ export const seedAutomation = async (
       type: 'ACTION',
       subtype: 'ACTION_SEND_EMAIL',
       configuration: {
-        subject: 'Thank you for your purchase.',
+        emailId,
       },
       branchIndex: 0,
     })
@@ -179,7 +192,7 @@ export const seedAutomation = async (
       parentId: hasTagReceivesThankYouautomationStepId,
       type: 'RULE',
       subtype: 'RULE_WAIT_FOR_DURATION',
-      configuration: { delay: '4 days' },
+      configuration: { delay: 5760 },
     })
     .execute()
 
@@ -193,7 +206,7 @@ export const seedAutomation = async (
       parentId: hasTagWait4DaysautomationStepId,
       type: 'ACTION',
       subtype: 'ACTION_SUBSCRIBE_TO_AUDIENCE',
-      configuration: { listId: 'akc34b1k27xrgy0c6qygcefe' },
+      configuration: { audienceId: 'akc34b1k27xrgy0c6qygcefe' },
     })
     .execute()
 
@@ -207,7 +220,7 @@ export const seedAutomation = async (
       parentId: hasTagAddToAudienceautomationId,
       type: 'RULE',
       subtype: 'RULE_WAIT_FOR_DURATION',
-      configuration: { delay: '1 day' },
+      configuration: { delay: 1440 },
     })
     .execute()
 
@@ -221,7 +234,7 @@ export const seedAutomation = async (
       parentId: hasTagWait1DayautomationStepId,
       type: 'ACTION',
       subtype: 'ACTION_SEND_EMAIL',
-      configuration: { subject: 'Enjoy this discount.' },
+      configuration: { emailId },
     })
     .execute()
 
@@ -235,7 +248,7 @@ export const seedAutomation = async (
       parentId: hasTagSendDiscountautomationStepId,
       type: 'END',
       subtype: 'END',
-      configuration: {},
+      configuration: { type: 'END' },
     })
     .execute()
 
@@ -250,7 +263,7 @@ export const seedAutomation = async (
       type: 'ACTION',
       subtype: 'ACTION_SEND_EMAIL',
       configuration: {
-        subject: 'Enjoy this 80% discount for the course.',
+        emailId,
       },
       branchIndex: 1,
     })
@@ -267,7 +280,7 @@ export const seedAutomation = async (
       type: 'RULE',
       subtype: 'RULE_WAIT_FOR_DURATION',
       configuration: {
-        subject: 'Pause for 3 days to see user behaviour.',
+        emailId,
       },
       branchIndex: 1,
     })
@@ -285,13 +298,11 @@ export const seedAutomation = async (
       subtype: 'RULE_IF_ELSE',
       configuration: {
         conditions: [
-          [
-            {
-              field: 'email',
-              operator: 'ENDS_WITH',
-              value: ['@gmail.com'],
-            },
-          ],
+          {
+            field: 'email',
+            operation: 'endsWith',
+            value: ['@gmail.com'],
+          },
         ],
       },
     })
@@ -308,7 +319,7 @@ export const seedAutomation = async (
 
       type: 'ACTION',
       subtype: 'ACTION_UNSUBSCRIBE_FROM_AUDIENCE',
-      configuration: {},
+      configuration: { type: 'END' },
       branchIndex: 0,
     })
     .execute()
@@ -324,7 +335,7 @@ export const seedAutomation = async (
       type: 'ACTION',
       subtype: 'ACTION_SEND_EMAIL',
       configuration: {
-        subject: "Here's a 90% discount for the course.",
+        emailId,
       },
       branchIndex: 1,
     })
@@ -340,7 +351,7 @@ export const seedAutomation = async (
       parentId: isNotGmailGetDiscountautomationStepId,
       type: 'RULE',
       subtype: 'RULE_WAIT_FOR_DURATION',
-      configuration: {},
+      configuration: { type: 'END' },
       branchIndex: 1,
     })
     .execute()
@@ -357,13 +368,11 @@ export const seedAutomation = async (
       subtype: 'RULE_IF_ELSE',
       configuration: {
         conditions: [
-          [
-            {
-              field: 'tags',
-              operator: 'CONTAINS',
-              value: ['brkkbrxhehqq0msk3jn8e02e'],
-            },
-          ],
+          {
+            field: 'tags',
+            operation: 'contains',
+            value: ['brkkbrxhehqq0msk3jn8e02e'],
+          },
         ],
       },
     })
@@ -379,7 +388,7 @@ export const seedAutomation = async (
       parentId: thirdIfElseBranchautomationStepId,
       type: 'ACTION',
       subtype: 'ACTION_SUBSCRIBE_TO_AUDIENCE',
-      configuration: { listId: 'akc34b1k27xrgy0c6qygcefe' },
+      configuration: { audienceId: 'akc34b1k27xrgy0c6qygcefe' },
       branchIndex: 0,
     })
     .execute()
@@ -394,7 +403,7 @@ export const seedAutomation = async (
       parentId: thirdIfElseBranchautomationStepId,
       type: 'ACTION',
       subtype: 'ACTION_UNSUBSCRIBE_FROM_AUDIENCE',
-      configuration: { listId: 'akc34b1k27xrgy0c6qygcefe' },
+      configuration: { audienceId: 'akc34b1k27xrgy0c6qygcefe' },
       branchIndex: 1,
     })
     .execute()
@@ -428,5 +437,10 @@ export const seedAutomation = async (
 
   // Provide sample api responses for each of the endpoints related to automations . all automation points must be their own database rows to allow for full flexibility to allow for features like drag and drop and reordering of automation points
 
-  return { id: automationId }
+  return {
+    id: automationId,
+    receiveWelcomeEmailautomationStepId,
+    hasTagAddToAudienceautomationId,
+    emailId,
+  }
 }

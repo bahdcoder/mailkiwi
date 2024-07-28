@@ -612,3 +612,11 @@ describe('Automation Step Validation', () => {
     })
   })
 })
+
+describe('Run automations', () => {
+  test('can run all automation actions for an automation', async ({
+    expect,
+  }) => {
+    //
+  })
+})

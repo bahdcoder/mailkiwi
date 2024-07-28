@@ -46,7 +46,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       contact.email,
       `${contact.firstName} ${contact.lastName}`,
     )
-      .subject('Welcome to our newsletter.')
+      .subject(broadcast.subject as string)
       .to(contact.email, `${contact.firstName} ${contact.lastName}`)
       .content(broadcast.contentHtml as string, broadcast.contentText as string)
       .send()
