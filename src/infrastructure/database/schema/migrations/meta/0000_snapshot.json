@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "4c943be2-20aa-41bf-b54f-c8fbf2122a97",
+  "id": "753c6b91-01af-436a-a443-cc1f5735946f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accessTokens": {
@@ -210,13 +210,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "conditions": {
-          "name": "conditions",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "branchIndex": {
           "name": "branchIndex",
           "type": "int",
@@ -406,34 +399,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "fromName": {
-          "name": "fromName",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "fromEmail": {
-          "name": "fromEmail",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "replyToEmail": {
-          "name": "replyToEmail",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "replyToName": {
-          "name": "replyToName",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "audienceId": {
           "name": "audienceId",
           "type": "varchar(32)",
@@ -469,37 +434,9 @@
           "notNull": false,
           "autoincrement": false
         },
-        "contentJson": {
-          "name": "contentJson",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "contentText": {
-          "name": "contentText",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "contentHtml": {
-          "name": "contentHtml",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "subject": {
-          "name": "subject",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "previewText": {
-          "name": "previewText",
-          "type": "varchar(255)",
+        "emailContentId": {
+          "name": "emailContentId",
+          "type": "varchar(32)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -559,6 +496,19 @@
             "id"
           ],
           "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "broadcasts_emailContentId_emailContents_id_fk": {
+          "name": "broadcasts_emailContentId_emailContents_id_fk",
+          "tableFrom": "broadcasts",
+          "tableTo": "emailContents",
+          "columnsFrom": [
+            "emailContentId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -809,6 +759,92 @@
         }
       }
     },
+    "emailContents": {
+      "name": "emailContents",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fromName": {
+          "name": "fromName",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fromEmail": {
+          "name": "fromEmail",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "replyToEmail": {
+          "name": "replyToEmail",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "replyToName": {
+          "name": "replyToName",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contentJson": {
+          "name": "contentJson",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contentText": {
+          "name": "contentText",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contentHtml": {
+          "name": "contentHtml",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "subject": {
+          "name": "subject",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "previewText": {
+          "name": "previewText",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "emailContents_id": {
+          "name": "emailContents_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "emails": {
       "name": "emails",
       "columns": {
@@ -833,13 +869,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "subject": {
-          "name": "subject",
-          "type": "varchar(180)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "audienceId": {
           "name": "audienceId",
           "type": "varchar(32)",
@@ -847,16 +876,9 @@
           "notNull": true,
           "autoincrement": false
         },
-        "content": {
-          "name": "content",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "contentText": {
-          "name": "contentText",
-          "type": "text",
+        "emailContentId": {
+          "name": "emailContentId",
+          "type": "varchar(32)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -870,6 +892,19 @@
           "tableTo": "audiences",
           "columnsFrom": [
             "audienceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "emails_emailContentId_emailContents_id_fk": {
+          "name": "emails_emailContentId_emailContents_id_fk",
+          "tableFrom": "emails",
+          "tableTo": "emailContents",
+          "columnsFrom": [
+            "emailContentId"
           ],
           "columnsTo": [
             "id"
@@ -1191,27 +1226,6 @@
         "email": {
           "name": "email",
           "type": "varchar(80)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "content": {
-          "name": "content",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "contentJson": {
-          "name": "contentJson",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "contentHtml": {
-          "name": "contentHtml",
-          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

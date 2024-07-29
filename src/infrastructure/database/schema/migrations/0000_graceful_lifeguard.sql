@@ -25,7 +25,6 @@ CREATE TABLE `automationSteps` (
 	`status` enum('DRAFT','ACTIVE','PAUSED','ARCHIVED') NOT NULL DEFAULT 'DRAFT',
 	`subtype` enum('TRIGGER_CONTACT_SUBSCRIBED','TRIGGER_CONTACT_UNSUBSCRIBED','TRIGGER_CONTACT_TAG_ADDED','TRIGGER_CONTACT_TAG_REMOVED','TRIGGER_API_MANUAL','ACTION_SEND_EMAIL','ACTION_ADD_TAG','ACTION_REMOVE_TAG','ACTION_SUBSCRIBE_TO_AUDIENCE','ACTION_UNSUBSCRIBE_FROM_AUDIENCE','ACTION_UPDATE_CONTACT_ATTRIBUTES','RULE_IF_ELSE','RULE_WAIT_FOR_DURATION','RULE_PERCENTAGE_SPLIT','RULE_WAIT_FOR_TRIGGER','END') NOT NULL,
 	`parentId` varchar(32),
-	`conditions` json,
 	`branchIndex` int,
 	`configuration` json NOT NULL,
 	`emailId` varchar(32),
@@ -45,20 +44,12 @@ CREATE TABLE `automations` (
 CREATE TABLE `broadcasts` (
 	`id` varchar(40) NOT NULL,
 	`name` varchar(255) NOT NULL,
-	`fromName` varchar(255),
-	`fromEmail` varchar(255),
-	`replyToEmail` varchar(255),
-	`replyToName` varchar(255),
 	`audienceId` varchar(32) NOT NULL,
 	`segmentId` varchar(32),
 	`teamId` varchar(32) NOT NULL,
 	`trackClicks` boolean,
 	`trackOpens` boolean,
-	`contentJson` json,
-	`contentText` text,
-	`contentHtml` text,
-	`subject` varchar(255),
-	`previewText` varchar(255),
+	`emailContentId` varchar(32),
 	`status` enum('SENT','SENDING','DRAFT','QUEUED_FOR_SENDING','SENDING_FAILED','DRAFT_ARCHIVED','ARCHIVED') DEFAULT 'DRAFT',
 	`sendAt` timestamp,
 	CONSTRAINT `broadcasts_id` PRIMARY KEY(`id`)
@@ -95,14 +86,26 @@ CREATE TABLE `contacts` (
 	CONSTRAINT `ContactEmailAudienceIdKey` UNIQUE(`email`,`audienceId`)
 );
 --> statement-breakpoint
+CREATE TABLE `emailContents` (
+	`id` varchar(40) NOT NULL,
+	`fromName` varchar(255),
+	`fromEmail` varchar(255),
+	`replyToEmail` varchar(255),
+	`replyToName` varchar(255),
+	`contentJson` json,
+	`contentText` text,
+	`contentHtml` text,
+	`subject` varchar(255),
+	`previewText` varchar(255),
+	CONSTRAINT `emailContents_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `emails` (
 	`id` varchar(40) NOT NULL,
 	`type` enum('AUTOMATION','TRANSACTIONAL') NOT NULL,
 	`title` varchar(50) NOT NULL,
-	`subject` varchar(180),
 	`audienceId` varchar(32) NOT NULL,
-	`content` json,
-	`contentText` text,
+	`emailContentId` varchar(32),
 	CONSTRAINT `emails_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -149,9 +152,6 @@ CREATE TABLE `sends` (
 	`type` enum('AUTOMATION','TRANSACTIONAL','BROADCAST') NOT NULL,
 	`status` enum('PENDING','SENT','FAILED') NOT NULL,
 	`email` varchar(80),
-	`content` json,
-	`contentJson` text,
-	`contentHtml` text,
 	`contactId` varchar(32) NOT NULL,
 	`broadcastId` varchar(32),
 	`sentAt` timestamp,
@@ -243,10 +243,12 @@ ALTER TABLE `automations` ADD CONSTRAINT `automations_audienceId_audiences_id_fk
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_segmentId_segments_id_fk` FOREIGN KEY (`segmentId`) REFERENCES `segments`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_automationStepId_automationSteps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automationSteps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emails` ADD CONSTRAINT `emails_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `emails` ADD CONSTRAINT `emails_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `mailerIdentities` ADD CONSTRAINT `mailerIdentities_mailerId_mailers_id_fk` FOREIGN KEY (`mailerId`) REFERENCES `mailers`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `mailers` ADD CONSTRAINT `mailers_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `segments` ADD CONSTRAINT `segments_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint

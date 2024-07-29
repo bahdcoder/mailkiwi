@@ -20,20 +20,22 @@ export const UpdateBroadcastDto = pipeAsync(
   objectAsync({
     name: optional(string()),
 
-    emailContent: object({
-      fromName: optional(string()),
-      fromEmail: optional(pipe(string(), email())),
-      replyToEmail: optional(pipe(string(), email())),
-      replyToName: optional(string()),
+    emailContent: optional(
+      object({
+        fromName: optional(string()),
+        fromEmail: optional(pipe(string(), email())),
+        replyToEmail: optional(pipe(string(), email())),
+        replyToName: optional(string()),
 
-      contentJson: optional(string()),
-      contentText: optional(string()),
-      contentHtml: optional(string()),
+        contentJson: optional(string()),
+        contentText: optional(string()),
+        contentHtml: optional(string()),
 
-      subject: optional(string()),
+        subject: optional(string()),
 
-      previewText: optional(string()),
-    }),
+        previewText: optional(string()),
+      }),
+    ),
 
     audienceId: pipeAsync(
       optional(string()),

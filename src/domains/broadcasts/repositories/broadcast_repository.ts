@@ -71,6 +71,9 @@ export class BroadcastRepository extends BaseRepository {
   async findById(id: string) {
     return this.database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, id),
+      with: {
+        emailContent: true,
+      },
     })
   }
 

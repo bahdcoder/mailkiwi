@@ -24,10 +24,6 @@ export async function createBroadcastForUser(
     body: {
       name: faker.lorem.words(3),
       audienceId,
-      fromName: faker.lorem.words(2),
-      fromEmail: faker.internet.email(),
-      replyToName: faker.lorem.words(2),
-      replyToEmail: faker.internet.email(),
     },
   })
   const { id } = await response.json()
@@ -37,13 +33,15 @@ export async function createBroadcastForUser(
       method: 'PUT',
       path: `/broadcasts/${id}`,
       body: {
-        fromName: faker.lorem.words(2),
-        fromEmail: faker.internet.email(),
-        replyToName: faker.lorem.words(2),
-        replyToEmail: faker.internet.email(),
-        subject: faker.lorem.words(4),
-        contentHtml: faker.lorem.paragraph(),
-        contentText: faker.lorem.paragraph(),
+        emailContent: {
+          fromName: faker.lorem.words(2),
+          fromEmail: faker.internet.email(),
+          replyToName: faker.lorem.words(2),
+          replyToEmail: faker.internet.email(),
+          subject: faker.lorem.words(4),
+          contentHtml: faker.lorem.paragraph(),
+          contentText: faker.lorem.paragraph(),
+        },
       },
     })
   }

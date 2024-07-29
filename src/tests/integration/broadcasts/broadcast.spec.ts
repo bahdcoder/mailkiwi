@@ -110,12 +110,14 @@ describe('Update broadcasts', () => {
 
     const updateData = {
       name: faker.lorem.words(3),
-      fromName: faker.person.fullName(),
-      fromEmail: faker.internet.email(),
-      replyToEmail: faker.internet.email(),
-      replyToName: faker.person.fullName(),
-      subject: faker.lorem.sentence(),
-      previewText: faker.lorem.sentence(),
+      emailContent: {
+        fromName: faker.person.fullName(),
+        fromEmail: faker.internet.email(),
+        replyToEmail: faker.internet.email(),
+        replyToName: faker.person.fullName(),
+        subject: faker.lorem.sentence(),
+        previewText: faker.lorem.sentence(),
+      },
     }
 
     const response = await makeRequestAsUser(user, {
@@ -127,6 +129,9 @@ describe('Update broadcasts', () => {
     expect(response.status).toBe(200)
     const updatedBroadcast = await database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, broadcastId),
+      with: {
+        emailContent: true,
+      },
     })
 
     expect(updatedBroadcast).toMatchObject(updateData)
@@ -169,8 +174,10 @@ describe('Update broadcasts', () => {
       method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: {
-        fromEmail: 'invalid-email',
-        replyToEmail: 'also-invalid',
+        emailContent: {
+          fromEmail: 'invalid-email',
+          replyToEmail: 'also-invalid',
+        },
       },
     })
 
@@ -179,11 +186,11 @@ describe('Update broadcasts', () => {
       errors: [
         {
           message: expect.stringMatching('Invalid email: Received'),
-          field: 'fromEmail',
+          field: 'emailContent',
         },
         {
           message: expect.stringMatching('Invalid email: Received'),
-          field: 'replyToEmail',
+          field: 'emailContent',
         },
       ],
     })
@@ -337,8 +344,6 @@ describe('Send Broadcast', () => {
     await refreshDatabase()
     const { user, audience, team } = await createUser()
 
-    const database = makeDatabase()
-
     await createMailerForTeam(team)
 
     SESMock.on(GetAccountSendingEnabledCommand).resolves({
@@ -364,8 +369,6 @@ describe('Send Broadcast', () => {
     await refreshDatabase()
     const { user, audience } = await createUser()
 
-    const database = makeDatabase()
-
     const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const response = await makeRequestAsUser(user, {
@@ -378,32 +381,8 @@ describe('Send Broadcast', () => {
       message: 'Validation failed.',
       errors: [
         {
-          message: 'Invalid type: Expected string but received null',
-          field: 'subject',
-        },
-        {
-          message: 'Invalid type: Expected string but received null',
-          field: 'fromName',
-        },
-        {
-          message: 'Invalid type: Expected string but received null',
-          field: 'fromEmail',
-        },
-        {
-          message: 'Invalid type: Expected string but received null',
-          field: 'replyToEmail',
-        },
-        {
-          message: 'Invalid type: Expected string but received null',
-          field: 'replyToName',
-        },
-        {
-          message: 'Invalid type: Expected string but received null',
-          field: 'contentText',
-        },
-        {
-          message: 'Invalid type: Expected string but received null',
-          field: 'contentHtml',
+          message: 'Invalid type: Expected Object but received null',
+          field: 'emailContent',
         },
       ],
     })

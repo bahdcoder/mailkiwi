@@ -13,11 +13,16 @@ export class UpdateBroadcastAction {
   async handle(broadcast: Broadcast, payload: UpdateBroadcastDto) {
     const { emailContent, ...broadcastPayload } = payload
 
-    await this.broadcastRepository.update(broadcast.id, broadcastPayload)
-    await this.emailContentRepository.updateForBroadcast(
-      broadcast,
-      emailContent,
-    )
+    if (Object.keys(broadcastPayload).length > 0) {
+      await this.broadcastRepository.update(broadcast.id, broadcastPayload)
+    }
+
+    if (emailContent && Object.keys(emailContent).length > 0) {
+      await this.emailContentRepository.updateForBroadcast(
+        broadcast,
+        emailContent,
+      )
+    }
 
     return { id: broadcast.id }
   }
