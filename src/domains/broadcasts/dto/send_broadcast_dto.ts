@@ -22,13 +22,9 @@ import {
   string,
 } from 'valibot'
 
-export const SendBroadcastDto = objectAsync({
+export const SendBroadcastSchema = objectAsync({
   name: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
-  subject: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
-  fromName: pipe(string(), nonEmpty()),
-  fromEmail: pipe(string(), nonEmpty(), email()),
-  replyToEmail: pipe(string(), nonEmpty(), email()),
-  replyToName: pipe(string(), nonEmpty()),
+
   audienceId: pipeAsync(
     string(),
     checkAsync(async (value) => {
@@ -45,11 +41,19 @@ export const SendBroadcastDto = objectAsync({
   trackClicks: optional(nullable(boolean())),
   trackOpens: optional(nullable(boolean())),
 
-  contentJson: nullable(optional(string())),
-  contentText: pipe(string(), nonEmpty()),
-  contentHtml: pipe(string(), nonEmpty()),
+  emailContent: object({
+    subject: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
+    fromName: pipe(string(), nonEmpty()),
+    fromEmail: pipe(string(), nonEmpty(), email()),
+    replyToEmail: pipe(string(), nonEmpty(), email()),
+    replyToName: pipe(string(), nonEmpty()),
 
-  previewText: nullable(optional(string())),
+    contentJson: nullable(optional(string())),
+    contentText: pipe(string(), nonEmpty()),
+    contentHtml: pipe(string(), nonEmpty()),
+
+    previewText: nullable(optional(string())),
+  }),
 
   sendAt: pipeAsync(
     nullable(optional(string())),
@@ -62,4 +66,4 @@ export const SendBroadcastDto = objectAsync({
   ),
 })
 
-export type SendBroadcastDto = InferInput<typeof SendBroadcastDto>
+export type SendBroadcastDto = InferInput<typeof SendBroadcastSchema>

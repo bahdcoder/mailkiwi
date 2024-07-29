@@ -15,6 +15,7 @@ import type {
   teams,
   users,
   segments,
+  emailContents,
   automationSteps,
 } from './schema.js'
 
@@ -64,3 +65,13 @@ export type Segment = typeof segments.$inferSelect
 export type InsertSegment = typeof segments.$inferInsert
 
 export type AutomationStep = typeof automationSteps.$inferSelect
+
+export type EmailContent = typeof emailContents.$inferSelect
+
+type NonNullableProperties<T> = {
+  [P in keyof T]: NonNullable<T[P]>
+}
+
+export type BroadcastWithEmailContent = Broadcast & {
+  emailContent: Required<NonNullableProperties<EmailContent>>
+}

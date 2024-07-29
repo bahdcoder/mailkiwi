@@ -10,7 +10,6 @@ import type { HonoContext } from '@/infrastructure/server/types.js'
 
 export class BaseController {
   protected async validate<
-    /* eslint-disable-next-line */
     T extends BaseSchema<any, any, any> | BaseSchemaAsync<any, any, any>,
   >(ctx: HonoContext, schema: T): Promise<InferInput<T>> {
     const { success, issues, output } = await safeParseAsync(

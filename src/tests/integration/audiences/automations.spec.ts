@@ -141,8 +141,6 @@ describe('Contact automations', () => {
     await database.insert(emails).values({
       id: emailId,
       title: faker.lorem.words(2),
-      subject: faker.lorem.sentence(),
-      contentText: faker.lorem.paragraph(),
       type: 'AUTOMATION',
       audienceId: audience.id,
     })

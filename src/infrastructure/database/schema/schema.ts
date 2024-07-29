@@ -231,12 +231,13 @@ export const emails = mysqlTable('emails', {
   id,
   type: mysqlEnum('type', ['AUTOMATION', 'TRANSACTIONAL']).notNull(),
   title: varchar('title', { length: 50 }).notNull(),
-  subject: varchar('subject', { length: 180 }),
   audienceId: varchar('audienceId', { length: 32 })
     .references(() => audiences.id, { onDelete: 'cascade' })
     .notNull(),
-  content: json('content'),
-  contentText: text('contentText'),
+  emailContentId: varchar('emailContentId', { length: 32 }).references(
+    () => emailContents.id,
+    { onDelete: 'cascade' },
+  ),
 })
 
 export const sends = mysqlTable('sends', {
@@ -248,9 +249,6 @@ export const sends = mysqlTable('sends', {
   ]).notNull(),
   status: mysqlEnum('status', ['PENDING', 'SENT', 'FAILED']).notNull(),
   email: varchar('email', { length: 80 }),
-  contentText: json('content'),
-  contentJson: text('contentJson'),
-  contentHtml: text('contentHtml'),
   contactId: varchar('contactId', { length: 32 })
     .references(() => contacts.id, { onDelete: 'cascade' })
     .notNull(),
@@ -284,10 +282,7 @@ export const emailContents = mysqlTable('emailContents', {
 export const broadcasts = mysqlTable('broadcasts', {
   id,
   name: varchar('name', { length: 255 }).notNull(),
-  fromName: varchar('fromName', { length: 255 }),
-  fromEmail: varchar('fromEmail', { length: 255 }),
-  replyToEmail: varchar('replyToEmail', { length: 255 }),
-  replyToName: varchar('replyToName', { length: 255 }),
+
   audienceId: varchar('audienceId', { length: 32 })
     .references(() => audiences.id)
     .notNull(),
@@ -297,11 +292,12 @@ export const broadcasts = mysqlTable('broadcasts', {
     .notNull(),
   trackClicks: boolean('trackClicks'),
   trackOpens: boolean('trackOpens'),
-  contentJson: json('contentJson'),
-  contentText: text('contentText'),
-  contentHtml: text('contentHtml'),
-  subject: varchar('subject', { length: 255 }),
-  previewText: varchar('previewText', { length: 255 }),
+
+  emailContentId: varchar('emailContentId', { length: 32 }).references(
+    () => emailContents.id,
+    { onDelete: 'cascade' },
+  ),
+
   status: mysqlEnum('status', [
     'SENT',
     'SENDING',
@@ -468,11 +464,22 @@ export const broadcastRelations = relations(broadcasts, ({ one, many }) => ({
     fields: [broadcasts.audienceId],
     references: [audiences.id],
   }),
+  emailContent: one(emailContents, {
+    fields: [broadcasts.emailContentId],
+    references: [emailContents.id],
+  }),
   team: one(teams, { fields: [broadcasts.teamId], references: [teams.id] }),
   sends: many(sends, { relationName: 'broadcastSends' }),
   segment: one(segments, {
     fields: [broadcasts.segmentId],
     references: [segments.id],
+  }),
+}))
+
+export const emailRelations = relations(emails, ({ one }) => ({
+  emailContent: one(emailContents, {
+    fields: [emails.emailContentId],
+    references: [emailContents.id],
   }),
 }))
 

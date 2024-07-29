@@ -13,11 +13,13 @@ import {
 } from '@/infrastructure/database/schema/schema.js'
 import type {
   Broadcast,
+  BroadcastWithEmailContent,
   Contact,
 } from '@/infrastructure/database/schema/types.js'
 import { addSecondsToDate } from '@/utils/dates.js'
-import { sleep } from '@/utils/sleep.js'
-import { and, eq, inArray } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
+import { safeParseAsync } from 'valibot'
+import { SendBroadcastSchema } from '../dto/send_broadcast_dto.ts'
 
 export interface SendBroadcastToContactPayload {
   broadcastId: string
@@ -35,7 +37,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
 
   private async sendEmailToContact(
     contact: Contact,
-    broadcast: Broadcast,
+    broadcast: BroadcastWithEmailContent,
     database: DrizzleClient,
   ) {
     d({ 'Sending email to:': contact.email })
@@ -43,12 +45,15 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     await this.createSendForContact(contact, broadcast, database)
 
     const [response, error] = await Mailer.from(
-      contact.email,
-      `${contact.firstName} ${contact.lastName}`,
+      broadcast.emailContent.fromEmail,
+      `${broadcast.emailContent.fromName}`,
     )
-      .subject(broadcast.subject as string)
+      .subject(broadcast.emailContent.subject)
       .to(contact.email, `${contact.firstName} ${contact.lastName}`)
-      .content(broadcast.contentHtml as string, broadcast.contentText as string)
+      .content(
+        broadcast.emailContent.contentHtml,
+        broadcast.emailContent.contentText,
+      )
       .send()
 
     if (error) {
@@ -148,6 +153,9 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
 
     const broadcast = await database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, payload.broadcastId),
+      with: {
+        emailContent: true,
+      },
     })
 
     if (!broadcast || !contact) {
@@ -155,7 +163,11 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     }
 
     try {
-      await this.sendEmailToContact(contact, broadcast, database)
+      await this.sendEmailToContact(
+        contact,
+        broadcast as BroadcastWithEmailContent,
+        database,
+      )
     } catch (error) {
       await this.markAsFailedToSendToContact(
         contact,

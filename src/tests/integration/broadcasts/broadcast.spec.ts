@@ -196,7 +196,9 @@ describe('Update broadcasts', () => {
     const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const updateData = {
-      subject: faker.lorem.sentence(),
+      emailContent: {
+        subject: faker.lorem.sentence(),
+      },
     }
 
     const response = await makeRequestAsUser(user, {
@@ -209,9 +211,14 @@ describe('Update broadcasts', () => {
 
     const updatedBroadcast = await database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, broadcastId),
+      with: {
+        emailContent: true,
+      },
     })
 
-    expect(updatedBroadcast?.subject).toBe(updateData.subject)
+    expect(updatedBroadcast?.emailContent?.subject).toBe(
+      updateData.emailContent.subject,
+    )
     expect(updatedBroadcast?.name).toBeDefined() // Other fields should remain unchanged
   })
 

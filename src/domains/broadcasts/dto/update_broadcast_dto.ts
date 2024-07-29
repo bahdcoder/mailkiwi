@@ -13,15 +13,28 @@ import {
   pipe,
   pipeAsync,
   string,
+  object,
 } from 'valibot'
 
 export const UpdateBroadcastDto = pipeAsync(
   objectAsync({
     name: optional(string()),
-    fromName: optional(string()),
-    fromEmail: optional(pipe(string(), email())),
-    replyToEmail: optional(pipe(string(), email())),
-    replyToName: optional(string()),
+
+    emailContent: object({
+      fromName: optional(string()),
+      fromEmail: optional(pipe(string(), email())),
+      replyToEmail: optional(pipe(string(), email())),
+      replyToName: optional(string()),
+
+      contentJson: optional(string()),
+      contentText: optional(string()),
+      contentHtml: optional(string()),
+
+      subject: optional(string()),
+
+      previewText: optional(string()),
+    }),
+
     audienceId: pipeAsync(
       optional(string()),
       checkAsync(async (value) => {
@@ -53,14 +66,6 @@ export const UpdateBroadcastDto = pipeAsync(
 
     trackClicks: optional(boolean()),
     trackOpens: optional(boolean()),
-
-    contentJson: optional(string()),
-    contentText: optional(string()),
-    contentHtml: optional(string()),
-
-    subject: optional(string()),
-
-    previewText: optional(string()),
 
     sendAt: pipeAsync(
       optional(string()),

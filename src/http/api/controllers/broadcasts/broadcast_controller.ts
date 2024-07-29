@@ -4,7 +4,10 @@ import { GetBroadcastAction } from '@/domains/broadcasts/actions/get_broadcast_a
 import { SendBroadcastAction } from '@/domains/broadcasts/actions/send_broadcast_action.js'
 import { UpdateBroadcastAction } from '@/domains/broadcasts/actions/update_broadcast_action.js'
 import { CreateBroadcastDto } from '@/domains/broadcasts/dto/create_broadcast_dto.js'
-import { SendBroadcastDto } from '@/domains/broadcasts/dto/send_broadcast_dto.js'
+import {
+  SendBroadcastDto,
+  SendBroadcastSchema,
+} from '@/domains/broadcasts/dto/send_broadcast_dto.js'
 import { UpdateBroadcastDto } from '@/domains/broadcasts/dto/update_broadcast_dto.js'
 import { BaseController } from '@/domains/shared/controllers/base_controller.js'
 import { BroadcastValidationAndAuthorizationConcern } from '@/http/api/concerns/broadcast_validation_concern.js'
@@ -93,7 +96,7 @@ export class BroadcastController extends BaseController {
 
     const { id } = await container
       .resolve(UpdateBroadcastAction)
-      .handle(broadcastId, data)
+      .handle(broadcast, data)
 
     return ctx.json({ id })
   }
@@ -108,7 +111,7 @@ export class BroadcastController extends BaseController {
     )
 
     const { success, issues } = await safeParseAsync(
-      SendBroadcastDto,
+      SendBroadcastSchema,
       broadcast,
     )
 
