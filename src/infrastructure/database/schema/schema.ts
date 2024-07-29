@@ -157,6 +157,12 @@ export const audiences = mysqlTable('audiences', {
   teamId: varchar('teamId', { length: 32 })
     .references(() => teams.id)
     .notNull(),
+  // Whenever we find a known key somewhere in the app, we'll update the audience.
+  // Example, when creating an automation, user types in new attribute to be added to contact profile.
+  // We'll automatically update the known attributes field.
+  // Or, during an import, or contact update, we see some unknown attributes, we'll update this list.
+  // This is to make it much easier for attribute management, so customers don't have to manually define which attributes their contacts will have.
+  knownAttributesKeys: json('knownAttributes').$type<string[]>(),
 })
 
 export const contacts = mysqlTable(
@@ -345,6 +351,13 @@ export const automationStepSubtypes = [
 ] as const
 
 export type ACTION_ADD_TAG_CONFIGURATION = { tagIds: string[] }
+export type ACTION_REMOVE_TAG_CONFIGURATION = { tagIds: string[] }
+export type ACTION_UPDATE_CONTACT_ATTRIBUTES = {
+  attributes: Record<string, any>
+}
+export type ACTION_SEND_EMAIL_CONFIGURATION = {
+  emailId: string
+}
 
 export type RULE_WAIT_FOR_DURATION_CONFIGURATION = {
   delay: number
@@ -352,10 +365,6 @@ export type RULE_WAIT_FOR_DURATION_CONFIGURATION = {
 
 export type RULE_IF_ELSE_CONFIGURATION = {
   conditions: ContactFilterCondition[]
-}
-
-export type ACTION_SEND_EMAIL_CONFIGURATION = {
-  emailId: string
 }
 
 export type TRIGGER_CONFIGURATION = {
@@ -374,8 +383,10 @@ export type AutomationStepConfiguration =
   | TRIGGER_CONFIGURATION
   | END_CONFIGURATION
   | ACTION_ADD_TAG_CONFIGURATION
+  | ACTION_REMOVE_TAG_CONFIGURATION
   | ACTION_SEND_EMAIL_CONFIGURATION
   | ACTION_SUBSCRIBE_TO_AUDIENCE_CONFIGURATION
+  | ACTION_UPDATE_CONTACT_ATTRIBUTES
   | RULE_IF_ELSE_CONFIGURATION
   | RULE_WAIT_FOR_DURATION_CONFIGURATION
 

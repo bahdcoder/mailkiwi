@@ -3,15 +3,11 @@ import {
   type JobContext,
 } from '@/domains/shared/queue/abstract_job.js'
 import { AVAILABLE_QUEUES } from '@/domains/shared/queue/config.js'
-import { AutomationsQueue } from '@/domains/shared/queue/queue.js'
-import { GetMailerAction } from '@/domains/teams/actions/mailers/get_mailer_action.js'
-import { TeamRepository } from '@/domains/teams/repositories/team_repository.js'
 import {
   automationSteps,
   contactAutomationSteps,
   contacts,
 } from '@/infrastructure/database/schema/schema.ts'
-import { container } from '@/utils/typi.js'
 import { and, eq } from 'drizzle-orm'
 import { AutomationStepRunner } from '../utils/automation_step_runners/automation_step_runner.ts'
 

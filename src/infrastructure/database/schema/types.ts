@@ -68,10 +68,12 @@ export type AutomationStep = typeof automationSteps.$inferSelect
 
 export type EmailContent = typeof emailContents.$inferSelect
 
-type NonNullableProperties<T> = {
+export type NonNullableProperties<T> = {
   [P in keyof T]: NonNullable<T[P]>
 }
 
+export type ValidatedEmailContent = NonNullableProperties<EmailContent>
+
 export type BroadcastWithEmailContent = Broadcast & {
-  emailContent: Required<NonNullableProperties<EmailContent>>
+  emailContent: Required<ValidatedEmailContent>
 }

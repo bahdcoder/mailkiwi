@@ -5,7 +5,6 @@ import type {
 } from '@/infrastructure/database/schema/types.ts'
 import type {
   AutomationStepRunnerContext,
-  AutomationStepRunnerContract,
   AutomationStepRunnerContractConstructor,
 } from './automation_runner_contract.ts'
 import { AddTagAutomationStepRunner } from './actions/action_add_tag_runner.ts'

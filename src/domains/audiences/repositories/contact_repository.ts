@@ -37,6 +37,8 @@ export class ContactRepository extends BaseRepository {
       .set(updatedContact)
       .where(eq(contacts.id, contactId))
 
+    // if new attributes found, sync them to the audience
+
     return { id: contactId }
   }
 
