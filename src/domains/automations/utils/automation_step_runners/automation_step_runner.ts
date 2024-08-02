@@ -10,6 +10,7 @@ import type {
 import { AddTagAutomationStepRunner } from './actions/action_add_tag_runner.ts'
 import { SendEmailAutomationStepRunner } from './actions/action_send_email_runner.ts'
 import { contactAutomationSteps } from '@/infrastructure/database/schema/schema.ts'
+import { RemoveTagAutomationStepRunner } from './actions/action_remove_tag_runner.ts'
 
 export class AutomationStepRunner {
   private contact: Contact
@@ -18,6 +19,7 @@ export class AutomationStepRunner {
   > = {
     ACTION_ADD_TAG: AddTagAutomationStepRunner,
     ACTION_SEND_EMAIL: SendEmailAutomationStepRunner,
+    ACTION_REMOVE_TAG: RemoveTagAutomationStepRunner,
   }
 
   constructor(private automationStep: AutomationStep) {}

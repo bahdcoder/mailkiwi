@@ -116,10 +116,9 @@ describe('Run automation for contact job', () => {
 
     const database = makeDatabase()
 
-    const { id: automationId, receiveWelcomeEmailautomationStepId } =
-      await seedAutomation({
-        audienceId: audience.id,
-      })
+    const { id: automationId } = await seedAutomation({
+      audienceId: audience.id,
+    })
 
     const automationsQueueMock = vi
       .spyOn(queues.AutomationsQueue, 'add')

@@ -1,27 +1,27 @@
-import { TeamMiddleware } from '@/http/api/middleware/audiences/team_middleware.js'
-import { AccessTokenMiddleware } from '@/http/api/middleware/auth/access_token_middleware.js'
-import { E_REQUEST_EXCEPTION } from '@/http/responses/errors.js'
-import { container } from '@/utils/typi.js'
-import type { HttpBindings } from '@hono/node-server'
-import { Hono as BaseHono, type MiddlewareHandler } from 'hono'
-import type { HonoRouteDefinition } from './types.js'
-import { env } from '@/infrastructure/env.js'
+import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware.js";
+import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware.js";
+import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js";
+import { container } from "@/utils/typi.js";
+import type { HttpBindings } from "@hono/node-server";
+import { Hono as BaseHono, type MiddlewareHandler } from "hono";
+import type { HonoRouteDefinition } from "./types.js";
+import { env } from "@/infrastructure/env.js";
 
 export type HonoInstance = BaseHono<{ Bindings: HttpBindings }> & {
   defineRoutes: (
     routes: HonoRouteDefinition[],
     routeOptions?: { middleware?: MiddlewareHandler[]; prefix?: string },
-  ) => void
-}
+  ) => void;
+};
 
 export class Hono
   extends BaseHono<{ Bindings: HttpBindings }>
   implements HonoInstance
 {
   constructor() {
-    super()
+    super({ strict: false });
 
-    this.defineErrorHandler()
+    this.defineErrorHandler();
   }
 
   defineErrorHandler() {
@@ -30,17 +30,17 @@ export class Hono
         return ctx.json(
           { message: error?.message, ...(error.payload ?? {}) },
           error?.statusCode ?? 500,
-        )
+        );
       }
 
       if (env.isDev) {
-        d({ error })
+        d({ error });
       }
 
-      return ctx.json({ message: error?.message }, 500)
-    })
+      return ctx.json({ message: error?.message }, 500);
+    });
 
-    return this
+    return this;
   }
 
   defineRoutes(
@@ -50,33 +50,33 @@ export class Hono
     const middleware: MiddlewareHandler[] = routeOptions?.middleware ?? [
       container.resolve(AccessTokenMiddleware).handle,
       container.resolve(TeamMiddleware).handle,
-    ]
+    ];
 
     const getPath = (path: string) => {
-      return `${routeOptions?.prefix?.replace(/^\/|\/$/g, '')}${path === '/' ? '' : '/'}${path?.replace(/^\/|\/$/g, '')}`
-    }
+      return `${routeOptions?.prefix?.replace(/^\/|\/$/g, "")}${path === "/" ? "" : "/"}${path?.replace(/^\/|\/$/g, "")}`;
+    };
 
     for (const [method, path, handler] of routes) {
-      const resolvedPath = getPath(path)
+      const resolvedPath = getPath(path);
 
       switch (method) {
-        case 'GET':
-          this.get(resolvedPath, ...middleware, handler)
-          break
-        case 'DELETE':
-          this.delete(resolvedPath, ...middleware, handler)
-          break
-        case 'PATCH':
-          this.patch(resolvedPath, ...middleware, handler)
-          break
-        case 'PUT':
-          this.put(resolvedPath, ...middleware, handler)
-          break
-        case 'POST':
-          this.post(resolvedPath, ...middleware, handler)
-          break
+        case "GET":
+          this.get(resolvedPath, ...middleware, handler);
+          break;
+        case "DELETE":
+          this.delete(resolvedPath, ...middleware, handler);
+          break;
+        case "PATCH":
+          this.patch(resolvedPath, ...middleware, handler);
+          break;
+        case "PUT":
+          this.put(resolvedPath, ...middleware, handler);
+          break;
+        case "POST":
+          this.post(resolvedPath, ...middleware, handler);
+          break;
         default:
-          break
+          break;
       }
     }
   }

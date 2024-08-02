@@ -8,6 +8,7 @@ import {
   automations,
   broadcasts,
   contacts,
+  emailContents,
   emails,
   mailerIdentities,
   mailers,
@@ -19,6 +20,7 @@ import {
   users,
 } from '@/infrastructure/database/schema/schema.js'
 import { faker } from '@faker-js/faker'
+import { createFakeEmailContent } from '../audiences/email_content.ts'
 
 export const refreshDatabase = async () => {
   const database = makeDatabase()
@@ -63,12 +65,19 @@ export const seedAutomation = async (
   }
 
   const emailId = cuid()
+  const emailContentId = cuid()
+
+  await database.insert(emailContents).values({
+    id: emailContentId,
+    ...createFakeEmailContent(),
+  })
 
   await database.insert(emails).values({
     id: emailId,
     title: faker.lorem.words(2),
     type: 'AUTOMATION',
     audienceId: automation.audienceId,
+    emailContentId,
   })
 
   // Now create sample data for a automation that looks like this:
@@ -99,6 +108,33 @@ export const seedAutomation = async (
     })
     .execute()
 
+  const attachesTagsAutomationStepId = cuid()
+
+  const attachTagIds = [cuid(), cuid()]
+
+  await database
+    .insert(tags)
+    .values(
+      attachTagIds.map((id) => ({
+        id,
+        name: faker.lorem.words(2),
+        audienceId: automation.audienceId,
+      })),
+    )
+    .execute()
+
+  await database
+    .insert(automationSteps)
+    .values({
+      id: attachesTagsAutomationStepId,
+      automationId,
+      parentId: receiveWelcomeEmailautomationStepId,
+      type: 'ACTION',
+      subtype: 'ACTION_ADD_TAG',
+      configuration: { tagIds: attachTagIds },
+    })
+    .execute()
+
   const waitsTwoDaysAutomationStepId = cuid()
 
   await database
@@ -106,10 +142,37 @@ export const seedAutomation = async (
     .values({
       id: waitsTwoDaysAutomationStepId,
       automationId,
-      parentId: receiveWelcomeEmailautomationStepId,
+      parentId: attachesTagsAutomationStepId,
       type: 'RULE',
       subtype: 'RULE_WAIT_FOR_DURATION',
       configuration: { delay: 2880 },
+    })
+    .execute()
+
+  const detachesTagsAutomationStepId = cuid()
+
+  const detachTagIds = [cuid(), cuid()]
+
+  await database
+    .insert(tags)
+    .values(
+      detachTagIds.map((id) => ({
+        id,
+        name: faker.lorem.words(2),
+        audienceId: automation.audienceId,
+      })),
+    )
+    .execute()
+
+  await database
+    .insert(automationSteps)
+    .values({
+      id: detachesTagsAutomationStepId,
+      automationId,
+      parentId: waitsTwoDaysAutomationStepId,
+      type: 'ACTION',
+      subtype: 'ACTION_REMOVE_TAG',
+      configuration: { tagIds: detachTagIds },
     })
     .execute()
 
@@ -120,7 +183,7 @@ export const seedAutomation = async (
     .values({
       id: receiveSecondEmailEmailautomationStepId,
       automationId,
-      parentId: waitsTwoDaysAutomationStepId,
+      parentId: detachesTagsAutomationStepId,
       type: 'ACTION',
       subtype: 'ACTION_SEND_EMAIL',
       configuration: { emailId },
@@ -439,6 +502,10 @@ export const seedAutomation = async (
     id: automationId,
     receiveWelcomeEmailautomationStepId,
     hasTagAddToAudienceautomationId,
+    attachesTagsAutomationStepId,
     emailId,
+    attachTagIds,
+    detachTagIds,
+    detachesTagsAutomationStepId,
   }
 }

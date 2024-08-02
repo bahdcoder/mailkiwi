@@ -67,6 +67,23 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
 
     const batchSize = 75
 
+    // Here we're just blasting out all those emails.
+
+    // For an A/B test broadcast:
+    // 1. Calculate test group count: 20% of total recipients or total segment. so instead of 75,000, we take 15,000.
+    // 2. Of the 15,000 split into three variants or x variants based on variant weight: 5,000 each.
+    // 3. Blast emails to all three.
+    // 4. Dispatch job to determine winner in 4 hours, depending on configured winning wait time
+    // 4. Wait 4 hours.
+    // 5. Calculate winning variant.
+    // 6. Select remaining 50,000 contacts...
+    // 7. Blast winning variant to all 50,000 contacts.
+
+    // 8. In the case of manually selecting a winner, we send an email to the customer telling them their test is over. They manually pick the winner and select "Proceed with broadcast." This will blast the winner to the remaining 80% of the list.
+
+    // A/B Testing in automation (Using branching?)
+    // We need support for merging branches.
+
     for (let batch = 0; batch <= totalBatches; batch++) {
       const contactIds = await database
         .select({ id: contacts.id })

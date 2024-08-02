@@ -1,3 +1,13 @@
+CREATE TABLE `abTestVariants` (
+	`id` varchar(40) NOT NULL,
+	`broadcastId` varchar(32) NOT NULL,
+	`emailContentId` varchar(32) NOT NULL,
+	`name` varchar(50) NOT NULL,
+	`weight` int NOT NULL DEFAULT 1,
+	`sendAt` timestamp,
+	CONSTRAINT `abTestVariants_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `accessTokens` (
 	`id` varchar(40) NOT NULL,
 	`userId` varchar(32),
@@ -15,6 +25,7 @@ CREATE TABLE `audiences` (
 	`id` varchar(40) NOT NULL,
 	`name` varchar(50) NOT NULL,
 	`teamId` varchar(32) NOT NULL,
+	`knownAttributes` json,
 	CONSTRAINT `audiences_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -50,7 +61,11 @@ CREATE TABLE `broadcasts` (
 	`trackClicks` boolean,
 	`trackOpens` boolean,
 	`emailContentId` varchar(32),
+	`winningAbTestVariantId` varchar(32),
 	`status` enum('SENT','SENDING','DRAFT','QUEUED_FOR_SENDING','SENDING_FAILED','DRAFT_ARCHIVED','ARCHIVED') DEFAULT 'DRAFT',
+	`isAbTest` boolean NOT NULL DEFAULT false,
+	`winningCriteria` enum('OPENS','CLICKS','CONVERSIONS'),
+	`winningWaitTime` int,
 	`sendAt` timestamp,
 	CONSTRAINT `broadcasts_id` PRIMARY KEY(`id`)
 );
@@ -154,10 +169,12 @@ CREATE TABLE `sends` (
 	`email` varchar(80),
 	`contactId` varchar(32) NOT NULL,
 	`broadcastId` varchar(32),
+	`variantId` varchar(32),
 	`sentAt` timestamp,
 	`timeoutAt` timestamp,
 	`messageId` varchar(255),
 	`logs` json,
+	`openCount` int NOT NULL DEFAULT 0,
 	`automationStepId` varchar(32),
 	CONSTRAINT `sends_id` PRIMARY KEY(`id`)
 );
@@ -231,6 +248,8 @@ CREATE TABLE `webhooks` (
 	CONSTRAINT `webhooks_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+ALTER TABLE `abTestVariants` ADD CONSTRAINT `abTestVariants_broadcastId_broadcasts_id_fk` FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `abTestVariants` ADD CONSTRAINT `abTestVariants_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `accessTokens` ADD CONSTRAINT `accessTokens_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `accessTokens` ADD CONSTRAINT `accessTokens_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `audiences` ADD CONSTRAINT `audiences_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -244,6 +263,7 @@ ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_audienceId_audiences_id_fk` 
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_segmentId_segments_id_fk` FOREIGN KEY (`segmentId`) REFERENCES `segments`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_winningAbTestVariantId_abTestVariants_id_fk` FOREIGN KEY (`winningAbTestVariantId`) REFERENCES `abTestVariants`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_automationStepId_automationSteps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automationSteps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -254,6 +274,7 @@ ALTER TABLE `mailers` ADD CONSTRAINT `mailers_teamId_teams_id_fk` FOREIGN KEY (`
 ALTER TABLE `segments` ADD CONSTRAINT `segments_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `sends` ADD CONSTRAINT `sends_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `sends` ADD CONSTRAINT `sends_broadcastId_broadcasts_id_fk` FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `sends` ADD CONSTRAINT `sends_variantId_abTestVariants_id_fk` FOREIGN KEY (`variantId`) REFERENCES `abTestVariants`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `sends` ADD CONSTRAINT `sends_automationStepId_automationSteps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automationSteps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `tags` ADD CONSTRAINT `tags_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `tagsOnContacts` ADD CONSTRAINT `tagsOnContacts_tagId_tags_id_fk` FOREIGN KEY (`tagId`) REFERENCES `tags`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint

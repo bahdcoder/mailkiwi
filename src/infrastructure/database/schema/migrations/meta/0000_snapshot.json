@@ -1,9 +1,95 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "753c6b91-01af-436a-a443-cc1f5735946f",
+  "id": "b72af956-c57a-4355-be86-a8ceb62f83e2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "abTestVariants": {
+      "name": "abTestVariants",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "broadcastId": {
+          "name": "broadcastId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "emailContentId": {
+          "name": "emailContentId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "weight": {
+          "name": "weight",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "sendAt": {
+          "name": "sendAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "abTestVariants_broadcastId_broadcasts_id_fk": {
+          "name": "abTestVariants_broadcastId_broadcasts_id_fk",
+          "tableFrom": "abTestVariants",
+          "tableTo": "broadcasts",
+          "columnsFrom": [
+            "broadcastId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "abTestVariants_emailContentId_emailContents_id_fk": {
+          "name": "abTestVariants_emailContentId_emailContents_id_fk",
+          "tableFrom": "abTestVariants",
+          "tableTo": "emailContents",
+          "columnsFrom": [
+            "emailContentId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "abTestVariants_id": {
+          "name": "abTestVariants_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "accessTokens": {
       "name": "accessTokens",
       "columns": {
@@ -135,6 +221,13 @@
           "type": "varchar(32)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "knownAttributes": {
+          "name": "knownAttributes",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         }
       },
@@ -441,6 +534,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "winningAbTestVariantId": {
+          "name": "winningAbTestVariantId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "status": {
           "name": "status",
           "type": "enum('SENT','SENDING','DRAFT','QUEUED_FOR_SENDING','SENDING_FAILED','DRAFT_ARCHIVED','ARCHIVED')",
@@ -448,6 +548,28 @@
           "notNull": false,
           "autoincrement": false,
           "default": "'DRAFT'"
+        },
+        "isAbTest": {
+          "name": "isAbTest",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "winningCriteria": {
+          "name": "winningCriteria",
+          "type": "enum('OPENS','CLICKS','CONVERSIONS')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "winningWaitTime": {
+          "name": "winningWaitTime",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         },
         "sendAt": {
           "name": "sendAt",
@@ -504,6 +626,19 @@
           "tableTo": "emailContents",
           "columnsFrom": [
             "emailContentId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "broadcasts_winningAbTestVariantId_abTestVariants_id_fk": {
+          "name": "broadcasts_winningAbTestVariantId_abTestVariants_id_fk",
+          "tableFrom": "broadcasts",
+          "tableTo": "abTestVariants",
+          "columnsFrom": [
+            "winningAbTestVariantId"
           ],
           "columnsTo": [
             "id"
@@ -1244,6 +1379,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "variantId": {
+          "name": "variantId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "sentAt": {
           "name": "sentAt",
           "type": "timestamp",
@@ -1271,6 +1413,14 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "openCount": {
+          "name": "openCount",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
         },
         "automationStepId": {
           "name": "automationStepId",
@@ -1301,6 +1451,19 @@
           "tableTo": "broadcasts",
           "columnsFrom": [
             "broadcastId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "sends_variantId_abTestVariants_id_fk": {
+          "name": "sends_variantId_abTestVariants_id_fk",
+          "tableFrom": "sends",
+          "tableTo": "abTestVariants",
+          "columnsFrom": [
+            "variantId"
           ],
           "columnsTo": [
             "id"

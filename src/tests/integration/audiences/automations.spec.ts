@@ -99,7 +99,7 @@ describe('Contact automations', () => {
     ) as FlatTreeNode[]
 
     expect(
-      tree[5]?.branches?.['1']?.[2]?.branches?.['1']?.[2]?.branches?.['1']?.[0]
+      tree[7]?.branches?.['1']?.[2]?.branches?.['1']?.[2]?.branches?.['1']?.[0]
         ?.subtype,
     ).toEqual('ACTION_UNSUBSCRIBE_FROM_AUDIENCE')
   })
