@@ -2,18 +2,18 @@ import type { MailerDriver } from "@/shared/mailers/mailer_types.js";
 import "./globals";
 
 import { Mailer } from "@/shared/mailers/mailer.js";
-import { AudienceController } from "@/http/api/controllers/audiences/audience_controller.js";
-import { ContactController } from "@/http/api/controllers/audiences/contact_controller.js";
-import { TagController } from "@/http/api/controllers/audiences/tag_controller.js";
-import { AuthController } from "@/http/api/controllers/auth/auth_controller.js";
-import { UserController } from "@/http/api/controllers/auth/user_controller.js";
-import { AutomationController } from "@/http/api/controllers/automations/automation_controller.js";
-import { BroadcastController } from "@/http/api/controllers/broadcasts/broadcast_controller.js";
-import { MailerController } from "@/http/api/controllers/teams/mailer_controller.js";
-import { MailerIdentityController } from "@/http/api/controllers/teams/mailer_identity_controller.js";
-import { TeamController } from "@/http/api/controllers/teams/team_controller.js";
-import { MailerWebhooksContorller } from "@/http/api/controllers/webhooks/mailer_webhooks_controller.js";
-import { RootController } from "@/http/views/controllers/root_controller.js";
+import { AudienceController } from "@/api/controllers/audiences/audience_controller.js";
+import { ContactController } from "@/api/controllers/audiences/contact_controller.js";
+import { TagController } from "@/api/controllers/audiences/tag_controller.js";
+import { AuthController } from "@/api/controllers/auth/auth_controller.js";
+import { UserController } from "@/api/controllers/auth/user_controller.js";
+import { AutomationController } from "@/api/controllers/automations/automation_controller.js";
+import { BroadcastController } from "@/api/controllers/broadcasts/broadcast_controller.js";
+import { MailerController } from "@/api/controllers/teams/mailer_controller.js";
+import { MailerIdentityController } from "@/api/controllers/teams/mailer_identity_controller.js";
+import { TeamController } from "@/api/controllers/teams/team_controller.js";
+import { MailerWebhooksContorller } from "@/api/controllers/webhooks/mailer_webhooks_controller.js";
+import { RootController } from "@/views/controllers/root_controller.js";
 import {
   ContainerKey,
   makeDatabaseConnection,
@@ -31,7 +31,7 @@ import {
 } from "@/shared/env/index.js";
 import { Hono, type HonoInstance } from "@/server/hono.js";
 import { container } from "@/utils/typi.js";
-import { SegmentController } from "@/http/api/controllers/audiences/segment_controller.ts";
+import { SegmentController } from "@/api/controllers/audiences/segment_controller.ts";
 
 export class Ignitor {
   protected env: EnvVariables;

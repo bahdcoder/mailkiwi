@@ -4,13 +4,10 @@ import { GetBroadcastAction } from "@/broadcasts/actions/get_broadcast_action.ts
 import { SendBroadcastAction } from "@/broadcasts/actions/send_broadcast_action.js";
 import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_action.js";
 import { CreateBroadcastDto } from "@/broadcasts/dto/create_broadcast_dto.js";
-import {
-  SendBroadcastDto,
-  SendBroadcastSchema,
-} from "@/broadcasts/dto/send_broadcast_dto.js";
+import { SendBroadcastSchema } from "@/broadcasts/dto/send_broadcast_dto.js";
 import { UpdateBroadcastDto } from "@/broadcasts/dto/update_broadcast_dto.js";
 import { BaseController } from "@/shared/controllers/base_controller.js";
-import { BroadcastValidationAndAuthorizationConcern } from "@/http/api/concerns/broadcast_validation_concern.js";
+import { BroadcastValidationAndAuthorizationConcern } from "@/api/concerns/broadcast_validation_concern.js";
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js";
 import { makeApp } from "@/shared/container/index.js";
 import type { HonoInstance } from "@/server/hono.js";

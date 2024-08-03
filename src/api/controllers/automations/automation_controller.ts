@@ -3,7 +3,7 @@ import { CreateAutomationStepAction } from "@/automations/actions/create_automat
 import { CreateAutomationSchema } from "@/automations/dto/create_automation_dto.js";
 import { CreateAutomationStepDto } from "@/automations/dto/create_automation_step_dto.js";
 import { BaseController } from "@/shared/controllers/base_controller.js";
-import { AudienceValidationAndAuthorizationConcern } from "@/http/api/concerns/audience_validation_concern.js";
+import { AudienceValidationAndAuthorizationConcern } from "@/api/concerns/audience_validation_concern.js";
 import { makeApp } from "@/shared/container/index.js";
 import type { HonoInstance } from "@/server/hono.js";
 import type { HonoContext } from "@/server/types.js";

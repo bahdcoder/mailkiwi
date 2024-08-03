@@ -1,5 +1,5 @@
-import { TeamMiddleware } from "@/http/api/middleware/audiences/team_middleware.js";
-import { AccessTokenMiddleware } from "@/http/api/middleware/auth/access_token_middleware.js";
+import { TeamMiddleware } from "@/api/middleware/audiences/team_middleware.js";
+import { AccessTokenMiddleware } from "@/api/middleware/auth/access_token_middleware.js";
 import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js";
 import { container } from "@/utils/typi.js";
 import type { HttpBindings } from "@hono/node-server";

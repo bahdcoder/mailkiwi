@@ -5,8 +5,7 @@ import { AccessToken } from "@/auth/acess_tokens/utils/access_token.js";
 import { BaseRepository } from "@/shared/repositories/base_repository.js";
 import { makeDatabase } from "@/shared/container/index.js";
 import type { DrizzleClient } from "@/database/client.js";
-import { accessTokens, users } from "@/database/schema/schema.js";
-import type { User } from "@/database/schema/types.js";
+import { accessTokens } from "@/database/schema/schema.js";
 
 export class AccessTokenRepository extends BaseRepository {
   protected tokenSecretLength = 40;

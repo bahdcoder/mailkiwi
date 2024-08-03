@@ -6,7 +6,7 @@ import { GetMailerIdentitiesAction } from "@/teams/actions/get_mailer_identities
 import { DeleteMailerIdentityAction } from "@/teams/actions/mailers/delete_mailer_identity_action.js";
 import { CreateMailerIdentitySchema } from "@/teams/dto/create_mailer_identity_dto.js";
 import { MailerIdentityRepository } from "@/teams/repositories/mailer_identity_repository.js";
-import { MailerValidationAndAuthorizationConcern } from "@/http/api/concerns/mailer_validation_concern.js";
+import { MailerValidationAndAuthorizationConcern } from "@/api/concerns/mailer_validation_concern.js";
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js";
 import { makeApp } from "@/shared/container/index.js";
 import { mailerIdentities } from "@/database/schema/schema.js";

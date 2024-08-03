@@ -9,7 +9,7 @@ import { AttachTagsToContactDto } from "@/audiences/dto/tags/attach_tags_to_cont
 import { DetachTagsFromContactDto } from "@/audiences/dto/tags/detach_tags_from_contact_dto.js";
 import { AudiencePolicy } from "@/audiences/policies/audience_policy.js";
 import { BaseController } from "@/shared/controllers/base_controller.js";
-import { AudienceValidationAndAuthorizationConcern } from "@/http/api/concerns/audience_validation_concern.js";
+import { AudienceValidationAndAuthorizationConcern } from "@/api/concerns/audience_validation_concern.js";
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js";
 import { makeApp } from "@/shared/container/index.js";
 import type { HonoInstance } from "@/server/hono.js";

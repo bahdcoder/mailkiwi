@@ -1,4 +1,4 @@
-import { AudienceValidationAndAuthorizationConcern } from "@/http/api/concerns/audience_validation_concern.js";
+import { AudienceValidationAndAuthorizationConcern } from "@/api/concerns/audience_validation_concern.js";
 import { makeApp } from "@/shared/container/index.js";
 import { BaseController } from "@/shared/controllers/base_controller.ts";
 import { container } from "@/utils/typi.ts";
