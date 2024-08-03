@@ -1,5 +1,5 @@
-import type { Contact } from '@/infrastructure/database/schema/types.ts'
-import { faker } from '@faker-js/faker'
+import type { Contact } from "@/database/schema/types.ts";
+import { faker } from "@faker-js/faker";
 
 export function createFakeContact(
   audienceId: string,
@@ -13,5 +13,5 @@ export function createFakeContact(
     avatarUrl: faker.image.avatarGitHub(),
     subscribedAt: faker.date.past(),
     ...contactOverrides,
-  }
+  };
 }

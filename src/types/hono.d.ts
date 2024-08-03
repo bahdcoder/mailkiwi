@@ -1,21 +1,18 @@
-import {} from 'hono'
+import {} from "hono";
 
-import type { TeamWithMembers } from '@/domains/shared/types/team'
-import type {
-  AccessToken,
-  User,
-} from '@/infrastructure/database/schema/types.js'
+import type { TeamWithMembers } from "@/shared/types/team";
+import type { AccessToken, User } from "@/database/schema/types.js";
 
-declare module 'hono' {
+declare module "hono" {
   interface ContextVariableMap {
-    accessToken: AccessToken
-    team: TeamWithMembers
-    user: User
+    accessToken: AccessToken;
+    team: TeamWithMembers;
+    user: User;
   }
 
   interface Context {
-    accessToken: AccessToken
-    team: TeamWithMembers
-    user: User
+    accessToken: AccessToken;
+    team: TeamWithMembers;
+    user: User;
   }
 }

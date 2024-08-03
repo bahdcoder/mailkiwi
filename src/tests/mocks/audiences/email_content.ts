@@ -1,5 +1,5 @@
-import { faker } from '@faker-js/faker'
-import type { EmailContent } from '@/infrastructure/database/schema/types.ts'
+import { faker } from "@faker-js/faker";
+import type { EmailContent } from "@/database/schema/types.ts";
 
 export function createFakeEmailContent(overrides?: Partial<EmailContent>) {
   return {
@@ -11,5 +11,5 @@ export function createFakeEmailContent(overrides?: Partial<EmailContent>) {
     contentHtml: faker.lorem.paragraph(),
     contentText: faker.lorem.paragraph(),
     ...overrides,
-  }
+  };
 }
