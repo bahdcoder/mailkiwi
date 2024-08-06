@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  mailkiwi:
+    env_file:
+      - .env.dev
+
+  mysql:
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: database
+
+volumes:
+  mysql_data:
+    name: mysql_dev_data

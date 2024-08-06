@@ -268,7 +268,6 @@ export const sends = mysqlTable("sends", {
   timeoutAt: timestamp("timeoutAt"),
   messageId: varchar("messageId", { length: 255 }),
   logs: json("logs"),
-  openCount: int("openCount").default(0).notNull(),
   automationStepId: varchar("automationStepId", { length: 32 }).references(
     () => automationSteps.id,
     { onDelete: "cascade" },

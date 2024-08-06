@@ -235,7 +235,7 @@ class SendSeed extends BaseSeed {
         sentAt: faker.date.recent(),
         openedAt: Math.random() < 0.3 ? faker.date.recent() : null,
         firstClickAt: Math.random() < 0.1 ? faker.date.recent() : null,
-        openCount: Math.random() < 0.3 ? Math.floor(Math.random() * 3) + 1 : 0,
+        // openCount: Math.random() < 0.3 ? Math.floor(Math.random() * 3) + 1 : 0,
         clickCount: Math.random() < 0.1 ? Math.floor(Math.random() * 5) + 1 : 0,
         clickedLinks:
           Math.random() < 0.1 ? this.generateClickedLinks(linkCount) : null,

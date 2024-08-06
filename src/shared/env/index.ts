@@ -4,7 +4,6 @@ import {
   maxLength,
   minLength,
   nonEmpty,
-  number,
   object,
   optional,
   picklist,
@@ -19,6 +18,7 @@ export type EnvVariables = {
   APP_KEY: string;
   APP_URL: string;
   DATABASE_URL: string;
+  REDIS_URL: string;
   NODE_ENV: "development" | "test" | "production";
   SMTP_TEST_URL: string;
   isTest: boolean;
@@ -46,6 +46,7 @@ const envValidationSchema = object({
     nonEmpty(),
     url(),
   ),
+  REDIS_URL: pipe(string(), nonEmpty()),
   DATABASE_URL: pipe(string(), nonEmpty()),
   NODE_ENV: picklist(["development", "test", "production"]),
   SMTP_TEST_URL: pipe(string(), nonEmpty(), url()),
@@ -68,7 +69,7 @@ env.isTest = env.NODE_ENV === "test";
 env.isProd = env.NODE_ENV === "production";
 env.isDev = env.NODE_ENV === "development";
 
-const SHORT_NAME = "bamboomailer";
+const SHORT_NAME = "mailkiwi";
 
 export const config = {
   ...env,

@@ -1,7 +1,9 @@
 import { Queue } from "bullmq";
 import { AVAILABLE_QUEUES } from "./config.js";
+import { Redis } from "ioredis";
+import { env } from "@/shared/env/index.ts";
 
-const connection = { host: "localhost", port: 6379 };
+const connection = new Redis(env.REDIS_URL);
 
 export const BroadcastsQueue = new Queue(AVAILABLE_QUEUES.broadcasts, {
   connection,

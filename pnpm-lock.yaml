@@ -35,6 +35,9 @@ importers:
       hono:
         specifier: ^4.5.0
         version: 4.5.0
+      ioredis:
+        specifier: ^5.4.1
+        version: 5.4.1
       mysql2:
         specifier: ^3.10.3
         version: 3.10.3

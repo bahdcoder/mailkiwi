@@ -1,0 +1,45 @@
+version: "3.8"
+name: mailkiwi
+
+services:
+  mailkiwi:
+    build:
+      context: ..
+      dockerfile: docker/app.dockerfile
+    ports:
+      - "5566:5566"
+    depends_on:
+      - mysql
+      - clickhouse
+      - redis
+    volumes:
+      - ..:/app
+      - /app/node_modules
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - "5567:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "5568:8123"
+      - "5569:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+  redis:
+    image: redis:latest
+    command: redis-server --appendonly yes
+    ports:
+      - "5570:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mysql_data:
+  clickhouse_data:
+  redis_data:

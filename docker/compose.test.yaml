@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  mailkiwi:
+    env_file:
+      - .env.test
+
+  mysql:
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: database_test
+
+volumes:
+  mysql_data:
+    name: mysql_test_data
