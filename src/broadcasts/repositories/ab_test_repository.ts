@@ -61,9 +61,8 @@ export class AbTestVariantRepository extends BaseRepository {
 
     this.emailContentRepository.transaction(this.database);
 
-    const emailContentIds = await this.emailContentRepository.bulkCreate(
-      variantsToInsert.map(({ name, weight, ...variant }) => variant),
-    );
+    const emailContentIds =
+      await this.emailContentRepository.bulkCreate(variantsToInsert);
 
     await this.emailContentRepository.bulkUpdate(
       variantsToUpdateWithEmailContentIds,

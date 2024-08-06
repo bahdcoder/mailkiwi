@@ -15,8 +15,6 @@ import type {
 } from "@/database/schema/types.js";
 import { addSecondsToDate } from "@/utils/dates.js";
 import { and, eq } from "drizzle-orm";
-import { safeParseAsync } from "valibot";
-import { SendBroadcastSchema } from "../dto/send_broadcast_dto.ts";
 
 export interface SendBroadcastToContactPayload {
   broadcastId: string;
@@ -30,6 +28,43 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
 
   static get queue() {
     return AVAILABLE_QUEUES.broadcasts;
+  }
+
+  async handle({
+    database,
+    payload,
+  }: JobContext<SendBroadcastToContactPayload>) {
+    const contact = await database.query.contacts.findFirst({
+      where: eq(contactsTable.id, payload.contactId),
+    });
+
+    const broadcast = await database.query.broadcasts.findFirst({
+      where: eq(broadcasts.id, payload.broadcastId),
+      with: {
+        emailContent: true,
+      },
+    });
+
+    if (!broadcast || !contact) {
+      return this.fail("Broadcast or contact not found.");
+    }
+
+    try {
+      await this.sendEmailToContact(
+        contact,
+        broadcast as BroadcastWithEmailContent,
+        database,
+      );
+    } catch (error) {
+      await this.markAsFailedToSendToContact(
+        contact,
+        broadcast,
+        database,
+        error as Error,
+      );
+    }
+
+    return { success: true, output: "Success" };
   }
 
   private async sendEmailToContact(
@@ -124,7 +159,6 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     database: DrizzleClient,
     messageId: string,
   ) {
-    d({ messageId, id: contact.id });
     await database
       .update(sends)
       .set({
@@ -138,42 +172,5 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
           eq(sends.broadcastId, broadcast.id),
         ),
       );
-  }
-
-  async handle({
-    database,
-    payload,
-  }: JobContext<SendBroadcastToContactPayload>) {
-    const contact = await database.query.contacts.findFirst({
-      where: eq(contactsTable.id, payload.contactId),
-    });
-
-    const broadcast = await database.query.broadcasts.findFirst({
-      where: eq(broadcasts.id, payload.broadcastId),
-      with: {
-        emailContent: true,
-      },
-    });
-
-    if (!broadcast || !contact) {
-      return this.fail("Broadcast or contact not found.");
-    }
-
-    try {
-      await this.sendEmailToContact(
-        contact,
-        broadcast as BroadcastWithEmailContent,
-        database,
-      );
-    } catch (error) {
-      await this.markAsFailedToSendToContact(
-        contact,
-        broadcast,
-        database,
-        error as Error,
-      );
-    }
-
-    return { success: true, output: "Success" };
   }
 }
