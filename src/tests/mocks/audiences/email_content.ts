@@ -13,3 +13,12 @@ export function createFakeEmailContent(overrides?: Partial<EmailContent>) {
     ...overrides,
   };
 }
+
+export function createFakeAbTestEmailContent(overrides?: { weight?: number }) {
+  return {
+    ...createFakeEmailContent(),
+    name: faker.lorem.words(2),
+    weight: faker.number.int({ min: 1, max: 100 }),
+    ...overrides,
+  };
+}

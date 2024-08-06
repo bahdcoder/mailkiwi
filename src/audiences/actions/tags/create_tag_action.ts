@@ -6,9 +6,7 @@ import { container } from "@/utils/typi.js";
 import { and, eq } from "drizzle-orm";
 
 export class CreateTagAction {
-  constructor(
-    private tagRepository: TagRepository = container.make(TagRepository),
-  ) {}
+  constructor(private tagRepository = container.make(TagRepository)) {}
 
   handle = async (payload: CreateTagDto, audienceId: string) => {
     const existingTag = await this.tagRepository.findFirst({

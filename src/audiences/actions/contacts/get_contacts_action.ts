@@ -7,9 +7,8 @@ import { contacts, tags, tagsOnContacts } from "@/database/schema/schema.ts";
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js";
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js";
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js";
-import { eq, inArray, sql, SQLWrapper } from "drizzle-orm";
+import { eq, inArray, type SQLWrapper } from "drizzle-orm";
 import { Paginator } from "@/shared/utils/pagination/paginator.ts";
-import { alias } from "drizzle-orm/mysql-core";
 
 export class GetContactsAction {
   constructor(

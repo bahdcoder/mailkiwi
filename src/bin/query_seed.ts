@@ -17,7 +17,6 @@ import {
 } from "@/database/schema/schema.js";
 import cluster from "node:cluster";
 import { cpus } from "node:os";
-import { Worker } from "node:worker_threads";
 import { env } from "@/shared/env/index.js";
 import { container } from "@/utils/typi.js";
 import { count, eq } from "drizzle-orm";

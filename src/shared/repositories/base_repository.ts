@@ -5,7 +5,7 @@ export class BaseRepository {
   protected database: DrizzleClient;
 
   transaction(transaction: DrizzleClient) {
-    this.database = transaction as DrizzleClient;
+    this.database = transaction;
 
     return this;
   }

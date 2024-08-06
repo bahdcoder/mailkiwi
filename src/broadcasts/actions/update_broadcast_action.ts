@@ -2,27 +2,50 @@ import type { UpdateBroadcastDto } from "@/broadcasts/dto/update_broadcast_dto.j
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js";
 import { EmailContentRepository } from "@/content/repositories/email_content_repository.js";
 import type { Broadcast } from "@/database/schema/types.js";
+import { makeDatabase } from "@/shared/container/index.ts";
 import { container } from "@/utils/typi.js";
+import { AbTestVariantRepository } from "../repositories/ab_test_repository.ts";
 
 export class UpdateBroadcastAction {
   constructor(
     private broadcastRepository = container.make(BroadcastRepository),
     private emailContentRepository = container.make(EmailContentRepository),
+    private abTestVariantRepository = container.make(AbTestVariantRepository),
+    private database = makeDatabase(),
   ) {}
 
   async handle(broadcast: Broadcast, payload: UpdateBroadcastDto) {
-    const { emailContent, ...broadcastPayload } = payload;
+    const { emailContent, emailContentVariants, ...broadcastPayload } = payload;
 
-    if (Object.keys(broadcastPayload).length > 0) {
-      await this.broadcastRepository.update(broadcast.id, broadcastPayload);
-    }
+    await this.database.transaction(async (trx) => {
+      const hasAbTestVariants =
+        emailContentVariants && emailContentVariants.length > 0;
 
-    if (emailContent && Object.keys(emailContent).length > 0) {
-      await this.emailContentRepository.updateForBroadcast(
-        broadcast,
-        emailContent,
-      );
-    }
+      this.broadcastRepository.transaction(trx);
+      this.emailContentRepository.transaction(trx);
+      this.abTestVariantRepository.transaction(trx);
+
+      if (Object.keys(broadcastPayload).length > 0) {
+        await this.broadcastRepository.transaction(trx).update(broadcast.id, {
+          ...broadcastPayload,
+          isAbTest: hasAbTestVariants || broadcast.isAbTest,
+        });
+      }
+
+      if (emailContent && Object.keys(emailContent).length > 0) {
+        await this.emailContentRepository.updateForBroadcast(
+          broadcast,
+          emailContent,
+        );
+      }
+
+      if (emailContentVariants && emailContentVariants.length > 0) {
+        await this.abTestVariantRepository.bulkUpsertVariants(
+          emailContentVariants,
+          broadcast.id,
+        );
+      }
+    });
 
     return { id: broadcast.id };
   }

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "b72af956-c57a-4355-be86-a8ceb62f83e2",
+  "id": "e7ef208f-9bf6-4345-a57f-a3f9c696b2a1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -540,6 +540,14 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "waitingTimeToPickWinner": {
+          "name": "waitingTimeToPickWinner",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 4
         },
         "status": {
           "name": "status",

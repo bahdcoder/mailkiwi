@@ -1,14 +1,13 @@
 import { UserRepository } from "@/auth/users/repositories/user_repository.js";
 import { GetMailerAction } from "@/teams/actions/mailers/get_mailer_action.js";
 import { makeApp } from "@/shared/container/index.js";
-import type { HonoInstance } from "@/server/hono.js";
 import type { HonoContext } from "@/server/types.js";
 import { container } from "@/utils/typi.js";
 
 export class UserController {
   constructor(
-    private userRepository: UserRepository = container.make(UserRepository),
-    private app: HonoInstance = makeApp(),
+    private userRepository = container.make(UserRepository),
+    private app = makeApp(),
   ) {
     this.app.defineRoutes([["GET", "/profile", this.profile.bind(this)]], {
       prefix: "auth",

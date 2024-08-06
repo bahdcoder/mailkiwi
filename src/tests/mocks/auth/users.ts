@@ -12,11 +12,16 @@ import type { Team, User } from "@/database/schema/types.js";
 import { makeRequestAsUser } from "@/tests/utils/http.js";
 import { container } from "@/utils/typi.js";
 import { Secret } from "@poppinss/utils";
+import { createFakeAbTestEmailContent } from "../audiences/email_content.ts";
 
 export async function createBroadcastForUser(
   user: User,
   audienceId: string,
-  options?: { updateWithValidContent?: boolean },
+  options?: {
+    updateWithValidContent?: boolean;
+    updateWithABTestsContent?: boolean;
+    weights?: number[];
+  },
 ) {
   const response = await makeRequestAsUser(user, {
     method: "POST",
@@ -33,6 +38,7 @@ export async function createBroadcastForUser(
       method: "PUT",
       path: `/broadcasts/${id}`,
       body: {
+        waitingTimeToPickWinner: faker.number.int({ min: 1, max: 10 }),
         emailContent: {
           fromName: faker.lorem.words(2),
           fromEmail: faker.internet.email(),
@@ -42,6 +48,17 @@ export async function createBroadcastForUser(
           contentHtml: faker.lorem.paragraph(),
           contentText: faker.lorem.paragraph(),
         },
+        ...(options?.updateWithABTestsContent
+          ? {
+              emailContentVariants: options?.weights?.map((weight) => ({
+                ...createFakeAbTestEmailContent(),
+                weight,
+              })) ?? [
+                createFakeAbTestEmailContent({ weight: 25 }),
+                createFakeAbTestEmailContent({ weight: 15 }),
+              ],
+            }
+          : {}),
       },
     });
   }

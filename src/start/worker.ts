@@ -1,6 +1,6 @@
 import { WorkerIgnitor } from "@/worker/worker_ignitor.js";
 import { ArgParser } from "@/utils/args_parser.js";
-import { AVAILABLE_QUEUES } from "./shared/queue/config.js";
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js";
 
 const ignitor = await new WorkerIgnitor().boot().start();
 

@@ -32,15 +32,16 @@ export class AudienceController extends BaseController {
 
     const team = this.ensureTeam(ctx);
 
-    const userId = ctx.get("accessToken")?.userId;
+    if (
+      !container
+        .make(AudiencePolicy)
+        .canCreate(team, ctx.get("accessToken")?.userId)
+    )
+      throw E_UNAUTHORIZED();
 
-    const policy = container.make(AudiencePolicy);
-
-    if (!policy.canCreate(team, userId)) throw E_UNAUTHORIZED();
-
-    const action = container.make(CreateAudienceAction);
-
-    const audience = await action.handle(data, team.id);
+    const audience = await container
+      .make(CreateAudienceAction)
+      .handle(data, team.id);
 
     return ctx.json(audience);
   }

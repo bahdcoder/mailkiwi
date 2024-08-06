@@ -1,12 +1,12 @@
-import { drizzle } from 'drizzle-orm/mysql2'
-import mysql from 'mysql2/promise'
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 
-import * as schema from './schema/schema.js'
+import * as schema from "./schema/schema.js";
 
 export const createDatabaseClient = (databaseConnectionUrl: string) =>
-  mysql.createConnection(databaseConnectionUrl)
+  mysql.createConnection(databaseConnectionUrl);
 
-export type DrizzleClient = ReturnType<typeof drizzle<typeof schema>>
+export type DrizzleClient = ReturnType<typeof drizzle<typeof schema>>;
 
 export const createDrizzleDatabase = (connection: mysql.Connection) =>
-  drizzle(connection, { schema, mode: 'default' })
+  drizzle(connection, { schema, mode: "default" });

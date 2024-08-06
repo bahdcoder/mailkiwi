@@ -324,6 +324,8 @@ export const broadcasts = mysqlTable("broadcasts", {
   }).references((): AnyMySqlColumn => abTestVariants.id, {
     onDelete: "cascade",
   }),
+  // waitingTimeToPickWinner
+  waitingTimeToPickWinner: int("waitingTimeToPickWinner").default(4), // in hours,
   status: mysqlEnum("status", [
     "SENT",
     "SENDING",

@@ -4,9 +4,7 @@ import { container } from "@/utils/typi.js";
 
 export class UpdateAudienceAction {
   constructor(
-    private audienceRepository: AudienceRepository = container.make(
-      AudienceRepository,
-    ),
+    private audienceRepository = container.make(AudienceRepository),
   ) {}
 
   handle = async (payload: CreateAudienceDto, audienceId: string) => {

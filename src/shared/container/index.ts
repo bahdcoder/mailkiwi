@@ -13,15 +13,16 @@ export enum ContainerKey {
   databaseConnection = "databaseConnection",
 }
 
-export const makeApp = () => container.make<HonoInstance>(ContainerKey.app);
+export const makeApp = () =>
+  container.singleton<HonoInstance>(ContainerKey.app);
 
 export const makeEnv = () => container.make<EnvVariables>(ContainerKey.env);
 
 export const makeConfig = () =>
-  container.make<ConfigVariables>(ContainerKey.config);
+  container.singleton<ConfigVariables>(ContainerKey.config);
 
 export const makeDatabase = (): DrizzleClient =>
   container.singleton<DrizzleClient>(ContainerKey.database);
 
 export const makeDatabaseConnection = () =>
-  container.make<Connection>(ContainerKey.databaseConnection);
+  container.singleton<Connection>(ContainerKey.databaseConnection);

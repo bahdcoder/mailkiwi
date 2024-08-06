@@ -4,7 +4,10 @@ import { GetBroadcastAction } from "@/broadcasts/actions/get_broadcast_action.ts
 import { SendBroadcastAction } from "@/broadcasts/actions/send_broadcast_action.js";
 import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_action.js";
 import { CreateBroadcastDto } from "@/broadcasts/dto/create_broadcast_dto.js";
-import { SendBroadcastSchema } from "@/broadcasts/dto/send_broadcast_dto.js";
+import {
+  SendBroadcastSchema,
+  SendBroadcastEmailContentSchema,
+} from "@/broadcasts/dto/send_broadcast_dto.js";
 import { UpdateBroadcastDto } from "@/broadcasts/dto/update_broadcast_dto.js";
 import { BaseController } from "@/shared/controllers/base_controller.js";
 import { BroadcastValidationAndAuthorizationConcern } from "@/api/concerns/broadcast_validation_concern.js";
@@ -102,10 +105,16 @@ export class BroadcastController extends BaseController {
     const broadcast =
       await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
         ctx,
+        { loadAbTestVariants: true },
       );
     await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
       ctx,
     );
+
+    if (broadcast.status !== "DRAFT")
+      throw E_VALIDATION_FAILED([
+        { message: "Only a draft broadcast can be sent.", field: "status" },
+      ]);
 
     const { success, issues } = await safeParseAsync(
       SendBroadcastSchema,
@@ -114,10 +123,24 @@ export class BroadcastController extends BaseController {
 
     if (!success) throw E_VALIDATION_FAILED(issues);
 
-    if (broadcast.status !== "DRAFT")
-      throw E_VALIDATION_FAILED([
-        { message: "Only a draft broadcast can be sent.", field: "status" },
-      ]);
+    if (broadcast.isAbTest) {
+      const validations = await Promise.all(
+        broadcast.abTestVariants.map((variant) =>
+          safeParseAsync(SendBroadcastEmailContentSchema, variant.emailContent),
+        ),
+      );
+
+      if (validations.some((validation) => validation.success === false)) {
+        throw E_VALIDATION_FAILED([
+          {
+            message:
+              "Some A/B test variants are invalid. Please make sure all variants are valid.",
+            field: "abTestVariants",
+          },
+          ...validations.flatMap((validation) => validation.issues),
+        ]);
+      }
+    }
 
     await container.make(SendBroadcastAction).handle(broadcast);
 

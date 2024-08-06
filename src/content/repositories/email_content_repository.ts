@@ -1,4 +1,7 @@
-import type { UpdateBroadcastDto } from "@/broadcasts/dto/update_broadcast_dto.ts";
+import type {
+  EmailContentVariant,
+  UpdateBroadcastDto,
+} from "@/broadcasts/dto/update_broadcast_dto.ts";
 import { BaseRepository } from "@/shared/repositories/base_repository.js";
 import { makeDatabase } from "@/shared/container/index.js";
 import type { DrizzleClient } from "@/database/client.js";
@@ -9,6 +12,29 @@ import { eq } from "drizzle-orm";
 export class EmailContentRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super();
+  }
+
+  async bulkCreate(payload: EmailContentVariant[]) {
+    const ids = payload.map(() => this.cuid());
+
+    await this.database
+      .insert(emailContents)
+      .values(payload.map((content, idx) => ({ ...content, id: ids[idx] })));
+
+    return ids;
+  }
+
+  async bulkUpdate(
+    payload: (EmailContentVariant & { emailContentId: string })[],
+  ) {
+    await Promise.all(
+      payload.map((content) =>
+        this.database
+          .update(emailContents)
+          .set({ ...content })
+          .where(eq(emailContents.id, content.emailContentId)),
+      ),
+    );
   }
 
   async updateForBroadcast(

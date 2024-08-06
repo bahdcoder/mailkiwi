@@ -22,6 +22,20 @@ import {
   string,
 } from "valibot";
 
+export const SendBroadcastEmailContentSchema = object({
+  subject: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
+  fromName: pipe(string(), nonEmpty()),
+  fromEmail: pipe(string(), nonEmpty(), email()),
+  replyToEmail: pipe(string(), nonEmpty(), email()),
+  replyToName: pipe(string(), nonEmpty()),
+
+  contentJson: nullable(optional(string())),
+  contentText: pipe(string(), nonEmpty()),
+  contentHtml: pipe(string(), nonEmpty()),
+
+  previewText: nullable(optional(string())),
+});
+
 export const SendBroadcastSchema = objectAsync({
   name: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
 
@@ -41,19 +55,7 @@ export const SendBroadcastSchema = objectAsync({
   trackClicks: optional(nullable(boolean())),
   trackOpens: optional(nullable(boolean())),
 
-  emailContent: object({
-    subject: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
-    fromName: pipe(string(), nonEmpty()),
-    fromEmail: pipe(string(), nonEmpty(), email()),
-    replyToEmail: pipe(string(), nonEmpty(), email()),
-    replyToName: pipe(string(), nonEmpty()),
-
-    contentJson: nullable(optional(string())),
-    contentText: pipe(string(), nonEmpty()),
-    contentHtml: pipe(string(), nonEmpty()),
-
-    previewText: nullable(optional(string())),
-  }),
+  emailContent: SendBroadcastEmailContentSchema,
 
   sendAt: pipeAsync(
     nullable(optional(string())),

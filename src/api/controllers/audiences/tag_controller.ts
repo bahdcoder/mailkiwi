@@ -11,7 +11,7 @@ import { container } from "@/utils/typi.js";
 export class TagController extends BaseController {
   constructor(
     private app: HonoInstance = makeApp(),
-    private audienceValidationAndAuthorizationConcern: AudienceValidationAndAuthorizationConcern = container.make(
+    private audienceValidationAndAuthorizationConcern = container.make(
       AudienceValidationAndAuthorizationConcern,
     ),
   ) {
@@ -57,15 +57,12 @@ export class TagController extends BaseController {
         ctx,
       );
 
-    const hasPermissions =
-      await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
-        ctx,
-        audience,
-      );
+    await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
+      ctx,
+      audience,
+    );
 
-    const action = container.resolve(DeleteTagAction);
-
-    await action.handle(tagId);
+    await container.resolve(DeleteTagAction).handle(tagId);
 
     return ctx.json({ id: tagId }, 200);
   }

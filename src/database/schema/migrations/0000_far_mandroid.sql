@@ -62,6 +62,7 @@ CREATE TABLE `broadcasts` (
 	`trackOpens` boolean,
 	`emailContentId` varchar(32),
 	`winningAbTestVariantId` varchar(32),
+	`waitingTimeToPickWinner` int DEFAULT 4,
 	`status` enum('SENT','SENDING','DRAFT','QUEUED_FOR_SENDING','SENDING_FAILED','DRAFT_ARCHIVED','ARCHIVED') DEFAULT 'DRAFT',
 	`isAbTest` boolean NOT NULL DEFAULT false,
 	`winningCriteria` enum('OPENS','CLICKS','CONVERSIONS'),

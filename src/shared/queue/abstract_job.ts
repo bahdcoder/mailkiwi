@@ -15,6 +15,10 @@ export abstract class BaseJob<T extends object = object> {
     throw new Error("ID is not defined for this job.");
   }
 
+  get batchSize(): number {
+    return 75;
+  }
+
   static get queue(): AVAILABLE_QUEUE_TYPE {
     throw new Error("Queue is not defined for this job.");
   }

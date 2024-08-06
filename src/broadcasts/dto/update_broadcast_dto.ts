@@ -1,7 +1,11 @@
 import { makeDatabase } from "@/shared/container/index.js";
-import { audiences, segments } from "@/database/schema/schema.js";
+import {
+  abTestVariants,
+  audiences,
+  segments,
+} from "@/database/schema/schema.js";
 import { isDateInPast } from "@/utils/dates.js";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq, inArray } from "drizzle-orm";
 import {
   type InferInput,
   boolean,
@@ -14,27 +18,51 @@ import {
   pipeAsync,
   string,
   object,
+  array,
+  minLength,
+  number,
+  maxLength,
+  nonEmpty,
 } from "valibot";
+
+const emailContentFields = {
+  fromName: optional(string()),
+  fromEmail: optional(pipe(string(), email())),
+  replyToEmail: optional(pipe(string(), email())),
+  replyToName: optional(string()),
+
+  contentJson: optional(string()),
+  contentText: optional(string()),
+  contentHtml: optional(string()),
+
+  subject: optional(string()),
+
+  previewText: optional(string()),
+};
+
+const EmailContent = object({
+  ...emailContentFields,
+});
+
+const EmailContentVariant = object({
+  ...emailContentFields,
+
+  // for ab tests email content variants
+  name: pipe(string(), nonEmpty()),
+  weight: number(),
+
+  // only when updating a variant email content.
+  abTestVariantId: optional(string()),
+});
 
 export const UpdateBroadcastDto = pipeAsync(
   objectAsync({
     name: optional(string()),
 
-    emailContent: optional(
-      object({
-        fromName: optional(string()),
-        fromEmail: optional(pipe(string(), email())),
-        replyToEmail: optional(pipe(string(), email())),
-        replyToName: optional(string()),
+    emailContent: optional(EmailContent),
 
-        contentJson: optional(string()),
-        contentText: optional(string()),
-        contentHtml: optional(string()),
-
-        subject: optional(string()),
-
-        previewText: optional(string()),
-      }),
+    emailContentVariants: optional(
+      pipe(array(EmailContentVariant), minLength(1), maxLength(5)),
     ),
 
     audienceId: pipeAsync(
@@ -84,6 +112,7 @@ export const UpdateBroadcastDto = pipeAsync(
         return isDateInPast(input) === false;
       }, "sendAt cannot be in the past."),
     ),
+    waitingTimeToPickWinner: optional(number()), // in hours
   }),
   checkAsync(async (input) => {
     if (!input.audienceId || !input.segmentId) return true;
@@ -99,6 +128,44 @@ export const UpdateBroadcastDto = pipeAsync(
 
     return segment !== undefined;
   }, "The Segment provided must part of the audience provided."),
+  checkAsync(async (input) => {
+    if (!input.emailContentVariants) {
+      return true;
+    }
+
+    const variantIds = input.emailContentVariants
+      .map((variant) => variant.abTestVariantId)
+      .filter((id) => id) as string[];
+
+    if (variantIds.length === 0) {
+      return true;
+    }
+
+    const database = makeDatabase();
+
+    const [{ count: existingAbTestVariants }] = await database
+      .select({ count: count() })
+      .from(abTestVariants)
+      .where(inArray(abTestVariants.id, variantIds));
+
+    return existingAbTestVariants === variantIds.length;
+  }, "One or more email content variants provided have an invalid ID."),
+  check((input) => {
+    if (
+      !input.emailContentVariants ||
+      input.emailContentVariants.length === 0
+    ) {
+      return true;
+    }
+
+    const sum = input.emailContentVariants.reduce((acc, variant) => {
+      return acc + variant.weight;
+    }, 0);
+
+    return sum < 100;
+  }, "The sum of all ab test variant weights must be less than 100."),
 );
+
+export type EmailContentVariant = InferInput<typeof EmailContentVariant>;
 
 export type UpdateBroadcastDto = InferInput<typeof UpdateBroadcastDto>;

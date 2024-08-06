@@ -1,7 +1,7 @@
 import type { InferSelectModel } from "drizzle-orm";
 import type { SQLiteUpdateSetSource } from "drizzle-orm/sqlite-core";
 
-import { makeDatabase } from "@/shared/container/index.js";
+import type { makeDatabase } from "@/shared/container/index.js";
 
 import type {
   accessTokens,
@@ -17,6 +17,7 @@ import type {
   segments,
   emailContents,
   automationSteps,
+  abTestVariants,
 } from "./schema.js";
 
 export type Setting = InferSelectModel<typeof settings>;
@@ -61,8 +62,12 @@ export type UpdateSetBroadcastInput = Omit<
   "sendAt"
 > & { sendAt: string | undefined };
 
+export type AbTestVariant = typeof abTestVariants.$inferSelect;
 export type Segment = typeof segments.$inferSelect;
 export type InsertSegment = typeof segments.$inferInsert;
+
+export type InsertAbTestVariant = typeof abTestVariants.$inferInsert;
+export type UpdateAbTestVariant = SQLiteUpdateSetSource<typeof abTestVariants>;
 
 export type AutomationStep = typeof automationSteps.$inferSelect;
 
@@ -76,4 +81,17 @@ export type ValidatedEmailContent = NonNullableProperties<EmailContent>;
 
 export type BroadcastWithEmailContent = Broadcast & {
   emailContent: Required<ValidatedEmailContent>;
+  abTestVariants: (AbTestVariant & {
+    emailContent: Required<ValidatedEmailContent>;
+  })[];
+};
+
+export type BroadcastWithSegment = Broadcast & {
+  segment: Segment;
+};
+
+export type BroadcastWithSegmentAndAbTestVariants = BroadcastWithSegment & {
+  abTestVariants: AbTestVariant[];
+  audience: Audience;
+  team: Team;
 };

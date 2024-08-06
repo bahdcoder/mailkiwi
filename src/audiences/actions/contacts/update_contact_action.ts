@@ -4,11 +4,7 @@ import { E_VALIDATION_FAILED } from "@/http/responses/errors.js";
 import { container } from "@/utils/typi.js";
 
 export class UpdateContactAction {
-  constructor(
-    private contactRepository: ContactRepository = container.make(
-      ContactRepository,
-    ),
-  ) {}
+  constructor(private contactRepository = container.make(ContactRepository)) {}
 
   handle = async (contactId: string, payload: UpdateContactDto) => {
     const contact = await this.contactRepository.findById(contactId);

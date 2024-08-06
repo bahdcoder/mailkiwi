@@ -471,4 +471,63 @@ describe("Send Broadcast", () => {
     });
     // TODO: Check redis for queued job.
   });
+
+  test("cannot send a broadcast with invalid or incomplete a/b variants information", async ({
+    expect,
+  }) => {
+    await refreshDatabase();
+    const { user, audience, team } = await createUser();
+
+    await createMailerForTeam(team);
+
+    SESMock.on(GetAccountSendingEnabledCommand).resolves({
+      Enabled: true,
+    });
+
+    const broadcastId = await createBroadcastForUser(user, audience.id, {
+      updateWithValidContent: true,
+    });
+
+    const updateData = {
+      name: faker.lorem.words(3),
+      emailContentVariants: [
+        {
+          fromName: faker.person.fullName(),
+          fromEmail: faker.internet.email(),
+          replyToEmail: faker.internet.email(),
+          name: faker.lorem.words(3),
+          weight: 25,
+        },
+        {
+          fromName: faker.person.fullName(),
+          fromEmail: faker.internet.email(),
+          replyToEmail: faker.internet.email(),
+          name: faker.lorem.words(2),
+          weight: 45,
+        },
+      ],
+    };
+
+    const updateResponse = await makeRequestAsUser(user, {
+      method: "PUT",
+      path: `/broadcasts/${broadcastId}`,
+      body: updateData,
+    });
+
+    expect(updateResponse.status).toBe(200);
+
+    const response = await makeRequestAsUser(user, {
+      method: "POST",
+      path: `/broadcasts/${broadcastId}/send`,
+    });
+
+    const json = await response.json();
+    expect(response.status).toBe(422);
+
+    expect(json.errors[0]).toEqual({
+      message:
+        "Some A/B test variants are invalid. Please make sure all variants are valid.",
+      field: "abTestVariants",
+    });
+  });
 });

@@ -16,9 +16,13 @@ export class BroadcastValidationAndAuthorizationConcern {
     private teamPolicy: TeamPolicy = container.make(TeamPolicy),
   ) {}
 
-  public async ensureBroadcastExists(ctx: HonoContext) {
+  public async ensureBroadcastExists(
+    ctx: HonoContext,
+    opts?: { loadAbTestVariants?: boolean },
+  ) {
     const broadcast = await this.broadcastRepository.findById(
       ctx.req.param("broadcastId"),
+      opts,
     );
 
     if (!broadcast) {

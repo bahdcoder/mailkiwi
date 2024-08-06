@@ -6,7 +6,7 @@ export function createFakeContact(
   contactOverrides?: Partial<Contact>,
 ) {
   return {
-    email: faker.internet.email(),
+    email: faker.string.nanoid(5) + faker.internet.email(),
     firstName: faker.person.firstName(),
     audienceId,
     lastName: faker.person.lastName(),

@@ -21,6 +21,7 @@ export class SegmentRepository extends BaseRepository {
 
   async delete(segmentId: string) {
     await this.database.delete(segments).where(eq(segments.id, segmentId));
+
     return { id: segmentId };
   }
 

@@ -1,16 +1,13 @@
 import type { CreateBroadcastDto } from "@/broadcasts/dto/create_broadcast_dto.js";
-import type { UpdateBroadcastDto } from "@/broadcasts/dto/update_broadcast_dto.js";
 import { BaseRepository } from "@/shared/repositories/base_repository.js";
 import { makeDatabase } from "@/shared/container/index.js";
 import type { DrizzleClient } from "@/database/client.js";
 import { broadcasts, sends } from "@/database/schema/schema.js";
-import type { UpdateSetBroadcastInput } from "@/database/schema/types.js";
+import type {
+  BroadcastWithEmailContent,
+  UpdateSetBroadcastInput,
+} from "@/database/schema/types.js";
 import { eq, sql } from "drizzle-orm";
-import {
-  MySql2QueryResultHKT,
-  MySqlQueryResult,
-  MySqlRawQueryResult,
-} from "drizzle-orm/mysql2";
 
 export class BroadcastRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -68,13 +65,22 @@ export class BroadcastRepository extends BaseRepository {
     return { id };
   }
 
-  async findById(id: string) {
-    return this.database.query.broadcasts.findFirst({
+  async findById(id: string, opts?: { loadAbTestVariants?: boolean }) {
+    const broadcast = await this.database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, id),
       with: {
         emailContent: true,
+        abTestVariants: opts?.loadAbTestVariants
+          ? {
+              with: {
+                emailContent: true,
+              },
+            }
+          : undefined,
       },
     });
+
+    return broadcast as BroadcastWithEmailContent;
   }
 
   async findAll() {

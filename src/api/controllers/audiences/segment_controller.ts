@@ -9,12 +9,10 @@ import { SegmentRepository } from "@/audiences/repositories/segment_repository.t
 export class SegmentController extends BaseController {
   constructor(
     private app = makeApp(),
-    private audienceValidationAndAuthorizationConcern: AudienceValidationAndAuthorizationConcern = container.make(
+    private audienceValidationAndAuthorizationConcern = container.make(
       AudienceValidationAndAuthorizationConcern,
     ),
-    private segmentRepository: SegmentRepository = container.make(
-      SegmentRepository,
-    ),
+    private segmentRepository = container.make(SegmentRepository),
   ) {
     super();
 
@@ -61,10 +59,8 @@ export class SegmentController extends BaseController {
 
     const segmentId = ctx.req.param("segmentId");
 
-    // const action = container.resolve(DeleteSegmentAction)
+    await this.segmentRepository.delete(segmentId);
 
-    // await action.handle(segmentId)
-
-    // return ctx.json({ id: segmentId })
+    return ctx.json({ id: segmentId });
   }
 }
