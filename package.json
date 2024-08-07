@@ -4,7 +4,7 @@
   "type": "module",
   "main": "src/main.ts",
   "scripts": {
-    "dev": " tsx watch --clear-screen=false --ignore src/http/views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs src/start/dev.ts",
+    "dev": "tsx watch --clear-screen=false --ignore src/http/views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs src/start/dev.ts",
     "worker:dev": "tsx watch src/start/worker.ts",
     "test": "pnpm test:watch --run",
     "build:clean": "del-cli build",

@@ -25,6 +25,11 @@ test() {
     docker-compose -f compose.yaml -f compose.test.yaml run --rm mailkiwi pnpm test
 }
 
+test_watch() {
+    echo "Running tests..."
+    docker-compose -f compose.yaml -f compose.test.yaml run --rm mailkiwi pnpm test:watch
+}
+
 # dev
 up() {
     echo "Starting development environment..."
@@ -41,6 +46,9 @@ case "$1" in
         ;;
     test)
         test
+        ;;
+    test-watch)
+        test_watch
         ;;
     up)
         up
