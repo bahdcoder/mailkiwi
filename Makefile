@@ -19,6 +19,7 @@ help:
 	@echo "  make test          - Run tests"
 	@echo "  make test-watch    - Run tests in watch mode"
 	@echo "  make up            - Start development environment"
+	@echo "  make run-command CMD='your command'  - Run a custom command in the mailkiwi container"
 
 # Build the application
 build:
@@ -49,9 +50,17 @@ test-watch:
 	@echo "Running tests in watch mode..."
 	docker-compose $(COMPOSE_TEST) run --rm mailkiwi pnpm test:watch
 
+# Run tests in watch mode
+run:
+	@if [ -z "$(CMD)" ]; then \
+		echo "Please provide a command using CMD='your command'"; \
+		exit 1; \
+	fi
+	docker-compose $(COMPOSE_DEV) run --rm mailkiwi pnpm $(CMD)
+
 # Start development environment
 dev:
 	@echo "Starting development environment..."
-	docker-compose --env-file .env.dev $(COMPOSE_DEV) up -d
+	docker-compose $(COMPOSE_DEV) up -d
 
 .PHONY: help build down app-build test test-watch up

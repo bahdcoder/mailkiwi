@@ -1,5 +1,5 @@
 {
-  "name": "@buyonce/bamboomailer",
+  "name": "@mailkiwi/api",
   "version": "1.0.0",
   "type": "module",
   "main": "src/main.ts",
@@ -20,6 +20,7 @@
     "lint": "pnpm biome check --write .",
     "db:seed": "pnpm db:migrate && tsx src/bin/seed.ts",
     "db:migrate:dev": "pnpm db:migrate",
+    "clickhouse:migrate:make": "tsx src/bin/clickhouse.ts make",
     "db:migrate": "pnpm drizzle-kit migrate --config=./src/database/drizzle.config.ts",
     "db:migrate:make": "pnpm drizzle-kit generate --config=./src/database/drizzle.config.ts",
     "db:studio": "pnpm drizzle-kit studio --config=./src/database/drizzle.config.ts",
@@ -31,6 +32,7 @@
   "description": "Buyonce software: Bamboomailer.",
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
+    "@drizzle-team/brocli": "^0.9.2",
     "@faker-js/faker": "^8.4.1",
     "@fastify/vite": "^6.0.6",
     "@hono/node-server": "^1.12.0",
