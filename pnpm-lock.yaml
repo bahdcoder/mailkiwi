@@ -17,6 +17,9 @@ importers:
       '@aws-sdk/client-sns':
         specifier: ^3.609.0
         version: 3.609.0
+      '@clickhouse/client':
+        specifier: ^1.4.0
+        version: 1.4.0
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
@@ -457,6 +460,13 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@clickhouse/client-common@1.4.0':
+    resolution: {integrity: sha512-kglG8YyWnR1K24RckUf5ZdNTN0U0s+a1j/bpCO4ZjzjO87ICgWlXFVD22pZqSACW7/2IIi1IkzbwtxKI2s/MOw==}
+
+  '@clickhouse/client@1.4.0':
+    resolution: {integrity: sha512-O4mbFPM/wQtFck01ghYI2mnNHv9jSFEiQBsTCH4t6MKeGHNAPkJGaFGv+KycLTv6zjnQNjiUGdXDMVRema5SyA==}
+    engines: {node: '>=16'}
 
   '@esbuild-kit/core-utils@3.3.2':
     resolution: {integrity: sha512-sPRAnw9CdSsRmEtnsl2WXWdyquogVpB3yZ3dgwJfe8zrOzTsV7cJvmwrKVa+0ma5BoiGJ+BoqkMvawbayKUsqQ==}
@@ -3915,6 +3925,12 @@ snapshots:
 
   '@biomejs/cli-win32-x64@1.8.3':
     optional: true
+
+  '@clickhouse/client-common@1.4.0': {}
+
+  '@clickhouse/client@1.4.0':
+    dependencies:
+      '@clickhouse/client-common': 1.4.0
 
   '@esbuild-kit/core-utils@3.3.2':
     dependencies:

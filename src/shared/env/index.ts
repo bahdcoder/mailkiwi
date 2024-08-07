@@ -18,6 +18,7 @@ export type EnvVariables = {
   APP_KEY: string;
   APP_URL: string;
   DATABASE_URL: string;
+  CLICKHOUSE_DATABASE_URL: string;
   REDIS_URL: string;
   NODE_ENV: "development" | "test" | "production";
   SMTP_TEST_URL: string;
@@ -46,6 +47,7 @@ const envValidationSchema = object({
     nonEmpty(),
     url(),
   ),
+  CLICKHOUSE_DATABASE_URL: pipe(string(), nonEmpty()),
   REDIS_URL: pipe(string(), nonEmpty()),
   DATABASE_URL: pipe(string(), nonEmpty()),
   NODE_ENV: picklist(["development", "test", "production"]),

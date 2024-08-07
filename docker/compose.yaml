@@ -24,7 +24,7 @@ services:
       - mysql_data:/var/lib/mysql
 
   clickhouse:
-    image: clickhouse/clickhouse-server:latest
+    image: clickhouse/clickhouse-server:latest-alpine
     ports:
       - "5568:8123"
       - "5569:9000"
