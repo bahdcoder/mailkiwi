@@ -52,11 +52,11 @@ test-watch:
 
 # Run tests in watch mode
 run:
-	@if [ -z "$(CMD)" ]; then \
-		echo "Please provide a command using CMD='your command'"; \
+	@if [ -z "$(cmd)" ]; then \
+		echo "Please provide a command using cmd='your command'"; \
 		exit 1; \
 	fi
-	docker-compose $(COMPOSE_DEV) run --rm mailkiwi pnpm $(CMD)
+	docker-compose $(COMPOSE_DEV) run --rm mailkiwi pnpm $(cmd)
 
 # Start development environment
 dev:

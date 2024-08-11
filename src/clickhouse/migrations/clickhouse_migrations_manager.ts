@@ -1,8 +1,15 @@
-import { ClickHouseClient } from "@clickhouse/client";
-import fs from "fs/promises";
-import path from "path";
+import type { ClickHouseClient } from "@clickhouse/client";
+import fs from "node:fs/promises";
+import path from "node:path";
+
+interface Migration {
+  id: string;
+  TIMESTAMP: string;
+}
 
 export class MigrationFileManager {
+  noob() {}
+
   static readonly MIGRATIONS_DIR = path.resolve(
     process.cwd(),
     "src",
@@ -11,12 +18,15 @@ export class MigrationFileManager {
   );
 
   static async readMigrationFiles(): Promise<string[]> {
-    const files = await fs.readdir(this.MIGRATIONS_DIR);
+    const files = await fs.readdir(MigrationFileManager.MIGRATIONS_DIR);
     return files.filter((file) => file.endsWith(".sql")).sort();
   }
 
   static async readMigrationContent(filename: string): Promise<string> {
-    return fs.readFile(path.join(this.MIGRATIONS_DIR, filename), "utf-8");
+    return fs.readFile(
+      path.join(MigrationFileManager.MIGRATIONS_DIR, filename),
+      "utf-8",
+    );
   }
 
   static async createMigrationFiles(
@@ -30,9 +40,12 @@ export class MigrationFileManager {
       .split(".")[0];
     const migrationId = `${timestamp}_${name}`;
 
-    const upFile = path.join(this.MIGRATIONS_DIR, `${migrationId}.sql`);
+    const upFile = path.join(
+      MigrationFileManager.MIGRATIONS_DIR,
+      `${migrationId}.sql`,
+    );
     const downFile = path.join(
-      this.MIGRATIONS_DIR,
+      MigrationFileManager.MIGRATIONS_DIR,
       `${migrationId}.rollback.sql`,
     );
 
@@ -80,13 +93,15 @@ export class MigrationRecordManager {
     });
   }
 
-  async getAppliedMigrations(): Promise<any[]> {
+  async getAppliedMigrations(): Promise<Migration[]> {
     const result = await this.client.query({
-      query: /*sql*/ `SELECT id, timestamp FROM migrations ORDER BY timestamp`,
+      query: /*sql*/ "SELECT id, timestamp FROM migrations ORDER BY timestamp",
       format: "JSONEachRow",
     });
 
-    return await result.json();
+    const migrations = await result.json<Migration>();
+
+    return migrations;
   }
 }
 
@@ -117,7 +132,7 @@ export class ClickHouseMigrationManager {
     }
   }
 
-  async rollbackMigrations(steps: number = 1): Promise<void> {
+  async rollbackMigrations(steps = 1): Promise<void> {
     const appliedMigrations =
       await this.migrationRecordManager.getAppliedMigrations();
     const migrationsToRollback = appliedMigrations.slice(-steps);

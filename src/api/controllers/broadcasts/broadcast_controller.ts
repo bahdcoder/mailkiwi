@@ -27,19 +27,22 @@ export class BroadcastController extends BaseController {
   ) {
     super();
 
+    this.app.defineRoutes([["POST", "/", this.create]], {
+      prefix: "broadcasts",
+    });
+
     this.app.defineRoutes(
       [
-        ["POST", "/", this.create.bind(this)],
-        ["DELETE", "/:broadcastId", this.delete.bind(this)],
-        ["GET", "/:broadcastId", this.get.bind(this)],
-        ["PUT", "/:broadcastId", this.update.bind(this)],
-        ["POST", "/:broadcastId/send", this.send.bind(this)],
+        ["DELETE", "/", this.delete],
+        ["GET", "/", this.get],
+        ["PUT", "/", this.update],
+        ["POST", "/send", this.send],
       ],
-      { prefix: "broadcasts" },
+      { prefix: "broadcasts/:broadcastId" },
     );
   }
 
-  async create(ctx: HonoContext) {
+  create = async (ctx: HonoContext) => {
     await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
       ctx,
     );
@@ -50,9 +53,9 @@ export class BroadcastController extends BaseController {
       .handle(data, ctx.get("team").id);
 
     return ctx.json(broadcast, 201);
-  }
+  };
 
-  async get(ctx: HonoContext) {
+  get = async (ctx: HonoContext) => {
     const broadcast =
       await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
         ctx,
@@ -63,9 +66,9 @@ export class BroadcastController extends BaseController {
     );
 
     return ctx.json(await container.make(GetBroadcastAction).handle(broadcast));
-  }
+  };
 
-  async delete(ctx: HonoContext) {
+  delete = async (ctx: HonoContext) => {
     const broadcast =
       await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
         ctx,
@@ -79,9 +82,9 @@ export class BroadcastController extends BaseController {
     await container.resolve(DeleteBroadcastAction).handle(id);
 
     return ctx.json({ id });
-  }
+  };
 
-  async update(ctx: HonoContext) {
+  update = async (ctx: HonoContext) => {
     const broadcast =
       await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
         ctx,
@@ -99,9 +102,9 @@ export class BroadcastController extends BaseController {
       .handle(broadcast, data);
 
     return ctx.json({ id });
-  }
+  };
 
-  async send(ctx: HonoContext) {
+  send = async (ctx: HonoContext) => {
     const broadcast =
       await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
         ctx,
@@ -145,5 +148,5 @@ export class BroadcastController extends BaseController {
     await container.make(SendBroadcastAction).handle(broadcast);
 
     return ctx.json({ id: broadcast.id });
-  }
+  };
 }
