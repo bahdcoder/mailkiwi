@@ -1,4 +1,5 @@
-import type { ClickHouseClient } from "@clickhouse/client";
+import { env } from "@/shared/env/index.ts";
+import { type ClickHouseClient, createClient } from "@clickhouse/client";
 import fs from "node:fs/promises";
 import path from "node:path";
 
@@ -32,7 +33,6 @@ export class MigrationFileManager {
   static async createMigrationFiles(
     name: string,
     upSql = "-- Add your SQL migration here",
-    downSql = "-- Add your rollback SQL here",
   ): Promise<string> {
     const timestamp = new Date()
       .toISOString()
@@ -40,17 +40,12 @@ export class MigrationFileManager {
       .split(".")[0];
     const migrationId = `${timestamp}_${name}`;
 
-    const upFile = path.join(
+    const migrationFile = path.join(
       MigrationFileManager.MIGRATIONS_DIR,
       `${migrationId}.sql`,
     );
-    const downFile = path.join(
-      MigrationFileManager.MIGRATIONS_DIR,
-      `${migrationId}.rollback.sql`,
-    );
 
-    await fs.writeFile(upFile, upSql);
-    await fs.writeFile(downFile, downSql);
+    await fs.writeFile(migrationFile, upSql);
 
     return migrationId;
   }
@@ -59,10 +54,16 @@ export class MigrationFileManager {
 export class MigrationRecordManager {
   constructor(private client: ClickHouseClient) {}
 
+  private DATABASE_NAME = env.CLICKHOUSE_DATABASE_URL.split("/").at(-1);
+
+  get MIGRATIONS_TABLE() {
+    return `${this.DATABASE_NAME}.__migrations`;
+  }
+
   async initializeMigrationTable(): Promise<void> {
     await this.client.query({
       query: /*sql*/ `
-        CREATE TABLE IF NOT EXISTS migrations (
+        CREATE TABLE IF NOT EXISTS ${this.MIGRATIONS_TABLE} (
           id String,
           timestamp DateTime DEFAULT now(),
           PRIMARY KEY (id)
@@ -73,7 +74,8 @@ export class MigrationRecordManager {
 
   async isMigrationApplied(id: string): Promise<boolean> {
     const result = await this.client.query({
-      query: /*sql*/ `SELECT 1 FROM migrations WHERE id = ${id}`,
+      query: /*sql*/ `SELECT * FROM ${this.MIGRATIONS_TABLE} WHERE id = {id:String}`,
+      query_params: { id },
       format: "JSONEachRow",
     });
 
@@ -82,20 +84,23 @@ export class MigrationRecordManager {
   }
 
   async recordMigration(id: string): Promise<void> {
-    await this.client.query({
-      query: /*sql*/ `INSERT INTO migrations (id) VALUES (${id})`,
+    await this.client.insert({
+      table: this.MIGRATIONS_TABLE,
+      values: [{ id }],
+      format: "JSONEachRow",
     });
   }
 
   async removeMigrationRecord(id: string): Promise<void> {
     await this.client.query({
-      query: /*sql*/ `DELETE FROM migrations WHERE id = ${id}`,
+      query: /*sql*/ `DELETE FROM ${this.MIGRATIONS_TABLE} WHERE id = {id:String}`,
+      query_params: { id },
     });
   }
 
   async getAppliedMigrations(): Promise<Migration[]> {
     const result = await this.client.query({
-      query: /*sql*/ "SELECT id, timestamp FROM migrations ORDER BY timestamp",
+      query: /*sql*/ `SELECT id, timestamp FROM ${this.MIGRATIONS_TABLE} ORDER BY timestamp`,
       format: "JSONEachRow",
     });
 
@@ -105,53 +110,53 @@ export class MigrationRecordManager {
   }
 }
 
-export class ClickHouseMigrationManager {
+export class MigrationManager {
+  private initialized = false;
+  private client: ClickHouseClient;
   private migrationRecordManager: MigrationRecordManager;
 
-  constructor(private client: ClickHouseClient) {
-    this.migrationRecordManager = new MigrationRecordManager(client);
+  constructor() {
+    this.client = createClient({
+      url: env.CLICKHOUSE_DATABASE_URL,
+    });
+
+    this.migrationRecordManager = new MigrationRecordManager(this.client);
   }
 
   async initializeDatabase(): Promise<void> {
+    if (this.initialized) return;
+
+    this.initialized = true;
     await this.migrationRecordManager.initializeMigrationTable();
   }
 
   async applyPendingMigrations(): Promise<void> {
+    await this.initializeDatabase();
+
     const migrations = await MigrationFileManager.readMigrationFiles();
 
     for (const migration of migrations) {
       const id = path.parse(migration).name;
+
+      if (migration.includes("rollback")) {
+        continue;
+      }
+
       const applied = await this.migrationRecordManager.isMigrationApplied(id);
 
       if (!applied) {
         const sql = await MigrationFileManager.readMigrationContent(migration);
+
         await this.client.query({ query: sql });
+
         await this.migrationRecordManager.recordMigration(id);
+
         console.log(`Applied migration: ${id}`);
+      } else {
+        console.log(`Migration already applied: ${id}`);
       }
     }
-  }
 
-  async rollbackMigrations(steps = 1): Promise<void> {
-    const appliedMigrations =
-      await this.migrationRecordManager.getAppliedMigrations();
-    const migrationsToRollback = appliedMigrations.slice(-steps);
-
-    for (const migration of migrationsToRollback.reverse()) {
-      const rollbackFile = `${migration.id}.rollback.sql`;
-
-      try {
-        const sql =
-          await MigrationFileManager.readMigrationContent(rollbackFile);
-        await this.client.query({ query: sql });
-
-        await this.migrationRecordManager.removeMigrationRecord(migration.id);
-
-        console.log(`Rolled back migration: ${migration.id}`);
-      } catch (error) {
-        console.error(`Error rolling back migration ${migration.id}:`, error);
-        break;
-      }
-    }
+    await this.client.close();
   }
 }

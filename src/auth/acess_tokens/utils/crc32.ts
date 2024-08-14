@@ -57,47 +57,47 @@ export class CRC32 {
     3401237130, 1404277552, 615818150, 3134207493, 3453421203, 1423857449,
     601450431, 3009837614, 3294710456, 1567103746, 711928724, 3020668471,
     3272380065, 1510334235, 755167117,
-  ]
+  ];
 
-  #initialCRC = 0xffffffff
+  #initialCRC = 0xffffffff;
 
   #calculateBytes(bytes: Uint8Array, accumulator?: number): number {
-    let crc = accumulator || this.#initialCRC
+    let crc = accumulator || this.#initialCRC;
     for (const byte of bytes) {
-      const tableIndex = (crc ^ byte) & 0xff
-      const tableVal = this.#lookupTable[tableIndex] as number
-      crc = (crc >>> 8) ^ tableVal
+      const tableIndex = (crc ^ byte) & 0xff;
+      const tableVal = this.#lookupTable[tableIndex] as number;
+      crc = (crc >>> 8) ^ tableVal;
     }
-    return crc
+    return crc;
   }
 
   #crcToUint(crc: number): number {
-    return this.#toUint32(crc ^ 0xffffffff)
+    return this.#toUint32(crc ^ 0xffffffff);
   }
 
   #strToBytes(input: string): Uint8Array {
-    const encoder = new TextEncoder()
-    return encoder.encode(input)
+    const encoder = new TextEncoder();
+    return encoder.encode(input);
   }
 
   #toUint32(num: number): number {
     if (num >= 0) {
-      return num
+      return num;
     }
-    return 0xffffffff - num * -1 + 1
+    return 0xffffffff - num * -1 + 1;
   }
 
   calculate(input: string): number {
-    return this.forString(input)
+    return this.forString(input);
   }
 
   forString(input: string): number {
-    const bytes = this.#strToBytes(input)
-    return this.forBytes(bytes)
+    const bytes = this.#strToBytes(input);
+    return this.forBytes(bytes);
   }
 
   forBytes(bytes: Uint8Array, accumulator?: number): number {
-    const crc = this.#calculateBytes(bytes, accumulator)
-    return this.#crcToUint(crc)
+    const crc = this.#calculateBytes(bytes, accumulator);
+    return this.#crcToUint(crc);
   }
 }

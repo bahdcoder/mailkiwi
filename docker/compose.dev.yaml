@@ -1,14 +1,14 @@
-version: "3.8"
+name: kibamail
 
 services:
-  mailkiwi:
-    env_file:
-      - .env.dev
-
   mysql:
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: database
+      MYSQL_DATABASE: kibamail
+
+  clickhouse:
+    environment:
+      CLICKHOUSE_DB: kibamail
 
 volumes:
   mysql_data:

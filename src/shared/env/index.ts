@@ -61,7 +61,10 @@ const parsed = safeParse(envValidationSchema, process.env);
 
 if (!parsed.success) {
   console.dir({
-    "🟡 ENVIRONMENT_VARIABLES_VALIDATION_FAILED": parsed.issues,
+    "🟡 ENVIRONMENT_VARIABLES_VALIDATION_FAILED": parsed.issues.map((issue) => [
+      issue?.path?.[0]?.key,
+      issue?.message,
+    ]),
   });
 }
 
@@ -71,7 +74,7 @@ env.isTest = env.NODE_ENV === "test";
 env.isProd = env.NODE_ENV === "production";
 env.isDev = env.NODE_ENV === "development";
 
-const SHORT_NAME = "mailkiwi";
+const SHORT_NAME = "kibamail";
 
 export const config = {
   ...env,
