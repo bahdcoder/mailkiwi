@@ -9,7 +9,7 @@ import {
   contactAutomationSteps,
   contacts,
 } from '@/database/schema/schema.ts'
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.ts'
 import { Job } from 'bullmq'
 import { cuid } from '@/shared/utils/cuid/cuid.ts'
@@ -24,6 +24,7 @@ describe('Run automation job', () => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
+    const redis = makeRedis()
 
     const { id: automationId } = await seedAutomation({
       audienceId: audience.id,
@@ -77,6 +78,7 @@ describe('Run automation job', () => {
 
     await new RunAutomationStepJob().handle({
       database,
+      redis,
       payload: { automationStepId: automationStepSendEmail?.id ?? '' },
     })
 

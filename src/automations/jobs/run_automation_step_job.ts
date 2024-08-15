@@ -2,16 +2,13 @@ import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
 import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
 import { AutomationsQueue } from '@/shared/queue/queue.js'
 import { Paginator } from '@/shared/utils/pagination/paginator.ts'
-import { GetMailerAction } from '@/teams/actions/mailers/get_mailer_action.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
 import {
   automationSteps,
   contactAutomationSteps,
   contacts,
 } from '@/database/schema/schema.ts'
-import { Contact } from '@/database/schema/types.ts'
-import { container } from '@/utils/typi.js'
-import { and, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm'
+import type { Contact } from '@/database/schema/types.ts'
+import { and, eq, isNotNull, sql } from 'drizzle-orm'
 import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.ts'
 
 export interface RunAutomationStepJobPayload {

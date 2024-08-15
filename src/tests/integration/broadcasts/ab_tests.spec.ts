@@ -1,33 +1,15 @@
-import { MailerIdentityRepository } from '@/teams/repositories/mailer_identity_repository.js'
-import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
 import { makeDatabase } from '@/shared/container/index.js'
-import {
-  abTestVariants,
-  broadcasts,
-  mailers,
-} from '@/database/schema/schema.js'
-import {
-  createBroadcastForUser,
-  createMailerForTeam,
-  createUser,
-} from '@/tests/mocks/auth/users.js'
+import { abTestVariants, broadcasts } from '@/database/schema/schema.js'
+import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
 import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
-import { container } from '@/utils/typi.js'
-import { GetAccountSendingEnabledCommand, SESClient } from '@aws-sdk/client-ses'
-import { SNSClient } from '@aws-sdk/client-sns'
 import { faker } from '@faker-js/faker'
-import { Secret } from '@poppinss/utils'
-import { mockClient } from 'aws-sdk-client-mock'
 import { asc, eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
 } from '@/tests/mocks/audiences/email_content.ts'
-
-const SESMock = mockClient(SESClient)
-const SNSMock = mockClient(SNSClient)
 
 describe('Update broadcasts', () => {
   test('can update a broadcast with ab test variants', async ({ expect }) => {

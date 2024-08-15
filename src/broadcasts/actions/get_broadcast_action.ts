@@ -12,7 +12,6 @@ export class GetBroadcastAction {
   async handle(broadcast: Broadcast) {
     return {
       ...broadcast,
-      summary: await this.broadcastRepository.summary(broadcast.id),
     }
   }
 }

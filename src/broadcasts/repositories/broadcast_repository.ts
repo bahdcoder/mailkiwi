@@ -2,7 +2,7 @@ import type { CreateBroadcastDto } from '@/broadcasts/dto/create_broadcast_dto.j
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
 import { makeDatabase } from '@/shared/container/index.js'
 import type { DrizzleClient } from '@/database/client.js'
-import { broadcasts, sends } from '@/database/schema/schema.js'
+import { broadcasts } from '@/database/schema/schema.js'
 import type {
   BroadcastWithEmailContent,
   UpdateSetBroadcastInput,
@@ -19,30 +19,6 @@ export class BroadcastRepository extends BaseRepository {
     await this.database.insert(broadcasts).values({ ...data, id, teamId })
 
     return { id }
-  }
-
-  async summary(
-    broadcastId: string,
-  ): Promise<{ totalSent: number; totalFailed: number }> {
-    const query: any = await this.database.execute(sql`
-      SELECT
-      COUNT(
-        CASE
-          WHEN status = 'SENT' THEN 1
-        END
-      ) AS totalSent,
-      COUNT(
-        CASE 
-          WHEN status = 'FAILED' THEN 1
-        END
-      ) AS totalFailed
-    FROM
-      ${sends}
-    WHERE
-      broadcastId = ${broadcastId};
-  `)
-
-    return query?.[0]?.[0]
   }
 
   async update(

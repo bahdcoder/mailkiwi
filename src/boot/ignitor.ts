@@ -9,8 +9,6 @@ import { AuthController } from '@/auth/controllers/auth_controller.ts'
 import { UserController } from '@/auth/controllers/user_controller.js'
 import { AutomationController } from '@/automations/controllers/automation_controller.js'
 import { BroadcastController } from '@/broadcasts/controllers/broadcast_controller.ts'
-import { MailerController } from '@/teams/controllers/mailer_controller.js'
-import { MailerIdentityController } from '@/teams/controllers/mailer_identity_controller.ts'
 import { TeamController } from '@/teams/controllers/team_controller.ts'
 import { MailerWebhooksContorller } from '@/webhooks/controllers/mailer_webhooks_controller.ts'
 import { RootController } from '@/views/controllers/root_controller.js'
@@ -32,6 +30,8 @@ import {
 import { Hono, type HonoInstance } from '@/server/hono.js'
 import { container } from '@/utils/typi.js'
 import { SegmentController } from '@/audiences/controllers/segment_controller.ts'
+import type { Redis } from 'ioredis'
+import { createRedisDatabaseInstance } from '@/redis/redis_client.ts'
 
 export class Ignitor {
   protected env: EnvVariables
@@ -39,6 +39,7 @@ export class Ignitor {
   protected app: HonoInstance
   protected database: DrizzleClient
   protected mailer: MailerDriver
+  protected redis: Redis
 
   boot() {
     this.env = env
@@ -84,9 +85,13 @@ export class Ignitor {
     if (this.database) return this
 
     const connection = await createDatabaseClient(this.env.DATABASE_URL)
+    const redisConnection = createRedisDatabaseInstance(this.env.REDIS_URL)
 
     this.database = createDrizzleDatabase(connection)
 
+    this.redis = redisConnection
+
+    container.registerInstance(ContainerKey.redis, this.redis)
     container.registerInstance(ContainerKey.database, this.database)
     container.registerInstance(ContainerKey.databaseConnection, connection)
 
@@ -104,10 +109,8 @@ export class Ignitor {
     container.resolve(AuthController)
     container.resolve(UserController)
     container.resolve(ContactController)
-    container.resolve(MailerController)
     container.resolve(TeamController)
     container.resolve(MailerWebhooksContorller)
-    container.resolve(MailerIdentityController)
     container.resolve(RootController)
   }
 

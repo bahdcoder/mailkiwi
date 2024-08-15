@@ -66,55 +66,6 @@ export const teams = mysqlTable('teams', {
   broadcastEditor: mysqlEnum('broadcastEditor', ['DEFAULT', 'MARKDOWN']),
 })
 
-export const mailers = mysqlTable('mailers', {
-  id,
-  name: varchar('name', { length: 50 }).notNull(),
-  configuration: varchar('configuration', { length: 512 }).notNull(),
-  default: boolean('default'),
-  provider: mysqlEnum('provider', ['AWS_SES', 'POSTMARK', 'MAILGUN']).notNull(),
-  status: mysqlEnum('status', [
-    'READY',
-    'PENDING',
-    'INSTALLING',
-    'CREATING_IDENTITIES',
-    'SENDING_TEST_EMAIL',
-    'DISABLED',
-    'ACCOUNT_SENDING_NOT_ENABLED',
-    'ACCESS_KEYS_LOST_PROVIDER_ACCESS',
-  ])
-    .default('PENDING')
-    .notNull(),
-  teamId: varchar('teamId', { length: 512 })
-    .references(() => teams.id)
-    .unique()
-    .notNull(),
-  sendingEnabled: boolean('sendingEnabled').default(false).notNull(),
-  inSandboxMode: boolean('inSandboxMode').default(true).notNull(),
-  max24HourSend: int('max24HourSend'),
-  maxSendRate: int('maxSendRate'),
-  sentLast24Hours: int('sentLast24Hours'),
-  testEmailSentAt: timestamp('testEmailSentAt'),
-  installationCompletedAt: timestamp('installationCompletedAt'),
-})
-
-export const mailerIdentities = mysqlTable('mailerIdentities', {
-  id,
-  mailerId: varchar('mailerId', { length: 32 }).references(() => mailers.id),
-  value: varchar('value', { length: 50 }).notNull(),
-  type: mysqlEnum('type', ['EMAIL', 'DOMAIN']).notNull(),
-  status: mysqlEnum('status', [
-    'PENDING',
-    'APPROVED',
-    'DENIED',
-    'FAILED',
-    'TEMPORARILY_FAILED',
-  ])
-    .default('PENDING')
-    .notNull(),
-  configuration: json('configuration'),
-  confirmedApprovalAt: timestamp('confirmedApprovalAt'),
-})
-
 export const webhooks = mysqlTable('webhooks', {
   id,
   name: varchar('name', { length: 50 }).notNull(),
@@ -237,36 +188,6 @@ export const emails = mysqlTable('emails', {
     .notNull(),
   emailContentId: varchar('emailContentId', { length: 32 }).references(
     () => emailContents.id,
-    { onDelete: 'cascade' },
-  ),
-})
-
-export const sends = mysqlTable('sends', {
-  id,
-  type: mysqlEnum('type', [
-    'AUTOMATION',
-    'TRANSACTIONAL',
-    'BROADCAST',
-  ]).notNull(),
-  status: mysqlEnum('status', ['PENDING', 'SENT', 'FAILED']).notNull(),
-  email: varchar('email', { length: 80 }),
-  contactId: varchar('contactId', { length: 32 })
-    .references(() => contacts.id, { onDelete: 'cascade' })
-    .notNull(),
-  broadcastId: varchar('broadcastId', { length: 32 }).references(
-    () => broadcasts.id,
-    { onDelete: 'cascade' },
-  ),
-  variantId: varchar('variantId', { length: 32 }).references(
-    () => abTestVariants.id,
-    { onDelete: 'cascade' },
-  ),
-  sentAt: timestamp('sentAt'),
-  timeoutAt: timestamp('timeoutAt'),
-  messageId: varchar('messageId', { length: 255 }),
-  logs: json('logs'),
-  automationStepId: varchar('automationStepId', { length: 32 }).references(
-    () => automationSteps.id,
     { onDelete: 'cascade' },
   ),
 })
@@ -487,7 +408,6 @@ export const teamRelations = relations(teams, ({ one, many }) => ({
   webhooks: many(webhooks),
   accessTokens: many(accessTokens),
   audiences: many(audiences),
-  mailer: one(mailers, { fields: [teams.id], references: [mailers.teamId] }),
 }))
 
 export const accessTokenRelations = relations(accessTokens, ({ one }) => ({
@@ -505,7 +425,6 @@ export const broadcastRelations = relations(broadcasts, ({ one, many }) => ({
     references: [emailContents.id],
   }),
   team: one(teams, { fields: [broadcasts.teamId], references: [teams.id] }),
-  sends: many(sends, { relationName: 'broadcastSends' }),
   segment: one(segments, {
     fields: [broadcasts.segmentId],
     references: [segments.id],
@@ -535,41 +454,6 @@ export const emailRelations = relations(emails, ({ one }) => ({
     references: [emailContents.id],
   }),
 }))
-
-export const sendsRelations = relations(sends, ({ one, many }) => ({
-  contact: one(contacts, {
-    fields: [sends.contactId],
-    references: [contacts.id],
-  }),
-  broadcast: one(broadcasts, {
-    fields: [sends.broadcastId],
-    references: [broadcasts.id],
-    relationName: 'broadcastSends',
-  }),
-  automationStep: one(automationSteps, {
-    fields: [sends.automationStepId],
-    references: [automationSteps.id],
-  }),
-  abTestVariant: one(abTestVariants, {
-    fields: [sends.variantId],
-    references: [abTestVariants.id],
-  }),
-}))
-
-export const mailerRelations = relations(mailers, ({ one, many }) => ({
-  team: one(teams, { fields: [mailers.teamId], references: [teams.id] }),
-  identities: many(mailerIdentities),
-}))
-
-export const MailerIdentityRelations = relations(
-  mailerIdentities,
-  ({ one }) => ({
-    mailer: one(mailers, {
-      fields: [mailerIdentities.mailerId],
-      references: [mailers.id],
-    }),
-  }),
-)
 
 export const WebhookRelations = relations(webhooks, ({ one }) => ({
   team: one(teams, { fields: [webhooks.teamId], references: [teams.id] }),

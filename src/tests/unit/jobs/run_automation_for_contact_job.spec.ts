@@ -5,7 +5,7 @@ import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.ts'
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
 import { faker } from '@faker-js/faker'
 import { contacts } from '@/database/schema/schema.ts'
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.ts'
 import { Job } from 'bullmq'
 import { cuid } from '@/shared/utils/cuid/cuid.ts'
@@ -42,6 +42,7 @@ describe('Run automation for contact job', () => {
 
     await new RunAutomationForContactJob().handle({
       database,
+      redis: makeRedis(),
       payload: { automationId: automationId, contactId: contactId },
     })
 
@@ -96,6 +97,7 @@ describe('Run automation for contact job', () => {
 
     const result = await new RunAutomationForContactJob().handle({
       database,
+      redis: makeRedis(),
       payload: { automationId: automationId, contactId: contactId },
     })
 
@@ -136,6 +138,7 @@ describe('Run automation for contact job', () => {
 
     const result = await new RunAutomationForContactJob().handle({
       database,
+      redis: makeRedis(),
       payload: { automationId: automationId, contactId: contactId },
     })
 

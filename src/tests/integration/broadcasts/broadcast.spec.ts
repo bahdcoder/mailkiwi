@@ -1,25 +1,11 @@
-import { MailerIdentityRepository } from '@/teams/repositories/mailer_identity_repository.js'
-import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
 import { makeDatabase } from '@/shared/container/index.js'
-import { broadcasts, mailers } from '@/database/schema/schema.js'
-import {
-  createBroadcastForUser,
-  createMailerForTeam,
-  createUser,
-} from '@/tests/mocks/auth/users.js'
+import { broadcasts } from '@/database/schema/schema.js'
+import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
 import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
-import { container } from '@/utils/typi.js'
-import { GetAccountSendingEnabledCommand, SESClient } from '@aws-sdk/client-ses'
-import { SNSClient } from '@aws-sdk/client-sns'
 import { faker } from '@faker-js/faker'
-import { Secret } from '@poppinss/utils'
-import { mockClient } from 'aws-sdk-client-mock'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
-
-const SESMock = mockClient(SESClient)
-const SNSMock = mockClient(SNSClient)
 
 describe('Create broadcasts', () => {
   test('can create a broadcast for an audience', async ({ expect }) => {
@@ -342,13 +328,7 @@ describe('Delete broadcasts', () => {
 describe('Send Broadcast', () => {
   test('can queue a broadcast for sending', async ({ expect }) => {
     await refreshDatabase()
-    const { user, audience, team } = await createUser()
-
-    await createMailerForTeam(team)
-
-    SESMock.on(GetAccountSendingEnabledCommand).resolves({
-      Enabled: true,
-    })
+    const { user, audience } = await createUser()
 
     const broadcastId = await createBroadcastForUser(user, audience.id, {
       updateWithValidContent: true,
@@ -387,50 +367,6 @@ describe('Send Broadcast', () => {
       ],
     })
     // TODO: Check redis for queued job.
-  })
-
-  test('cannot queue a broadcast if it is not in draft status', async ({
-    expect,
-  }) => {
-    await refreshDatabase()
-    const { user, audience, team } = await createUser()
-
-    const database = makeDatabase()
-
-    await createMailerForTeam(team)
-
-    SESMock.on(GetAccountSendingEnabledCommand).resolves({
-      Enabled: false,
-    })
-
-    // Could not verify AWS access. Please make sure your provider configuration is valid.
-
-    const broadcastId = await createBroadcastForUser(user, audience.id, {
-      updateWithValidContent: true,
-    })
-
-    const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/broadcasts/${broadcastId}/send`,
-    })
-
-    expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
-      message: 'Validation failed.',
-      errors: [
-        {
-          message:
-            'Could not verify AWS access. Please make sure your provider configuration is valid.',
-        },
-      ],
-    })
-    // TODO: Check redis for queued job.
-
-    const mailer = await database.query.mailers.findFirst({
-      where: eq(mailers.teamId, team.id),
-    })
-
-    expect(mailer?.status).toEqual('ACCOUNT_SENDING_NOT_ENABLED')
   })
 
   test('cannot queue a broadcast if the aws account has sending disabled', async ({
@@ -474,12 +410,6 @@ describe('Send Broadcast', () => {
   }) => {
     await refreshDatabase()
     const { user, audience, team } = await createUser()
-
-    await createMailerForTeam(team)
-
-    SESMock.on(GetAccountSendingEnabledCommand).resolves({
-      Enabled: true,
-    })
 
     const broadcastId = await createBroadcastForUser(user, audience.id, {
       updateWithValidContent: true,

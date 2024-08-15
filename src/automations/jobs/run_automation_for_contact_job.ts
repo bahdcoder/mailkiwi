@@ -1,16 +1,12 @@
 import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
 import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
 import { AutomationsQueue } from '@/shared/queue/queue.js'
-import { GetMailerAction } from '@/teams/actions/mailers/get_mailer_action.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
 import {
-  automations,
   automationSteps,
   contactAutomationSteps,
   contacts,
-  TRIGGER_CONFIGURATION,
+  type TRIGGER_CONFIGURATION,
 } from '@/database/schema/schema.ts'
-import { container } from '@/utils/typi.js'
 import { and, eq } from 'drizzle-orm'
 import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.ts'
 import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.ts'

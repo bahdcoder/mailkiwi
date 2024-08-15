@@ -2,11 +2,10 @@ import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
 import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.js'
 import { MailhogDriver } from '@/shared/mailers/drivers/mailhog_mailer_driver.js'
 import type { BaseJob } from '@/shared/queue/abstract_job.js'
-import { VerifyMailerIdentityJob } from '@/teams/jobs/verify_mailer_identity_job.js'
 import { SendTransactionalEmailJob } from '@/transactional/jobs/send_transactional_email_job.js'
 import { Ignitor } from '@/boot/ignitor.js'
 import { type Job, Worker } from 'bullmq'
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<any, any, string>[] = []
@@ -23,7 +22,6 @@ export class WorkerIgnitor extends Ignitor {
 
   registerJobs() {
     this.registerJob(SendBroadcastJob.id, SendBroadcastJob)
-    this.registerJob(VerifyMailerIdentityJob.id, VerifyMailerIdentityJob)
     this.registerJob(SendBroadcastToContact.id, SendBroadcastToContact)
     this.registerJob(SendTransactionalEmailJob.id, SendTransactionalEmailJob)
   }
@@ -45,6 +43,7 @@ export class WorkerIgnitor extends Ignitor {
 
     await new Executor().handle({
       payload: job.data,
+      redis: makeRedis(),
       database: makeDatabase(),
     })
   }

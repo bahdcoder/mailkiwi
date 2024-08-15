@@ -8,8 +8,6 @@ import type {
   audiences,
   broadcasts,
   contacts,
-  mailerIdentities,
-  mailers,
   settings,
   teamMemberships,
   teams,
@@ -30,18 +28,8 @@ export type BroadcastWithoutContent = Omit<
   'contentHtml' | 'contentText' | 'contentJson'
 >
 export type AccessToken = InferSelectModel<typeof accessTokens>
-export type Mailer = InferSelectModel<typeof mailers>
 export type Team = InferSelectModel<typeof teams>
 export type TeamMembership = InferSelectModel<typeof teamMemberships>
-export type MailerIdentity = InferSelectModel<typeof mailerIdentities>
-
-export type FindMailerByIdArgs = Parameters<
-  ReturnType<typeof makeDatabase>['query']['mailers']['findFirst']
->[0]
-
-export type FindManyMailerIdentityArgs = Parameters<
-  ReturnType<typeof makeDatabase>['query']['mailerIdentities']['findMany']
->[0]
 
 export type FindUserByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>['query']['users']['findFirst']
@@ -51,11 +39,6 @@ export type FindAutomationByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>['query']['automations']['findFirst']
 >[0]
 
-export type UpdateSetMailerIdentityInput = SQLiteUpdateSetSource<
-  typeof mailerIdentities
->
-
-export type UpdateSetMailerInput = SQLiteUpdateSetSource<typeof mailers>
 export type UpdateSetContactInput = SQLiteUpdateSetSource<typeof contacts>
 export type UpdateSetBroadcastInput = Omit<
   SQLiteUpdateSetSource<typeof broadcasts>,

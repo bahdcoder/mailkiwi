@@ -32,11 +32,6 @@ export class TeamRepository extends BaseRepository {
       where: eq(teams.userId, userId),
       with: {
         members: true,
-        mailer: {
-          with: {
-            identities: true,
-          },
-        },
       },
     })
   }
@@ -46,11 +41,6 @@ export class TeamRepository extends BaseRepository {
       where: eq(teams.id, teamId),
       with: {
         members: true,
-        mailer: {
-          with: {
-            identities: true,
-          },
-        },
       },
     })
 

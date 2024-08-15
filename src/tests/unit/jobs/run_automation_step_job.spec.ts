@@ -9,7 +9,7 @@ import {
   contactAutomationSteps,
   contacts,
 } from '@/database/schema/schema.ts'
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.ts'
 import { Job } from 'bullmq'
 import { cuid } from '@/shared/utils/cuid/cuid.ts'
@@ -77,6 +77,7 @@ describe('Run automation step job', () => {
 
     await new RunAutomationStepJob().handle({
       database,
+      redis: makeRedis(),
       payload: { automationStepId: automationStepSendEmail?.id ?? '' },
     })
 

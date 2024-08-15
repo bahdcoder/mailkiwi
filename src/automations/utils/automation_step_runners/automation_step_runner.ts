@@ -27,7 +27,7 @@ export class AutomationStepRunner {
     return this
   }
 
-  async run({ database }: AutomationStepRunnerContext) {
+  async run({ database, redis }: AutomationStepRunnerContext) {
     if (!this.contact) {
       throw E_OPERATION_FAILED('Contact not set for automation step runner.')
     }
@@ -40,7 +40,7 @@ export class AutomationStepRunner {
       )
     }
 
-    await new Runner(this.automationStep, this.contact).run({ database })
+    await new Runner(this.automationStep, this.contact).run({ database, redis })
 
     await database.insert(contactAutomationSteps).values({
       contactId: this.contact.id,

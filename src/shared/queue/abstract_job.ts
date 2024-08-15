@@ -1,5 +1,6 @@
 import type { DrizzleClient } from '@/database/client.js'
 import type { AVAILABLE_QUEUE_TYPE } from './config.js'
+import { Redis } from 'ioredis'
 
 export interface JobHandlerResponse {
   success: boolean
@@ -85,5 +86,6 @@ export type AbstractJobType<T extends object = object> = {
 
 export interface JobContext<T> {
   database: DrizzleClient
+  redis: Redis
   payload: T
 }

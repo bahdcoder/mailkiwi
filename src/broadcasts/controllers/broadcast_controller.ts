@@ -93,7 +93,6 @@ export class BroadcastController extends BaseController {
       ctx,
       broadcast,
     )
-    const broadcastId = ctx.req.param('broadcastId')
 
     const data = await this.validate(ctx, UpdateBroadcastDto)
 

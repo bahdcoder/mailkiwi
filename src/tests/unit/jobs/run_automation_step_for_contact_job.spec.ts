@@ -9,7 +9,7 @@ import {
   contacts,
   tagsOnContacts,
 } from '@/database/schema/schema.ts'
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.ts'
 import { Job } from 'bullmq'
 import { cuid } from '@/shared/utils/cuid/cuid.ts'
@@ -27,16 +27,11 @@ describe('Run automation step for contact job', () => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
+    const redis = makeRedis()
 
     const { receiveWelcomeEmailautomationStepId } = await seedAutomation({
       audienceId: audience.id,
     })
-
-    const automationsQueueMock = vi
-      .spyOn(queues.AutomationsQueue, 'add')
-      .mockImplementation(
-        async () => new Job(queues.AutomationsQueue, SendBroadcastJob.id, {}),
-      )
 
     const messageId = cuid()
 
@@ -62,6 +57,7 @@ describe('Run automation step for contact job', () => {
         automationStepId: receiveWelcomeEmailautomationStepId as string,
         contactId: contactId,
       },
+      redis,
     })
 
     expect(fakeSendFn.mock.calls).toHaveLength(1)
@@ -77,10 +73,15 @@ describe('Run automation step for contact job', () => {
       ),
     })
 
-    const send = await database.query.sends.findFirst()
-
     expect(completed).toBeDefined()
-    expect(send?.messageId).toEqual(messageId)
+
+    const send = await redis.get(messageId)
+
+    expect(send).toBeDefined()
+
+    expect(send).toEqual(
+      `AUTOMATION_STEP:${completed?.automationStepId}:${contactId}`,
+    )
   })
 
   test('automation step action: attach tags for a contact', async ({
@@ -90,6 +91,7 @@ describe('Run automation step for contact job', () => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
+    const redis = makeRedis()
 
     const { attachesTagsAutomationStepId, attachTagIds } = await seedAutomation(
       {
@@ -115,6 +117,7 @@ describe('Run automation step for contact job', () => {
 
     await new RunAutomationStepForContactJob().handle({
       database,
+      redis,
       payload: {
         automationStepId: attachesTagsAutomationStepId as string,
         contactId: contactId,
@@ -150,6 +153,7 @@ describe('Run automation step for contact job', () => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
+    const redis = makeRedis()
 
     const { detachesTagsAutomationStepId, detachTagIds = [] } =
       await seedAutomation({
@@ -168,6 +172,7 @@ describe('Run automation step for contact job', () => {
 
     await new RunAutomationStepForContactJob().handle({
       database,
+      redis,
       payload: {
         automationStepId: detachesTagsAutomationStepId as string,
         contactId: contactId,

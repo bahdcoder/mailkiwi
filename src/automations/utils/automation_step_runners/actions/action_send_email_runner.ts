@@ -11,7 +11,6 @@ import type {
 import {
   type ACTION_SEND_EMAIL_CONFIGURATION,
   emails,
-  sends,
 } from '@/database/schema/schema.ts'
 import { eq } from 'drizzle-orm'
 import { Mailer } from '@/shared/mailers/mailer.ts'
@@ -24,7 +23,7 @@ export class SendEmailAutomationStepRunner
     private contact: Contact,
   ) {}
 
-  async run({ database }: AutomationStepRunnerContext) {
+  async run({ database, redis }: AutomationStepRunnerContext) {
     const configuration = this.automationStep
       .configuration as ACTION_SEND_EMAIL_CONFIGURATION
 
@@ -43,7 +42,7 @@ export class SendEmailAutomationStepRunner
     const { fromEmail, fromName, contentHtml, contentText, subject } =
       email.emailContent as ValidatedEmailContent
 
-    const [{ messageId }, error] = await Mailer.from(fromEmail, fromName)
+    const [response, error] = await Mailer.from(fromEmail, fromName)
       .to(
         this.contact.email,
         `${this.contact.firstName} ${this.contact.lastName}`,
@@ -54,13 +53,9 @@ export class SendEmailAutomationStepRunner
 
     if (error) throw error
 
-    await database.insert(sends).values({
-      type: 'AUTOMATION',
-      messageId,
-      automationStepId: this.automationStep.id,
-      status: 'SENT',
-      contactId: this.contact.id,
-      sentAt: new Date(),
-    })
+    await redis.set(
+      response.messageId,
+      `AUTOMATION_STEP:${this.automationStep.id}:${this.contact.id}`,
+    )
   }
 }

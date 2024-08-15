@@ -8,7 +8,6 @@ import {
   abTestVariants,
   broadcasts,
   contacts,
-  sends,
 } from '@/database/schema/schema.js'
 import {
   and,
@@ -20,7 +19,6 @@ import {
   type SQLWrapper,
 } from 'drizzle-orm'
 import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.ts'
 import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.ts'
 import { PickAbTestWinnerJob } from './pick_ab_test_winner_job.ts'
 import { hoursToSeconds } from '@/utils/dates.ts'
@@ -29,6 +27,8 @@ import type {
   BroadcastWithSegmentAndAbTestVariants,
 } from '@/database/schema/types.ts'
 import type { DrizzleClient } from '@/database/client.js'
+import { ContactsConcern } from '../concerns/broadcast_contacts_concern.ts'
+import { container } from '@/utils/typi.ts'
 
 export interface SendAbTestBroadcastJobPayload {
   broadcastId: string
@@ -46,26 +46,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
   private database: DrizzleClient
   private broadcast: BroadcastWithSegmentAndAbTestVariants
 
-  private leftJoinSends = (broadcastId: string) =>
-    sql`${contacts.id} = ${sends.contactId} AND ${sends.broadcastId} = ${broadcastId}`
-
-  private filterContactsQuery(): SQL | undefined {
-    const segmentQueryConditions: SQLWrapper[] = []
-
-    if (this.broadcast.segment) {
-      segmentQueryConditions.push(
-        new SegmentBuilder(
-          this.broadcast.segment.conditions as CreateSegmentDto['conditions'],
-        ).build(),
-      )
-    }
-
-    return and(
-      eq(contacts.audienceId, this.broadcast.audience.id),
-      ...segmentQueryConditions,
-      sql`${sends.id} IS NULL`,
-    )
-  }
+  private contactsConcern = container.make(ContactsConcern)
 
   private calculateVariantSizesAndOffsets(totalContacts: number) {
     let currentOffset = 0
@@ -100,7 +81,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
       const amountLeft = variant.endOffset - offSet
       const limit = Math.min(this.batchSize, amountLeft)
 
-      const contactIds = await this.getContactIds(offSet, limit)
+      const contactIds = await this.contactsConcern.getContactIds(offSet, limit)
 
       await BroadcastsQueue.addBulk(
         contactIds.map((contact) => ({
@@ -117,17 +98,6 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     }
   }
 
-  private async getContactIds(offSet: number, limit: number) {
-    return this.database
-      .select({ id: contacts.id })
-      .from(contacts)
-      .leftJoin(sends, this.leftJoinSends(this.broadcast.id))
-      .where(this.filterContactsQuery())
-      .orderBy(asc(contacts.id))
-      .limit(limit)
-      .offset(offSet)
-  }
-
   async handle({
     database,
     payload,
@@ -135,13 +105,14 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     this.database = database
 
     this.broadcast = await this.getBroadcast(payload.broadcastId)
+    this.contactsConcern.broadcast = this.broadcast
+    this.contactsConcern.database = database
 
     if (!this.broadcast || !this.broadcast.audience || !this.broadcast.team) {
       return this.fail('Broadcast or audience or team not properly provided.')
     }
 
     const totalContacts = await this.getTotalContacts()
-    const batchSize = 75
 
     const variantsWithOffsetsAndLimits =
       this.calculateVariantSizesAndOffsets(totalContacts)
@@ -172,7 +143,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     const broadcast = await this.database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, broadcastId),
       with: {
-        team: { with: { mailer: true } },
+        team: true,
         abTestVariants: { orderBy: asc(abTestVariants.weight) },
         audience: true,
         segment: true,
@@ -186,8 +157,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     const [{ count: totalContacts }] = await this.database
       .select({ count: count() })
       .from(contacts)
-      .leftJoin(sends, this.leftJoinSends(this.broadcast.id))
-      .where(this.filterContactsQuery())
+      .where(this.contactsConcern.filterContactsQuery())
       .orderBy(asc(contacts.id))
 
     return totalContacts
@@ -207,7 +177,10 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     for (let batch = 0; batch < totalBatchesForFinalSample; batch++) {
       const offSet = startingOffset + batch * this.batchSize
 
-      const contactIds = await this.getContactIds(offSet, this.batchSize)
+      const contactIds = await this.contactsConcern.getContactIds(
+        offSet,
+        this.batchSize,
+      )
 
       await BroadcastsQueue.addBulk(
         contactIds.map((contact) => ({

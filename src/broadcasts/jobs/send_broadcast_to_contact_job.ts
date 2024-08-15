@@ -1,20 +1,12 @@
 import { Mailer } from '@/shared/mailers/mailer.js'
 import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
 import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
-import type { DrizzleClient } from '@/database/client.js'
 import {
   broadcasts,
   contacts as contactsTable,
-  sends,
 } from '@/database/schema/schema.js'
-import type {
-  Broadcast,
-  BroadcastWithEmailContent,
-  Contact,
-} from '@/database/schema/types.js'
-import { addSecondsToDate } from '@/utils/dates.js'
-import { and, eq } from 'drizzle-orm'
+import type { BroadcastWithEmailContent } from '@/database/schema/types.js'
+import { eq } from 'drizzle-orm'
 
 export interface SendBroadcastToContactPayload {
   broadcastId: string
@@ -33,144 +25,48 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
   async handle({
     database,
     payload,
+    redis,
   }: JobContext<SendBroadcastToContactPayload>) {
-    const contact = await database.query.contacts.findFirst({
-      where: eq(contactsTable.id, payload.contactId),
-    })
-
-    const broadcast = await database.query.broadcasts.findFirst({
-      where: eq(broadcasts.id, payload.broadcastId),
-      with: {
-        emailContent: true,
-      },
-    })
+    const [contact, broadcast] = await Promise.all([
+      database.query.contacts.findFirst({
+        where: eq(contactsTable.id, payload.contactId),
+      }),
+      database.query.broadcasts.findFirst({
+        where: eq(broadcasts.id, payload.broadcastId),
+        with: {
+          emailContent: true,
+        },
+      }),
+    ])
 
     if (!broadcast || !contact) {
       return this.fail('Broadcast or contact not found.')
     }
 
-    try {
-      await this.sendEmailToContact(
-        contact,
-        broadcast as BroadcastWithEmailContent,
-        database,
-      )
-    } catch (error) {
-      await this.markAsFailedToSendToContact(
-        contact,
-        broadcast,
-        database,
-        error as Error,
-      )
-    }
-
-    return { success: true, output: 'Success' }
-  }
-
-  private async sendEmailToContact(
-    contact: Contact,
-    broadcast: BroadcastWithEmailContent,
-    database: DrizzleClient,
-  ) {
-    d({ 'Sending email to:': contact.email })
-
-    await this.createSendForContact(contact, broadcast, database)
+    const broadcastWithContent = broadcast as BroadcastWithEmailContent
 
     const [response, error] = await Mailer.from(
-      broadcast.emailContent.fromEmail,
-      `${broadcast.emailContent.fromName}`,
+      broadcastWithContent.emailContent.fromEmail,
+      `${broadcastWithContent.emailContent.fromName}`,
     )
-      .subject(broadcast.emailContent.subject)
+      .subject(broadcastWithContent.emailContent.subject)
       .to(contact.email, `${contact.firstName} ${contact.lastName}`)
       .content(
-        broadcast.emailContent.contentHtml,
-        broadcast.emailContent.contentText,
+        broadcastWithContent.emailContent.contentHtml,
+        broadcastWithContent.emailContent.contentText,
       )
       .send()
 
     if (error) {
-      d({ [`Failed to send to contact: ${contact.email}`]: error })
-      await this.markAsFailedToSendToContact(
-        contact,
-        broadcast,
-        database,
-        error,
-      )
-
-      return
+      return this.fail(`Failed to send to contact: ${contact.id}`)
     }
 
-    await this.markAsSentToContact(
-      contact,
-      broadcast,
-      database,
+    /* After sending, set a key in redis to store the message id. */
+    await redis.set(
       response.messageId,
+      `BROADCAST:${broadcast.id}:${contact.id}`,
     )
-  }
 
-  async createSendForContact(
-    contact: Contact,
-    broadcast: Broadcast,
-    database: DrizzleClient,
-  ) {
-    const id = cuid()
-
-    await database
-      .insert(sends)
-      .values({
-        id,
-        contactId: contact.id,
-        broadcastId: broadcast.id,
-        status: 'PENDING',
-        type: 'BROADCAST',
-        timeoutAt: addSecondsToDate(new Date(), 25),
-      })
-      .execute()
-
-    return { id }
-  }
-
-  async markAsFailedToSendToContact(
-    contact: Contact,
-    broadcast: Broadcast,
-    database: DrizzleClient,
-    error: Error,
-  ) {
-    await database
-      .update(sends)
-      .set({
-        status: 'FAILED',
-        type: 'BROADCAST',
-        logs: JSON.stringify(error.message),
-      })
-      .where(
-        and(
-          and(
-            eq(sends.contactId, contact.id),
-            eq(sends.broadcastId, broadcast.id),
-          ),
-        ),
-      )
-  }
-
-  async markAsSentToContact(
-    contact: Contact,
-    broadcast: Broadcast,
-    database: DrizzleClient,
-    messageId: string,
-  ) {
-    await database
-      .update(sends)
-      .set({
-        status: 'SENT',
-        messageId,
-        sentAt: new Date(),
-      })
-      .where(
-        and(
-          eq(sends.contactId, contact.id),
-          eq(sends.broadcastId, broadcast.id),
-        ),
-      )
+    return { success: true, output: 'Success.' }
   }
 }

@@ -3,10 +3,12 @@ import { container } from '@/utils/typi.js'
 import type { Connection } from 'mysql2'
 import type { DrizzleClient } from '@/database/client.js'
 import type { HonoInstance } from '@/server/hono.js'
+import { Redis } from 'ioredis'
 
 export enum ContainerKey {
   app = 'app',
   env = 'env',
+  redis = 'redis',
   config = 'config',
   database = 'database',
   viteManifestFile = 'viteManifestFile',
@@ -22,6 +24,9 @@ export const makeConfig = () =>
 
 export const makeDatabase = (): DrizzleClient =>
   container.singleton<DrizzleClient>(ContainerKey.database)
+
+export const makeRedis = (): Redis =>
+  container.singleton<Redis>(ContainerKey.redis)
 
 export const makeDatabaseConnection = () =>
   container.singleton<Connection>(ContainerKey.databaseConnection)

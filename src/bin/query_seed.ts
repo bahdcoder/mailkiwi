@@ -11,7 +11,6 @@ import {
   audiences,
   contacts as ContactsTable,
   broadcasts,
-  sends,
   abTestVariants,
   emailContents,
 } from '@/database/schema/schema.js'
@@ -241,8 +240,6 @@ class SendSeed extends BaseSeed {
           Math.random() < 0.1 ? this.generateClickedLinks(linkCount) : null,
       }
     })
-
-    await this.batchInsert(sends, sendData, 'sends')
   }
 
   private generateClickedLinks(linkCount: number): Record<string, number> {

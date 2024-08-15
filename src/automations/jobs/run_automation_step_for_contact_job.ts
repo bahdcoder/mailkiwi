@@ -25,6 +25,7 @@ export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepFor
   async handle({
     database,
     payload,
+    redis,
   }: JobContext<RunAutomationStepForContactJobPayload>) {
     const [automationStep, contact, contactAutomationStep] = await Promise.all([
       database.query.automationSteps.findFirst({
@@ -59,7 +60,7 @@ export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepFor
 
     await new AutomationStepRunner(automationStep)
       .forContact(contact)
-      .run({ database })
+      .run({ database, redis })
 
     // get all automation step executors.
     // find the correct executor for this job.

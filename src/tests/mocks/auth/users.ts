@@ -3,11 +3,9 @@ import { eq } from 'drizzle-orm'
 
 import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
-import { MailerIdentityRepository } from '@/teams/repositories/mailer_identity_repository.js'
-import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
 import { TeamRepository } from '@/teams/repositories/team_repository.js'
 import { makeDatabase } from '@/shared/container/index.js'
-import { mailers, users } from '@/database/schema/schema.js'
+import { users } from '@/database/schema/schema.js'
 import type { Team, User } from '@/database/schema/types.js'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
 import { container } from '@/utils/typi.js'
@@ -66,41 +64,7 @@ export async function createBroadcastForUser(
   return id
 }
 
-export const createMailerForTeam = async (team: Team) => {
-  const database = makeDatabase()
-
-  const { id: mailerId } = await container.make(MailerRepository).create(
-    {
-      name: faker.lorem.words(5),
-      provider: 'AWS_SES',
-      configuration: {
-        accessKey: new Secret(faker.string.uuid()),
-        accessSecret: new Secret(faker.string.uuid()),
-        region: 'us-east-2',
-        domain: 'newsletter.example.com',
-        email: undefined,
-      },
-    },
-    team,
-  )
-
-  await database
-    .update(mailers)
-    .set({ status: 'READY' })
-    .where(eq(mailers.id, mailerId))
-    .execute()
-
-  await container.make(MailerIdentityRepository).create(
-    {
-      value: 'newsletter.example.com',
-      type: 'DOMAIN',
-    },
-    mailerId,
-  )
-}
-
 export const createUser = async ({
-  createMailerWithIdentity,
   createBroadcast,
 }: {
   createMailerWithIdentity?: boolean
@@ -132,10 +96,6 @@ export const createUser = async ({
       teams: true,
     },
   })) as User & { teams: Team[] }
-
-  if (createMailerWithIdentity) {
-    await createMailerForTeam(teamObject as Team)
-  }
 
   let broadcastId: string | undefined = undefined
 

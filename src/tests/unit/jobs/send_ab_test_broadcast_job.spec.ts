@@ -9,7 +9,7 @@ import {
   broadcasts,
   contacts,
 } from '@/database/schema/schema.ts'
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { Job } from 'bullmq'
 import { cuid } from '@/shared/utils/cuid/cuid.ts'
 import { eq } from 'drizzle-orm'
@@ -24,6 +24,7 @@ describe('Send broadcast job', () => {
     await refreshDatabase()
 
     const database = makeDatabase()
+    const redis = makeRedis()
 
     const broadcastQueueMock = vi
       .spyOn(queues.BroadcastsQueue, 'addBulk')
@@ -79,6 +80,7 @@ describe('Send broadcast job', () => {
 
     await new SendAbTestBroadcastJob().handle({
       database,
+      redis,
       payload: { broadcastId },
     })
 

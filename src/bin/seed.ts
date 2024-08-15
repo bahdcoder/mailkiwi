@@ -3,21 +3,16 @@ import { faker } from '@faker-js/faker'
 import { CreateAudienceAction } from '@/audiences/actions/audiences/create_audience_action.js'
 import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
 import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
-import { MailerIdentityRepository } from '@/teams/repositories/mailer_identity_repository.js'
-import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
 import { ContainerKey } from '@/shared/container/index.js'
 import {
   createDatabaseClient,
   createDrizzleDatabase,
 } from '@/database/client.js'
-import { contacts, mailers, teams } from '@/database/schema/schema.js'
-import type { Team } from '@/database/schema/types.js'
+import { contacts, teams } from '@/database/schema/schema.js'
 import { env } from '@/shared/env/index.js'
 import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
 import { container } from '@/utils/typi.js'
-import { Secret } from '@poppinss/utils'
 import { eq } from 'drizzle-orm'
-import type { ConfigurationObjectInput } from '@/teams/dto/mailers/update_mailer_dto.js'
 
 const connection = await createDatabaseClient(env.DATABASE_URL)
 

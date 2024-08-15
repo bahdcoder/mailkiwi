@@ -5,7 +5,7 @@ import { refreshDatabase } from '@/tests/mocks/teams/teams.ts'
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
 import { faker } from '@faker-js/faker'
 import { broadcasts, contacts, segments } from '@/database/schema/schema.ts'
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.ts'
 import { Job } from 'bullmq'
 import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.ts'
@@ -58,7 +58,11 @@ describe('Send broadcast job', () => {
           .map(() => createFakeContact(otherAudience.id)),
       )
 
-    await new SendBroadcastJob().handle({ database, payload: { broadcastId } })
+    await new SendBroadcastJob().handle({
+      database,
+      payload: { broadcastId },
+      redis: makeRedis(),
+    })
 
     const mockCalls = broadcastQueueMock.mock.calls[0][0].sort(
       (callA, callB) => (callA.data.contactId > callB.data.contactId ? 1 : -1),
@@ -74,8 +78,6 @@ describe('Send broadcast job', () => {
         contactId: contactIdsSorted[idx],
         broadcastId,
       })
-      // Expect the delay to be 2.5 seconds after each send. This is due to configured maxSendRate
-      expect(job.opts?.delay).toEqual(idx * 2.5 * 1000)
     }
   })
 
@@ -154,7 +156,11 @@ describe('Send broadcast job', () => {
           .map(() => createFakeContact(otherAudience.id)),
       )
 
-    await new SendBroadcastJob().handle({ database, payload: { broadcastId } })
+    await new SendBroadcastJob().handle({
+      database,
+      payload: { broadcastId },
+      redis: makeRedis(),
+    })
 
     const mockCalls = broadcastQueueMock.mock.calls[0][0]
 
