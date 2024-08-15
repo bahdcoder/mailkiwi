@@ -1,11 +1,11 @@
-import type { MailerConfiguration } from "@/shared/types/mailer.js";
-import { MailerRepository } from "@/teams/repositories/mailer_repository.js";
-import type { Mailer } from "@/database/schema/types.js";
-import { AwsSdk } from "@/ses/sdk.js";
-import { container } from "@/utils/typi.js";
+import type { MailerConfiguration } from '@/shared/types/mailer.js'
+import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
+import type { Mailer } from '@/database/schema/types.js'
+import { AwsSdk } from '@/ses/sdk.js'
+import { container } from '@/utils/typi.js'
 
 export class CheckProviderCredentials {
-  private checkProviderSendingEnabled = false;
+  private checkProviderSendingEnabled = false
 
   constructor(
     private configuration: MailerConfiguration,
@@ -16,9 +16,9 @@ export class CheckProviderCredentials {
   ) {}
 
   checkSendingEnabled() {
-    this.checkProviderSendingEnabled = true;
+    this.checkProviderSendingEnabled = true
 
-    return this;
+    return this
   }
 
   credentialsExist() {
@@ -26,34 +26,34 @@ export class CheckProviderCredentials {
       this.configuration.accessKey &&
       this.configuration.accessSecret &&
       this.configuration.region
-    );
+    )
   }
 
   async execute(updateMailerStatus?: boolean) {
-    if (!this.credentialsExist()) return false;
+    if (!this.credentialsExist()) return false
 
     const sdk = new AwsSdk(
       this.configuration.accessKey,
       this.configuration.accessSecret,
       this.configuration.region,
-    );
+    )
 
-    const credentialsAreValid = await sdk.permissionsChecker().checkAllAccess();
+    const credentialsAreValid = await sdk.permissionsChecker().checkAllAccess()
 
-    let enabled: boolean | undefined = undefined;
+    let enabled: boolean | undefined = undefined
 
     if (credentialsAreValid && this.checkProviderSendingEnabled) {
-      const { Enabled } = await sdk.sesService().getAccountSendingEnabled();
+      const { Enabled } = await sdk.sesService().getAccountSendingEnabled()
 
-      enabled = Enabled;
+      enabled = Enabled
 
       if (this.mailer && !Enabled) {
         await this.mailerRepository.setMailerStatus(
           this.mailer,
-          "ACCOUNT_SENDING_NOT_ENABLED",
-        );
+          'ACCOUNT_SENDING_NOT_ENABLED',
+        )
 
-        return enabled;
+        return enabled
       }
     }
 
@@ -61,11 +61,11 @@ export class CheckProviderCredentials {
       if (this.mailer) {
         await this.mailerRepository.setMailerStatus(
           this.mailer,
-          "ACCESS_KEYS_LOST_PROVIDER_ACCESS",
-        );
+          'ACCESS_KEYS_LOST_PROVIDER_ACCESS',
+        )
       }
     }
 
-    return credentialsAreValid;
+    return credentialsAreValid
   }
 }

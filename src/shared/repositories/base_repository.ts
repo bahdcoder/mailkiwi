@@ -1,16 +1,16 @@
-import { cuid } from "@/shared/utils/cuid/cuid.js";
-import type { DrizzleClient } from "@/database/client.js";
+import { cuid } from '@/shared/utils/cuid/cuid.js'
+import type { DrizzleClient } from '@/database/client.js'
 
 export class BaseRepository {
-  protected database: DrizzleClient;
+  protected database: DrizzleClient
 
   transaction(transaction: DrizzleClient) {
-    this.database = transaction;
+    this.database = transaction
 
-    return this;
+    return this
   }
 
   cuid() {
-    return cuid();
+    return cuid()
   }
 }

@@ -3,9 +3,9 @@ import type {
   MailerIdentity,
   Team,
   TeamMembership,
-} from "@/database/schema/types.js";
+} from '@/database/schema/types.js'
 
 export type TeamWithMembers = Team & {
-  members: TeamMembership[];
-  mailer: Mailer & { identities: MailerIdentity[] };
-};
+  members: TeamMembership[]
+  mailer: Mailer & { identities: MailerIdentity[] }
+}

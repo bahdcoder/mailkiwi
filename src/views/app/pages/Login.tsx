@@ -1,18 +1,18 @@
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import React from "react";
-import { useState } from "react";
+import { useMutation } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
+import React from 'react'
+import { useState } from 'react'
 import {
   type ErrorResponse,
   type LoginCredentials,
   type LoginResponse,
   login,
-} from "@client/api/auth.ts";
+} from '@client/api/auth.ts'
 
 export const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const navigate = useNavigate()
 
   const loginMutation = useMutation<
     LoginResponse,
@@ -20,17 +20,17 @@ export const LoginPage: React.FC = () => {
     LoginCredentials
   >({
     mutationFn: async (credentials: LoginCredentials) => {
-      const [response, error] = await login<LoginResponse>(credentials);
+      const [response, error] = await login<LoginResponse>(credentials)
 
-      if (error) throw error;
+      if (error) throw error
 
-      return response;
+      return response
     },
     onSuccess: (data) => {
-      localStorage.setItem("accessToken", data.accessToken.token);
-      navigate({ to: "/" });
+      localStorage.setItem('accessToken', data.accessToken.token)
+      navigate({ to: '/' })
     },
-  });
+  })
 
   const getErrorMessages = () => {
     if (loginMutation.error) {
@@ -38,17 +38,17 @@ export const LoginPage: React.FC = () => {
         loginMutation.error?.errors &&
         loginMutation.error?.errors.length > 0
       ) {
-        return loginMutation.error.errors.map((error) => error.message);
+        return loginMutation.error.errors.map((error) => error.message)
       }
-      return [loginMutation.error.message];
+      return [loginMutation.error.message]
     }
-    return [];
-  };
+    return []
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    loginMutation.mutate({ email, password });
-  };
+    e.preventDefault()
+    loginMutation.mutate({ email, password })
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -142,7 +142,7 @@ export const LoginPage: React.FC = () => {
                   </svg>
                 </span>
               )}
-              {loginMutation.isPending ? "Signing in..." : "Sign in"}
+              {loginMutation.isPending ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
         </form>
@@ -181,7 +181,7 @@ export const LoginPage: React.FC = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

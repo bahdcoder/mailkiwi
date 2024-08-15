@@ -1,25 +1,25 @@
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js";
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js";
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
 import {
   automationSteps,
   contactAutomationSteps,
   contacts,
-} from "@/database/schema/schema.ts";
-import { and, eq } from "drizzle-orm";
-import { AutomationStepRunner } from "../utils/automation_step_runners/automation_step_runner.ts";
+} from '@/database/schema/schema.ts'
+import { and, eq } from 'drizzle-orm'
+import { AutomationStepRunner } from '../utils/automation_step_runners/automation_step_runner.ts'
 
 export interface RunAutomationStepForContactJobPayload {
-  automationStepId: string;
-  contactId: string;
+  automationStepId: string
+  contactId: string
 }
 
 export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepForContactJobPayload> {
   static get id() {
-    return "AUTOMATIONS::RUN_AUTOMATION_STEP_FOR_CONTACT";
+    return 'AUTOMATIONS::RUN_AUTOMATION_STEP_FOR_CONTACT'
   }
 
   static get queue() {
-    return AVAILABLE_QUEUES.automations;
+    return AVAILABLE_QUEUES.automations
   }
 
   async handle({
@@ -39,27 +39,27 @@ export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepFor
           eq(contactAutomationSteps.automationStepId, payload.automationStepId),
         ),
       }),
-    ]);
+    ])
 
     if (contactAutomationStep) {
       return this.done(
         `Automation step already ran for contact ${payload.contactId}`,
-      );
+      )
     }
 
     if (!automationStep) {
       return this.done(
         `Automation step not found with id ${payload.automationStepId}. Might have been deleted after job was queued.`,
-      );
+      )
     }
 
     if (!contact) {
-      return this.done(`Contact not found with id ${payload.contactId}.`);
+      return this.done(`Contact not found with id ${payload.contactId}.`)
     }
 
     await new AutomationStepRunner(automationStep)
       .forContact(contact)
-      .run({ database });
+      .run({ database })
 
     // get all automation step executors.
     // find the correct executor for this job.
@@ -72,6 +72,6 @@ export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepFor
 
     // execute it for this contact
     // save the results to automation results for contact
-    return this.done();
+    return this.done()
   }
 }

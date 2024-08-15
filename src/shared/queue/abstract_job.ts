@@ -1,89 +1,89 @@
-import type { DrizzleClient } from "@/database/client.js";
-import type { AVAILABLE_QUEUE_TYPE } from "./config.js";
+import type { DrizzleClient } from '@/database/client.js'
+import type { AVAILABLE_QUEUE_TYPE } from './config.js'
 
 export interface JobHandlerResponse {
-  success: boolean;
-  output?: string;
+  success: boolean
+  output?: string
 }
 
-type PromiseFunction<T> = () => Promise<T>;
-type ErrorHandler = (error: Error) => Promise<void>;
-type PromiseItem<T> = [PromiseFunction<T>, ErrorHandler];
+type PromiseFunction<T> = () => Promise<T>
+type ErrorHandler = (error: Error) => Promise<void>
+type PromiseItem<T> = [PromiseFunction<T>, ErrorHandler]
 
 export abstract class BaseJob<T extends object = object> {
   static get id(): string {
-    throw new Error("ID is not defined for this job.");
+    throw new Error('ID is not defined for this job.')
   }
 
   get batchSize(): number {
-    return 75;
+    return 75
   }
 
   static get queue(): AVAILABLE_QUEUE_TYPE {
-    throw new Error("Queue is not defined for this job.");
+    throw new Error('Queue is not defined for this job.')
   }
 
   done(output?: string) {
-    return { success: true, output };
+    return { success: true, output }
   }
 
   fail(output?: string) {
-    return { success: false, output };
+    return { success: false, output }
   }
 
   processPromises<T>(
     items: PromiseItem<T>[],
     concurrency: number,
   ): Promise<(T | undefined)[]> {
-    let index = 0;
-    const results: (T | undefined)[] = new Array(items.length);
+    let index = 0
+    const results: (T | undefined)[] = new Array(items.length)
 
     const runNext = async (): Promise<void> => {
-      if (index >= items.length) return;
+      if (index >= items.length) return
 
-      const currentIndex = index++;
-      const [promiseFn, errorHandler] = items[currentIndex];
+      const currentIndex = index++
+      const [promiseFn, errorHandler] = items[currentIndex]
 
       try {
-        const result = await promiseFn();
-        results[currentIndex] = result;
+        const result = await promiseFn()
+        results[currentIndex] = result
       } catch (error) {
-        await errorHandler(error as Error);
-        results[currentIndex] = undefined;
+        await errorHandler(error as Error)
+        results[currentIndex] = undefined
       }
 
-      await runNext();
-    };
+      await runNext()
+    }
 
     return new Promise<(T | undefined)[]>((resolve) => {
       const runBatch = async () => {
         const batch = Array(Math.min(concurrency, items.length))
           .fill(null)
-          .map(() => runNext());
+          .map(() => runNext())
 
-        await Promise.all(batch);
+        await Promise.all(batch)
 
         if (index < items.length) {
-          await runBatch();
+          await runBatch()
         } else {
-          resolve(results);
+          resolve(results)
         }
-      };
+      }
 
-      runBatch();
-    });
+      runBatch()
+    })
   }
 
-  abstract handle(ctx: JobContext<T>): Promise<JobHandlerResponse>;
+  abstract handle(ctx: JobContext<T>): Promise<JobHandlerResponse>
 }
 
 export type AbstractJobType<T extends object = object> = {
-  new: () => BaseJob<T>;
-  id: string;
-  queue: AVAILABLE_QUEUE_TYPE;
-};
+  new: () => BaseJob<T>
+  id: string
+  queue: AVAILABLE_QUEUE_TYPE
+}
 
 export interface JobContext<T> {
-  database: DrizzleClient;
-  payload: T;
+  database: DrizzleClient
+  payload: T
 }

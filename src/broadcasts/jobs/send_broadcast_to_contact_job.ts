@@ -1,33 +1,33 @@
-import { Mailer } from "@/shared/mailers/mailer.js";
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js";
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js";
-import { cuid } from "@/shared/utils/cuid/cuid.js";
-import type { DrizzleClient } from "@/database/client.js";
+import { Mailer } from '@/shared/mailers/mailer.js'
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
+import type { DrizzleClient } from '@/database/client.js'
 import {
   broadcasts,
   contacts as contactsTable,
   sends,
-} from "@/database/schema/schema.js";
+} from '@/database/schema/schema.js'
 import type {
   Broadcast,
   BroadcastWithEmailContent,
   Contact,
-} from "@/database/schema/types.js";
-import { addSecondsToDate } from "@/utils/dates.js";
-import { and, eq } from "drizzle-orm";
+} from '@/database/schema/types.js'
+import { addSecondsToDate } from '@/utils/dates.js'
+import { and, eq } from 'drizzle-orm'
 
 export interface SendBroadcastToContactPayload {
-  broadcastId: string;
-  contactId: string;
+  broadcastId: string
+  contactId: string
 }
 
 export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayload> {
   static get id() {
-    return "BROADCASTS::SEND_BROADCAST_TO_CONTACTS";
+    return 'BROADCASTS::SEND_BROADCAST_TO_CONTACTS'
   }
 
   static get queue() {
-    return AVAILABLE_QUEUES.broadcasts;
+    return AVAILABLE_QUEUES.broadcasts
   }
 
   async handle({
@@ -36,17 +36,17 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
   }: JobContext<SendBroadcastToContactPayload>) {
     const contact = await database.query.contacts.findFirst({
       where: eq(contactsTable.id, payload.contactId),
-    });
+    })
 
     const broadcast = await database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, payload.broadcastId),
       with: {
         emailContent: true,
       },
-    });
+    })
 
     if (!broadcast || !contact) {
-      return this.fail("Broadcast or contact not found.");
+      return this.fail('Broadcast or contact not found.')
     }
 
     try {
@@ -54,17 +54,17 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
         contact,
         broadcast as BroadcastWithEmailContent,
         database,
-      );
+      )
     } catch (error) {
       await this.markAsFailedToSendToContact(
         contact,
         broadcast,
         database,
         error as Error,
-      );
+      )
     }
 
-    return { success: true, output: "Success" };
+    return { success: true, output: 'Success' }
   }
 
   private async sendEmailToContact(
@@ -72,9 +72,9 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     broadcast: BroadcastWithEmailContent,
     database: DrizzleClient,
   ) {
-    d({ "Sending email to:": contact.email });
+    d({ 'Sending email to:': contact.email })
 
-    await this.createSendForContact(contact, broadcast, database);
+    await this.createSendForContact(contact, broadcast, database)
 
     const [response, error] = await Mailer.from(
       broadcast.emailContent.fromEmail,
@@ -86,18 +86,18 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
         broadcast.emailContent.contentHtml,
         broadcast.emailContent.contentText,
       )
-      .send();
+      .send()
 
     if (error) {
-      d({ [`Failed to send to contact: ${contact.email}`]: error });
+      d({ [`Failed to send to contact: ${contact.email}`]: error })
       await this.markAsFailedToSendToContact(
         contact,
         broadcast,
         database,
         error,
-      );
+      )
 
-      return;
+      return
     }
 
     await this.markAsSentToContact(
@@ -105,7 +105,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       broadcast,
       database,
       response.messageId,
-    );
+    )
   }
 
   async createSendForContact(
@@ -113,7 +113,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     broadcast: Broadcast,
     database: DrizzleClient,
   ) {
-    const id = cuid();
+    const id = cuid()
 
     await database
       .insert(sends)
@@ -121,13 +121,13 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
         id,
         contactId: contact.id,
         broadcastId: broadcast.id,
-        status: "PENDING",
-        type: "BROADCAST",
+        status: 'PENDING',
+        type: 'BROADCAST',
         timeoutAt: addSecondsToDate(new Date(), 25),
       })
-      .execute();
+      .execute()
 
-    return { id };
+    return { id }
   }
 
   async markAsFailedToSendToContact(
@@ -139,8 +139,8 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     await database
       .update(sends)
       .set({
-        status: "FAILED",
-        type: "BROADCAST",
+        status: 'FAILED',
+        type: 'BROADCAST',
         logs: JSON.stringify(error.message),
       })
       .where(
@@ -150,7 +150,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
             eq(sends.broadcastId, broadcast.id),
           ),
         ),
-      );
+      )
   }
 
   async markAsSentToContact(
@@ -162,7 +162,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     await database
       .update(sends)
       .set({
-        status: "SENT",
+        status: 'SENT',
         messageId,
         sentAt: new Date(),
       })
@@ -171,6 +171,6 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
           eq(sends.contactId, contact.id),
           eq(sends.broadcastId, broadcast.id),
         ),
-      );
+      )
   }
 }

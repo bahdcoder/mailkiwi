@@ -1,10 +1,10 @@
-import { faker } from "@faker-js/faker";
-import { cuid } from "@/shared/utils/cuid/cuid.js";
-import { ContainerKey } from "@/shared/container/index.js";
+import { faker } from '@faker-js/faker'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { ContainerKey } from '@/shared/container/index.js'
 import {
   createDatabaseClient,
   createDrizzleDatabase,
-} from "@/database/client.js";
+} from '@/database/client.js'
 import {
   users,
   teams,
@@ -14,24 +14,24 @@ import {
   sends,
   abTestVariants,
   emailContents,
-} from "@/database/schema/schema.js";
-import cluster from "node:cluster";
-import { cpus } from "node:os";
-import { env } from "@/shared/env/index.js";
-import { container } from "@/utils/typi.js";
-import { count, eq } from "drizzle-orm";
-import { refreshDatabase } from "@/tests/mocks/teams/teams.ts";
-import { sleep } from "@/utils/sleep.ts";
+} from '@/database/schema/schema.js'
+import cluster from 'node:cluster'
+import { cpus } from 'node:os'
+import { env } from '@/shared/env/index.js'
+import { container } from '@/utils/typi.js'
+import { count, eq } from 'drizzle-orm'
+import { refreshDatabase } from '@/tests/mocks/teams/teams.ts'
+import { sleep } from '@/utils/sleep.ts'
 
 // Set up database connection
-const connection = await createDatabaseClient(env.DATABASE_URL);
-const database = createDrizzleDatabase(connection);
+const connection = await createDatabaseClient(env.DATABASE_URL)
+const database = createDrizzleDatabase(connection)
 
-container.registerInstance(ContainerKey.env, env);
-container.registerInstance(ContainerKey.database, database);
+container.registerInstance(ContainerKey.env, env)
+container.registerInstance(ContainerKey.database, database)
 
 class BaseSeed {
-  protected db = database;
+  protected db = database
 
   protected async batchInsert<T extends Record<string, any>>(
     table: any,
@@ -39,14 +39,14 @@ class BaseSeed {
     message?: string,
     batchSize = 10000,
   ) {
-    console.log(`Inserting ${data.length} ${message || ""}`);
+    console.log(`Inserting ${data.length} ${message || ''}`)
 
     for (let i = 0; i < data.length; i += batchSize) {
-      const batch = data.slice(i, i + batchSize);
-      await this.db.insert(table).values(batch);
+      const batch = data.slice(i, i + batchSize)
+      await this.db.insert(table).values(batch)
       console.log(
         `Inserted batch of length ${batch.length} ${i / batchSize + 1} of ${Math.ceil(data.length / batchSize)}`,
-      );
+      )
     }
   }
 }
@@ -58,9 +58,9 @@ class UserSeed extends BaseSeed {
       email: faker.internet.email(),
       name: faker.person.fullName(),
       password: faker.internet.password(),
-    }));
-    await this.batchInsert(users, userData, "users");
-    return userData;
+    }))
+    await this.batchInsert(users, userData, 'users')
+    return userData
   }
 }
 
@@ -71,9 +71,9 @@ class TeamSeed extends BaseSeed {
       name: faker.company.name(),
       userId,
       configurationKey: faker.string.uuid(),
-    };
-    await this.db.insert(teams).values(teamData);
-    return teamData;
+    }
+    await this.db.insert(teams).values(teamData)
+    return teamData
   }
 }
 
@@ -83,9 +83,9 @@ class AudienceSeed extends BaseSeed {
       id: cuid(),
       name: faker.word.words(2),
       teamId,
-    };
-    await this.db.insert(audiences).values(audienceData);
-    return audienceData;
+    }
+    await this.db.insert(audiences).values(audienceData)
+    return audienceData
   }
 }
 
@@ -98,9 +98,9 @@ class ContactSeed extends BaseSeed {
       email: `${faker.string.nanoid(8)}.${faker.internet.email()}`,
       audienceId,
       subscribedAt: faker.date.past(),
-    }));
-    await this.batchInsert(ContactsTable, contactData, "contacts");
-    return contactData;
+    }))
+    await this.batchInsert(ContactsTable, contactData, 'contacts')
+    return contactData
   }
 }
 
@@ -117,28 +117,28 @@ class EmailContentSeed extends BaseSeed {
       contentJson: JSON.stringify(this.generateEmailStructure()),
       contentHtml: this.generateHtmlContent(),
       contentText: faker.lorem.paragraphs(3),
-    }));
-    await this.batchInsert(emailContents, emailContentData, "email contents");
-    return emailContentData;
+    }))
+    await this.batchInsert(emailContents, emailContentData, 'email contents')
+    return emailContentData
   }
 
   private generateEmailStructure() {
     return {
       body: {
-        type: "container",
+        type: 'container',
         children: [
           {
-            type: "text",
+            type: 'text',
             value: faker.lorem.paragraph(),
           },
           {
-            type: "button",
-            value: "Click me!",
+            type: 'button',
+            value: 'Click me!',
             url: faker.internet.url(),
           },
         ],
       },
-    };
+    }
   }
 
   private generateHtmlContent() {
@@ -151,7 +151,7 @@ class EmailContentSeed extends BaseSeed {
           <a href="${faker.internet.url()}">${faker.lorem.words(3)}</a>
         </body>
       </html>
-    `;
+    `
   }
 }
 
@@ -162,25 +162,25 @@ class BroadcastSeed extends BaseSeed {
       name: faker.lorem.words(3),
       audienceId,
       teamId,
-      status: "DRAFT",
+      status: 'DRAFT',
       isAbTest: Math.random() < 0.5, // 50% chance of being an A/B test
-    }));
-    await this.batchInsert(broadcasts, broadcastData, "broadcasts");
-    return broadcastData;
+    }))
+    await this.batchInsert(broadcasts, broadcastData, 'broadcasts')
+    return broadcastData
   }
 }
 
 class ABTestVariantSeed extends BaseSeed {
-  private emailContentSeed: EmailContentSeed;
+  private emailContentSeed: EmailContentSeed
 
   constructor() {
-    super();
-    this.emailContentSeed = new EmailContentSeed();
+    super()
+    this.emailContentSeed = new EmailContentSeed()
   }
 
   async seed(broadcastId: string, isAbTest: boolean) {
-    const variantCount = isAbTest ? Math.floor(Math.random() * 2) + 2 : 1; // 2 or 3 variants for A/B tests, 1 for regular broadcasts
-    const emailContents = await this.emailContentSeed.seed(variantCount);
+    const variantCount = isAbTest ? Math.floor(Math.random() * 2) + 2 : 1 // 2 or 3 variants for A/B tests, 1 for regular broadcasts
+    const emailContents = await this.emailContentSeed.seed(variantCount)
 
     const variantData = emailContents.map((content, index) => ({
       id: cuid(),
@@ -188,17 +188,17 @@ class ABTestVariantSeed extends BaseSeed {
       name: `Variant ${index + 1}`,
       emailContentId: content.id,
       weight: this.calculateVariantWeight(index, variantCount),
-    }));
+    }))
 
-    await this.batchInsert(abTestVariants, variantData, "abtests");
-    return variantData;
+    await this.batchInsert(abTestVariants, variantData, 'abtests')
+    return variantData
   }
 
   private calculateVariantWeight(index: number, totalVariants: number): number {
-    if (totalVariants === 1) return 100;
-    if (totalVariants === 2) return index === 0 ? 50 : 50;
-    if (totalVariants === 3) return [40, 30, 30][index];
-    return Math.floor(100 / totalVariants); // Fallback for unexpected cases
+    if (totalVariants === 1) return 100
+    if (totalVariants === 2) return index === 0 ? 50 : 50
+    if (totalVariants === 3) return [40, 30, 30][index]
+    return Math.floor(100 / totalVariants) // Fallback for unexpected cases
   }
 }
 
@@ -212,26 +212,26 @@ class SendSeed extends BaseSeed {
     const totalWeight = variants.reduce(
       (sum, variant) => sum + variant.weight,
       0,
-    );
+    )
     const variantThresholds = variants.map((variant, index, array) => ({
       ...variant,
       threshold:
         array.slice(0, index + 1).reduce((sum, v) => sum + v.weight, 0) /
         totalWeight,
-    }));
+    }))
 
     const sendData = contactData.map((contact) => {
-      const random = Math.random();
+      const random = Math.random()
       const selectedVariant =
         variantThresholds.find((v) => random <= v.threshold) ||
-        variants[variants.length - 1];
+        variants[variants.length - 1]
 
       return {
         id: cuid(),
         broadcastId,
         variantId: selectedVariant.id,
         contactId: contact.id,
-        status: "SENT",
+        status: 'SENT',
         sentAt: faker.date.recent(),
         openedAt: Math.random() < 0.3 ? faker.date.recent() : null,
         firstClickAt: Math.random() < 0.1 ? faker.date.recent() : null,
@@ -239,96 +239,96 @@ class SendSeed extends BaseSeed {
         clickCount: Math.random() < 0.1 ? Math.floor(Math.random() * 5) + 1 : 0,
         clickedLinks:
           Math.random() < 0.1 ? this.generateClickedLinks(linkCount) : null,
-      };
-    });
+      }
+    })
 
-    await this.batchInsert(sends, sendData, "sends");
+    await this.batchInsert(sends, sendData, 'sends')
   }
 
   private generateClickedLinks(linkCount: number): Record<string, number> {
-    const clickedLinks: Record<string, number> = {};
+    const clickedLinks: Record<string, number> = {}
     for (let i = 0; i < linkCount; i++) {
       if (Math.random() < 0.25) {
         clickedLinks[`http://example.com/link${i + 1}`] =
-          Math.floor(Math.random() * 3) + 1;
+          Math.floor(Math.random() * 3) + 1
       }
     }
-    return clickedLinks;
+    return clickedLinks
   }
 }
 
 class DatabaseSeeder {
-  private userSeed = new UserSeed();
-  private teamSeed = new TeamSeed();
-  private audienceSeed = new AudienceSeed();
-  private contactSeed = new ContactSeed();
-  private broadcastSeed = new BroadcastSeed();
-  private abTestVariantSeed = new ABTestVariantSeed();
-  private sendSeed = new SendSeed();
+  private userSeed = new UserSeed()
+  private teamSeed = new TeamSeed()
+  private audienceSeed = new AudienceSeed()
+  private contactSeed = new ContactSeed()
+  private broadcastSeed = new BroadcastSeed()
+  private abTestVariantSeed = new ABTestVariantSeed()
+  private sendSeed = new SendSeed()
 
   async seed() {
-    console.log("Starting database seed...");
+    console.log('Starting database seed...')
 
-    const seededUsers = await this.userSeed.seed(100);
-    console.log("Seeded 100 users");
+    const seededUsers = await this.userSeed.seed(100)
+    console.log('Seeded 100 users')
 
     for (const user of seededUsers) {
-      await sleep(5000);
-      const team = await this.teamSeed.seed(user.id);
-      console.log(`Seeded team for user ${user.email}\n`);
+      await sleep(5000)
+      const team = await this.teamSeed.seed(user.id)
+      console.log(`Seeded team for user ${user.email}\n`)
 
-      const audience = await this.audienceSeed.seed(team.id);
-      console.log(`Seeded audience for team ${team.name}\n`);
+      const audience = await this.audienceSeed.seed(team.id)
+      console.log(`Seeded audience for team ${team.name}\n`)
 
-      const contacts = await this.contactSeed.seed(audience.id, 1000000);
-      console.log(`Seeded 1,000,000 contacts for audience ${audience.name}\n`);
+      const contacts = await this.contactSeed.seed(audience.id, 1000000)
+      console.log(`Seeded 1,000,000 contacts for audience ${audience.name}\n`)
 
-      const broadcasts = await this.broadcastSeed.seed(audience.id, team.id, 1);
-      console.log(`Seeded 50 broadcasts for audience ${audience.name}\n`);
+      const broadcasts = await this.broadcastSeed.seed(audience.id, team.id, 1)
+      console.log(`Seeded 50 broadcasts for audience ${audience.name}\n`)
 
       for (const broadcast of broadcasts) {
         const variants = await this.abTestVariantSeed.seed(
           broadcast.id,
           broadcast.isAbTest,
-        );
+        )
         console.log(
           `Seeded ${variants.length} variant(s) with email content for broadcast ${broadcast.name}\n`,
-        );
+        )
 
-        await this.sendSeed.seed(broadcast.id, variants, contacts, 4);
-        console.log(`Seeded 1,000,000 sends for broadcast ${broadcast.name}\n`);
+        await this.sendSeed.seed(broadcast.id, variants, contacts, 4)
+        console.log(`Seeded 1,000,000 sends for broadcast ${broadcast.name}\n`)
       }
     }
 
-    console.log("Database seed completed successfully");
+    console.log('Database seed completed successfully')
   }
 }
 
 async function seed() {
-  const seeder = new DatabaseSeeder();
+  const seeder = new DatabaseSeeder()
   seeder
     .seed()
-    .then(() => console.log("Seeding completed"))
-    .catch((error) => console.error("Error during seeding:", error));
+    .then(() => console.log('Seeding completed'))
+    .catch((error) => console.error('Error during seeding:', error))
 }
 
-const numCPUs = cpus().length;
+const numCPUs = cpus().length
 
 if (cluster.isPrimary) {
-  console.log(`Primary ${process.pid} is running`);
+  console.log(`Primary ${process.pid} is running`)
 
-  console.log("Cleaning database ...");
-  await refreshDatabase();
-  console.log("Done cleaning database.");
+  console.log('Cleaning database ...')
+  await refreshDatabase()
+  console.log('Done cleaning database.')
 
   // Fork workers
   for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
+    cluster.fork()
   }
 
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
-  });
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} died`)
+  })
 } else {
-  await seed();
+  await seed()
 }

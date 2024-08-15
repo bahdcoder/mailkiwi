@@ -27,19 +27,3 @@
   reservations also.
 - Kubernetes / Nomad for container orchestration (Workers and Monolith)
 - Syself for Kubernetes management (If using Kubernetes)
-
-## Possible domain names
-
-- mailsignal.com ($10,000)
-- mailerlink.com ($6,000)
-- karamail.com ($4,000)
-- mailpeek.com ($3,000)
-- peekmail.com ($1,000)
-
-- kibamail.com ($20)
-- kibamail.com ($20)
-- ferymail.com ($20)
-- kibapost.com ($20)
-- mailerlime.com ($20)
-- lemonmailer.com ($20)
-- mailercamp.com ($20)

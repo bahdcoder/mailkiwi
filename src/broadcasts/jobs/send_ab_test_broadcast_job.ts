@@ -1,15 +1,15 @@
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js";
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js";
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
 import {
   AbTestsBroadcastsQueue,
   BroadcastsQueue,
-} from "@/shared/queue/queue.js";
+} from '@/shared/queue/queue.js'
 import {
   abTestVariants,
   broadcasts,
   contacts,
   sends,
-} from "@/database/schema/schema.js";
+} from '@/database/schema/schema.js'
 import {
   and,
   asc,
@@ -18,89 +18,89 @@ import {
   type SQL,
   sql,
   type SQLWrapper,
-} from "drizzle-orm";
-import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js";
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts";
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts";
-import { PickAbTestWinnerJob } from "./pick_ab_test_winner_job.ts";
-import { hoursToSeconds } from "@/utils/dates.ts";
+} from 'drizzle-orm'
+import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
+import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.ts'
+import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.ts'
+import { PickAbTestWinnerJob } from './pick_ab_test_winner_job.ts'
+import { hoursToSeconds } from '@/utils/dates.ts'
 import type {
   AbTestVariant,
   BroadcastWithSegmentAndAbTestVariants,
-} from "@/database/schema/types.ts";
-import type { DrizzleClient } from "@/database/client.js";
+} from '@/database/schema/types.ts'
+import type { DrizzleClient } from '@/database/client.js'
 
 export interface SendAbTestBroadcastJobPayload {
-  broadcastId: string;
+  broadcastId: string
 }
 
 export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayload> {
   static get id() {
-    return "BROADCASTS::SEND_AB_TEST_BROADCAST";
+    return 'BROADCASTS::SEND_AB_TEST_BROADCAST'
   }
 
   static get queue() {
-    return AVAILABLE_QUEUES.abtests_broadcasts;
+    return AVAILABLE_QUEUES.abtests_broadcasts
   }
 
-  private database: DrizzleClient;
-  private broadcast: BroadcastWithSegmentAndAbTestVariants;
+  private database: DrizzleClient
+  private broadcast: BroadcastWithSegmentAndAbTestVariants
 
   private leftJoinSends = (broadcastId: string) =>
-    sql`${contacts.id} = ${sends.contactId} AND ${sends.broadcastId} = ${broadcastId}`;
+    sql`${contacts.id} = ${sends.contactId} AND ${sends.broadcastId} = ${broadcastId}`
 
   private filterContactsQuery(): SQL | undefined {
-    const segmentQueryConditions: SQLWrapper[] = [];
+    const segmentQueryConditions: SQLWrapper[] = []
 
     if (this.broadcast.segment) {
       segmentQueryConditions.push(
         new SegmentBuilder(
-          this.broadcast.segment.conditions as CreateSegmentDto["conditions"],
+          this.broadcast.segment.conditions as CreateSegmentDto['conditions'],
         ).build(),
-      );
+      )
     }
 
     return and(
       eq(contacts.audienceId, this.broadcast.audience.id),
       ...segmentQueryConditions,
       sql`${sends.id} IS NULL`,
-    );
+    )
   }
 
   private calculateVariantSizesAndOffsets(totalContacts: number) {
-    let currentOffset = 0;
+    let currentOffset = 0
 
     return this.broadcast.abTestVariants.map((variant) => {
-      const size = Math.floor((variant.weight / 100) * totalContacts);
+      const size = Math.floor((variant.weight / 100) * totalContacts)
 
       const variantWithOffsetAndSize = {
         ...variant,
         offset: currentOffset,
         endOffset: currentOffset + size,
         size,
-      };
-      currentOffset += size;
+      }
+      currentOffset += size
 
-      return variantWithOffsetAndSize;
-    });
+      return variantWithOffsetAndSize
+    })
   }
 
   private async dispatchVariantSending(
     variant: AbTestVariant & {
-      offset: number;
-      endOffset: number;
-      size: number;
+      offset: number
+      endOffset: number
+      size: number
     },
   ) {
-    const totalContactsForVariant = variant.size;
-    const totalBatches = Math.ceil(totalContactsForVariant / this.batchSize);
+    const totalContactsForVariant = variant.size
+    const totalBatches = Math.ceil(totalContactsForVariant / this.batchSize)
 
     for (let batch = 0; batch < totalBatches; batch++) {
-      const offSet = variant.offset + batch * this.batchSize;
-      const amountLeft = variant.endOffset - offSet;
-      const limit = Math.min(this.batchSize, amountLeft);
+      const offSet = variant.offset + batch * this.batchSize
+      const amountLeft = variant.endOffset - offSet
+      const limit = Math.min(this.batchSize, amountLeft)
 
-      const contactIds = await this.getContactIds(offSet, limit);
+      const contactIds = await this.getContactIds(offSet, limit)
 
       await BroadcastsQueue.addBulk(
         contactIds.map((contact) => ({
@@ -113,7 +113,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
           },
           opts: { attempts: 3 },
         })),
-      );
+      )
     }
   }
 
@@ -125,29 +125,29 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
       .where(this.filterContactsQuery())
       .orderBy(asc(contacts.id))
       .limit(limit)
-      .offset(offSet);
+      .offset(offSet)
   }
 
   async handle({
     database,
     payload,
   }: JobContext<SendAbTestBroadcastJobPayload>) {
-    this.database = database;
+    this.database = database
 
-    this.broadcast = await this.getBroadcast(payload.broadcastId);
+    this.broadcast = await this.getBroadcast(payload.broadcastId)
 
     if (!this.broadcast || !this.broadcast.audience || !this.broadcast.team) {
-      return this.fail("Broadcast or audience or team not properly provided.");
+      return this.fail('Broadcast or audience or team not properly provided.')
     }
 
-    const totalContacts = await this.getTotalContacts();
-    const batchSize = 75;
+    const totalContacts = await this.getTotalContacts()
+    const batchSize = 75
 
     const variantsWithOffsetsAndLimits =
-      this.calculateVariantSizesAndOffsets(totalContacts);
+      this.calculateVariantSizesAndOffsets(totalContacts)
 
     for (const variant of variantsWithOffsetsAndLimits) {
-      await this.dispatchVariantSending(variant);
+      await this.dispatchVariantSending(variant)
     }
 
     const finalSampleSize =
@@ -155,17 +155,17 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
       variantsWithOffsetsAndLimits.reduce(
         (total, variant) => total + variant.size,
         0,
-      );
+      )
 
     const finalSampleOffset =
       variantsWithOffsetsAndLimits[variantsWithOffsetsAndLimits.length - 1]
-        ?.endOffset;
+        ?.endOffset
 
-    await this.dispatchFinalSampleSending(finalSampleSize, finalSampleOffset);
+    await this.dispatchFinalSampleSending(finalSampleSize, finalSampleOffset)
 
-    await this.schedulePickWinnerJob();
+    await this.schedulePickWinnerJob()
 
-    return this.done();
+    return this.done()
   }
 
   private async getBroadcast(broadcastId: string) {
@@ -177,9 +177,9 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
         audience: true,
         segment: true,
       },
-    });
+    })
 
-    return broadcast as BroadcastWithSegmentAndAbTestVariants;
+    return broadcast as BroadcastWithSegmentAndAbTestVariants
   }
 
   private async getTotalContacts() {
@@ -188,26 +188,26 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
       .from(contacts)
       .leftJoin(sends, this.leftJoinSends(this.broadcast.id))
       .where(this.filterContactsQuery())
-      .orderBy(asc(contacts.id));
+      .orderBy(asc(contacts.id))
 
-    return totalContacts;
+    return totalContacts
   }
 
   private async dispatchFinalSampleSending(
     size: number,
     startingOffset: number,
   ) {
-    const totalBatchesForFinalSample = Math.ceil(size / this.batchSize);
+    const totalBatchesForFinalSample = Math.ceil(size / this.batchSize)
 
     const pickWinnerJobDelay = hoursToSeconds(
       this.broadcast.waitingTimeToPickWinner ?? 4,
-    );
-    const sendToRestOfListDelay = pickWinnerJobDelay + 3 * 60; // 3 minutes after picking winner.
+    )
+    const sendToRestOfListDelay = pickWinnerJobDelay + 3 * 60 // 3 minutes after picking winner.
 
     for (let batch = 0; batch < totalBatchesForFinalSample; batch++) {
-      const offSet = startingOffset + batch * this.batchSize;
+      const offSet = startingOffset + batch * this.batchSize
 
-      const contactIds = await this.getContactIds(offSet, this.batchSize);
+      const contactIds = await this.getContactIds(offSet, this.batchSize)
 
       await BroadcastsQueue.addBulk(
         contactIds.map((contact) => ({
@@ -219,18 +219,18 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
           },
           opts: { attempts: 3, delay: sendToRestOfListDelay },
         })),
-      );
+      )
     }
   }
 
   private async schedulePickWinnerJob() {
     const pickWinnerJobDelay = hoursToSeconds(
       this.broadcast.waitingTimeToPickWinner ?? 4,
-    );
+    )
     await AbTestsBroadcastsQueue.add(
       PickAbTestWinnerJob.id,
       { broadcastId: this.broadcast.id },
       { delay: pickWinnerJobDelay },
-    );
+    )
   }
 }

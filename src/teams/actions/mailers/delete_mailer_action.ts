@@ -1,5 +1,5 @@
-import { MailerRepository } from "@/teams/repositories/mailer_repository.js";
-import { container } from "@/utils/typi.js";
+import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
+import { container } from '@/utils/typi.js'
 
 export class DeleteMailerAction {
   constructor(
@@ -10,5 +10,5 @@ export class DeleteMailerAction {
 
   handle = async () => {
     // Implement action logic here
-  };
+  }
 }

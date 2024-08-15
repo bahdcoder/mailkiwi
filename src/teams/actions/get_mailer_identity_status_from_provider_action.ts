@@ -1,5 +1,5 @@
-import { MailerIdentityRepository } from "@/teams/repositories/mailer_identity_repository.js";
-import { container } from "@/utils/typi.js";
+import { MailerIdentityRepository } from '@/teams/repositories/mailer_identity_repository.js'
+import { container } from '@/utils/typi.js'
 
 export class GetMailerIdentityStatusFromProviderAction {
   constructor(
@@ -10,5 +10,5 @@ export class GetMailerIdentityStatusFromProviderAction {
 
   handle = async () => {
     // Implement action logic here
-  };
+  }
 }

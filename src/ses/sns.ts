@@ -6,14 +6,14 @@ import {
   SNSClient,
   SubscribeCommand,
   Topic,
-} from "@aws-sdk/client-sns";
-import type { Secret } from "@poppinss/utils";
+} from '@aws-sdk/client-sns'
+import type { Secret } from '@poppinss/utils'
 
-import { E_OPERATION_FAILED } from "@/http/responses/errors.js";
-import { sleep } from "@/utils/sleep.js";
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import { sleep } from '@/utils/sleep.js'
 
 export class SNSService {
-  private sns: SNSClient;
+  private sns: SNSClient
 
   constructor(
     accessKeyId: Secret<string>,
@@ -26,83 +26,83 @@ export class SNSService {
         secretAccessKey: secretAccessKey.release(),
       },
       region,
-    });
+    })
   }
 
   async checkAccess(): Promise<boolean> {
     try {
-      await this.sns.send(new ListTopicsCommand({}));
+      await this.sns.send(new ListTopicsCommand({}))
 
-      return true;
+      return true
     } catch (error) {
-      return false;
+      return false
     }
   }
 
   async createSnsTopic(topicName: string) {
-    const existingTopic = await this.getSnsTopic(topicName);
+    const existingTopic = await this.getSnsTopic(topicName)
 
-    if (existingTopic) return existingTopic;
+    if (existingTopic) return existingTopic
 
-    return this.sns.send(new CreateTopicCommand({ Name: topicName }));
+    return this.sns.send(new CreateTopicCommand({ Name: topicName }))
   }
 
   async deleteSnsTopic(TopicArn: string) {
-    return this.sns.send(new DeleteTopicCommand({ TopicArn }));
+    return this.sns.send(new DeleteTopicCommand({ TopicArn }))
   }
 
   async getSnsTopic(topicName: string) {
-    const topics = await this.sns.send(new ListTopicsCommand({}));
+    const topics = await this.sns.send(new ListTopicsCommand({}))
 
     const topic = topics.Topics?.find((topic) =>
       topic.TopicArn?.endsWith(`:${topicName}`),
-    );
+    )
 
-    return topic ?? null;
+    return topic ?? null
   }
 
   private async isSubscriptionConfirmed(topic: Topic, endpoint: string) {
     // Keep retrying to make sure the sns was confirmed via webhook.
-    let tries = 3;
-    let subscriptionConfirmed = false;
+    let tries = 3
+    let subscriptionConfirmed = false
 
     while (subscriptionConfirmed === false && tries > 0) {
-      await sleep(1500);
+      await sleep(1500)
 
       const subscribers = await this.sns.send(
         new ListSubscriptionsByTopicCommand({
           TopicArn: topic.TopicArn,
         }),
-      );
+      )
 
       const subscription = subscribers.Subscriptions?.find(
         (subscription) => subscription.Endpoint === endpoint,
-      );
+      )
 
       if (
         subscription &&
-        subscription?.SubscriptionArn !== "PendingConfirmation"
+        subscription?.SubscriptionArn !== 'PendingConfirmation'
       ) {
-        subscriptionConfirmed = true;
+        subscriptionConfirmed = true
       }
 
-      tries--;
+      tries--
     }
 
-    return subscriptionConfirmed;
+    return subscriptionConfirmed
   }
 
   async createSnsSubscription(topicName: string, endpoint: string) {
-    const topic = await this.getSnsTopic(topicName);
+    const topic = await this.getSnsTopic(topicName)
 
     if (!topic) {
-      throw E_OPERATION_FAILED(`Topic ${topicName} does not exist.`);
+      throw E_OPERATION_FAILED(`Topic ${topicName} does not exist.`)
     }
 
     const subscriber = await this.sns.send(
       new SubscribeCommand({
         TopicArn: topic.TopicArn,
-        Protocol: "https",
+        Protocol: 'https',
         Endpoint: endpoint,
         Attributes: {
           DeliveryPolicy: JSON.stringify({
@@ -112,19 +112,19 @@ export class SNSService {
           }),
         },
       }),
-    );
+    )
 
     const subscriptionConfirmed = await this.isSubscriptionConfirmed(
       topic,
       endpoint,
-    );
+    )
 
     if (subscriptionConfirmed === false) {
       throw E_OPERATION_FAILED(
-        "Could not confirm subscription on AWS email provider.. Please try creating the mailer again.",
-      );
+        'Could not confirm subscription on AWS email provider.. Please try creating the mailer again.',
+      )
     }
 
-    return subscriber;
+    return subscriber
   }
 }

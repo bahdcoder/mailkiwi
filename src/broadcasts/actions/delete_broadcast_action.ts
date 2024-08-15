@@ -1,5 +1,5 @@
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js";
-import { container } from "@/utils/typi.js";
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { container } from '@/utils/typi.js'
 
 export class DeleteBroadcastAction {
   constructor(
@@ -9,6 +9,6 @@ export class DeleteBroadcastAction {
   ) {}
 
   async handle(broadcastId: string) {
-    return this.broadcastRepository.delete(broadcastId);
+    return this.broadcastRepository.delete(broadcastId)
   }
 }

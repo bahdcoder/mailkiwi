@@ -1,15 +1,15 @@
-import type { AutomationStep, Contact } from "@/database/schema/types.js";
+import type { AutomationStep, Contact } from '@/database/schema/types.js'
 import type {
   AutomationStepRunnerContract,
   AutomationStepRunnerContext,
-} from "@/automations/utils/automation_step_runners/automation_runner_contract.js";
-import { ContactRepository } from "@/audiences/repositories/contact_repository.ts";
-import { container } from "@/utils/typi.ts";
+} from '@/automations/utils/automation_step_runners/automation_runner_contract.js'
+import { ContactRepository } from '@/audiences/repositories/contact_repository.ts'
+import { container } from '@/utils/typi.ts'
 import {
   tags,
   type ACTION_UPDATE_CONTACT_ATTRIBUTES,
-} from "@/database/schema/schema.ts";
-import { inArray } from "drizzle-orm";
+} from '@/database/schema/schema.ts'
+import { inArray } from 'drizzle-orm'
 
 export class UpdateContactAttributesAutomationStepRunner
   implements AutomationStepRunnerContract
@@ -21,12 +21,12 @@ export class UpdateContactAttributesAutomationStepRunner
 
   async run({ database }: AutomationStepRunnerContext) {
     const configuration = this.automationStep
-      .configuration as ACTION_UPDATE_CONTACT_ATTRIBUTES;
+      .configuration as ACTION_UPDATE_CONTACT_ATTRIBUTES
 
-    const contactRepository = container.resolve(ContactRepository);
+    const contactRepository = container.resolve(ContactRepository)
 
     await contactRepository.update(this.contact.id, {
       attributes: configuration.attributes,
-    });
+    })
   }
 }

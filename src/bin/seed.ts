@@ -1,38 +1,38 @@
-import { faker } from "@faker-js/faker";
+import { faker } from '@faker-js/faker'
 
-import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js";
-import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js";
-import { RegisterUserAction } from "@/auth/actions/register_user_action.js";
-import { MailerIdentityRepository } from "@/teams/repositories/mailer_identity_repository.js";
-import { MailerRepository } from "@/teams/repositories/mailer_repository.js";
-import { ContainerKey } from "@/shared/container/index.js";
+import { CreateAudienceAction } from '@/audiences/actions/audiences/create_audience_action.js'
+import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
+import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
+import { MailerIdentityRepository } from '@/teams/repositories/mailer_identity_repository.js'
+import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
+import { ContainerKey } from '@/shared/container/index.js'
 import {
   createDatabaseClient,
   createDrizzleDatabase,
-} from "@/database/client.js";
-import { contacts, mailers, teams } from "@/database/schema/schema.js";
-import type { Team } from "@/database/schema/types.js";
-import { env } from "@/shared/env/index.js";
-import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js";
-import { container } from "@/utils/typi.js";
-import { Secret } from "@poppinss/utils";
-import { eq } from "drizzle-orm";
-import type { ConfigurationObjectInput } from "@/teams/dto/mailers/update_mailer_dto.js";
+} from '@/database/client.js'
+import { contacts, mailers, teams } from '@/database/schema/schema.js'
+import type { Team } from '@/database/schema/types.js'
+import { env } from '@/shared/env/index.js'
+import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
+import { container } from '@/utils/typi.js'
+import { Secret } from '@poppinss/utils'
+import { eq } from 'drizzle-orm'
+import type { ConfigurationObjectInput } from '@/teams/dto/mailers/update_mailer_dto.js'
 
-const connection = await createDatabaseClient(env.DATABASE_URL);
+const connection = await createDatabaseClient(env.DATABASE_URL)
 
-const database = createDrizzleDatabase(connection);
+const database = createDrizzleDatabase(connection)
 
-container.registerInstance(ContainerKey.env, env);
-container.registerInstance(ContainerKey.database, database);
+container.registerInstance(ContainerKey.env, env)
+container.registerInstance(ContainerKey.database, database)
 
-const registerUserAction = container.resolve(RegisterUserAction);
-const createAudienceAction = container.resolve(CreateAudienceAction);
+const registerUserAction = container.resolve(RegisterUserAction)
+const createAudienceAction = container.resolve(CreateAudienceAction)
 
-await refreshDatabase();
+await refreshDatabase()
 
 for (let userIndex = 0; userIndex < 1; userIndex++) {
-  console.log(`\nCreating user: ${userIndex + 1}\n`);
+  console.log(`\nCreating user: ${userIndex + 1}\n`)
 
   const { team, user } = await registerUserAction.handle({
     name: faker.person.fullName(),
@@ -40,12 +40,12 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
     }),
-    password: "password",
-  });
+    password: 'password',
+  })
 
   const teamObject = await database.query.teams.findFirst({
     where: eq(teams.id, team.id),
-  });
+  })
 
   // await container.make(CreateMailerAction).handle()
 
@@ -79,30 +79,27 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
   //   mailerId,
   // )
 
-  const audienceIds = [];
+  const audienceIds = []
 
   for (let audienceIndex = 0; audienceIndex < 5; audienceIndex++) {
-    const audiencePayload = { name: faker.commerce.productName() };
+    const audiencePayload = { name: faker.commerce.productName() }
 
     console.log(
-      "Creating audience: ",
+      'Creating audience: ',
       `${audienceIndex}: ${audiencePayload.name}`,
-    );
+    )
 
-    const audience = await createAudienceAction.handle(
-      audiencePayload,
-      team.id,
-    );
+    const audience = await createAudienceAction.handle(audiencePayload, team.id)
 
     await seedAutomation({
       audienceId: audience.id,
       name: faker.commerce.productName(),
       description: faker.commerce.productDescription(),
-    });
+    })
 
-    const contactsCount = faker.helpers.rangeToNumber({ min: 50, max: 1000 });
+    const contactsCount = faker.helpers.rangeToNumber({ min: 50, max: 1000 })
 
-    audienceIds.push({ audienceId: audience.id, contactsCount });
+    audienceIds.push({ audienceId: audience.id, contactsCount })
 
     const mockContacts = faker.helpers
       .multiple(faker.person.firstName, {
@@ -120,21 +117,21 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
         audienceId: audience.id,
         subscribedAt: faker.date.past(),
         avatarUrl: faker.image.avatarGitHub(),
-      }));
+      }))
 
     console.log(
-      "Inserting contacts for audience:",
+      'Inserting contacts for audience:',
       `${mockContacts.length} mock contacts.`,
-    );
+    )
 
-    await database.insert(contacts).values(mockContacts);
+    await database.insert(contacts).values(mockContacts)
   }
 
-  console.log("\n Seeded data ✅ \n");
+  console.log('\n Seeded data ✅ \n')
 
   const accessToken = await container
     .make(AccessTokenRepository)
-    .createAccessToken(user);
+    .createAccessToken(user)
 
   console.dir(
     [
@@ -144,7 +141,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
       audienceIds,
     ],
     { depth: null },
-  );
+  )
 }
 
-connection.destroy();
+connection.destroy()

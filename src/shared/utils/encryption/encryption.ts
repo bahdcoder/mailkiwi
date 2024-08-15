@@ -1,67 +1,67 @@
-import { createCipheriv, createDecipheriv, createHash } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHash } from 'node:crypto'
 
-import { MessageBuilder, base64 } from "@poppinss/utils";
+import { MessageBuilder, base64 } from '@poppinss/utils'
 
-import string from "@/shared/utils/string.js";
+import string from '@/shared/utils/string.js'
 
-import { Hmac } from "./hmac.js";
-import { MessageVerifier } from "./message_verifier.js";
-import type { EncryptionOptions } from "./types.js";
+import { Hmac } from './hmac.js'
+import { MessageVerifier } from './message_verifier.js'
+import type { EncryptionOptions } from './types.js'
 
 export class Encryption {
-  #options: Required<EncryptionOptions>;
+  #options: Required<EncryptionOptions>
 
   /**
    * The key for signing and encrypting values. It is derived
    * from the user provided secret.
    */
-  #cryptoKey: Buffer;
+  #cryptoKey: Buffer
 
   /**
    * Use `dot` as a separator for joining encrypted value, iv and the
    * hmac hash. The idea is borrowed from JWTs.
    */
-  #separator = ".";
+  #separator = '.'
 
   /**
    * Reference to the instance of message verifier for signing
    * and verifying values.
    */
-  verifier: MessageVerifier;
+  verifier: MessageVerifier
 
   /**
    * Reference to base64 object for base64 encoding/decoding values
    */
-  base64: typeof base64 = base64;
+  base64: typeof base64 = base64
 
   /**
    * The algorithm in use
    */
-  get algorithm(): "aes-256-cbc" {
-    return this.#options.algorithm;
+  get algorithm(): 'aes-256-cbc' {
+    return this.#options.algorithm
   }
 
   constructor(options: EncryptionOptions) {
     const secretValue =
       options.secret &&
-      typeof options.secret === "object" &&
-      "release" in options.secret
+      typeof options.secret === 'object' &&
+      'release' in options.secret
         ? options.secret.release()
-        : options.secret;
+        : options.secret
 
-    this.#options = { algorithm: "aes-256-cbc", ...options };
-    this.#validateSecret(secretValue);
-    this.#cryptoKey = createHash("sha256").update(secretValue).digest();
-    this.verifier = new MessageVerifier(secretValue);
+    this.#options = { algorithm: 'aes-256-cbc', ...options }
+    this.#validateSecret(secretValue)
+    this.#cryptoKey = createHash('sha256').update(secretValue).digest()
+    this.verifier = new MessageVerifier(secretValue)
   }
 
   /**
    * Validates the app secret
    */
   #validateSecret(secret?: string) {
-    if (typeof secret !== "string") {
+    if (typeof secret !== 'string') {
       //   throw new errors.E_MISSING_APP_KEY()
-      throw new Error("");
+      throw new Error('')
     }
 
     if (secret.length < 16) {
@@ -88,29 +88,25 @@ export class Encryption {
     /**
      * Using a random string as the iv for generating unpredictable values
      */
-    const iv = string.random(16);
+    const iv = string.random(16)
 
     /**
      * Creating chiper
      */
-    const cipher = createCipheriv(this.algorithm, this.#cryptoKey, iv);
+    const cipher = createCipheriv(this.algorithm, this.#cryptoKey, iv)
 
     /**
      * Encoding value to a string so that we can set it on the cipher
      */
-    const encodedValue = new MessageBuilder().build(
-      payload,
-      expiresIn,
-      purpose,
-    );
+    const encodedValue = new MessageBuilder().build(payload, expiresIn, purpose)
 
     /**
      * Set final to the cipher instance and encrypt it
      */
     const encrypted = Buffer.concat([
-      cipher.update(encodedValue, "utf-8"),
+      cipher.update(encodedValue, 'utf-8'),
       cipher.final(),
-    ]);
+    ])
 
     /**
      * Concatenate `encrypted value` and `iv` by urlEncoding them. The concatenation is required
@@ -119,12 +115,12 @@ export class Encryption {
      */
     const result = `${this.base64.urlEncode(encrypted)}${this.#separator}${this.base64.urlEncode(
       iv,
-    )}`;
+    )}`
 
     /**
      * Returns the result + hmac
      */
-    return `${result}${this.#separator}${new Hmac(this.#cryptoKey).generate(result)}`;
+    return `${result}${this.#separator}${new Hmac(this.#cryptoKey).generate(result)}`
   }
 
   /**
@@ -132,33 +128,33 @@ export class Encryption {
    */
   // eslint-disable-next-line
   decrypt<T>(value: unknown, purpose?: string): T | null {
-    if (typeof value !== "string") {
-      return null;
+    if (typeof value !== 'string') {
+      return null
     }
 
     /**
      * Make sure the encrypted value is in correct format. ie
      * [encrypted value].[iv].[hash]
      */
-    const [encryptedEncoded, ivEncoded, hash] = value.split(this.#separator);
+    const [encryptedEncoded, ivEncoded, hash] = value.split(this.#separator)
     if (!encryptedEncoded || !ivEncoded || !hash) {
-      return null;
+      return null
     }
 
     /**
      * Make sure we are able to urlDecode the encrypted value
      */
-    const encrypted = this.base64.urlDecode(encryptedEncoded, "base64");
+    const encrypted = this.base64.urlDecode(encryptedEncoded, 'base64')
     if (!encrypted) {
-      return null;
+      return null
     }
 
     /**
      * Make sure we are able to urlDecode the iv
      */
-    const iv = this.base64.urlDecode(ivEncoded);
+    const iv = this.base64.urlDecode(ivEncoded)
     if (!iv) {
-      return null;
+      return null
     }
 
     /**
@@ -168,10 +164,10 @@ export class Encryption {
     const isValidHmac = new Hmac(this.#cryptoKey).compare(
       `${encryptedEncoded}${this.#separator}${ivEncoded}`,
       hash,
-    );
+    )
 
     if (!isValidHmac) {
-      return null;
+      return null
     }
 
     /**
@@ -179,12 +175,12 @@ export class Encryption {
      * to avoid leaking sensitive information
      */
     try {
-      const decipher = createDecipheriv(this.algorithm, this.#cryptoKey, iv);
+      const decipher = createDecipheriv(this.algorithm, this.#cryptoKey, iv)
       const decrypted =
-        decipher.update(encrypted, "base64", "utf8") + decipher.final("utf8");
-      return new MessageBuilder().verify(decrypted, purpose);
+        decipher.update(encrypted, 'base64', 'utf8') + decipher.final('utf8')
+      return new MessageBuilder().verify(decrypted, purpose)
     } catch {
-      return null;
+      return null
     }
   }
 
@@ -192,6 +188,6 @@ export class Encryption {
    * Create a children instance with different secret key
    */
   child(options?: EncryptionOptions) {
-    return new Encryption({ ...this.#options, ...options });
+    return new Encryption({ ...this.#options, ...options })
   }
 }

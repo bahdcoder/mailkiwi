@@ -1,14 +1,14 @@
-import type { Exception } from "@poppinss/utils";
+import type { Exception } from '@poppinss/utils'
 
-import type { MailerConfiguration } from "@/shared/types/mailer.js";
-import type { DeleteMailerIdentityDto } from "@/teams/dto/delete_mailer_identity_dto.js";
-import { CheckProviderCredentials } from "@/teams/helpers/check_provider_credentials.js";
-import { MailerIdentityRepository } from "@/teams/repositories/mailer_identity_repository.js";
-import { MailerRepository } from "@/teams/repositories/mailer_repository.js";
-import { E_OPERATION_FAILED } from "@/http/responses/errors.js";
-import type { Mailer, MailerIdentity, Team } from "@/database/schema/types.js";
-import { AwsSdk } from "@/ses/sdk.js";
-import { container } from "@/utils/typi.js";
+import type { MailerConfiguration } from '@/shared/types/mailer.js'
+import type { DeleteMailerIdentityDto } from '@/teams/dto/delete_mailer_identity_dto.js'
+import { CheckProviderCredentials } from '@/teams/helpers/check_provider_credentials.js'
+import { MailerIdentityRepository } from '@/teams/repositories/mailer_identity_repository.js'
+import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import type { Mailer, MailerIdentity, Team } from '@/database/schema/types.js'
+import { AwsSdk } from '@/ses/sdk.js'
+import { container } from '@/utils/typi.js'
 
 export class DeleteMailerIdentityAction {
   constructor(
@@ -29,16 +29,16 @@ export class DeleteMailerIdentityAction {
     const configuration = this.mailerRepository.getDecryptedConfiguration(
       mailer.configuration,
       team.configurationKey,
-    ) as MailerConfiguration;
+    ) as MailerConfiguration
 
     if (payload.deleteOnProvider) {
       // Implement provider-specific deletion logic here
       const credentialsAreValid = await new CheckProviderCredentials(
         configuration,
         mailer,
-      ).execute(true);
+      ).execute(true)
 
-      if (mailer.provider === "AWS_SES" && credentialsAreValid) {
+      if (mailer.provider === 'AWS_SES' && credentialsAreValid) {
         try {
           await new AwsSdk(
             configuration.accessKey,
@@ -46,15 +46,15 @@ export class DeleteMailerIdentityAction {
             configuration.region,
           )
             .sesService()
-            .deleteIdentity(mailerIdentity.value);
+            .deleteIdentity(mailerIdentity.value)
         } catch (error) {
           throw E_OPERATION_FAILED(
             `Could not delete identity on provider. Reason from provider: ${(error as Exception)?.message}`,
-          );
+          )
         }
       }
     }
 
-    await this.mailerIdentityRepository.delete(mailerIdentity.id);
-  };
+    await this.mailerIdentityRepository.delete(mailerIdentity.id)
+  }
 }

@@ -1,14 +1,14 @@
-import { container } from "@/utils/typi.js";
-import { SegmentRepository } from "@/audiences/repositories/segment_repository.ts";
-import type { Audience, Contact, Segment } from "@/database/schema/types.ts";
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts";
-import { makeDatabase } from "@/shared/container/index.js";
-import { contacts, tags, tagsOnContacts } from "@/database/schema/schema.ts";
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js";
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js";
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js";
-import { eq, inArray, type SQLWrapper } from "drizzle-orm";
-import { Paginator } from "@/shared/utils/pagination/paginator.ts";
+import { container } from '@/utils/typi.js'
+import { SegmentRepository } from '@/audiences/repositories/segment_repository.ts'
+import type { Audience, Contact, Segment } from '@/database/schema/types.ts'
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.ts'
+import { makeDatabase } from '@/shared/container/index.js'
+import { contacts, tags, tagsOnContacts } from '@/database/schema/schema.ts'
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
+import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
+import { eq, inArray, type SQLWrapper } from 'drizzle-orm'
+import { Paginator } from '@/shared/utils/pagination/paginator.ts'
 
 export class GetContactsAction {
   constructor(
@@ -23,38 +23,38 @@ export class GetContactsAction {
     page?: number,
     perPage?: number,
   ) => {
-    let segment: Segment | undefined;
-    let audience: Audience | undefined;
+    let segment: Segment | undefined
+    let audience: Audience | undefined
 
     if (!audienceId) {
-      throw E_VALIDATION_FAILED([{ message: "Audience id is required." }]);
+      throw E_VALIDATION_FAILED([{ message: 'Audience id is required.' }])
     }
 
-    const queryConditions: SQLWrapper[] = [];
+    const queryConditions: SQLWrapper[] = []
 
     if (audienceId) {
-      audience = await this.audienceRepository.findById(audienceId);
+      audience = await this.audienceRepository.findById(audienceId)
 
       if (!audience) {
         throw E_VALIDATION_FAILED([
           { message: `Audience with id ${audienceId} not found.` },
-        ]);
+        ])
       }
     }
 
     if (segmentId) {
-      segment = await this.segmentRepository.findById(segmentId);
+      segment = await this.segmentRepository.findById(segmentId)
 
       if (!segment)
         throw E_VALIDATION_FAILED([
           { message: `Segment with id ${segmentId} not found.` },
-        ]);
+        ])
 
       queryConditions.push(
         new SegmentBuilder(
-          segment.conditions as CreateSegmentDto["conditions"],
+          segment.conditions as CreateSegmentDto['conditions'],
         ).build(),
-      );
+      )
     }
 
     return new Paginator<Contact>(contacts)
@@ -71,15 +71,15 @@ export class GetContactsAction {
               tagsOnContacts.contactId,
               rows.map((row) => row.id),
             ),
-          );
+          )
 
         return rows.map((row) => ({
           ...row,
           tags: tagsForContacts
             .filter((tag) => tag.tagsOnContacts?.contactId === row.id)
             .map((relation) => relation.tags),
-        }));
+        }))
       })
-      .paginate();
-  };
+      .paginate()
+  }
 }

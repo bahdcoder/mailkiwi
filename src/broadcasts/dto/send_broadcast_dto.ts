@@ -1,7 +1,7 @@
-import { makeDatabase } from "@/shared/container/index.js";
-import { audiences } from "@/database/schema/schema.js";
-import { isDateInPast } from "@/utils/dates.js";
-import { eq } from "drizzle-orm";
+import { makeDatabase } from '@/shared/container/index.js'
+import { audiences } from '@/database/schema/schema.js'
+import { isDateInPast } from '@/utils/dates.js'
+import { eq } from 'drizzle-orm'
 import {
   type InferInput,
   boolean,
@@ -20,7 +20,7 @@ import {
   pipe,
   pipeAsync,
   string,
-} from "valibot";
+} from 'valibot'
 
 export const SendBroadcastEmailContentSchema = object({
   subject: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
@@ -34,7 +34,7 @@ export const SendBroadcastEmailContentSchema = object({
   contentHtml: pipe(string(), nonEmpty()),
 
   previewText: nullable(optional(string())),
-});
+})
 
 export const SendBroadcastSchema = objectAsync({
   name: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
@@ -42,13 +42,13 @@ export const SendBroadcastSchema = objectAsync({
   audienceId: pipeAsync(
     string(),
     checkAsync(async (value) => {
-      const database = makeDatabase();
+      const database = makeDatabase()
 
       const audience = await database.query.audiences.findFirst({
         where: eq(audiences.id, value),
-      });
+      })
 
-      return audience !== undefined;
+      return audience !== undefined
     }),
   ),
 
@@ -60,12 +60,12 @@ export const SendBroadcastSchema = objectAsync({
   sendAt: pipeAsync(
     nullable(optional(string())),
     check((input) => {
-      if (!input) return true;
-      const date = new Date(input);
+      if (!input) return true
+      const date = new Date(input)
 
-      return !Number.isNaN(date.getTime());
+      return !Number.isNaN(date.getTime())
     }),
   ),
-});
+})
 
-export type SendBroadcastDto = InferInput<typeof SendBroadcastSchema>;
+export type SendBroadcastDto = InferInput<typeof SendBroadcastSchema>

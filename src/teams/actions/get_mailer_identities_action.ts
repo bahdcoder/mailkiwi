@@ -1,12 +1,12 @@
-import type { VerificationStatus } from "@aws-sdk/client-ses";
+import type { VerificationStatus } from '@aws-sdk/client-ses'
 
-import type { MailerConfiguration } from "@/shared/types/mailer.js";
-import { MailerIdentityRepository } from "@/teams/repositories/mailer_identity_repository.js";
-import type { Mailer, MailerIdentity, Team } from "@/database/schema/types.js";
-import { AwsSdk } from "@/ses/sdk.js";
-import { container } from "@/utils/typi.js";
+import type { MailerConfiguration } from '@/shared/types/mailer.js'
+import { MailerIdentityRepository } from '@/teams/repositories/mailer_identity_repository.js'
+import type { Mailer, MailerIdentity, Team } from '@/database/schema/types.js'
+import { AwsSdk } from '@/ses/sdk.js'
+import { container } from '@/utils/typi.js'
 
-import { MailerRepository } from "@/teams/repositories/mailer_repository.js";
+import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
 
 export class GetMailerIdentitiesAction {
   constructor(
@@ -23,28 +23,28 @@ export class GetMailerIdentitiesAction {
     const configuration = this.mailerRepository.getDecryptedConfiguration(
       mailer.configuration,
       team.configurationKey,
-    ) as MailerConfiguration;
+    ) as MailerConfiguration
 
-    if (mailer.provider === "AWS_SES") {
+    if (mailer.provider === 'AWS_SES') {
       const attributes = await this.getAwsMailerIdentities(
         identities.map((identity) => identity.value),
         configuration,
-      );
+      )
 
       if (!attributes) {
-        return identities;
+        return identities
       }
 
-      const updatedIdentities: MailerIdentity[] = [];
+      const updatedIdentities: MailerIdentity[] = []
 
       for (const identity of identities) {
-        const attribute = attributes[identity.value];
+        const attribute = attributes[identity.value]
 
         const updated = {
           status: this.parseDkimStatusToDatabaseStatus(
-            identity.type === "EMAIL"
-              ? attribute.VerificationStatus ?? "Pending"
-              : attribute.DkimVerificationStatus ?? "Pending",
+            identity.type === 'EMAIL'
+              ? attribute.VerificationStatus ?? 'Pending'
+              : attribute.DkimVerificationStatus ?? 'Pending',
           ),
           configuration: {
             ...(identity.configuration as object),
@@ -54,45 +54,45 @@ export class GetMailerIdentitiesAction {
             MailFromDomain: attribute.MailFromDomain,
             BehaviorOnMXFailure: attribute.BehaviorOnMXFailure,
           },
-        };
+        }
 
-        await this.mailerIdentityRepository.update(identity.id, updated);
+        await this.mailerIdentityRepository.update(identity.id, updated)
 
-        updatedIdentities.push({ ...identity, ...updated });
+        updatedIdentities.push({ ...identity, ...updated })
       }
 
-      return updatedIdentities;
+      return updatedIdentities
     }
 
-    return identities;
-  };
+    return identities
+  }
 
   async getAwsMailerIdentities(
     identities: string[],
     configuration: MailerConfiguration,
   ) {
-    const { accessKey, accessSecret, region } = configuration;
+    const { accessKey, accessSecret, region } = configuration
 
     return new AwsSdk(accessKey, accessSecret, region)
       .sesService()
-      .getIdentitiesAttributes(identities);
+      .getIdentitiesAttributes(identities)
   }
 
   private parseDkimStatusToDatabaseStatus(
     dkimVerificationStatus: VerificationStatus,
-  ): Required<MailerIdentity["status"]> {
+  ): Required<MailerIdentity['status']> {
     switch (dkimVerificationStatus) {
-      case "Success":
-        return "APPROVED";
-      case "Failed":
-        return "FAILED";
-      case "Pending":
-      case "NotStarted":
-        return "PENDING";
-      case "TemporaryFailure":
-        return "TEMPORARILY_FAILED";
+      case 'Success':
+        return 'APPROVED'
+      case 'Failed':
+        return 'FAILED'
+      case 'Pending':
+      case 'NotStarted':
+        return 'PENDING'
+      case 'TemporaryFailure':
+        return 'TEMPORARILY_FAILED'
       default:
-        return "PENDING";
+        return 'PENDING'
     }
   }
 }

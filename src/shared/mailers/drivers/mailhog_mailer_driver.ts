@@ -1,17 +1,17 @@
-import { cuid } from "@/shared/utils/cuid/cuid.js";
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 import type {
   MailObject,
   MailerDriver,
   MailerDriverError,
   MailerDriverResponse,
-} from "@/shared/mailers/mailer_types.js";
+} from '@/shared/mailers/mailer_types.js'
 
 export interface MailhogDriverResponse {
-  ok: boolean;
+  ok: boolean
 }
 
 export interface MailhogDriverError {
-  message: string;
+  message: string
 }
 
 export class MailhogDriver implements MailerDriver {
@@ -21,16 +21,16 @@ export class MailhogDriver implements MailerDriver {
     mail: MailObject,
   ): Promise<[MailerDriverResponse, MailerDriverError]> {
     try {
-      const path = `${this.baseUrl}/api/send-email`;
+      const path = `${this.baseUrl}/api/send-email`
 
       d({
         [`Calling external api to send mail:${path}`]: mail.to.email,
-      });
+      })
 
       const response = await fetch(path, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           from: `${mail.from.name} <${mail.from.email}>`,
@@ -39,20 +39,20 @@ export class MailhogDriver implements MailerDriver {
           text: mail.content.text,
           html: mail.content.html,
         }),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error(`Failed to send email: ${response.statusText}`);
+        throw new Error(`Failed to send email: ${response.statusText}`)
       }
 
-      d(await response.json());
+      d(await response.json())
 
-      return [{ messageId: cuid() }, null];
+      return [{ messageId: cuid() }, null]
     } catch (error) {
       return [
         null,
-        error instanceof Error ? error : new Error("Unknown error occurred"),
-      ] as unknown as [MailerDriverResponse, MailerDriverError];
+        error instanceof Error ? error : new Error('Unknown error occurred'),
+      ] as unknown as [MailerDriverResponse, MailerDriverError]
     }
   }
 }

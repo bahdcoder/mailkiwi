@@ -1,9 +1,9 @@
-import type { Next } from "hono";
+import type { Next } from 'hono'
 
-import { TeamRepository } from "@/teams/repositories/team_repository.js";
-import { makeConfig } from "@/shared/container/index.js";
-import type { HonoContext } from "@/server/types.js";
-import { container } from "@/utils/typi.js";
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { makeConfig } from '@/shared/container/index.js'
+import type { HonoContext } from '@/server/types.js'
+import { container } from '@/utils/typi.js'
 
 export class TeamMiddleware {
   constructor(
@@ -11,22 +11,22 @@ export class TeamMiddleware {
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
-    const teamHeader = ctx.req.header(makeConfig().software.teamHeader);
+    const teamHeader = ctx.req.header(makeConfig().software.teamHeader)
 
     let team = teamHeader
       ? await this.teamRepository.findById(teamHeader)
-      : undefined;
+      : undefined
 
-    const accessToken = ctx.get("accessToken");
+    const accessToken = ctx.get('accessToken')
 
     if (!team && accessToken.userId) {
-      team = await this.teamRepository.findUserDefaultTeam(accessToken.userId);
+      team = await this.teamRepository.findUserDefaultTeam(accessToken.userId)
     }
 
     if (team) {
-      ctx.set("team", team);
+      ctx.set('team', team)
     }
 
-    await next();
-  };
+    await next()
+  }
 }

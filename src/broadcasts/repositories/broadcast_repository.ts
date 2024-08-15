@@ -1,24 +1,24 @@
-import type { CreateBroadcastDto } from "@/broadcasts/dto/create_broadcast_dto.js";
-import { BaseRepository } from "@/shared/repositories/base_repository.js";
-import { makeDatabase } from "@/shared/container/index.js";
-import type { DrizzleClient } from "@/database/client.js";
-import { broadcasts, sends } from "@/database/schema/schema.js";
+import type { CreateBroadcastDto } from '@/broadcasts/dto/create_broadcast_dto.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from '@/shared/container/index.js'
+import type { DrizzleClient } from '@/database/client.js'
+import { broadcasts, sends } from '@/database/schema/schema.js'
 import type {
   BroadcastWithEmailContent,
   UpdateSetBroadcastInput,
-} from "@/database/schema/types.js";
-import { eq, sql } from "drizzle-orm";
+} from '@/database/schema/types.js'
+import { eq, sql } from 'drizzle-orm'
 
 export class BroadcastRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
-    super();
+    super()
   }
 
   async create(data: CreateBroadcastDto, teamId: string) {
-    const id = this.cuid();
-    await this.database.insert(broadcasts).values({ ...data, id, teamId });
+    const id = this.cuid()
+    await this.database.insert(broadcasts).values({ ...data, id, teamId })
 
-    return { id };
+    return { id }
   }
 
   async summary(
@@ -40,9 +40,9 @@ export class BroadcastRepository extends BaseRepository {
       ${sends}
     WHERE
       broadcastId = ${broadcastId};
-  `);
+  `)
 
-    return query?.[0]?.[0];
+    return query?.[0]?.[0]
   }
 
   async update(
@@ -55,14 +55,14 @@ export class BroadcastRepository extends BaseRepository {
         ...payload,
         ...(sendAt ? { sendAt: new Date(sendAt as string) } : {}),
       })
-      .where(eq(broadcasts.id, id));
-    return { id };
+      .where(eq(broadcasts.id, id))
+    return { id }
   }
 
   async delete(id: string) {
-    await this.database.delete(broadcasts).where(eq(broadcasts.id, id));
+    await this.database.delete(broadcasts).where(eq(broadcasts.id, id))
 
-    return { id };
+    return { id }
   }
 
   async findById(id: string, opts?: { loadAbTestVariants?: boolean }) {
@@ -78,12 +78,12 @@ export class BroadcastRepository extends BaseRepository {
             }
           : undefined,
       },
-    });
+    })
 
-    return broadcast as BroadcastWithEmailContent;
+    return broadcast as BroadcastWithEmailContent
   }
 
   async findAll() {
-    return this.database.query.broadcasts.findMany();
+    return this.database.query.broadcasts.findMany()
   }
 }

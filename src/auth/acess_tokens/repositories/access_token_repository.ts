@@ -1,19 +1,19 @@
-import type { Secret } from "@poppinss/utils";
-import { eq } from "drizzle-orm";
+import type { Secret } from '@poppinss/utils'
+import { eq } from 'drizzle-orm'
 
-import { AccessToken } from "@/auth/acess_tokens/utils/access_token.js";
-import { BaseRepository } from "@/shared/repositories/base_repository.js";
-import { makeDatabase } from "@/shared/container/index.js";
-import type { DrizzleClient } from "@/database/client.js";
-import { accessTokens } from "@/database/schema/schema.js";
+import { AccessToken } from '@/auth/acess_tokens/utils/access_token.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from '@/shared/container/index.js'
+import type { DrizzleClient } from '@/database/client.js'
+import { accessTokens } from '@/database/schema/schema.js'
 
 export class AccessTokenRepository extends BaseRepository {
-  protected tokenSecretLength = 40;
-  protected tokenExpiresIn = 1000 * 60;
-  protected opaqueAccessTokenPrefix = "oat_";
+  protected tokenSecretLength = 40
+  protected tokenExpiresIn = 1000 * 60
+  protected opaqueAccessTokenPrefix = 'oat_'
 
   constructor(protected database: DrizzleClient = makeDatabase()) {
-    super();
+    super()
   }
 
   async createAccessToken(user: { id: string }) {
@@ -21,53 +21,53 @@ export class AccessTokenRepository extends BaseRepository {
       user.id,
       this.tokenSecretLength,
       this.tokenExpiresIn,
-    );
+    )
 
-    const id = this.cuid();
+    const id = this.cuid()
 
     await this.database.insert(accessTokens).values({
       id,
       userId: user.id,
-      type: "bearer",
+      type: 'bearer',
       // abilities: ["read", "write"],
       hash: transientAccessToken.hash,
       expiresAt: transientAccessToken.expiresAt,
-    });
+    })
 
     const instance = new AccessToken({
       identifier: id,
       tokenableId: user.id,
-      type: "bearer",
+      type: 'bearer',
       prefix: this.opaqueAccessTokenPrefix,
       secret: transientAccessToken.secret,
       createdAt: new Date(),
       lastUsedAt: new Date(),
       updatedAt: new Date(),
-      abilities: ["read", "write"],
+      abilities: ['read', 'write'],
       hash: transientAccessToken.hash,
-      name: "token",
+      name: 'token',
       expiresAt: transientAccessToken.expiresAt as Date,
-    });
+    })
 
-    return instance;
+    return instance
   }
 
   async verifyToken(token: Secret<string>) {
     const decodedToken = AccessToken.decode(
       this.opaqueAccessTokenPrefix,
       token.release(),
-    );
+    )
 
     if (!decodedToken) {
-      return null;
+      return null
     }
 
     const accessToken = await this.database.query.accessTokens.findFirst({
       where: eq(accessTokens.id, decodedToken.identifier),
-    });
+    })
 
     if (!accessToken) {
-      return null;
+      return null
     }
 
     const accessTokenInstance = new AccessToken({
@@ -79,18 +79,18 @@ export class AccessTokenRepository extends BaseRepository {
       lastUsedAt: accessToken.lastUsedAt,
       updatedAt: accessToken.createdAt,
       expiresAt: accessToken.expiresAt,
-      abilities: ["read", "write"],
+      abilities: ['read', 'write'],
       hash: accessToken.hash,
-      name: "Authentication token.",
-    });
+      name: 'Authentication token.',
+    })
 
     if (
       !accessTokenInstance.verify(decodedToken.secret) ||
       accessTokenInstance.isExpired()
     ) {
-      return null;
+      return null
     }
 
-    return { accessTokenInstance, accessToken };
+    return { accessTokenInstance, accessToken }
   }
 }

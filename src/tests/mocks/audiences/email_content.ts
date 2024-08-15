@@ -1,5 +1,5 @@
-import { faker } from "@faker-js/faker";
-import type { EmailContent } from "@/database/schema/types.ts";
+import { faker } from '@faker-js/faker'
+import type { EmailContent } from '@/database/schema/types.ts'
 
 export function createFakeEmailContent(overrides?: Partial<EmailContent>) {
   return {
@@ -11,7 +11,7 @@ export function createFakeEmailContent(overrides?: Partial<EmailContent>) {
     contentHtml: faker.lorem.paragraph(),
     contentText: faker.lorem.paragraph(),
     ...overrides,
-  };
+  }
 }
 
 export function createFakeAbTestEmailContent(overrides?: { weight?: number }) {
@@ -20,5 +20,5 @@ export function createFakeAbTestEmailContent(overrides?: { weight?: number }) {
     name: faker.lorem.words(2),
     weight: faker.number.int({ min: 1, max: 100 }),
     ...overrides,
-  };
+  }
 }

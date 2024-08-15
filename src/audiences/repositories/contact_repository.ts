@@ -1,28 +1,28 @@
-import { BaseRepository } from "@/shared/repositories/base_repository.js";
-import { makeDatabase } from "@/shared/container/index.js";
-import type { DrizzleClient } from "@/database/client.js";
-import { contacts, tagsOnContacts } from "@/database/schema/schema.js";
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from '@/shared/container/index.js'
+import type { DrizzleClient } from '@/database/client.js'
+import { contacts, tagsOnContacts } from '@/database/schema/schema.js'
 
-import type { UpdateSetContactInput } from "@/database/schema/types.js";
-import { and, eq, inArray } from "drizzle-orm";
-import type { CreateContactDto } from "@/audiences/dto/contacts/create_contact_dto.js";
+import type { UpdateSetContactInput } from '@/database/schema/types.js'
+import { and, eq, inArray } from 'drizzle-orm'
+import type { CreateContactDto } from '@/audiences/dto/contacts/create_contact_dto.js'
 
 export class ContactRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
-    super();
+    super()
   }
 
   findById(contactId: string) {
     return this.database.query.contacts.findFirst({
       where: eq(contacts.id, contactId),
-    });
+    })
   }
 
   async createContact(payload: CreateContactDto, audienceId: string) {
-    const id = this.cuid();
-    await this.database.insert(contacts).values({ ...payload, id, audienceId });
+    const id = this.cuid()
+    await this.database.insert(contacts).values({ ...payload, id, audienceId })
 
-    return { id };
+    return { id }
   }
 
   async update(
@@ -32,21 +32,21 @@ export class ContactRepository extends BaseRepository {
     await this.database
       .update(contacts)
       .set(updatedContact)
-      .where(eq(contacts.id, contactId));
+      .where(eq(contacts.id, contactId))
 
     // if new attributes found, sync them to the audience
 
-    return { id: contactId };
+    return { id: contactId }
   }
 
   async attachTags(contactId: string, tagIds: string[]) {
     const existingTags = await this.database.query.tagsOnContacts.findMany({
       where: eq(tagsOnContacts.contactId, contactId),
-    });
+    })
 
-    const existingTagIds = existingTags.map((t) => t.tagId);
+    const existingTagIds = existingTags.map((t) => t.tagId)
 
-    const newTagIds = tagIds.filter((id) => !existingTagIds.includes(id));
+    const newTagIds = tagIds.filter((id) => !existingTagIds.includes(id))
 
     if (newTagIds.length > 0) {
       await this.database.insert(tagsOnContacts).values(
@@ -55,10 +55,10 @@ export class ContactRepository extends BaseRepository {
           tagId,
           assignedAt: new Date(),
         })),
-      );
+      )
     }
 
-    return { id: contactId };
+    return { id: contactId }
   }
 
   async detachTags(contactId: string, tagIds: string[]) {
@@ -69,8 +69,8 @@ export class ContactRepository extends BaseRepository {
           eq(tagsOnContacts.contactId, contactId),
           inArray(tagsOnContacts.tagId, tagIds),
         ),
-      );
+      )
 
-    return { id: contactId };
+    return { id: contactId }
   }
 }

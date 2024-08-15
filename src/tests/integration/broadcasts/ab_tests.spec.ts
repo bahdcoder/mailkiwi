@@ -1,63 +1,60 @@
-import { MailerIdentityRepository } from "@/teams/repositories/mailer_identity_repository.js";
-import { MailerRepository } from "@/teams/repositories/mailer_repository.js";
-import { makeDatabase } from "@/shared/container/index.js";
+import { MailerIdentityRepository } from '@/teams/repositories/mailer_identity_repository.js'
+import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
+import { makeDatabase } from '@/shared/container/index.js'
 import {
   abTestVariants,
   broadcasts,
   mailers,
-} from "@/database/schema/schema.js";
+} from '@/database/schema/schema.js'
 import {
   createBroadcastForUser,
   createMailerForTeam,
   createUser,
-} from "@/tests/mocks/auth/users.js";
-import { refreshDatabase } from "@/tests/mocks/teams/teams.js";
-import { makeRequestAsUser } from "@/tests/utils/http.js";
-import { container } from "@/utils/typi.js";
-import {
-  GetAccountSendingEnabledCommand,
-  SESClient,
-} from "@aws-sdk/client-ses";
-import { SNSClient } from "@aws-sdk/client-sns";
-import { faker } from "@faker-js/faker";
-import { Secret } from "@poppinss/utils";
-import { mockClient } from "aws-sdk-client-mock";
-import { asc, eq } from "drizzle-orm";
-import { describe, test } from "vitest";
+} from '@/tests/mocks/auth/users.js'
+import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
+import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { container } from '@/utils/typi.js'
+import { GetAccountSendingEnabledCommand, SESClient } from '@aws-sdk/client-ses'
+import { SNSClient } from '@aws-sdk/client-sns'
+import { faker } from '@faker-js/faker'
+import { Secret } from '@poppinss/utils'
+import { mockClient } from 'aws-sdk-client-mock'
+import { asc, eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
-} from "@/tests/mocks/audiences/email_content.ts";
+} from '@/tests/mocks/audiences/email_content.ts'
 
-const SESMock = mockClient(SESClient);
-const SNSMock = mockClient(SNSClient);
+const SESMock = mockClient(SESClient)
+const SNSMock = mockClient(SNSClient)
 
-describe("Update broadcasts", () => {
-  test("can update a broadcast with ab test variants", async ({ expect }) => {
-    await refreshDatabase();
-    const { user, audience } = await createUser();
-    const database = makeDatabase();
-    const broadcastId = await createBroadcastForUser(user, audience.id);
+describe('Update broadcasts', () => {
+  test('can update a broadcast with ab test variants', async ({ expect }) => {
+    await refreshDatabase()
+    const { user, audience } = await createUser()
+    const database = makeDatabase()
+    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const abTestVariantsMock = [
       createFakeAbTestEmailContent({ weight: 10 }),
       createFakeAbTestEmailContent({ weight: 30 }),
       createFakeAbTestEmailContent({ weight: 50 }),
-    ];
+    ]
 
     const updateData = {
       name: faker.lorem.words(3),
       emailContent: createFakeEmailContent(),
       emailContentVariants: abTestVariantsMock,
-    };
+    }
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: updateData,
-    });
+    })
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(200)
     const updatedBroadcast = await database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, broadcastId),
       with: {
@@ -69,9 +66,9 @@ describe("Update broadcasts", () => {
           },
         },
       },
-    });
+    })
 
-    expect(updatedBroadcast?.isAbTest).toBe(true);
+    expect(updatedBroadcast?.isAbTest).toBe(true)
 
     const variantsEmailContent = updatedBroadcast?.abTestVariants.map(
       ({
@@ -97,49 +94,49 @@ describe("Update broadcasts", () => {
         contentHtml,
         contentText,
       }),
-    );
+    )
 
-    expect(variantsEmailContent).toStrictEqual(abTestVariantsMock);
-  });
+    expect(variantsEmailContent).toStrictEqual(abTestVariantsMock)
+  })
 
-  test("cannot update ab test variants if weights sum up to more than 100", async ({
+  test('cannot update ab test variants if weights sum up to more than 100', async ({
     expect,
   }) => {
-    await refreshDatabase();
-    const { user, audience } = await createUser();
-    const database = makeDatabase();
-    const broadcastId = await createBroadcastForUser(user, audience.id);
+    await refreshDatabase()
+    const { user, audience } = await createUser()
+    const database = makeDatabase()
+    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const abTestVariantsMock = [
       createFakeAbTestEmailContent({ weight: 10 }),
       createFakeAbTestEmailContent({ weight: 30 }),
       createFakeAbTestEmailContent({ weight: 75 }),
-    ];
+    ]
 
     const updateData = {
       name: faker.lorem.words(3),
       emailContent: createFakeEmailContent(),
       emailContentVariants: abTestVariantsMock,
-    };
+    }
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: updateData,
-    });
+    })
 
-    const json = await response.json();
+    const json = await response.json()
 
-    expect(response.status).toBe(422);
+    expect(response.status).toBe(422)
     expect(json).toMatchObject({
-      message: "Validation failed.",
+      message: 'Validation failed.',
       errors: [
         {
           message:
-            "The sum of all ab test variant weights must be less than 100.",
+            'The sum of all ab test variant weights must be less than 100.',
         },
       ],
-    });
+    })
 
     const updatedBroadcast = await database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, broadcastId),
@@ -152,8 +149,8 @@ describe("Update broadcasts", () => {
           },
         },
       },
-    });
+    })
 
-    expect(updatedBroadcast?.isAbTest).toBe(false);
-  });
-});
+    expect(updatedBroadcast?.isAbTest).toBe(false)
+  })
+})

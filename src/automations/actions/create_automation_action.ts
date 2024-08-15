@@ -1,6 +1,6 @@
-import type { CreateAutomationDto } from "@/automations//dto/create_automation_dto.js";
-import { AutomationRepository } from "@/automations/repositories/automation_repository.js";
-import { container } from "@/utils/typi.js";
+import type { CreateAutomationDto } from '@/automations//dto/create_automation_dto.js'
+import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
+import { container } from '@/utils/typi.js'
 
 export class CreateAutomationAction {
   constructor(
@@ -13,8 +13,8 @@ export class CreateAutomationAction {
     const automation = await this.automationRepository.create(
       payload,
       audienceId,
-    );
+    )
 
-    return automation;
-  };
+    return automation
+  }
 }

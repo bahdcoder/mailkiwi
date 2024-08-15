@@ -1,17 +1,17 @@
 import {
   AbTestsBroadcastsQueue,
   BroadcastsQueue,
-} from "@/shared/queue/queue.js";
-import { CheckProviderCredentials } from "@/teams/helpers/check_provider_credentials.js";
-import { MailerRepository } from "@/teams/repositories/mailer_repository.js";
-import { TeamRepository } from "@/teams/repositories/team_repository.js";
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js";
-import type { BroadcastWithoutContent } from "@/database/schema/types.js";
-import { differenceInSeconds } from "@/utils/dates.js";
-import { container } from "@/utils/typi.js";
-import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.js";
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js";
-import { SendAbTestBroadcastJob } from "../jobs/send_ab_test_broadcast_job.ts";
+} from '@/shared/queue/queue.js'
+import { CheckProviderCredentials } from '@/teams/helpers/check_provider_credentials.js'
+import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import type { BroadcastWithoutContent } from '@/database/schema/types.js'
+import { differenceInSeconds } from '@/utils/dates.js'
+import { container } from '@/utils/typi.js'
+import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { SendAbTestBroadcastJob } from '../jobs/send_ab_test_broadcast_job.ts'
 
 export class SendBroadcastAction {
   constructor(
@@ -25,15 +25,15 @@ export class SendBroadcastAction {
   ) {}
 
   async handle(broadcast: BroadcastWithoutContent) {
-    const team = await this.teamRepository.findById(broadcast.teamId);
+    const team = await this.teamRepository.findById(broadcast.teamId)
 
-    if (team?.mailer?.status !== "READY")
+    if (team?.mailer?.status !== 'READY')
       throw E_VALIDATION_FAILED([
         {
           message:
-            "Cannot send a broadcast without configuring a valid mailer.",
+            'Cannot send a broadcast without configuring a valid mailer.',
         },
-      ]);
+      ])
 
     const configurationIsValid = await new CheckProviderCredentials(
       this.mailerRepository.getDecryptedConfiguration(
@@ -43,15 +43,15 @@ export class SendBroadcastAction {
       team.mailer,
     )
       .checkSendingEnabled()
-      .execute();
+      .execute()
 
     if (!configurationIsValid)
       throw E_VALIDATION_FAILED([
         {
           message:
-            "Could not verify AWS access. Please make sure your provider configuration is valid.",
+            'Could not verify AWS access. Please make sure your provider configuration is valid.',
         },
-      ]);
+      ])
 
     if (broadcast.isAbTest) {
       await AbTestsBroadcastsQueue.add(
@@ -62,7 +62,7 @@ export class SendBroadcastAction {
             ? differenceInSeconds(new Date(), broadcast.sendAt)
             : 0,
         },
-      );
+      )
     }
 
     if (!broadcast.isAbTest) {
@@ -74,11 +74,11 @@ export class SendBroadcastAction {
             ? differenceInSeconds(new Date(), broadcast.sendAt)
             : 0,
         },
-      );
+      )
     }
 
     await this.broadcastRepository.update(broadcast.id, {
-      status: "QUEUED_FOR_SENDING",
-    });
+      status: 'QUEUED_FOR_SENDING',
+    })
   }
 }

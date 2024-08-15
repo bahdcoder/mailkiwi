@@ -1,14 +1,14 @@
-import type { UpdateMailerDto } from "@/teams/dto/mailers/update_mailer_dto.js";
-import { MailerRepository } from "@/teams/repositories/mailer_repository.js";
+import type { UpdateMailerDto } from '@/teams/dto/mailers/update_mailer_dto.js'
+import { MailerRepository } from '@/teams/repositories/mailer_repository.js'
 import {
   E_OPERATION_FAILED,
   E_VALIDATION_FAILED,
-} from "@/http/responses/errors.js";
-import { makeConfig, makeDatabase, makeEnv } from "@/shared/container/index.js";
-import type { DrizzleClient } from "@/database/client.js";
-import type { Mailer, Team } from "@/database/schema/types.js";
-import { AwsSdk } from "@/ses/sdk.js";
-import { container } from "@/utils/typi.js";
+} from '@/http/responses/errors.js'
+import { makeConfig, makeDatabase, makeEnv } from '@/shared/container/index.js'
+import type { DrizzleClient } from '@/database/client.js'
+import type { Mailer, Team } from '@/database/schema/types.js'
+import { AwsSdk } from '@/ses/sdk.js'
+import { container } from '@/utils/typi.js'
 
 export class InstallMailerAction {
   constructor(
@@ -22,70 +22,70 @@ export class InstallMailerAction {
     const configuration = this.mailerRepository.getDecryptedConfiguration(
       mailer.configuration,
       team.configurationKey,
-    );
+    )
 
     if (!configuration.region) {
       throw E_VALIDATION_FAILED([
         {
-          message: "Region is not defined for this mailer.",
-          field: "configuration.region",
+          message: 'Region is not defined for this mailer.',
+          field: 'configuration.region',
         },
-      ]);
+      ])
     }
 
-    let installed = false;
+    let installed = false
 
     switch (mailer.provider) {
-      case "AWS_SES":
+      case 'AWS_SES':
         installed = await this.installSes(
           configuration,
           mailer,
           `${makeEnv().APP_URL}/webhooks/ses`,
-        );
-        break;
+        )
+        break
       default:
-        installed = false;
+        installed = false
     }
 
     if (installed) {
       await this.mailerRepository.update(
         mailer,
         {
-          status: "CREATING_IDENTITIES",
+          status: 'CREATING_IDENTITIES',
           installationCompletedAt: new Date(),
         },
         team,
-      );
+      )
     }
 
-    return installed;
-  };
+    return installed
+  }
 
   private async installSes(
-    configuration: UpdateMailerDto["configuration"],
+    configuration: UpdateMailerDto['configuration'],
     mailer: Mailer,
     endpoint: string,
   ) {
     if (!configuration.region) {
-      return false;
+      return false
     }
 
     const sdk = new AwsSdk(
       configuration.accessKey,
       configuration.accessSecret,
       configuration.region,
-    );
+    )
 
-    const configurationSetName = `${makeConfig().software.shortName}_${mailer.id}`;
+    const configurationSetName = `${makeConfig().software.shortName}_${mailer.id}`
 
     try {
-      await sdk.install(configurationSetName, endpoint);
+      await sdk.install(configurationSetName, endpoint)
 
-      return true;
+      return true
     } catch (error) {
-      await sdk.uninstall(configurationSetName);
+      await sdk.uninstall(configurationSetName)
 
-      throw error;
+      throw error
     }
   }
 }
