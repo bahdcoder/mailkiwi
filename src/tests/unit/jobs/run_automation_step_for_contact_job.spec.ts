@@ -1,7 +1,6 @@
 import { describe, test, vi } from 'vitest'
 import { createUser } from '@/tests/mocks/auth/users.ts'
-import * as queues from '@/shared/queue/queue.js'
-import { Mailer } from '@/shared/mailers/mailer.js'
+import { MailBuilder, Mailer } from '@/shared/mailers/mailer.js'
 import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.ts'
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
 import {
@@ -10,11 +9,8 @@ import {
   tagsOnContacts,
 } from '@/database/schema/schema.ts'
 import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.ts'
-import { Job } from 'bullmq'
 import { cuid } from '@/shared/utils/cuid/cuid.ts'
 import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.ts'
-import type { MailerDriver } from '@/shared/mailers/mailer_types.ts'
 import { and, eq } from 'drizzle-orm'
 import { container } from '@/utils/typi.ts'
 import { ContactRepository } from '@/audiences/repositories/contact_repository.ts'
@@ -37,11 +33,13 @@ describe('Run automation step for contact job', () => {
 
     const fakeSendFn = vi.fn(() => [{ messageId }] as any)
 
-    class FakeDriver implements MailerDriver {
+    class FakeMailer extends MailBuilder {
       send = fakeSendFn
     }
 
-    Mailer.setDriver(new FakeDriver())
+    vi.spyOn(Mailer, 'from').mockImplementation(() => {
+      return new FakeMailer({} as any) as any
+    })
 
     const contactId = cuid()
 
@@ -98,14 +96,6 @@ describe('Run automation step for contact job', () => {
         audienceId: audience.id,
       },
     )
-
-    const automationsQueueMock = vi
-      .spyOn(queues.AutomationsQueue, 'add')
-      .mockImplementation(
-        async () => new Job(queues.AutomationsQueue, SendBroadcastJob.id, {}),
-      )
-
-    const messageId = cuid()
 
     const contactId = cuid()
 

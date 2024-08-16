@@ -60,6 +60,8 @@ export class BroadcastRepository extends BaseRepository {
   }
 
   async findAll() {
-    return this.database.query.broadcasts.findMany()
+    return this.database.query.broadcasts.findMany({
+      with: { abTestVariants: true },
+    })
   }
 }

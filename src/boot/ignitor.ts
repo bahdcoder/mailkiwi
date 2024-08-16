@@ -38,7 +38,6 @@ export class Ignitor {
   protected config: ConfigVariables
   protected app: HonoInstance
   protected database: DrizzleClient
-  protected mailer: MailerDriver
   protected redis: Redis
 
   boot() {
@@ -56,12 +55,6 @@ export class Ignitor {
 
   bootHttpServer() {
     this.app = new Hono()
-
-    return this
-  }
-
-  mailerDriver(makeDriver: (env: EnvVariables) => MailerDriver) {
-    Mailer.setDriver(makeDriver(this.env))
 
     return this
   }

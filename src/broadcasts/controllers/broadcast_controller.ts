@@ -17,6 +17,7 @@ import type { HonoInstance } from '@/server/hono.js'
 import type { HonoContext } from '@/server/types.js'
 import { container } from '@/utils/typi.js'
 import { safeParseAsync } from 'valibot'
+import { GetBroadcastsAction } from '../actions/get_broadcasts_action.ts'
 
 export class BroadcastController extends BaseController {
   constructor(
@@ -27,9 +28,15 @@ export class BroadcastController extends BaseController {
   ) {
     super()
 
-    this.app.defineRoutes([['POST', '/', this.create]], {
-      prefix: 'broadcasts',
-    })
+    this.app.defineRoutes(
+      [
+        ['POST', '/', this.create],
+        ['GET', '/', this.index],
+      ],
+      {
+        prefix: 'broadcasts',
+      },
+    )
 
     this.app.defineRoutes(
       [
@@ -40,6 +47,16 @@ export class BroadcastController extends BaseController {
       ],
       { prefix: 'broadcasts/:broadcastId' },
     )
+  }
+
+  index = async (ctx: HonoContext) => {
+    await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
+      ctx,
+    )
+
+    const broadcasts = await container.resolve(GetBroadcastsAction).handle()
+
+    return ctx.json(broadcasts)
   }
 
   create = async (ctx: HonoContext) => {
@@ -118,10 +135,10 @@ export class BroadcastController extends BaseController {
         { message: 'Only a draft broadcast can be sent.', field: 'status' },
       ])
 
-    const { success, issues } = await safeParseAsync(
-      SendBroadcastSchema,
-      broadcast,
-    )
+    const { success, issues } = await safeParseAsync(SendBroadcastSchema, {
+      ...broadcast,
+      sendAt: broadcast.sendAt?.toString(),
+    })
 
     if (!success) throw E_VALIDATION_FAILED(issues)
 

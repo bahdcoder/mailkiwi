@@ -1,6 +1,5 @@
 import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
 import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.js'
-import { MailhogDriver } from '@/shared/mailers/drivers/mailhog_mailer_driver.js'
 import type { BaseJob } from '@/shared/queue/abstract_job.js'
 import { SendTransactionalEmailJob } from '@/transactional/jobs/send_transactional_email_job.js'
 import { Ignitor } from '@/boot/ignitor.js'
@@ -14,7 +13,6 @@ export class WorkerIgnitor extends Ignitor {
   async start() {
     await this.startDatabaseConnector()
 
-    this.mailerDriver(({ SMTP_TEST_URL }) => new MailhogDriver(SMTP_TEST_URL))
     this.registerJobs()
 
     return this
@@ -54,9 +52,17 @@ export class WorkerIgnitor extends Ignitor {
         queue,
         async (job) => this.processJob(job),
         {
-          connection: { host: 'localhost', port: 6379 },
+          connection: makeRedis(),
         },
       )
+
+      this.workers[idx].on('completed', function jobCompleted(job) {
+        d(['Completed:', job.id, job.data])
+      })
+
+      this.workers[idx].on('failed', function jobFailed(job, error) {
+        d(['Failed:', job?.id, job?.data, error?.message, error])
+      })
     }
 
     d(`Queue listening for jobs on queues: ${queueNames.join(', ')}`)

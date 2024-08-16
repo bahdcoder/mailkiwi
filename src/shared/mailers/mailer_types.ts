@@ -13,6 +13,7 @@ export interface MailObject {
   preview?: string
   from: MailerContact
   to: MailerContact
+  replyTo: MailerContact
   content: MailContent
   personalise?: Record<string, any>
 }

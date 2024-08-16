@@ -125,59 +125,12 @@ CREATE TABLE `emails` (
 	CONSTRAINT `emails_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `mailerIdentities` (
-	`id` varchar(40) NOT NULL,
-	`mailerId` varchar(32),
-	`value` varchar(50) NOT NULL,
-	`type` enum('EMAIL','DOMAIN') NOT NULL,
-	`status` enum('PENDING','APPROVED','DENIED','FAILED','TEMPORARILY_FAILED') NOT NULL DEFAULT 'PENDING',
-	`configuration` json,
-	`confirmedApprovalAt` timestamp,
-	CONSTRAINT `mailerIdentities_id` PRIMARY KEY(`id`)
-);
---> statement-breakpoint
-CREATE TABLE `mailers` (
-	`id` varchar(40) NOT NULL,
-	`name` varchar(50) NOT NULL,
-	`configuration` varchar(512) NOT NULL,
-	`default` boolean,
-	`provider` enum('AWS_SES','POSTMARK','MAILGUN') NOT NULL,
-	`status` enum('READY','PENDING','INSTALLING','CREATING_IDENTITIES','SENDING_TEST_EMAIL','DISABLED','ACCOUNT_SENDING_NOT_ENABLED','ACCESS_KEYS_LOST_PROVIDER_ACCESS') NOT NULL DEFAULT 'PENDING',
-	`teamId` varchar(512) NOT NULL,
-	`sendingEnabled` boolean NOT NULL DEFAULT false,
-	`inSandboxMode` boolean NOT NULL DEFAULT true,
-	`max24HourSend` int,
-	`maxSendRate` int,
-	`sentLast24Hours` int,
-	`testEmailSentAt` timestamp,
-	`installationCompletedAt` timestamp,
-	CONSTRAINT `mailers_id` PRIMARY KEY(`id`),
-	CONSTRAINT `mailers_teamId_unique` UNIQUE(`teamId`)
-);
---> statement-breakpoint
 CREATE TABLE `segments` (
 	`id` varchar(40) NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`audienceId` varchar(32) NOT NULL,
 	`conditions` json NOT NULL,
 	CONSTRAINT `segments_id` PRIMARY KEY(`id`)
-);
---> statement-breakpoint
-CREATE TABLE `sends` (
-	`id` varchar(40) NOT NULL,
-	`type` enum('AUTOMATION','TRANSACTIONAL','BROADCAST') NOT NULL,
-	`status` enum('PENDING','SENT','FAILED') NOT NULL,
-	`email` varchar(80),
-	`contactId` varchar(32) NOT NULL,
-	`broadcastId` varchar(32),
-	`variantId` varchar(32),
-	`sentAt` timestamp,
-	`timeoutAt` timestamp,
-	`messageId` varchar(255),
-	`logs` json,
-	`openCount` int NOT NULL DEFAULT 0,
-	`automationStepId` varchar(32),
-	CONSTRAINT `sends_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `settings` (
@@ -270,13 +223,7 @@ ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_cont
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emails` ADD CONSTRAINT `emails_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emails` ADD CONSTRAINT `emails_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `mailerIdentities` ADD CONSTRAINT `mailerIdentities_mailerId_mailers_id_fk` FOREIGN KEY (`mailerId`) REFERENCES `mailers`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `mailers` ADD CONSTRAINT `mailers_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `segments` ADD CONSTRAINT `segments_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `sends` ADD CONSTRAINT `sends_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `sends` ADD CONSTRAINT `sends_broadcastId_broadcasts_id_fk` FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `sends` ADD CONSTRAINT `sends_variantId_abTestVariants_id_fk` FOREIGN KEY (`variantId`) REFERENCES `abTestVariants`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `sends` ADD CONSTRAINT `sends_automationStepId_automationSteps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automationSteps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `tags` ADD CONSTRAINT `tags_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `tagsOnContacts` ADD CONSTRAINT `tagsOnContacts_tagId_tags_id_fk` FOREIGN KEY (`tagId`) REFERENCES `tags`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `tagsOnContacts` ADD CONSTRAINT `tagsOnContacts_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint

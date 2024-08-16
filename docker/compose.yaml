@@ -14,9 +14,9 @@ services:
     volumes:
       - clickhouse_data:/var/lib/clickhouse
     ulimits:
-        nofile:
-          soft: 262144
-          hard: 262144
+      nofile:
+        soft: 262144
+        hard: 262144
     environment:
       CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
       CLICKHOUSE_PASSWORD: password
@@ -40,10 +40,9 @@ services:
       - 5571:8025
       - 5572:1025
     environment:
-      MP_MAX_MESSAGES: 50000
-      MP_DATABASE: /data/mailpit.db
-      MP_SMTP_AUTH_ACCEPT_ANY: 1
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+      MP_MAX_MESSAGES: 500000
+      SMTP_USER: kibamail
+      SMTP_PASS: password
 
 volumes:
   mysql_data:

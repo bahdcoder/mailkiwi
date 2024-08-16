@@ -10,6 +10,7 @@ import {
   pipe,
   safeParse,
   string,
+  number,
 } from 'valibot'
 
 export type EnvVariables = {
@@ -21,13 +22,15 @@ export type EnvVariables = {
   CLICKHOUSE_DATABASE_URL: string
   REDIS_URL: string
   NODE_ENV: 'development' | 'test' | 'production'
-  SMTP_TEST_URL: string
+
   isTest: boolean
   isProd: boolean
   isDev: boolean
-  TEST_AWS_KEY: string
-  TEST_AWS_SECRET: string
-  TEST_AWS_REGION: string
+
+  SMTP_HOST: string
+  SMTP_PORT: number
+  SMTP_USER: string
+  SMTP_PASS: string
 }
 
 export type ConfigVariables = typeof config
@@ -51,13 +54,16 @@ const envValidationSchema = object({
   REDIS_URL: pipe(string(), nonEmpty()),
   DATABASE_URL: pipe(string(), nonEmpty()),
   NODE_ENV: picklist(['development', 'test', 'production']),
-  SMTP_TEST_URL: pipe(string(), nonEmpty(), url()),
-  TEST_AWS_KEY: optional(string()),
-  TEST_AWS_SECRET: optional(string()),
-  TEST_AWS_REGION: optional(string()),
+  SMTP_HOST: pipe(string(), nonEmpty()),
+  SMTP_PORT: number(),
+  SMTP_USER: pipe(string(), nonEmpty()),
+  SMTP_PASS: pipe(string(), nonEmpty()),
 })
 
-const parsed = safeParse(envValidationSchema, process.env)
+const parsed = safeParse(envValidationSchema, {
+  ...process.env,
+  SMTP_PORT: Number.parseInt(process.env.SMTP_PORT ?? ''),
+})
 
 if (!parsed.success) {
   console.dir({

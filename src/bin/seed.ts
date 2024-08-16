@@ -8,11 +8,19 @@ import {
   createDatabaseClient,
   createDrizzleDatabase,
 } from '@/database/client.js'
-import { contacts, teams } from '@/database/schema/schema.js'
+import { broadcasts, contacts, teams } from '@/database/schema/schema.js'
 import { env } from '@/shared/env/index.js'
 import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
 import { container } from '@/utils/typi.js'
 import { eq } from 'drizzle-orm'
+import { CreateBroadcastAction } from '@/broadcasts/actions/create_broadcast_action.ts'
+import { UpdateBroadcastAction } from '@/broadcasts/actions/update_broadcast_action.ts'
+import type { Broadcast } from '@/database/schema/types.ts'
+
+import Fs from 'node:fs/promises'
+import Path from 'node:path'
+import { addSecondsToDate } from '@/utils/dates.ts'
+import { fileURLToPath } from 'node:url'
 
 const connection = await createDatabaseClient(env.DATABASE_URL)
 
@@ -38,43 +46,9 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     password: 'password',
   })
 
-  const teamObject = await database.query.teams.findFirst({
-    where: eq(teams.id, team.id),
-  })
-
-  // await container.make(CreateMailerAction).handle()
-
-  // const { id: mailerId } = await container.make(MailerRepository).create(
-  //   {
-  //     name: faker.lorem.words(5),
-  //     provider: 'AWS_SES',
-  //     configuration: {
-  //       accessKey: new Secret(env.TEST_AWS_KEY ?? faker.string.uuid()),
-  //       accessSecret: new Secret(env.TEST_AWS_SECRET ?? faker.string.uuid()),
-  //       region: (env.TEST_AWS_REGION ??
-  //         'us-east-1') as ConfigurationObjectInput['region'],
-  //       domain: 'newsletter.example.com',
-  //       email: undefined,
-  //     },
-  //   },
-  //   teamObject as Team,
-  // )
-
-  // await database
-  //   .update(mailers)
-  //   .set({ status: 'READY' })
-  //   .where(eq(mailers.id, mailerId))
-  //   .execute()
-
-  // await container.make(MailerIdentityRepository).create(
-  //   {
-  //     value: 'newsletter.example.com',
-  //     type: 'DOMAIN',
-  //   },
-  //   mailerId,
-  // )
-
   const audienceIds = []
+
+  const broadcastIds = []
 
   for (let audienceIndex = 0; audienceIndex < 5; audienceIndex++) {
     const audiencePayload = { name: faker.commerce.productName() }
@@ -120,6 +94,49 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     )
 
     await database.insert(contacts).values(mockContacts)
+
+    // create a broadcast with complete information
+    const { id: broadcastId } = await container
+      .make(CreateBroadcastAction)
+      .handle(
+        {
+          name: faker.commerce.productName(),
+          audienceId: audience.id,
+        },
+        team.id,
+      )
+
+    const broadcast = await database.query.broadcasts.findFirst({
+      where: eq(broadcasts.id, broadcastId),
+    })
+
+    await container.make(UpdateBroadcastAction).handle(broadcast as Broadcast, {
+      emailContent: {
+        fromEmail: faker.internet.email(),
+        fromName: faker.person.fullName(),
+        replyToEmail: faker.internet.email(),
+        replyToName: faker.person.fullName(),
+        subject: faker.lorem.words(5),
+        previewText: faker.lorem.words(5),
+        contentHtml: await Fs.readFile(
+          Path.resolve(
+            Path.dirname(fileURLToPath(import.meta.url)),
+            '..',
+            'tests',
+            'mocks',
+            'emails',
+            'hotel-booking.html',
+          ),
+          'utf-8',
+        ),
+        contentText: faker.lorem.paragraphs(12),
+      },
+      segmentId: undefined,
+      audienceId: undefined,
+      sendAt: addSecondsToDate(new Date(), 300).toDateString(),
+    })
+
+    broadcastIds.push({ broadcastId, audienceId: audience.id })
   }
 
   console.log('\n Seeded data ✅ \n')
@@ -132,8 +149,8 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     [
       [{ userId: user.id, accessToken: accessToken.toJSON().token }],
       [{ teamId: team.id }],
-      // [{ mailerId: mailerId }],
       audienceIds,
+      broadcastIds,
     ],
     { depth: null },
   )
