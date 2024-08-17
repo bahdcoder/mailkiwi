@@ -79,6 +79,7 @@
    - If IP warming is configured, Haraka also does IP warming rate limits for the email client that connected.
 4. Haraka instances pick which IP to use for relaying/sending, from our subnet of ip addresses
 
+   -
    - Completely isolate subnets used for transactional and marketing infrastructure. 2 different infrastructures. Ideally 2 different email servers.
    - When customers use the SMTP to send emails, Haraka automatically qualifies them as transactional email
    - When an email is coming from Kibamail, then these emails are marketing emails.
@@ -89,3 +90,19 @@
    - Haraka keeps a per client rate limit.
 
 5. Haraka instances send email
+
+## Cloud architecture
+
+1. Kubernetes runs the following services:
+   - Kafka for events processing, clickhouse ingesting
+   - Redis for Queueing
+   - BullMQ background Workers
+   - MySQL database
+   - Clickhouse database
+   - NodeJS API
+   - Kafka consumers (NodeJS apps running)
+   - Load balancers for API
+2. Manual provision of SMTP servers:
+   - Redis for authentication
+   - HAProxy for smtp load balancing (High availability)
+   - Haraka mail servers on dedicated servers

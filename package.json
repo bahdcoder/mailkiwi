@@ -26,9 +26,14 @@
     "clickhouse:migrate:dev": "env-cmd -e development tsx src/bin/clickhouse.ts run",
     "mysql:migrate": "pnpm drizzle-kit migrate --config=./src/database/drizzle.config.ts",
     "mysql:migrate:make": "env-cmd -e development pnpm drizzle-kit generate --config=./src/database/drizzle.config.ts",
+    "haraka:dev": "haraka -c src/haraka",
     "mysql:studio": "pnpm drizzle-kit studio --config=./src/database/drizzle.config.ts"
   },
-  "keywords": ["open source", "email marketing", "transactional email"],
+  "keywords": [
+    "open source",
+    "email marketing",
+    "transactional email"
+  ],
   "author": "Frantz Kati <hey@katifrantz.com>",
   "license": "ISC",
   "description": "Kiba: The developer friendly email platform for modern businesses.",
@@ -77,6 +82,7 @@
     "@poppinss/utils": "^6.7.3",
     "bullmq": "^5.10.4",
     "env-cmd": "^10.1.0",
+    "haraka": "^0.0.33",
     "hono": "^4.5.0",
     "ioredis": "^5.4.1",
     "mysql2": "^3.10.3",
