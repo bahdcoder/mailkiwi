@@ -16,9 +16,12 @@ export class AccessTokenRepository extends BaseRepository {
     super()
   }
 
-  async createAccessToken(user: { id: string }) {
+  async createAccessToken(
+    owner: { id: string },
+    type: 'user' | 'team' = 'user',
+  ) {
     const transientAccessToken = AccessToken.createTransientToken(
-      user.id,
+      owner.id,
       this.tokenSecretLength,
       this.tokenExpiresIn,
     )
@@ -27,7 +30,7 @@ export class AccessTokenRepository extends BaseRepository {
 
     await this.database.insert(accessTokens).values({
       id,
-      userId: user.id,
+      ...(type === 'user' ? { userId: owner.id } : { teamId: owner.id }),
       type: 'bearer',
       // abilities: ["read", "write"],
       hash: transientAccessToken.hash,
@@ -36,7 +39,7 @@ export class AccessTokenRepository extends BaseRepository {
 
     const instance = new AccessToken({
       identifier: id,
-      tokenableId: user.id,
+      tokenableId: owner.id,
       type: 'bearer',
       prefix: this.opaqueAccessTokenPrefix,
       secret: transientAccessToken.secret,

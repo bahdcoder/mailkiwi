@@ -1,4 +1,4 @@
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 import { makeEnv } from '@/shared/container/index.ts'
 
 export interface LinkMetadata {
@@ -21,7 +21,7 @@ export class EmailLinkManager {
     })
 
     const hash = crypto
-      .createHmac('sha1', this.env.APP_KEY)
+      .createHmac('sha1', this.env.APP_KEY.release())
       .update(data)
       .digest('base64url')
       .slice(0, 10)
@@ -43,7 +43,7 @@ export class EmailLinkManager {
     const decodedData = Buffer.from(encodedData, 'base64url').toString()
 
     const computedHash = crypto
-      .createHmac('sha1', this.env.APP_KEY)
+      .createHmac('sha1', this.env.APP_KEY.release())
       .update(decodedData)
       .digest('base64url')
       .slice(0, 10)

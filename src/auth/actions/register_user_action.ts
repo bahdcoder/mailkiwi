@@ -7,18 +7,21 @@ import { container } from '@/utils/typi.js'
 
 export class RegisterUserAction {
   constructor(
-    private userRepository: UserRepository = container.make(UserRepository),
-    private teamRepository: TeamRepository = container.make(TeamRepository),
+    private userRepository = container.make(UserRepository),
+    private teamRepository = container.make(TeamRepository),
     private database: DrizzleClient = makeDatabase(),
   ) {}
 
   handle = async (payload: CreateUserDto) => {
-    const user = await this.userRepository.create(payload)
+    const { user, team } = await this.database.transaction(async (tx) => {
+      const user = await this.userRepository.transaction(tx).create(payload)
 
-    const team = await this.teamRepository.create(
-      { name: payload.name },
-      user.id,
-    )
+      const team = await this.teamRepository
+        .transaction(tx)
+        .create({ name: payload.name }, user.id)
+
+      return { user, team }
+    })
 
     return { user, team }
   }

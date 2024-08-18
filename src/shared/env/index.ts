@@ -1,3 +1,4 @@
+import { Secret } from '@poppinss/utils'
 import {
   url,
   ip,
@@ -16,7 +17,7 @@ import {
 export type EnvVariables = {
   PORT: number
   HOST: string
-  APP_KEY: string
+  APP_KEY: Secret<string>
   APP_URL: string
   DATABASE_URL: string
   CLICKHOUSE_DATABASE_URL: string
@@ -74,7 +75,14 @@ if (!parsed.success) {
   })
 }
 
-export const env = parsed.output as EnvVariables
+const parsedOutput = parsed.output as Omit<EnvVariables, 'APP_KEY'> & {
+  APP_KEY: string
+}
+
+export const env = {
+  ...parsedOutput,
+  APP_KEY: new Secret(parsedOutput.APP_KEY as string),
+} as EnvVariables
 
 env.isTest = env.NODE_ENV === 'test'
 env.isProd = env.NODE_ENV === 'production'

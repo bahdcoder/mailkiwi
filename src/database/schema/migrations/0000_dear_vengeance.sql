@@ -178,7 +178,6 @@ CREATE TABLE `teams` (
 	`userId` varchar(32) NOT NULL,
 	`trackClicks` boolean,
 	`trackOpens` boolean,
-	`configurationKey` varchar(512) NOT NULL,
 	`broadcastEditor` enum('DEFAULT','MARKDOWN'),
 	CONSTRAINT `teams_id` PRIMARY KEY(`id`)
 );

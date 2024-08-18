@@ -1,9 +1,8 @@
 import { eq } from 'drizzle-orm'
 
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { Encryption } from '@/shared/utils/encryption/encryption.js'
-import string from '@/shared/utils/string.js'
-import { makeDatabase, makeEnv } from '@/shared/container/index.js'
+
+import { makeDatabase } from '@/shared/container/index.js'
 import type { DrizzleClient } from '@/database/client.js'
 import { teams } from '@/database/schema/schema.js'
 
@@ -20,7 +19,6 @@ export class TeamRepository extends BaseRepository {
     await this.database.insert(teams).values({
       ...payload,
       id,
-      configurationKey: this.generateTeamConfigurationKey(),
       userId,
     })
 
@@ -45,11 +43,5 @@ export class TeamRepository extends BaseRepository {
     })
 
     return team
-  }
-
-  generateTeamConfigurationKey() {
-    return new Encryption({
-      secret: makeEnv().APP_KEY,
-    }).encrypt(string.random(32))
   }
 }

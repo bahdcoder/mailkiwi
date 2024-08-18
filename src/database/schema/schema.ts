@@ -62,7 +62,6 @@ export const teams = mysqlTable('teams', {
     .references(() => users.id),
   trackClicks: boolean('trackClicks'),
   trackOpens: boolean('trackOpens'),
-  configurationKey: varchar('configurationKey', { length: 512 }).notNull(),
   broadcastEditor: mysqlEnum('broadcastEditor', ['DEFAULT', 'MARKDOWN']),
 })
 

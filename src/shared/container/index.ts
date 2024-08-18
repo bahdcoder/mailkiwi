@@ -3,7 +3,7 @@ import { container } from '@/utils/typi.js'
 import type { Connection } from 'mysql2'
 import type { DrizzleClient } from '@/database/client.js'
 import type { HonoInstance } from '@/server/hono.js'
-import { Redis } from 'ioredis'
+import type { Redis } from 'ioredis'
 
 export enum ContainerKey {
   app = 'app',

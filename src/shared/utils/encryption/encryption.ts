@@ -1,193 +1,47 @@
-import { createCipheriv, createDecipheriv, createHash } from 'node:crypto'
-
-import { MessageBuilder, base64 } from '@poppinss/utils'
-
-import string from '@/shared/utils/string.js'
-
-import { Hmac } from './hmac.js'
-import { MessageVerifier } from './message_verifier.js'
-import type { EncryptionOptions } from './types.js'
+import type { Secret } from '@poppinss/utils'
+import {
+  createCipheriv,
+  randomBytes,
+  createDecipheriv,
+  createHash,
+} from 'node:crypto'
 
 export class Encryption {
-  #options: Required<EncryptionOptions>
+  private algorithm = 'aes-256-cbc'
+  private encryptionKey: Buffer
 
-  /**
-   * The key for signing and encrypting values. It is derived
-   * from the user provided secret.
-   */
-  #cryptoKey: Buffer
+  private ivDelimiter = ':'
 
-  /**
-   * Use `dot` as a separator for joining encrypted value, iv and the
-   * hmac hash. The idea is borrowed from JWTs.
-   */
-  #separator = '.'
-
-  /**
-   * Reference to the instance of message verifier for signing
-   * and verifying values.
-   */
-  verifier: MessageVerifier
-
-  /**
-   * Reference to base64 object for base64 encoding/decoding values
-   */
-  base64: typeof base64 = base64
-
-  /**
-   * The algorithm in use
-   */
-  get algorithm(): 'aes-256-cbc' {
-    return this.#options.algorithm
+  constructor(secret: Secret<string>) {
+    this.encryptionKey = createHash('sha256').update(secret.release()).digest()
   }
 
-  constructor(options: EncryptionOptions) {
-    const secretValue =
-      options.secret &&
-      typeof options.secret === 'object' &&
-      'release' in options.secret
-        ? options.secret.release()
-        : options.secret
+  encrypt(text: string) {
+    const iv = randomBytes(16)
 
-    this.#options = { algorithm: 'aes-256-cbc', ...options }
-    this.#validateSecret(secretValue)
-    this.#cryptoKey = createHash('sha256').update(secretValue).digest()
-    this.verifier = new MessageVerifier(secretValue)
+    const cipher = createCipheriv(this.algorithm, this.encryptionKey, iv)
+
+    let encrypted = cipher.update(text, 'utf8', 'hex')
+    encrypted += cipher.final('hex')
+
+    return `${iv.toString('hex')}${this.ivDelimiter}${encrypted}`
   }
 
-  /**
-   * Validates the app secret
-   */
-  #validateSecret(secret?: string) {
-    if (typeof secret !== 'string') {
-      //   throw new errors.E_MISSING_APP_KEY()
-      throw new Error('')
-    }
+  decrypt(encryptedData: string) {
+    const [ivHex, encryptedText] = encryptedData.split(this.ivDelimiter)
 
-    if (secret.length < 16) {
-      //   throw new errors.E_INSECURE_APP_KEY()
-    }
-  }
-
-  /**
-   * Encrypt a given piece of value using the app secret. A wide range of
-   * data types are supported.
-   *
-   * - String
-   * - Arrays
-   * - Objects
-   * - Booleans
-   * - Numbers
-   * - Dates
-   *
-   * You can optionally define a purpose for which the value was encrypted and
-   * mentioning a different purpose/no purpose during decrypt will fail.
-   */
-  // eslint-disable-next-line
-  encrypt(payload: any, expiresIn?: string | number, purpose?: string) {
-    /**
-     * Using a random string as the iv for generating unpredictable values
-     */
-    const iv = string.random(16)
-
-    /**
-     * Creating chiper
-     */
-    const cipher = createCipheriv(this.algorithm, this.#cryptoKey, iv)
-
-    /**
-     * Encoding value to a string so that we can set it on the cipher
-     */
-    const encodedValue = new MessageBuilder().build(payload, expiresIn, purpose)
-
-    /**
-     * Set final to the cipher instance and encrypt it
-     */
-    const encrypted = Buffer.concat([
-      cipher.update(encodedValue, 'utf-8'),
-      cipher.final(),
-    ])
-
-    /**
-     * Concatenate `encrypted value` and `iv` by urlEncoding them. The concatenation is required
-     * to generate the HMAC, so that HMAC checks for integrity of both the `encrypted value`
-     * and the `iv`.
-     */
-    const result = `${this.base64.urlEncode(encrypted)}${this.#separator}${this.base64.urlEncode(
-      iv,
-    )}`
-
-    /**
-     * Returns the result + hmac
-     */
-    return `${result}${this.#separator}${new Hmac(this.#cryptoKey).generate(result)}`
-  }
-
-  /**
-   * Decrypt value and verify it against a purpose
-   */
-  // eslint-disable-next-line
-  decrypt<T>(value: unknown, purpose?: string): T | null {
-    if (typeof value !== 'string') {
+    if (!ivHex || !encryptedText) {
       return null
     }
 
-    /**
-     * Make sure the encrypted value is in correct format. ie
-     * [encrypted value].[iv].[hash]
-     */
-    const [encryptedEncoded, ivEncoded, hash] = value.split(this.#separator)
-    if (!encryptedEncoded || !ivEncoded || !hash) {
-      return null
-    }
+    const iv = Buffer.from(ivHex, 'hex')
 
-    /**
-     * Make sure we are able to urlDecode the encrypted value
-     */
-    const encrypted = this.base64.urlDecode(encryptedEncoded, 'base64')
-    if (!encrypted) {
-      return null
-    }
+    const decipher = createDecipheriv(this.algorithm, this.encryptionKey, iv)
 
-    /**
-     * Make sure we are able to urlDecode the iv
-     */
-    const iv = this.base64.urlDecode(ivEncoded)
-    if (!iv) {
-      return null
-    }
+    let decrypted = decipher.update(encryptedText, 'hex', 'utf8')
 
-    /**
-     * Make sure the hash is correct, it means the first 2 parts of the
-     * string are not tampered.
-     */
-    const isValidHmac = new Hmac(this.#cryptoKey).compare(
-      `${encryptedEncoded}${this.#separator}${ivEncoded}`,
-      hash,
-    )
+    decrypted += decipher.final('utf8')
 
-    if (!isValidHmac) {
-      return null
-    }
-
-    /**
-     * The Decipher can raise exceptions with malformed input, so we wrap it
-     * to avoid leaking sensitive information
-     */
-    try {
-      const decipher = createDecipheriv(this.algorithm, this.#cryptoKey, iv)
-      const decrypted =
-        decipher.update(encrypted, 'base64', 'utf8') + decipher.final('utf8')
-      return new MessageBuilder().verify(decrypted, purpose)
-    } catch {
-      return null
-    }
-  }
-
-  /**
-   * Create a children instance with different secret key
-   */
-  child(options?: EncryptionOptions) {
-    return new Encryption({ ...this.#options, ...options })
+    return decrypted
   }
 }

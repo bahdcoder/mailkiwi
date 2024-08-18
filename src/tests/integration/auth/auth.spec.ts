@@ -58,7 +58,6 @@ describe('User registration', () => {
     expect(user).not.toBeNull()
     expect(user?.teams).toHaveLength(1)
     expect(user?.teams?.[0]?.name).toEqual(payload.name)
-    expect(user?.teams?.[0]?.configurationKey).toBeDefined()
   })
 
   test('can only register with an email once and not twice', async ({

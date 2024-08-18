@@ -10,15 +10,13 @@ import { makeApp } from '@/shared/container/index.js'
 import type { HonoInstance } from '@/server/hono.js'
 import type { HonoContext } from '@/server/types.js'
 import { container } from '@/utils/typi.js'
+import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.ts'
 
 export class AuthController extends BaseController {
   constructor(
-    private userRepository: UserRepository = container.make(UserRepository),
-    private accessTokenRepository: AccessTokenRepository = container.make(
-      AccessTokenRepository,
-    ),
-    private teamRepository: TeamRepository = container.make(TeamRepository),
-    private app: HonoInstance = makeApp(),
+    private userRepository = container.make(UserRepository),
+    private accessTokenRepository = container.make(AccessTokenRepository),
+    private app = makeApp(),
   ) {
     super()
 
@@ -32,16 +30,29 @@ export class AuthController extends BaseController {
         middleware: [],
       },
     )
+
+    this.app.defineRoutes(
+      [['POST', '/api-keys', this.createApiKey.bind(this)]],
+      {
+        prefix: 'auth',
+      },
+    )
   }
 
   async register(ctx: HonoContext) {
-    const data = await this.validate(ctx, CreateUserSchema)
-
-    const action = container.resolve(RegisterUserAction)
-
-    const { user } = await action.handle(data)
+    const { user } = await container
+      .resolve(RegisterUserAction)
+      .handle(await this.validate(ctx, CreateUserSchema))
 
     return ctx.json(user)
+  }
+
+  async createApiKey(ctx: HonoContext) {
+    const accessToken = await container
+      .make(CreateTeamAccessTokenAction)
+      .handle(ctx.get('team').id)
+
+    return ctx.json(accessToken.toJSON())
   }
 
   async login(ctx: HonoContext) {
