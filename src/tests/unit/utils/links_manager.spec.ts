@@ -4,13 +4,14 @@ import {
   type LinkMetadata,
 } from '@/shared/utils/links/link_manager.js'
 import { EnvVariables } from '@/shared/env/index.ts'
+import { Secret } from '@poppinss/utils'
 
 describe('Link manager ', () => {
   let linkManager: EmailLinkManager
 
   beforeEach(() => {
     linkManager = new EmailLinkManager({
-      APP_KEY: 'test_app_key',
+      APP_KEY: new Secret('test_app_key'),
     } as EnvVariables)
   })
 
@@ -50,7 +51,7 @@ describe('Link manager ', () => {
     const originalLink = 'https://example.com'
     const metadata: LinkMetadata = { broadcastId: '123' }
     const encodedLink = linkManager.encodeLink(originalLink, metadata)
-    const tamperedLink = 'x' + encodedLink.slice(1)
+    const tamperedLink = `x${encodedLink.slice(1)}`
     const decodedData = linkManager.decodeLink(tamperedLink)
 
     expect(decodedData).toBeNull()

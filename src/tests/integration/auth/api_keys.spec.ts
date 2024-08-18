@@ -35,8 +35,6 @@ describe('API Token Generation', () => {
       where: eq(accessTokens.teamId, team.id),
     })
 
-    d(accessKeysFromDatabase)
-
     expect(response.status).toBe(200)
 
     const keyInRedis = await container
