@@ -2,14 +2,19 @@ import { eq } from 'drizzle-orm'
 
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import type { DrizzleClient } from '@/database/client.js'
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { teams } from '@/database/schema/schema.js'
 
 import type { CreateTeamDto } from '@/teams/dto/create_team_dto.js'
+import { container } from '@/utils/typi.ts'
 
 export class TeamRepository extends BaseRepository {
-  constructor(protected database: DrizzleClient = makeDatabase()) {
+  private HASH_PREFIX = 'TEAM'
+
+  constructor(
+    protected database = makeDatabase(),
+    protected redis = makeRedis(),
+  ) {
     super()
   }
 
@@ -43,5 +48,46 @@ export class TeamRepository extends BaseRepository {
     })
 
     return team
+  }
+
+  usage(teamId: string) {
+    return container.make(TeamUsage).forTeam(teamId)
+  }
+}
+
+export interface TeamUsagePayload {
+  availableCredits: number
+  startOfMonth: string
+  freeCredits: number
+  apiKey: string
+}
+
+export class TeamUsage {
+  private HASH_PREFIX = 'TEAM'
+  private teamId: string
+
+  constructor(private redis = makeRedis()) {}
+
+  forTeam(teamId: string) {
+    this.teamId = teamId
+
+    return this
+  }
+
+  private key() {
+    return `${this.HASH_PREFIX}:${this.teamId}`
+  }
+
+  async get() {
+    return this.redis.hgetall(this.key())
+  }
+
+  async set(payload: Partial<TeamUsagePayload>) {
+    return this.redis.hmset(
+      this.key(),
+      Object.fromEntries(
+        Object.entries(payload).filter(([_, value]) => value !== undefined),
+      ),
+    )
   }
 }

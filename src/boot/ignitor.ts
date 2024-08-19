@@ -15,6 +15,7 @@ import { RootController } from '@/views/controllers/root_controller.js'
 import {
   ContainerKey,
   makeDatabaseConnection,
+  makeRedis,
 } from '@/shared/container/index.js'
 import {
   type DrizzleClient,
@@ -109,9 +110,12 @@ export class Ignitor {
 
   async shutdown() {
     const connection = makeDatabaseConnection()
+    const redis = makeRedis()
 
     if (connection) {
       connection.destroy()
     }
+
+    redis.disconnect()
   }
 }

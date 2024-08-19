@@ -1,73 +1,141 @@
 // Plugin: auth_redis_api_key.js
+const url = require('url')
+const { createDecipheriv, createHash } = require('crypto')
+const { plugin } = require('postcss')
+// HAS TO MATCH KEYS STORED BY MONOLITH
+const known_keys = {
+  TEAM: (username) => `TEAM:${username}`,
+}
+
+// Configuration: We are disabling constrain_sender option so it allows authentication user during smtp to be different from mail_from in the email.
+// Once we set up domain verification, we will add a constraint to make sure only mail_from any_user@exampledomain.com can authenticate and send from a verified exampledomain.com domain.
+
+const encryption_settings = {
+  algorithm: 'aes-256-cbc',
+  encryption_key: createHash('sha256').update(process.env.APP_KEY).digest(),
+  iv_delimiter: ':',
+}
+
+const iv_delimiter = ':'
+
+exports.get_redis_connection_details = function () {
+  const parsed_url = url.parse(process.env.REDIS_URL)
+
+  const [username, password] = (parsed_url.auth || '').split(':')
+
+  const host = parsed_url.hostname
+  const port = parsed_url.port
+
+  return {
+    host,
+    port,
+    username: username ?? undefined,
+    password: password ?? undefined,
+  }
+}
 
 exports.register = function () {
-  const plugin = this;
+  const plugin = this
 
-  plugin.inherits('redis');
-  plugin.inherits('auth/auth_base');
+  plugin.inherits('haraka-plugin-redis')
+  plugin.inherits('auth/auth_base')
+
+  this.cfg = {
+    redis: plugin.get_redis_connection_details(),
+  }
+
+  this.merge_redis_ini()
 
   plugin.register_hook('init_master', 'init_redis_plugin')
   plugin.register_hook('init_child', 'init_redis_plugin')
-  plugin.loginfo('api_keys authentication plugin registered.')
-};
+}
 
-exports.hook_capabilities = function (next, connection) {
-    const plugin = this;
-    
-    if (!connection.tls.enabled) {
-        connection.loginfo(plugin, "No TLS, skipping AUTH advertising");
-        return next();
+exports.check_plain_passwd = async function (
+  connection,
+  username,
+  password,
+  cb,
+) {
+  const plugin = this
+  const redis = this.db
+
+  if (!redis) {
+    connection.logerror(plugin, 'Redis connection needed for authentication.')
+    return cb(false)
+  }
+
+  const redis_key = known_keys['TEAM'](username)
+
+  connection.loginfo(plugin, `Checking auth for user: ${redis_key}`)
+
+  try {
+    const team_usage = await redis.hGetAll(redis_key)
+
+    const encrypted_api_key = team_usage['apiKey']
+
+    connection.loginfo(plugin, `Team usage `, team_usage)
+
+    if (!encrypted_api_key) {
+      connection.loginfo(plugin, `No API key found for username: ${username}`)
+      return cb(false)
     }
 
-    connection.capabilities.push('AUTH');
-    connection.notes.allowed_auth_methods = ['AUTH'];
-    next();
-};
+    try {
+      const decrypted_api_key = plugin.decrypt_api_key(
+        connection,
+        username,
+        encrypted_api_key,
+      )
+      const is_valid = decrypted_api_key === password
 
-exports.check_plain_passwd = function (connection, username, password, cb) {
-    const plugin = this;
+      // check free send credits
+      // track sends
+      // check paid send credits
+      // reject valid with helpful message
 
-    if (!plugin.redis) {
-        connection.logerror(plugin, 'Redis not connected');
-        return cb(false);
+      if (is_valid) {
+        connection.loginfo(plugin, `Auth succeeded for user: ${username}`)
+        return cb(true)
+      } else {
+        connection.loginfo(plugin, `Auth failed for user: ${username}`)
+        return cb(false)
+      }
+    } catch (decrypt_err) {
+      connection.logerror(
+        plugin,
+        `Decryption error and auth failed: ${decrypt_err.message}`,
+      )
+      return cb(false)
     }
+  } catch (error) {
+    if (error) {
+      connection.logerror(plugin, `Redis error: ${error.message}`)
+      return cb(false)
+    }
+  }
+}
 
-    const redis_key = `TEAM:${username}:API_KEY`;
+exports.decrypt_api_key = function (connection, username, encrypted_api_key) {
+  const [iv_hex, encrypted_text] = encrypted_api_key.split(iv_delimiter)
+  connection.loginfo(this, 'Decrypting api key for username: ', username)
+  if (!iv_hex || !encrypted_text) {
+    return null
+  }
 
-    plugin.redis.get(redis_key, (err, encrypted_api_key) => {
-        if (err) {
-            connection.logerror(plugin, `Redis error: ${err.message}`);
-            return cb(false);
-        }
+  const iv = Buffer.from(iv_hex, 'hex')
 
-        if (!encrypted_api_key) {
-            connection.loginfo(plugin, `No API key found for user: ${username}`);
-            return cb(false);
-        }
+  const decipher = createDecipheriv(
+    encryption_settings.algorithm,
+    encryption_settings.encryption_key,
+    iv,
+  )
 
-        try {
-            const decrypted_api_key = plugin.decrypt_api_key(encrypted_api_key);
-            const is_valid = (decrypted_api_key === password);
+  let decrypted = decipher.update(encrypted_text, 'hex', 'utf8')
 
-            if (is_valid) {
-                connection.loginfo(plugin, `Auth succeeded for user: ${username}`);
-                return cb(true);
-            } else {
-                connection.loginfo(plugin, `Auth failed for user: ${username}`);
-                return cb(false);
-            }
-        } catch (decrypt_err) {
-            connection.logerror(plugin, `Decryption error: ${decrypt_err.message}`);
-            return cb(false);
-        }
-    });
-};
+  decrypted += decipher.final('utf8')
 
-exports.decrypt_api_key = function (encrypted_api_key) {
-    // Implement your decryption logic here
-    // This is a placeholder function
-    return encrypted_api_key;
-};
+  return decrypted
+}
 
 // // HAS TO MATCH KEYS STORED BY MONOLITH
 // const known_keys = {

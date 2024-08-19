@@ -28,6 +28,10 @@
 - Kubernetes / Nomad for container orchestration (Workers and Monolith)
 - Syself for Kubernetes management (If using Kubernetes)
 
+## Code quality technology Stack
+
+- Scrutinizer ci for code quality
+
 ## Email Queueing / Sending Flow
 
 1. User hits publish on broadcast.

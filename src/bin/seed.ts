@@ -21,13 +21,17 @@ import Fs from 'node:fs/promises'
 import Path from 'node:path'
 import { addSecondsToDate } from '@/utils/dates.ts'
 import { fileURLToPath } from 'node:url'
+import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.ts'
+import { createRedisDatabaseInstance } from '@/redis/redis_client.ts'
 
 const connection = await createDatabaseClient(env.DATABASE_URL)
+const redis = createRedisDatabaseInstance(env.REDIS_URL)
 
 const database = createDrizzleDatabase(connection)
 
 container.registerInstance(ContainerKey.env, env)
 container.registerInstance(ContainerKey.database, database)
+container.registerInstance(ContainerKey.redis, redis)
 
 const registerUserAction = container.resolve(RegisterUserAction)
 const createAudienceAction = container.resolve(CreateAudienceAction)
@@ -145,9 +149,20 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     .make(AccessTokenRepository)
     .createAccessToken(user)
 
+  const teamAccessToken = await container
+    .make(CreateTeamAccessTokenAction)
+    .handle(team.id)
+
   console.dir(
     [
-      [{ userId: user.id, accessToken: accessToken.toJSON().token }],
+      [
+        {
+          userId: user.id,
+          teamId: team.id,
+          accessToken: accessToken.toJSON().token,
+          teamAccessToken: teamAccessToken.toJSON().token,
+        },
+      ],
       [{ teamId: team.id }],
       audienceIds,
       broadcastIds,
@@ -157,3 +172,4 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
 }
 
 connection.destroy()
+redis.disconnect()
