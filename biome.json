@@ -14,7 +14,8 @@
       "**/src/zonemta/**/*",
       "**/coverage",
       "**/*.html",
-      "**/pnpm-lock.yaml"
+      "**/pnpm-lock.yaml",
+      "**/node_modules/**/*"
     ]
   },
   "organizeImports": { "enabled": true },

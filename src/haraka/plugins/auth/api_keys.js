@@ -1,7 +1,7 @@
 // Plugin: auth_redis_api_key.js
 const url = require('url')
 const { createDecipheriv, createHash } = require('crypto')
-const { plugin } = require('postcss')
+
 // HAS TO MATCH KEYS STORED BY MONOLITH
 const known_keys = {
   TEAM: (username) => `TEAM:${username}`,
