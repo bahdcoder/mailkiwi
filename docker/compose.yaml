@@ -41,10 +41,19 @@ services:
       - 5572:1025
     environment:
       MP_MAX_MESSAGES: 500000
+      MP_SMTP_DISABLE_RDNS: true
       SMTP_USER: kibamail
       SMTP_PASS: password
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "5573:27017"
+    volumes:
+      - mongodb_data:/data/db
 
 volumes:
   mysql_data:
   clickhouse_data:
   redis_data:
+  mongodb_data:

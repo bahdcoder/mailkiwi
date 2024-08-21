@@ -79,7 +79,9 @@ export class TeamUsage {
   }
 
   async get() {
-    return this.redis.hgetall(this.key())
+    return this.redis.hgetall(
+      this.key(),
+    ) as unknown as Promise<TeamUsagePayload>
   }
 
   async set(payload: Partial<TeamUsagePayload>) {

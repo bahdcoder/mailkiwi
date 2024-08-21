@@ -7,24 +7,20 @@ import { accessTokens, teams, users } from '@/database/schema/schema.js'
 import { createUser } from '@/tests/mocks/auth/users.js'
 import { makeRequest, makeRequestAsUser } from '@/tests/utils/http.js'
 import { container } from '@/utils/typi.ts'
-import { RedisKeySetter } from '@/redis/redis_commands.ts'
 import { Encryption } from '@/shared/utils/encryption/encryption.ts'
 import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.ts'
 import { Secret } from '@poppinss/utils'
+import { TeamRepository } from '@/teams/repositories/team_repository.ts'
+import { refreshRedisDatabase } from '@/tests/mocks/teams/teams.ts'
 
 describe('API Token Generation', () => {
   test('can generate an api token for api and smtp access', async ({
     expect,
   }) => {
+    await refreshRedisDatabase()
     const database = makeDatabase()
 
     const { user, team } = await createUser()
-
-    // const payload = {
-    //   name: faker.person.fullName(),
-    //   email: faker.internet.exampleEmail(),
-    //   password: '@Dx93opPisxYee#$%^',
-    // }
 
     const response = await makeRequestAsUser(user, {
       method: 'POST',
@@ -37,15 +33,12 @@ describe('API Token Generation', () => {
 
     expect(response.status).toBe(200)
 
-    const keyInRedis = await container
-      .make(RedisKeySetter)
-      .entity(team.id)
-      .get('TEAM_API_KEY')
+    const teamUsage = await container.make(TeamRepository).usage(team.id).get()
 
-    expect(keyInRedis).toBeDefined()
+    expect(teamUsage.apiKey).toBeDefined()
 
     const decryptedApiKey = new Encryption(makeEnv().APP_KEY).decrypt(
-      keyInRedis as string,
+      teamUsage.apiKey,
     )
 
     const verifiedToken = await container

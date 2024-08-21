@@ -1,7 +1,10 @@
 import { describe, test, vi } from 'vitest'
 import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.ts'
 import * as queues from '@/shared/queue/queue.js'
-import { refreshDatabase } from '@/tests/mocks/teams/teams.ts'
+import {
+  refreshDatabase,
+  refreshRedisDatabase,
+} from '@/tests/mocks/teams/teams.ts'
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
 import { faker } from '@faker-js/faker'
 import {
@@ -21,23 +24,11 @@ describe('Send broadcast job', () => {
   test('queues send email jobs for all contacts in audience for the broadcast based on a/b test variants', async ({
     expect,
   }) => {
+    await refreshRedisDatabase()
     await refreshDatabase()
 
     const database = makeDatabase()
     const redis = makeRedis()
-
-    const broadcastQueueMock = vi
-      .spyOn(queues.BroadcastsQueue, 'addBulk')
-      .mockImplementation(async () => [
-        new Job(queues.BroadcastsQueue, SendAbTestBroadcastJob.id, {}),
-      ])
-
-    const AbTestBroadcastQueueMock = vi
-      .spyOn(queues.AbTestsBroadcastsQueue, 'add')
-      .mockImplementation(
-        async () =>
-          new Job(queues.AbTestsBroadcastsQueue, PickAbTestWinnerJob.id, {}),
-      )
 
     const { user, audience } = await createUser({
       createMailerWithIdentity: true,
@@ -88,20 +79,19 @@ describe('Send broadcast job', () => {
       where: eq(broadcasts.id, broadcastId),
     })
 
-    const mockCalls = broadcastQueueMock.mock.calls.flat().flat()
-    const abTestMockCalls = AbTestBroadcastQueueMock.mock.calls.flat()
+    const broadcastsQueueJobs = await queues.Queue.broadcasts().getJobs()
+    const abTestsBroadcastsQueueJobs =
+      await queues.Queue.abTestsBroadcasts().getJobs()
 
-    // d({ contactIds, mockCalls });
-
-    expect(mockCalls).toHaveLength(contactsForAudience)
+    expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
 
     const allVariants = await database
       .select()
       .from(abTestVariants)
       .where(eq(abTestVariants.broadcastId, broadcastId))
 
-    const totalSentToVariants = mockCalls.filter(
-      (call) => !call.data.isAbTestFinalSample,
+    const totalSentToVariants = broadcastsQueueJobs.filter(
+      (job) => !job.data.isAbTestFinalSample,
     ).length
 
     expect(totalSentToVariants).toBe(expectedTotalWeightsRecipients)
@@ -109,8 +99,8 @@ describe('Send broadcast job', () => {
     const finalSampleSize = contactsForAudience - expectedTotalWeightsRecipients
 
     for (const variant of allVariants) {
-      const allCallsForVariant = mockCalls.filter(
-        (call) => call.data.abTestVariantId === variant.id,
+      const allCallsForVariant = broadcastsQueueJobs.filter(
+        (job) => job.data.abTestVariantId === variant.id,
       )
 
       const totalForVariantWeight = Math.floor(
@@ -120,16 +110,15 @@ describe('Send broadcast job', () => {
       expect(allCallsForVariant).toHaveLength(totalForVariantWeight)
     }
 
-    const totalFinalSampleRecipients = mockCalls.filter(
-      (call) => call.data.isAbTestFinalSample,
+    const totalFinalSampleRecipients = broadcastsQueueJobs.filter(
+      (job) => job.data.isAbTestFinalSample,
     )
 
     expect(totalFinalSampleRecipients).toHaveLength(finalSampleSize)
 
-    const delayToPickWinner = abTestMockCalls[2]
+    const abTestJobOptions = abTestsBroadcastsQueueJobs[0].opts
 
-    expect(abTestMockCalls[0]).toEqual(PickAbTestWinnerJob.id)
-    expect(delayToPickWinner.delay).toEqual(
+    expect(abTestJobOptions.delay).toEqual(
       hoursToSeconds(broadcast?.waitingTimeToPickWinner ?? 0),
     )
   })

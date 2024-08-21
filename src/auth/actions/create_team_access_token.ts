@@ -1,7 +1,6 @@
 import { makeDatabase, makeEnv } from '@/shared/container/index.js'
 import { container } from '@/utils/typi.js'
 import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
-import { RedisKeySetter } from '@/redis/redis_commands.js'
 import { Encryption } from '@/shared/utils/encryption/encryption.ts'
 import { TeamRepository } from '@/teams/repositories/team_repository.ts'
 

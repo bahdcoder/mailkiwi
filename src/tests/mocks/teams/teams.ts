@@ -1,5 +1,5 @@
 import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import {
   type ContactFilterCondition,
   accessTokens,
@@ -19,6 +19,12 @@ import {
 } from '@/database/schema/schema.js'
 import { faker } from '@faker-js/faker'
 import { createFakeEmailContent } from '../audiences/email_content.ts'
+
+export const refreshRedisDatabase = async () => {
+  const redis = makeRedis()
+
+  await redis.flushall()
+}
 
 export const refreshDatabase = async () => {
   const database = makeDatabase()

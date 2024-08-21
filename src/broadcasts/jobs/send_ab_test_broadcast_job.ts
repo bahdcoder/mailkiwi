@@ -1,23 +1,12 @@
 import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
 import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import {
-  AbTestsBroadcastsQueue,
-  BroadcastsQueue,
-} from '@/shared/queue/queue.js'
+import { Queue } from '@/shared/queue/queue.js'
 import {
   abTestVariants,
   broadcasts,
   contacts,
 } from '@/database/schema/schema.js'
-import {
-  and,
-  asc,
-  count,
-  eq,
-  type SQL,
-  sql,
-  type SQLWrapper,
-} from 'drizzle-orm'
+import { asc, count, eq } from 'drizzle-orm'
 import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
 import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.ts'
 import { PickAbTestWinnerJob } from './pick_ab_test_winner_job.ts'
@@ -83,7 +72,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
 
       const contactIds = await this.contactsConcern.getContactIds(offSet, limit)
 
-      await BroadcastsQueue.addBulk(
+      await Queue.broadcasts().addBulk(
         contactIds.map((contact) => ({
           name: SendBroadcastToContact.id,
           data: {
@@ -182,7 +171,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
         this.batchSize,
       )
 
-      await BroadcastsQueue.addBulk(
+      await Queue.broadcasts().addBulk(
         contactIds.map((contact) => ({
           name: SendBroadcastToContact.id,
           data: {
@@ -200,7 +189,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     const pickWinnerJobDelay = hoursToSeconds(
       this.broadcast.waitingTimeToPickWinner ?? 4,
     )
-    await AbTestsBroadcastsQueue.add(
+    await Queue.abTestsBroadcasts().add(
       PickAbTestWinnerJob.id,
       { broadcastId: this.broadcast.id },
       { delay: pickWinnerJobDelay },

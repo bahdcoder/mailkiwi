@@ -1,30 +1,38 @@
-import { Queue } from 'bullmq'
+import { Queue as BullQueue } from 'bullmq'
 import { AVAILABLE_QUEUES } from './config.js'
-import { Redis } from 'ioredis'
-import { env } from '@/shared/env/index.ts'
 import { makeRedis } from '@/shared/container/index.ts'
 
-const connection = makeRedis()
+export const BroadcastsQueue = () =>
+  new BullQueue(AVAILABLE_QUEUES.broadcasts, {
+    connection: makeRedis(),
+  })
 
-export const BroadcastsQueue = new Queue(AVAILABLE_QUEUES.broadcasts, {
-  connection,
-})
+export const AbTestsBroadcastsQueue = () =>
+  new BullQueue(AVAILABLE_QUEUES.abtests_broadcasts, {
+    connection: makeRedis(),
+  })
 
-export const AbTestsBroadcastsQueue = new Queue(
-  AVAILABLE_QUEUES.abtests_broadcasts,
-  {
-    connection,
-  },
-)
+export const AutomationsQueue = () =>
+  new BullQueue(AVAILABLE_QUEUES.automations, {
+    connection: makeRedis(),
+  })
 
-export const AutomationsQueue = new Queue(AVAILABLE_QUEUES.automations, {
-  connection,
-})
+export const AccountsQueue = () =>
+  new BullQueue(AVAILABLE_QUEUES.accounts, {
+    connection: makeRedis(),
+  })
 
-export const AccountsQueue = new Queue(AVAILABLE_QUEUES.accounts, {
-  connection,
-})
+export const TransactionalQueue = () =>
+  new BullQueue(AVAILABLE_QUEUES.transactional, {
+    connection: makeRedis(),
+  })
 
-export const TransactionalQueue = new Queue(AVAILABLE_QUEUES.transactional, {
-  connection,
-})
+export class Queues {
+  broadcasts = BroadcastsQueue
+  abTestsBroadcasts = AbTestsBroadcastsQueue
+  automations = AutomationsQueue
+  accounts = AccountsQueue
+  transactional = TransactionalQueue
+}
+
+export const Queue = new Queues()

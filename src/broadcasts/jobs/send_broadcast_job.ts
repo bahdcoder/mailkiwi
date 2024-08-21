@@ -1,7 +1,7 @@
 import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
 import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
 
-import { BroadcastsQueue } from '@/shared/queue/queue.js'
+import { Queue } from '@/shared/queue/queue.js'
 import { broadcasts, contacts } from '@/database/schema/schema.js'
 import { and, eq, type SQLWrapper } from 'drizzle-orm'
 import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
@@ -65,7 +65,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
         .limit(batchSize)
         .offset(batch * batchSize)
 
-      await BroadcastsQueue.addBulk(
+      await Queue.broadcasts().addBulk(
         contactIds.map((contact, idx) => ({
           name: SendBroadcastToContact.id,
           data: { contactId: contact.id, broadcastId: broadcast.id },

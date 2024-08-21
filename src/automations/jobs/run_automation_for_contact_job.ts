@@ -1,6 +1,6 @@
 import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
 import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { AutomationsQueue } from '@/shared/queue/queue.js'
+import { Queue } from '@/shared/queue/queue.js'
 import {
   automationSteps,
   contactAutomationSteps,
@@ -72,7 +72,7 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
         status: 'COMPLETED',
       })
 
-      await AutomationsQueue.add(RunAutomationStepForContactJob.id, {
+      await Queue.automations().add(RunAutomationStepForContactJob.id, {
         contactId: payload.contactId,
         automationStepId: nextAutomationStep.id,
       })

@@ -1,7 +1,4 @@
-import {
-  AbTestsBroadcastsQueue,
-  BroadcastsQueue,
-} from '@/shared/queue/queue.js'
+import { BroadcastsQueue, Queue } from '@/shared/queue/queue.js'
 import type { BroadcastWithoutContent } from '@/database/schema/types.js'
 import { differenceInSeconds } from '@/utils/dates.js'
 import { container } from '@/utils/typi.js'
@@ -16,7 +13,7 @@ export class SendBroadcastAction {
 
   async handle(broadcast: BroadcastWithoutContent) {
     if (broadcast.isAbTest) {
-      await AbTestsBroadcastsQueue.add(
+      await Queue.abTestsBroadcasts().add(
         SendAbTestBroadcastJob.id,
         { broadcastId: broadcast.id },
         {
@@ -28,7 +25,7 @@ export class SendBroadcastAction {
     }
 
     if (!broadcast.isAbTest) {
-      await BroadcastsQueue.add(
+      await Queue.broadcasts().add(
         SendBroadcastJob.id,
         { broadcastId: broadcast.id },
         {

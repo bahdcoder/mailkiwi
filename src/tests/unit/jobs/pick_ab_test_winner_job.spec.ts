@@ -1,7 +1,10 @@
 import { describe, test, vi } from 'vitest'
 import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.ts'
-import * as queues from '@/shared/queue/queue.js'
-import { refreshDatabase } from '@/tests/mocks/teams/teams.ts'
+import { Queue } from '@/shared/queue/queue.js'
+import {
+  refreshDatabase,
+  refreshRedisDatabase,
+} from '@/tests/mocks/teams/teams.ts'
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
 import { faker } from '@faker-js/faker'
 import {
@@ -10,11 +13,9 @@ import {
   contacts,
 } from '@/database/schema/schema.ts'
 import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { Job } from 'bullmq'
 import { cuid } from '@/shared/utils/cuid/cuid.ts'
 import { eq } from 'drizzle-orm'
 import { SendAbTestBroadcastJob } from '@/broadcasts/jobs/send_ab_test_broadcast_job.ts'
-import { PickAbTestWinnerJob } from '@/broadcasts/jobs/pick_ab_test_winner_job.ts'
 import { hoursToSeconds } from '@/utils/dates.ts'
 
 describe('Pick A/B Test winner', () => {
@@ -22,22 +23,10 @@ describe('Pick A/B Test winner', () => {
     expect,
   }) => {
     await refreshDatabase()
+    await refreshRedisDatabase()
 
     const database = makeDatabase()
     const redis = makeRedis()
-
-    const broadcastQueueMock = vi
-      .spyOn(queues.BroadcastsQueue, 'addBulk')
-      .mockImplementation(async () => [
-        new Job(queues.BroadcastsQueue, SendAbTestBroadcastJob.id, {}),
-      ])
-
-    const AbTestBroadcastQueueMock = vi
-      .spyOn(queues.AbTestsBroadcastsQueue, 'add')
-      .mockImplementation(
-        async () =>
-          new Job(queues.AbTestsBroadcastsQueue, PickAbTestWinnerJob.id, {}),
-      )
 
     const { user, audience } = await createUser({
       createMailerWithIdentity: true,
@@ -88,20 +77,19 @@ describe('Pick A/B Test winner', () => {
       where: eq(broadcasts.id, broadcastId),
     })
 
-    const mockCalls = broadcastQueueMock.mock.calls.flat().flat()
-    const abTestMockCalls = AbTestBroadcastQueueMock.mock.calls.flat()
+    const jobsFromBroadcastsQueue = await Queue.broadcasts().getJobs()
+    const jobsFromAbTestBroadcastQueue =
+      await Queue.abTestsBroadcasts().getJobs()
 
-    // d({ contactIds, mockCalls });
-
-    expect(mockCalls).toHaveLength(contactsForAudience)
+    expect(jobsFromBroadcastsQueue).toHaveLength(contactsForAudience)
 
     const allVariants = await database
       .select()
       .from(abTestVariants)
       .where(eq(abTestVariants.broadcastId, broadcastId))
 
-    const totalSentToVariants = mockCalls.filter(
-      (call) => !call.data.isAbTestFinalSample,
+    const totalSentToVariants = jobsFromBroadcastsQueue.filter(
+      (job) => !job.data.isAbTestFinalSample,
     ).length
 
     expect(totalSentToVariants).toBe(expectedTotalWeightsRecipients)
@@ -109,8 +97,8 @@ describe('Pick A/B Test winner', () => {
     const finalSampleSize = contactsForAudience - expectedTotalWeightsRecipients
 
     for (const variant of allVariants) {
-      const allCallsForVariant = mockCalls.filter(
-        (call) => call.data.abTestVariantId === variant.id,
+      const allCallsForVariant = jobsFromBroadcastsQueue.filter(
+        (job) => job.data.abTestVariantId === variant.id,
       )
 
       const totalForVariantWeight = Math.floor(
@@ -120,16 +108,15 @@ describe('Pick A/B Test winner', () => {
       expect(allCallsForVariant).toHaveLength(totalForVariantWeight)
     }
 
-    const totalFinalSampleRecipients = mockCalls.filter(
-      (call) => call.data.isAbTestFinalSample,
+    const totalFinalSampleRecipients = jobsFromBroadcastsQueue.filter(
+      (job) => job.data.isAbTestFinalSample,
     )
 
     expect(totalFinalSampleRecipients).toHaveLength(finalSampleSize)
 
-    const delayToPickWinner = abTestMockCalls[2]
+    const pickWinnerJobOptions = jobsFromAbTestBroadcastQueue[0].opts
 
-    expect(abTestMockCalls[0]).toEqual(PickAbTestWinnerJob.id)
-    expect(delayToPickWinner.delay).toEqual(
+    expect(pickWinnerJobOptions.delay).toEqual(
       hoursToSeconds(broadcast?.waitingTimeToPickWinner ?? 0),
     )
   })

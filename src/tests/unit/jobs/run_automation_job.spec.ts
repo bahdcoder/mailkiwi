@@ -1,7 +1,11 @@
 import { describe, test, vi } from 'vitest'
 import { createUser } from '@/tests/mocks/auth/users.ts'
 import * as queues from '@/shared/queue/queue.js'
-import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.ts'
+import {
+  refreshDatabase,
+  refreshRedisDatabase,
+  seedAutomation,
+} from '@/tests/mocks/teams/teams.ts'
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
 import { faker } from '@faker-js/faker'
 import {
@@ -10,8 +14,6 @@ import {
   contacts,
 } from '@/database/schema/schema.ts'
 import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.ts'
-import { Job } from 'bullmq'
 import { cuid } from '@/shared/utils/cuid/cuid.ts'
 import { and, eq } from 'drizzle-orm'
 import { RunAutomationStepJob } from '@/automations/jobs/run_automation_step_job.ts'
@@ -20,6 +22,7 @@ describe('Run automation job', () => {
   test('dispatches a run automation step job for each step in the automation', async ({
     expect,
   }) => {
+    await refreshRedisDatabase()
     await refreshDatabase()
     const { audience } = await createUser()
 
@@ -32,12 +35,6 @@ describe('Run automation job', () => {
 
     const totalContacts = 373
     const totalContactsNotAtStep = 32
-
-    const automationsQueueMock = vi
-      .spyOn(queues.AutomationsQueue, 'addBulk')
-      .mockImplementation(async () => [
-        new Job(queues.AutomationsQueue, SendBroadcastJob.id, {}),
-      ])
 
     const contactIds = faker.helpers.multiple(cuid, { count: totalContacts })
 
@@ -82,11 +79,8 @@ describe('Run automation job', () => {
       payload: { automationStepId: automationStepSendEmail?.id ?? '' },
     })
 
-    const calls = automationsQueueMock.mock.calls
+    const automationsQueueJobs = await queues.Queue.automations().getJobs()
 
-    const expectedBatches = Math.ceil(totalContacts / 75)
-
-    expect(calls.length).toBe(expectedBatches)
-    expect(calls.flat().flat()).toHaveLength(totalContacts)
+    expect(automationsQueueJobs.length).toBe(totalContacts)
   })
 })

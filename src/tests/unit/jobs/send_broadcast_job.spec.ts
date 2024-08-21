@@ -1,7 +1,10 @@
 import { describe, test, vi } from 'vitest'
 import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.ts'
 import * as queues from '@/shared/queue/queue.js'
-import { refreshDatabase } from '@/tests/mocks/teams/teams.ts'
+import {
+  refreshDatabase,
+  refreshRedisDatabase,
+} from '@/tests/mocks/teams/teams.ts'
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
 import { faker } from '@faker-js/faker'
 import { broadcasts, contacts, segments } from '@/database/schema/schema.ts'
@@ -16,15 +19,10 @@ describe('Send broadcast job', () => {
   test('queues send email jobs for all contacts in audience for the broadcast', async ({
     expect,
   }) => {
+    await refreshRedisDatabase()
     await refreshDatabase()
 
     const database = makeDatabase()
-
-    const broadcastQueueMock = vi
-      .spyOn(queues.BroadcastsQueue, 'addBulk')
-      .mockImplementation(async () => [
-        new Job(queues.BroadcastsQueue, SendBroadcastJob.id, {}),
-      ])
 
     const { user, audience } = await createUser({
       createMailerWithIdentity: true,
@@ -64,15 +62,17 @@ describe('Send broadcast job', () => {
       redis: makeRedis(),
     })
 
-    const mockCalls = broadcastQueueMock.mock.calls[0][0].sort(
-      (callA, callB) => (callA.data.contactId > callB.data.contactId ? 1 : -1),
+    const broadcastsQueueJobs = await queues.Queue.broadcasts().getJobs()
+
+    const sortedBroadcastsQueueJobs = broadcastsQueueJobs.sort((jobA, jobB) =>
+      jobA.data.contactId > jobB.data.contactId ? 1 : -1,
     )
 
-    expect(mockCalls).toHaveLength(contactsForAudience)
+    expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
 
     const contactIdsSorted = contactIds.sort((idA, idB) => (idA > idB ? 1 : -1))
 
-    for (const [idx, job] of mockCalls.entries()) {
+    for (const [idx, job] of sortedBroadcastsQueueJobs.entries()) {
       expect(job.name).toBe(SendBroadcastToContact.id)
       expect(job.data).toStrictEqual({
         contactId: contactIdsSorted[idx],
@@ -84,15 +84,10 @@ describe('Send broadcast job', () => {
   test('queues send email jobs for a specific segment of contacts in audience if segment is defined', async ({
     expect,
   }) => {
+    await refreshRedisDatabase()
     await refreshDatabase()
 
     const database = makeDatabase()
-
-    const broadcastQueueMock = vi
-      .spyOn(queues.BroadcastsQueue, 'addBulk')
-      .mockImplementation(async () => [
-        new Job(queues.BroadcastsQueue, SendBroadcastJob.id, {}),
-      ])
 
     const { user, audience } = await createUser({
       createMailerWithIdentity: true,
@@ -162,11 +157,11 @@ describe('Send broadcast job', () => {
       redis: makeRedis(),
     })
 
-    const mockCalls = broadcastQueueMock.mock.calls[0][0]
+    const broadcastsQueueJobs = await queues.Queue.broadcasts().getJobs()
 
-    expect(mockCalls).toHaveLength(contactsForAudience)
+    expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
 
-    for (const [, job] of mockCalls.entries()) {
+    for (const [, job] of broadcastsQueueJobs.entries()) {
       const findContactId = contactIds.find((id) => id === job.data.contactId)
 
       expect(job.name).toBe(SendBroadcastToContact.id)

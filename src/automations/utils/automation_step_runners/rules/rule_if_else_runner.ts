@@ -10,7 +10,7 @@ import {
 } from '@/database/schema/schema.ts'
 import { and, eq, isNotNull } from 'drizzle-orm'
 import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.ts'
-import { AutomationsQueue } from '@/shared/queue/queue.ts'
+import { Queue } from '@/shared/queue/queue.ts'
 import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.ts'
 
 export class AddTagAutomationStepRunner
@@ -62,14 +62,14 @@ export class AddTagAutomationStepRunner
       .limit(1)
 
     if (contactMatchesConditions && yesBranch) {
-      await AutomationsQueue.add(RunAutomationStepForContactJob.id, {
+      await Queue.automations().add(RunAutomationStepForContactJob.id, {
         automationStepId: yesBranch.id,
         contactId: this.contact.id,
       })
     }
 
     if (!contactMatchesConditions && noBranch) {
-      await AutomationsQueue.add(RunAutomationStepForContactJob.id, {
+      await Queue.automations().add(RunAutomationStepForContactJob.id, {
         automationStepId: noBranch.id,
         contactId: this.contact.id,
       })

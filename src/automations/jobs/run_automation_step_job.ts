@@ -1,6 +1,6 @@
 import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
 import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { AutomationsQueue } from '@/shared/queue/queue.js'
+import { Queue } from '@/shared/queue/queue.js'
 import { Paginator } from '@/shared/utils/pagination/paginator.ts'
 import {
   automationSteps,
@@ -62,7 +62,7 @@ export class RunAutomationStepJob extends BaseJob<RunAutomationStepJobPayload> {
         ])
         .next()
 
-      await AutomationsQueue.addBulk(
+      await Queue.automations().addBulk(
         data.map((contact) => ({
           name: RunAutomationStepForContactJob.id,
           data: {

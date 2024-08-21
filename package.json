@@ -27,6 +27,7 @@
     "mysql:migrate": "pnpm drizzle-kit migrate --config=./src/database/drizzle.config.ts",
     "mysql:migrate:make": "env-cmd -e development pnpm drizzle-kit generate --config=./src/database/drizzle.config.ts",
     "haraka:dev": "env-cmd -e development haraka -c src/haraka",
+    "zonemta:dev": "env-cmd -e development tsx src/zonemta/start_zonemta.ts --config=./src/zonemta/config/zonemta.toml",
     "mysql:studio": "pnpm drizzle-kit studio --config=./src/database/drizzle.config.ts"
   },
   "keywords": [
@@ -90,7 +91,12 @@
     "nodemailer": "^6.9.14",
     "nunjucks": "^3.2.4",
     "uuid": "^10.0.0",
-    "valibot": "^0.36.0"
+    "valibot": "^0.36.0",
+    "zone-mta": "3.9.6",
+    "zonemta-avast": "1.0.0",
+    "zonemta-delivery-counters": "1.0.1",
+    "zonemta-limiter": "1.0.0",
+    "zonemta-loop-breaker": "1.0.2"
   },
   "prisma": {
     "schema": "src/database/schema/core.prisma"

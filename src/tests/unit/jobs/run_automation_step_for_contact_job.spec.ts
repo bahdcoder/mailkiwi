@@ -47,8 +47,6 @@ describe('Run automation step for contact job', () => {
       .insert(contacts)
       .values(createFakeContact(audience.id, { id: contactId }))
 
-    // Insert automation steps for contacts before starting to process job.
-
     await new RunAutomationStepForContactJob().handle({
       database,
       payload: {

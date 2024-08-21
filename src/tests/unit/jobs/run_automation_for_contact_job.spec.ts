@@ -1,21 +1,24 @@
-import { describe, test, vi } from 'vitest'
+import { describe, test } from 'vitest'
 import { createUser } from '@/tests/mocks/auth/users.ts'
-import * as queues from '@/shared/queue/queue.js'
-import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.ts'
+import {
+  refreshDatabase,
+  refreshRedisDatabase,
+  seedAutomation,
+} from '@/tests/mocks/teams/teams.ts'
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
 import { faker } from '@faker-js/faker'
 import { contacts } from '@/database/schema/schema.ts'
 import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.ts'
-import { Job } from 'bullmq'
 import { cuid } from '@/shared/utils/cuid/cuid.ts'
 import { RunAutomationForContactJob } from '@/automations/jobs/run_automation_for_contact_job.ts'
+import { Queue } from '@/shared/queue/queue.ts'
 import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.ts'
 
 describe('Run automation for contact job', () => {
   test('successfully runs an automation job for a contact by queueing next job', async ({
     expect,
   }) => {
+    await refreshRedisDatabase()
     await refreshDatabase()
     const { audience } = await createUser()
 
@@ -25,12 +28,6 @@ describe('Run automation for contact job', () => {
       await seedAutomation({
         audienceId: audience.id,
       })
-
-    const automationsQueueMock = vi
-      .spyOn(queues.AutomationsQueue, 'add')
-      .mockImplementation(
-        async () => new Job(queues.AutomationsQueue, SendBroadcastJob.id, {}),
-      )
 
     const contactId = cuid()
 
@@ -46,12 +43,13 @@ describe('Run automation for contact job', () => {
       payload: { automationId: automationId, contactId: contactId },
     })
 
-    const calls = automationsQueueMock.mock.calls
+    const automationsQueueJobs = await Queue.automations().getJobs()
 
-    expect(calls.length).toBe(1)
+    expect(automationsQueueJobs.length).toBe(1)
 
-    const jobId = calls[0][0]
-    const jobPayload = calls[0][1]
+    const jobId = automationsQueueJobs[0].name
+
+    const jobPayload = automationsQueueJobs[0].data
 
     expect(jobId).toBe(RunAutomationStepForContactJob.id)
     expect(jobPayload).toEqual({
@@ -63,6 +61,7 @@ describe('Run automation for contact job', () => {
   test('does not trigger job if contact does not match query conditions', async ({
     expect,
   }) => {
+    await refreshRedisDatabase()
     await refreshDatabase()
     const { audience } = await createUser()
 
@@ -80,12 +79,6 @@ describe('Run automation for contact job', () => {
         ],
       })
 
-    const automationsQueueMock = vi
-      .spyOn(queues.AutomationsQueue, 'add')
-      .mockImplementation(
-        async () => new Job(queues.AutomationsQueue, SendBroadcastJob.id, {}),
-      )
-
     const contactId = cuid()
 
     await database.insert(contacts).values(
@@ -101,9 +94,9 @@ describe('Run automation for contact job', () => {
       payload: { automationId: automationId, contactId: contactId },
     })
 
-    const calls = automationsQueueMock.mock.calls
+    const automationsQueueJobs = await Queue.automations().getJobs()
 
-    expect(calls.length).toBe(0)
+    expect(automationsQueueJobs.length).toBe(0)
     expect(result.success).toBe(true)
     expect(result.output).toBe(
       `No contact found with id ${contactId} that matches trigger conditions.`,
@@ -113,6 +106,7 @@ describe('Run automation for contact job', () => {
   test('correctly runs job if contact matches additional query conditions', async ({
     expect,
   }) => {
+    await refreshRedisDatabase()
     await refreshDatabase()
     const { audience } = await createUser()
 
@@ -121,12 +115,6 @@ describe('Run automation for contact job', () => {
     const { id: automationId } = await seedAutomation({
       audienceId: audience.id,
     })
-
-    const automationsQueueMock = vi
-      .spyOn(queues.AutomationsQueue, 'add')
-      .mockImplementation(
-        async () => new Job(queues.AutomationsQueue, SendBroadcastJob.id, {}),
-      )
 
     const contactId = cuid()
 
@@ -142,9 +130,9 @@ describe('Run automation for contact job', () => {
       payload: { automationId: automationId, contactId: contactId },
     })
 
-    const calls = automationsQueueMock.mock.calls
+    const automationsQueueJobs = await Queue.automations().getJobs()
 
-    expect(calls.length).toBe(1)
+    expect(automationsQueueJobs.length).toBe(1)
     expect(result.success).toBe(true)
   })
 })
