@@ -1,14 +1,18 @@
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.ts'
-import { E_OPERATION_FAILED } from '@/http/responses/errors.ts'
-import { contacts, tagsOnContacts } from '@/database/schema/schema.ts'
-import { and, eq, inArray, notInArray, type SQLWrapper } from 'drizzle-orm'
-import { FieldSegmentBuilder } from './base_field_segment_builder.ts'
-import { makeDatabase } from '@/shared/container/index.js'
+import { FieldSegmentBuilder } from "./base_field_segment_builder.ts"
+import { type SQLWrapper, and, eq, inArray, notInArray } from "drizzle-orm"
+
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
+
+import { contacts, tagsOnContacts } from "@/database/schema/schema.ts"
+
+import { E_OPERATION_FAILED } from "@/http/responses/errors.ts"
+
+import { makeDatabase } from "@/shared/container/index.js"
 
 export class TagsSegmentBuilder extends FieldSegmentBuilder {
   constructor(
-    protected operation: CreateSegmentDto['conditions'][number]['operation'],
-    protected value: CreateSegmentDto['conditions'][number]['value'],
+    protected operation: CreateSegmentDto["conditions"][number]["operation"],
+    protected value: CreateSegmentDto["conditions"][number]["value"],
   ) {
     super(operation, value)
   }
@@ -28,10 +32,10 @@ export class TagsSegmentBuilder extends FieldSegmentBuilder {
     const queryConditions: SQLWrapper[] = []
 
     switch (this.operation) {
-      case 'contains':
+      case "contains":
         queryConditions.push(inArray(contacts.id, this.queryTagsForContacts()))
         break
-      case 'notContains':
+      case "notContains":
         queryConditions.push(
           notInArray(contacts.id, this.queryTagsForContacts()),
         )

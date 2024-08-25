@@ -1,14 +1,16 @@
-import { sendingDomains } from '@/database/schema/schema.ts'
-import { makeDatabase } from '@/shared/container/index.ts'
-import { eq } from 'drizzle-orm'
+import { eq } from "drizzle-orm"
 import {
-  checkAsync,
   type InferInput,
+  checkAsync,
   objectAsync,
   pipeAsync,
   regex,
   string,
-} from 'valibot'
+} from "valibot"
+
+import { sendingDomains } from "@/database/schema/schema.ts"
+
+import { makeDatabase } from "@/shared/container/index.ts"
 
 export const CreateSendingDomainSchema = objectAsync({
   name: pipeAsync(
@@ -24,7 +26,7 @@ export const CreateSendingDomainSchema = objectAsync({
       )
 
       return sendingDomainExists === undefined
-    }, 'This sending domain is already registered.'),
+    }, "This sending domain is already registered."),
   ),
 })
 

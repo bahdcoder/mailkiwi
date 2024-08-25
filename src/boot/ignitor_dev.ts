@@ -1,12 +1,12 @@
-import { serve } from '@hono/node-server'
-import { createServer as createViteServer } from 'vite'
-import { Ignitor } from './ignitor.js'
+import { Ignitor } from "./ignitor.js"
+import { serve } from "@hono/node-server"
+import { createServer as createViteServer } from "vite"
 
 export class IgnitorDev extends Ignitor {
   async startSinglePageApplication() {
     const viteDevServer = await createViteServer({
       server: { middlewareMode: true },
-      appType: 'custom',
+      appType: "custom",
     })
 
     this.app.use(async (ctx, next) => {

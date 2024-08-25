@@ -1,11 +1,16 @@
-import { TeamMiddleware } from '@/audiences/middleware/team_middleware.ts'
-import { AccessTokenMiddleware } from '@/auth/middleware/access_token_middleware.ts'
-import { E_REQUEST_EXCEPTION } from '@/http/responses/errors.js'
-import { container } from '@/utils/typi.js'
-import type { HttpBindings } from '@hono/node-server'
-import { Hono as BaseHono, type MiddlewareHandler } from 'hono'
-import type { HonoRouteDefinition } from './types.js'
-import { env } from '@/shared/env/index.js'
+import type { HonoRouteDefinition } from "./types.js"
+import type { HttpBindings } from "@hono/node-server"
+import { Hono as BaseHono, type MiddlewareHandler } from "hono"
+
+import { TeamMiddleware } from "@/audiences/middleware/team_middleware.ts"
+
+import { AccessTokenMiddleware } from "@/auth/middleware/access_token_middleware.ts"
+
+import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js"
+
+import { env } from "@/shared/env/index.js"
+
+import { container } from "@/utils/typi.js"
 
 export type HonoInstance = BaseHono<{ Bindings: HttpBindings }> & {
   defineRoutes: (
@@ -53,26 +58,26 @@ export class Hono
     ]
 
     const getPath = (path: string) => {
-      return `${routeOptions?.prefix?.replace(/^\/|\/$/g, '')}${path === '/' ? '' : '/'}${path?.replace(/^\/|\/$/g, '')}`
+      return `${routeOptions?.prefix?.replace(/^\/|\/$/g, "")}${path === "/" ? "" : "/"}${path?.replace(/^\/|\/$/g, "")}`
     }
 
     for (const [method, path, handler] of routes) {
       const resolvedPath = getPath(path)
 
       switch (method) {
-        case 'GET':
+        case "GET":
           this.get(resolvedPath, ...middleware, handler)
           break
-        case 'DELETE':
+        case "DELETE":
           this.delete(resolvedPath, ...middleware, handler)
           break
-        case 'PATCH':
+        case "PATCH":
           this.patch(resolvedPath, ...middleware, handler)
           break
-        case 'PUT':
+        case "PUT":
           this.put(resolvedPath, ...middleware, handler)
           break
-        case 'POST':
+        case "POST":
           this.post(resolvedPath, ...middleware, handler)
           break
         default:

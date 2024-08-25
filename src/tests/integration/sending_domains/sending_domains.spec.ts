@@ -1,32 +1,32 @@
-import { eq } from 'drizzle-orm'
-import { describe, test } from 'vitest'
-import { createSign, createVerify } from 'node:crypto'
+import { eq } from "drizzle-orm"
+import { createSign, createVerify } from "node:crypto"
+import { describe, test } from "vitest"
 
-import { container } from '@/utils/typi.ts'
+import { TeamRepository } from "@/teams/repositories/team_repository.ts"
 
-import { createUser } from '@/tests/mocks/auth/users.ts'
-import { refreshDatabase } from '@/tests/mocks/teams/teams.ts'
-import { makeRequestAsUser } from '@/tests/utils/http.ts'
+import { createUser } from "@/tests/mocks/auth/users.ts"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
+import { makeRequestAsUser } from "@/tests/utils/http.ts"
 
-import { makeDatabase, makeEnv } from '@/shared/container/index.ts'
-import { Encryption } from '@/shared/utils/encryption/encryption.ts'
+import { sendingDomains } from "@/database/schema/schema.ts"
 
-import { sendingDomains } from '@/database/schema/schema.ts'
+import { makeDatabase, makeEnv } from "@/shared/container/index.ts"
+import { Queue } from "@/shared/queue/queue.ts"
+import { Encryption } from "@/shared/utils/encryption/encryption.ts"
 
-import { TeamRepository } from '@/teams/repositories/team_repository.ts'
-import { Queue } from '@/shared/queue/queue.ts'
+import { container } from "@/utils/typi.ts"
 
-describe('Sending domains', () => {
-  test('can create unique sending domains for a team', async ({ expect }) => {
+describe("Sending domains", () => {
+  test("can create unique sending domains for a team", async ({ expect }) => {
     await refreshDatabase()
 
     const { team, user } = await createUser()
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: '/sending_domains',
+      method: "POST",
+      path: "/sending_domains",
       body: {
-        name: 'newsletter.kibamail.com',
+        name: "newsletter.kibamail.com",
       },
     })
 
@@ -60,15 +60,15 @@ describe('Sending domains', () => {
      */
     const dkimPublicKey = domains[0]?.dkimPublicKey
 
-    const THIS_IS_A_TEST_MESSAGE = 'THIS_IS_A_TEST_MESSAGE'
+    const THIS_IS_A_TEST_MESSAGE = "THIS_IS_A_TEST_MESSAGE"
 
-    const signedMessage = createSign('sha256')
+    const signedMessage = createSign("sha256")
       .update(THIS_IS_A_TEST_MESSAGE)
-      .sign(dkimPrivateKey, 'hex')
+      .sign(dkimPrivateKey, "hex")
 
-    const verifiedMessage = createVerify('sha256')
+    const verifiedMessage = createVerify("sha256")
       .update(THIS_IS_A_TEST_MESSAGE)
-      .verify(dkimPublicKey, signedMessage, 'hex')
+      .verify(dkimPublicKey, signedMessage, "hex")
 
     expect(verifiedMessage).toBe(true)
   })

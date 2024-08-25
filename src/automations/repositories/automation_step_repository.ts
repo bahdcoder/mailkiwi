@@ -1,11 +1,13 @@
-import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import type { DrizzleClient } from '@/database/client.js'
+import type { CreateAutomationStepDto } from "@/automations/dto/create_automation_step_dto.js"
+
+import type { DrizzleClient } from "@/database/client.js"
 import {
   type AutomationStepConfiguration,
   automationSteps,
-} from '@/database/schema/schema.js'
+} from "@/database/schema/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
 
 export class AutomationStepRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

@@ -1,28 +1,34 @@
-import { faker } from '@faker-js/faker'
+import { faker } from "@faker-js/faker"
+import { eq } from "drizzle-orm"
+import Fs from "node:fs/promises"
+import Path from "node:path"
+import { fileURLToPath } from "node:url"
 
-import { CreateAudienceAction } from '@/audiences/actions/audiences/create_audience_action.js'
-import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
-import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
-import { ContainerKey } from '@/shared/container/index.js'
+import { CreateBroadcastAction } from "@/broadcasts/actions/create_broadcast_action.ts"
+import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_action.ts"
+
+import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
+
+import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
+import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.ts"
+import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
+
+import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
+
 import {
   createDatabaseClient,
   createDrizzleDatabase,
-} from '@/database/client.js'
-import { broadcasts, contacts, teams } from '@/database/schema/schema.js'
-import { env } from '@/shared/env/index.js'
-import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
-import { container } from '@/utils/typi.js'
-import { eq } from 'drizzle-orm'
-import { CreateBroadcastAction } from '@/broadcasts/actions/create_broadcast_action.ts'
-import { UpdateBroadcastAction } from '@/broadcasts/actions/update_broadcast_action.ts'
-import type { Broadcast } from '@/database/schema/database_schema_types.js'
+} from "@/database/client.js"
+import type { Broadcast } from "@/database/schema/database_schema_types.js"
+import { broadcasts, contacts, teams } from "@/database/schema/schema.js"
 
-import Fs from 'node:fs/promises'
-import Path from 'node:path'
-import { addSecondsToDate } from '@/utils/dates.ts'
-import { fileURLToPath } from 'node:url'
-import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.ts'
-import { createRedisDatabaseInstance } from '@/redis/redis_client.ts'
+import { ContainerKey } from "@/shared/container/index.js"
+import { env } from "@/shared/env/index.js"
+
+import { createRedisDatabaseInstance } from "@/redis/redis_client.ts"
+
+import { addSecondsToDate } from "@/utils/dates.ts"
+import { container } from "@/utils/typi.js"
 
 const connection = await createDatabaseClient(env.DATABASE_URL)
 const redis = createRedisDatabaseInstance(env.REDIS_URL)
@@ -47,7 +53,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
     }),
-    password: 'password',
+    password: "password",
   })
 
   const audienceIds = []
@@ -58,7 +64,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     const audiencePayload = { name: faker.commerce.productName() }
 
     console.log(
-      'Creating audience: ',
+      "Creating audience: ",
       `${audienceIndex}: ${audiencePayload.name}`,
     )
 
@@ -93,7 +99,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
       }))
 
     console.log(
-      'Inserting contacts for audience:',
+      "Inserting contacts for audience:",
       `${mockContacts.length} mock contacts.`,
     )
 
@@ -125,13 +131,13 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
         contentHtml: await Fs.readFile(
           Path.resolve(
             Path.dirname(fileURLToPath(import.meta.url)),
-            '..',
-            'tests',
-            'mocks',
-            'emails',
-            'hotel-booking.html',
+            "..",
+            "tests",
+            "mocks",
+            "emails",
+            "hotel-booking.html",
           ),
-          'utf-8',
+          "utf-8",
         ),
         contentText: faker.lorem.paragraphs(12),
       },
@@ -143,7 +149,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     broadcastIds.push({ broadcastId, audienceId: audience.id })
   }
 
-  console.log('\n Seeded data ✅ \n')
+  console.log("\n Seeded data ✅ \n")
 
   const accessToken = await container
     .make(AccessTokenRepository)

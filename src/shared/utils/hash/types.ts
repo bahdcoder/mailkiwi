@@ -52,7 +52,7 @@ export type PhcNode<
 /**
  * Available argon variants
  */
-export type ArgonVariants = 'd' | 'i' | 'id'
+export type ArgonVariants = "d" | "i" | "id"
 
 /**
  * Shape of argon2 config

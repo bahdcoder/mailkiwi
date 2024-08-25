@@ -1,3 +1,3 @@
-import { IgnitorDev } from '@/boot/ignitor_dev.js'
+import { IgnitorDev } from "@/boot/ignitor_dev.js"
 
 await new IgnitorDev().boot().start()

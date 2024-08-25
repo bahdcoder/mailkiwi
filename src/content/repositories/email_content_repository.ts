@@ -1,13 +1,16 @@
+import { eq } from "drizzle-orm"
+
 import type {
   EmailContentVariant,
   UpdateBroadcastDto,
-} from '@/broadcasts/dto/update_broadcast_dto.ts'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import type { DrizzleClient } from '@/database/client.js'
-import { broadcasts, emailContents } from '@/database/schema/schema.ts'
-import type { Broadcast } from '@/database/schema/database_schema_types.js'
-import { eq } from 'drizzle-orm'
+} from "@/broadcasts/dto/update_broadcast_dto.ts"
+
+import type { DrizzleClient } from "@/database/client.js"
+import type { Broadcast } from "@/database/schema/database_schema_types.js"
+import { broadcasts, emailContents } from "@/database/schema/schema.ts"
+
+import { makeDatabase } from "@/shared/container/index.js"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
 
 export class EmailContentRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -39,7 +42,7 @@ export class EmailContentRepository extends BaseRepository {
 
   async updateForBroadcast(
     broadcast: Broadcast,
-    payload: UpdateBroadcastDto['emailContent'],
+    payload: UpdateBroadcastDto["emailContent"],
   ) {
     let emailContentId = broadcast.emailContentId
 

@@ -1,25 +1,29 @@
-import { describe, test } from 'vitest'
+import { faker } from "@faker-js/faker"
+import { eq, lt } from "drizzle-orm"
+import { describe, test } from "vitest"
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.ts'
-import { faker } from '@faker-js/faker'
-import { makeDatabase } from '@/shared/container/index.js'
-import { refreshDatabase } from '@/tests/mocks/teams/teams.ts'
+import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
+import { createUser } from "@/tests/mocks/auth/users.js"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
+import { makeRequestAsUser } from "@/tests/utils/http.ts"
+
 import {
   contacts,
   emails,
   segments,
   tags,
   tagsOnContacts,
-} from '@/database/schema/schema.ts'
-import { cuid } from '@/shared/utils/cuid/cuid.ts'
-import { container } from '@/utils/typi.ts'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.ts'
-import { eq, lt } from 'drizzle-orm'
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
+} from "@/database/schema/schema.ts"
 
-describe('Audience segments', () => {
-  test('can create an audience segment', async ({ expect }) => {
+import { makeDatabase } from "@/shared/container/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.ts"
+
+import { container } from "@/utils/typi.ts"
+
+describe("Audience segments", () => {
+  test("can create an audience segment", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
 
@@ -29,15 +33,15 @@ describe('Audience segments', () => {
       name: faker.lorem.words(3),
       conditions: [
         {
-          field: 'email',
-          operation: 'endsWith',
-          value: '@gmail.com',
+          field: "email",
+          operation: "endsWith",
+          value: "@gmail.com",
         },
       ],
     }
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/segments`,
       body: payload,
     })
@@ -52,13 +56,13 @@ describe('Audience segments', () => {
         name: payload.name,
         audienceId: audience.id,
         conditions: [
-          { field: 'email', value: '@gmail.com', operation: 'endsWith' },
+          { field: "email", value: "@gmail.com", operation: "endsWith" },
         ],
       },
     ])
   })
 
-  test('cannot create an audience with invalid conditions', async ({
+  test("cannot create an audience with invalid conditions", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -70,27 +74,27 @@ describe('Audience segments', () => {
       name: faker.lorem.words(3),
       conditions: [
         {
-          field: 'fame',
-          operation: 'endsWith',
-          value: '@gmail.com',
+          field: "fame",
+          operation: "endsWith",
+          value: "@gmail.com",
         },
       ],
     }
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/segments`,
       body: payload,
     })
 
     expect(response.status).toBe(422)
     expect(await response.json()).toStrictEqual({
-      message: 'Validation failed.',
+      message: "Validation failed.",
       errors: [
         {
           message:
             'Invalid type: Expected "email" | "firstName" | "lastName" | "subscribedAt" | "tags" but received "fame"',
-          field: 'conditions',
+          field: "conditions",
         },
       ],
     })
@@ -100,7 +104,7 @@ describe('Audience segments', () => {
     expect(savedSegment).toHaveLength(0)
   })
 
-  test('can select contacts for a specific segment: email starts with', async ({
+  test("can select contacts for a specific segment: email starts with", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -138,15 +142,15 @@ describe('Audience segments', () => {
       name: faker.lorem.words(3),
       conditions: [
         {
-          field: 'email',
-          operation: 'startsWith',
+          field: "email",
+          operation: "startsWith",
           value: emailStartsWith,
         },
       ],
     })
 
     const response = await makeRequestAsUser(user, {
-      method: 'GET',
+      method: "GET",
       path: `/audiences/${audience.id}/contacts?segmentId=${segmentId}&page=1&perPage=50`,
     })
 
@@ -156,7 +160,7 @@ describe('Audience segments', () => {
     expect(json.data).toHaveLength(countForSegment)
   })
 
-  test('can select contacts for a specific segment: contact has one of tags', async ({
+  test("can select contacts for a specific segment: contact has one of tags", async ({
     expect,
   }) => {
     const database = makeDatabase()
@@ -214,15 +218,15 @@ describe('Audience segments', () => {
       name: faker.lorem.words(3),
       conditions: [
         {
-          field: 'tags',
-          operation: 'contains',
+          field: "tags",
+          operation: "contains",
           value: [tagIds[0], tagIds[1]],
         },
       ],
     })
 
     const response = await makeRequestAsUser(user, {
-      method: 'GET',
+      method: "GET",
       path: `/audiences/${audience.id}/contacts?segmentId=${segmentId}&page=1&perPage=50`,
     })
 
@@ -232,7 +236,7 @@ describe('Audience segments', () => {
     expect(json.data).toHaveLength(countForSegment)
   })
 
-  test('can select contacts for a specific segment: contact has none of tags', async ({
+  test("can select contacts for a specific segment: contact has none of tags", async ({
     expect,
   }) => {
     const database = makeDatabase()
@@ -296,15 +300,15 @@ describe('Audience segments', () => {
       name: faker.lorem.words(3),
       conditions: [
         {
-          field: 'tags',
-          operation: 'notContains',
+          field: "tags",
+          operation: "notContains",
           value: [tagIds[0], tagIds[1]],
         },
       ],
     })
 
     const response = await makeRequestAsUser(user, {
-      method: 'GET',
+      method: "GET",
       path: `/audiences/${audience.id}/contacts?segmentId=${segmentId}&page=1&perPage=100`,
     })
 

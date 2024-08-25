@@ -1,4 +1,4 @@
-import { type InferInput, object, string } from 'valibot'
+import { type InferInput, object, string } from "valibot"
 
 export const LoginUserSchema = object({
   email: string(),

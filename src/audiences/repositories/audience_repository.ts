@@ -1,12 +1,14 @@
-import { eq } from 'drizzle-orm'
+import { eq } from "drizzle-orm"
 
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { ContainerKey } from '@/shared/container/index.js'
-import type { DrizzleClient } from '@/database/client.js'
-import { audiences } from '@/database/schema/schema.js'
-import { container } from '@/utils/typi.js'
+import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
 
-import type { CreateAudienceDto } from '@/audiences/dto/audiences/create_audience_dto.js'
+import type { DrizzleClient } from "@/database/client.js"
+import { audiences } from "@/database/schema/schema.js"
+
+import { ContainerKey } from "@/shared/container/index.js"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
+
+import { container } from "@/utils/typi.js"
 
 export class AudienceRepository extends BaseRepository {
   constructor(

@@ -1,20 +1,23 @@
-import path from 'node:path'
-import fs from 'node:fs/promises'
-import { describe, it, vi } from 'vitest'
+import fs from "node:fs/promises"
+import path from "node:path"
+import { describe, it, vi } from "vitest"
+
+import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.ts"
+
+import { createUser } from "@/tests/mocks/auth/users.ts"
 import {
   refreshDatabase,
   refreshRedisDatabase,
-} from '@/tests/mocks/teams/teams.ts'
-import { createUser } from '@/tests/mocks/auth/users.ts'
-import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.ts'
-import { container } from '@/utils/typi.ts'
+} from "@/tests/mocks/teams/teams.ts"
 
-describe('zonemta/api-keys-auth', () => {
+import { container } from "@/utils/typi.ts"
+
+describe("zonemta/api-keys-auth", () => {
   const zoneMtaAuthApiKeysPlugin = require(
-    path.resolve(process.cwd(), 'src/zonemta/plugins/auth-api-keys.js'),
+    path.resolve(process.cwd(), "src/zonemta/plugins/auth-api-keys.js"),
   )
 
-  it('registers smtp:auth hook and calls done properly', ({ expect }) => {
+  it("registers smtp:auth hook and calls done properly", ({ expect }) => {
     const app = {
       addHook: vi.fn(),
     }
@@ -22,11 +25,11 @@ describe('zonemta/api-keys-auth', () => {
 
     zoneMtaAuthApiKeysPlugin.init(app, done)
 
-    expect(app.addHook.mock.calls[0][0]).toBe('smtp:auth')
+    expect(app.addHook.mock.calls[0][0]).toBe("smtp:auth")
     expect(done).toHaveBeenCalled()
   })
 
-  it.skip('verifies api key authentication for an incoming smtp connection', async ({
+  it.skip("verifies api key authentication for an incoming smtp connection", async ({
     expect,
   }) => {
     await refreshRedisDatabase()
@@ -49,13 +52,13 @@ describe('zonemta/api-keys-auth', () => {
         smtpAuthHook = fn
       },
       config: {
-        interfaces: ['feeder'],
+        interfaces: ["feeder"],
       },
     }
     const done = vi.fn()
 
     const mockSession = {
-      interface: 'feeder',
+      interface: "feeder",
     }
 
     const mockAuth = {
@@ -77,13 +80,13 @@ describe('zonemta/api-keys-auth', () => {
     const authFailed = await Promise.resolve<any>(
       new Promise((resolve) => {
         smtpAuthHook(
-          { ...mockAuth, password: 'wrong-password' },
+          { ...mockAuth, password: "wrong-password" },
           mockSession,
           resolve,
         )
       }),
     )
 
-    expect(authFailed.message).toEqual('API Key authentication failed')
+    expect(authFailed.message).toEqual("API Key authentication failed")
   })
 })

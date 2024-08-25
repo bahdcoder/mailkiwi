@@ -1,6 +1,6 @@
 // Plugin: auth_redis_api_key.js
-const url = require('url')
-const { createDecipheriv, createHash } = require('crypto')
+const url = require("url")
+const { createDecipheriv, createHash } = require("crypto")
 
 // HAS TO MATCH KEYS STORED BY MONOLITH
 const known_keys = {
@@ -11,17 +11,17 @@ const known_keys = {
 // Once we set up domain verification, we will add a constraint to make sure only mail_from any_user@exampledomain.com can authenticate and send from a verified exampledomain.com domain.
 
 const encryption_settings = {
-  algorithm: 'aes-256-cbc',
-  encryption_key: createHash('sha256').update(process.env.APP_KEY).digest(),
-  iv_delimiter: ':',
+  algorithm: "aes-256-cbc",
+  encryption_key: createHash("sha256").update(process.env.APP_KEY).digest(),
+  iv_delimiter: ":",
 }
 
-const iv_delimiter = ':'
+const iv_delimiter = ":"
 
 exports.get_redis_connection_details = function () {
   const parsed_url = url.parse(process.env.REDIS_URL)
 
-  const [username, password] = (parsed_url.auth || '').split(':')
+  const [username, password] = (parsed_url.auth || "").split(":")
 
   const host = parsed_url.hostname
   const port = parsed_url.port
@@ -37,8 +37,8 @@ exports.get_redis_connection_details = function () {
 exports.register = function () {
   const plugin = this
 
-  plugin.inherits('haraka-plugin-redis')
-  plugin.inherits('auth/auth_base')
+  plugin.inherits("haraka-plugin-redis")
+  plugin.inherits("auth/auth_base")
 
   this.cfg = {
     redis: plugin.get_redis_connection_details(),
@@ -46,8 +46,8 @@ exports.register = function () {
 
   this.merge_redis_ini()
 
-  plugin.register_hook('init_master', 'init_redis_plugin')
-  plugin.register_hook('init_child', 'init_redis_plugin')
+  plugin.register_hook("init_master", "init_redis_plugin")
+  plugin.register_hook("init_child", "init_redis_plugin")
 }
 
 exports.check_plain_passwd = async function (
@@ -60,18 +60,18 @@ exports.check_plain_passwd = async function (
   const redis = this.db
 
   if (!redis) {
-    connection.logerror(plugin, 'Redis connection needed for authentication.')
+    connection.logerror(plugin, "Redis connection needed for authentication.")
     return cb(false)
   }
 
-  const redis_key = known_keys['TEAM'](username)
+  const redis_key = known_keys["TEAM"](username)
 
   connection.loginfo(plugin, `Checking auth for user: ${redis_key}`)
 
   try {
     const team_usage = await redis.hGetAll(redis_key)
 
-    const encrypted_api_key = team_usage['apiKey']
+    const encrypted_api_key = team_usage["apiKey"]
 
     connection.loginfo(plugin, `Team usage `, team_usage)
 
@@ -117,12 +117,12 @@ exports.check_plain_passwd = async function (
 
 exports.decrypt_api_key = function (connection, username, encrypted_api_key) {
   const [iv_hex, encrypted_text] = encrypted_api_key.split(iv_delimiter)
-  connection.loginfo(this, 'Decrypting api key for username: ', username)
+  connection.loginfo(this, "Decrypting api key for username: ", username)
   if (!iv_hex || !encrypted_text) {
     return null
   }
 
-  const iv = Buffer.from(iv_hex, 'hex')
+  const iv = Buffer.from(iv_hex, "hex")
 
   const decipher = createDecipheriv(
     encryption_settings.algorithm,
@@ -130,9 +130,9 @@ exports.decrypt_api_key = function (connection, username, encrypted_api_key) {
     iv,
   )
 
-  let decrypted = decipher.update(encrypted_text, 'hex', 'utf8')
+  let decrypted = decipher.update(encrypted_text, "hex", "utf8")
 
-  decrypted += decipher.final('utf8')
+  decrypted += decipher.final("utf8")
 
   return decrypted
 }

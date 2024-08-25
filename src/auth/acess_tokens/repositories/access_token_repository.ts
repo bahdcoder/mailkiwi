@@ -1,16 +1,18 @@
-import type { Secret } from '@poppinss/utils'
-import { eq } from 'drizzle-orm'
+import type { Secret } from "@poppinss/utils"
+import { eq } from "drizzle-orm"
 
-import { AccessToken } from '@/auth/acess_tokens/utils/access_token.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import type { DrizzleClient } from '@/database/client.js'
-import { accessTokens } from '@/database/schema/schema.js'
+import { AccessToken } from "@/auth/acess_tokens/utils/access_token.js"
+
+import type { DrizzleClient } from "@/database/client.js"
+import { accessTokens } from "@/database/schema/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
 
 export class AccessTokenRepository extends BaseRepository {
   protected tokenSecretLength = 40
   protected tokenExpiresIn = 1000 * 60
-  protected opaqueAccessTokenPrefix = 'oat_'
+  protected opaqueAccessTokenPrefix = "oat_"
 
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
@@ -18,7 +20,7 @@ export class AccessTokenRepository extends BaseRepository {
 
   async createAccessToken(
     owner: { id: string },
-    type: 'user' | 'team' = 'user',
+    type: "user" | "team" = "user",
   ) {
     const transientAccessToken = AccessToken.createTransientToken(
       owner.id,
@@ -30,8 +32,8 @@ export class AccessTokenRepository extends BaseRepository {
 
     await this.database.insert(accessTokens).values({
       id,
-      ...(type === 'user' ? { userId: owner.id } : { teamId: owner.id }),
-      type: 'bearer',
+      ...(type === "user" ? { userId: owner.id } : { teamId: owner.id }),
+      type: "bearer",
       // abilities: ["read", "write"],
       hash: transientAccessToken.hash,
       expiresAt: transientAccessToken.expiresAt,
@@ -40,15 +42,15 @@ export class AccessTokenRepository extends BaseRepository {
     const instance = new AccessToken({
       identifier: id,
       tokenableId: owner.id,
-      type: 'bearer',
+      type: "bearer",
       prefix: this.opaqueAccessTokenPrefix,
       secret: transientAccessToken.secret,
       createdAt: new Date(),
       lastUsedAt: new Date(),
       updatedAt: new Date(),
-      abilities: ['read', 'write'],
+      abilities: ["read", "write"],
       hash: transientAccessToken.hash,
-      name: 'token',
+      name: "token",
       expiresAt: transientAccessToken.expiresAt as Date,
     })
 
@@ -82,9 +84,9 @@ export class AccessTokenRepository extends BaseRepository {
       lastUsedAt: accessToken.lastUsedAt,
       updatedAt: accessToken.createdAt,
       expiresAt: accessToken.expiresAt,
-      abilities: ['read', 'write'],
+      abilities: ["read", "write"],
       hash: accessToken.hash,
-      name: 'Authentication token.',
+      name: "Authentication token.",
     })
 
     if (

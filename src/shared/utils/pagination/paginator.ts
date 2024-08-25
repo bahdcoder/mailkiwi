@@ -1,17 +1,19 @@
-import { E_OPERATION_FAILED } from '@/http/responses/errors.ts'
-import { makeDatabase } from '@/shared/container/index.js'
 import {
+  type SQLWrapper,
+  type SelectedFields,
   and,
   count,
   gt,
-  type SelectedFields,
-  type SQLWrapper,
-} from 'drizzle-orm'
+} from "drizzle-orm"
 import type {
   AnyMySqlColumn,
   AnyMySqlTable,
   MySqlSelect,
-} from 'drizzle-orm/mysql-core'
+} from "drizzle-orm/mysql-core"
+
+import { E_OPERATION_FAILED } from "@/http/responses/errors.ts"
+
+import { makeDatabase } from "@/shared/container/index.js"
 
 type QueryModifierFn = (
   query: MySqlSelect<any, any, any>,
@@ -113,7 +115,7 @@ export class Paginator<RowType extends object = any> {
     )
 
     if (!this.cursorPagination.field)
-      throw E_OPERATION_FAILED('Field is required for cursor pagination')
+      throw E_OPERATION_FAILED("Field is required for cursor pagination")
 
     const selectQuery = this.$modifyWhereQuery(
       selectSelect.where(

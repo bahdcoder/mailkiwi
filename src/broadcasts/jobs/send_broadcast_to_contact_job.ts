@@ -1,12 +1,14 @@
-import { Mailer } from '@/shared/mailers/mailer.js'
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { eq } from "drizzle-orm"
+
+import type { BroadcastWithEmailContent } from "@/database/schema/database_schema_types.js"
 import {
   broadcasts,
   contacts as contactsTable,
-} from '@/database/schema/schema.js'
-import type { BroadcastWithEmailContent } from '@/database/schema/database_schema_types.js'
-import { eq } from 'drizzle-orm'
+} from "@/database/schema/schema.js"
+
+import { Mailer } from "@/shared/mailers/mailer.js"
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 
 export interface SendBroadcastToContactPayload {
   broadcastId: string
@@ -15,7 +17,7 @@ export interface SendBroadcastToContactPayload {
 
 export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayload> {
   static get id() {
-    return 'BROADCASTS::SEND_BROADCAST_TO_CONTACTS'
+    return "BROADCASTS::SEND_BROADCAST_TO_CONTACTS"
   }
 
   static get queue() {
@@ -40,7 +42,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     ])
 
     if (!broadcast || !contact) {
-      return this.fail('Broadcast or contact not found.')
+      return this.fail("Broadcast or contact not found.")
     }
 
     const broadcastWithContent = broadcast as BroadcastWithEmailContent
@@ -67,6 +69,6 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       `BROADCAST:${broadcast.id}:${contact.id}`,
     )
 
-    return { success: true, output: 'Success.' }
+    return { success: true, output: "Success." }
   }
 }

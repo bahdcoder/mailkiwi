@@ -1,16 +1,16 @@
-import { eq } from 'drizzle-orm'
+import { Secret } from "@poppinss/utils"
+import { eq } from "drizzle-orm"
 
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import type { CreateTeamDto } from "@/teams/dto/create_team_dto.js"
 
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { teams } from '@/database/schema/schema.js'
+import { teams } from "@/database/schema/schema.js"
 
-import type { CreateTeamDto } from '@/teams/dto/create_team_dto.js'
-import { container } from '@/utils/typi.ts'
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
+
+import { container } from "@/utils/typi.ts"
 
 export class TeamRepository extends BaseRepository {
-  private HASH_PREFIX = 'TEAM'
-
   constructor(
     protected database = makeDatabase(),
     protected redis = makeRedis(),
@@ -64,7 +64,7 @@ export interface TeamUsagePayload {
 }
 
 export class TeamUsage {
-  private HASH_PREFIX = 'TEAM'
+  private HASH_PREFIX = "TEAM"
   private teamId: string
 
   constructor(private redis = makeRedis()) {}

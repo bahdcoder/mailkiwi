@@ -1,16 +1,18 @@
-import cuid2 from '@paralleldrive/cuid2'
-import { eq } from 'drizzle-orm'
+import cuid2 from "@paralleldrive/cuid2"
+import { eq } from "drizzle-orm"
 
-import type { CreateUserDto } from '@/auth/users/dto/create_user_dto.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { scrypt } from '@/shared/utils/hash/scrypt.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import type { DrizzleClient } from '@/database/client.js'
-import { users } from '@/database/schema/schema.js'
+import type { CreateUserDto } from "@/auth/users/dto/create_user_dto.js"
+
+import type { DrizzleClient } from "@/database/client.js"
 import type {
   FindUserByIdArgs,
   User,
-} from '@/database/schema/database_schema_types.js'
+} from "@/database/schema/database_schema_types.js"
+import { users } from "@/database/schema/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { scrypt } from "@/shared/utils/hash/scrypt.js"
 
 export class UserRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

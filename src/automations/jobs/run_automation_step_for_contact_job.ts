@@ -1,12 +1,14 @@
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { AutomationStepRunner } from "../utils/automation_step_runners/automation_step_runner.ts"
+import { and, eq } from "drizzle-orm"
+
 import {
   automationSteps,
   contactAutomationSteps,
   contacts,
-} from '@/database/schema/schema.ts'
-import { and, eq } from 'drizzle-orm'
-import { AutomationStepRunner } from '../utils/automation_step_runners/automation_step_runner.ts'
+} from "@/database/schema/schema.ts"
+
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 
 export interface RunAutomationStepForContactJobPayload {
   automationStepId: string
@@ -15,7 +17,7 @@ export interface RunAutomationStepForContactJobPayload {
 
 export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepForContactJobPayload> {
   static get id() {
-    return 'AUTOMATIONS::RUN_AUTOMATION_STEP_FOR_CONTACT'
+    return "AUTOMATIONS::RUN_AUTOMATION_STEP_FOR_CONTACT"
   }
 
   static get queue() {

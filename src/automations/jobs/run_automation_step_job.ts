@@ -1,15 +1,17 @@
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { Paginator } from '@/shared/utils/pagination/paginator.ts'
+import { RunAutomationStepForContactJob } from "./run_automation_step_for_contact_job.ts"
+import { and, eq, isNotNull, sql } from "drizzle-orm"
+
+import type { Contact } from "@/database/schema/database_schema_types.js"
 import {
   automationSteps,
   contactAutomationSteps,
   contacts,
-} from '@/database/schema/schema.ts'
-import type { Contact } from '@/database/schema/database_schema_types.js'
-import { and, eq, isNotNull, sql } from 'drizzle-orm'
-import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.ts'
+} from "@/database/schema/schema.ts"
+
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { Queue } from "@/shared/queue/queue.js"
+import { Paginator } from "@/shared/utils/pagination/paginator.ts"
 
 export interface RunAutomationStepJobPayload {
   automationStepId: string
@@ -17,7 +19,7 @@ export interface RunAutomationStepJobPayload {
 
 export class RunAutomationStepJob extends BaseJob<RunAutomationStepJobPayload> {
   static get id() {
-    return 'AUTOMATIONS::RUN_AUTOMATION_STEP'
+    return "AUTOMATIONS::RUN_AUTOMATION_STEP"
   }
 
   static get queue() {
@@ -57,7 +59,7 @@ export class RunAutomationStepJob extends BaseJob<RunAutomationStepJobPayload> {
         .queryConditions([
           and(
             isNotNull(contactAutomationSteps.id),
-            eq(contactAutomationSteps.status, 'PENDING'),
+            eq(contactAutomationSteps.status, "PENDING"),
           ),
         ])
         .next()

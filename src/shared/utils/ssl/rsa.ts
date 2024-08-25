@@ -1,9 +1,9 @@
-import { Secret } from '@poppinss/utils'
-import { generateKeyPairSync } from 'node:crypto'
+import { Secret } from "@poppinss/utils"
+import { generateKeyPairSync } from "node:crypto"
 
 export class RsaKeyPair {
-  public publicKey = ''
-  public privateKey = new Secret('')
+  public publicKey = ""
+  public privateKey = new Secret("")
 
   public clean() {
     return {
@@ -13,25 +13,25 @@ export class RsaKeyPair {
   }
 
   private cleanupKey(key: string) {
-    const lines = key.split('\n')
+    const lines = key.split("\n")
 
     lines.shift() // remove start private key line
     lines.pop() // remove empty space at end of key
     lines.pop() // remove end private key line
 
-    return lines.join('')
+    return lines.join("")
   }
 
   public generate(modulusLength = 1024) {
-    const keyPair = generateKeyPairSync('rsa', {
+    const keyPair = generateKeyPairSync("rsa", {
       modulusLength,
       publicKeyEncoding: {
-        type: 'spki',
-        format: 'pem',
+        type: "spki",
+        format: "pem",
       },
       privateKeyEncoding: {
-        type: 'pkcs8', // PKCS #8 format
-        format: 'pem',
+        type: "pkcs8", // PKCS #8 format
+        format: "pem",
       },
     })
 

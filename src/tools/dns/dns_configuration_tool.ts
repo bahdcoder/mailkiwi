@@ -1,6 +1,6 @@
 export class DnsConfigurationTool {
   private domain: string
-  private encryptionAlgorithm = 'rsa'
+  private encryptionAlgorithm = "rsa"
 
   forDomain(domain: string) {
     this.domain = domain
@@ -8,13 +8,13 @@ export class DnsConfigurationTool {
   }
 
   private cleanupPublicKey(publicKey: string) {
-    const lines = publicKey.split('\n')
+    const lines = publicKey.split("\n")
 
     lines.shift()
     lines.pop()
     lines.pop()
 
-    return lines.join('')
+    return lines.join("")
   }
 
   private dkimRecordValue(publicKey: string, dkimSubDomain: string) {

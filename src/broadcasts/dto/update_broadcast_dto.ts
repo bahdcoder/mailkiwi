@@ -1,29 +1,32 @@
-import { makeDatabase } from '@/shared/container/index.js'
-import {
-  abTestVariants,
-  audiences,
-  segments,
-} from '@/database/schema/schema.js'
-import { isDateInPast } from '@/utils/dates.js'
-import { and, count, eq, inArray } from 'drizzle-orm'
+import { and, count, eq, inArray } from "drizzle-orm"
 import {
   type InferInput,
+  array,
   boolean,
   check,
   checkAsync,
   email,
+  maxLength,
+  minLength,
+  nonEmpty,
+  number,
+  object,
   objectAsync,
   optional,
   pipe,
   pipeAsync,
   string,
-  object,
-  array,
-  minLength,
-  number,
-  maxLength,
-  nonEmpty,
-} from 'valibot'
+} from "valibot"
+
+import {
+  abTestVariants,
+  audiences,
+  segments,
+} from "@/database/schema/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
+
+import { isDateInPast } from "@/utils/dates.js"
 
 const emailContentFields = {
   fromName: optional(string()),
@@ -110,7 +113,7 @@ export const UpdateBroadcastDto = pipeAsync(
         if (!input) return true
 
         return isDateInPast(input) === false
-      }, 'sendAt cannot be in the past.'),
+      }, "sendAt cannot be in the past."),
     ),
     waitingTimeToPickWinner: optional(number()), // in hours
   }),
@@ -127,7 +130,7 @@ export const UpdateBroadcastDto = pipeAsync(
     })
 
     return segment !== undefined
-  }, 'The Segment provided must part of the audience provided.'),
+  }, "The Segment provided must part of the audience provided."),
   checkAsync(async (input) => {
     if (!input.emailContentVariants) {
       return true
@@ -149,7 +152,7 @@ export const UpdateBroadcastDto = pipeAsync(
       .where(inArray(abTestVariants.id, variantIds))
 
     return existingAbTestVariants === variantIds.length
-  }, 'One or more email content variants provided have an invalid ID.'),
+  }, "One or more email content variants provided have an invalid ID."),
   check((input) => {
     if (
       !input.emailContentVariants ||
@@ -163,7 +166,7 @@ export const UpdateBroadcastDto = pipeAsync(
     }, 0)
 
     return sum < 100
-  }, 'The sum of all ab test variant weights must be less than 100.'),
+  }, "The sum of all ab test variant weights must be less than 100."),
 )
 
 export type EmailContentVariant = InferInput<typeof EmailContentVariant>

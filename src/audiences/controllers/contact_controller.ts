@@ -1,20 +1,24 @@
-import { CreateContactAction } from '@/audiences/actions/contacts/create_contact_action.js'
-import { GetContactsAction } from '@/audiences/actions/contacts/get_contacts_action.ts'
-import { UpdateContactAction } from '@/audiences/actions/contacts/update_contact_action.js'
-import { AttachTagsToContactAction } from '@/audiences/actions/tags/attach_tags_to_contact_action.js'
-import { DetachTagsFromContactAction } from '@/audiences/actions/tags/detach_tags_from_contact_action.js'
-import { CreateContactSchema } from '@/audiences/dto/contacts/create_contact_dto.js'
-import { UpdateContactDto } from '@/audiences/dto/contacts/update_contact_dto.js'
-import { AttachTagsToContactDto } from '@/audiences/dto/tags/attach_tags_to_contact_dto.js'
-import { DetachTagsFromContactDto } from '@/audiences/dto/tags/detach_tags_from_contact_dto.js'
-import { AudiencePolicy } from '@/audiences/policies/audience_policy.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import { AudienceValidationAndAuthorizationConcern } from '@/audiences/concerns/audience_validation_concern.ts'
-import { E_UNAUTHORIZED } from '@/http/responses/errors.js'
-import { makeApp } from '@/shared/container/index.js'
-import type { HonoInstance } from '@/server/hono.js'
-import type { HonoContext } from '@/server/types.js'
-import { container } from '@/utils/typi.js'
+import { CreateContactAction } from "@/audiences/actions/contacts/create_contact_action.js"
+import { GetContactsAction } from "@/audiences/actions/contacts/get_contacts_action.ts"
+import { UpdateContactAction } from "@/audiences/actions/contacts/update_contact_action.js"
+import { AttachTagsToContactAction } from "@/audiences/actions/tags/attach_tags_to_contact_action.js"
+import { DetachTagsFromContactAction } from "@/audiences/actions/tags/detach_tags_from_contact_action.js"
+import { AudienceValidationAndAuthorizationConcern } from "@/audiences/concerns/audience_validation_concern.ts"
+import { CreateContactSchema } from "@/audiences/dto/contacts/create_contact_dto.js"
+import { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js"
+import { AttachTagsToContactDto } from "@/audiences/dto/tags/attach_tags_to_contact_dto.js"
+import { DetachTagsFromContactDto } from "@/audiences/dto/tags/detach_tags_from_contact_dto.js"
+import { AudiencePolicy } from "@/audiences/policies/audience_policy.js"
+
+import type { HonoInstance } from "@/server/hono.js"
+import type { HonoContext } from "@/server/types.js"
+
+import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
+
+import { makeApp } from "@/shared/container/index.js"
+import { BaseController } from "@/shared/controllers/base_controller.js"
+
+import { container } from "@/utils/typi.js"
 
 export class ContactController extends BaseController {
   constructor(
@@ -27,14 +31,14 @@ export class ContactController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ['GET', '/', this.index.bind(this)],
-        ['POST', '/', this.store.bind(this)],
-        ['POST', '/:contactId/tags/attach', this.attachTags.bind(this)],
-        ['POST', '/:contactId/tags/detach', this.detachTags.bind(this)],
-        ['PATCH', '/:contactId', this.update.bind(this)],
+        ["GET", "/", this.index.bind(this)],
+        ["POST", "/", this.store.bind(this)],
+        ["POST", "/:contactId/tags/attach", this.attachTags.bind(this)],
+        ["POST", "/:contactId/tags/detach", this.detachTags.bind(this)],
+        ["PATCH", "/:contactId", this.update.bind(this)],
       ],
       {
-        prefix: 'audiences/:audienceId/contacts',
+        prefix: "audiences/:audienceId/contacts",
       },
     )
   }
@@ -43,10 +47,10 @@ export class ContactController extends BaseController {
     const paginatedContacts = await container
       .make(GetContactsAction)
       .handle(
-        ctx.req.param('audienceId'),
-        ctx.req.query('segmentId'),
-        Number.parseInt(ctx.req.query('page') ?? '1'),
-        Number.parseInt(ctx.req.query('perPage') ?? '10'),
+        ctx.req.param("audienceId"),
+        ctx.req.query("segmentId"),
+        Number.parseInt(ctx.req.query("page") ?? "1"),
+        Number.parseInt(ctx.req.query("perPage") ?? "10"),
       )
 
     return ctx.json(paginatedContacts)
@@ -68,12 +72,12 @@ export class ContactController extends BaseController {
 
     const policy = container.resolve(AudiencePolicy)
 
-    if (!policy.canCreate(team, ctx.get('accessToken').userId))
+    if (!policy.canCreate(team, ctx.get("accessToken").userId))
       throw E_UNAUTHORIZED()
 
     const action = container.resolve(CreateContactAction)
 
-    const contact = await action.handle(data, ctx.req.param('audienceId'))
+    const contact = await action.handle(data, ctx.req.param("audienceId"))
 
     return ctx.json(contact)
   }
@@ -88,7 +92,7 @@ export class ContactController extends BaseController {
       audience,
     )
 
-    const contactId = ctx.req.param('contactId')
+    const contactId = ctx.req.param("contactId")
     const data = await this.validate(ctx, UpdateContactDto)
 
     const action = container.resolve(UpdateContactAction)
@@ -108,7 +112,7 @@ export class ContactController extends BaseController {
       audience,
     )
 
-    const contactId = ctx.req.param('contactId')
+    const contactId = ctx.req.param("contactId")
 
     const data = await this.validate(ctx, AttachTagsToContactDto)
 
@@ -127,7 +131,7 @@ export class ContactController extends BaseController {
       audience,
     )
 
-    const contactId = ctx.req.param('contactId')
+    const contactId = ctx.req.param("contactId")
 
     const data = await this.validate(ctx, DetachTagsFromContactDto)
 

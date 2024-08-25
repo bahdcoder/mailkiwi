@@ -11,7 +11,7 @@ import {
   record,
   string,
   union,
-} from 'valibot'
+} from "valibot"
 
 export const CreateSegmentSchema = object({
   name: pipe(string(), nonEmpty()),
@@ -19,25 +19,25 @@ export const CreateSegmentSchema = object({
     array(
       object({
         field: picklist([
-          'email',
-          'firstName',
-          'lastName',
-          'subscribedAt',
-          'tags',
+          "email",
+          "firstName",
+          "lastName",
+          "subscribedAt",
+          "tags",
         ]),
         operation: picklist([
-          'eq',
-          'ne',
-          'gt',
-          'lt',
-          'gte',
-          'lte',
-          'in',
-          'nin',
-          'startsWith',
-          'endsWith',
-          'contains',
-          'notContains',
+          "eq",
+          "ne",
+          "gt",
+          "lt",
+          "gte",
+          "lte",
+          "in",
+          "nin",
+          "startsWith",
+          "endsWith",
+          "contains",
+          "notContains",
         ]),
         value: union([string(), array(string()), number(), array(number())]),
       }),

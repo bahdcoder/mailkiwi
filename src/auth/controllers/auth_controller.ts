@@ -1,16 +1,21 @@
-import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
-import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
-import { CreateUserSchema } from '@/auth/users/dto/create_user_dto.js'
-import { LoginUserSchema } from '@/auth/users/dto/login_user_dto.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
-import { makeApp } from '@/shared/container/index.js'
-import type { HonoInstance } from '@/server/hono.js'
-import type { HonoContext } from '@/server/types.js'
-import { container } from '@/utils/typi.js'
-import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.ts'
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
+
+import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
+import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.ts"
+import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
+import { CreateUserSchema } from "@/auth/users/dto/create_user_dto.js"
+import { LoginUserSchema } from "@/auth/users/dto/login_user_dto.js"
+import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+
+import type { HonoInstance } from "@/server/hono.js"
+import type { HonoContext } from "@/server/types.js"
+
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+
+import { makeApp } from "@/shared/container/index.js"
+import { BaseController } from "@/shared/controllers/base_controller.js"
+
+import { container } from "@/utils/typi.js"
 
 export class AuthController extends BaseController {
   constructor(
@@ -22,19 +27,19 @@ export class AuthController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ['POST', '/login', this.login.bind(this)],
-        ['POST', '/register', this.register.bind(this)],
+        ["POST", "/login", this.login.bind(this)],
+        ["POST", "/register", this.register.bind(this)],
       ],
       {
-        prefix: 'auth',
+        prefix: "auth",
         middleware: [],
       },
     )
 
     this.app.defineRoutes(
-      [['POST', '/api-keys', this.createApiKey.bind(this)]],
+      [["POST", "/api-keys", this.createApiKey.bind(this)]],
       {
-        prefix: 'auth',
+        prefix: "auth",
       },
     )
   }
@@ -50,7 +55,7 @@ export class AuthController extends BaseController {
   async createApiKey(ctx: HonoContext) {
     const accessToken = await container
       .make(CreateTeamAccessTokenAction)
-      .handle(ctx.get('team').id)
+      .handle(ctx.get("team").id)
 
     return ctx.json(accessToken.toJSON())
   }
@@ -68,8 +73,8 @@ export class AuthController extends BaseController {
     if (!user || !passwordIsValid) {
       throw E_VALIDATION_FAILED([
         {
-          message: 'These credentials do not match our records.',
-          field: 'email',
+          message: "These credentials do not match our records.",
+          field: "email",
         },
       ])
     }

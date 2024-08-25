@@ -1,9 +1,11 @@
-import type { Secret } from '@poppinss/utils'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { makeDatabase, makeEnv } from '@/shared/container/index.js'
-import { sendingDomains } from '@/database/schema/schema.ts'
-import type { InsertSendingDomain } from '@/database/schema/database_schema_types.ts'
-import { Encryption } from '@/shared/utils/encryption/encryption.ts'
+import type { Secret } from "@poppinss/utils"
+
+import type { InsertSendingDomain } from "@/database/schema/database_schema_types.ts"
+import { sendingDomains } from "@/database/schema/schema.ts"
+
+import { makeDatabase, makeEnv } from "@/shared/container/index.js"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { Encryption } from "@/shared/utils/encryption/encryption.ts"
 
 export class SendingDomainRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {

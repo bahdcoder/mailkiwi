@@ -1,5 +1,6 @@
-import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { createFakeEmailContent } from "../audiences/email_content.ts"
+import { faker } from "@faker-js/faker"
+
 import {
   type ContactFilterCondition,
   accessTokens,
@@ -17,9 +18,10 @@ import {
   teamMemberships,
   teams,
   users,
-} from '@/database/schema/schema.js'
-import { faker } from '@faker-js/faker'
-import { createFakeEmailContent } from '../audiences/email_content.ts'
+} from "@/database/schema/schema.js"
+
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 export const refreshRedisDatabase = async () => {
   const redis = makeRedis()
@@ -59,9 +61,9 @@ export const seedAutomation = async (
 
   await database.insert(automations).values({
     id: automationId,
-    name: automation.name ?? 'Book launch',
+    name: automation.name ?? "Book launch",
     audienceId: automation.audienceId,
-    description: automation.description ?? 'Book launch',
+    description: automation.description ?? "Book launch",
   })
 
   if (!createSteps) {
@@ -79,7 +81,7 @@ export const seedAutomation = async (
   await database.insert(emails).values({
     id: emailId,
     title: faker.lorem.words(2),
-    type: 'AUTOMATION',
+    type: "AUTOMATION",
     audienceId: automation.audienceId,
     emailContentId,
   })
@@ -92,8 +94,8 @@ export const seedAutomation = async (
     .values({
       id: startingTriggerAutomationStepId,
       automationId,
-      type: 'TRIGGER',
-      subtype: 'TRIGGER_CONTACT_SUBSCRIBED',
+      type: "TRIGGER",
+      subtype: "TRIGGER_CONTACT_SUBSCRIBED",
       configuration: { conditions: automation.triggerConditions ?? [] },
     })
     .execute()
@@ -106,8 +108,8 @@ export const seedAutomation = async (
       id: receiveWelcomeEmailautomationStepId,
       automationId,
       parentId: startingTriggerAutomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_SEND_EMAIL',
+      type: "ACTION",
+      subtype: "ACTION_SEND_EMAIL",
       configuration: { emailId },
     })
     .execute()
@@ -133,8 +135,8 @@ export const seedAutomation = async (
       id: attachesTagsAutomationStepId,
       automationId,
       parentId: receiveWelcomeEmailautomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_ADD_TAG',
+      type: "ACTION",
+      subtype: "ACTION_ADD_TAG",
       configuration: { tagIds: attachTagIds },
     })
     .execute()
@@ -147,8 +149,8 @@ export const seedAutomation = async (
       id: waitsTwoDaysAutomationStepId,
       automationId,
       parentId: attachesTagsAutomationStepId,
-      type: 'RULE',
-      subtype: 'RULE_WAIT_FOR_DURATION',
+      type: "RULE",
+      subtype: "RULE_WAIT_FOR_DURATION",
       configuration: { delay: 2880 },
     })
     .execute()
@@ -174,8 +176,8 @@ export const seedAutomation = async (
       id: detachesTagsAutomationStepId,
       automationId,
       parentId: waitsTwoDaysAutomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_REMOVE_TAG',
+      type: "ACTION",
+      subtype: "ACTION_REMOVE_TAG",
       configuration: { tagIds: detachTagIds },
     })
     .execute()
@@ -188,8 +190,8 @@ export const seedAutomation = async (
       id: receiveSecondEmailEmailautomationStepId,
       automationId,
       parentId: detachesTagsAutomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_SEND_EMAIL',
+      type: "ACTION",
+      subtype: "ACTION_SEND_EMAIL",
       configuration: { emailId },
     })
     .execute()
@@ -202,8 +204,8 @@ export const seedAutomation = async (
       id: waitsOneDayAutomationStepId,
       automationId,
       parentId: receiveSecondEmailEmailautomationStepId,
-      type: 'RULE',
-      subtype: 'RULE_WAIT_FOR_DURATION',
+      type: "RULE",
+      subtype: "RULE_WAIT_FOR_DURATION",
       configuration: { delay: 1440 }, // delay is in minutes
     })
     .execute()
@@ -216,14 +218,14 @@ export const seedAutomation = async (
       id: ifElseBranchautomationStepId,
       automationId,
       parentId: waitsOneDayAutomationStepId,
-      type: 'RULE',
-      subtype: 'RULE_IF_ELSE',
+      type: "RULE",
+      subtype: "RULE_IF_ELSE",
       configuration: {
         conditions: [
           {
-            field: 'tags',
-            operation: 'contains',
-            value: ['gjdbbgfyz6e9m3tk99ezp084'],
+            field: "tags",
+            operation: "contains",
+            value: ["gjdbbgfyz6e9m3tk99ezp084"],
           },
         ],
       },
@@ -238,8 +240,8 @@ export const seedAutomation = async (
       id: hasTagReceivesThankYouautomationStepId,
       automationId,
       parentId: ifElseBranchautomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_SEND_EMAIL',
+      type: "ACTION",
+      subtype: "ACTION_SEND_EMAIL",
       configuration: {
         emailId,
       },
@@ -255,8 +257,8 @@ export const seedAutomation = async (
       id: hasTagWait4DaysautomationStepId,
       automationId,
       parentId: hasTagReceivesThankYouautomationStepId,
-      type: 'RULE',
-      subtype: 'RULE_WAIT_FOR_DURATION',
+      type: "RULE",
+      subtype: "RULE_WAIT_FOR_DURATION",
       configuration: { delay: 5760 },
     })
     .execute()
@@ -269,9 +271,9 @@ export const seedAutomation = async (
       id: hasTagAddToAudienceautomationId,
       automationId,
       parentId: hasTagWait4DaysautomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_SUBSCRIBE_TO_AUDIENCE',
-      configuration: { audienceId: 'akc34b1k27xrgy0c6qygcefe' },
+      type: "ACTION",
+      subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
+      configuration: { audienceId: "akc34b1k27xrgy0c6qygcefe" },
     })
     .execute()
 
@@ -283,8 +285,8 @@ export const seedAutomation = async (
       id: hasTagWait1DayautomationStepId,
       automationId,
       parentId: hasTagAddToAudienceautomationId,
-      type: 'RULE',
-      subtype: 'RULE_WAIT_FOR_DURATION',
+      type: "RULE",
+      subtype: "RULE_WAIT_FOR_DURATION",
       configuration: { delay: 1440 },
     })
     .execute()
@@ -297,8 +299,8 @@ export const seedAutomation = async (
       id: hasTagSendDiscountautomationStepId,
       automationId,
       parentId: hasTagWait1DayautomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_SEND_EMAIL',
+      type: "ACTION",
+      subtype: "ACTION_SEND_EMAIL",
       configuration: { emailId },
     })
     .execute()
@@ -311,9 +313,9 @@ export const seedAutomation = async (
       id: hasTagEndautomationStepId,
       automationId,
       parentId: hasTagSendDiscountautomationStepId,
-      type: 'END',
-      subtype: 'END',
-      configuration: { type: 'END' },
+      type: "END",
+      subtype: "END",
+      configuration: { type: "END" },
     })
     .execute()
 
@@ -325,8 +327,8 @@ export const seedAutomation = async (
       id: notHasTagReceives80PercentDiscountEmailautomationStepId,
       automationId,
       parentId: ifElseBranchautomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_SEND_EMAIL',
+      type: "ACTION",
+      subtype: "ACTION_SEND_EMAIL",
       configuration: {
         emailId,
       },
@@ -342,8 +344,8 @@ export const seedAutomation = async (
       id: notHasTagWait3DaysautomationStepId,
       automationId,
       parentId: notHasTagReceives80PercentDiscountEmailautomationStepId,
-      type: 'RULE',
-      subtype: 'RULE_WAIT_FOR_DURATION',
+      type: "RULE",
+      subtype: "RULE_WAIT_FOR_DURATION",
       configuration: {
         emailId,
       },
@@ -359,14 +361,14 @@ export const seedAutomation = async (
       id: secondIfElseBranchautomationStepId,
       automationId,
       parentId: notHasTagWait3DaysautomationStepId,
-      type: 'RULE',
-      subtype: 'RULE_IF_ELSE',
+      type: "RULE",
+      subtype: "RULE_IF_ELSE",
       configuration: {
         conditions: [
           {
-            field: 'email',
-            operation: 'endsWith',
-            value: ['@gmail.com'],
+            field: "email",
+            operation: "endsWith",
+            value: ["@gmail.com"],
           },
         ],
       },
@@ -382,9 +384,9 @@ export const seedAutomation = async (
       automationId,
       parentId: secondIfElseBranchautomationStepId,
 
-      type: 'ACTION',
-      subtype: 'ACTION_UNSUBSCRIBE_FROM_AUDIENCE',
-      configuration: { type: 'END' },
+      type: "ACTION",
+      subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
+      configuration: { type: "END" },
       branchIndex: 0,
     })
     .execute()
@@ -397,8 +399,8 @@ export const seedAutomation = async (
       id: isNotGmailGetDiscountautomationStepId,
       automationId,
       parentId: secondIfElseBranchautomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_SEND_EMAIL',
+      type: "ACTION",
+      subtype: "ACTION_SEND_EMAIL",
       configuration: {
         emailId,
       },
@@ -414,9 +416,9 @@ export const seedAutomation = async (
       id: isNotGmailWait5DaysautomationStepId,
       automationId,
       parentId: isNotGmailGetDiscountautomationStepId,
-      type: 'RULE',
-      subtype: 'RULE_WAIT_FOR_DURATION',
-      configuration: { type: 'END' },
+      type: "RULE",
+      subtype: "RULE_WAIT_FOR_DURATION",
+      configuration: { type: "END" },
       branchIndex: 1,
     })
     .execute()
@@ -429,14 +431,14 @@ export const seedAutomation = async (
       id: thirdIfElseBranchautomationStepId,
       automationId,
       parentId: isNotGmailWait5DaysautomationStepId,
-      type: 'RULE',
-      subtype: 'RULE_IF_ELSE',
+      type: "RULE",
+      subtype: "RULE_IF_ELSE",
       configuration: {
         conditions: [
           {
-            field: 'tags',
-            operation: 'contains',
-            value: ['brkkbrxhehqq0msk3jn8e02e'],
+            field: "tags",
+            operation: "contains",
+            value: ["brkkbrxhehqq0msk3jn8e02e"],
           },
         ],
       },
@@ -451,9 +453,9 @@ export const seedAutomation = async (
       id: purchasedBookautomationStepId,
       automationId,
       parentId: thirdIfElseBranchautomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_SUBSCRIBE_TO_AUDIENCE',
-      configuration: { audienceId: 'akc34b1k27xrgy0c6qygcefe' },
+      type: "ACTION",
+      subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
+      configuration: { audienceId: "akc34b1k27xrgy0c6qygcefe" },
       branchIndex: 0,
     })
     .execute()
@@ -466,9 +468,9 @@ export const seedAutomation = async (
       id: notPurchasedBookautomationStepId,
       automationId,
       parentId: thirdIfElseBranchautomationStepId,
-      type: 'ACTION',
-      subtype: 'ACTION_UNSUBSCRIBE_FROM_AUDIENCE',
-      configuration: { audienceId: 'akc34b1k27xrgy0c6qygcefe' },
+      type: "ACTION",
+      subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
+      configuration: { audienceId: "akc34b1k27xrgy0c6qygcefe" },
       branchIndex: 1,
     })
     .execute()

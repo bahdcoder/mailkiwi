@@ -1,13 +1,14 @@
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js"
+import { type SQLWrapper, and, eq } from "drizzle-orm"
 
-import { Queue } from '@/shared/queue/queue.js'
-import { broadcasts, contacts } from '@/database/schema/schema.js'
-import { and, eq, type SQLWrapper } from 'drizzle-orm'
-import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
+import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
 
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.ts'
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.ts'
+import { broadcasts, contacts } from "@/database/schema/schema.js"
+
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { Queue } from "@/shared/queue/queue.js"
 
 export interface SendBroadcastJobPayload {
   broadcastId: string
@@ -15,7 +16,7 @@ export interface SendBroadcastJobPayload {
 
 export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
   static get id() {
-    return 'BROADCASTS::SEND_BROADCAST'
+    return "BROADCASTS::SEND_BROADCAST"
   }
 
   static get queue() {
@@ -33,7 +34,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
     })
 
     if (!broadcast || !broadcast.audience || !broadcast.team) {
-      return this.fail('Broadcast or audience or team not properly provided.')
+      return this.fail("Broadcast or audience or team not properly provided.")
     }
 
     const segmentQueryConditions: SQLWrapper[] = []
@@ -41,7 +42,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
     if (broadcast.segment) {
       segmentQueryConditions.push(
         new SegmentBuilder(
-          broadcast.segment.conditions as CreateSegmentDto['conditions'],
+          broadcast.segment.conditions as CreateSegmentDto["conditions"],
         ).build(),
       )
     }

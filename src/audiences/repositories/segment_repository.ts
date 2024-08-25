@@ -1,13 +1,14 @@
-import { eq } from 'drizzle-orm'
+import { eq } from "drizzle-orm"
 
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { segments } from '@/database/schema/schema.js'
+import type { DrizzleClient } from "@/database/client.ts"
 import type {
   InsertSegment,
   Segment,
-} from '@/database/schema/database_schema_types.js'
-import type { DrizzleClient } from '@/database/client.ts'
-import { makeDatabase } from '@/shared/container/index.js'
+} from "@/database/schema/database_schema_types.js"
+import { segments } from "@/database/schema/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
 
 export class SegmentRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

@@ -1,18 +1,21 @@
-import { makeDatabase } from '@/shared/container/index.js'
-import { abTestVariants, broadcasts } from '@/database/schema/schema.js'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
-import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
-import { faker } from '@faker-js/faker'
-import { asc, eq } from 'drizzle-orm'
-import { describe, test } from 'vitest'
+import { faker } from "@faker-js/faker"
+import { asc, eq } from "drizzle-orm"
+import { describe, test } from "vitest"
+
 import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
-} from '@/tests/mocks/audiences/email_content.ts'
+} from "@/tests/mocks/audiences/email_content.ts"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
+import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-describe('Update broadcasts', () => {
-  test('can update a broadcast with ab test variants', async ({ expect }) => {
+import { abTestVariants, broadcasts } from "@/database/schema/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
+
+describe("Update broadcasts", () => {
+  test("can update a broadcast with ab test variants", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()
@@ -31,7 +34,7 @@ describe('Update broadcasts', () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: 'PUT',
+      method: "PUT",
       path: `/broadcasts/${broadcastId}`,
       body: updateData,
     })
@@ -81,7 +84,7 @@ describe('Update broadcasts', () => {
     expect(variantsEmailContent).toStrictEqual(abTestVariantsMock)
   })
 
-  test('cannot update ab test variants if weights sum up to more than 100', async ({
+  test("cannot update ab test variants if weights sum up to more than 100", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -102,7 +105,7 @@ describe('Update broadcasts', () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: 'PUT',
+      method: "PUT",
       path: `/broadcasts/${broadcastId}`,
       body: updateData,
     })
@@ -111,11 +114,11 @@ describe('Update broadcasts', () => {
 
     expect(response.status).toBe(422)
     expect(json).toMatchObject({
-      message: 'Validation failed.',
+      message: "Validation failed.",
       errors: [
         {
           message:
-            'The sum of all ab test variant weights must be less than 100.',
+            "The sum of all ab test variant weights must be less than 100.",
         },
       ],
     })

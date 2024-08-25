@@ -1,26 +1,32 @@
-import { sendingDomains } from '@/database/schema/schema.ts'
-import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.ts'
-import { CheckSendingDomainDnsConfigurationJob } from '@/sending_domains/jobs/check_sending_domain_dns_configuration_job.ts'
+import { faker } from "@faker-js/faker"
+import { eq } from "drizzle-orm"
+import dns from "node:dns/promises"
+import { describe, test, vi } from "vitest"
+
+import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.ts"
+import { CheckSendingDomainDnsConfigurationJob } from "@/sending_domains/jobs/check_sending_domain_dns_configuration_job.ts"
+
+import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.ts"
+
+import { createUser } from "@/tests/mocks/auth/users.ts"
+import {
+  refreshDatabase,
+  refreshRedisDatabase,
+} from "@/tests/mocks/teams/teams.ts"
+
+import { sendingDomains } from "@/database/schema/schema.ts"
+
 import {
   makeConfig,
   makeDatabase,
   makeRedis,
-} from '@/shared/container/index.ts'
-import { Queue } from '@/shared/queue/queue.ts'
-import { createUser } from '@/tests/mocks/auth/users.ts'
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-} from '@/tests/mocks/teams/teams.ts'
-import { DnsConfigurationTool } from '@/tools/dns/dns_configuration_tool.ts'
-import { container } from '@/utils/typi.ts'
-import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
-import dns from 'node:dns/promises'
-import { describe, test, vi } from 'vitest'
+} from "@/shared/container/index.ts"
+import { Queue } from "@/shared/queue/queue.ts"
 
-describe('Sending domain dns configuration check', () => {
-  test('marks sending domain as verified when dns records are correctly configured', async ({
+import { container } from "@/utils/typi.ts"
+
+describe("Sending domain dns configuration check", () => {
+  test("marks sending domain as verified when dns records are correctly configured", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -47,11 +53,11 @@ describe('Sending domain dns configuration check', () => {
       )
 
     const mockResolveCname = vi
-      .spyOn(dns, 'resolveCname')
+      .spyOn(dns, "resolveCname")
       .mockImplementation(async () => [config.software.bounceHost])
 
     const mockResolveTxt = vi
-      .spyOn(dns, 'resolveTxt')
+      .spyOn(dns, "resolveTxt")
       .mockImplementation(async () => [[records.dkim.value]])
 
     await container.make(CheckSendingDomainDnsConfigurationJob).handle({
@@ -77,7 +83,7 @@ describe('Sending domain dns configuration check', () => {
     expect(refreshedSendingDomain?.returnPathDomainVerifiedAt).toBeDefined()
   })
 
-  test('marks only return path as verified when only return path dns records are correctly configured', async ({
+  test("marks only return path as verified when only return path dns records are correctly configured", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -104,11 +110,11 @@ describe('Sending domain dns configuration check', () => {
       )
 
     const mockResolveCname = vi
-      .spyOn(dns, 'resolveCname')
+      .spyOn(dns, "resolveCname")
       .mockImplementation(async () => [config.software.bounceHost])
 
     const mockResolveTxt = vi
-      .spyOn(dns, 'resolveTxt')
+      .spyOn(dns, "resolveTxt")
       .mockImplementation(async () => [])
 
     await container.make(CheckSendingDomainDnsConfigurationJob).handle({
@@ -134,7 +140,7 @@ describe('Sending domain dns configuration check', () => {
     expect(refreshedSendingDomain?.returnPathDomainVerifiedAt).toBeDefined()
   })
 
-  test('marks only dkim as verified when only dkim dns records are correctly configured', async ({
+  test("marks only dkim as verified when only dkim dns records are correctly configured", async ({
     expect,
   }) => {
     await refreshRedisDatabase()
@@ -162,11 +168,11 @@ describe('Sending domain dns configuration check', () => {
       )
 
     const mockResolveCname = vi
-      .spyOn(dns, 'resolveCname')
+      .spyOn(dns, "resolveCname")
       .mockImplementation(async () => [])
 
     const mockResolveTxt = vi
-      .spyOn(dns, 'resolveTxt')
+      .spyOn(dns, "resolveTxt")
       .mockImplementation(async () => [[records.dkim.value]])
 
     await container.make(CheckSendingDomainDnsConfigurationJob).handle({

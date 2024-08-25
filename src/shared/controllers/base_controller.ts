@@ -3,10 +3,11 @@ import {
   type BaseSchemaAsync,
   type InferInput,
   safeParseAsync,
-} from 'valibot'
+} from "valibot"
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
-import type { HonoContext } from '@/server/types.js'
+import type { HonoContext } from "@/server/types.js"
+
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 export class BaseController {
   protected async validate<
@@ -23,13 +24,13 @@ export class BaseController {
   }
 
   protected ensureTeam(ctx: HonoContext) {
-    const team = ctx.get('team')
+    const team = ctx.get("team")
 
     if (!team)
       throw E_VALIDATION_FAILED([
         {
-          message: 'The team is required to create an audience.',
-          field: 'email',
+          message: "The team is required to create an audience.",
+          field: "email",
         },
       ])
 

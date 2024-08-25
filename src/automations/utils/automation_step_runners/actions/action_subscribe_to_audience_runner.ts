@@ -1,17 +1,20 @@
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.ts"
+
+import type {
+  AutomationStepRunnerContext,
+  AutomationStepRunnerContract,
+} from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
+
 import type {
   AutomationStep,
   Contact,
-} from '@/database/schema/database_schema_types.js'
-import type {
-  AutomationStepRunnerContract,
-  AutomationStepRunnerContext,
-} from '@/automations/utils/automation_step_runners/automation_runner_contract.js'
-import { container } from '@/utils/typi.ts'
+} from "@/database/schema/database_schema_types.js"
 import {
-  contacts,
   type ACTION_SUBSCRIBE_TO_AUDIENCE_CONFIGURATION,
-} from '@/database/schema/schema.ts'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.ts'
+  contacts,
+} from "@/database/schema/schema.ts"
+
+import { container } from "@/utils/typi.ts"
 
 export class SubscribeToAudienceAutomationStepRunner
   implements AutomationStepRunnerContract

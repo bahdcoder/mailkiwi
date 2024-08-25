@@ -1,27 +1,32 @@
-import { describe, test, vi } from 'vitest'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.ts'
-import * as queues from '@/shared/queue/queue.js'
+import { faker } from "@faker-js/faker"
+import { Job } from "bullmq"
+import { eq } from "drizzle-orm"
+import { describe, test, vi } from "vitest"
+
+import { PickAbTestWinnerJob } from "@/broadcasts/jobs/pick_ab_test_winner_job.ts"
+import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.ts"
+
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.ts"
 import {
   refreshDatabase,
   refreshRedisDatabase,
-} from '@/tests/mocks/teams/teams.ts'
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
-import { faker } from '@faker-js/faker'
+} from "@/tests/mocks/teams/teams.ts"
+
 import {
   abTestVariants,
   broadcasts,
   contacts,
-} from '@/database/schema/schema.ts'
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { Job } from 'bullmq'
-import { cuid } from '@/shared/utils/cuid/cuid.ts'
-import { eq } from 'drizzle-orm'
-import { SendAbTestBroadcastJob } from '@/broadcasts/jobs/send_ab_test_broadcast_job.ts'
-import { PickAbTestWinnerJob } from '@/broadcasts/jobs/pick_ab_test_winner_job.ts'
-import { hoursToSeconds } from '@/utils/dates.ts'
+} from "@/database/schema/schema.ts"
 
-describe('Send broadcast job', () => {
-  test('queues send email jobs for all contacts in audience for the broadcast based on a/b test variants', async ({
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
+import * as queues from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.ts"
+
+import { hoursToSeconds } from "@/utils/dates.ts"
+
+describe("Send broadcast job", () => {
+  test("queues send email jobs for all contacts in audience for the broadcast based on a/b test variants", async ({
     expect,
   }) => {
     await refreshRedisDatabase()

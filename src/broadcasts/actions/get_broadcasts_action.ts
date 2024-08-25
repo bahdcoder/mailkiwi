@@ -1,5 +1,6 @@
-import { container } from '@/utils/typi.ts'
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+
+import { container } from "@/utils/typi.ts"
 
 export class GetBroadcastsAction {
   constructor(

@@ -1,10 +1,13 @@
-import { AudienceValidationAndAuthorizationConcern } from '@/audiences/concerns/audience_validation_concern.ts'
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.ts'
-import { container } from '@/utils/typi.ts'
-import type { HonoContext } from '@/server/types.ts'
-import { CreateSegmentSchema } from '@/audiences/dto/segments/create_segment_dto.js'
-import { SegmentRepository } from '@/audiences/repositories/segment_repository.ts'
+import { AudienceValidationAndAuthorizationConcern } from "@/audiences/concerns/audience_validation_concern.ts"
+import { CreateSegmentSchema } from "@/audiences/dto/segments/create_segment_dto.js"
+import { SegmentRepository } from "@/audiences/repositories/segment_repository.ts"
+
+import type { HonoContext } from "@/server/types.ts"
+
+import { makeApp } from "@/shared/container/index.js"
+import { BaseController } from "@/shared/controllers/base_controller.ts"
+
+import { container } from "@/utils/typi.ts"
 
 export class SegmentController extends BaseController {
   constructor(
@@ -18,11 +21,11 @@ export class SegmentController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ['POST', '/', this.create.bind(this)],
-        ['DELETE', '/:segmentId', this.delete.bind(this)],
+        ["POST", "/", this.create.bind(this)],
+        ["DELETE", "/:segmentId", this.delete.bind(this)],
       ],
       {
-        prefix: 'audiences/:audienceId/segments',
+        prefix: "audiences/:audienceId/segments",
       },
     )
   }
@@ -57,7 +60,7 @@ export class SegmentController extends BaseController {
       audience,
     )
 
-    const segmentId = ctx.req.param('segmentId')
+    const segmentId = ctx.req.param("segmentId")
 
     await this.segmentRepository.delete(segmentId)
 

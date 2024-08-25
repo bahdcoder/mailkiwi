@@ -6,12 +6,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 // eslint-disable-next-line
 // @ts-expect-error
-import phc from '@phc/format'
-
-import type { PhcNode } from './types.js'
+import type { PhcNode } from "./types.js"
+import phc from "@phc/format"
 
 /**
  * Phc formatter is used to serialize a hash to a phc string and

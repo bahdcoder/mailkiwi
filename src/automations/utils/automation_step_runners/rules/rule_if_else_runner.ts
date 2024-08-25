@@ -1,20 +1,24 @@
+import { and, eq, isNotNull } from "drizzle-orm"
+
+import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
+
+import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.ts"
+import type {
+  AutomationStepRunnerContext,
+  AutomationStepRunnerContract,
+} from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
+
 import type {
   AutomationStep,
   Contact,
-} from '@/database/schema/database_schema_types.js'
-import type {
-  AutomationStepRunnerContract,
-  AutomationStepRunnerContext,
-} from '@/automations/utils/automation_step_runners/automation_runner_contract.js'
+} from "@/database/schema/database_schema_types.js"
 import {
+  type RULE_IF_ELSE_CONFIGURATION,
   automationSteps,
   contacts,
-  type RULE_IF_ELSE_CONFIGURATION,
-} from '@/database/schema/schema.ts'
-import { and, eq, isNotNull } from 'drizzle-orm'
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.ts'
-import { Queue } from '@/shared/queue/queue.ts'
-import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.ts'
+} from "@/database/schema/schema.ts"
+
+import { Queue } from "@/shared/queue/queue.ts"
 
 export class AddTagAutomationStepRunner
   implements AutomationStepRunnerContract

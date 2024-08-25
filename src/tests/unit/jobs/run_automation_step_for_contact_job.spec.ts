@@ -1,22 +1,28 @@
-import { describe, test, vi } from 'vitest'
-import { createUser } from '@/tests/mocks/auth/users.ts'
-import { MailBuilder, Mailer } from '@/shared/mailers/mailer.js'
-import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.ts'
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
+import { and, eq } from "drizzle-orm"
+import { describe, test, vi } from "vitest"
+
+import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+
+import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.ts"
+
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
+import { createUser } from "@/tests/mocks/auth/users.ts"
+import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.ts"
+
 import {
   contactAutomationSteps,
   contacts,
   tagsOnContacts,
-} from '@/database/schema/schema.ts'
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.ts'
-import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.ts'
-import { and, eq } from 'drizzle-orm'
-import { container } from '@/utils/typi.ts'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.ts'
+} from "@/database/schema/schema.ts"
 
-describe('Run automation step for contact job', () => {
-  test('automation step action: send email for a contact', async ({
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
+import { MailBuilder, Mailer } from "@/shared/mailers/mailer.js"
+import { cuid } from "@/shared/utils/cuid/cuid.ts"
+
+import { container } from "@/utils/typi.ts"
+
+describe("Run automation step for contact job", () => {
+  test("automation step action: send email for a contact", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -37,7 +43,7 @@ describe('Run automation step for contact job', () => {
       send = fakeSendFn
     }
 
-    vi.spyOn(Mailer, 'from').mockImplementation(() => {
+    vi.spyOn(Mailer, "from").mockImplementation(() => {
       return new FakeMailer({} as any) as any
     })
 
@@ -63,9 +69,9 @@ describe('Run automation step for contact job', () => {
         eq(contactAutomationSteps.contactId, contactId),
         eq(
           contactAutomationSteps.automationStepId,
-          receiveWelcomeEmailautomationStepId ?? '',
+          receiveWelcomeEmailautomationStepId ?? "",
         ),
-        eq(contactAutomationSteps.status, 'COMPLETED'),
+        eq(contactAutomationSteps.status, "COMPLETED"),
       ),
     })
 
@@ -80,7 +86,7 @@ describe('Run automation step for contact job', () => {
     )
   })
 
-  test('automation step action: attach tags for a contact', async ({
+  test("automation step action: attach tags for a contact", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -117,9 +123,9 @@ describe('Run automation step for contact job', () => {
         eq(contactAutomationSteps.contactId, contactId),
         eq(
           contactAutomationSteps.automationStepId,
-          attachesTagsAutomationStepId ?? '',
+          attachesTagsAutomationStepId ?? "",
         ),
-        eq(contactAutomationSteps.status, 'COMPLETED'),
+        eq(contactAutomationSteps.status, "COMPLETED"),
       ),
     })
 
@@ -134,7 +140,7 @@ describe('Run automation step for contact job', () => {
     expect(completed).toBeDefined()
   })
 
-  test('automation step action: detach tags from a contact', async ({
+  test("automation step action: detach tags from a contact", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -172,9 +178,9 @@ describe('Run automation step for contact job', () => {
         eq(contactAutomationSteps.contactId, contactId),
         eq(
           contactAutomationSteps.automationStepId,
-          detachesTagsAutomationStepId ?? '',
+          detachesTagsAutomationStepId ?? "",
         ),
-        eq(contactAutomationSteps.status, 'COMPLETED'),
+        eq(contactAutomationSteps.status, "COMPLETED"),
       ),
     })
 

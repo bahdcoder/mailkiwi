@@ -1,39 +1,49 @@
-import type { MailerDriver } from '@/shared/mailers/mailer_types.js'
-import './globals'
+import "./globals"
+import { RootController } from "@/views/controllers/root_controller.js"
+import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.ts"
+import type { Redis } from "ioredis"
 
-import { Mailer } from '@/shared/mailers/mailer.js'
-import { AudienceController } from '@/audiences/controllers/audience_controller.js'
-import { ContactController } from '@/audiences/controllers/contact_controller.ts'
-import { TagController } from '@/audiences/controllers/tag_controller.ts'
-import { AuthController } from '@/auth/controllers/auth_controller.ts'
-import { UserController } from '@/auth/controllers/user_controller.js'
-import { AutomationController } from '@/automations/controllers/automation_controller.js'
-import { BroadcastController } from '@/broadcasts/controllers/broadcast_controller.ts'
-import { TeamController } from '@/teams/controllers/team_controller.ts'
-import { MailerWebhooksContorller } from '@/webhooks/controllers/mailer_webhooks_controller.ts'
-import { RootController } from '@/views/controllers/root_controller.js'
-import {
-  ContainerKey,
-  makeDatabaseConnection,
-  makeRedis,
-} from '@/shared/container/index.js'
+import { BroadcastController } from "@/broadcasts/controllers/broadcast_controller.ts"
+
+import { AudienceController } from "@/audiences/controllers/audience_controller.js"
+import { ContactController } from "@/audiences/controllers/contact_controller.ts"
+import { SegmentController } from "@/audiences/controllers/segment_controller.ts"
+import { TagController } from "@/audiences/controllers/tag_controller.ts"
+
+import { TeamController } from "@/teams/controllers/team_controller.ts"
+
+import { AuthController } from "@/auth/controllers/auth_controller.ts"
+import { UserController } from "@/auth/controllers/user_controller.js"
+
+import { AutomationController } from "@/automations/controllers/automation_controller.js"
+
+import { SendingDomainController } from "@/sending_domains/controllers/sending_domain_controller.ts"
+
 import {
   type DrizzleClient,
   createDatabaseClient,
   createDrizzleDatabase,
-} from '@/database/client.js'
+} from "@/database/client.js"
+
+import { Hono, type HonoInstance } from "@/server/hono.js"
+
+import {
+  ContainerKey,
+  makeDatabaseConnection,
+  makeRedis,
+} from "@/shared/container/index.js"
 import {
   type ConfigVariables,
   type EnvVariables,
   config,
   env,
-} from '@/shared/env/index.js'
-import { Hono, type HonoInstance } from '@/server/hono.js'
-import { container } from '@/utils/typi.js'
-import { SegmentController } from '@/audiences/controllers/segment_controller.ts'
-import type { Redis } from 'ioredis'
-import { createRedisDatabaseInstance } from '@/redis/redis_client.ts'
-import { SendingDomainController } from '@/sending_domains/controllers/sending_domain_controller.ts'
+} from "@/shared/env/index.js"
+import { Mailer } from "@/shared/mailers/mailer.js"
+import type { MailerDriver } from "@/shared/mailers/mailer_types.js"
+
+import { createRedisDatabaseInstance } from "@/redis/redis_client.ts"
+
+import { container } from "@/utils/typi.js"
 
 export class Ignitor {
   protected env: EnvVariables

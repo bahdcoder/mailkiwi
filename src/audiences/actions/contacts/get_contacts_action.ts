@@ -1,18 +1,23 @@
-import { container } from '@/utils/typi.js'
-import { SegmentRepository } from '@/audiences/repositories/segment_repository.ts'
+import { type SQLWrapper, eq, inArray } from "drizzle-orm"
+
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import { SegmentRepository } from "@/audiences/repositories/segment_repository.ts"
+import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
+
 import type {
   Audience,
   Contact,
   Segment,
-} from '@/database/schema/database_schema_types.js'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.ts'
-import { makeDatabase } from '@/shared/container/index.js'
-import { contacts, tags, tagsOnContacts } from '@/database/schema/schema.ts'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
-import { eq, inArray, type SQLWrapper } from 'drizzle-orm'
-import { Paginator } from '@/shared/utils/pagination/paginator.ts'
+} from "@/database/schema/database_schema_types.js"
+import { contacts, tags, tagsOnContacts } from "@/database/schema/schema.ts"
+
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
+
+import { makeDatabase } from "@/shared/container/index.js"
+import { Paginator } from "@/shared/utils/pagination/paginator.ts"
+
+import { container } from "@/utils/typi.js"
 
 export class GetContactsAction {
   constructor(
@@ -31,7 +36,7 @@ export class GetContactsAction {
     let audience: Audience | undefined
 
     if (!audienceId) {
-      throw E_VALIDATION_FAILED([{ message: 'Audience id is required.' }])
+      throw E_VALIDATION_FAILED([{ message: "Audience id is required." }])
     }
 
     const queryConditions: SQLWrapper[] = []
@@ -56,7 +61,7 @@ export class GetContactsAction {
 
       queryConditions.push(
         new SegmentBuilder(
-          segment.conditions as CreateSegmentDto['conditions'],
+          segment.conditions as CreateSegmentDto["conditions"],
         ).build(),
       )
     }

@@ -1,26 +1,30 @@
-import { faker } from '@faker-js/faker'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { ContainerKey } from '@/shared/container/index.js'
+import { faker } from "@faker-js/faker"
+import { count, eq } from "drizzle-orm"
+import cluster from "node:cluster"
+import { cpus } from "node:os"
+
+import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
+
 import {
   createDatabaseClient,
   createDrizzleDatabase,
-} from '@/database/client.js'
+} from "@/database/client.js"
 import {
-  users,
-  teams,
-  audiences,
   contacts as ContactsTable,
-  broadcasts,
   abTestVariants,
+  audiences,
+  broadcasts,
   emailContents,
-} from '@/database/schema/schema.js'
-import cluster from 'node:cluster'
-import { cpus } from 'node:os'
-import { env } from '@/shared/env/index.js'
-import { container } from '@/utils/typi.js'
-import { count, eq } from 'drizzle-orm'
-import { refreshDatabase } from '@/tests/mocks/teams/teams.ts'
-import { sleep } from '@/utils/sleep.ts'
+  teams,
+  users,
+} from "@/database/schema/schema.js"
+
+import { ContainerKey } from "@/shared/container/index.js"
+import { env } from "@/shared/env/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
+
+import { sleep } from "@/utils/sleep.ts"
+import { container } from "@/utils/typi.js"
 
 // Set up database connection
 const connection = await createDatabaseClient(env.DATABASE_URL)
@@ -38,7 +42,7 @@ class BaseSeed {
     message?: string,
     batchSize = 10000,
   ) {
-    console.log(`Inserting ${data.length} ${message || ''}`)
+    console.log(`Inserting ${data.length} ${message || ""}`)
 
     for (let i = 0; i < data.length; i += batchSize) {
       const batch = data.slice(i, i + batchSize)
@@ -58,7 +62,7 @@ class UserSeed extends BaseSeed {
       name: faker.person.fullName(),
       password: faker.internet.password(),
     }))
-    await this.batchInsert(users, userData, 'users')
+    await this.batchInsert(users, userData, "users")
     return userData
   }
 }
@@ -98,7 +102,7 @@ class ContactSeed extends BaseSeed {
       audienceId,
       subscribedAt: faker.date.past(),
     }))
-    await this.batchInsert(ContactsTable, contactData, 'contacts')
+    await this.batchInsert(ContactsTable, contactData, "contacts")
     return contactData
   }
 }
@@ -117,22 +121,22 @@ class EmailContentSeed extends BaseSeed {
       contentHtml: this.generateHtmlContent(),
       contentText: faker.lorem.paragraphs(3),
     }))
-    await this.batchInsert(emailContents, emailContentData, 'email contents')
+    await this.batchInsert(emailContents, emailContentData, "email contents")
     return emailContentData
   }
 
   private generateEmailStructure() {
     return {
       body: {
-        type: 'container',
+        type: "container",
         children: [
           {
-            type: 'text',
+            type: "text",
             value: faker.lorem.paragraph(),
           },
           {
-            type: 'button',
-            value: 'Click me!',
+            type: "button",
+            value: "Click me!",
             url: faker.internet.url(),
           },
         ],
@@ -161,10 +165,10 @@ class BroadcastSeed extends BaseSeed {
       name: faker.lorem.words(3),
       audienceId,
       teamId,
-      status: 'DRAFT',
+      status: "DRAFT",
       isAbTest: Math.random() < 0.5, // 50% chance of being an A/B test
     }))
-    await this.batchInsert(broadcasts, broadcastData, 'broadcasts')
+    await this.batchInsert(broadcasts, broadcastData, "broadcasts")
     return broadcastData
   }
 }
@@ -189,7 +193,7 @@ class ABTestVariantSeed extends BaseSeed {
       weight: this.calculateVariantWeight(index, variantCount),
     }))
 
-    await this.batchInsert(abTestVariants, variantData, 'abtests')
+    await this.batchInsert(abTestVariants, variantData, "abtests")
     return variantData
   }
 
@@ -230,7 +234,7 @@ class SendSeed extends BaseSeed {
         broadcastId,
         variantId: selectedVariant.id,
         contactId: contact.id,
-        status: 'SENT',
+        status: "SENT",
         sentAt: faker.date.recent(),
         openedAt: Math.random() < 0.3 ? faker.date.recent() : null,
         firstClickAt: Math.random() < 0.1 ? faker.date.recent() : null,
@@ -264,10 +268,10 @@ class DatabaseSeeder {
   private sendSeed = new SendSeed()
 
   async seed() {
-    console.log('Starting database seed...')
+    console.log("Starting database seed...")
 
     const seededUsers = await this.userSeed.seed(100)
-    console.log('Seeded 100 users')
+    console.log("Seeded 100 users")
 
     for (const user of seededUsers) {
       await sleep(5000)
@@ -297,7 +301,7 @@ class DatabaseSeeder {
       }
     }
 
-    console.log('Database seed completed successfully')
+    console.log("Database seed completed successfully")
   }
 }
 
@@ -305,8 +309,8 @@ async function seed() {
   const seeder = new DatabaseSeeder()
   seeder
     .seed()
-    .then(() => console.log('Seeding completed'))
-    .catch((error) => console.error('Error during seeding:', error))
+    .then(() => console.log("Seeding completed"))
+    .catch((error) => console.error("Error during seeding:", error))
 }
 
 const numCPUs = cpus().length
@@ -314,16 +318,16 @@ const numCPUs = cpus().length
 if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`)
 
-  console.log('Cleaning database ...')
+  console.log("Cleaning database ...")
   await refreshDatabase()
-  console.log('Done cleaning database.')
+  console.log("Done cleaning database.")
 
   // Fork workers
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork()
   }
 
-  cluster.on('exit', (worker, code, signal) => {
+  cluster.on("exit", (worker, code, signal) => {
     console.log(`Worker ${worker.process.pid} died`)
   })
 } else {

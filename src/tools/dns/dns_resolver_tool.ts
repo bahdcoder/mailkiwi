@@ -1,7 +1,10 @@
-import { makeConfig } from '@/shared/container/index.ts'
-import { DnsConfigurationTool } from '@/tools/dns/dns_configuration_tool.ts'
-import { container } from '@/utils/typi.ts'
-import dns from 'node:dns/promises'
+import dns from "node:dns/promises"
+
+import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.ts"
+
+import { makeConfig } from "@/shared/container/index.ts"
+
+import { container } from "@/utils/typi.ts"
 
 export class DnsResolverTool {
   private domain: string
@@ -72,7 +75,7 @@ export class DnsResolverTool {
     ])
 
     dkimTxtRecords = dkimTxtRecords.map((record) =>
-      Array.isArray(record) ? record.join('') : record,
+      Array.isArray(record) ? record.join("") : record,
     ) as string[]
 
     return {

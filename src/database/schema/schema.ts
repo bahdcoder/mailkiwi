@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm'
+import { relations } from "drizzle-orm"
 import {
   type AnyMySqlColumn,
   boolean,
@@ -11,302 +11,303 @@ import {
   timestamp,
   unique,
   varchar,
-} from 'drizzle-orm/mysql-core'
+} from "drizzle-orm/mysql-core"
 
-import { cuid } from '@/shared/utils/cuid/cuid.ts'
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.ts'
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
 
-const id = varchar('id', { length: 40 }).primaryKey().notNull().$defaultFn(cuid)
+import { cuid } from "@/shared/utils/cuid/cuid.ts"
+
+const id = varchar("id", { length: 40 }).primaryKey().notNull().$defaultFn(cuid)
 
 export type ContactFilterCondition = {
-  field: CreateSegmentDto['conditions'][number]['field']
-  operation: CreateSegmentDto['conditions'][number]['operation']
+  field: CreateSegmentDto["conditions"][number]["field"]
+  operation: CreateSegmentDto["conditions"][number]["operation"]
   value: string | number | string[] | number[]
 }
 
 // Tables
-export const settings = mysqlTable('settings', {
+export const settings = mysqlTable("settings", {
   id,
-  url: varchar('url', { length: 256 }).unique(),
-  domain: varchar('domain', { length: 50 }).unique().notNull(),
-  installedSslCertificate: boolean('installedSslCertificate')
+  url: varchar("url", { length: 256 }).unique(),
+  domain: varchar("domain", { length: 50 }).unique().notNull(),
+  installedSslCertificate: boolean("installedSslCertificate")
     .default(false)
     .notNull(),
 })
 
-export const users = mysqlTable('users', {
+export const users = mysqlTable("users", {
   id,
-  email: varchar('email', { length: 80 }).unique().notNull(),
-  name: varchar('name', { length: 80 }),
-  avatarUrl: varchar('avatarUrl', { length: 256 }),
-  password: varchar('password', { length: 256 }).notNull(),
+  email: varchar("email", { length: 80 }).unique().notNull(),
+  name: varchar("name", { length: 80 }),
+  avatarUrl: varchar("avatarUrl", { length: 256 }),
+  password: varchar("password", { length: 256 }).notNull(),
 })
 
-export const accessTokens = mysqlTable('accessTokens', {
+export const accessTokens = mysqlTable("accessTokens", {
   id,
-  userId: varchar('userId', { length: 32 }).references(() => users.id),
-  teamId: varchar('teamId', { length: 32 }).references(() => teams.id),
-  type: varchar('type', { length: 16 }).notNull(),
-  name: varchar('name', { length: 32 }),
-  hash: varchar('hash', { length: 100 }).notNull(),
-  createdAt: timestamp('createdAt').defaultNow().notNull(),
-  lastUsedAt: timestamp('lastUsedAt').defaultNow().notNull(),
-  expiresAt: timestamp('expiresAt').defaultNow().notNull(),
+  userId: varchar("userId", { length: 32 }).references(() => users.id),
+  teamId: varchar("teamId", { length: 32 }).references(() => teams.id),
+  type: varchar("type", { length: 16 }).notNull(),
+  name: varchar("name", { length: 32 }),
+  hash: varchar("hash", { length: 100 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  lastUsedAt: timestamp("lastUsedAt").defaultNow().notNull(),
+  expiresAt: timestamp("expiresAt").defaultNow().notNull(),
 })
 
-export const teams = mysqlTable('teams', {
+export const teams = mysqlTable("teams", {
   id,
-  name: varchar('name', { length: 100 }).notNull(),
-  userId: varchar('userId', { length: 32 })
+  name: varchar("name", { length: 100 }).notNull(),
+  userId: varchar("userId", { length: 32 })
     .notNull()
     .references(() => users.id),
-  trackClicks: boolean('trackClicks'),
-  trackOpens: boolean('trackOpens'),
-  broadcastEditor: mysqlEnum('broadcastEditor', ['DEFAULT', 'MARKDOWN']),
+  trackClicks: boolean("trackClicks"),
+  trackOpens: boolean("trackOpens"),
+  broadcastEditor: mysqlEnum("broadcastEditor", ["DEFAULT", "MARKDOWN"]),
 })
 
-export const sendingDomains = mysqlTable('sendingDomains', {
+export const sendingDomains = mysqlTable("sendingDomains", {
   id,
-  name: varchar('name', { length: 100 }).notNull(),
-  teamId: varchar('teamId', { length: 32 })
+  name: varchar("name", { length: 100 }).notNull(),
+  teamId: varchar("teamId", { length: 32 })
     .notNull()
     .references(() => teams.id),
-  dkimSubDomain: varchar('dkimSubDomain', { length: 120 }).notNull(),
-  dkimPublicKey: text('dkimPublicKey').notNull(),
-  dkimPrivateKey: text('dkimPrivateKey').notNull(),
-  returnPathSubDomain: varchar('returnPathSubDomain', {
+  dkimSubDomain: varchar("dkimSubDomain", { length: 120 }).notNull(),
+  dkimPublicKey: text("dkimPublicKey").notNull(),
+  dkimPrivateKey: text("dkimPrivateKey").notNull(),
+  returnPathSubDomain: varchar("returnPathSubDomain", {
     length: 120,
   }).notNull(),
-  returnPathDomainCnameValue: varchar('returnPathDomainCnameValue', {
+  returnPathDomainCnameValue: varchar("returnPathDomainCnameValue", {
     length: 120,
   }).notNull(),
-  dkimVerifiedAt: timestamp('dkimVerifiedAt'),
-  returnPathDomainVerifiedAt: timestamp('returnPathDomainVerifiedAt'),
+  dkimVerifiedAt: timestamp("dkimVerifiedAt"),
+  returnPathDomainVerifiedAt: timestamp("returnPathDomainVerifiedAt"),
 })
 
-export const webhooks = mysqlTable('webhooks', {
+export const webhooks = mysqlTable("webhooks", {
   id,
-  name: varchar('name', { length: 50 }).notNull(),
-  url: varchar('url', { length: 256 }).notNull(),
-  events: mysqlEnum('webhookEvent', [
-    'ALL_EVENTS',
-    'CONTACT_ADDED',
-    'CONTACT_REMOVED',
-    'CONTACT_TAG_ADDED',
-    'CONTACT_TAG_REMOVED',
-    'BROADCAST_SENT',
-    'BROADCAST_PAUSED',
-    'BROADCAST_EMAIL_OPENED',
-    'BROADCAST_EMAIL_LINK_CLICKED',
-    'AUDIENCE_ADDED',
-    'TAG_ADDED',
-    'TAG_REMOVED',
+  name: varchar("name", { length: 50 }).notNull(),
+  url: varchar("url", { length: 256 }).notNull(),
+  events: mysqlEnum("webhookEvent", [
+    "ALL_EVENTS",
+    "CONTACT_ADDED",
+    "CONTACT_REMOVED",
+    "CONTACT_TAG_ADDED",
+    "CONTACT_TAG_REMOVED",
+    "BROADCAST_SENT",
+    "BROADCAST_PAUSED",
+    "BROADCAST_EMAIL_OPENED",
+    "BROADCAST_EMAIL_LINK_CLICKED",
+    "AUDIENCE_ADDED",
+    "TAG_ADDED",
+    "TAG_REMOVED",
   ]),
-  teamId: varchar('teamId', { length: 32 })
+  teamId: varchar("teamId", { length: 32 })
     .references(() => teams.id)
     .notNull(),
 })
 
-export const teamMemberships = mysqlTable('teamMemberships', {
+export const teamMemberships = mysqlTable("teamMemberships", {
   id,
-  userId: varchar('userId', { length: 32 }).references(() => users.id),
-  email: varchar('email', { length: 50 }).notNull(),
-  teamId: varchar('teamId', { length: 32 })
+  userId: varchar("userId", { length: 32 }).references(() => users.id),
+  email: varchar("email", { length: 50 }).notNull(),
+  teamId: varchar("teamId", { length: 32 })
     .references(() => teams.id)
     .notNull(),
-  role: mysqlEnum('role', ['ADMINISTRATOR', 'USER']),
-  status: mysqlEnum('status', ['PENDING', 'ACTIVE']),
-  invitedAt: timestamp('invitedAt').defaultNow().notNull(),
-  expiresAt: timestamp('expiresAt').notNull(),
+  role: mysqlEnum("role", ["ADMINISTRATOR", "USER"]),
+  status: mysqlEnum("status", ["PENDING", "ACTIVE"]),
+  invitedAt: timestamp("invitedAt").defaultNow().notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
 })
 
-export const audiences = mysqlTable('audiences', {
+export const audiences = mysqlTable("audiences", {
   id,
-  name: varchar('name', { length: 50 }).notNull(),
-  teamId: varchar('teamId', { length: 32 })
+  name: varchar("name", { length: 50 }).notNull(),
+  teamId: varchar("teamId", { length: 32 })
     .references(() => teams.id)
     .notNull(),
-  knownAttributesKeys: json('knownAttributes').$type<string[]>(),
+  knownAttributesKeys: json("knownAttributes").$type<string[]>(),
 })
 
 export const contacts = mysqlTable(
-  'contacts',
+  "contacts",
   {
     id,
-    firstName: varchar('firstName', { length: 50 }),
-    lastName: varchar('lastName', { length: 50 }),
-    email: varchar('email', { length: 80 }).notNull(),
-    avatarUrl: varchar('avatarUrl', { length: 256 }),
-    subscribedAt: timestamp('subscribedAt'),
-    unsubscribedAt: timestamp('unsubscribedAt'),
-    audienceId: varchar('audienceId', { length: 32 })
+    firstName: varchar("firstName", { length: 50 }),
+    lastName: varchar("lastName", { length: 50 }),
+    email: varchar("email", { length: 80 }).notNull(),
+    avatarUrl: varchar("avatarUrl", { length: 256 }),
+    subscribedAt: timestamp("subscribedAt"),
+    unsubscribedAt: timestamp("unsubscribedAt"),
+    audienceId: varchar("audienceId", { length: 32 })
       .references(() => audiences.id)
       .notNull(),
-    emailVerificationToken: varchar('emailVerificationToken', { length: 100 }),
+    emailVerificationToken: varchar("emailVerificationToken", { length: 100 }),
     emailVerificationTokenExpiresAt: timestamp(
-      'emailVerificationTokenExpiresAt',
+      "emailVerificationTokenExpiresAt",
     ),
-    attributes: json('attributes').$type<Record<string, any>>(),
-    createdAt: timestamp('createdAt').defaultNow(),
+    attributes: json("attributes").$type<Record<string, any>>(),
+    createdAt: timestamp("createdAt").defaultNow(),
   },
   (table) => ({
-    ContactEmailAudienceIdKey: unique('ContactEmailAudienceIdKey').on(
+    ContactEmailAudienceIdKey: unique("ContactEmailAudienceIdKey").on(
       table.email,
       table.audienceId,
     ),
   }),
 )
 
-export const tags = mysqlTable('tags', {
+export const tags = mysqlTable("tags", {
   id,
-  name: varchar('name', { length: 256 }).notNull(),
-  description: varchar('description', { length: 256 }),
-  audienceId: varchar('audienceId', { length: 32 })
+  name: varchar("name", { length: 256 }).notNull(),
+  description: varchar("description", { length: 256 }),
+  audienceId: varchar("audienceId", { length: 32 })
     .references(() => audiences.id)
     .notNull(),
 })
 
 export const tagsOnContacts = mysqlTable(
-  'tagsOnContacts',
+  "tagsOnContacts",
   {
     id,
-    tagId: varchar('tagId', { length: 32 })
+    tagId: varchar("tagId", { length: 32 })
       .references(() => tags.id)
       .notNull(),
-    contactId: varchar('contactId', { length: 32 })
+    contactId: varchar("contactId", { length: 32 })
       .references(() => contacts.id)
       .notNull(),
-    assignedAt: timestamp('assignedAt'),
+    assignedAt: timestamp("assignedAt"),
   },
   (table) => ({
     tagsOnContactsTagIdContactIdKey: unique(
-      'tagsOnContactsTagIdContactIdKey',
+      "tagsOnContactsTagIdContactIdKey",
     ).on(table.tagId, table.contactId),
     tagsOnContactsTagIdContactIdIdx: index(
-      'tagsOnContactsTagIdContactIdIdx',
+      "tagsOnContactsTagIdContactIdIdx",
     ).on(table.tagId, table.contactId),
   }),
 )
 
-export const automations = mysqlTable('automations', {
+export const automations = mysqlTable("automations", {
   id,
-  name: varchar('name', { length: 50 }).notNull(),
-  description: varchar('description', { length: 512 }),
-  audienceId: varchar('audienceId', { length: 32 })
-    .references(() => audiences.id, { onDelete: 'cascade' })
+  name: varchar("name", { length: 50 }).notNull(),
+  description: varchar("description", { length: 512 }),
+  audienceId: varchar("audienceId", { length: 32 })
+    .references(() => audiences.id, { onDelete: "cascade" })
     .notNull(),
 })
 
-export const emails = mysqlTable('emails', {
+export const emails = mysqlTable("emails", {
   id,
-  type: mysqlEnum('type', ['AUTOMATION', 'TRANSACTIONAL']).notNull(),
-  title: varchar('title', { length: 50 }).notNull(),
-  audienceId: varchar('audienceId', { length: 32 })
-    .references(() => audiences.id, { onDelete: 'cascade' })
+  type: mysqlEnum("type", ["AUTOMATION", "TRANSACTIONAL"]).notNull(),
+  title: varchar("title", { length: 50 }).notNull(),
+  audienceId: varchar("audienceId", { length: 32 })
+    .references(() => audiences.id, { onDelete: "cascade" })
     .notNull(),
-  emailContentId: varchar('emailContentId', { length: 32 }).references(
+  emailContentId: varchar("emailContentId", { length: 32 }).references(
     () => emailContents.id,
-    { onDelete: 'cascade' },
+    { onDelete: "cascade" },
   ),
 })
 
-export const abTestVariants = mysqlTable('abTestVariants', {
+export const abTestVariants = mysqlTable("abTestVariants", {
   id,
-  broadcastId: varchar('broadcastId', { length: 32 })
-    .references(() => broadcasts.id, { onDelete: 'cascade' })
+  broadcastId: varchar("broadcastId", { length: 32 })
+    .references(() => broadcasts.id, { onDelete: "cascade" })
     .notNull(),
-  emailContentId: varchar('emailContentId', { length: 32 })
-    .references(() => emailContents.id, { onDelete: 'cascade' })
+  emailContentId: varchar("emailContentId", { length: 32 })
+    .references(() => emailContents.id, { onDelete: "cascade" })
     .notNull(),
-  name: varchar('name', { length: 50 }).notNull(),
-  weight: int('weight').default(1).notNull(), // in percentages.
-  sendAt: timestamp('sendAt').$type<Date | undefined>(),
+  name: varchar("name", { length: 50 }).notNull(),
+  weight: int("weight").default(1).notNull(), // in percentages.
+  sendAt: timestamp("sendAt").$type<Date | undefined>(),
 })
 
-export const emailContents = mysqlTable('emailContents', {
+export const emailContents = mysqlTable("emailContents", {
   id,
-  fromName: varchar('fromName', { length: 255 }),
-  fromEmail: varchar('fromEmail', { length: 255 }),
-  replyToEmail: varchar('replyToEmail', { length: 255 }),
-  replyToName: varchar('replyToName', { length: 255 }),
-  contentJson: json('contentJson'),
-  contentText: text('contentText'),
-  contentHtml: text('contentHtml'),
-  subject: varchar('subject', { length: 255 }),
-  previewText: varchar('previewText', { length: 255 }),
+  fromName: varchar("fromName", { length: 255 }),
+  fromEmail: varchar("fromEmail", { length: 255 }),
+  replyToEmail: varchar("replyToEmail", { length: 255 }),
+  replyToName: varchar("replyToName", { length: 255 }),
+  contentJson: json("contentJson"),
+  contentText: text("contentText"),
+  contentHtml: text("contentHtml"),
+  subject: varchar("subject", { length: 255 }),
+  previewText: varchar("previewText", { length: 255 }),
 })
 
-export const broadcasts = mysqlTable('broadcasts', {
+export const broadcasts = mysqlTable("broadcasts", {
   id,
-  name: varchar('name', { length: 255 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
 
-  audienceId: varchar('audienceId', { length: 32 })
+  audienceId: varchar("audienceId", { length: 32 })
     .references(() => audiences.id)
     .notNull(),
-  segmentId: varchar('segmentId', { length: 32 }).references(() => segments.id),
-  teamId: varchar('teamId', { length: 32 })
+  segmentId: varchar("segmentId", { length: 32 }).references(() => segments.id),
+  teamId: varchar("teamId", { length: 32 })
     .references(() => teams.id)
     .notNull(),
-  trackClicks: boolean('trackClicks'),
-  trackOpens: boolean('trackOpens'),
+  trackClicks: boolean("trackClicks"),
+  trackOpens: boolean("trackOpens"),
 
-  emailContentId: varchar('emailContentId', { length: 32 }).references(
+  emailContentId: varchar("emailContentId", { length: 32 }).references(
     () => emailContents.id,
-    { onDelete: 'cascade' },
+    { onDelete: "cascade" },
   ),
-  winningAbTestVariantId: varchar('winningAbTestVariantId', {
+  winningAbTestVariantId: varchar("winningAbTestVariantId", {
     length: 32,
   }).references((): AnyMySqlColumn => abTestVariants.id, {
-    onDelete: 'cascade',
+    onDelete: "cascade",
   }),
   // waitingTimeToPickWinner
-  waitingTimeToPickWinner: int('waitingTimeToPickWinner').default(4), // in hours,
-  status: mysqlEnum('status', [
-    'SENT',
-    'SENDING',
-    'DRAFT',
-    'QUEUED_FOR_SENDING',
-    'SENDING_FAILED',
-    'DRAFT_ARCHIVED',
-    'ARCHIVED',
-  ]).default('DRAFT'),
-  isAbTest: boolean('isAbTest').default(false).notNull(),
-  winningCriteria: mysqlEnum('winningCriteria', [
-    'OPENS',
-    'CLICKS',
-    'CONVERSIONS',
+  waitingTimeToPickWinner: int("waitingTimeToPickWinner").default(4), // in hours,
+  status: mysqlEnum("status", [
+    "SENT",
+    "SENDING",
+    "DRAFT",
+    "QUEUED_FOR_SENDING",
+    "SENDING_FAILED",
+    "DRAFT_ARCHIVED",
+    "ARCHIVED",
+  ]).default("DRAFT"),
+  isAbTest: boolean("isAbTest").default(false).notNull(),
+  winningCriteria: mysqlEnum("winningCriteria", [
+    "OPENS",
+    "CLICKS",
+    "CONVERSIONS",
   ]),
-  winningWaitTime: int('winningWaitTime'), // in hours
-  sendAt: timestamp('sendAt').$type<Date | undefined>(),
+  winningWaitTime: int("winningWaitTime"), // in hours
+  sendAt: timestamp("sendAt").$type<Date | undefined>(),
 })
 
 export const automationStepSubtypesTrigger = [
-  'TRIGGER_CONTACT_SUBSCRIBED',
-  'TRIGGER_CONTACT_UNSUBSCRIBED',
-  'TRIGGER_CONTACT_TAG_ADDED',
-  'TRIGGER_CONTACT_TAG_REMOVED',
-  'TRIGGER_API_MANUAL',
+  "TRIGGER_CONTACT_SUBSCRIBED",
+  "TRIGGER_CONTACT_UNSUBSCRIBED",
+  "TRIGGER_CONTACT_TAG_ADDED",
+  "TRIGGER_CONTACT_TAG_REMOVED",
+  "TRIGGER_API_MANUAL",
 ] as const
 
 export const automationStepSubtypesAction = [
-  'ACTION_SEND_EMAIL',
-  'ACTION_ADD_TAG',
-  'ACTION_REMOVE_TAG',
-  'ACTION_SUBSCRIBE_TO_AUDIENCE',
-  'ACTION_UNSUBSCRIBE_FROM_AUDIENCE',
-  'ACTION_UPDATE_CONTACT_ATTRIBUTES',
+  "ACTION_SEND_EMAIL",
+  "ACTION_ADD_TAG",
+  "ACTION_REMOVE_TAG",
+  "ACTION_SUBSCRIBE_TO_AUDIENCE",
+  "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
+  "ACTION_UPDATE_CONTACT_ATTRIBUTES",
 ] as const
 
 export const automationStepSubtypesRule = [
-  'RULE_IF_ELSE',
-  'RULE_WAIT_FOR_DURATION',
-  'RULE_PERCENTAGE_SPLIT',
-  'RULE_WAIT_FOR_TRIGGER',
+  "RULE_IF_ELSE",
+  "RULE_WAIT_FOR_DURATION",
+  "RULE_PERCENTAGE_SPLIT",
+  "RULE_WAIT_FOR_TRIGGER",
 ] as const
 
-export const automationStepSubtypesEnd = ['END'] as const
+export const automationStepSubtypesEnd = ["END"] as const
 
-export const automationStepTypes = ['TRIGGER', 'ACTION', 'RULE', 'END'] as const
+export const automationStepTypes = ["TRIGGER", "ACTION", "RULE", "END"] as const
 export const automationStepSubtypes = [
   ...automationStepSubtypesTrigger,
   ...automationStepSubtypesAction,
@@ -336,7 +337,7 @@ export type TRIGGER_CONFIGURATION = {
 }
 
 export type END_CONFIGURATION = {
-  type: 'END'
+  type: "END"
 }
 
 export type ACTION_SUBSCRIBE_TO_AUDIENCE_CONFIGURATION = {
@@ -354,61 +355,61 @@ export type AutomationStepConfiguration =
   | RULE_IF_ELSE_CONFIGURATION
   | RULE_WAIT_FOR_DURATION_CONFIGURATION
 
-export const automationSteps = mysqlTable('automationSteps', {
+export const automationSteps = mysqlTable("automationSteps", {
   id,
-  automationId: varchar('automationId', { length: 32 })
+  automationId: varchar("automationId", { length: 32 })
     .references(() => automations.id)
     .notNull(),
-  type: mysqlEnum('type', automationStepTypes).notNull(),
-  status: mysqlEnum('status', ['DRAFT', 'ACTIVE', 'PAUSED', 'ARCHIVED'])
+  type: mysqlEnum("type", automationStepTypes).notNull(),
+  status: mysqlEnum("status", ["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"])
     .notNull()
-    .default('DRAFT'),
-  subtype: mysqlEnum('subtype', automationStepSubtypes).notNull(),
-  parentId: varchar('parentId', { length: 32 }).references(
+    .default("DRAFT"),
+  subtype: mysqlEnum("subtype", automationStepSubtypes).notNull(),
+  parentId: varchar("parentId", { length: 32 }).references(
     (): AnyMySqlColumn => automationSteps.id,
-    { onDelete: 'cascade' },
+    { onDelete: "cascade" },
   ),
-  branchIndex: int('branchIndex'),
-  configuration: json('configuration')
+  branchIndex: int("branchIndex"),
+  configuration: json("configuration")
     .$type<AutomationStepConfiguration>()
     .notNull(),
-  emailId: varchar('emailId', { length: 32 }).references(() => emails.id),
-  tagId: varchar('tagId', { length: 32 }).references(() => tags.id),
-  audienceId: varchar('audienceId', { length: 32 }).references(
+  emailId: varchar("emailId", { length: 32 }).references(() => emails.id),
+  tagId: varchar("tagId", { length: 32 }).references(() => tags.id),
+  audienceId: varchar("audienceId", { length: 32 }).references(
     () => audiences.id,
   ),
 })
 
-export const segments = mysqlTable('segments', {
+export const segments = mysqlTable("segments", {
   id,
-  name: varchar('name', { length: 255 }).notNull(),
-  audienceId: varchar('audienceId', { length: 32 })
+  name: varchar("name", { length: 255 }).notNull(),
+  audienceId: varchar("audienceId", { length: 32 })
     .references(() => audiences.id)
     .notNull(),
-  conditions: json('conditions').$type<ContactFilterCondition[]>().notNull(),
+  conditions: json("conditions").$type<ContactFilterCondition[]>().notNull(),
 })
 
-export const contactAutomationSteps = mysqlTable('contactAutomationSteps', {
+export const contactAutomationSteps = mysqlTable("contactAutomationSteps", {
   id,
-  automationStepId: varchar('automationStepId', { length: 32 })
-    .references(() => automationSteps.id, { onDelete: 'cascade' })
+  automationStepId: varchar("automationStepId", { length: 32 })
+    .references(() => automationSteps.id, { onDelete: "cascade" })
     .notNull(),
-  contactId: varchar('contactId', { length: 32 })
-    .references(() => contacts.id, { onDelete: 'cascade' })
+  contactId: varchar("contactId", { length: 32 })
+    .references(() => contacts.id, { onDelete: "cascade" })
     .notNull(),
-  status: mysqlEnum('status', [
-    'PENDING',
-    'ACTIVE',
-    'COMPLETED',
-    'FAILED',
-    'HALTED',
-  ]).default('PENDING'),
-  haltedAt: timestamp('haltedAt'),
-  failedAt: timestamp('failedAt'),
-  startedAt: timestamp('startedAt'),
-  completedAt: timestamp('completedAt'),
-  createdAt: timestamp('createdAt'),
-  output: json('output').$type<string[]>(),
+  status: mysqlEnum("status", [
+    "PENDING",
+    "ACTIVE",
+    "COMPLETED",
+    "FAILED",
+    "HALTED",
+  ]).default("PENDING"),
+  haltedAt: timestamp("haltedAt"),
+  failedAt: timestamp("failedAt"),
+  startedAt: timestamp("startedAt"),
+  completedAt: timestamp("completedAt"),
+  createdAt: timestamp("createdAt"),
+  output: json("output").$type<string[]>(),
 })
 
 // Relations remain the same as in the original file
@@ -447,7 +448,7 @@ export const broadcastRelations = relations(broadcasts, ({ one, many }) => ({
     fields: [broadcasts.segmentId],
     references: [segments.id],
   }),
-  abTestVariants: many(abTestVariants, { relationName: 'abTestVariants' }),
+  abTestVariants: many(abTestVariants, { relationName: "abTestVariants" }),
   winningAbTestVariant: one(abTestVariants, {
     fields: [broadcasts.winningAbTestVariantId],
     references: [abTestVariants.id],
@@ -458,7 +459,7 @@ export const abTestVariantRelations = relations(abTestVariants, ({ one }) => ({
   broadcast: one(broadcasts, {
     fields: [abTestVariants.broadcastId],
     references: [broadcasts.id],
-    relationName: 'abTestVariants',
+    relationName: "abTestVariants",
   }),
   emailContent: one(emailContents, {
     fields: [abTestVariants.emailContentId],
@@ -534,10 +535,10 @@ export const automationStepsRelations = relations(
     parent: one(automationSteps, {
       fields: [automationSteps.parentId],
       references: [automationSteps.id],
-      relationName: 'steps',
+      relationName: "steps",
     }),
     steps: many(automationSteps, {
-      relationName: 'steps',
+      relationName: "steps",
     }),
   }),
 )

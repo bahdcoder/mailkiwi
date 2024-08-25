@@ -1,6 +1,4 @@
-import { makeDatabase } from '@/shared/container/index.js'
-import { tags } from '@/database/schema/schema.js'
-import { eq, inArray } from 'drizzle-orm'
+import { eq, inArray } from "drizzle-orm"
 import {
   type InferInput,
   array,
@@ -9,7 +7,11 @@ import {
   pipe,
   pipeAsync,
   string,
-} from 'valibot'
+} from "valibot"
+
+import { tags } from "@/database/schema/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
 
 export const AttachTagsToContactDto = objectAsync({
   tags: pipeAsync(
@@ -22,7 +24,7 @@ export const AttachTagsToContactDto = objectAsync({
       })
 
       return existingTags.length === input.length
-    }, 'One or more of the provided tag IDs is invalid.'),
+    }, "One or more of the provided tag IDs is invalid."),
   ),
 })
 

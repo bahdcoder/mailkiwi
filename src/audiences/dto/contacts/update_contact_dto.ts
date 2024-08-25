@@ -1,5 +1,4 @@
 import {
-  url,
   type InferInput,
   array,
   number,
@@ -9,7 +8,8 @@ import {
   record,
   string,
   union,
-} from 'valibot'
+  url,
+} from "valibot"
 
 export const UpdateContactDto = objectAsync({
   firstName: optional(string()),

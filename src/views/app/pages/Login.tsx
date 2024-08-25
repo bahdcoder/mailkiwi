@@ -1,17 +1,17 @@
-import { useMutation } from '@tanstack/react-query'
-import { useNavigate } from '@tanstack/react-router'
-import React from 'react'
-import { useState } from 'react'
 import {
   type ErrorResponse,
   type LoginCredentials,
   type LoginResponse,
   login,
-} from '@client/api/auth.ts'
+} from "@client/api/auth.ts"
+import { useMutation } from "@tanstack/react-query"
+import { useNavigate } from "@tanstack/react-router"
+import type React from "react"
+import { useState } from "react"
 
 export const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const navigate = useNavigate()
 
   const loginMutation = useMutation<
@@ -27,8 +27,8 @@ export const LoginPage: React.FC = () => {
       return response
     },
     onSuccess: (data) => {
-      localStorage.setItem('accessToken', data.accessToken.token)
-      navigate({ to: '/' })
+      localStorage.setItem("accessToken", data.accessToken.token)
+      navigate({ to: "/" })
     },
   })
 
@@ -142,7 +142,7 @@ export const LoginPage: React.FC = () => {
                   </svg>
                 </span>
               )}
-              {loginMutation.isPending ? 'Signing in...' : 'Sign in'}
+              {loginMutation.isPending ? "Signing in..." : "Sign in"}
             </button>
           </div>
         </form>

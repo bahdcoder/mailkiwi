@@ -1,17 +1,18 @@
-import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
-import { container } from '@/utils/typi.js'
-import { serve } from '@hono/node-server'
-import { Ignitor } from './ignitor.js'
+import { Ignitor } from "./ignitor.js"
+import { serve } from "@hono/node-server"
+import { readFile } from "node:fs/promises"
+import { resolve } from "node:path"
+
+import { container } from "@/utils/typi.js"
 
 export class IgnitorProd extends Ignitor {
   async startSinglePageApplication() {
     const viteManifestFile = await readFile(
-      resolve(__dirname, 'client', '.vite', 'manifest.json'),
+      resolve(__dirname, "client", ".vite", "manifest.json"),
     )
 
     container.register(
-      'viteManifestFile',
+      "viteManifestFile",
       JSON.parse(viteManifestFile.toString()),
     )
   }

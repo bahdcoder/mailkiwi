@@ -1,22 +1,26 @@
-import { describe, test, vi } from 'vitest'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.ts'
-import * as queues from '@/shared/queue/queue.js'
+import { faker } from "@faker-js/faker"
+import { Job } from "bullmq"
+import { eq } from "drizzle-orm"
+import { describe, test, vi } from "vitest"
+
+import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.ts"
+import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_contact_job.ts"
+
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.ts"
 import {
   refreshDatabase,
   refreshRedisDatabase,
-} from '@/tests/mocks/teams/teams.ts'
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
-import { faker } from '@faker-js/faker'
-import { broadcasts, contacts, segments } from '@/database/schema/schema.ts'
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.ts'
-import { Job } from 'bullmq'
-import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.ts'
-import { cuid } from '@/shared/utils/cuid/cuid.ts'
-import { eq } from 'drizzle-orm'
+} from "@/tests/mocks/teams/teams.ts"
 
-describe('Send broadcast job', () => {
-  test('queues send email jobs for all contacts in audience for the broadcast', async ({
+import { broadcasts, contacts, segments } from "@/database/schema/schema.ts"
+
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
+import * as queues from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.ts"
+
+describe("Send broadcast job", () => {
+  test("queues send email jobs for all contacts in audience for the broadcast", async ({
     expect,
   }) => {
     await refreshRedisDatabase()
@@ -81,7 +85,7 @@ describe('Send broadcast job', () => {
     }
   })
 
-  test('queues send email jobs for a specific segment of contacts in audience if segment is defined', async ({
+  test("queues send email jobs for a specific segment of contacts in audience if segment is defined", async ({
     expect,
   }) => {
     await refreshRedisDatabase()
@@ -108,8 +112,8 @@ describe('Send broadcast job', () => {
       name: faker.lorem.words(3),
       conditions: [
         {
-          field: 'email',
-          operation: 'startsWith',
+          field: "email",
+          operation: "startsWith",
           value: emailStartsWith,
         },
       ],

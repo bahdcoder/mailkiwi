@@ -1,10 +1,12 @@
-import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
-import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.js'
-import type { BaseJob } from '@/shared/queue/abstract_job.js'
-import { SendTransactionalEmailJob } from '@/transactional/jobs/send_transactional_email_job.js'
-import { Ignitor } from '@/boot/ignitor.js'
-import { type Job, Worker } from 'bullmq'
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { Ignitor } from "@/boot/ignitor.js"
+import { SendTransactionalEmailJob } from "@/transactional/jobs/send_transactional_email_job.js"
+import { type Job, Worker } from "bullmq"
+
+import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.js"
+import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_contact_job.js"
+
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
+import type { BaseJob } from "@/shared/queue/abstract_job.js"
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<any, any, string>[] = []
@@ -34,7 +36,7 @@ export class WorkerIgnitor extends Ignitor {
     const Executor = this.jobs.get(job.name)
 
     if (!Executor) {
-      d(['No handler defined for job name:', job.name])
+      d(["No handler defined for job name:", job.name])
 
       return
     }
@@ -56,16 +58,16 @@ export class WorkerIgnitor extends Ignitor {
         },
       )
 
-      this.workers[idx].on('completed', function jobCompleted(job) {
-        d(['Completed:', job.id, job.data])
+      this.workers[idx].on("completed", function jobCompleted(job) {
+        d(["Completed:", job.id, job.data])
       })
 
-      this.workers[idx].on('failed', function jobFailed(job, error) {
-        d(['Failed:', job?.id, job?.data, error?.message, error])
+      this.workers[idx].on("failed", function jobFailed(job, error) {
+        d(["Failed:", job?.id, job?.data, error?.message, error])
       })
     }
 
-    d(`Queue listening for jobs on queues: ${queueNames.join(', ')}`)
+    d(`Queue listening for jobs on queues: ${queueNames.join(", ")}`)
   }
 
   async shutdown() {

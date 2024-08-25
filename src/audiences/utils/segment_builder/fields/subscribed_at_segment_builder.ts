@@ -1,13 +1,16 @@
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.ts'
-import { E_OPERATION_FAILED } from '@/http/responses/errors.ts'
-import { contacts } from '@/database/schema/schema.ts'
-import { and, eq, like, type SQLWrapper } from 'drizzle-orm'
-import { FieldSegmentBuilder } from './base_field_segment_builder.ts'
+import { FieldSegmentBuilder } from "./base_field_segment_builder.ts"
+import { type SQLWrapper, and, eq, like } from "drizzle-orm"
+
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
+
+import { contacts } from "@/database/schema/schema.ts"
+
+import { E_OPERATION_FAILED } from "@/http/responses/errors.ts"
 
 export class SubscribedAtSegmentBuilder extends FieldSegmentBuilder {
   constructor(
-    protected operation: CreateSegmentDto['conditions'][number]['operation'],
-    protected value: CreateSegmentDto['conditions'][number]['value'],
+    protected operation: CreateSegmentDto["conditions"][number]["operation"],
+    protected value: CreateSegmentDto["conditions"][number]["value"],
   ) {
     super(operation, value)
 

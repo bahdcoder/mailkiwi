@@ -1,25 +1,30 @@
-import { describe, test, vi } from 'vitest'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.ts'
-import { Queue } from '@/shared/queue/queue.js'
+import { faker } from "@faker-js/faker"
+import { eq } from "drizzle-orm"
+import { describe, test, vi } from "vitest"
+
+import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.ts"
+
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.ts"
 import {
   refreshDatabase,
   refreshRedisDatabase,
-} from '@/tests/mocks/teams/teams.ts'
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
-import { faker } from '@faker-js/faker'
+} from "@/tests/mocks/teams/teams.ts"
+
 import {
   abTestVariants,
   broadcasts,
   contacts,
-} from '@/database/schema/schema.ts'
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.ts'
-import { eq } from 'drizzle-orm'
-import { SendAbTestBroadcastJob } from '@/broadcasts/jobs/send_ab_test_broadcast_job.ts'
-import { hoursToSeconds } from '@/utils/dates.ts'
+} from "@/database/schema/schema.ts"
 
-describe('Pick A/B Test winner', () => {
-  test('picks A/B test winner for click rate winning criteria', async ({
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
+import { Queue } from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.ts"
+
+import { hoursToSeconds } from "@/utils/dates.ts"
+
+describe("Pick A/B Test winner", () => {
+  test("picks A/B test winner for click rate winning criteria", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -121,11 +126,11 @@ describe('Pick A/B Test winner', () => {
     )
   })
 
-  test('picks A/B test winner for open rate winning criteria', async ({
+  test("picks A/B test winner for open rate winning criteria", async ({
     expect,
   }) => {})
 
-  test('picks A/B test winner for open rate winning criteria', async ({
+  test("picks A/B test winner for open rate winning criteria", async ({
     expect,
   }) => {})
 })

@@ -7,7 +7,7 @@ import {
   record,
   string,
   union,
-} from 'valibot'
+} from "valibot"
 
 export const CreateContactSchema = object({
   email: string(),

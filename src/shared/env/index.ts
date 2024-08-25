@@ -1,18 +1,18 @@
-import { Secret } from '@poppinss/utils'
+import { Secret } from "@poppinss/utils"
 import {
-  url,
   ip,
   maxLength,
   minLength,
   nonEmpty,
+  number,
   object,
   optional,
   picklist,
   pipe,
   safeParse,
   string,
-  number,
-} from 'valibot'
+  url,
+} from "valibot"
 
 export type EnvVariables = {
   PORT: number
@@ -22,7 +22,7 @@ export type EnvVariables = {
   DATABASE_URL: string
   CLICKHOUSE_DATABASE_URL: string
   REDIS_URL: string
-  NODE_ENV: 'development' | 'test' | 'production'
+  NODE_ENV: "development" | "test" | "production"
 
   isTest: boolean
   isProd: boolean
@@ -36,7 +36,7 @@ export type EnvVariables = {
 
 export type ConfigVariables = typeof config
 
-const DEFAULT_PORT = '5566'
+const DEFAULT_PORT = "5566"
 
 const envValidationSchema = object({
   PORT: optional(string(), DEFAULT_PORT),
@@ -54,7 +54,7 @@ const envValidationSchema = object({
   CLICKHOUSE_DATABASE_URL: pipe(string(), nonEmpty()),
   REDIS_URL: pipe(string(), nonEmpty()),
   DATABASE_URL: pipe(string(), nonEmpty()),
-  NODE_ENV: picklist(['development', 'test', 'production']),
+  NODE_ENV: picklist(["development", "test", "production"]),
   SMTP_HOST: pipe(string(), nonEmpty()),
   SMTP_PORT: number(),
   SMTP_USER: pipe(string(), nonEmpty()),
@@ -63,19 +63,19 @@ const envValidationSchema = object({
 
 const parsed = safeParse(envValidationSchema, {
   ...process.env,
-  SMTP_PORT: Number.parseInt(process.env.SMTP_PORT ?? ''),
+  SMTP_PORT: Number.parseInt(process.env.SMTP_PORT ?? ""),
 })
 
 if (!parsed.success) {
   console.dir({
-    '🟡 ENVIRONMENT_VARIABLES_VALIDATION_FAILED': parsed.issues.map((issue) => [
+    "🟡 ENVIRONMENT_VARIABLES_VALIDATION_FAILED": parsed.issues.map((issue) => [
       issue?.path?.[0]?.key,
       issue?.message,
     ]),
   })
 }
 
-const parsedOutput = parsed.output as Omit<EnvVariables, 'APP_KEY'> & {
+const parsedOutput = parsed.output as Omit<EnvVariables, "APP_KEY"> & {
   APP_KEY: string
 }
 
@@ -84,36 +84,36 @@ export const env = {
   APP_KEY: new Secret(parsedOutput.APP_KEY as string),
 } as EnvVariables
 
-env.isTest = env.NODE_ENV === 'test'
-env.isProd = env.NODE_ENV === 'production'
-env.isDev = env.NODE_ENV === 'development'
+env.isTest = env.NODE_ENV === "test"
+env.isProd = env.NODE_ENV === "production"
+env.isDev = env.NODE_ENV === "development"
 
-const SHORT_NAME = 'kibamail'
+const SHORT_NAME = "kibamail"
 
 // This is where we host the bounce processing server.
 // All incoming bounces and complaints from our customers will go through here.
 // They eventually get fed into a kafka topic that multiple services will consume.
 
 // The SPF configuration for this domain must point to (include) spf.kbmta.net, which further includes all our sending subnets and ip addresses.
-const BOUNCE_HOST_NAME = 'kb-bounces.kbmta.net'
+const BOUNCE_HOST_NAME = "kb-bounces.kbmta.net"
 
 // This is where we host the SPF DNS entry.
 // All our subnets and IP addresses for email sending must be configured as a TXT record on this domain.
 // All our domains like kb-bounces.kbmta.net, kb-marketing.kbmta.net, kibamail.com etc. must include this domain in its SPF record.
-const SPF_HOST_NAME = 'spf.kbmta.net'
+const SPF_HOST_NAME = "spf.kbmta.net"
 
 // This is where we host the transactional email server.
 // All inbound transactional emails will go through here, including those sent via HTTP api.
-const SMTP_HOST_NAME = 'smtp.kbmta.net'
+const SMTP_HOST_NAME = "smtp.kbmta.net"
 
 // This is where we host the marketing email server.
 // All inbound marketing emails will go through here, including those sent via HTTP api.
-const SMTP_MARKETING_HOST_NAME = 'smtp-mkg.kbmta.net'
+const SMTP_MARKETING_HOST_NAME = "smtp-mkg.kbmta.net"
 
 // This is the default subdomain customers will use when configuring the `Return-Path` DNS entry.
 // Example: Google uses our infrastructure to send emails, so they'll configure the following dns entry:
 // kb-bounces.google.com. IN CNAME kb-bounces.kbmta.net
-const DEFAULT_BOUNCE_SUBDOMAIN = 'kb-bounces'
+const DEFAULT_BOUNCE_SUBDOMAIN = "kb-bounces"
 
 export const config = {
   ...env,

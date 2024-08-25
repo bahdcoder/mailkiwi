@@ -1,7 +1,9 @@
-import type { UpdateContactDto } from '@/audiences/dto/contacts/update_contact_dto.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
-import { container } from '@/utils/typi.js'
+import type { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+
+import { container } from "@/utils/typi.js"
 
 export class UpdateContactAction {
   constructor(private contactRepository = container.make(ContactRepository)) {}
@@ -12,8 +14,8 @@ export class UpdateContactAction {
     if (!contact) {
       throw E_VALIDATION_FAILED([
         {
-          message: 'Invalid contact provided.',
-          field: 'contactId',
+          message: "Invalid contact provided.",
+          field: "contactId",
         },
       ])
     }

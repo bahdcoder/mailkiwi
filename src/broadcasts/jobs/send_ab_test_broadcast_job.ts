@@ -1,23 +1,27 @@
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { ContactsConcern } from "../concerns/broadcast_contacts_concern.ts"
+import { PickAbTestWinnerJob } from "./pick_ab_test_winner_job.ts"
+import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js"
+import { asc, count, eq } from "drizzle-orm"
+
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
+
+import type { DrizzleClient } from "@/database/client.js"
+import type {
+  AbTestVariant,
+  BroadcastWithSegmentAndAbTestVariants,
+} from "@/database/schema/database_schema_types.js"
 import {
   abTestVariants,
   broadcasts,
   contacts,
-} from '@/database/schema/schema.js'
-import { asc, count, eq } from 'drizzle-orm'
-import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.ts'
-import { PickAbTestWinnerJob } from './pick_ab_test_winner_job.ts'
-import { hoursToSeconds } from '@/utils/dates.ts'
-import type {
-  AbTestVariant,
-  BroadcastWithSegmentAndAbTestVariants,
-} from '@/database/schema/database_schema_types.js'
-import type { DrizzleClient } from '@/database/client.js'
-import { ContactsConcern } from '../concerns/broadcast_contacts_concern.ts'
-import { container } from '@/utils/typi.ts'
+} from "@/database/schema/schema.js"
+
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { Queue } from "@/shared/queue/queue.js"
+
+import { hoursToSeconds } from "@/utils/dates.ts"
+import { container } from "@/utils/typi.ts"
 
 export interface SendAbTestBroadcastJobPayload {
   broadcastId: string
@@ -25,7 +29,7 @@ export interface SendAbTestBroadcastJobPayload {
 
 export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayload> {
   static get id() {
-    return 'BROADCASTS::SEND_AB_TEST_BROADCAST'
+    return "BROADCASTS::SEND_AB_TEST_BROADCAST"
   }
 
   static get queue() {
@@ -98,7 +102,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     this.contactsConcern.database = database
 
     if (!this.broadcast || !this.broadcast.audience || !this.broadcast.team) {
-      return this.fail('Broadcast or audience or team not properly provided.')
+      return this.fail("Broadcast or audience or team not properly provided.")
     }
 
     const totalContacts = await this.getTotalContacts()

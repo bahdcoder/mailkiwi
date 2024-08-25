@@ -1,12 +1,13 @@
-import { env } from '@/shared/env/index.js'
-import type { MailObject, MailerDriverResponse } from './mailer_types.js'
+import type { MailObject, MailerDriverResponse } from "./mailer_types.js"
 import {
-  createTransport,
-  type Transporter,
   type SentMessageInfo,
-} from 'nodemailer'
-import { v4 as uuidV4 } from 'uuid'
-import { cuid } from '@/shared/utils/cuid/cuid.ts'
+  type Transporter,
+  createTransport,
+} from "nodemailer"
+import { v4 as uuidV4 } from "uuid"
+
+import { env } from "@/shared/env/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.ts"
 
 export class MailerClass {
   transport = createTransport({
@@ -78,7 +79,7 @@ export class MailBuilder {
       !this.mail.content ||
       !this.mail.subject
     ) {
-      return [null, new Error('Incomplete mail object')] as unknown as [
+      return [null, new Error("Incomplete mail object")] as unknown as [
         MailerDriverResponse,
         null,
       ]

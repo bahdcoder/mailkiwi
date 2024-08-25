@@ -1,4 +1,4 @@
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 
 type BeforeRequestHook = (config: RequestConfig) => RequestConfig
 type AfterRequestHook = (response: Response) => Promise<Response>
@@ -23,7 +23,7 @@ export class ZCall {
   private afterRequestHook?: AfterRequestHook
 
   constructor(config?: ZCallConfig) {
-    this.basePath = config?.basePath ?? '/'
+    this.basePath = config?.basePath ?? "/"
     this.beforeRequestHook = config?.beforeRequestHook
     this.afterRequestHook = config?.afterRequestHook
   }
@@ -76,7 +76,7 @@ export class ZCall {
     path: string,
     queryParams?: Record<string, string>,
   ): Promise<[T, E | null]> {
-    return this.request<T, E>({ method: 'GET', headers: {}, path, queryParams })
+    return this.request<T, E>({ method: "GET", headers: {}, path, queryParams })
   }
 
   async post<T, E = Error>(
@@ -86,7 +86,7 @@ export class ZCall {
   ): Promise<[T, E | null]> {
     const [finalBody, finalHeaders] = this.prepareBodyAndHeaders(body, headers)
     return this.request<T, E>({
-      method: 'POST',
+      method: "POST",
       headers: finalHeaders,
       body: finalBody,
       path,
@@ -100,7 +100,7 @@ export class ZCall {
   ): Promise<[T, E | null]> {
     const [finalBody, finalHeaders] = this.prepareBodyAndHeaders(body, headers)
     return this.request<T, E>({
-      method: 'PUT',
+      method: "PUT",
       headers: finalHeaders,
       body: finalBody,
       path,
@@ -114,7 +114,7 @@ export class ZCall {
   ): Promise<[T, E | null]> {
     const [finalBody, finalHeaders] = this.prepareBodyAndHeaders(body, headers)
     return this.request<T, E>({
-      method: 'PATCH',
+      method: "PATCH",
       headers: finalHeaders,
       body: finalBody,
       path,
@@ -127,7 +127,7 @@ export class ZCall {
     headers?: Record<string, string>,
   ): Promise<[T, E | null]> {
     return this.request<T, E>({
-      method: 'DELETE',
+      method: "DELETE",
       headers: headers || {},
       body,
       path,
@@ -143,13 +143,13 @@ export class ZCall {
 
     if (
       body &&
-      typeof body === 'object' &&
+      typeof body === "object" &&
       !(body instanceof Blob) &&
       !(body instanceof FormData) &&
       !(body instanceof URLSearchParams)
     ) {
       finalBody = JSON.stringify(body)
-      finalHeaders['Content-Type'] = 'application/json'
+      finalHeaders["Content-Type"] = "application/json"
     } else {
       finalBody = body as BodyInit
     }

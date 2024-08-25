@@ -1,16 +1,22 @@
-import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { createFakeAbTestEmailContent } from "../audiences/email_content.ts"
+import { faker } from "@faker-js/faker"
+import { Secret } from "@poppinss/utils"
+import { eq } from "drizzle-orm"
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import { users } from '@/database/schema/schema.js'
-import type { Team, User } from '@/database/schema/database_schema_types.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
-import { container } from '@/utils/typi.js'
-import { Secret } from '@poppinss/utils'
-import { createFakeAbTestEmailContent } from '../audiences/email_content.ts'
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
+
+import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
+
+import { makeRequestAsUser } from "@/tests/utils/http.js"
+
+import type { Team, User } from "@/database/schema/database_schema_types.js"
+import { users } from "@/database/schema/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
+
+import { container } from "@/utils/typi.js"
 
 export async function createBroadcastForUser(
   user: User,
@@ -22,8 +28,8 @@ export async function createBroadcastForUser(
   },
 ) {
   const response = await makeRequestAsUser(user, {
-    method: 'POST',
-    path: '/broadcasts',
+    method: "POST",
+    path: "/broadcasts",
     body: {
       name: faker.lorem.words(3),
       audienceId,
@@ -33,7 +39,7 @@ export async function createBroadcastForUser(
 
   if (options?.updateWithValidContent) {
     await makeRequestAsUser(user, {
-      method: 'PUT',
+      method: "PUT",
       path: `/broadcasts/${id}`,
       body: {
         waitingTimeToPickWinner: faker.number.int({ min: 1, max: 10 }),
@@ -79,14 +85,14 @@ export const createUser = async ({
   const { user, team } = await registerUserAction.handle({
     name: faker.person.fullName(),
     email: faker.internet.exampleEmail(),
-    password: 'password',
+    password: "password",
   })
 
   const teamRepository = container.resolve(TeamRepository)
   const teamObject = await teamRepository.findById(team.id)
 
   const audience = await audienceRepository.createAudience(
-    { name: 'Newsletter' },
+    { name: "Newsletter" },
     team.id,
   )
 

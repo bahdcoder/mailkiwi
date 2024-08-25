@@ -1,18 +1,17 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Layout } from "./layouts/layout-default.tsx"
+import "./root.css"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import {
   RouterProvider,
   createRootRoute,
   createRoute,
   createRouter,
-} from '@tanstack/react-router'
-import React, { StrictMode } from 'react'
-import ReactDOM from 'react-dom/client'
+} from "@tanstack/react-router"
+import React, { StrictMode } from "react"
+import ReactDOM from "react-dom/client"
 
-import { Layout } from './layouts/layout-default.tsx'
-import './root.css'
-
-const Login = React.lazy(() => import('./pages/Login.tsx'))
-const Dashbaord = React.lazy(() => import('./pages/Dashboard.tsx'))
+const Login = React.lazy(() => import("./pages/Login.tsx"))
+const Dashbaord = React.lazy(() => import("./pages/Dashboard.tsx"))
 
 const queryClient = new QueryClient()
 
@@ -22,27 +21,27 @@ const rootRoute = createRootRoute({
 
 const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
+  path: "/",
   component: Dashbaord,
 })
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/login',
+  path: "/login",
   component: Login,
 })
 
 const routeTree = rootRoute.addChildren([dashboardRoute, loginRoute])
 
-const router = createRouter({ routeTree, basepath: '/p' })
+const router = createRouter({ routeTree, basepath: "/p" })
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router
   }
 }
 
-const rootElement = document.getElementById('root')
+const rootElement = document.getElementById("root")
 
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)

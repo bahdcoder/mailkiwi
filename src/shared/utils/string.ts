@@ -1,6 +1,5 @@
-import { randomBytes } from 'node:crypto'
-
-import { base64 } from '@poppinss/utils'
+import { base64 } from "@poppinss/utils"
+import { randomBytes } from "node:crypto"
 
 export default {
   random(size: number) {

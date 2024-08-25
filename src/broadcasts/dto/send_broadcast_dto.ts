@@ -1,7 +1,4 @@
-import { makeDatabase } from '@/shared/container/index.js'
-import { audiences } from '@/database/schema/schema.js'
-import { isDateInPast } from '@/utils/dates.js'
-import { eq } from 'drizzle-orm'
+import { eq } from "drizzle-orm"
 import {
   type InferInput,
   boolean,
@@ -20,7 +17,13 @@ import {
   pipe,
   pipeAsync,
   string,
-} from 'valibot'
+} from "valibot"
+
+import { audiences } from "@/database/schema/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
+
+import { isDateInPast } from "@/utils/dates.js"
 
 export const SendBroadcastEmailContentSchema = object({
   subject: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),

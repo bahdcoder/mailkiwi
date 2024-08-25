@@ -1,24 +1,24 @@
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import react from "@vitejs/plugin-react"
+import { dirname, resolve } from "node:path"
+import { fileURLToPath } from "node:url"
+import { defineConfig } from "vite"
 
 const path = fileURLToPath(import.meta.url)
-const root = resolve(dirname(path), 'src/views/app')
+const root = resolve(dirname(path), "src/views/app")
 
 export default defineConfig({
   root,
   resolve: {
     alias: {
-      '@client': resolve(root),
+      "@client": resolve(root),
     },
   },
-  plugins: [react({ jsxRuntime: 'classic' })],
+  plugins: [react({ jsxRuntime: "classic" })],
   build: {
     manifest: true,
-    outDir: resolve(process.cwd(), 'build/client'),
+    outDir: resolve(process.cwd(), "build/client"),
     rollupOptions: {
-      input: resolve(root, 'main.tsx'),
+      input: resolve(root, "main.tsx"),
     },
   },
   server: {

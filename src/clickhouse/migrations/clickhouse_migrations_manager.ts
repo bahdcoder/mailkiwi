@@ -1,38 +1,39 @@
-import { env } from '@/shared/env/index.ts'
-import { type ClickHouseClient, createClient } from '@clickhouse/client'
-import fs from 'node:fs/promises'
-import path from 'node:path'
+import { type ClickHouseClient, createClient } from "@clickhouse/client"
+import fs from "node:fs/promises"
+import path from "node:path"
+
+import { env } from "@/shared/env/index.ts"
 
 export class MigrationFileManager {
   noob() {}
 
   static readonly MIGRATIONS_DIR = path.resolve(
     process.cwd(),
-    'src',
-    'clickhouse',
-    'schema',
+    "src",
+    "clickhouse",
+    "schema",
   )
 
   static async readMigrationFiles(): Promise<string[]> {
     const files = await fs.readdir(MigrationFileManager.MIGRATIONS_DIR)
-    return files.filter((file) => file.endsWith('.sql')).sort()
+    return files.filter((file) => file.endsWith(".sql")).sort()
   }
 
   static async readMigrationContent(filename: string): Promise<string> {
     return fs.readFile(
       path.join(MigrationFileManager.MIGRATIONS_DIR, filename),
-      'utf-8',
+      "utf-8",
     )
   }
 
   static async createMigrationFiles(
     name: string,
-    upSql = '-- Add your SQL migration here',
+    upSql = "-- Add your SQL migration here",
   ): Promise<string> {
     const timestamp = new Date()
       .toISOString()
-      .replace(/[-:]/g, '')
-      .split('.')[0]
+      .replace(/[-:]/g, "")
+      .split(".")[0]
     const migrationId = `${timestamp}_${name}`
 
     const migrationFile = path.join(
@@ -61,7 +62,7 @@ export class MigrationManager {
     for (const migration of migrations) {
       const id = path.parse(migration).name
 
-      if (migration.includes('rollback')) {
+      if (migration.includes("rollback")) {
         continue
       }
 

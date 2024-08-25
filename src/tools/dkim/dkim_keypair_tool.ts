@@ -1,6 +1,6 @@
-import { makeEnv } from '@/shared/container/index.ts'
-import { Encryption } from '@/shared/utils/encryption/encryption.ts'
-import { RsaKeyPair } from '@/shared/utils/ssl/rsa.ts'
+import { makeEnv } from "@/shared/container/index.ts"
+import { Encryption } from "@/shared/utils/encryption/encryption.ts"
+import { RsaKeyPair } from "@/shared/utils/ssl/rsa.ts"
 
 export class DkimKeyPairTool {
   constructor(private env = makeEnv()) {}

@@ -1,11 +1,15 @@
-import { eq } from 'drizzle-orm'
-import { resolveCname, resolveTxt } from 'node:dns/promises'
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.ts'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.ts'
-import { sendingDomains } from '@/database/schema/schema.ts'
-import { container } from '@/utils/typi.ts'
-import { DnsResolverTool } from '@/tools/dns/dns_resolver_tool.ts'
-import { Queue } from '@/shared/queue/queue.ts'
+import { eq } from "drizzle-orm"
+import { resolveCname, resolveTxt } from "node:dns/promises"
+
+import { DnsResolverTool } from "@/tools/dns/dns_resolver_tool.ts"
+
+import { sendingDomains } from "@/database/schema/schema.ts"
+
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.ts"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.ts"
+import { Queue } from "@/shared/queue/queue.ts"
+
+import { container } from "@/utils/typi.ts"
 
 export interface CheckSendingDomainDnsConfigurationJobPayload {
   sendingDomainId: string
@@ -13,7 +17,7 @@ export interface CheckSendingDomainDnsConfigurationJobPayload {
 
 export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingDomainDnsConfigurationJobPayload> {
   static get id() {
-    return 'SENDING_DOMAINS::CHECK_SENDING_DOMAIN_DNS_CONFIGURATION'
+    return "SENDING_DOMAINS::CHECK_SENDING_DOMAIN_DNS_CONFIGURATION"
   }
 
   static get queue() {

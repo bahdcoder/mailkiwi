@@ -6,12 +6,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-import { safeEqual } from '@poppinss/utils'
-
-import { MAX_UINT32, randomBytesAsync, scryptAsync } from './helpers.js'
-import { PhcFormatter } from './phc_formatter.js'
-import type { HashDriverContract, ScryptConfig } from './types.js'
+import { MAX_UINT32, randomBytesAsync, scryptAsync } from "./helpers.js"
+import { PhcFormatter } from "./phc_formatter.js"
+import type { HashDriverContract, ScryptConfig } from "./types.js"
+import { safeEqual } from "@poppinss/utils"
 
 export function scrypt() {
   return new Scrypt({})
@@ -66,7 +64,7 @@ export class Scrypt implements HashDriverContract {
     /**
      * Validate top level properties to exist
      */
-    if (phcNode.id !== 'scrypt') {
+    if (phcNode.id !== "scrypt") {
       throw new TypeError(`Invalid "id" found in the phc string`)
     }
     if (!phcNode.params) {
@@ -133,7 +131,7 @@ export class Scrypt implements HashDriverContract {
      * Serialize hash
      */
     return this.#phcFormatter.serialize(salt, hash, {
-      id: 'scrypt',
+      id: "scrypt",
       params: {
         n: this.#config.cost,
         r: this.#config.blockSize,
@@ -204,7 +202,7 @@ export class Scrypt implements HashDriverContract {
    */
   needsReHash(value: string): boolean {
     const phcNode = this.#phcFormatter.deserialize(value)
-    if (phcNode.id !== 'scrypt') {
+    if (phcNode.id !== "scrypt") {
       return true
     }
 

@@ -1,12 +1,17 @@
-import { container } from '@/utils/typi.js'
-import type { CreateAudienceDto } from '@/audiences/dto/audiences/create_audience_dto.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
-import { DkimHostNameTool } from '@/tools/dkim/dkim_hostname_tool.js'
-import { DkimKeyPairTool } from '@/tools/dkim/dkim_keypair_tool.js'
-import { makeConfig, makeDatabase } from '@/shared/container/index.ts'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { CheckSendingDomainDnsConfigurationJob } from '@/sending_domains/jobs/check_sending_domain_dns_configuration_job.js'
+import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
+
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
+
+import { CheckSendingDomainDnsConfigurationJob } from "@/sending_domains/jobs/check_sending_domain_dns_configuration_job.js"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+
+import { DkimHostNameTool } from "@/tools/dkim/dkim_hostname_tool.js"
+import { DkimKeyPairTool } from "@/tools/dkim/dkim_keypair_tool.js"
+
+import { makeConfig, makeDatabase } from "@/shared/container/index.ts"
+import { Queue } from "@/shared/queue/queue.js"
+
+import { container } from "@/utils/typi.js"
 
 export class CreateSendingDomainAction {
   constructor(

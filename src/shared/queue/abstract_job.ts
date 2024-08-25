@@ -1,6 +1,7 @@
-import type { DrizzleClient } from '@/database/client.js'
-import type { AVAILABLE_QUEUE_TYPE } from './config.js'
-import { Redis } from 'ioredis'
+import type { AVAILABLE_QUEUE_TYPE } from "./config.js"
+import type { Redis } from "ioredis"
+
+import type { DrizzleClient } from "@/database/client.js"
 
 export interface JobHandlerResponse {
   success: boolean
@@ -13,7 +14,7 @@ type PromiseItem<T> = [PromiseFunction<T>, ErrorHandler]
 
 export abstract class BaseJob<T extends object = object> {
   static get id(): string {
-    throw new Error('ID is not defined for this job.')
+    throw new Error("ID is not defined for this job.")
   }
 
   get batchSize(): number {
@@ -21,7 +22,7 @@ export abstract class BaseJob<T extends object = object> {
   }
 
   static get queue(): AVAILABLE_QUEUE_TYPE {
-    throw new Error('Queue is not defined for this job.')
+    throw new Error("Queue is not defined for this job.")
   }
 
   done(output?: string) {

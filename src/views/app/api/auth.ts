@@ -1,4 +1,4 @@
-import { ZCall } from './z-call.js'
+import { ZCall } from "./z-call.js"
 
 const api = new ZCall()
 
@@ -19,4 +19,4 @@ export interface LoginResponse {
 }
 
 export const login = <T>(credentials: LoginCredentials) =>
-  api.post<T>('auth/login', credentials)
+  api.post<T>("auth/login", credentials)

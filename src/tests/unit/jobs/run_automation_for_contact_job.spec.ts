@@ -1,21 +1,25 @@
-import { describe, test } from 'vitest'
-import { createUser } from '@/tests/mocks/auth/users.ts'
+import { faker } from "@faker-js/faker"
+import { describe, test } from "vitest"
+
+import { RunAutomationForContactJob } from "@/automations/jobs/run_automation_for_contact_job.ts"
+import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.ts"
+
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
+import { createUser } from "@/tests/mocks/auth/users.ts"
 import {
   refreshDatabase,
   refreshRedisDatabase,
   seedAutomation,
-} from '@/tests/mocks/teams/teams.ts'
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.ts'
-import { faker } from '@faker-js/faker'
-import { contacts } from '@/database/schema/schema.ts'
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.ts'
-import { RunAutomationForContactJob } from '@/automations/jobs/run_automation_for_contact_job.ts'
-import { Queue } from '@/shared/queue/queue.ts'
-import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.ts'
+} from "@/tests/mocks/teams/teams.ts"
 
-describe('Run automation for contact job', () => {
-  test('successfully runs an automation job for a contact by queueing next job', async ({
+import { contacts } from "@/database/schema/schema.ts"
+
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
+import { Queue } from "@/shared/queue/queue.ts"
+import { cuid } from "@/shared/utils/cuid/cuid.ts"
+
+describe("Run automation for contact job", () => {
+  test("successfully runs an automation job for a contact by queueing next job", async ({
     expect,
   }) => {
     await refreshRedisDatabase()
@@ -58,7 +62,7 @@ describe('Run automation for contact job', () => {
     })
   })
 
-  test('does not trigger job if contact does not match query conditions', async ({
+  test("does not trigger job if contact does not match query conditions", async ({
     expect,
   }) => {
     await refreshRedisDatabase()
@@ -72,9 +76,9 @@ describe('Run automation for contact job', () => {
         audienceId: audience.id,
         triggerConditions: [
           {
-            field: 'email',
-            operation: 'endsWith',
-            value: '@gmail.com',
+            field: "email",
+            operation: "endsWith",
+            value: "@gmail.com",
           },
         ],
       })
@@ -103,7 +107,7 @@ describe('Run automation for contact job', () => {
     )
   })
 
-  test('correctly runs job if contact matches additional query conditions', async ({
+  test("correctly runs job if contact matches additional query conditions", async ({
     expect,
   }) => {
     await refreshRedisDatabase()

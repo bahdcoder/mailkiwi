@@ -1,18 +1,22 @@
+import { inArray } from "drizzle-orm"
+
+import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+
+import type {
+  AutomationStepRunnerContext,
+  AutomationStepRunnerContract,
+} from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
+
 import type {
   AutomationStep,
   Contact,
-} from '@/database/schema/database_schema_types.js'
-import type {
-  AutomationStepRunnerContract,
-  AutomationStepRunnerContext,
-} from '@/automations/utils/automation_step_runners/automation_runner_contract.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.ts'
-import { container } from '@/utils/typi.ts'
+} from "@/database/schema/database_schema_types.js"
 import {
-  tags,
   type ACTION_UPDATE_CONTACT_ATTRIBUTES,
-} from '@/database/schema/schema.ts'
-import { inArray } from 'drizzle-orm'
+  tags,
+} from "@/database/schema/schema.ts"
+
+import { container } from "@/utils/typi.ts"
 
 export class UpdateContactAttributesAutomationStepRunner
   implements AutomationStepRunnerContract

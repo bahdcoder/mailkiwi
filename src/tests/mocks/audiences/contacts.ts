@@ -1,5 +1,6 @@
-import type { Contact } from '@/database/schema/database_schema_types.js'
-import { faker } from '@faker-js/faker'
+import { faker } from "@faker-js/faker"
+
+import type { Contact } from "@/database/schema/database_schema_types.js"
 
 export function createFakeContact(
   audienceId: string,

@@ -1,9 +1,13 @@
-import type { CreateUserDto } from '@/auth/users/dto/create_user_dto.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import type { DrizzleClient } from '@/database/client.js'
-import { container } from '@/utils/typi.js'
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
+
+import type { CreateUserDto } from "@/auth/users/dto/create_user_dto.js"
+import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+
+import type { DrizzleClient } from "@/database/client.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
+
+import { container } from "@/utils/typi.js"
 
 export class RegisterUserAction {
   constructor(

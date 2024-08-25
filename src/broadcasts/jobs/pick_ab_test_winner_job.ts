@@ -1,5 +1,5 @@
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 
 export interface PickAbTestWinnerJobPayload {
   broadcastId: string
@@ -7,7 +7,7 @@ export interface PickAbTestWinnerJobPayload {
 
 export class PickAbTestWinnerJob extends BaseJob<PickAbTestWinnerJobPayload> {
   static get id() {
-    return 'ABTESTS_BROADCASTS::PICK_AB_TEST_WINNER'
+    return "ABTESTS_BROADCASTS::PICK_AB_TEST_WINNER"
   }
 
   static get queue() {

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq } from "drizzle-orm"
 import {
   type InferInput,
   checkAsync,
@@ -9,10 +9,11 @@ import {
   pipeAsync,
   regex,
   string,
-} from 'valibot'
+} from "valibot"
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { users } from '@/database/schema/schema.js'
+import { users } from "@/database/schema/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
 
 export const CreateUserSchema = objectAsync({
   email: pipeAsync(
@@ -26,15 +27,15 @@ export const CreateUserSchema = objectAsync({
       })
 
       return userExists === undefined
-    }, 'A user with this email already exists.'),
+    }, "A user with this email already exists."),
   ),
   name: pipe(string(), maxLength(50)),
   password: pipe(
     string(),
-    regex(/[A-Z]/, 'Must contain capital letter.'),
-    regex(/[a-z]/, 'Must contain lowercase letter.'),
-    regex(/[0-9]/, 'Must contain a number.'),
-    regex(/[!@#$%^&*]/, 'Must contain a special character.'),
+    regex(/[A-Z]/, "Must contain capital letter."),
+    regex(/[a-z]/, "Must contain lowercase letter."),
+    regex(/[0-9]/, "Must contain a number."),
+    regex(/[!@#$%^&*]/, "Must contain a special character."),
   ),
 })
 

@@ -1,5 +1,5 @@
-import type { StatusCode } from 'hono/utils/http-status'
-import type { BaseSchema, BaseSchemaAsync, InferIssue } from 'valibot'
+import type { StatusCode } from "hono/utils/http-status"
+import type { BaseSchema, BaseSchemaAsync, InferIssue } from "valibot"
 
 type ValibotValidationError =
   | InferIssue<BaseSchema<any, any, any>>
@@ -12,12 +12,12 @@ export class E_REQUEST_EXCEPTION extends Error {
     public payload?: object,
     public statusCode: StatusCode = 500,
   ) {
-    super(message ?? 'An error occurred.')
+    super(message ?? "An error occurred.")
   }
 
   public static E_VALIDATION_FAILED(errors: ValibotValidationError[]) {
     return new E_REQUEST_EXCEPTION(
-      'Validation failed.',
+      "Validation failed.",
       {
         errors: errors?.map((error) => ({
           message: error?.message,
@@ -30,7 +30,7 @@ export class E_REQUEST_EXCEPTION extends Error {
 
   public static E_UNAUTHORIZED(message?: string) {
     return new E_REQUEST_EXCEPTION(
-      `Unauthorized${message ? `: ${message}` : '.'}`,
+      `Unauthorized${message ? `: ${message}` : "."}`,
       {},
       401,
     )
@@ -38,7 +38,7 @@ export class E_REQUEST_EXCEPTION extends Error {
 
   public static E_OPERATION_FAILED(message?: string) {
     return new E_REQUEST_EXCEPTION(
-      `Internal server error${message ? `: ${message}` : '.'}`,
+      `Internal server error${message ? `: ${message}` : "."}`,
       {},
       500,
     )
