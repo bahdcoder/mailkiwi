@@ -1,0 +1,107 @@
+{
+  "FromName": "Kati Frantz",
+  "MessageStream": "inbound",
+  "From": "bahdcoder@gmail.com",
+  "FromFull": {
+    "Email": "bahdcoder@gmail.com",
+    "Name": "Kati Frantz",
+    "MailboxHash": ""
+  },
+  "To": "cac0731fa0b48a89b6bb9d12bca81e59+d039d4f6d142e5c2391b5b13e3c4120a@inbound.postmarkapp.com",
+  "ToFull": [
+    {
+      "Email": "cac0731fa0b48a89b6bb9d12bca81e59+d039d4f6d142e5c2391b5b13e3c4120a@inbound.postmarkapp.com",
+      "Name": "",
+      "MailboxHash": "d039d4f6d142e5c2391b5b13e3c4120a"
+    }
+  ],
+  "Cc": "",
+  "CcFull": [],
+  "Bcc": "",
+  "BccFull": [],
+  "OriginalRecipient": "cac0731fa0b48a89b6bb9d12bca81e59+d039d4f6d142e5c2391b5b13e3c4120a@inbound.postmarkapp.com",
+  "Subject": "Postmark, Hello !",
+  "MessageID": "64b31744-c903-4ac4-b36e-6f5451e7b992",
+  "ReplyTo": "",
+  "MailboxHash": "d039d4f6d142e5c2391b5b13e3c4120a",
+  "Date": "Sat, 24 Aug 2024 06:25:15 +0100",
+  "TextBody": "Postmark, Hello ![image: IMG-20240616-WA0002.jpg]\n",
+  "HtmlBody": "<div dir=\"ltr\">Postmark, Hello !<img src=\"cid:ii_m07p5beu0\" alt=\"IMG-20240616-WA0002.jpg\" width=\"542\" height=\"305\"><br></div>\n",
+  "StrippedTextReply": "",
+  "Tag": "",
+  "Headers": [
+    {
+      "Name": "Return-Path",
+      "Value": "<bahdcoder@gmail.com>"
+    },
+    {
+      "Name": "Received",
+      "Value": "by p-pm-inboundg01a-aws-euwest1a.inbound.postmarkapp.com (Postfix, from userid 996)\tid B8E4C40582C; Sat, 24 Aug 2024 05:25:28 +0000 (UTC)"
+    },
+    {
+      "Name": "X-Spam-Checker-Version",
+      "Value": "SpamAssassin 3.4.0 (2014-02-07) on\tp-pm-inboundg01a-aws-euwest1a"
+    },
+    {
+      "Name": "X-Spam-Status",
+      "Value": "No"
+    },
+    {
+      "Name": "X-Spam-Score",
+      "Value": "0.2"
+    },
+    {
+      "Name": "X-Spam-Tests",
+      "Value": "DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FROM,\tHTML_IMAGE_ONLY_04,HTML_IMAGE_RATIO_02,HTML_MESSAGE,RCVD_IN_DNSWL_NONE,\tRCVD_IN_MSPIKE_H2,RCVD_IN_ZEN_BLOCKED_OPENDNS,SPF_HELO_NONE,SPF_PASS,\tT_SCC_BODY_TEXT_LINE"
+    },
+    {
+      "Name": "Received-SPF",
+      "Value": "pass (gmail.com ... _spf.google.com: Sender is authorized to use 'bahdcoder@gmail.com' in 'mfrom' identity (mechanism 'include:_netblocks.google.com' matched)) receiver=p-pm-inboundg01a-aws-euwest1a; identity=mailfrom; envelope-from=\"bahdcoder@gmail.com\"; helo=mail-wm1-f45.google.com; client-ip=209.85.128.45"
+    },
+    {
+      "Name": "Received",
+      "Value": "from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])\t(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))\t(No client certificate requested)\tby p-pm-inboundg01a-aws-euwest1a.inbound.postmarkapp.com (Postfix) with ESMTPS id 7CF09405824\tfor <cac0731fa0b48a89b6bb9d12bca81e59+d039d4f6d142e5c2391b5b13e3c4120a@inbound.postmarkapp.com>; Sat, 24 Aug 2024 05:25:28 +0000 (UTC)"
+    },
+    {
+      "Name": "Received",
+      "Value": "by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4281c164408so20538985e9.1        for <cac0731fa0b48a89b6bb9d12bca81e59+d039d4f6d142e5c2391b5b13e3c4120a@inbound.postmarkapp.com>; Fri, 23 Aug 2024 22:25:28 -0700 (PDT)"
+    },
+    {
+      "Name": "DKIM-Signature",
+      "Value": "v=1; a=rsa-sha256; c=relaxed/relaxed;        d=gmail.com; s=20230601; t=1724477128; x=1725081928; darn=inbound.postmarkapp.com;        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject         :date:message-id:reply-to;        bh=asYKbmk+cwFRfZvI0uX5h0DFXyyW7MLMXmYqckpxlwU=;        b=XumUQedLHiwAmQR1G8duEJB7mP1WbKZNumrNB7rTIl1ZRxIKOrlFz9MWboy2VkzXYR         J/8QEc9krWcnPyI5jPWjs5PY2KcUTX36NzQbwDlC6BLlI6qiC3snHyIYwL5+O9tEoj6I         lVd+54QgYi5YH8XOszFIbUTRtYCdMdOjD23fTIxLqRvbGNms8OaafvUpMKjRjwxgfsmH         BEblioufPAdV/BzOO9yf7bbaHth313nFigarpTzLK13niTlbMfAq0ACUOv570R2LQGWH         w13JvG2zBr2/Y+zg/SKayr/QVBxsJ0E1OVkYSv2xM5rH1tWngezBLWJOUN9ee8IdT5oB         Qh0w=="
+    },
+    {
+      "Name": "X-Google-DKIM-Signature",
+      "Value": "v=1; a=rsa-sha256; c=relaxed/relaxed;        d=1e100.net; s=20230601; t=1724477128; x=1725081928;        h=to:subject:message-id:date:from:mime-version:x-gm-message-state         :from:to:cc:subject:date:message-id:reply-to;        bh=asYKbmk+cwFRfZvI0uX5h0DFXyyW7MLMXmYqckpxlwU=;        b=iI6cYKUHh9W9HrXeZnK8upB0/VvQSDFLfe095hy1hiVrBHB/N9ATsB5oqHz7e4ztRI         MxzJ//OBZg5+esyHFXWN1q8NwCAxn71s0c1ejRjw5kcX/Dy+LtudMMRd/v1zI22WF0X3         gtaqA2KteRPyB5PU6gkGd/UgIPEY3/OG+fYo0PbhoegCR6ZNpunNX3wf2984bvIJeEad         CI3H7HQNq7zPMDmoCKdhYBVt+OAHLj+tU8eN5dGC52Upqa76jrSIHtnpvW2DKvnv9O7o         QnjnT6pwA3jSWec5rc+AhhudWg9TgBFZtIPtiXzU14MxvrHMmdg7S7F2nVJThy0rNJvY         g3Xw=="
+    },
+    {
+      "Name": "X-Gm-Message-State",
+      "Value": "AOJu0YzRMBilNRDJvSaWtVHO0nR79BWAaUFYoEvtIk+hsSRRDylS7heG\tNerImDu4QTcn3IAuL4r/SBEM9M0HnpfW0/DpOG+xv6hYd0q91JX3ymZPqjvxlrM537paOHu1Yl6\tm1GOWB2TvK03F9WlWizqHFaactMmQsT3ai4nvICWOpyI="
+    },
+    {
+      "Name": "X-Google-Smtp-Source",
+      "Value": "AGHT+IHx5eDRgj95KWGAPoZkEoH8yz5EbG6HcI6oGFn0nSDDgglOvb7Q13LEitJKb3x6g/n4zco+SqCqDxJu1HVjfkA="
+    },
+    {
+      "Name": "X-Received",
+      "Value": "by 2002:a05:600c:4446:b0:428:e140:88c4 with SMTP id 5b1f17b1804b1-42acc9fe9cfmr25771765e9.33.1724477127242; Fri, 23 Aug 2024 22:25:27 -0700 (PDT)"
+    },
+    {
+      "Name": "MIME-Version",
+      "Value": "1.0"
+    },
+    {
+      "Name": "Message-ID",
+      "Value": "<CAHJ4RSSAtjQ8R0BoyqAQf1e4_vjY3JeTVYYF8xgKL4AOGbkJkg@mail.gmail.com>"
+    }
+  ],
+  "Attachments": [
+    {
+      "Content": "",
+      "ContentLength": 29804,
+      "Name": "IMG-20240616-WA0002.jpg",
+      "ContentType": "image/jpeg",
+      "ContentID": "ii_m07p5beu0"
+    }
+  ]
+}

@@ -4,6 +4,7 @@ export const AVAILABLE_QUEUES = {
   transactional: 'transactional',
   automations: 'automations',
   accounts: 'accounts',
+  sending_domains: 'sending_domains',
 } as const
 
 export type AVAILABLE_QUEUE_TYPE = keyof typeof AVAILABLE_QUEUES

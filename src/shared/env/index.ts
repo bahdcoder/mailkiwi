@@ -90,7 +90,37 @@ env.isDev = env.NODE_ENV === 'development'
 
 const SHORT_NAME = 'kibamail'
 
+// This is where we host the bounce processing server.
+// All incoming bounces and complaints from our customers will go through here.
+// They eventually get fed into a kafka topic that multiple services will consume.
+
+// The SPF configuration for this domain must point to (include) spf.kbmta.net, which further includes all our sending subnets and ip addresses.
+const BOUNCE_HOST_NAME = 'kb-bounces.kbmta.net'
+
+// This is where we host the SPF DNS entry.
+// All our subnets and IP addresses for email sending must be configured as a TXT record on this domain.
+// All our domains like kb-bounces.kbmta.net, kb-marketing.kbmta.net, kibamail.com etc. must include this domain in its SPF record.
+const SPF_HOST_NAME = 'spf.kbmta.net'
+
+// This is where we host the transactional email server.
+// All inbound transactional emails will go through here, including those sent via HTTP api.
+const SMTP_HOST_NAME = 'smtp.kbmta.net'
+
+// This is where we host the marketing email server.
+// All inbound marketing emails will go through here, including those sent via HTTP api.
+const SMTP_MARKETING_HOST_NAME = 'smtp-mkg.kbmta.net'
+
+// This is the default subdomain customers will use when configuring the `Return-Path` DNS entry.
+// Example: Google uses our infrastructure to send emails, so they'll configure the following dns entry:
+// kb-bounces.google.com. IN CNAME kb-bounces.kbmta.net
+const DEFAULT_BOUNCE_SUBDOMAIN = 'kb-bounces'
+
 export const config = {
   ...env,
-  software: { shortName: SHORT_NAME, teamHeader: `x-${SHORT_NAME}-team-id` },
+  software: {
+    shortName: SHORT_NAME,
+    teamHeader: `x-${SHORT_NAME}-team-id`,
+    bounceHost: BOUNCE_HOST_NAME,
+    bounceSubdomain: DEFAULT_BOUNCE_SUBDOMAIN,
+  },
 }

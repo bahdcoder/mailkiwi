@@ -65,6 +65,25 @@ export const teams = mysqlTable('teams', {
   broadcastEditor: mysqlEnum('broadcastEditor', ['DEFAULT', 'MARKDOWN']),
 })
 
+export const sendingDomains = mysqlTable('sendingDomains', {
+  id,
+  name: varchar('name', { length: 100 }).notNull(),
+  teamId: varchar('teamId', { length: 32 })
+    .notNull()
+    .references(() => teams.id),
+  dkimSubDomain: varchar('dkimSubDomain', { length: 120 }).notNull(),
+  dkimPublicKey: text('dkimPublicKey').notNull(),
+  dkimPrivateKey: text('dkimPrivateKey').notNull(),
+  returnPathSubDomain: varchar('returnPathSubDomain', {
+    length: 120,
+  }).notNull(),
+  returnPathDomainCnameValue: varchar('returnPathDomainCnameValue', {
+    length: 120,
+  }).notNull(),
+  dkimVerifiedAt: timestamp('dkimVerifiedAt'),
+  returnPathDomainVerifiedAt: timestamp('returnPathDomainVerifiedAt'),
+})
+
 export const webhooks = mysqlTable('webhooks', {
   id,
   name: varchar('name', { length: 50 }).notNull(),

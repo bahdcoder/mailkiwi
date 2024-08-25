@@ -14,7 +14,7 @@ import { hoursToSeconds } from '@/utils/dates.ts'
 import type {
   AbTestVariant,
   BroadcastWithSegmentAndAbTestVariants,
-} from '@/database/schema/types.ts'
+} from '@/database/schema/database_schema_types.js'
 import type { DrizzleClient } from '@/database/client.js'
 import { ContactsConcern } from '../concerns/broadcast_contacts_concern.ts'
 import { container } from '@/utils/typi.ts'

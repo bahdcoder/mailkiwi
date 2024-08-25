@@ -3,9 +3,7 @@ import { container } from '@/utils/typi.js'
 
 export class SummariseBroadcastAction {
   constructor(
-    private broadcastRepository: BroadcastRepository = container.make(
-      BroadcastRepository,
-    ),
+    private broadcastRepository = container.make(BroadcastRepository),
   ) {}
 
   async handle(broadcastId: string) {

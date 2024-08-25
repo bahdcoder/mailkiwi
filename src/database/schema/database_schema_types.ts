@@ -16,6 +16,7 @@ import type {
   emailContents,
   automationSteps,
   abTestVariants,
+  sendingDomains,
 } from './schema.js'
 
 export type Setting = InferSelectModel<typeof settings>
@@ -49,6 +50,7 @@ export type AbTestVariant = typeof abTestVariants.$inferSelect
 export type Segment = typeof segments.$inferSelect
 export type InsertSegment = typeof segments.$inferInsert
 
+export type InsertSendingDomain = typeof sendingDomains.$inferInsert
 export type InsertAbTestVariant = typeof abTestVariants.$inferInsert
 export type UpdateAbTestVariant = SQLiteUpdateSetSource<typeof abTestVariants>
 

@@ -110,3 +110,24 @@
    - Redis for authentication
    - HAProxy for smtp load balancing (High availability)
    - Haraka mail servers on dedicated servers
+
+## Zonemta findings
+
+1. In the Zonemta codebase, the lib/mail-queue.js file, the `queuCounterUpdate` method adds a timeout for pulling jobs out of the mongodb queue. If running in production and experience any email delivery delay issues, try playing with this value or raising a Github issue asking how to fix this.
+
+## Must have "Nice to have" features
+
+1. Free DMARC reporting and digests
+2. Setup free email validation
+3. Build contact activity feed. Store queued, delivered, opened, clicked, bounced, complaints, unsubscribed, events etc in a timeline fashion.
+   - Build activity feed for each contact (broadcasts, and automations)
+
+# Email server considerations
+
+1. Haraka inbound is awesome. Haraka outbound is rather hard to customise. Haraka Outbound makes it really hard to use a custom queue driver. It only supports the default disk based queue driver, which is not horizontally scalable.
+2. Perhaps fork Haraka and customise it to support a custom queue drivers?
+3. Zonemta is great, but it does not have great inbound email support, and the addition of Mongodb to the tech stack could cause additional maintenance overhead.
+
+# Kibahelp
+
+1. One inbox to support them all: An open source Helpscout alternative

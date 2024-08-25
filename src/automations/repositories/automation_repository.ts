@@ -5,7 +5,7 @@ import { BaseRepository } from '@/shared/repositories/base_repository.js'
 import { makeDatabase } from '@/shared/container/index.js'
 import type { DrizzleClient } from '@/database/client.js'
 import { automations } from '@/database/schema/schema.js'
-import type { FindAutomationByIdArgs } from '@/database/schema/types.js'
+import type { FindAutomationByIdArgs } from '@/database/schema/database_schema_types.js'
 
 export class AutomationRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

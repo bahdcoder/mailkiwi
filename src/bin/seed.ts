@@ -15,7 +15,7 @@ import { container } from '@/utils/typi.js'
 import { eq } from 'drizzle-orm'
 import { CreateBroadcastAction } from '@/broadcasts/actions/create_broadcast_action.ts'
 import { UpdateBroadcastAction } from '@/broadcasts/actions/update_broadcast_action.ts'
-import type { Broadcast } from '@/database/schema/types.ts'
+import type { Broadcast } from '@/database/schema/database_schema_types.js'
 
 import Fs from 'node:fs/promises'
 import Path from 'node:path'

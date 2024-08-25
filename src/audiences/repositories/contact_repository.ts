@@ -3,7 +3,7 @@ import { makeDatabase } from '@/shared/container/index.js'
 import type { DrizzleClient } from '@/database/client.js'
 import { contacts, tagsOnContacts } from '@/database/schema/schema.js'
 
-import type { UpdateSetContactInput } from '@/database/schema/types.js'
+import type { UpdateSetContactInput } from '@/database/schema/database_schema_types.js'
 import { and, eq, inArray } from 'drizzle-orm'
 import type { CreateContactDto } from '@/audiences/dto/contacts/create_contact_dto.js'
 

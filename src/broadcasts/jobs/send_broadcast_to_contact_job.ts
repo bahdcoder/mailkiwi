@@ -5,7 +5,7 @@ import {
   broadcasts,
   contacts as contactsTable,
 } from '@/database/schema/schema.js'
-import type { BroadcastWithEmailContent } from '@/database/schema/types.js'
+import type { BroadcastWithEmailContent } from '@/database/schema/database_schema_types.js'
 import { eq } from 'drizzle-orm'
 
 export interface SendBroadcastToContactPayload {

@@ -1,6 +1,10 @@
 import { container } from '@/utils/typi.js'
 import { SegmentRepository } from '@/audiences/repositories/segment_repository.ts'
-import type { Audience, Contact, Segment } from '@/database/schema/types.ts'
+import type {
+  Audience,
+  Contact,
+  Segment,
+} from '@/database/schema/database_schema_types.js'
 import { E_VALIDATION_FAILED } from '@/http/responses/errors.ts'
 import { makeDatabase } from '@/shared/container/index.js'
 import { contacts, tags, tagsOnContacts } from '@/database/schema/schema.ts'

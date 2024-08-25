@@ -1,4 +1,4 @@
-import type { Contact } from '@/database/schema/types.ts'
+import type { Contact } from '@/database/schema/database_schema_types.js'
 import { faker } from '@faker-js/faker'
 
 export function createFakeContact(

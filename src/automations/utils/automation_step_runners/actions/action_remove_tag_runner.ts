@@ -1,4 +1,7 @@
-import type { AutomationStep, Contact } from '@/database/schema/types.js'
+import type {
+  AutomationStep,
+  Contact,
+} from '@/database/schema/database_schema_types.js'
 import type { AutomationStepRunnerContract } from '@/automations/utils/automation_step_runners/automation_runner_contract.js'
 import { ContactRepository } from '@/audiences/repositories/contact_repository.ts'
 import { container } from '@/utils/typi.ts'

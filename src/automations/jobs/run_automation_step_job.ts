@@ -7,7 +7,7 @@ import {
   contactAutomationSteps,
   contacts,
 } from '@/database/schema/schema.ts'
-import type { Contact } from '@/database/schema/types.ts'
+import type { Contact } from '@/database/schema/database_schema_types.js'
 import { and, eq, isNotNull, sql } from 'drizzle-orm'
 import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.ts'
 

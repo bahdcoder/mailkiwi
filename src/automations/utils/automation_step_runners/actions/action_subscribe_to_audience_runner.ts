@@ -1,4 +1,7 @@
-import type { AutomationStep, Contact } from '@/database/schema/types.js'
+import type {
+  AutomationStep,
+  Contact,
+} from '@/database/schema/database_schema_types.js'
 import type {
   AutomationStepRunnerContract,
   AutomationStepRunnerContext,

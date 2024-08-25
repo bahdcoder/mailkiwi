@@ -1,5 +1,8 @@
 import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
-import type { AutomationStep, Contact } from '@/database/schema/types.js'
+import type {
+  AutomationStep,
+  Contact,
+} from '@/database/schema/database_schema_types.js'
 import type {
   AutomationStepRunnerContext,
   AutomationStepRunnerContractConstructor,

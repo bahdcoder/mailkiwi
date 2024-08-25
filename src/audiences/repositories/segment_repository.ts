@@ -2,7 +2,10 @@ import { eq } from 'drizzle-orm'
 
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
 import { segments } from '@/database/schema/schema.js'
-import type { InsertSegment, Segment } from '@/database/schema/types.ts'
+import type {
+  InsertSegment,
+  Segment,
+} from '@/database/schema/database_schema_types.js'
 import type { DrizzleClient } from '@/database/client.ts'
 import { makeDatabase } from '@/shared/container/index.js'
 

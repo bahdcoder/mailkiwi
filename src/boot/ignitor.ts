@@ -33,6 +33,7 @@ import { container } from '@/utils/typi.js'
 import { SegmentController } from '@/audiences/controllers/segment_controller.ts'
 import type { Redis } from 'ioredis'
 import { createRedisDatabaseInstance } from '@/redis/redis_client.ts'
+import { SendingDomainController } from '@/sending_domains/controllers/sending_domain_controller.ts'
 
 export class Ignitor {
   protected env: EnvVariables
@@ -105,6 +106,7 @@ export class Ignitor {
     container.resolve(ContactController)
     container.resolve(TeamController)
     container.resolve(MailerWebhooksContorller)
+    container.resolve(SendingDomainController)
     container.resolve(RootController)
   }
 

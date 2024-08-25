@@ -1,7 +1,7 @@
 import { TeamPolicy } from '@/audiences/policies/team_policy.js'
 import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '@/http/responses/errors.js'
-import type { Audience } from '@/database/schema/types.js'
+import type { Audience } from '@/database/schema/database_schema_types.js'
 import type { HonoContext } from '@/server/types.js'
 import { container } from '@/utils/typi.js'
 

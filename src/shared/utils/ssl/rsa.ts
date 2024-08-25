@@ -1,13 +1,14 @@
+import { Secret } from '@poppinss/utils'
 import { generateKeyPairSync } from 'node:crypto'
 
 export class RsaKeyPair {
   public publicKey = ''
-  public privateKey = ''
+  public privateKey = new Secret('')
 
   public clean() {
     return {
       publicKey: this.cleanupKey(this.publicKey),
-      privateKey: this.cleanupKey(this.privateKey),
+      privateKey: new Secret(this.cleanupKey(this.privateKey.release())),
     }
   }
 
@@ -21,9 +22,9 @@ export class RsaKeyPair {
     return lines.join('')
   }
 
-  public generate() {
+  public generate(modulusLength = 1024) {
     const keyPair = generateKeyPairSync('rsa', {
-      modulusLength: 1024, // 1024-bit RSA encryption
+      modulusLength,
       publicKeyEncoding: {
         type: 'spki',
         format: 'pem',
@@ -34,9 +35,14 @@ export class RsaKeyPair {
       },
     })
 
-    this.privateKey = keyPair.privateKey
+    this.privateKey = new Secret(keyPair.privateKey)
     this.publicKey = keyPair.publicKey
 
-    return this
+    return {
+      privateKey: this.privateKey,
+      publicKey: this.publicKey,
+
+      cleaned: this.clean(),
+    }
   }
 }

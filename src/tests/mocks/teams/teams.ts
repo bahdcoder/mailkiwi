@@ -11,6 +11,7 @@ import {
   emailContents,
   emails,
   segments,
+  sendingDomains,
   tags,
   tagsOnContacts,
   teamMemberships,
@@ -29,6 +30,7 @@ export const refreshRedisDatabase = async () => {
 export const refreshDatabase = async () => {
   const database = makeDatabase()
 
+  await database.delete(sendingDomains)
   await database.delete(tagsOnContacts)
   await database.delete(broadcasts)
   await database.delete(segments)

@@ -1,6 +1,6 @@
 import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
 import { makeApp, makeConfig } from '@/shared/container/index.js'
-import type { Team, User } from '@/database/schema/types.js'
+import type { Team, User } from '@/database/schema/database_schema_types.js'
 import type { HTTPMethods } from '@/server/types.js'
 import { container } from '@/utils/typi.js'
 

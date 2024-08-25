@@ -27,12 +27,18 @@ export const TransactionalQueue = () =>
     connection: makeRedis(),
   })
 
+export const SendingDomainsQueue = () =>
+  new BullQueue(AVAILABLE_QUEUES.sending_domains, {
+    connection: makeRedis(),
+  })
+
 export class Queues {
   broadcasts = BroadcastsQueue
   abTestsBroadcasts = AbTestsBroadcastsQueue
   automations = AutomationsQueue
   accounts = AccountsQueue
   transactional = TransactionalQueue
+  sending_domains = SendingDomainsQueue
 }
 
 export const Queue = new Queues()

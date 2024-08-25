@@ -6,7 +6,7 @@ import { BaseRepository } from '@/shared/repositories/base_repository.js'
 import { makeDatabase } from '@/shared/container/index.js'
 import type { DrizzleClient } from '@/database/client.js'
 import { broadcasts, emailContents } from '@/database/schema/schema.ts'
-import type { Broadcast } from '@/database/schema/types.ts'
+import type { Broadcast } from '@/database/schema/database_schema_types.js'
 import { eq } from 'drizzle-orm'
 
 export class EmailContentRepository extends BaseRepository {

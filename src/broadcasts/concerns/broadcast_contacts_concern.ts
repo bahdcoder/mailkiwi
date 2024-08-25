@@ -2,7 +2,7 @@ import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_d
 import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.ts'
 import type { DrizzleClient } from '@/database/client.ts'
 import { contacts } from '@/database/schema/schema.ts'
-import type { BroadcastWithSegmentAndAbTestVariants } from '@/database/schema/types.ts'
+import type { BroadcastWithSegmentAndAbTestVariants } from '@/database/schema/database_schema_types.js'
 import { and, asc, eq, type SQL, sql, type SQLWrapper } from 'drizzle-orm'
 
 export class ContactsConcern {

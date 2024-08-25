@@ -6,7 +6,7 @@ import { broadcasts } from '@/database/schema/schema.js'
 import type {
   BroadcastWithEmailContent,
   UpdateSetBroadcastInput,
-} from '@/database/schema/types.js'
+} from '@/database/schema/database_schema_types.js'
 import { eq, sql } from 'drizzle-orm'
 
 export class BroadcastRepository extends BaseRepository {

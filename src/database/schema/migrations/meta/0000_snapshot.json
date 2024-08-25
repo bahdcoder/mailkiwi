@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "c7f3694d-080f-468b-9e56-e86fe754693f",
+  "id": "73cfe048-17c3-4cfb-93a4-6ff88b9ad490",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -1117,6 +1117,106 @@
       "compositePrimaryKeys": {
         "segments_id": {
           "name": "segments_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "sendingDomains": {
+      "name": "sendingDomains",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "teamId": {
+          "name": "teamId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dkimSubDomain": {
+          "name": "dkimSubDomain",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dkimPublicKey": {
+          "name": "dkimPublicKey",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dkimPrivateKey": {
+          "name": "dkimPrivateKey",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "returnPathSubDomain": {
+          "name": "returnPathSubDomain",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "returnPathDomainCnameValue": {
+          "name": "returnPathDomainCnameValue",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dkimVerifiedAt": {
+          "name": "dkimVerifiedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "returnPathDomainVerifiedAt": {
+          "name": "returnPathDomainVerifiedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sendingDomains_teamId_teams_id_fk": {
+          "name": "sendingDomains_teamId_teams_id_fk",
+          "tableFrom": "sendingDomains",
+          "tableTo": "teams",
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "sendingDomains_id": {
+          "name": "sendingDomains_id",
           "columns": [
             "id"
           ]

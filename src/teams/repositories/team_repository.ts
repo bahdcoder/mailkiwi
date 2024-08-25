@@ -60,6 +60,7 @@ export interface TeamUsagePayload {
   startOfMonth: string
   freeCredits: number
   apiKey: string
+  encryptedDkimPrivateKey: string
 }
 
 export class TeamUsage {

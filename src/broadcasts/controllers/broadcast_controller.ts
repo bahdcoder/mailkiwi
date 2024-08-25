@@ -13,7 +13,6 @@ import { BaseController } from '@/shared/controllers/base_controller.js'
 import { BroadcastValidationAndAuthorizationConcern } from '@/broadcasts/concerns/broadcast_validation_concern.ts'
 import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 import { makeApp } from '@/shared/container/index.js'
-import type { HonoInstance } from '@/server/hono.js'
 import type { HonoContext } from '@/server/types.js'
 import { container } from '@/utils/typi.js'
 import { safeParseAsync } from 'valibot'
@@ -21,8 +20,8 @@ import { GetBroadcastsAction } from '../actions/get_broadcasts_action.ts'
 
 export class BroadcastController extends BaseController {
   constructor(
-    private app: HonoInstance = makeApp(),
-    private broadcastValidationAndAuthorizationConcern: BroadcastValidationAndAuthorizationConcern = container.make(
+    private app = makeApp(),
+    private broadcastValidationAndAuthorizationConcern = container.make(
       BroadcastValidationAndAuthorizationConcern,
     ),
   ) {

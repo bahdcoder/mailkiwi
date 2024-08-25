@@ -1,5 +1,5 @@
 import { BroadcastsQueue, Queue } from '@/shared/queue/queue.js'
-import type { BroadcastWithoutContent } from '@/database/schema/types.js'
+import type { BroadcastWithoutContent } from '@/database/schema/database_schema_types.js'
 import { differenceInSeconds } from '@/utils/dates.js'
 import { container } from '@/utils/typi.js'
 import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'

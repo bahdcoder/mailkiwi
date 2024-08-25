@@ -22,11 +22,10 @@ export const makeEnv = () => container.make<EnvVariables>(ContainerKey.env)
 export const makeConfig = () =>
   container.singleton<ConfigVariables>(ContainerKey.config)
 
-export const makeDatabase = (): DrizzleClient =>
+export const makeDatabase = () =>
   container.singleton<DrizzleClient>(ContainerKey.database)
 
-export const makeRedis = (): Redis =>
-  container.singleton<Redis>(ContainerKey.redis)
+export const makeRedis = () => container.singleton<Redis>(ContainerKey.redis)
 
 export const makeDatabaseConnection = () =>
   container.singleton<Connection>(ContainerKey.databaseConnection)

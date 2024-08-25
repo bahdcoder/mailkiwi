@@ -133,6 +133,20 @@ CREATE TABLE `segments` (
 	CONSTRAINT `segments_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `sendingDomains` (
+	`id` varchar(40) NOT NULL,
+	`name` varchar(100) NOT NULL,
+	`teamId` varchar(32) NOT NULL,
+	`dkimSubDomain` varchar(120) NOT NULL,
+	`dkimPublicKey` text NOT NULL,
+	`dkimPrivateKey` text NOT NULL,
+	`returnPathSubDomain` varchar(120) NOT NULL,
+	`returnPathDomainCnameValue` varchar(120) NOT NULL,
+	`dkimVerifiedAt` timestamp,
+	`returnPathDomainVerifiedAt` timestamp,
+	CONSTRAINT `sendingDomains_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `settings` (
 	`id` varchar(40) NOT NULL,
 	`url` varchar(256),
@@ -223,6 +237,7 @@ ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FORE
 ALTER TABLE `emails` ADD CONSTRAINT `emails_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emails` ADD CONSTRAINT `emails_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `segments` ADD CONSTRAINT `segments_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `sendingDomains` ADD CONSTRAINT `sendingDomains_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `tags` ADD CONSTRAINT `tags_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `tagsOnContacts` ADD CONSTRAINT `tagsOnContacts_tagId_tags_id_fk` FOREIGN KEY (`tagId`) REFERENCES `tags`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `tagsOnContacts` ADD CONSTRAINT `tagsOnContacts_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
