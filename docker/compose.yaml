@@ -38,7 +38,7 @@ services:
       - ./data:/data
     ports:
       - 5571:8025
-      - 5572:1025
+      - 25:1025
     environment:
       MP_MAX_MESSAGES: 500000
       MP_SMTP_DISABLE_RDNS: true

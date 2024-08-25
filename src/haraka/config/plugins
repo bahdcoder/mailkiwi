@@ -48,7 +48,7 @@ mail_from.is_resolvable
 # RCPT TO
 # At least one rcpt_to plugin is REQUIRED for inbound email. The simplest
 # plugin is in_host_list, see 'haraka -h rcpt_to.in_host_list' to configure.
-rcpt_to.in_host_list
+# rcpt_to.in_host_list
 #qmail-deliverable
 #rcpt_to.ldap
 #rcpt_to.routes
@@ -67,7 +67,7 @@ headers
 # QUEUE
 # queues: discard  qmail-queue  quarantine  smtp_forward  smtp_proxy
 # Queue mail via smtp - see config/smtp_forward.ini for where your mail goes
-queue/discard
-queue/bullmq
-# queue/smtp_forward
+# queue/discard
+# queue/bullmq
+# queue/smtp_proxy
 #watch

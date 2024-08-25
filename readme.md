@@ -131,3 +131,7 @@
 # Kibahelp
 
 1. One inbox to support them all: An open source Helpscout alternative
+
+# DMARC
+
+1. This [open source github repository](https://github.com/andreialecu/dmarc-report-parser/) contains an open source parser and sample fixtures for testing and building a dmarc digest
