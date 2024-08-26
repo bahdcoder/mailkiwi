@@ -10,10 +10,15 @@ import { env } from "@/shared/env/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.ts"
 
 export class MailerClass {
+  // a transport must be created for the team making this mail send call.
+  // we decrypt the api key for this sender and we invoke the smtp server
+  // using the team api key and username credentials.
+  // this ensures that our reputation tracking engine on the smtp server still counts
+  // reputation correctly for the sender based on their teamId and api key
   transport = createTransport({
     port: env.SMTP_PORT,
     host: env.SMTP_HOST,
-    secure: env.isProd,
+    secure: true,
     auth: {
       user: env.SMTP_USER,
       pass: env.SMTP_PASS,

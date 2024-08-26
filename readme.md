@@ -18,6 +18,7 @@
 - Kafka for consuming event streams (Email opens, clicks, form resposes, landing
   page views and visitors, etc etc)
 - Graphana / Prometheus for metrics and dashboards
+- Maxmind GeoLite2 for Geo location database
 
 ## Cloud Technology Stack
 
@@ -48,7 +49,7 @@
    4. Clickhouse ingests data from this topic
 6. When an email open webhook comes in / a click event from an email comes in:
    1. Event is added to a Kafka topic called smtp_email_opens
-   2. A Kafka consumer receives this event, formats it and adds it to a Kafka topic called clickhouse_smtp_email_opens
+   2. A Kafka consumer receives this event, formats it (by adding geo location information, updating contact activity feed) and adds it to a Kafka topic called clickhouse_smtp_email_opens
 
 ## Email reputation building
 
@@ -135,3 +136,5 @@
 # DMARC
 
 1. This [open source github repository](https://github.com/andreialecu/dmarc-report-parser/) contains an open source parser and sample fixtures for testing and building a dmarc digest
+
+2. Before sending the email out using our outbound infrastructure, first we must check to see that DKIM, SPF and DMARC are all correctly configured for the team (sender). If not, we add these emails back to the queue for sending at a later date. The automatic DMARC / DKIM and SPF checking is done by the core api, and will handle alerting the customer if anything is wrong. It will also update Redis to mark the sender as ready to continue sending, so that when next the emails in the queue are processed by Haraka, they will be sent out.

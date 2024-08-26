@@ -26,7 +26,7 @@
     "clickhouse:migrate:dev": "env-cmd -e development tsx src/bin/clickhouse.ts run",
     "mysql:migrate": "pnpm drizzle-kit migrate --config=./src/database/drizzle.config.ts",
     "mysql:migrate:make": "env-cmd -e development pnpm drizzle-kit generate --config=./src/database/drizzle.config.ts",
-    "haraka:dev": "env-cmd -e development haraka -c src/haraka",
+    "haraka:dev": "env-cmd -e email-server haraka -c src/haraka",
     "zonemta:dev": "env-cmd -e development tsx src/zonemta/start_zonemta.ts --config=./src/zonemta/config/zonemta.toml",
     "mysql:studio": "pnpm drizzle-kit studio --config=./src/database/drizzle.config.ts"
   },

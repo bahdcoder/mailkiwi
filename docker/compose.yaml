@@ -1,10 +1,22 @@
 services:
+  dnsmasq:
+    build:
+      context: ./dnsmasq
+      dockerfile: dnsmasq.dockerfile
+    container_name: dnsmasq
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.2
+
   mysql:
     image: mysql:latest
     ports:
       - "5567:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.3
 
   clickhouse:
     image: clickhouse/clickhouse-server:24.7.3-alpine
@@ -21,6 +33,9 @@ services:
       CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
       CLICKHOUSE_PASSWORD: password
       CLICKHOUSE_USER: kibamail
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.4
 
   redis:
     image: redis:latest
@@ -29,6 +44,9 @@ services:
       - "5570:6379"
     volumes:
       - redis_data:/data
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.5
 
   mailpit:
     image: axllent/mailpit
@@ -37,13 +55,16 @@ services:
     volumes:
       - ./data:/data
     ports:
-      - 5571:8025
-      - 25:1025
+      - 5571:1025
+      - 5572:8025
     environment:
       MP_MAX_MESSAGES: 500000
       MP_SMTP_DISABLE_RDNS: true
       SMTP_USER: kibamail
       SMTP_PASS: password
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.6
 
   mongodb:
     image: mongo:latest
@@ -51,9 +72,46 @@ services:
       - "5573:27017"
     volumes:
       - mongodb_data:/data/db
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.7
+
+  smtp_proxy:
+    image: nginx:alpine
+    container_name: smtp_proxy
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.8
+    ports:
+      - "25:25"
+    volumes:
+      - ./dnsmasq/nginx.conf:/etc/nginx/nginx.conf
+
+  haraka:
+    build:
+      context: ..
+      dockerfile: docker/haraka.dockerfile
+    container_name: haraka
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.9
+    dns:
+      - 172.20.0.2
+    ports:
+      - "1025:587"
+    volumes:
+      - ..:/app
+      - /app/node_modules
 
 volumes:
   mysql_data:
   clickhouse_data:
   redis_data:
   mongodb_data:
+
+networks:
+  kibamail-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

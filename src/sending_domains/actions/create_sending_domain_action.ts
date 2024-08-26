@@ -35,7 +35,7 @@ export class CreateSendingDomainAction {
             teamId,
             dkimPublicKey,
             dkimPrivateKey: dkimPrivateKey.release(),
-            // The default domain for return path would be kb-bounces.customerdomain.com -> points to kb-bounces.kbmta.net
+            // The default domain for return path would be kb.customerdomain.com -> points to mail.kbmta.net
             returnPathSubDomain: this.config.software.bounceSubdomain,
             returnPathDomainCnameValue: this.config.software.bounceHost,
             dkimSubDomain: container.make(DkimHostNameTool).generate(), // 20241112010101._domainkey
