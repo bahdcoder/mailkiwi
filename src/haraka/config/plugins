@@ -64,6 +64,8 @@ headers
 #dkim_sign
 #limit
 
+dkim/dkim_sign
+
 # QUEUE
 # queues: discard  qmail-queue  quarantine  smtp_forward  smtp_proxy
 # Queue mail via smtp - see config/smtp_forward.ini for where your mail goes

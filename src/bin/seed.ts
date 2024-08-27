@@ -13,6 +13,8 @@ import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_t
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.ts"
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 
+import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.ts"
+
 import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
 
 import {
@@ -23,7 +25,7 @@ import type { Broadcast } from "@/database/schema/database_schema_types.js"
 import { broadcasts, contacts, teams } from "@/database/schema/schema.js"
 
 import { ContainerKey } from "@/shared/container/index.js"
-import { env } from "@/shared/env/index.js"
+import { config, env } from "@/shared/env/index.js"
 
 import { createRedisDatabaseInstance } from "@/redis/redis_client.ts"
 
@@ -36,6 +38,7 @@ const redis = createRedisDatabaseInstance(env.REDIS_URL)
 const database = createDrizzleDatabase(connection)
 
 container.registerInstance(ContainerKey.env, env)
+container.registerInstance(ContainerKey.config, config)
 container.registerInstance(ContainerKey.database, database)
 container.registerInstance(ContainerKey.redis, redis)
 
@@ -158,6 +161,10 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
   const teamAccessToken = await container
     .make(CreateTeamAccessTokenAction)
     .handle(team.id)
+
+  await container
+    .make(CreateSendingDomainAction)
+    .handle({ name: "kb.openmailer.org" }, team.id)
 
   console.dir(
     [

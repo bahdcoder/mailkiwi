@@ -29,6 +29,7 @@ export class CreateSendingDomainAction {
 
     const sendingDomain = await this.database.transaction(
       async (transaction) => {
+        const dkimSubDomain = container.make(DkimHostNameTool).generate()
         const [sendingDomain] = await Promise.all([
           this.sendingDomainRepository.transaction(transaction).create({
             name: payload.name,
@@ -38,10 +39,13 @@ export class CreateSendingDomainAction {
             // The default domain for return path would be kb.customerdomain.com -> points to mail.kbmta.net
             returnPathSubDomain: this.config.software.bounceSubdomain,
             returnPathDomainCnameValue: this.config.software.bounceHost,
-            dkimSubDomain: container.make(DkimHostNameTool).generate(), // 20241112010101._domainkey
+            dkimSubDomain, // 20241112010101._domainkey
           }),
           this.teamRepository.usage(teamId).set({
             encryptedDkimPrivateKey: dkimPrivateKey.release(),
+            returnPathSubDomain: this.config.software.bounceSubdomain,
+            returnPathDomainCnameValue: this.config.software.bounceHost,
+            dkimSubDomain,
           }),
         ])
 

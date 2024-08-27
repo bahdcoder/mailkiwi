@@ -61,6 +61,10 @@ export interface TeamUsagePayload {
   freeCredits: number
   apiKey: string
   encryptedDkimPrivateKey: string
+  returnPathSubDomain: string
+  returnPathDomainCnameValue: string
+  dkimSubDomain: string
+  dkimPublicKey: string
 }
 
 export class TeamUsage {

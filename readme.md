@@ -138,3 +138,24 @@
 1. This [open source github repository](https://github.com/andreialecu/dmarc-report-parser/) contains an open source parser and sample fixtures for testing and building a dmarc digest
 
 2. Before sending the email out using our outbound infrastructure, first we must check to see that DKIM, SPF and DMARC are all correctly configured for the team (sender). If not, we add these emails back to the queue for sending at a later date. The automatic DMARC / DKIM and SPF checking is done by the core api, and will handle alerting the customer if anything is wrong. It will also update Redis to mark the sender as ready to continue sending, so that when next the emails in the queue are processed by Haraka, they will be sent out.
+
+# GO TO MARKET STRATEGY
+
+1. 10,000 emails per month plan forever is a steal for any business. Do the math over and over, and see if this is feasible and scalable.
+2. Target solo founders just starting out.
+   1. Find them on Twitter
+   2. Find them on Product Hunt
+   3. Reach out to them and propose your product. Keep doing that over and over and over until someone obliges.
+3. Target open source communities spending on Mailchimp.
+   1. Target OSCA Africa (Spends close to $1,000 on Mailchimp every year)
+   2. Target other Africa based open source communities and make a value proposition.
+4. Patience is the key here. Before launching, budget 300 euros a month (for at least 18 months of infrastructure runway)
+   1. Consider paying in bulk for dedicated servers.
+
+# Server infrastructure setup / planning
+
+1. Purchase only 1 dedicated server for email sending and receiving. This will be `smtp.kbmta.net` and `mail.kbmta.net` with a static ip address (one ip from the purchased subnet)
+   1. On this dedicated server, run haproxy as a load balancer listening on port 25 (for inbound emails) and port 587/457 (for inbound submissions)
+   2. Start 4 haraka processes using PM2 on port 25565, 25566, 25567, 25568. HaProxy balances traffic to these 4 servers equally.
+   3. Each instance
+2. Everything else is deployed to the cloud on hetzner: A nomad or Kubernetes cluster running Clickhouse, MySQL, Kafka, Redis, and NodeJS services (docker images). With a Hetzner load balancer sending traffic to the nomad cluster (NodeJS services).

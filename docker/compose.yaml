@@ -100,8 +100,7 @@ services:
     ports:
       - "1025:587"
     volumes:
-      - ..:/app
-      - /app/node_modules
+      - ../src/haraka:/app/haraka
 
 volumes:
   mysql_data:

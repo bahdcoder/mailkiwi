@@ -87,6 +87,7 @@
     "Haraka": "^3.0.3",
     "bullmq": "^5.10.4",
     "env-cmd": "^10.1.0",
+    "haraka-plugin-dkim": "^1.0.5",
     "hono": "^4.5.0",
     "ioredis": "^5.4.1",
     "luxon": "^3.5.0",
