@@ -119,7 +119,7 @@ const DEFAULT_BOUNCE_SUBDOMAIN = "kb"
 // Our SAAS customers will receive emails from support@kibamail.com. The Return-Path for this email will be kb.kibamail.com, and bounces will return to bounces@kb.kibamail.com
 // Our inbound email servers will host email for support@kibamail.com, ceo@kibamail.com, hr@kibamail.com etc
 
-// bounces@mail.kbmta.net will receive all bounce reports for all our customers. The meta data in the email headers will know exactly which customer the email belongs to 
+// bounces@mail.kbmta.net will receive all bounce reports for all our customers. The meta data in the email headers will know exactly which customer the email belongs to
 // All bounces will be fed into kafka and processed at a later time with some low priority background workers.
 // But we will track bounces per minute and per hour per customer, and temporarily pause sending for a sender in some scenarios.
 // Pausing only pauses the queue of emails for this sender, but continues to receive email via smtp and http api.
