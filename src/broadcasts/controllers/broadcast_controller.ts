@@ -58,7 +58,9 @@ export class BroadcastController extends BaseController {
       ctx,
     )
 
-    const broadcasts = await container.resolve(GetBroadcastsAction).handle()
+    const broadcasts = await container
+      .resolve(GetBroadcastsAction)
+      .handle()
 
     return ctx.json(broadcasts)
   }
@@ -86,7 +88,9 @@ export class BroadcastController extends BaseController {
       broadcast,
     )
 
-    return ctx.json(await container.make(GetBroadcastAction).handle(broadcast))
+    return ctx.json(
+      await container.make(GetBroadcastAction).handle(broadcast),
+    )
   }
 
   delete = async (ctx: HonoContext) => {
@@ -136,7 +140,10 @@ export class BroadcastController extends BaseController {
 
     if (broadcast.status !== "DRAFT")
       throw E_VALIDATION_FAILED([
-        { message: "Only a draft broadcast can be sent.", field: "status" },
+        {
+          message: "Only a draft broadcast can be sent.",
+          field: "status",
+        },
       ])
 
     const { success, issues } = await safeParseAsync(SendBroadcastSchema, {
@@ -149,7 +156,10 @@ export class BroadcastController extends BaseController {
     if (broadcast.isAbTest) {
       const validations = await Promise.all(
         broadcast.abTestVariants.map((variant) =>
-          safeParseAsync(SendBroadcastEmailContentSchema, variant.emailContent),
+          safeParseAsync(
+            SendBroadcastEmailContentSchema,
+            variant.emailContent,
+          ),
         ),
       )
 

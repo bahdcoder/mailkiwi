@@ -6,7 +6,10 @@ import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
 } from "@/tests/mocks/audiences/email_content.ts"
-import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
+import {
+  createBroadcastForUser,
+  createUser,
+} from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
@@ -15,7 +18,9 @@ import { abTestVariants, broadcasts } from "@/database/schema/schema.js"
 import { makeDatabase } from "@/shared/container/index.js"
 
 describe("Update broadcasts", () => {
-  test("can update a broadcast with ab test variants", async ({ expect }) => {
+  test("can update a broadcast with ab test variants", async ({
+    expect,
+  }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()

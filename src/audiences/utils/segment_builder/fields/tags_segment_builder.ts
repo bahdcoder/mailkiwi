@@ -33,7 +33,9 @@ export class TagsSegmentBuilder extends FieldSegmentBuilder {
 
     switch (this.operation) {
       case "contains":
-        queryConditions.push(inArray(contacts.id, this.queryTagsForContacts()))
+        queryConditions.push(
+          inArray(contacts.id, this.queryTagsForContacts()),
+        )
         break
       case "notContains":
         queryConditions.push(

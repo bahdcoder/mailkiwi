@@ -1,4 +1,5 @@
 import { type ClickHouseClient, createClient } from "@clickhouse/client"
+import chalk from "chalk"
 import fs from "node:fs/promises"
 import path from "node:path"
 
@@ -15,6 +16,12 @@ export class MigrationFileManager {
   )
 
   static async readMigrationFiles(): Promise<string[]> {
+    console.log(
+      chalk.grey(
+        `Reading clickhouse migrations from '${MigrationFileManager.MIGRATIONS_DIR}'`,
+      ),
+    )
+
     const files = await fs.readdir(MigrationFileManager.MIGRATIONS_DIR)
     return files.filter((file) => file.endsWith(".sql")).sort()
   }
@@ -66,11 +73,14 @@ export class MigrationManager {
         continue
       }
 
-      const sql = await MigrationFileManager.readMigrationContent(migration)
+      const sql =
+        await MigrationFileManager.readMigrationContent(migration)
 
       await this.client.query({ query: sql })
 
-      console.log(`Applied migration: ${id}`)
+      console.log(
+        `[${chalk.green("✓")}] Clickhouse migration ${id} applied successfully!`,
+      )
     }
 
     await this.client.close()

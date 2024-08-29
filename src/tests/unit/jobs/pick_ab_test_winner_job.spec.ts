@@ -5,7 +5,10 @@ import { describe, test, vi } from "vitest"
 import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.ts"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
-import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.ts"
+import {
+  createBroadcastForUser,
+  createUser,
+} from "@/tests/mocks/auth/users.ts"
 import {
   refreshDatabase,
   refreshRedisDatabase,
@@ -37,7 +40,10 @@ describe("Pick A/B Test winner", () => {
       createMailerWithIdentity: true,
     })
 
-    const contactsForAudience = faker.number.int({ min: 277, max: 1233 })
+    const contactsForAudience = faker.number.int({
+      min: 277,
+      max: 1233,
+    })
 
     const testAbVariantWeights = [
       faker.number.int({ min: 14, max: 50 }),
@@ -62,15 +68,17 @@ describe("Pick A/B Test winner", () => {
       count: contactsForAudience,
     })
 
-    await database
-      .insert(contacts)
-      .values(
-        faker.helpers
-          .multiple(faker.lorem.word, { count: contactsForAudience })
-          .map((_, idx) =>
-            createFakeContact(audience.id, { id: contactIds[idx] }),
-          ),
-      )
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(faker.lorem.word, {
+          count: contactsForAudience,
+        })
+        .map((_, idx) =>
+          createFakeContact(audience.id, {
+            id: contactIds[idx],
+          }),
+        ),
+    )
 
     await new SendAbTestBroadcastJob().handle({
       database,
@@ -99,7 +107,8 @@ describe("Pick A/B Test winner", () => {
 
     expect(totalSentToVariants).toBe(expectedTotalWeightsRecipients)
 
-    const finalSampleSize = contactsForAudience - expectedTotalWeightsRecipients
+    const finalSampleSize =
+      contactsForAudience - expectedTotalWeightsRecipients
 
     for (const variant of allVariants) {
       const allCallsForVariant = jobsFromBroadcastsQueue.filter(

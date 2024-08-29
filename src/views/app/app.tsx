@@ -50,7 +50,10 @@ const aboutRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([indexRoute, aboutRoute])
 
-const router = createRouter({ routeTree, defaultPreload: "intent" })
+const router = createRouter({
+  routeTree,
+  defaultPreload: "intent",
+})
 
 declare module "@tanstack/react-router" {
   interface Register {

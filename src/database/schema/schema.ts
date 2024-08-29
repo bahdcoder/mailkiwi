@@ -17,7 +17,10 @@ import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_d
 
 import { cuid } from "@/shared/utils/cuid/cuid.ts"
 
-const id = varchar("id", { length: 40 }).primaryKey().notNull().$defaultFn(cuid)
+const id = varchar("id", { length: 40 })
+  .primaryKey()
+  .notNull()
+  .$defaultFn(cuid)
 
 export type ContactFilterCondition = {
   field: CreateSegmentDto["conditions"][number]["field"]
@@ -72,7 +75,9 @@ export const sendingDomains = mysqlTable("sendingDomains", {
   teamId: varchar("teamId", { length: 32 })
     .notNull()
     .references(() => teams.id),
-  dkimSubDomain: varchar("dkimSubDomain", { length: 120 }).notNull(),
+  dkimSubDomain: varchar("dkimSubDomain", {
+    length: 120,
+  }).notNull(),
   dkimPublicKey: text("dkimPublicKey").notNull(),
   dkimPrivateKey: text("dkimPrivateKey").notNull(),
   returnPathSubDomain: varchar("returnPathSubDomain", {
@@ -143,7 +148,9 @@ export const contacts = mysqlTable(
     audienceId: varchar("audienceId", { length: 32 })
       .references(() => audiences.id)
       .notNull(),
-    emailVerificationToken: varchar("emailVerificationToken", { length: 100 }),
+    emailVerificationToken: varchar("emailVerificationToken", {
+      length: 100,
+    }),
     emailVerificationTokenExpiresAt: timestamp(
       "emailVerificationTokenExpiresAt",
     ),
@@ -205,19 +212,24 @@ export const emails = mysqlTable("emails", {
   audienceId: varchar("audienceId", { length: 32 })
     .references(() => audiences.id, { onDelete: "cascade" })
     .notNull(),
-  emailContentId: varchar("emailContentId", { length: 32 }).references(
-    () => emailContents.id,
-    { onDelete: "cascade" },
-  ),
+  emailContentId: varchar("emailContentId", {
+    length: 32,
+  }).references(() => emailContents.id, {
+    onDelete: "cascade",
+  }),
 })
 
 export const abTestVariants = mysqlTable("abTestVariants", {
   id,
   broadcastId: varchar("broadcastId", { length: 32 })
-    .references(() => broadcasts.id, { onDelete: "cascade" })
+    .references(() => broadcasts.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   emailContentId: varchar("emailContentId", { length: 32 })
-    .references(() => emailContents.id, { onDelete: "cascade" })
+    .references(() => emailContents.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   name: varchar("name", { length: 50 }).notNull(),
   weight: int("weight").default(1).notNull(), // in percentages.
@@ -244,17 +256,20 @@ export const broadcasts = mysqlTable("broadcasts", {
   audienceId: varchar("audienceId", { length: 32 })
     .references(() => audiences.id)
     .notNull(),
-  segmentId: varchar("segmentId", { length: 32 }).references(() => segments.id),
+  segmentId: varchar("segmentId", {
+    length: 32,
+  }).references(() => segments.id),
   teamId: varchar("teamId", { length: 32 })
     .references(() => teams.id)
     .notNull(),
   trackClicks: boolean("trackClicks"),
   trackOpens: boolean("trackOpens"),
 
-  emailContentId: varchar("emailContentId", { length: 32 }).references(
-    () => emailContents.id,
-    { onDelete: "cascade" },
-  ),
+  emailContentId: varchar("emailContentId", {
+    length: 32,
+  }).references(() => emailContents.id, {
+    onDelete: "cascade",
+  }),
   winningAbTestVariantId: varchar("winningAbTestVariantId", {
     length: 32,
   }).references((): AnyMySqlColumn => abTestVariants.id, {
@@ -307,7 +322,12 @@ export const automationStepSubtypesRule = [
 
 export const automationStepSubtypesEnd = ["END"] as const
 
-export const automationStepTypes = ["TRIGGER", "ACTION", "RULE", "END"] as const
+export const automationStepTypes = [
+  "TRIGGER",
+  "ACTION",
+  "RULE",
+  "END",
+] as const
 export const automationStepSubtypes = [
   ...automationStepSubtypesTrigger,
   ...automationStepSubtypesAction,
@@ -315,8 +335,12 @@ export const automationStepSubtypes = [
   ...automationStepSubtypesEnd,
 ] as const
 
-export type ACTION_ADD_TAG_CONFIGURATION = { tagIds: string[] }
-export type ACTION_REMOVE_TAG_CONFIGURATION = { tagIds: string[] }
+export type ACTION_ADD_TAG_CONFIGURATION = {
+  tagIds: string[]
+}
+export type ACTION_REMOVE_TAG_CONFIGURATION = {
+  tagIds: string[]
+}
 export type ACTION_UPDATE_CONTACT_ATTRIBUTES = {
   attributes: Record<string, any>
 }
@@ -365,19 +389,20 @@ export const automationSteps = mysqlTable("automationSteps", {
     .notNull()
     .default("DRAFT"),
   subtype: mysqlEnum("subtype", automationStepSubtypes).notNull(),
-  parentId: varchar("parentId", { length: 32 }).references(
-    (): AnyMySqlColumn => automationSteps.id,
-    { onDelete: "cascade" },
-  ),
+  parentId: varchar("parentId", {
+    length: 32,
+  }).references((): AnyMySqlColumn => automationSteps.id, {
+    onDelete: "cascade",
+  }),
   branchIndex: int("branchIndex"),
   configuration: json("configuration")
     .$type<AutomationStepConfiguration>()
     .notNull(),
   emailId: varchar("emailId", { length: 32 }).references(() => emails.id),
   tagId: varchar("tagId", { length: 32 }).references(() => tags.id),
-  audienceId: varchar("audienceId", { length: 32 }).references(
-    () => audiences.id,
-  ),
+  audienceId: varchar("audienceId", {
+    length: 32,
+  }).references(() => audiences.id),
 })
 
 export const segments = mysqlTable("segments", {
@@ -386,31 +411,42 @@ export const segments = mysqlTable("segments", {
   audienceId: varchar("audienceId", { length: 32 })
     .references(() => audiences.id)
     .notNull(),
-  conditions: json("conditions").$type<ContactFilterCondition[]>().notNull(),
+  conditions: json("conditions")
+    .$type<ContactFilterCondition[]>()
+    .notNull(),
 })
 
-export const contactAutomationSteps = mysqlTable("contactAutomationSteps", {
-  id,
-  automationStepId: varchar("automationStepId", { length: 32 })
-    .references(() => automationSteps.id, { onDelete: "cascade" })
-    .notNull(),
-  contactId: varchar("contactId", { length: 32 })
-    .references(() => contacts.id, { onDelete: "cascade" })
-    .notNull(),
-  status: mysqlEnum("status", [
-    "PENDING",
-    "ACTIVE",
-    "COMPLETED",
-    "FAILED",
-    "HALTED",
-  ]).default("PENDING"),
-  haltedAt: timestamp("haltedAt"),
-  failedAt: timestamp("failedAt"),
-  startedAt: timestamp("startedAt"),
-  completedAt: timestamp("completedAt"),
-  createdAt: timestamp("createdAt"),
-  output: json("output").$type<string[]>(),
-})
+export const contactAutomationSteps = mysqlTable(
+  "contactAutomationSteps",
+  {
+    id,
+    automationStepId: varchar("automationStepId", {
+      length: 32,
+    })
+      .references(() => automationSteps.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    contactId: varchar("contactId", { length: 32 })
+      .references(() => contacts.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    status: mysqlEnum("status", [
+      "PENDING",
+      "ACTIVE",
+      "COMPLETED",
+      "FAILED",
+      "HALTED",
+    ]).default("PENDING"),
+    haltedAt: timestamp("haltedAt"),
+    failedAt: timestamp("failedAt"),
+    startedAt: timestamp("startedAt"),
+    completedAt: timestamp("completedAt"),
+    createdAt: timestamp("createdAt"),
+    output: json("output").$type<string[]>(),
+  },
+)
 
 // Relations remain the same as in the original file
 
@@ -422,7 +458,10 @@ export const userRelations = relations(users, ({ many }) => ({
 }))
 
 export const teamRelations = relations(teams, ({ one, many }) => ({
-  owner: one(users, { fields: [teams.userId], references: [users.id] }),
+  owner: one(users, {
+    fields: [teams.userId],
+    references: [users.id],
+  }),
   members: many(teamMemberships),
   webhooks: many(webhooks),
   accessTokens: many(accessTokens),
@@ -430,42 +469,59 @@ export const teamRelations = relations(teams, ({ one, many }) => ({
 }))
 
 export const accessTokenRelations = relations(accessTokens, ({ one }) => ({
-  user: one(users, { fields: [accessTokens.userId], references: [users.id] }),
-  team: one(teams, { fields: [accessTokens.teamId], references: [teams.id] }),
-}))
-
-export const broadcastRelations = relations(broadcasts, ({ one, many }) => ({
-  audience: one(audiences, {
-    fields: [broadcasts.audienceId],
-    references: [audiences.id],
+  user: one(users, {
+    fields: [accessTokens.userId],
+    references: [users.id],
   }),
-  emailContent: one(emailContents, {
-    fields: [broadcasts.emailContentId],
-    references: [emailContents.id],
-  }),
-  team: one(teams, { fields: [broadcasts.teamId], references: [teams.id] }),
-  segment: one(segments, {
-    fields: [broadcasts.segmentId],
-    references: [segments.id],
-  }),
-  abTestVariants: many(abTestVariants, { relationName: "abTestVariants" }),
-  winningAbTestVariant: one(abTestVariants, {
-    fields: [broadcasts.winningAbTestVariantId],
-    references: [abTestVariants.id],
+  team: one(teams, {
+    fields: [accessTokens.teamId],
+    references: [teams.id],
   }),
 }))
 
-export const abTestVariantRelations = relations(abTestVariants, ({ one }) => ({
-  broadcast: one(broadcasts, {
-    fields: [abTestVariants.broadcastId],
-    references: [broadcasts.id],
-    relationName: "abTestVariants",
+export const broadcastRelations = relations(
+  broadcasts,
+  ({ one, many }) => ({
+    audience: one(audiences, {
+      fields: [broadcasts.audienceId],
+      references: [audiences.id],
+    }),
+    emailContent: one(emailContents, {
+      fields: [broadcasts.emailContentId],
+      references: [emailContents.id],
+    }),
+    team: one(teams, {
+      fields: [broadcasts.teamId],
+      references: [teams.id],
+    }),
+    segment: one(segments, {
+      fields: [broadcasts.segmentId],
+      references: [segments.id],
+    }),
+    abTestVariants: many(abTestVariants, {
+      relationName: "abTestVariants",
+    }),
+    winningAbTestVariant: one(abTestVariants, {
+      fields: [broadcasts.winningAbTestVariantId],
+      references: [abTestVariants.id],
+    }),
   }),
-  emailContent: one(emailContents, {
-    fields: [abTestVariants.emailContentId],
-    references: [emailContents.id],
+)
+
+export const abTestVariantRelations = relations(
+  abTestVariants,
+  ({ one }) => ({
+    broadcast: one(broadcasts, {
+      fields: [abTestVariants.broadcastId],
+      references: [broadcasts.id],
+      relationName: "abTestVariants",
+    }),
+    emailContent: one(emailContents, {
+      fields: [abTestVariants.emailContentId],
+      references: [emailContents.id],
+    }),
   }),
-}))
+)
 
 export const emailRelations = relations(emails, ({ one }) => ({
   emailContent: one(emailContents, {
@@ -475,7 +531,10 @@ export const emailRelations = relations(emails, ({ one }) => ({
 }))
 
 export const WebhookRelations = relations(webhooks, ({ one }) => ({
-  team: one(teams, { fields: [webhooks.teamId], references: [teams.id] }),
+  team: one(teams, {
+    fields: [webhooks.teamId],
+    references: [teams.id],
+  }),
 }))
 
 export const TeamMembershipRelations = relations(
@@ -493,7 +552,10 @@ export const TeamMembershipRelations = relations(
 )
 
 export const AudienceRelations = relations(audiences, ({ one, many }) => ({
-  team: one(teams, { fields: [audiences.teamId], references: [teams.id] }),
+  team: one(teams, {
+    fields: [audiences.teamId],
+    references: [teams.id],
+  }),
   contacts: many(contacts),
 }))
 
@@ -509,21 +571,30 @@ export const TagRelations = relations(tags, ({ many }) => ({
   contacts: many(tagsOnContacts),
 }))
 
-export const TagsOnContactsRelations = relations(tagsOnContacts, ({ one }) => ({
-  tag: one(tags, { fields: [tagsOnContacts.tagId], references: [tags.id] }),
-  contact: one(contacts, {
-    fields: [tagsOnContacts.contactId],
-    references: [contacts.id],
+export const TagsOnContactsRelations = relations(
+  tagsOnContacts,
+  ({ one }) => ({
+    tag: one(tags, {
+      fields: [tagsOnContacts.tagId],
+      references: [tags.id],
+    }),
+    contact: one(contacts, {
+      fields: [tagsOnContacts.contactId],
+      references: [contacts.id],
+    }),
   }),
-}))
+)
 
-export const automationRelations = relations(automations, ({ one, many }) => ({
-  audience: one(audiences, {
-    fields: [automations.audienceId],
-    references: [audiences.id],
+export const automationRelations = relations(
+  automations,
+  ({ one, many }) => ({
+    audience: one(audiences, {
+      fields: [automations.audienceId],
+      references: [audiences.id],
+    }),
+    steps: many(automationSteps),
   }),
-  steps: many(automationSteps),
-}))
+)
 
 export const automationStepsRelations = relations(
   automationSteps,

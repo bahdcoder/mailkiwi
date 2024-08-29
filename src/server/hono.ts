@@ -12,10 +12,15 @@ import { env } from "@/shared/env/index.js"
 
 import { container } from "@/utils/typi.js"
 
-export type HonoInstance = BaseHono<{ Bindings: HttpBindings }> & {
+export type HonoInstance = BaseHono<{
+  Bindings: HttpBindings
+}> & {
   defineRoutes: (
     routes: HonoRouteDefinition[],
-    routeOptions?: { middleware?: MiddlewareHandler[]; prefix?: string },
+    routeOptions?: {
+      middleware?: MiddlewareHandler[]
+      prefix?: string
+    },
   ) => void
 }
 
@@ -33,7 +38,10 @@ export class Hono
     this.onError((error, ctx) => {
       if (error instanceof E_REQUEST_EXCEPTION) {
         return ctx.json(
-          { message: error?.message, ...(error.payload ?? {}) },
+          {
+            message: error?.message,
+            ...(error.payload ?? {}),
+          },
           error?.statusCode ?? 500,
         )
       }
@@ -50,7 +58,10 @@ export class Hono
 
   defineRoutes(
     routes: HonoRouteDefinition[],
-    routeOptions?: { middleware?: MiddlewareHandler[]; prefix?: string },
+    routeOptions?: {
+      middleware?: MiddlewareHandler[]
+      prefix?: string
+    },
   ) {
     const middleware: MiddlewareHandler[] = routeOptions?.middleware ?? [
       container.resolve(AccessTokenMiddleware).handle,

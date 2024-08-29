@@ -4,7 +4,9 @@ import { ContactRepository } from "@/audiences/repositories/contact_repository.j
 import { container } from "@/utils/typi.js"
 
 export class CreateContactAction {
-  constructor(private contactRepository = container.make(ContactRepository)) {}
+  constructor(
+    private contactRepository = container.make(ContactRepository),
+  ) {}
 
   handle = async (payload: CreateContactDto, audienceId: string) => {
     const audience = await this.contactRepository.createContact(

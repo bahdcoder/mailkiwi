@@ -17,7 +17,9 @@ export class AccessTokenMiddleware {
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
-    const tokenHeader = ctx.req.header("authorization")?.split("Bearer ")?.[1]
+    const tokenHeader = ctx.req
+      .header("authorization")
+      ?.split("Bearer ")?.[1]
 
     if (!tokenHeader) {
       throw E_UNAUTHORIZED()

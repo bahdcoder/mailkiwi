@@ -204,7 +204,9 @@ describe("Delete tags", () => {
 })
 
 describe("Attach tags to contacts", () => {
-  test("can attach 5 tags to a contact in an audience", async ({ expect }) => {
+  test("can attach 5 tags to a contact in an audience", async ({
+    expect,
+  }) => {
     // Arrange
     await refreshDatabase()
     const { user, audience } = await createUser()
@@ -438,7 +440,9 @@ describe("Detach tags from Contacts", () => {
     const detachResponse = await makeRequestAsUser(user, {
       method: "POST",
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/detach`,
-      body: { tagIds: [...attachedTagIds, ...unattachedTagIds] },
+      body: {
+        tagIds: [...attachedTagIds, ...unattachedTagIds],
+      },
     })
 
     expect(detachResponse.status).toBe(200)

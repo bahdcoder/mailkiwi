@@ -79,7 +79,9 @@ exports.hook_queue_outbound = function (next, connection, params) {
       .catch((error) => {
         plugin.logerror(
           connection,
-          "Message " + transaction_payload.uuid + " failed to add to queue.",
+          "Message " +
+            transaction_payload.uuid +
+            " failed to add to queue.",
           error,
         )
 

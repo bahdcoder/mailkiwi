@@ -7,13 +7,20 @@ import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.ts"
 import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_contact_job.ts"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
-import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.ts"
+import {
+  createBroadcastForUser,
+  createUser,
+} from "@/tests/mocks/auth/users.ts"
 import {
   refreshDatabase,
   refreshRedisDatabase,
 } from "@/tests/mocks/teams/teams.ts"
 
-import { broadcasts, contacts, segments } from "@/database/schema/schema.ts"
+import {
+  broadcasts,
+  contacts,
+  segments,
+} from "@/database/schema/schema.ts"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
@@ -43,15 +50,17 @@ describe("Send broadcast job", () => {
       count: contactsForAudience,
     })
 
-    await database
-      .insert(contacts)
-      .values(
-        faker.helpers
-          .multiple(faker.lorem.word, { count: contactsForAudience })
-          .map((_, idx) =>
-            createFakeContact(audience.id, { id: contactIds[idx] }),
-          ),
-      )
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(faker.lorem.word, {
+          count: contactsForAudience,
+        })
+        .map((_, idx) =>
+          createFakeContact(audience.id, {
+            id: contactIds[idx],
+          }),
+        ),
+    )
     await database
       .insert(contacts)
       .values(
@@ -68,13 +77,15 @@ describe("Send broadcast job", () => {
 
     const broadcastsQueueJobs = await queues.Queue.broadcasts().getJobs()
 
-    const sortedBroadcastsQueueJobs = broadcastsQueueJobs.sort((jobA, jobB) =>
-      jobA.data.contactId > jobB.data.contactId ? 1 : -1,
+    const sortedBroadcastsQueueJobs = broadcastsQueueJobs.sort(
+      (jobA, jobB) => (jobA.data.contactId > jobB.data.contactId ? 1 : -1),
     )
 
     expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
 
-    const contactIdsSorted = contactIds.sort((idA, idB) => (idA > idB ? 1 : -1))
+    const contactIdsSorted = contactIds.sort((idA, idB) =>
+      idA > idB ? 1 : -1,
+    )
 
     for (const [idx, job] of sortedBroadcastsQueueJobs.entries()) {
       expect(job.name).toBe(SendBroadcastToContact.id)
@@ -132,7 +143,9 @@ describe("Send broadcast job", () => {
 
     await database.insert(contacts).values(
       faker.helpers
-        .multiple(faker.lorem.word, { count: contactsForAudience })
+        .multiple(faker.lorem.word, {
+          count: contactsForAudience,
+        })
         .map((_, idx) =>
           createFakeContact(audience.id, {
             id: contactIds[idx],
@@ -166,7 +179,9 @@ describe("Send broadcast job", () => {
     expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
 
     for (const [, job] of broadcastsQueueJobs.entries()) {
-      const findContactId = contactIds.find((id) => id === job.data.contactId)
+      const findContactId = contactIds.find(
+        (id) => id === job.data.contactId,
+      )
 
       expect(job.name).toBe(SendBroadcastToContact.id)
       expect(job.data).toStrictEqual({

@@ -11,7 +11,10 @@ import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import type { Team, User } from "@/database/schema/database_schema_types.js"
+import type {
+  Team,
+  User,
+} from "@/database/schema/database_schema_types.js"
 import { users } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -42,7 +45,10 @@ export async function createBroadcastForUser(
       method: "PUT",
       path: `/broadcasts/${id}`,
       body: {
-        waitingTimeToPickWinner: faker.number.int({ min: 1, max: 10 }),
+        waitingTimeToPickWinner: faker.number.int({
+          min: 1,
+          max: 10,
+        }),
         emailContent: {
           fromName: faker.lorem.words(2),
           fromEmail: faker.internet.email(),
@@ -58,8 +64,12 @@ export async function createBroadcastForUser(
                 ...createFakeAbTestEmailContent(),
                 weight,
               })) ?? [
-                createFakeAbTestEmailContent({ weight: 25 }),
-                createFakeAbTestEmailContent({ weight: 15 }),
+                createFakeAbTestEmailContent({
+                  weight: 25,
+                }),
+                createFakeAbTestEmailContent({
+                  weight: 15,
+                }),
               ],
             }
           : {}),

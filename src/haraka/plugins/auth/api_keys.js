@@ -12,7 +12,9 @@ const known_keys = {
 
 const encryption_settings = {
   algorithm: "aes-256-cbc",
-  encryption_key: createHash("sha256").update(process.env.APP_KEY).digest(),
+  encryption_key: createHash("sha256")
+    .update(process.env.APP_KEY)
+    .digest(),
   iv_delimiter: ":",
 }
 
@@ -58,7 +60,10 @@ exports.check_plain_passwd = async function (
   const redis = this.db
 
   if (!redis) {
-    connection.logerror(plugin, "Redis connection needed for authentication.")
+    connection.logerror(
+      plugin,
+      "Redis connection needed for authentication.",
+    )
     return cb(false)
   }
 
@@ -75,20 +80,30 @@ exports.check_plain_passwd = async function (
       ...other_team_usage_keys
     } = team_usage
 
-    const decrypted_dkim_private_key = plugin.decrypt_api_key(
-      connection,
-      username,
-      dkim_private_key,
-    )
+    let decrypted_dkim_private_key = null
 
-    connection.loginfo(plugin, `Setting transaction notes for team details`)
+    if (dkim_private_key) {
+      decrypted_dkim_private_key = plugin.decrypt_api_key(
+        connection,
+        username,
+        dkim_private_key,
+      )
+    }
+
+    connection.loginfo(
+      plugin,
+      `Setting transaction notes for team details`,
+    )
     connection.notes.team_usage = {
       decrypted_dkim_private_key,
       ...other_team_usage_keys,
     }
 
     if (!encrypted_api_key) {
-      connection.loginfo(plugin, `No API key found for username: ${username}`)
+      connection.loginfo(
+        plugin,
+        `No API key found for username: ${username}`,
+      )
       return cb(false)
     }
 
@@ -127,7 +142,11 @@ exports.check_plain_passwd = async function (
   }
 }
 
-exports.decrypt_api_key = function (connection, username, encrypted_api_key) {
+exports.decrypt_api_key = function (
+  connection,
+  username,
+  encrypted_api_key,
+) {
   const [iv_hex, encrypted_text] = encrypted_api_key.split(
     encryption_settings.iv_delimiter,
   )
@@ -149,4 +168,15 @@ exports.decrypt_api_key = function (connection, username, encrypted_api_key) {
   decrypted += decipher.final("utf8")
 
   return decrypted
+}
+
+exports.hook_capabilities = (next, connection) => {
+  if (!connection.tls.enabled) return next()
+
+  const methods = ["LOGIN"]
+
+  connection.capabilities.push(`AUTH ${methods.join(" ")}`)
+  connection.notes.allowed_auth_methods = methods
+
+  next()
 }

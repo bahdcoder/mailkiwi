@@ -1,6 +1,9 @@
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
-import type { Team, User } from "@/database/schema/database_schema_types.js"
+import type {
+  Team,
+  User,
+} from "@/database/schema/database_schema_types.js"
 
 import type { HTTPMethods } from "@/server/types.js"
 
@@ -21,7 +24,9 @@ export async function makeRequest(
   return app.request(path, {
     method: options.method,
     body:
-      options.method !== "GET" ? JSON.stringify(options.body ?? {}) : undefined,
+      options.method !== "GET"
+        ? JSON.stringify(options.body ?? {})
+        : undefined,
     headers: new Headers({
       "Content-Type": "application/json",
       ...options?.headers,
@@ -52,8 +57,9 @@ export async function makeRequestAsUser(
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${accessToken.toJSON().token}`,
-      [makeConfig().software.teamHeader]: (user as User & { teams: Team[] })
-        ?.teams?.[0]?.id,
+      [makeConfig().software.teamHeader]: (
+        user as User & { teams: Team[] }
+      )?.teams?.[0]?.id,
       ...restOfOptions.headers,
     },
   })

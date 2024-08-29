@@ -39,7 +39,12 @@ export const CreateSegmentSchema = object({
           "contains",
           "notContains",
         ]),
-        value: union([string(), array(string()), number(), array(number())]),
+        value: union([
+          string(),
+          array(string()),
+          number(),
+          array(number()),
+        ]),
       }),
     ),
     minLength(1),

@@ -26,7 +26,10 @@ export class RunAutomationStepJob extends BaseJob<RunAutomationStepJobPayload> {
     return AVAILABLE_QUEUES.automations
   }
 
-  async handle({ database, payload }: JobContext<RunAutomationStepJobPayload>) {
+  async handle({
+    database,
+    payload,
+  }: JobContext<RunAutomationStepJobPayload>) {
     // fetch the automation step alongside the automation.
     const automationStep = await database.query.automationSteps.findFirst({
       where: eq(automationSteps.id, payload.automationStepId),

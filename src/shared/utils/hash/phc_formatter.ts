@@ -27,7 +27,11 @@ export class PhcFormatter<
   serialize(
     salt: Buffer,
     hash: Buffer,
-    options: { id: string; params?: Params; version?: number | string },
+    options: {
+      id: string
+      params?: Params
+      version?: number | string
+    },
   ): string {
     return phc.serialize({
       id: options.id,

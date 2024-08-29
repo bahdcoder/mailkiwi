@@ -12,7 +12,9 @@ import { container } from "@/utils/typi.js"
 
 export class AudienceRepository extends BaseRepository {
   constructor(
-    protected database: DrizzleClient = container.make(ContainerKey.database),
+    protected database: DrizzleClient = container.make(
+      ContainerKey.database,
+    ),
   ) {
     super()
   }

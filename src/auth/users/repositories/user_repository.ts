@@ -49,7 +49,10 @@ export class UserRepository extends BaseRepository {
     })
   }
 
-  async authenticateUserPassword(user: User | undefined, password: string) {
+  async authenticateUserPassword(
+    user: User | undefined,
+    password: string,
+  ) {
     if (!user) {
       return null
     }

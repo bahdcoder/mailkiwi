@@ -18,7 +18,10 @@ export class SegmentBuilder {
         case "firstName":
         case "lastName":
           queryConditions.push(
-            ...new FieldSegmentBuilder(condition.operation, condition.value)
+            ...new FieldSegmentBuilder(
+              condition.operation,
+              condition.value,
+            )
               .forField(contacts[condition.field])
               .buildCommonOperations(),
           )

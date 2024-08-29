@@ -7,6 +7,8 @@ services:
     networks:
       kibamail-network:
         ipv4_address: 172.20.0.2
+    volumes:
+      - ./dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
 
   mysql:
     image: mysql:latest
@@ -102,11 +104,60 @@ services:
     volumes:
       - ../src/haraka:/app/haraka
 
+  mailserver:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: mailserver
+    hostname: gmaaail.com
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.10
+    dns:
+      - 172.20.0.2
+    ports:
+      - "5580:25"
+      - "5581:465"
+      - "5582:587"
+      - "5583:143"
+      - "5584:993"
+    volumes:
+      - ./mailserver/mail-data/:/var/mail/
+      - ./mailserver/mail-state/:/var/mail-state/
+      - ./mailserver/mail-logs/:/var/log/mail/
+      - ./mailserver/config/:/tmp/docker-mailserver/
+      - /etc/localtime:/etc/localtime:ro
+    stop_grace_period: 1m
+    restart: always
+
+  rspamd:
+    image: rspamd/rspamd:latest
+    container_name: rspamd
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.11
+    ports:
+      - "11333:11333"
+    volumes:
+      - rspamd_data:/var/lib/rspamd
+    restart: unless-stopped
+
+  spamassassin:
+    image: axllent/spamassassin:latest
+    container_name: spamassassin
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.12
+    ports:
+      - "5587:783"
+    restart: unless-stopped
+    environment:
+      - DNS_CHECKS=true
+
 volumes:
   mysql_data:
   clickhouse_data:
   redis_data:
   mongodb_data:
+  rspamd_data:
 
 networks:
   kibamail-network:

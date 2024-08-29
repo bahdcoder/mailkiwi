@@ -23,7 +23,10 @@ export class WorkerIgnitor extends Ignitor {
   registerJobs() {
     this.registerJob(SendBroadcastJob.id, SendBroadcastJob)
     this.registerJob(SendBroadcastToContact.id, SendBroadcastToContact)
-    this.registerJob(SendTransactionalEmailJob.id, SendTransactionalEmailJob)
+    this.registerJob(
+      SendTransactionalEmailJob.id,
+      SendTransactionalEmailJob,
+    )
   }
 
   private registerJob(id: string, job: new () => BaseJob<object>) {

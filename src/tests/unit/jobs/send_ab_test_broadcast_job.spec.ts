@@ -7,7 +7,10 @@ import { PickAbTestWinnerJob } from "@/broadcasts/jobs/pick_ab_test_winner_job.t
 import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.ts"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
-import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.ts"
+import {
+  createBroadcastForUser,
+  createUser,
+} from "@/tests/mocks/auth/users.ts"
 import {
   refreshDatabase,
   refreshRedisDatabase,
@@ -39,7 +42,10 @@ describe("Send broadcast job", () => {
       createMailerWithIdentity: true,
     })
 
-    const contactsForAudience = faker.number.int({ min: 277, max: 1233 })
+    const contactsForAudience = faker.number.int({
+      min: 277,
+      max: 1233,
+    })
 
     const testAbVariantWeights = [
       faker.number.int({ min: 14, max: 50 }),
@@ -64,15 +70,17 @@ describe("Send broadcast job", () => {
       count: contactsForAudience,
     })
 
-    await database
-      .insert(contacts)
-      .values(
-        faker.helpers
-          .multiple(faker.lorem.word, { count: contactsForAudience })
-          .map((_, idx) =>
-            createFakeContact(audience.id, { id: contactIds[idx] }),
-          ),
-      )
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(faker.lorem.word, {
+          count: contactsForAudience,
+        })
+        .map((_, idx) =>
+          createFakeContact(audience.id, {
+            id: contactIds[idx],
+          }),
+        ),
+    )
 
     await new SendAbTestBroadcastJob().handle({
       database,
@@ -101,7 +109,8 @@ describe("Send broadcast job", () => {
 
     expect(totalSentToVariants).toBe(expectedTotalWeightsRecipients)
 
-    const finalSampleSize = contactsForAudience - expectedTotalWeightsRecipients
+    const finalSampleSize =
+      contactsForAudience - expectedTotalWeightsRecipients
 
     for (const variant of allVariants) {
       const allCallsForVariant = broadcastsQueueJobs.filter(

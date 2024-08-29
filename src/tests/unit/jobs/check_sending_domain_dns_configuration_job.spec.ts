@@ -80,7 +80,9 @@ describe("Sending domain dns configuration check", () => {
     )
 
     expect(refreshedSendingDomain?.dkimVerifiedAt).toBeDefined()
-    expect(refreshedSendingDomain?.returnPathDomainVerifiedAt).toBeDefined()
+    expect(
+      refreshedSendingDomain?.returnPathDomainVerifiedAt,
+    ).toBeDefined()
   })
 
   test("marks only return path as verified when only return path dns records are correctly configured", async ({
@@ -137,7 +139,9 @@ describe("Sending domain dns configuration check", () => {
     )
 
     expect(refreshedSendingDomain?.dkimVerifiedAt).toBeFalsy()
-    expect(refreshedSendingDomain?.returnPathDomainVerifiedAt).toBeDefined()
+    expect(
+      refreshedSendingDomain?.returnPathDomainVerifiedAt,
+    ).toBeDefined()
   })
 
   test("marks only dkim as verified when only dkim dns records are correctly configured", async ({

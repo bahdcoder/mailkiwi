@@ -7,7 +7,10 @@ import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automatio
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
 import { createUser } from "@/tests/mocks/auth/users.ts"
-import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.ts"
+import {
+  refreshDatabase,
+  seedAutomation,
+} from "@/tests/mocks/teams/teams.ts"
 
 import {
   contactAutomationSteps,
@@ -64,16 +67,17 @@ describe("Run automation step for contact job", () => {
 
     expect(fakeSendFn.mock.calls).toHaveLength(1)
 
-    const completed = await database.query.contactAutomationSteps.findFirst({
-      where: and(
-        eq(contactAutomationSteps.contactId, contactId),
-        eq(
-          contactAutomationSteps.automationStepId,
-          receiveWelcomeEmailautomationStepId ?? "",
+    const completed =
+      await database.query.contactAutomationSteps.findFirst({
+        where: and(
+          eq(contactAutomationSteps.contactId, contactId),
+          eq(
+            contactAutomationSteps.automationStepId,
+            receiveWelcomeEmailautomationStepId ?? "",
+          ),
+          eq(contactAutomationSteps.status, "COMPLETED"),
         ),
-        eq(contactAutomationSteps.status, "COMPLETED"),
-      ),
-    })
+      })
 
     expect(completed).toBeDefined()
 
@@ -95,11 +99,10 @@ describe("Run automation step for contact job", () => {
     const database = makeDatabase()
     const redis = makeRedis()
 
-    const { attachesTagsAutomationStepId, attachTagIds } = await seedAutomation(
-      {
+    const { attachesTagsAutomationStepId, attachTagIds } =
+      await seedAutomation({
         audienceId: audience.id,
-      },
-    )
+      })
 
     const contactId = cuid()
 
@@ -118,16 +121,17 @@ describe("Run automation step for contact job", () => {
       },
     })
 
-    const completed = await database.query.contactAutomationSteps.findFirst({
-      where: and(
-        eq(contactAutomationSteps.contactId, contactId),
-        eq(
-          contactAutomationSteps.automationStepId,
-          attachesTagsAutomationStepId ?? "",
+    const completed =
+      await database.query.contactAutomationSteps.findFirst({
+        where: and(
+          eq(contactAutomationSteps.contactId, contactId),
+          eq(
+            contactAutomationSteps.automationStepId,
+            attachesTagsAutomationStepId ?? "",
+          ),
+          eq(contactAutomationSteps.status, "COMPLETED"),
         ),
-        eq(contactAutomationSteps.status, "COMPLETED"),
-      ),
-    })
+      })
 
     const tagsForContact = await database.query.tagsOnContacts.findMany({
       where: eq(tagsOnContacts.contactId, contactId),
@@ -173,16 +177,17 @@ describe("Run automation step for contact job", () => {
       },
     })
 
-    const completed = await database.query.contactAutomationSteps.findFirst({
-      where: and(
-        eq(contactAutomationSteps.contactId, contactId),
-        eq(
-          contactAutomationSteps.automationStepId,
-          detachesTagsAutomationStepId ?? "",
+    const completed =
+      await database.query.contactAutomationSteps.findFirst({
+        where: and(
+          eq(contactAutomationSteps.contactId, contactId),
+          eq(
+            contactAutomationSteps.automationStepId,
+            detachesTagsAutomationStepId ?? "",
+          ),
+          eq(contactAutomationSteps.status, "COMPLETED"),
         ),
-        eq(contactAutomationSteps.status, "COMPLETED"),
-      ),
-    })
+      })
 
     const tagsForContact = await database.query.tagsOnContacts.findMany({
       where: eq(tagsOnContacts.contactId, contactId),

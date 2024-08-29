@@ -2,7 +2,10 @@ import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
-import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
+import {
+  createBroadcastForUser,
+  createUser,
+} from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
@@ -39,7 +42,9 @@ describe("Create broadcasts", () => {
     expect(createdBroadcast?.audienceId).toBe(audience.id)
   })
 
-  test("cannot create a broadcast without a valid name", async ({ expect }) => {
+  test("cannot create a broadcast without a valid name", async ({
+    expect,
+  }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
 
@@ -185,7 +190,9 @@ describe("Update broadcasts", () => {
     })
   })
 
-  test("can update individual fields of a broadcast", async ({ expect }) => {
+  test("can update individual fields of a broadcast", async ({
+    expect,
+  }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()
@@ -278,13 +285,20 @@ describe("Update broadcasts", () => {
 
     expect(response.status).toBe(422)
     expect(await response.json()).toMatchObject({
-      errors: [{ message: "sendAt cannot be in the past.", field: "sendAt" }],
+      errors: [
+        {
+          message: "sendAt cannot be in the past.",
+          field: "sendAt",
+        },
+      ],
     })
   })
 })
 
 describe("Delete broadcasts", () => {
-  test("cannot delete a broadcast from another team", async ({ expect }) => {
+  test("cannot delete a broadcast from another team", async ({
+    expect,
+  }) => {
     await refreshDatabase()
 
     const { user: user1, audience: audience1 } = await createUser()

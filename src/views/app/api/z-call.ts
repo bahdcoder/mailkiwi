@@ -35,10 +35,15 @@ export class ZCall {
       let config: RequestConfig = defaultConfig
 
       if (this.beforeRequestHook) {
-        config = { ...defaultConfig, ...this.beforeRequestHook(defaultConfig) }
+        config = {
+          ...defaultConfig,
+          ...this.beforeRequestHook(defaultConfig),
+        }
       }
 
-      const url = new URL(window.location.origin + this.basePath + config.path)
+      const url = new URL(
+        window.location.origin + this.basePath + config.path,
+      )
 
       if (config.queryParams) {
         for (const [key, value] of Object.entries(config.queryParams)) {
@@ -76,7 +81,12 @@ export class ZCall {
     path: string,
     queryParams?: Record<string, string>,
   ): Promise<[T, E | null]> {
-    return this.request<T, E>({ method: "GET", headers: {}, path, queryParams })
+    return this.request<T, E>({
+      method: "GET",
+      headers: {},
+      path,
+      queryParams,
+    })
   }
 
   async post<T, E = Error>(
@@ -84,7 +94,10 @@ export class ZCall {
     body: BodyInit | object,
     headers?: Record<string, string>,
   ): Promise<[T, E | null]> {
-    const [finalBody, finalHeaders] = this.prepareBodyAndHeaders(body, headers)
+    const [finalBody, finalHeaders] = this.prepareBodyAndHeaders(
+      body,
+      headers,
+    )
     return this.request<T, E>({
       method: "POST",
       headers: finalHeaders,
@@ -98,7 +111,10 @@ export class ZCall {
     body: BodyInit | object,
     headers?: Record<string, string>,
   ): Promise<[T, E | null]> {
-    const [finalBody, finalHeaders] = this.prepareBodyAndHeaders(body, headers)
+    const [finalBody, finalHeaders] = this.prepareBodyAndHeaders(
+      body,
+      headers,
+    )
     return this.request<T, E>({
       method: "PUT",
       headers: finalHeaders,
@@ -112,7 +128,10 @@ export class ZCall {
     body: BodyInit | object,
     headers?: Record<string, string>,
   ): Promise<[T, E | null]> {
-    const [finalBody, finalHeaders] = this.prepareBodyAndHeaders(body, headers)
+    const [finalBody, finalHeaders] = this.prepareBodyAndHeaders(
+      body,
+      headers,
+    )
     return this.request<T, E>({
       method: "PATCH",
       headers: finalHeaders,
@@ -139,7 +158,9 @@ export class ZCall {
     headers?: Record<string, string>,
   ): [BodyInit, Record<string, string>] {
     let finalBody: BodyInit
-    const finalHeaders: Record<string, string> = { ...headers }
+    const finalHeaders: Record<string, string> = {
+      ...headers,
+    }
 
     if (
       body &&

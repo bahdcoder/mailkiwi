@@ -68,10 +68,9 @@ const parsed = safeParse(envValidationSchema, {
 
 if (!parsed.success) {
   console.dir({
-    "🟡 ENVIRONMENT_VARIABLES_VALIDATION_FAILED": parsed.issues.map((issue) => [
-      issue?.path?.[0]?.key,
-      issue?.message,
-    ]),
+    "🟡 ENVIRONMENT_VARIABLES_VALIDATION_FAILED": parsed.issues.map(
+      (issue) => [issue?.path?.[0]?.key, issue?.message],
+    ),
   })
 }
 

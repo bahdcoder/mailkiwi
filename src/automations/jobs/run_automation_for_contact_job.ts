@@ -47,7 +47,8 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
       where: and(
         eq(contacts.id, payload.contactId),
         new SegmentBuilder(
-          (trigger.configuration as TRIGGER_CONFIGURATION)?.conditions ?? [],
+          (trigger.configuration as TRIGGER_CONFIGURATION)?.conditions ??
+            [],
         ).build(),
       ),
     })
@@ -58,9 +59,10 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
       )
     }
 
-    const nextAutomationStep = await database.query.automationSteps.findFirst({
-      where: eq(automationSteps.parentId, trigger.id),
-    })
+    const nextAutomationStep =
+      await database.query.automationSteps.findFirst({
+        where: eq(automationSteps.parentId, trigger.id),
+      })
 
     if (!nextAutomationStep) {
       return this.fail(

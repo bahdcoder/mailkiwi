@@ -18,7 +18,9 @@ export class RegisterUserAction {
 
   handle = async (payload: CreateUserDto) => {
     const { user, team } = await this.database.transaction(async (tx) => {
-      const user = await this.userRepository.transaction(tx).create(payload)
+      const user = await this.userRepository
+        .transaction(tx)
+        .create(payload)
 
       const team = await this.teamRepository
         .transaction(tx)

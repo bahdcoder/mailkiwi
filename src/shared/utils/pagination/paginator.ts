@@ -48,7 +48,9 @@ export class Paginator<RowType extends object = any> {
   ) {}
 
   queryConditions(conditions: (SQLWrapper | undefined)[]) {
-    this.conditions = conditions.filter((condition) => condition !== undefined)
+    this.conditions = conditions.filter(
+      (condition) => condition !== undefined,
+    )
 
     return this
   }
@@ -140,11 +142,16 @@ export class Paginator<RowType extends object = any> {
         this.cursorPagination.field.name
       ],
       finished,
-      data: await this.$transformRows(finished ? result : result.slice(0, -1)),
+      data: await this.$transformRows(
+        finished ? result : result.slice(0, -1),
+      ),
     }
   }
 
-  async paginate(): Promise<{ data: RowType[]; total: number }> {
+  async paginate(): Promise<{
+    data: RowType[]
+    total: number
+  }> {
     const countSelect = this.$modifyQuery(
       this.database.select({ count: count() }).from(this.table).$dynamic(),
     )
@@ -164,7 +171,9 @@ export class Paginator<RowType extends object = any> {
       selectSelect.where(and(...this.conditions)),
     )
       .limit(this.offsetPagination.size)
-      .offset((this.offsetPagination.page - 1) * this.offsetPagination.size)
+      .offset(
+        (this.offsetPagination.page - 1) * this.offsetPagination.size,
+      )
 
     const [countResult, selectResult] = await Promise.all([
       countQuery.execute(),

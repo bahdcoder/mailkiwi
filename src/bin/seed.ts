@@ -15,7 +15,10 @@ import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 
 import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.ts"
 
-import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
+import {
+  refreshDatabase,
+  seedAutomation,
+} from "@/tests/mocks/teams/teams.js"
 
 import {
   createDatabaseClient,
@@ -64,14 +67,19 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
   const broadcastIds = []
 
   for (let audienceIndex = 0; audienceIndex < 5; audienceIndex++) {
-    const audiencePayload = { name: faker.commerce.productName() }
+    const audiencePayload = {
+      name: faker.commerce.productName(),
+    }
 
     console.log(
       "Creating audience: ",
       `${audienceIndex}: ${audiencePayload.name}`,
     )
 
-    const audience = await createAudienceAction.handle(audiencePayload, team.id)
+    const audience = await createAudienceAction.handle(
+      audiencePayload,
+      team.id,
+    )
 
     await seedAutomation({
       audienceId: audience.id,
@@ -79,9 +87,15 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
       description: faker.commerce.productDescription(),
     })
 
-    const contactsCount = faker.helpers.rangeToNumber({ min: 50, max: 1000 })
+    const contactsCount = faker.helpers.rangeToNumber({
+      min: 50,
+      max: 1000,
+    })
 
-    audienceIds.push({ audienceId: audience.id, contactsCount })
+    audienceIds.push({
+      audienceId: audience.id,
+      contactsCount,
+    })
 
     const mockContacts = faker.helpers
       .multiple(faker.person.firstName, {
@@ -123,33 +137,38 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
       where: eq(broadcasts.id, broadcastId),
     })
 
-    await container.make(UpdateBroadcastAction).handle(broadcast as Broadcast, {
-      emailContent: {
-        fromEmail: faker.internet.email(),
-        fromName: faker.person.fullName(),
-        replyToEmail: faker.internet.email(),
-        replyToName: faker.person.fullName(),
-        subject: faker.lorem.words(5),
-        previewText: faker.lorem.words(5),
-        contentHtml: await Fs.readFile(
-          Path.resolve(
-            Path.dirname(fileURLToPath(import.meta.url)),
-            "..",
-            "tests",
-            "mocks",
-            "emails",
-            "hotel-booking.html",
+    await container
+      .make(UpdateBroadcastAction)
+      .handle(broadcast as Broadcast, {
+        emailContent: {
+          fromEmail: faker.internet.email(),
+          fromName: faker.person.fullName(),
+          replyToEmail: faker.internet.email(),
+          replyToName: faker.person.fullName(),
+          subject: faker.lorem.words(5),
+          previewText: faker.lorem.words(5),
+          contentHtml: await Fs.readFile(
+            Path.resolve(
+              Path.dirname(fileURLToPath(import.meta.url)),
+              "..",
+              "tests",
+              "mocks",
+              "emails",
+              "hotel-booking.html",
+            ),
+            "utf-8",
           ),
-          "utf-8",
-        ),
-        contentText: faker.lorem.paragraphs(12),
-      },
-      segmentId: undefined,
-      audienceId: undefined,
-      sendAt: addSecondsToDate(new Date(), 300).toDateString(),
-    })
+          contentText: faker.lorem.paragraphs(12),
+        },
+        segmentId: undefined,
+        audienceId: undefined,
+        sendAt: addSecondsToDate(new Date(), 300).toDateString(),
+      })
 
-    broadcastIds.push({ broadcastId, audienceId: audience.id })
+    broadcastIds.push({
+      broadcastId,
+      audienceId: audience.id,
+    })
   }
 
   console.log("\n Seeded data ✅ \n")

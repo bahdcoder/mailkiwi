@@ -29,20 +29,24 @@ export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepFor
     payload,
     redis,
   }: JobContext<RunAutomationStepForContactJobPayload>) {
-    const [automationStep, contact, contactAutomationStep] = await Promise.all([
-      database.query.automationSteps.findFirst({
-        where: eq(automationSteps.id, payload.automationStepId),
-      }),
-      database.query.contacts.findFirst({
-        where: eq(contacts.id, payload.contactId),
-      }),
-      database.query.contactAutomationSteps.findFirst({
-        where: and(
-          eq(contactAutomationSteps.contactId, payload.contactId),
-          eq(contactAutomationSteps.automationStepId, payload.automationStepId),
-        ),
-      }),
-    ])
+    const [automationStep, contact, contactAutomationStep] =
+      await Promise.all([
+        database.query.automationSteps.findFirst({
+          where: eq(automationSteps.id, payload.automationStepId),
+        }),
+        database.query.contacts.findFirst({
+          where: eq(contacts.id, payload.contactId),
+        }),
+        database.query.contactAutomationSteps.findFirst({
+          where: and(
+            eq(contactAutomationSteps.contactId, payload.contactId),
+            eq(
+              contactAutomationSteps.automationStepId,
+              payload.automationStepId,
+            ),
+          ),
+        }),
+      ])
 
     if (contactAutomationStep) {
       return this.done(

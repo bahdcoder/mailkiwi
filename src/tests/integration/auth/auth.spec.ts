@@ -126,7 +126,9 @@ describe("User login", () => {
     expect(profile.email).toBe(user.email)
   })
 
-  test("a user cannot login with wrong credentials.", async ({ expect }) => {
+  test("a user cannot login with wrong credentials.", async ({
+    expect,
+  }) => {
     const { user } = await createUser()
     const app = makeApp()
 

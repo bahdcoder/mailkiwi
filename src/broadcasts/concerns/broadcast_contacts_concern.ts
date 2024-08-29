@@ -18,7 +18,8 @@ export class ContactsConcern {
     if (this.broadcast.segment) {
       segmentQueryConditions.push(
         new SegmentBuilder(
-          this.broadcast.segment.conditions as CreateSegmentDto["conditions"],
+          this.broadcast.segment
+            .conditions as CreateSegmentDto["conditions"],
         ).build(),
       )
     }

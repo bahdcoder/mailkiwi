@@ -3,7 +3,10 @@ import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
+import {
+  refreshDatabase,
+  seedAutomation,
+} from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import {
@@ -41,7 +44,9 @@ describe("Contact automations", () => {
       branches?: { [key: number]: FlatTreeNode[] }
     }
 
-    function createFlatAutomationTree(steps: AutomationStep[]): FlatTreeNode[] {
+    function createFlatAutomationTree(
+      steps: AutomationStep[],
+    ): FlatTreeNode[] {
       const nodeMap: { [key: string]: FlatTreeNode } = {}
 
       // Create nodes for all steps
@@ -63,13 +68,15 @@ describe("Contact automations", () => {
               if (!node.branches?.[branchIndex]) {
                 node.branches[branchIndex] = []
               }
-              node.branches[branchIndex] = node.branches?.[branchIndex].concat(
-                processNode(step.id),
-              )
+              node.branches[branchIndex] = node.branches?.[
+                branchIndex
+              ].concat(processNode(step.id))
             }
           }
         } else {
-          const children = steps.filter((step) => step.parentId === node.id)
+          const children = steps.filter(
+            (step) => step.parentId === node.id,
+          )
 
           for (const child of children) {
             result.push(...processNode(child.id))
@@ -101,8 +108,9 @@ describe("Contact automations", () => {
     ) as FlatTreeNode[]
 
     expect(
-      tree[7]?.branches?.["1"]?.[2]?.branches?.["1"]?.[2]?.branches?.["1"]?.[0]
-        ?.subtype,
+      tree[7]?.branches?.["1"]?.[2]?.branches?.["1"]?.[2]?.branches?.[
+        "1"
+      ]?.[0]?.subtype,
     ).toEqual("ACTION_UNSUBSCRIBE_FROM_AUDIENCE")
   })
 
@@ -135,7 +143,10 @@ describe("Contact automations", () => {
   }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
     const database = makeDatabase()
 
     const emailId = cuid()
@@ -169,10 +180,15 @@ describe("Contact automations", () => {
     expect(createdStep?.emailId).toBe(emailId)
   })
 
-  test("can create ACTION_ADD_TAG automation step type", async ({ expect }) => {
+  test("can create ACTION_ADD_TAG automation step type", async ({
+    expect,
+  }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
     const database = makeDatabase()
 
     const tagId = cuid()
@@ -208,7 +224,10 @@ describe("Contact automations", () => {
   }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, true)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      true,
+    )
     const database = makeDatabase()
 
     const audienceId = cuid()
@@ -285,7 +304,10 @@ describe("Automation Steps", () => {
   }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
 
     const stepData = {
       type: "TRIGGER",
@@ -309,7 +331,10 @@ describe("Automation Steps", () => {
     await refreshDatabase()
 
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
     const database = makeDatabase()
 
     const response = await makeRequestAsUser(user, {
@@ -329,7 +354,10 @@ describe("Automation Steps", () => {
       type: "ACTION",
       subtype: "ACTION_UPDATE_CONTACT_ATTRIBUTES",
       parentId,
-      configuration: { add: { age: 25 }, remove: { hobby: ["reading"] } },
+      configuration: {
+        add: { age: 25 },
+        remove: { hobby: ["reading"] },
+      },
     }
 
     const response1 = await makeRequestAsUser(user, {
@@ -361,7 +389,10 @@ describe("Automation Step Validation", () => {
   test("validates TRIGGER subtype", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -388,7 +419,10 @@ describe("Automation Step Validation", () => {
 
   test("validates ACTION subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -414,7 +448,10 @@ describe("Automation Step Validation", () => {
 
   test("validates RULE subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -440,7 +477,10 @@ describe("Automation Step Validation", () => {
 
   test("validates END subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -467,7 +507,10 @@ describe("Automation Step Validation", () => {
   test("validates ACTION_SEND_EMAIL configuration", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -494,7 +537,10 @@ describe("Automation Step Validation", () => {
   test("validates ACTION_ADD_TAG configuration", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -523,7 +569,10 @@ describe("Automation Step Validation", () => {
   }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -552,7 +601,10 @@ describe("Automation Step Validation", () => {
   }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -581,7 +633,10 @@ describe("Automation Step Validation", () => {
   test("validates RULE_IF_ELSE configuration", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const automation = await seedAutomation(
+      { audienceId: audience.id },
+      false,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -606,7 +661,8 @@ describe("Automation Step Validation", () => {
       message: "Validation failed.",
       errors: [
         {
-          message: "The configuration object for RULE_IF_ELSE is malformed.",
+          message:
+            "The configuration object for RULE_IF_ELSE is malformed.",
         },
       ],
     })

@@ -17,7 +17,10 @@ import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
 export class AutomationStepRunner {
   private contact: Contact
   protected runners: Partial<
-    Record<AutomationStep["subtype"], AutomationStepRunnerContractConstructor>
+    Record<
+      AutomationStep["subtype"],
+      AutomationStepRunnerContractConstructor
+    >
   > = {
     ACTION_ADD_TAG: AddTagAutomationStepRunner,
     ACTION_SEND_EMAIL: SendEmailAutomationStepRunner,
@@ -34,7 +37,9 @@ export class AutomationStepRunner {
 
   async run({ database, redis }: AutomationStepRunnerContext) {
     if (!this.contact) {
-      throw E_OPERATION_FAILED("Contact not set for automation step runner.")
+      throw E_OPERATION_FAILED(
+        "Contact not set for automation step runner.",
+      )
     }
 
     const Runner = this.runners[this.automationStep.subtype]
@@ -45,7 +50,10 @@ export class AutomationStepRunner {
       )
     }
 
-    await new Runner(this.automationStep, this.contact).run({ database, redis })
+    await new Runner(this.automationStep, this.contact).run({
+      database,
+      redis,
+    })
 
     await database.insert(contactAutomationSteps).values({
       contactId: this.contact.id,

@@ -11,9 +11,6 @@ exports.load_dkim_ini = function () {
 
   this.cfg.sign.enabled = true
   this.cfg.verify.enabled = true
-  // this.cfg.redis = this.config.get('dkim_redis.ini', {
-  //   booleans: ['+enabled'],
-  // }).redis
 }
 
 exports.get_sign_properties = function (connection, done) {
@@ -40,12 +37,12 @@ exports.get_sign_properties = function (connection, done) {
     )
   }
 
-  const { decrypted_dkim_private_key, dkimSubDomain } =
+  const { decrypted_dkim_private_key, dkimSubDomain: dkim_sub_domain } =
     connection.notes.team_usage
 
   done(null, {
     domain,
-    selector: dkimSubDomain,
+    selector: dkim_sub_domain,
     private_key: decrypted_dkim_private_key,
   })
 }

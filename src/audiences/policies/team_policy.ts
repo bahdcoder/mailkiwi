@@ -5,7 +5,8 @@ export class TeamPolicy {
     return (
       team?.userId === userId ||
       team?.members.find(
-        (member) => member.userId === userId && member.role === "ADMINISTRATOR",
+        (member) =>
+          member.userId === userId && member.role === "ADMINISTRATOR",
       )
     )
   }

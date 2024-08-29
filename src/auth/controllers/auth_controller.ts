@@ -65,10 +65,11 @@ export class AuthController extends BaseController {
 
     const user = await this.userRepository.findByEmail(data.email)
 
-    const passwordIsValid = await this.userRepository.authenticateUserPassword(
-      user,
-      data.password,
-    )
+    const passwordIsValid =
+      await this.userRepository.authenticateUserPassword(
+        user,
+        data.password,
+      )
 
     if (!user || !passwordIsValid) {
       throw E_VALIDATION_FAILED([
@@ -79,7 +80,8 @@ export class AuthController extends BaseController {
       ])
     }
 
-    const accessToken = await this.accessTokenRepository.createAccessToken(user)
+    const accessToken =
+      await this.accessTokenRepository.createAccessToken(user)
 
     return ctx.json({
       ...user,

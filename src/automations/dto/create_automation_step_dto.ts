@@ -58,17 +58,19 @@ export const CreateAutomationStepDto = pipeAsync(
 
         const database = makeDatabase()
 
-        const [automationStep, automationStepWithParent] = await Promise.all([
-          database.query.automationSteps.findFirst({
-            where: eq(automationSteps.id, input),
-          }),
-          database.query.automationSteps.findFirst({
-            where: eq(automationSteps.parentId, input),
-          }),
-        ])
+        const [automationStep, automationStepWithParent] =
+          await Promise.all([
+            database.query.automationSteps.findFirst({
+              where: eq(automationSteps.id, input),
+            }),
+            database.query.automationSteps.findFirst({
+              where: eq(automationSteps.parentId, input),
+            }),
+          ])
 
         return (
-          automationStep !== undefined && automationStepWithParent === undefined
+          automationStep !== undefined &&
+          automationStepWithParent === undefined
         )
       }, "The parentId must be a valid automation step ID and must not be linked to another automation step."),
     ),
@@ -118,8 +120,10 @@ export const CreateAutomationStepDto = pipeAsync(
   }),
   checkAsync((input) => {
     if (input.type === "TRIGGER") {
-      return safeParse(picklist(automationStepSubtypesTrigger), input.subtype)
-        .success
+      return safeParse(
+        picklist(automationStepSubtypesTrigger),
+        input.subtype,
+      ).success
     }
 
     return true
@@ -134,8 +138,10 @@ export const CreateAutomationStepDto = pipeAsync(
   }, "The subtype must be valid for the type rule."),
   checkAsync((input) => {
     if (input.type === "ACTION") {
-      return safeParse(picklist(automationStepSubtypesAction), input.subtype)
-        .success
+      return safeParse(
+        picklist(automationStepSubtypesAction),
+        input.subtype,
+      ).success
     }
 
     return true
@@ -223,11 +229,14 @@ export const CreateAutomationStepDto = pipeAsync(
       input.subtype === "ACTION_SUBSCRIBE_TO_AUDIENCE" ||
       input.subtype === "ACTION_UNSUBSCRIBE_FROM_AUDIENCE"
     ) {
-      return safeParse(pipe(string(), nonEmpty()), input.audienceId).success
+      return safeParse(pipe(string(), nonEmpty()), input.audienceId)
+        .success
     }
 
     return true
   }, "The audienceId must be present for subtype ACTION_SUBSCRIBE_TO_AUDIENCE and ACTION_UNSUBSCRIBE_FROM_AUDIENCE."),
 )
 
-export type CreateAutomationStepDto = InferInput<typeof CreateAutomationStepDto>
+export type CreateAutomationStepDto = InferInput<
+  typeof CreateAutomationStepDto
+>

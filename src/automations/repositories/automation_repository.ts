@@ -14,7 +14,10 @@ export class AutomationRepository extends BaseRepository {
     super()
   }
 
-  async findById(automationId: string, args?: Partial<FindAutomationByIdArgs>) {
+  async findById(
+    automationId: string,
+    args?: Partial<FindAutomationByIdArgs>,
+  ) {
     return this.database.query.automations.findFirst({
       where: eq(automations.id, automationId),
       ...args,

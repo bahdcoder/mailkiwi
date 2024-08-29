@@ -51,7 +51,9 @@ export type InsertSegment = typeof segments.$inferInsert
 
 export type InsertSendingDomain = typeof sendingDomains.$inferInsert
 export type InsertAbTestVariant = typeof abTestVariants.$inferInsert
-export type UpdateAbTestVariant = SQLiteUpdateSetSource<typeof abTestVariants>
+export type UpdateAbTestVariant = SQLiteUpdateSetSource<
+  typeof abTestVariants
+>
 
 export type AutomationStep = typeof automationSteps.$inferSelect
 
@@ -74,8 +76,9 @@ export type BroadcastWithSegment = Broadcast & {
   segment: Segment
 }
 
-export type BroadcastWithSegmentAndAbTestVariants = BroadcastWithSegment & {
-  abTestVariants: AbTestVariant[]
-  audience: Audience
-  team: Team
-}
+export type BroadcastWithSegmentAndAbTestVariants =
+  BroadcastWithSegment & {
+    abTestVariants: AbTestVariant[]
+    audience: Audience
+    team: Team
+  }

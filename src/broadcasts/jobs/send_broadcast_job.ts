@@ -23,7 +23,10 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
     return AVAILABLE_QUEUES.broadcasts
   }
 
-  async handle({ database, payload }: JobContext<SendBroadcastJobPayload>) {
+  async handle({
+    database,
+    payload,
+  }: JobContext<SendBroadcastJobPayload>) {
     const broadcast = await database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, payload.broadcastId),
       with: {
@@ -34,7 +37,9 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
     })
 
     if (!broadcast || !broadcast.audience || !broadcast.team) {
-      return this.fail("Broadcast or audience or team not properly provided.")
+      return this.fail(
+        "Broadcast or audience or team not properly provided.",
+      )
     }
 
     const segmentQueryConditions: SQLWrapper[] = []
@@ -69,7 +74,10 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
       await Queue.broadcasts().addBulk(
         contactIds.map((contact, idx) => ({
           name: SendBroadcastToContact.id,
-          data: { contactId: contact.id, broadcastId: broadcast.id },
+          data: {
+            contactId: contact.id,
+            broadcastId: broadcast.id,
+          },
           opts: {
             attempts: 3,
           },

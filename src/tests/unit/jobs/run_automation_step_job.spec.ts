@@ -39,25 +39,29 @@ describe("Run automation step job", () => {
     const totalContacts = 373
     const totalContactsNotAtStep = 32
 
-    const contactIds = faker.helpers.multiple(cuid, { count: totalContacts })
+    const contactIds = faker.helpers.multiple(cuid, {
+      count: totalContacts,
+    })
 
-    await database
-      .insert(contacts)
-      .values(
-        faker.helpers
-          .multiple(faker.lorem.word, { count: totalContacts })
-          .map((_, idx) =>
-            createFakeContact(audience.id, { id: contactIds[idx] }),
-          ),
-      )
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(faker.lorem.word, {
+          count: totalContacts,
+        })
+        .map((_, idx) =>
+          createFakeContact(audience.id, {
+            id: contactIds[idx],
+          }),
+        ),
+    )
 
-    await database
-      .insert(contacts)
-      .values(
-        faker.helpers
-          .multiple(faker.lorem.word, { count: totalContactsNotAtStep })
-          .map(() => createFakeContact(audience.id)),
-      )
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(faker.lorem.word, {
+          count: totalContactsNotAtStep,
+        })
+        .map(() => createFakeContact(audience.id)),
+    )
 
     const automationStepSendEmail =
       await database.query.automationSteps.findFirst({
@@ -79,7 +83,9 @@ describe("Run automation step job", () => {
     await new RunAutomationStepJob().handle({
       database,
       redis: makeRedis(),
-      payload: { automationStepId: automationStepSendEmail?.id ?? "" },
+      payload: {
+        automationStepId: automationStepSendEmail?.id ?? "",
+      },
     })
 
     const automationsQueueJobs = await queues.Queue.automations().getJobs()

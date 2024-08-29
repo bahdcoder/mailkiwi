@@ -25,7 +25,9 @@ export class TagRepository extends BaseRepository {
   }
 
   async findFirst(args: { where: SQL | undefined }) {
-    return this.database.query.tags.findFirst({ where: args.where })
+    return this.database.query.tags.findFirst({
+      where: args.where,
+    })
   }
 
   async create(payload: CreateTagDto, audienceId: string) {

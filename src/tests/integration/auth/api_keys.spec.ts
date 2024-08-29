@@ -13,7 +13,11 @@ import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { accessTokens, teams, users } from "@/database/schema/schema.js"
 
-import { makeApp, makeDatabase, makeEnv } from "@/shared/container/index.js"
+import {
+  makeApp,
+  makeDatabase,
+  makeEnv,
+} from "@/shared/container/index.js"
 import { Encryption } from "@/shared/utils/encryption/encryption.ts"
 
 import { container } from "@/utils/typi.ts"
@@ -32,13 +36,17 @@ describe("API Token Generation", () => {
       path: "/auth/api-keys",
     })
 
-    const accessKeysFromDatabase = await database.query.accessTokens.findFirst({
-      where: eq(accessTokens.teamId, team.id),
-    })
+    const accessKeysFromDatabase =
+      await database.query.accessTokens.findFirst({
+        where: eq(accessTokens.teamId, team.id),
+      })
 
     expect(response.status).toBe(200)
 
-    const teamUsage = await container.make(TeamRepository).usage(team.id).get()
+    const teamUsage = await container
+      .make(TeamRepository)
+      .usage(team.id)
+      .get()
 
     expect(teamUsage.apiKey).toBeDefined()
 

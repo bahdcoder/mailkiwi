@@ -121,7 +121,11 @@ class EmailContentSeed extends BaseSeed {
       contentHtml: this.generateHtmlContent(),
       contentText: faker.lorem.paragraphs(3),
     }))
-    await this.batchInsert(emailContents, emailContentData, "email contents")
+    await this.batchInsert(
+      emailContents,
+      emailContentData,
+      "email contents",
+    )
     return emailContentData
   }
 
@@ -197,7 +201,10 @@ class ABTestVariantSeed extends BaseSeed {
     return variantData
   }
 
-  private calculateVariantWeight(index: number, totalVariants: number): number {
+  private calculateVariantWeight(
+    index: number,
+    totalVariants: number,
+  ): number {
     if (totalVariants === 1) return 100
     if (totalVariants === 2) return index === 0 ? 50 : 50
     if (totalVariants === 3) return [40, 30, 30][index]
@@ -239,9 +246,12 @@ class SendSeed extends BaseSeed {
         openedAt: Math.random() < 0.3 ? faker.date.recent() : null,
         firstClickAt: Math.random() < 0.1 ? faker.date.recent() : null,
         // openCount: Math.random() < 0.3 ? Math.floor(Math.random() * 3) + 1 : 0,
-        clickCount: Math.random() < 0.1 ? Math.floor(Math.random() * 5) + 1 : 0,
+        clickCount:
+          Math.random() < 0.1 ? Math.floor(Math.random() * 5) + 1 : 0,
         clickedLinks:
-          Math.random() < 0.1 ? this.generateClickedLinks(linkCount) : null,
+          Math.random() < 0.1
+            ? this.generateClickedLinks(linkCount)
+            : null,
       }
     })
   }
@@ -282,9 +292,15 @@ class DatabaseSeeder {
       console.log(`Seeded audience for team ${team.name}\n`)
 
       const contacts = await this.contactSeed.seed(audience.id, 1000000)
-      console.log(`Seeded 1,000,000 contacts for audience ${audience.name}\n`)
+      console.log(
+        `Seeded 1,000,000 contacts for audience ${audience.name}\n`,
+      )
 
-      const broadcasts = await this.broadcastSeed.seed(audience.id, team.id, 1)
+      const broadcasts = await this.broadcastSeed.seed(
+        audience.id,
+        team.id,
+        1,
+      )
       console.log(`Seeded 50 broadcasts for audience ${audience.name}\n`)
 
       for (const broadcast of broadcasts) {
@@ -297,7 +313,9 @@ class DatabaseSeeder {
         )
 
         await this.sendSeed.seed(broadcast.id, variants, contacts, 4)
-        console.log(`Seeded 1,000,000 sends for broadcast ${broadcast.name}\n`)
+        console.log(
+          `Seeded 1,000,000 sends for broadcast ${broadcast.name}\n`,
+        )
       }
     }
 

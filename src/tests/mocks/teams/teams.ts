@@ -96,7 +96,9 @@ export const seedAutomation = async (
       automationId,
       type: "TRIGGER",
       subtype: "TRIGGER_CONTACT_SUBSCRIBED",
-      configuration: { conditions: automation.triggerConditions ?? [] },
+      configuration: {
+        conditions: automation.triggerConditions ?? [],
+      },
     })
     .execute()
 
@@ -273,7 +275,9 @@ export const seedAutomation = async (
       parentId: hasTagWait4DaysautomationStepId,
       type: "ACTION",
       subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
-      configuration: { audienceId: "akc34b1k27xrgy0c6qygcefe" },
+      configuration: {
+        audienceId: "akc34b1k27xrgy0c6qygcefe",
+      },
     })
     .execute()
 
@@ -455,7 +459,9 @@ export const seedAutomation = async (
       parentId: thirdIfElseBranchautomationStepId,
       type: "ACTION",
       subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
-      configuration: { audienceId: "akc34b1k27xrgy0c6qygcefe" },
+      configuration: {
+        audienceId: "akc34b1k27xrgy0c6qygcefe",
+      },
       branchIndex: 0,
     })
     .execute()
@@ -470,7 +476,9 @@ export const seedAutomation = async (
       parentId: thirdIfElseBranchautomationStepId,
       type: "ACTION",
       subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
-      configuration: { audienceId: "akc34b1k27xrgy0c6qygcefe" },
+      configuration: {
+        audienceId: "akc34b1k27xrgy0c6qygcefe",
+      },
       branchIndex: 1,
     })
     .execute()

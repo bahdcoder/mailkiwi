@@ -1,6 +1,7 @@
 module.exports = {
   semi: false,
   importOrderSeparation: true,
+  printWidth: 75,
   importOrderSortSpecifiers: true,
   importOrder: [
     "^@/broadcasts/(.*)$",

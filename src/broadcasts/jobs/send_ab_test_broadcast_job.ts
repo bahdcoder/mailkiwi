@@ -67,14 +67,19 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     },
   ) {
     const totalContactsForVariant = variant.size
-    const totalBatches = Math.ceil(totalContactsForVariant / this.batchSize)
+    const totalBatches = Math.ceil(
+      totalContactsForVariant / this.batchSize,
+    )
 
     for (let batch = 0; batch < totalBatches; batch++) {
       const offSet = variant.offset + batch * this.batchSize
       const amountLeft = variant.endOffset - offSet
       const limit = Math.min(this.batchSize, amountLeft)
 
-      const contactIds = await this.contactsConcern.getContactIds(offSet, limit)
+      const contactIds = await this.contactsConcern.getContactIds(
+        offSet,
+        limit,
+      )
 
       await Queue.broadcasts().addBulk(
         contactIds.map((contact) => ({
@@ -101,8 +106,14 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     this.contactsConcern.broadcast = this.broadcast
     this.contactsConcern.database = database
 
-    if (!this.broadcast || !this.broadcast.audience || !this.broadcast.team) {
-      return this.fail("Broadcast or audience or team not properly provided.")
+    if (
+      !this.broadcast ||
+      !this.broadcast.audience ||
+      !this.broadcast.team
+    ) {
+      return this.fail(
+        "Broadcast or audience or team not properly provided.",
+      )
     }
 
     const totalContacts = await this.getTotalContacts()
@@ -125,7 +136,10 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
       variantsWithOffsetsAndLimits[variantsWithOffsetsAndLimits.length - 1]
         ?.endOffset
 
-    await this.dispatchFinalSampleSending(finalSampleSize, finalSampleOffset)
+    await this.dispatchFinalSampleSending(
+      finalSampleSize,
+      finalSampleOffset,
+    )
 
     await this.schedulePickWinnerJob()
 
@@ -137,7 +151,9 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
       where: eq(broadcasts.id, broadcastId),
       with: {
         team: true,
-        abTestVariants: { orderBy: asc(abTestVariants.weight) },
+        abTestVariants: {
+          orderBy: asc(abTestVariants.weight),
+        },
         audience: true,
         segment: true,
       },
@@ -183,7 +199,10 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
             broadcastId: this.broadcast.id,
             isAbTestFinalSample: true,
           },
-          opts: { attempts: 3, delay: sendToRestOfListDelay },
+          opts: {
+            attempts: 3,
+            delay: sendToRestOfListDelay,
+          },
         })),
       )
     }

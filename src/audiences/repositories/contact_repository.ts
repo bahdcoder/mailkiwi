@@ -22,7 +22,9 @@ export class ContactRepository extends BaseRepository {
 
   async createContact(payload: CreateContactDto, audienceId: string) {
     const id = this.cuid()
-    await this.database.insert(contacts).values({ ...payload, id, audienceId })
+    await this.database
+      .insert(contacts)
+      .values({ ...payload, id, audienceId })
 
     return { id }
   }
@@ -42,9 +44,11 @@ export class ContactRepository extends BaseRepository {
   }
 
   async attachTags(contactId: string, tagIds: string[]) {
-    const existingTags = await this.database.query.tagsOnContacts.findMany({
-      where: eq(tagsOnContacts.contactId, contactId),
-    })
+    const existingTags = await this.database.query.tagsOnContacts.findMany(
+      {
+        where: eq(tagsOnContacts.contactId, contactId),
+      },
+    )
 
     const existingTagIds = existingTags.map((t) => t.tagId)
 

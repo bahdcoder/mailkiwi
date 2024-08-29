@@ -27,4 +27,6 @@ export type HTTPMethods = Uppercase<_HTTPMethods> | Lowercase<_HTTPMethods>
 
 export type HonoRouteDefinition = [HTTPMethods, string, Handler]
 
-export type HonoContext = BaseHonoContext<{ Bindings: { _: boolean } }>
+export type HonoContext = BaseHonoContext<{
+  Bindings: { _: boolean }
+}>

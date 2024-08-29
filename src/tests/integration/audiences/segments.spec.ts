@@ -56,7 +56,11 @@ describe("Audience segments", () => {
         name: payload.name,
         audienceId: audience.id,
         conditions: [
-          { field: "email", value: "@gmail.com", operation: "endsWith" },
+          {
+            field: "email",
+            value: "@gmail.com",
+            operation: "endsWith",
+          },
         ],
       },
     ])
@@ -122,11 +126,16 @@ describe("Audience segments", () => {
           .map(() => createFakeContact(audience.id)),
       )
 
-    const countForSegment = faker.number.int({ min: 7, max: 36 })
+    const countForSegment = faker.number.int({
+      min: 7,
+      max: 36,
+    })
 
     await database.insert(contacts).values(
       faker.helpers
-        .multiple(faker.lorem.word, { count: countForSegment })
+        .multiple(faker.lorem.word, {
+          count: countForSegment,
+        })
         .map(() =>
           createFakeContact(audience.id, {
             email: emailStartsWith + faker.internet.email(),
@@ -190,21 +199,26 @@ describe("Audience segments", () => {
         })),
     )
 
-    const countForSegment = faker.number.int({ min: 8, max: 17 })
+    const countForSegment = faker.number.int({
+      min: 8,
+      max: 17,
+    })
 
     const segmentContactIds = faker.helpers.multiple(() => cuid(), {
       count: countForSegment,
     })
 
-    await database
-      .insert(contacts)
-      .values(
-        faker.helpers
-          .multiple(faker.lorem.word, { count: countForSegment })
-          .map((_, idx) =>
-            createFakeContact(audience.id, { id: segmentContactIds[idx] }),
-          ),
-      )
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(faker.lorem.word, {
+          count: countForSegment,
+        })
+        .map((_, idx) =>
+          createFakeContact(audience.id, {
+            id: segmentContactIds[idx],
+          }),
+        ),
+    )
 
     for (const contactId of segmentContactIds) {
       await container.make(ContactRepository).attachTags(contactId, tagIds)
@@ -244,15 +258,18 @@ describe("Audience segments", () => {
     await refreshDatabase()
     const { user, audience } = await createUser()
 
-    const countForNonSegment = faker.number.int({ min: 10, max: 40 })
+    const countForNonSegment = faker.number.int({
+      min: 10,
+      max: 40,
+    })
 
-    await database
-      .insert(contacts)
-      .values(
-        faker.helpers
-          .multiple(faker.lorem.word, { count: countForNonSegment })
-          .map(() => createFakeContact(audience.id)),
-      )
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(faker.lorem.word, {
+          count: countForNonSegment,
+        })
+        .map(() => createFakeContact(audience.id)),
+    )
 
     const tagIds = faker.helpers.multiple(() => cuid(), {
       count: 3,
@@ -268,21 +285,26 @@ describe("Audience segments", () => {
         })),
     )
 
-    const countForSegment = faker.number.int({ min: 8, max: 17 })
+    const countForSegment = faker.number.int({
+      min: 8,
+      max: 17,
+    })
 
     const segmentContactIds = faker.helpers.multiple(() => cuid(), {
       count: countForSegment,
     })
 
-    await database
-      .insert(contacts)
-      .values(
-        faker.helpers
-          .multiple(faker.lorem.word, { count: countForSegment })
-          .map((_, idx) =>
-            createFakeContact(audience.id, { id: segmentContactIds[idx] }),
-          ),
-      )
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(faker.lorem.word, {
+          count: countForSegment,
+        })
+        .map((_, idx) =>
+          createFakeContact(audience.id, {
+            id: segmentContactIds[idx],
+          }),
+        ),
+    )
 
     for (const contactId of segmentContactIds) {
       await container.make(ContactRepository).attachTags(contactId, tagIds)

@@ -18,7 +18,9 @@ export class CreateSendingDomainAction {
     private config = makeConfig(),
     private database = makeDatabase(),
     private teamRepository = container.make(TeamRepository),
-    private sendingDomainRepository = container.make(SendingDomainRepository),
+    private sendingDomainRepository = container.make(
+      SendingDomainRepository,
+    ),
   ) {}
 
   async handle(payload: CreateAudienceDto, teamId: string) {

@@ -44,7 +44,10 @@ describe("Run automation for contact job", () => {
     await new RunAutomationForContactJob().handle({
       database,
       redis: makeRedis(),
-      payload: { automationId: automationId, contactId: contactId },
+      payload: {
+        automationId: automationId,
+        contactId: contactId,
+      },
     })
 
     const automationsQueueJobs = await Queue.automations().getJobs()
@@ -95,7 +98,10 @@ describe("Run automation for contact job", () => {
     const result = await new RunAutomationForContactJob().handle({
       database,
       redis: makeRedis(),
-      payload: { automationId: automationId, contactId: contactId },
+      payload: {
+        automationId: automationId,
+        contactId: contactId,
+      },
     })
 
     const automationsQueueJobs = await Queue.automations().getJobs()
@@ -131,7 +137,10 @@ describe("Run automation for contact job", () => {
     const result = await new RunAutomationForContactJob().handle({
       database,
       redis: makeRedis(),
-      payload: { automationId: automationId, contactId: contactId },
+      payload: {
+        automationId: automationId,
+        contactId: contactId,
+      },
     })
 
     const automationsQueueJobs = await Queue.automations().getJobs()

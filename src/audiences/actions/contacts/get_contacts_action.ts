@@ -10,7 +10,11 @@ import type {
   Contact,
   Segment,
 } from "@/database/schema/database_schema_types.js"
-import { contacts, tags, tagsOnContacts } from "@/database/schema/schema.ts"
+import {
+  contacts,
+  tags,
+  tagsOnContacts,
+} from "@/database/schema/schema.ts"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
 
@@ -46,7 +50,9 @@ export class GetContactsAction {
 
       if (!audience) {
         throw E_VALIDATION_FAILED([
-          { message: `Audience with id ${audienceId} not found.` },
+          {
+            message: `Audience with id ${audienceId} not found.`,
+          },
         ])
       }
     }
@@ -56,7 +62,9 @@ export class GetContactsAction {
 
       if (!segment)
         throw E_VALIDATION_FAILED([
-          { message: `Segment with id ${segmentId} not found.` },
+          {
+            message: `Segment with id ${segmentId} not found.`,
+          },
         ])
 
       queryConditions.push(

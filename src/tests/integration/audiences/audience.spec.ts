@@ -11,7 +11,9 @@ import { audiences, contacts } from "@/database/schema/schema.js"
 import { makeConfig, makeDatabase } from "@/shared/container/index.js"
 
 describe("Audiences", () => {
-  test("can create an audience only if authenticated", async ({ expect }) => {
+  test("can create an audience only if authenticated", async ({
+    expect,
+  }) => {
     const response = await makeRequest("audiences", {
       method: "POST",
     })
@@ -64,7 +66,8 @@ describe("Audiences", () => {
         name: "Newsletter",
       },
       headers: {
-        [makeConfig().software.teamHeader]: unauthorizedUser?.teams?.[0]?.id,
+        [makeConfig().software.teamHeader]:
+          unauthorizedUser?.teams?.[0]?.id,
       },
     })
 
@@ -179,7 +182,10 @@ describe("Update contacts", () => {
     const { id: contactId } = await createContactResponse.json()
 
     const updateData = {
-      attributes: { hobby: "reading", favoriteColor: "blue" },
+      attributes: {
+        hobby: "reading",
+        favoriteColor: "blue",
+      },
     }
 
     const updateResponse = await makeRequestAsUser(user, {
@@ -245,7 +251,9 @@ describe("Update contacts", () => {
     })
   })
 
-  test("cannot update without proper authorisation", async ({ expect }) => {
+  test("cannot update without proper authorisation", async ({
+    expect,
+  }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
     const { user: unauthorizedUser } = await createUser()

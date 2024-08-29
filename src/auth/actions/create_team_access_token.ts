@@ -17,10 +17,11 @@ export class CreateTeamAccessTokenAction {
 
   handle = async (teamId: string) => {
     const { accessToken } = await this.database.transaction(async (tx) => {
-      const accessToken = await this.accessTokenRepository.createAccessToken(
-        { id: teamId },
-        "team",
-      )
+      const accessToken =
+        await this.accessTokenRepository.createAccessToken(
+          { id: teamId },
+          "team",
+        )
 
       const encryptedApiKey = new Encryption(this.env.APP_KEY).encrypt(
         accessToken.toJSON().token as string,

@@ -19,7 +19,8 @@ export enum ContainerKey {
   databaseConnection = "databaseConnection",
 }
 
-export const makeApp = () => container.singleton<HonoInstance>(ContainerKey.app)
+export const makeApp = () =>
+  container.singleton<HonoInstance>(ContainerKey.app)
 
 export const makeEnv = () => container.make<EnvVariables>(ContainerKey.env)
 
@@ -29,7 +30,8 @@ export const makeConfig = () =>
 export const makeDatabase = () =>
   container.singleton<DrizzleClient>(ContainerKey.database)
 
-export const makeRedis = () => container.singleton<Redis>(ContainerKey.redis)
+export const makeRedis = () =>
+  container.singleton<Redis>(ContainerKey.redis)
 
 export const makeDatabaseConnection = () =>
   container.singleton<Connection>(ContainerKey.databaseConnection)

@@ -32,9 +32,10 @@ export class EmailLinkManager {
     return `${hash}.${encodedData}`
   }
 
-  decodeLink(
-    encodedLink: string,
-  ): { originalLink: string; metadata: LinkMetadata } | null {
+  decodeLink(encodedLink: string): {
+    originalLink: string
+    metadata: LinkMetadata
+  } | null {
     const [receivedHash, encodedData] = encodedLink.split(".")
 
     if (!receivedHash || !encodedData) {

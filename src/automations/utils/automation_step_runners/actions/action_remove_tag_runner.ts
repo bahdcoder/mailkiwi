@@ -24,6 +24,9 @@ export class RemoveTagAutomationStepRunner
 
     const contactRepository = container.resolve(ContactRepository)
 
-    await contactRepository.detachTags(this.contact.id, configuration.tagIds)
+    await contactRepository.detachTags(
+      this.contact.id,
+      configuration.tagIds,
+    )
   }
 }

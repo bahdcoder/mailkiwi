@@ -5,7 +5,10 @@ import type { Audience } from "@/database/schema/database_schema_types.js"
 
 import type { HonoContext } from "@/server/types.js"
 
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import {
+  E_UNAUTHORIZED,
+  E_VALIDATION_FAILED,
+} from "@/http/responses/errors.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -24,7 +27,10 @@ export class AudienceValidationAndAuthorizationConcern {
 
     if (!audience) {
       throw E_VALIDATION_FAILED([
-        { message: "Unknown audience.", field: "audienceId" },
+        {
+          message: "Unknown audience.",
+          field: "audienceId",
+        },
       ])
     }
 
@@ -38,8 +44,12 @@ export class AudienceValidationAndAuthorizationConcern {
       throw E_UNAUTHORIZED("This audience does not belong to your team.")
     }
 
-    if (!this.teamPolicy.canAdministrate(team, ctx.get("accessToken").userId)) {
-      throw E_UNAUTHORIZED("You do not have permission to perform this action.")
+    if (
+      !this.teamPolicy.canAdministrate(team, ctx.get("accessToken").userId)
+    ) {
+      throw E_UNAUTHORIZED(
+        "You do not have permission to perform this action.",
+      )
     }
 
     return true

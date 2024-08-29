@@ -14,13 +14,17 @@ export class CreateTagAction {
 
   handle = async (payload: CreateTagDto, audienceId: string) => {
     const existingTag = await this.tagRepository.findFirst({
-      where: and(eq(tags.name, payload.name), eq(tags.audienceId, audienceId)),
+      where: and(
+        eq(tags.name, payload.name),
+        eq(tags.audienceId, audienceId),
+      ),
     })
 
     if (existingTag) {
       throw E_VALIDATION_FAILED([
         {
-          message: "A tag with this name already exists for this audience.",
+          message:
+            "A tag with this name already exists for this audience.",
           field: "name",
         },
       ])

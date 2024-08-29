@@ -1,4 +1,9 @@
-import { RuntimeException, Secret, base64, safeEqual } from "@poppinss/utils"
+import {
+  RuntimeException,
+  Secret,
+  base64,
+  safeEqual,
+} from "@poppinss/utils"
 import { createHash } from "node:crypto"
 
 import { CRC32 } from "@/auth/acess_tokens/utils/crc32.js"
@@ -67,7 +72,9 @@ export class AccessToken {
   static seed(size: number) {
     const seed = string.random(size)
     const secret = new Secret(`${seed}${new CRC32().calculate(seed)}`)
-    const hash = createHash("sha256").update(secret.release()).digest("hex")
+    const hash = createHash("sha256")
+      .update(secret.release())
+      .digest("hex")
     return { secret, hash }
   }
 
@@ -181,7 +188,9 @@ export class AccessToken {
    * Check if the token denies the ability.
    */
   denies(ability: string) {
-    return !this.abilities.includes(ability) && !this.abilities.includes("*")
+    return (
+      !this.abilities.includes(ability) && !this.abilities.includes("*")
+    )
   }
 
   /**
@@ -212,7 +221,9 @@ export class AccessToken {
    * Verifies the value of a token against the pre-defined hash
    */
   verify(secret: Secret<string>): boolean {
-    const newHash = createHash("sha256").update(secret.release()).digest("hex")
+    const newHash = createHash("sha256")
+      .update(secret.release())
+      .digest("hex")
     return safeEqual(this.hash, newHash)
   }
 

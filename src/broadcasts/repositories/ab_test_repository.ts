@@ -15,7 +15,9 @@ import { container } from "@/utils/typi.ts"
 export class AbTestVariantRepository extends BaseRepository {
   constructor(
     protected database: DrizzleClient = makeDatabase(),
-    private emailContentRepository = container.make(EmailContentRepository),
+    private emailContentRepository = container.make(
+      EmailContentRepository,
+    ),
   ) {
     super()
   }

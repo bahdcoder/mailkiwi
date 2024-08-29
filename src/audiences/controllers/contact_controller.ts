@@ -116,7 +116,9 @@ export class ContactController extends BaseController {
 
     const data = await this.validate(ctx, AttachTagsToContactDto)
 
-    await container.resolve(AttachTagsToContactAction).handle(contactId, data)
+    await container
+      .resolve(AttachTagsToContactAction)
+      .handle(contactId, data)
 
     return ctx.json({ id: contactId })
   }
@@ -137,7 +139,9 @@ export class ContactController extends BaseController {
 
     const action = container.resolve(DetachTagsFromContactAction)
 
-    await container.resolve(DetachTagsFromContactAction).handle(contactId, data)
+    await container
+      .resolve(DetachTagsFromContactAction)
+      .handle(contactId, data)
 
     return ctx.json({ id: contactId })
   }

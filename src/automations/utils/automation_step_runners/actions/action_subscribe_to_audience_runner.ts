@@ -30,7 +30,9 @@ export class SubscribeToAudienceAutomationStepRunner
 
     const audienceRepository = container.resolve(AudienceRepository)
 
-    const audience = await audienceRepository.findById(configuration.audienceId)
+    const audience = await audienceRepository.findById(
+      configuration.audienceId,
+    )
 
     if (!audience) {
       return

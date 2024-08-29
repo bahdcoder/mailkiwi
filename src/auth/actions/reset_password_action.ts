@@ -5,7 +5,9 @@ import { container } from "@/utils/typi.js"
 
 export class ResetPasswordAction {
   constructor(
-    private userRepository: UserRepository = container.make(UserRepository),
+    private userRepository: UserRepository = container.make(
+      UserRepository,
+    ),
   ) {}
 
   handle = async (_: ResetPasswordDto) => {

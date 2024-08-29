@@ -17,7 +17,9 @@ import { Encryption } from "@/shared/utils/encryption/encryption.ts"
 import { container } from "@/utils/typi.ts"
 
 describe("Sending domains", () => {
-  test("can create unique sending domains for a team", async ({ expect }) => {
+  test("can create unique sending domains for a team", async ({
+    expect,
+  }) => {
     await refreshDatabase()
 
     const { team, user } = await createUser()
@@ -43,7 +45,10 @@ describe("Sending domains", () => {
     expect(checkDnsJobs[0]?.delay).toEqual(60000) // wait 60 seconds before running job
     expect(checkDnsJobs[0]?.data?.sendingDomainId).toEqual(domains[0].id)
 
-    const teamUsage = await container.make(TeamRepository).usage(team.id).get()
+    const teamUsage = await container
+      .make(TeamRepository)
+      .usage(team.id)
+      .get()
 
     expect(teamUsage?.encryptedDkimPrivateKey).toEqual(
       domains[0]?.dkimPrivateKey,

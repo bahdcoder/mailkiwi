@@ -10,7 +10,9 @@ import { container } from "@/utils/typi.js"
 
 export class TeamMiddleware {
   constructor(
-    private teamRepository: TeamRepository = container.make(TeamRepository),
+    private teamRepository: TeamRepository = container.make(
+      TeamRepository,
+    ),
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
@@ -23,7 +25,9 @@ export class TeamMiddleware {
     const accessToken = ctx.get("accessToken")
 
     if (!team && accessToken.userId) {
-      team = await this.teamRepository.findUserDefaultTeam(accessToken.userId)
+      team = await this.teamRepository.findUserDefaultTeam(
+        accessToken.userId,
+      )
     }
 
     if (team) {

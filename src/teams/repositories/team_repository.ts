@@ -93,7 +93,9 @@ export class TeamUsage {
     return this.redis.hmset(
       this.key(),
       Object.fromEntries(
-        Object.entries(payload).filter(([_, value]) => value !== undefined),
+        Object.entries(payload).filter(
+          ([_, value]) => value !== undefined,
+        ),
       ),
     )
   }
