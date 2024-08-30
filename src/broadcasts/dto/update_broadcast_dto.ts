@@ -1,4 +1,5 @@
 import { and, count, eq, inArray } from "drizzle-orm"
+import type { CSSProperties } from "react"
 import {
   type InferInput,
   array,

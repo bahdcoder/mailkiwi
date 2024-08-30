@@ -22,7 +22,7 @@ export class RootController {
   }
 
   async index(ctx: HonoContext) {
-    return ctx.html(/* html*/ `
+    return ctx.html(/* html */ `
       <!DOCTYPE html>
         <head>
           ${
