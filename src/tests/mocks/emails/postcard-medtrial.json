@@ -1,0 +1,3278 @@
+[
+  {
+    "id": "130dfbea-7bb9-4718-a4c6-37bbcd0052c5",
+    "name": "Menu",
+    "items": [
+      {
+        "type": "grid",
+        "itemsSize": "fill",
+        "itemsAlignment": "middle left",
+        "itemsSpacings": {
+          "vertical": 0,
+          "horizontal": "0"
+        },
+        "shouldCollapseOnMobile": false,
+        "responsive": {
+          "620": {
+            "itemsSpacings": {
+              "vertical": 20,
+              "horizontal": 20
+            },
+            "spacings": {
+              "spacing": [
+                12,
+                0,
+                24,
+                0
+              ],
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "spacing",
+                "position": 2
+              }
+            }
+          }
+        },
+        "items": [
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "middle left",
+            "items": [
+              {
+                "alt": "",
+                "url": "user-9614/image-17250635448320.svg",
+                "link": "",
+                "size": {
+                  "heightRatio": 0.2,
+                  "widthRatio": 5,
+                  "width": "160px",
+                  "height": ""
+                },
+                "type": "image",
+                "dndId": "fad526a2-02c2-403b-9866-92a174d47fce",
+                "dndParentId": "99f71760-2229-4d5e-bd2c-20df50a3c526",
+                "depth": 3,
+                "index": 0,
+                "fixedSize": null,
+                "name": "image-1706496409187.svg",
+                "isUpload": true,
+                "responsive": {
+                  "620": {
+                    "size": {
+                      "width": "107px",
+                      "height": "",
+                      "heightRatio": 0.20738327904451684,
+                      "widthRatio": 4.821989528795812
+                    }
+                  }
+                },
+                "elmId": "image-2e472e15"
+              }
+            ],
+            "dndId": "99f71760-2229-4d5e-bd2c-20df50a3c526",
+            "dndParentId": "bf711c1d-feb3-4ac7-9690-ee0493dfa06e",
+            "depth": 2,
+            "index": 0,
+            "dndCollapsed": false,
+            "elmId": "gridItem-672ff9b9"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "bottom right",
+            "items": [
+              {
+                "type": "grid",
+                "itemsSize": "hug",
+                "itemsAlignment": "top left",
+                "itemsSpacings": {
+                  "vertical": "16",
+                  "horizontal": 20
+                },
+                "responsive": {
+                  "620": {
+                    "itemsSpacings": {
+                      "vertical": 0,
+                      "horizontal": 16
+                    }
+                  }
+                },
+                "items": [
+                  {
+                    "type": "gridItem",
+                    "height": "hug",
+                    "width": "hug",
+                    "itemsAlignment": "top left",
+                    "items": [
+                      {
+                        "link": "",
+                        "text": "<div><span style=\"white-space: pre-wrap;\">Enterprise</span></div>",
+                        "type": "link",
+                        "color": "#ffffff",
+                        "fontSize": "16px",
+                        "fontStyle": "500",
+                        "fontFamily": "Fira Sans",
+                        "lineHeight": "120%",
+                        "dndId": "f61cb09a-769b-4c90-969c-0b7393de359e",
+                        "dndParentId": "13466d10-5d00-4730-a0d4-122d2a9acc16",
+                        "depth": 5,
+                        "index": 0,
+                        "letterSpacing": "-0px",
+                        "responsive": {
+                          "620": {
+                            "fontSize": "14px"
+                          }
+                        },
+                        "elmId": "link-e470ceb2"
+                      }
+                    ],
+                    "dndId": "13466d10-5d00-4730-a0d4-122d2a9acc16",
+                    "dndParentId": "356897be-86c8-4616-bafb-8e4f5fa025ac",
+                    "depth": 4,
+                    "index": 0,
+                    "elmId": "gridItem-84f0bdab",
+                    "dndCollapsed": true
+                  },
+                  {
+                    "type": "gridItem",
+                    "height": "hug",
+                    "width": "hug",
+                    "itemsAlignment": "top left",
+                    "items": [
+                      {
+                        "link": "",
+                        "text": "<div><span style=\"white-space: pre-wrap;\">Pricing</span></div>",
+                        "type": "link",
+                        "color": "#ffffff",
+                        "fontSize": "16px",
+                        "fontStyle": "500",
+                        "fontFamily": "Fira Sans",
+                        "lineHeight": "120%",
+                        "dndId": "5edc38a5-5f0e-437a-8431-2c8f7b7b487b",
+                        "dndParentId": "df09846b-d90b-4e2f-8b7a-4e3ac3097e0b",
+                        "depth": 5,
+                        "index": 0,
+                        "letterSpacing": "-0px",
+                        "responsive": {
+                          "620": {
+                            "fontSize": "14px"
+                          }
+                        },
+                        "elmId": "link-95b49b9f"
+                      }
+                    ],
+                    "dndId": "df09846b-d90b-4e2f-8b7a-4e3ac3097e0b",
+                    "dndParentId": "356897be-86c8-4616-bafb-8e4f5fa025ac",
+                    "depth": 4,
+                    "index": 1,
+                    "elmId": "gridItem-1556c890",
+                    "dndCollapsed": true
+                  },
+                  {
+                    "type": "gridItem",
+                    "height": "hug",
+                    "width": "hug",
+                    "itemsAlignment": "top left",
+                    "items": [
+                      {
+                        "link": "",
+                        "text": "<div><span style=\"white-space: pre-wrap;\">Solutions</span></div>",
+                        "type": "link",
+                        "color": "#ffffff",
+                        "fontSize": "15px",
+                        "fontStyle": "500",
+                        "fontFamily": "Fira Sans",
+                        "lineHeight": "120%",
+                        "dndId": "4982659a-44b7-4820-a849-53c5622fe6e6",
+                        "dndParentId": "04241654-ac3a-4280-af90-d6b9e1092405",
+                        "depth": 5,
+                        "index": 0,
+                        "letterSpacing": "-0px",
+                        "responsive": {
+                          "620": {
+                            "fontSize": "14px"
+                          }
+                        },
+                        "elmId": "link-f7a2535d"
+                      }
+                    ],
+                    "dndId": "04241654-ac3a-4280-af90-d6b9e1092405",
+                    "dndParentId": "356897be-86c8-4616-bafb-8e4f5fa025ac",
+                    "depth": 4,
+                    "index": 2,
+                    "elmId": "gridItem-48171431"
+                  }
+                ],
+                "dndId": "356897be-86c8-4616-bafb-8e4f5fa025ac",
+                "dndParentId": "c32c60ed-4035-4395-9427-cf63e05ceb30",
+                "depth": 3,
+                "index": 0,
+                "elmId": "grid-a2123617",
+                "dndCollapsed": false
+              }
+            ],
+            "dndId": "c32c60ed-4035-4395-9427-cf63e05ceb30",
+            "dndParentId": "bf711c1d-feb3-4ac7-9690-ee0493dfa06e",
+            "depth": 2,
+            "index": 1,
+            "elmId": "gridItem-63cae73b"
+          }
+        ],
+        "dndId": "bf711c1d-feb3-4ac7-9690-ee0493dfa06e",
+        "dndParentId": "8ef0b188-6d4b-47eb-b8eb-965806cee657",
+        "depth": 1,
+        "index": 0,
+        "dndCollapsed": false,
+        "spacings": {
+          "spacing": [
+            12,
+            0,
+            24,
+            0
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 0
+          }
+        },
+        "elmId": "grid-d76e134e"
+      },
+      {
+        "size": {
+          "height": 1,
+          "width": "100%"
+        },
+        "type": "line",
+        "color": "#ffffff14",
+        "dndId": "22296099-7536-4e9c-9c59-445ae303ce0b",
+        "dndParentId": "8ef0b188-6d4b-47eb-b8eb-965806cee657",
+        "depth": 1,
+        "index": 1,
+        "elmId": "line-2df5ea0c"
+      }
+    ],
+    "settings": [
+      {
+        "type": "backgroundColor",
+        "color": "#243361",
+        "prevColor": "#243361"
+      },
+      {
+        "url": "",
+        "type": "backgroundImage"
+      },
+      {
+        "type": "spacings",
+        "padding": [
+          20,
+          40,
+          24,
+          40
+        ],
+        "spacing": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "responsive": {
+          "620": {
+            "padding": [
+              20,
+              32,
+              0,
+              32
+            ],
+            "spacing": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "type": "radius",
+        "radius": {
+          "value": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "hide": true
+        }
+      },
+      {
+        "type": "shadows",
+        "boxShadow": {
+          "x": 0,
+          "y": 2,
+          "blur": 4,
+          "hide": true,
+          "color": {
+            "a": 0.1,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "spread": 0
+        },
+        "textShadow": {
+          "x": 0,
+          "y": 0,
+          "blur": 0,
+          "hide": true,
+          "color": {
+            "a": 0.6,
+            "b": 0,
+            "g": 4,
+            "r": 0
+          }
+        }
+      }
+    ],
+    "dndId": "8ef0b188-6d4b-47eb-b8eb-965806cee657",
+    "dndCollapsed": false,
+    "depth": 0,
+    "index": 0,
+    "elmId": "module-61ba0363"
+  },
+  {
+    "type": "grid",
+    "itemsSize": "fill",
+    "itemsAlignment": "middle left",
+    "shouldCollapseOnMobile": false,
+    "dndId": "bf711c1d-feb3-4ac7-9690-ee0493dfa06e",
+    "dndParentId": "8ef0b188-6d4b-47eb-b8eb-965806cee657",
+    "depth": 1,
+    "index": 0,
+    "dndCollapsed": false,
+    "elmId": "grid-d76e134e"
+  },
+  {
+    "type": "gridItem",
+    "height": "hug",
+    "width": "fill",
+    "itemsAlignment": "middle left",
+    "dndId": "99f71760-2229-4d5e-bd2c-20df50a3c526",
+    "dndParentId": "bf711c1d-feb3-4ac7-9690-ee0493dfa06e",
+    "depth": 2,
+    "index": 0,
+    "dndCollapsed": false,
+    "elmId": "gridItem-672ff9b9"
+  },
+  {
+    "alt": "",
+    "url": "user-9614/image-17250635448320.svg",
+    "link": "",
+    "type": "image",
+    "dndId": "fad526a2-02c2-403b-9866-92a174d47fce",
+    "dndParentId": "99f71760-2229-4d5e-bd2c-20df50a3c526",
+    "depth": 3,
+    "index": 0,
+    "fixedSize": null,
+    "name": "image-1706496409187.svg",
+    "isUpload": true,
+    "elmId": "image-2e472e15"
+  },
+  {
+    "type": "gridItem",
+    "height": "hug",
+    "width": "fill",
+    "itemsAlignment": "bottom right",
+    "dndId": "c32c60ed-4035-4395-9427-cf63e05ceb30",
+    "dndParentId": "bf711c1d-feb3-4ac7-9690-ee0493dfa06e",
+    "depth": 2,
+    "index": 1,
+    "elmId": "gridItem-63cae73b"
+  },
+  {
+    "type": "grid",
+    "itemsSize": "hug",
+    "itemsAlignment": "top left",
+    "dndId": "356897be-86c8-4616-bafb-8e4f5fa025ac",
+    "dndParentId": "c32c60ed-4035-4395-9427-cf63e05ceb30",
+    "depth": 3,
+    "index": 0,
+    "elmId": "grid-a2123617",
+    "dndCollapsed": false
+  },
+  {
+    "type": "gridItem",
+    "height": "hug",
+    "width": "hug",
+    "itemsAlignment": "top left",
+    "dndId": "13466d10-5d00-4730-a0d4-122d2a9acc16",
+    "dndParentId": "356897be-86c8-4616-bafb-8e4f5fa025ac",
+    "depth": 4,
+    "index": 0,
+    "elmId": "gridItem-84f0bdab",
+    "dndCollapsed": true
+  },
+  {
+    "type": "gridItem",
+    "height": "hug",
+    "width": "hug",
+    "itemsAlignment": "top left",
+    "dndId": "df09846b-d90b-4e2f-8b7a-4e3ac3097e0b",
+    "dndParentId": "356897be-86c8-4616-bafb-8e4f5fa025ac",
+    "depth": 4,
+    "index": 1,
+    "elmId": "gridItem-1556c890",
+    "dndCollapsed": true
+  },
+  {
+    "type": "gridItem",
+    "height": "hug",
+    "width": "hug",
+    "itemsAlignment": "top left",
+    "dndId": "04241654-ac3a-4280-af90-d6b9e1092405",
+    "dndParentId": "356897be-86c8-4616-bafb-8e4f5fa025ac",
+    "depth": 4,
+    "index": 2,
+    "elmId": "gridItem-48171431"
+  },
+  {
+    "link": "",
+    "text": "<div><span style=\"white-space: pre-wrap;\">Solutions</span></div>",
+    "type": "link",
+    "color": "#ffffff",
+    "fontSize": "15px",
+    "fontStyle": "500",
+    "fontFamily": "Fira Sans",
+    "lineHeight": "120%",
+    "dndId": "4982659a-44b7-4820-a849-53c5622fe6e6",
+    "dndParentId": "04241654-ac3a-4280-af90-d6b9e1092405",
+    "depth": 5,
+    "index": 0,
+    "letterSpacing": "-0px",
+    "elmId": "link-f7a2535d"
+  },
+  {
+    "type": "line",
+    "color": "#ffffff14",
+    "dndId": "22296099-7536-4e9c-9c59-445ae303ce0b",
+    "dndParentId": "8ef0b188-6d4b-47eb-b8eb-965806cee657",
+    "depth": 1,
+    "index": 1,
+    "elmId": "line-2df5ea0c"
+  },
+  {
+    "id": "049d10f8-9bb2-49dc-bdf5-8c93dcc87ba7",
+    "name": "Start your trial",
+    "items": [
+      {
+        "text": "<div><span style=\"white-space: pre-wrap;\">Start your free </span></div><div><span style=\"white-space: pre-wrap;\">trial today!</span></div>",
+        "type": "text",
+        "align": "left",
+        "color": "#faeec2",
+        "fontSize": "56px",
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            16,
+            40
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 3
+          }
+        },
+        "fontStyle": "700",
+        "fontFamily": "Fira Sans",
+        "lineHeight": "110%",
+        "responsive": {
+          "620": {
+            "fontSize": "40px",
+            "spacings": {
+              "spacing": [
+                0,
+                32,
+                16,
+                32
+              ],
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "spacing",
+                "position": 1
+              }
+            },
+            "lineHeight": 40
+          }
+        },
+        "letterSpacing": "-1px",
+        "dndId": "cc818df1-d6d4-4f93-a27a-3e2323ab1246",
+        "dndParentId": "f74822ef-3753-468e-b87e-d76bbc699332",
+        "depth": 1,
+        "index": 0,
+        "elmId": "text-47b19da6"
+      },
+      {
+        "text": "<div><span style=\"white-space: pre-wrap;\">Perfect your planning tasks with MedTrial. Enjoy our free trial and see for yourself how we can help you achieve your work goals more effectively.</span></div>",
+        "type": "text",
+        "align": "left",
+        "color": "#ffffff",
+        "fontSize": "16px",
+        "spacings": {
+          "spacing": [
+            0,
+            40,
+            32,
+            40
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 2
+          }
+        },
+        "fontStyle": "500",
+        "fontFamily": "Fira Sans",
+        "lineHeight": "150%",
+        "letterSpacing": "-0px",
+        "dndId": "e4faf386-3d4c-4b87-a040-cb90606931ec",
+        "dndParentId": "f74822ef-3753-468e-b87e-d76bbc699332",
+        "depth": 1,
+        "index": 1,
+        "responsive": {
+          "620": {
+            "spacings": {
+              "spacing": [
+                0,
+                32,
+                24,
+                32
+              ],
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "spacing",
+                "position": 1
+              }
+            }
+          }
+        },
+        "elmId": "text-5ace5205"
+      },
+      {
+        "link": "https://designmodo.com/postcards",
+        "text": "<div><span style=\"white-space: pre-wrap;\">Let’s get </span><span style=\"color: #db2ca8;white-space: pre-wrap;\">trial</span></div>",
+        "type": "button",
+        "color": "#ffffff",
+        "radius": {
+          "value": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "hide": true
+        },
+        "fontSize": 16,
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            40,
+            40
+          ],
+          "padding": [
+            10,
+            24,
+            10,
+            24
+          ]
+        },
+        "fontStyle": "500",
+        "fontFamily": "Fira Sans",
+        "lineHeight": 24,
+        "letterSpacing": -0.2,
+        "backgroundColor": "#3569ff",
+        "dndId": "10c14be2-28b1-4d9b-9f32-b6ee5da9dc87",
+        "dndParentId": "f74822ef-3753-468e-b87e-d76bbc699332",
+        "fixedSize": {
+          "width": 149,
+          "height": 44
+        },
+        "responsive": {
+          "620": {
+            "spacings": {
+              "spacing": [
+                0,
+                0,
+                40,
+                32
+              ],
+              "padding": [
+                12,
+                20,
+                12,
+                20
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "spacing",
+                "position": 3
+              }
+            }
+          }
+        },
+        "depth": 1,
+        "index": 2,
+        "elmId": "button-4c6fd7fe"
+      },
+      {
+        "alt": "",
+        "url": "user-9614/image-17250635448631.png",
+        "link": "",
+        "size": {
+          "heightRatio": 0.6120283018867925,
+          "widthRatio": 1.6339113680154143,
+          "width": "100%",
+          "height": ""
+        },
+        "type": "image",
+        "align": "center",
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 2
+          }
+        },
+        "nicelyScale": true,
+        "dndId": "a55869d6-3c24-430a-b9d5-a9e3025d54f4",
+        "dndParentId": "f74822ef-3753-468e-b87e-d76bbc699332",
+        "fixedSize": {
+          "width": 600,
+          "height": 367
+        },
+        "depth": 1,
+        "index": 3,
+        "name": "image-1704962862204.png",
+        "isUpload": true,
+        "radius": {
+          "value": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "hide": true
+        },
+        "elmId": "image-97227298"
+      }
+    ],
+    "settings": [
+      {
+        "type": "backgroundColor",
+        "color": "#064B85",
+        "prevColor": "#064B85",
+        "presets": [
+          {
+            "id": "preset-color-brand",
+            "version": ""
+          }
+        ]
+      },
+      {
+        "url": "",
+        "type": "backgroundImage",
+        "help": "Default size: 600x831px",
+        "hide": true
+      },
+      {
+        "type": "spacings",
+        "padding": [
+          10,
+          0,
+          0,
+          0
+        ],
+        "spacing": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "responsive": {
+          "620": {
+            "padding": [
+              32,
+              0,
+              0,
+              0
+            ],
+            "spacing": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "type": "radius",
+        "radius": 0
+      },
+      {
+        "type": "shadows",
+        "boxShadow": {
+          "x": 0,
+          "y": 2,
+          "blur": 4,
+          "hide": true,
+          "color": {
+            "a": 0.1,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "spread": 0
+        },
+        "textShadow": {
+          "x": 0,
+          "y": 0,
+          "blur": 100,
+          "hide": true,
+          "color": {
+            "a": 1,
+            "b": 0,
+            "g": 4,
+            "r": 0
+          }
+        }
+      },
+      {
+        "type": "hide",
+        "desktop": false,
+        "mobile": false
+      }
+    ],
+    "dndId": "f74822ef-3753-468e-b87e-d76bbc699332",
+    "depth": 0,
+    "index": 1,
+    "dndCollapsed": true,
+    "elmId": "module-ea3cba39"
+  },
+  {
+    "id": "28bc7b6e-926e-4349-9ed4-a961ddd6fbc0",
+    "name": "Contacts",
+    "items": [
+      {
+        "text": "<div><span style=\"white-space: pre-wrap;\">We support and provide your team&#39;s work planning needs at any scale</span></div>",
+        "type": "text",
+        "color": "#243361",
+        "fontSize": "28px",
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            32,
+            0
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 2
+          }
+        },
+        "fontStyle": "700",
+        "fontFamily": "Fira Sans",
+        "lineHeight": "120%",
+        "letterSpacing": "-0px",
+        "dndId": "5747fe24-3b15-472d-afbb-986906cc58f8",
+        "dndParentId": "576e48ab-f538-40bb-8808-6094f276ab57",
+        "align": "center",
+        "depth": 1,
+        "index": 0,
+        "elmId": "text-75e04abf"
+      },
+      {
+        "type": "grid",
+        "itemsSize": "hug",
+        "itemsAlignment": "top center",
+        "itemsSpacings": {
+          "vertical": 0,
+          "horizontal": "0"
+        },
+        "columns": "",
+        "shouldCollapseOnMobile": false,
+        "responsive": {
+          "620": {
+            "itemsSpacings": {
+              "vertical": 30,
+              "horizontal": 8
+            },
+            "itemsSize": "fill"
+          }
+        },
+        "items": [
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "top center",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Let&#39;s talk and improve the efficiency of your team&#39;s work</span></div>",
+                "type": "text",
+                "color": "#1d3425",
+                "fontSize": "17px",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    16,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "fontStyle": "regular",
+                "fontFamily": "Inter",
+                "lineHeight": "120%",
+                "letterSpacing": "-0px",
+                "dndId": "37d6ccc4-fc36-40db-8657-1aa5f8459af7",
+                "dndParentId": "72940f6e-14f2-48ee-8506-b4a070b6a338",
+                "depth": 3,
+                "index": 0,
+                "responsive": {
+                  "620": {
+                    "align": "center",
+                    "fontSize": "16px"
+                  }
+                },
+                "name": "Cost analysis",
+                "align": "center",
+                "userFontFamily": true,
+                "elmId": "text-d3a979b3"
+              },
+              {
+                "link": "https://designmodo.com/postcards",
+                "text": "<div><span style=\"white-space: pre-wrap;\">Call us: +1 (648) 456 7898</span></div>",
+                "type": "button",
+                "color": "#243361",
+                "radius": {
+                  "value": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "hide": true
+                },
+                "fontSize": 16,
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    16,
+                    0
+                  ],
+                  "padding": [
+                    12,
+                    20,
+                    12,
+                    20
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "padding",
+                    "position": 2
+                  }
+                },
+                "fontStyle": "500",
+                "fontFamily": "Fira Sans",
+                "lineHeight": 24,
+                "letterSpacing": "-0px",
+                "backgroundColor": false,
+                "dndId": "583dc7e9-bba0-4952-bc77-42689911e81e",
+                "dndParentId": "72940f6e-14f2-48ee-8506-b4a070b6a338",
+                "fixedSize": {
+                  "width": 304,
+                  "height": 48
+                },
+                "prevBackgroundColor": "#1595e7",
+                "border": {
+                  "color": {
+                    "top": "#243361",
+                    "right": "#243361",
+                    "bottom": "#243361",
+                    "left": "#243361"
+                  },
+                  "style": {
+                    "top": "solid",
+                    "right": "solid",
+                    "bottom": "solid",
+                    "left": "solid"
+                  },
+                  "width": {
+                    "top": 1,
+                    "right": 1,
+                    "bottom": 1,
+                    "left": 1
+                  },
+                  "hide": false
+                },
+                "depth": 3,
+                "index": 1,
+                "size": {
+                  "width": "306px",
+                  "height": "",
+                  "help": null,
+                  "heightRatio": null,
+                  "widthRatio": null,
+                  "changed": "width"
+                },
+                "elmId": "button-fe5d3ce2"
+              },
+              {
+                "link": "https://designmodo.com/postcards",
+                "text": "<div><span style=\"white-space: pre-wrap;\">helpdesk.medtrial@medtrial.com</span></div>",
+                "type": "button",
+                "color": "#243361",
+                "radius": {
+                  "value": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "hide": true
+                },
+                "fontSize": 16,
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    24,
+                    0
+                  ],
+                  "padding": [
+                    12,
+                    20,
+                    12,
+                    20
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "padding",
+                    "position": 0
+                  }
+                },
+                "fontStyle": "500",
+                "fontFamily": "Fira Sans",
+                "lineHeight": 24,
+                "letterSpacing": "-0px",
+                "backgroundColor": false,
+                "dndId": "805a585b-ff7a-415b-97ff-ea466969e26c",
+                "dndParentId": "72940f6e-14f2-48ee-8506-b4a070b6a338",
+                "fixedSize": {
+                  "width": 304,
+                  "height": 48
+                },
+                "prevBackgroundColor": "#1595e7",
+                "border": {
+                  "color": {
+                    "top": "#243361",
+                    "right": "#243361",
+                    "bottom": "#243361",
+                    "left": "#243361"
+                  },
+                  "style": {
+                    "top": "solid",
+                    "right": "solid",
+                    "bottom": "solid",
+                    "left": "solid"
+                  },
+                  "width": {
+                    "top": 1,
+                    "right": 1,
+                    "bottom": 1,
+                    "left": 1
+                  },
+                  "hide": false
+                },
+                "depth": 3,
+                "index": 2,
+                "size": {
+                  "width": "306px",
+                  "height": "",
+                  "help": null,
+                  "heightRatio": null,
+                  "widthRatio": null,
+                  "changed": "width"
+                },
+                "elmId": "button-5ca78657"
+              },
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Discover a smarter way to work with Medtrial. We are dedicated to providing cutting-edge task management solutions that adapt to your unique needs. Take the plunge into productivity – start your free trial today</span></div>",
+                "type": "text",
+                "color": "#243361",
+                "fontSize": "14px",
+                "fontStyle": "regular",
+                "fontFamily": "Inter",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "75e90545-88f5-48b2-868f-679b810393b7",
+                "dndParentId": "72940f6e-14f2-48ee-8506-b4a070b6a338",
+                "letterSpacing": "0px",
+                "align": "center",
+                "depth": 3,
+                "index": 3,
+                "userFontFamily": true,
+                "elmId": "text-0ed47a25"
+              }
+            ],
+            "dndId": "72940f6e-14f2-48ee-8506-b4a070b6a338",
+            "dndParentId": "af4bab47-6659-4a2a-8d8d-b51a6ecb822d",
+            "depth": 2,
+            "index": 0,
+            "dndCollapsed": false,
+            "elmId": "gridItem-ceb0bb41"
+          }
+        ],
+        "dndId": "af4bab47-6659-4a2a-8d8d-b51a6ecb822d",
+        "dndParentId": "576e48ab-f538-40bb-8808-6094f276ab57",
+        "depth": 1,
+        "index": 1,
+        "elmId": "grid-f96cbd0a"
+      }
+    ],
+    "settings": [
+      {
+        "type": "backgroundColor",
+        "color": "#faeec2",
+        "prevColor": "#faeec2"
+      },
+      {
+        "url": "",
+        "type": "backgroundImage"
+      },
+      {
+        "type": "spacings",
+        "padding": [
+          40,
+          40,
+          40,
+          40
+        ],
+        "spacing": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "responsive": {
+          "620": {
+            "padding": [
+              32,
+              32,
+              32,
+              32
+            ],
+            "spacing": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "type": "radius",
+        "radius": 0
+      },
+      {
+        "type": "shadows",
+        "boxShadow": {
+          "x": 0,
+          "y": 2,
+          "blur": 4,
+          "hide": true,
+          "color": {
+            "a": 0.1,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "spread": 0
+        },
+        "textShadow": {
+          "x": 0,
+          "y": 0,
+          "blur": 100,
+          "hide": true,
+          "color": {
+            "a": 1,
+            "b": 0,
+            "g": 4,
+            "r": 0
+          }
+        }
+      }
+    ],
+    "dndId": "576e48ab-f538-40bb-8808-6094f276ab57",
+    "dndCollapsed": true,
+    "depth": 0,
+    "index": 2,
+    "elmId": "module-926847ea"
+  },
+  {
+    "id": "31ec8d22-4604-4814-9718-b1d99dcf7f7d",
+    "name": "Features",
+    "items": [
+      {
+        "text": "<div><span style=\"white-space: pre-wrap;\">Our various services to improve team work efficiency</span></div>",
+        "type": "text",
+        "color": "#243361",
+        "fontSize": "32px",
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            40,
+            0
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 2
+          }
+        },
+        "fontStyle": "700",
+        "fontFamily": "Fira Sans",
+        "lineHeight": "120%",
+        "letterSpacing": "-0px",
+        "dndId": "dde03720-6a89-40c6-8953-48da78e7284e",
+        "dndParentId": "ce48c2cd-7133-43e4-95a1-c614d1e3b2c2",
+        "align": "center",
+        "depth": 1,
+        "index": 0,
+        "elmId": "text-4d25d555"
+      },
+      {
+        "type": "grid",
+        "itemsSize": "fill",
+        "itemsAlignment": "top center",
+        "itemsSpacings": {
+          "vertical": 0,
+          "horizontal": 48
+        },
+        "columns": 3,
+        "shouldCollapseOnMobile": false,
+        "responsive": {
+          "620": {
+            "itemsSpacings": {
+              "vertical": 30,
+              "horizontal": 8
+            },
+            "itemsSize": "fill"
+          }
+        },
+        "items": [
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "top center",
+            "items": [
+              {
+                "url": "user-9614/image-17250635449762.svg",
+                "size": {
+                  "heightRatio": 1,
+                  "widthRatio": 1,
+                  "width": "80px",
+                  "height": ""
+                },
+                "type": "image",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    16,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "link": "",
+                "dndId": "26f1c033-3c81-4fe2-8fae-9c47c8cd7df0",
+                "dndParentId": "6d372f3f-07c7-4fb0-8b5b-0a689559b1aa",
+                "fixedSize": null,
+                "depth": 3,
+                "index": 0,
+                "name": "image-1704960887065.svg",
+                "isUpload": true,
+                "responsive": {
+                  "620": {
+                    "size": {
+                      "width": "65px",
+                      "height": "",
+                      "heightRatio": 1,
+                      "widthRatio": 1
+                    }
+                  }
+                },
+                "align": "center",
+                "elmId": "image-087cdfc1"
+              },
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Task Manager</span></div>",
+                "type": "text",
+                "color": "#243361",
+                "fontSize": "16px",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    6,
+                    0
+                  ]
+                },
+                "fontStyle": "500",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "120%",
+                "letterSpacing": "-0px",
+                "dndId": "86b381ac-ae6b-4d50-b7e7-3fc85996d544",
+                "dndParentId": "6d372f3f-07c7-4fb0-8b5b-0a689559b1aa",
+                "depth": 3,
+                "index": 1,
+                "responsive": {
+                  "620": {
+                    "align": "center",
+                    "fontSize": "16px"
+                  }
+                },
+                "elmId": "text-bb37e4d0"
+              }
+            ],
+            "dndId": "6d372f3f-07c7-4fb0-8b5b-0a689559b1aa",
+            "dndParentId": "095551df-6c65-4a79-81d5-9907d362ea11",
+            "depth": 2,
+            "index": 0,
+            "elmId": "gridItem-b63b5931"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "top center",
+            "items": [
+              {
+                "url": "user-9614/image-17250635449843.svg",
+                "size": {
+                  "heightRatio": 1,
+                  "widthRatio": 1,
+                  "width": "80px",
+                  "height": ""
+                },
+                "type": "image",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    16,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "link": "",
+                "dndId": "87747987-1d7c-4099-8c1e-a5343c3176a7",
+                "dndParentId": "4b86f53f-9849-4678-94e4-6bb69c240c6e",
+                "fixedSize": null,
+                "depth": 3,
+                "index": 0,
+                "name": "image-1704960888066.svg",
+                "isUpload": true,
+                "responsive": {
+                  "620": {
+                    "size": {
+                      "width": "65px",
+                      "height": "",
+                      "heightRatio": 1,
+                      "widthRatio": 1
+                    }
+                  }
+                },
+                "align": "center",
+                "elmId": "image-f90a68bb"
+              },
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Time Tracking</span></div>",
+                "type": "text",
+                "color": "#243361",
+                "fontSize": "16px",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    6,
+                    0
+                  ]
+                },
+                "fontStyle": "500",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "120%",
+                "letterSpacing": "-0px",
+                "dndId": "c324ed14-a3dd-48ff-b4c3-2b72f7530e92",
+                "dndParentId": "4b86f53f-9849-4678-94e4-6bb69c240c6e",
+                "depth": 3,
+                "index": 1,
+                "responsive": {
+                  "620": {
+                    "align": "center",
+                    "fontSize": "16px"
+                  }
+                },
+                "elmId": "text-d1303663"
+              }
+            ],
+            "dndId": "4b86f53f-9849-4678-94e4-6bb69c240c6e",
+            "dndParentId": "095551df-6c65-4a79-81d5-9907d362ea11",
+            "depth": 2,
+            "index": 1,
+            "elmId": "gridItem-8d47c546"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "top center",
+            "items": [
+              {
+                "url": "user-9614/image-17250635449904.svg",
+                "size": {
+                  "heightRatio": 1,
+                  "widthRatio": 1,
+                  "width": "80px",
+                  "height": ""
+                },
+                "type": "image",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    16,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "link": "",
+                "dndId": "63bb23ab-f381-44f9-a33f-5f3701eb051e",
+                "dndParentId": "0d17d4cc-160f-42f6-9732-13261108ec88",
+                "fixedSize": null,
+                "depth": 3,
+                "index": 0,
+                "name": "image-1704960815695.svg",
+                "isUpload": true,
+                "responsive": {
+                  "620": {
+                    "size": {
+                      "width": "65px",
+                      "height": "",
+                      "heightRatio": 1,
+                      "widthRatio": 1
+                    }
+                  }
+                },
+                "align": "center",
+                "elmId": "image-cf566bfe"
+              },
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Smart Dashboard With a nice knack for things that do not scale</span></div>",
+                "type": "text",
+                "color": "#243361",
+                "fontSize": "16px",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    6,
+                    0
+                  ]
+                },
+                "fontStyle": "500",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "120%",
+                "letterSpacing": "-0px",
+                "dndId": "8c349266-7ad4-4b15-a0ae-3e124349b67a",
+                "dndParentId": "0d17d4cc-160f-42f6-9732-13261108ec88",
+                "depth": 3,
+                "index": 1,
+                "responsive": {
+                  "620": {
+                    "align": "center",
+                    "fontSize": "16px"
+                  }
+                },
+                "align": "center",
+                "elmId": "text-8a510c09"
+              }
+            ],
+            "dndId": "0d17d4cc-160f-42f6-9732-13261108ec88",
+            "dndParentId": "095551df-6c65-4a79-81d5-9907d362ea11",
+            "depth": 2,
+            "index": 2,
+            "elmId": "gridItem-9ef30ebd"
+          }
+        ],
+        "dndId": "095551df-6c65-4a79-81d5-9907d362ea11",
+        "dndParentId": "ce48c2cd-7133-43e4-95a1-c614d1e3b2c2",
+        "depth": 1,
+        "index": 1,
+        "dndCollapsed": false,
+        "elmId": "grid-0defc1fb"
+      }
+    ],
+    "settings": [
+      {
+        "type": "backgroundColor",
+        "color": "#faeec2",
+        "prevColor": "#faeec2"
+      },
+      {
+        "url": "",
+        "type": "backgroundImage"
+      },
+      {
+        "type": "spacings",
+        "padding": [
+          40,
+          40,
+          60,
+          40
+        ],
+        "spacing": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "responsive": {
+          "620": {
+            "padding": [
+              32,
+              32,
+              32,
+              32
+            ],
+            "spacing": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "type": "radius",
+        "radius": 0
+      },
+      {
+        "type": "shadows",
+        "boxShadow": {
+          "x": 0,
+          "y": 2,
+          "blur": 4,
+          "hide": true,
+          "color": {
+            "a": 0.1,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "spread": 0
+        },
+        "textShadow": {
+          "x": 0,
+          "y": 0,
+          "blur": 100,
+          "hide": true,
+          "color": {
+            "a": 1,
+            "b": 0,
+            "g": 4,
+            "r": 0
+          }
+        }
+      }
+    ],
+    "dndId": "ce48c2cd-7133-43e4-95a1-c614d1e3b2c2",
+    "dndCollapsed": true,
+    "depth": 0,
+    "index": 3,
+    "elmId": "module-7b7d2dd5"
+  },
+  {
+    "id": "6a239556-4c00-4e48-b1d6-9266940b4183",
+    "name": "Numbers",
+    "items": [
+      {
+        "text": "<div style=\"text-align: left; text-align-last: left;\"><span style=\"font-weight: 700;font-style: normal;color: rgb(36, 51, 97);white-space: pre-wrap;\">Don&#39;t miss out – try it free and elevate your team&#39;s success!</span></div>",
+        "type": "text",
+        "color": "#243361",
+        "fontSize": "33px",
+        "fontStyle": "700",
+        "fontFamily": "Fira Sans",
+        "lineHeight": "120%",
+        "size": {
+          "width": "100%",
+          "height": ""
+        },
+        "dndId": "7b34e2cc-f879-4d7e-8684-8152f40f4992",
+        "dndParentId": "8d3865c5-83d4-4a14-9d06-706918505eb2",
+        "letterSpacing": "-0px",
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            40,
+            0
+          ],
+          "padding": [
+            0,
+            10,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "padding",
+            "position": 1
+          }
+        },
+        "depth": 1,
+        "index": 0,
+        "responsive": {
+          "620": {
+            "spacings": {
+              "spacing": [
+                0,
+                0,
+                32,
+                0
+              ],
+              "padding": [
+                0,
+                10,
+                0,
+                0
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "spacing",
+                "position": 2
+              }
+            },
+            "fontSize": "32px"
+          }
+        },
+        "elmId": "text-54261a34"
+      },
+      {
+        "type": "grid",
+        "itemsSize": "hug",
+        "itemsAlignment": "top left",
+        "itemsSpacings": {
+          "vertical": 30,
+          "horizontal": 40
+        },
+        "columns": "",
+        "shouldCollapseOnMobile": true,
+        "responsive": {
+          "620": {
+            "itemsSpacings": {
+              "vertical": 16,
+              "horizontal": 0
+            },
+            "spacings": {
+              "spacing": [
+                0,
+                0,
+                24,
+                0
+              ],
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "spacing",
+                "position": 2
+              }
+            }
+          }
+        },
+        "items": [
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "top left",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">20K</span></div>",
+                "type": "text",
+                "align": "left",
+                "color": "#ff6c44",
+                "fontSize": "60px",
+                "fontStyle": "700",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "120%",
+                "letterSpacing": "0px",
+                "dndId": "9f941e36-6d3f-4e4b-bb55-3a0c81210b76",
+                "dndParentId": "b31a5216-1a2e-4bce-9d90-e7e7f8f25dc6",
+                "depth": 3,
+                "index": 0,
+                "elmId": "text-957a127d",
+                "textAlign": "left"
+              }
+            ],
+            "dndId": "b31a5216-1a2e-4bce-9d90-e7e7f8f25dc6",
+            "dndParentId": "9f0473d0-8e12-4832-8b12-1642a4b78b05",
+            "depth": 2,
+            "index": 0,
+            "elmId": "gridItem-8174dd99",
+            "dndCollapsed": true
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "top left",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Joined teams</span></div>",
+                "type": "text",
+                "align": "left",
+                "color": "#243361",
+                "fontSize": "20px",
+                "fontStyle": "700",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "120%",
+                "letterSpacing": "-0px",
+                "dndId": "ec67100c-4c18-4502-a554-2ff11af496f6",
+                "dndParentId": "73f00450-c439-423a-bbd3-c170d0152c89",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    8,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "depth": 3,
+                "index": 0,
+                "elmId": "text-208aa96d"
+              },
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Over 20k teams joined and increased their work efficiency.</span></div>",
+                "type": "text",
+                "color": "#243361",
+                "fontSize": "16px",
+                "fontStyle": "regular",
+                "fontFamily": "Inter",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "bd53229d-d13d-4f72-a5dc-a145cf748301",
+                "dndParentId": "73f00450-c439-423a-bbd3-c170d0152c89",
+                "letterSpacing": "-0px",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    16,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "depth": 3,
+                "index": 1,
+                "userFontFamily": true,
+                "elmId": "text-70b481cc"
+              },
+              {
+                "size": {
+                  "height": 1,
+                  "width": "100%"
+                },
+                "type": "line",
+                "color": "#081b2f14",
+                "dndId": "cb151bd3-5069-4d14-8257-a943f8c097ad",
+                "dndParentId": "73f00450-c439-423a-bbd3-c170d0152c89",
+                "depth": 3,
+                "index": 2,
+                "elmId": "line-d1230655"
+              }
+            ],
+            "dndId": "73f00450-c439-423a-bbd3-c170d0152c89",
+            "dndParentId": "9f0473d0-8e12-4832-8b12-1642a4b78b05",
+            "depth": 2,
+            "index": 1,
+            "elmId": "gridItem-131aef64",
+            "dndCollapsed": true
+          }
+        ],
+        "dndId": "9f0473d0-8e12-4832-8b12-1642a4b78b05",
+        "dndParentId": "8d3865c5-83d4-4a14-9d06-706918505eb2",
+        "dndCollapsed": false,
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            40,
+            0
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 2
+          }
+        },
+        "depth": 1,
+        "index": 1,
+        "elmId": "grid-b02cc2c2"
+      },
+      {
+        "type": "grid",
+        "itemsSize": "hug",
+        "itemsAlignment": "top center",
+        "itemsSpacings": {
+          "vertical": 30,
+          "horizontal": 40
+        },
+        "columns": "",
+        "shouldCollapseOnMobile": true,
+        "responsive": {
+          "620": {
+            "itemsSpacings": {
+              "vertical": 16,
+              "horizontal": 0
+            },
+            "spacings": {
+              "spacing": [
+                0,
+                0,
+                24,
+                0
+              ],
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "spacing",
+                "position": 2
+              }
+            }
+          }
+        },
+        "items": [
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "top center",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">42K</span></div>",
+                "type": "text",
+                "align": "left",
+                "color": "#ff6c44",
+                "fontSize": "60px",
+                "fontStyle": "700",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "120%",
+                "letterSpacing": "0px",
+                "dndId": "dd70cfcf-7780-458d-8ad2-276810f352c5",
+                "dndParentId": "cdcd660f-604b-4c85-867f-cdb12b1a7127",
+                "depth": 3,
+                "index": 0,
+                "elmId": "text-7939410c",
+                "textAlign": "center"
+              }
+            ],
+            "dndId": "cdcd660f-604b-4c85-867f-cdb12b1a7127",
+            "dndParentId": "ecaaa474-8baa-405c-808f-670779de6d34",
+            "depth": 2,
+            "index": 0,
+            "elmId": "gridItem-a54d9554"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "middle left",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Completed Project</span></div>",
+                "type": "text",
+                "align": "left",
+                "color": "#243361",
+                "fontSize": "20px",
+                "fontStyle": "700",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "120%",
+                "letterSpacing": "-0px",
+                "dndId": "916192ec-25ad-48dd-9958-1fc179e9635f",
+                "dndParentId": "28071f34-9ed3-4d0a-b799-076bcae109a1",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    8,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                "depth": 3,
+                "index": 0,
+                "elmId": "text-dee0ed96",
+                "textAlign": "left"
+              },
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Over 42k projects have been successfully developed to date.</span></div>",
+                "type": "text",
+                "color": "#243361",
+                "fontSize": "16px",
+                "fontStyle": "regular",
+                "fontFamily": "Inter",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "6fa88365-b52b-4103-8f42-3df7a94b5271",
+                "dndParentId": "28071f34-9ed3-4d0a-b799-076bcae109a1",
+                "letterSpacing": "-0px",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    16,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "depth": 3,
+                "index": 1,
+                "userFontFamily": true,
+                "elmId": "text-10b5e964",
+                "textAlign": "left"
+              },
+              {
+                "size": {
+                  "height": 1,
+                  "width": "100%"
+                },
+                "type": "line",
+                "color": "#081b2f14",
+                "dndId": "3fe1c566-d027-47d5-8911-a1e6a3421987",
+                "dndParentId": "28071f34-9ed3-4d0a-b799-076bcae109a1",
+                "depth": 3,
+                "index": 2,
+                "elmId": "line-ab8ba841",
+                "align": "left"
+              }
+            ],
+            "dndId": "28071f34-9ed3-4d0a-b799-076bcae109a1",
+            "dndParentId": "ecaaa474-8baa-405c-808f-670779de6d34",
+            "depth": 2,
+            "index": 1,
+            "elmId": "gridItem-d87eb7f1"
+          }
+        ],
+        "dndId": "ecaaa474-8baa-405c-808f-670779de6d34",
+        "dndParentId": "8d3865c5-83d4-4a14-9d06-706918505eb2",
+        "dndCollapsed": false,
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            40,
+            0
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "depth": 1,
+        "index": 2,
+        "elmId": "grid-b274b571"
+      },
+      {
+        "type": "grid",
+        "itemsSize": "hug",
+        "itemsAlignment": "top left",
+        "itemsSpacings": {
+          "vertical": 30,
+          "horizontal": 40
+        },
+        "columns": "",
+        "shouldCollapseOnMobile": true,
+        "responsive": {
+          "620": {
+            "itemsSpacings": {
+              "vertical": 16,
+              "horizontal": 0
+            }
+          }
+        },
+        "items": [
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "top left",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">1.5K</span></div>",
+                "type": "text",
+                "align": "left",
+                "color": "#ff6c44",
+                "fontSize": "60px",
+                "fontStyle": "700",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "120%",
+                "letterSpacing": "0px",
+                "dndId": "fe18d500-c000-4a05-b9a9-0d1c37d57d3f",
+                "dndParentId": "fa6df8b8-5257-40ed-a9b4-744427254126",
+                "depth": 3,
+                "index": 0,
+                "elmId": "text-8a61a36a"
+              }
+            ],
+            "dndId": "fa6df8b8-5257-40ed-a9b4-744427254126",
+            "dndParentId": "3516b973-6c52-4cc1-9dfa-b9da030407bc",
+            "depth": 2,
+            "index": 0,
+            "elmId": "gridItem-9fb84b6d"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "top left",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Daily Active User</span></div>",
+                "type": "text",
+                "align": "left",
+                "color": "#243361",
+                "fontSize": "20px",
+                "fontStyle": "700",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "120%",
+                "letterSpacing": "-0px",
+                "dndId": "7aaca16c-1483-42c8-91a4-a66c6eedb21c",
+                "dndParentId": "4cb2c529-f18c-4091-8262-cd59e6831671",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    8,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "depth": 3,
+                "index": 0,
+                "elmId": "text-b048583f"
+              },
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Our platform is used by 1.5k people every day to plan and work on their projects.</span></div><div><span style=\"white-space: pre-wrap;\"> </span></div>",
+                "type": "text",
+                "color": "#243361",
+                "fontSize": "16px",
+                "fontStyle": "regular",
+                "fontFamily": "Inter",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "5b35ad82-ea9f-4136-b30c-66c872c32e66",
+                "dndParentId": "4cb2c529-f18c-4091-8262-cd59e6831671",
+                "letterSpacing": "-0px",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "depth": 3,
+                "index": 1,
+                "userFontFamily": true,
+                "elmId": "text-d696b920"
+              }
+            ],
+            "dndId": "4cb2c529-f18c-4091-8262-cd59e6831671",
+            "dndParentId": "3516b973-6c52-4cc1-9dfa-b9da030407bc",
+            "depth": 2,
+            "index": 1,
+            "elmId": "gridItem-37e27270"
+          }
+        ],
+        "dndId": "3516b973-6c52-4cc1-9dfa-b9da030407bc",
+        "dndParentId": "8d3865c5-83d4-4a14-9d06-706918505eb2",
+        "dndCollapsed": false,
+        "depth": 1,
+        "index": 3,
+        "elmId": "grid-71d92cef"
+      }
+    ],
+    "settings": [
+      {
+        "type": "backgroundColor",
+        "color": "#fffcef",
+        "prevColor": "#fffcef"
+      },
+      {
+        "url": "",
+        "type": "backgroundImage"
+      },
+      {
+        "type": "spacings",
+        "padding": [
+          60,
+          40,
+          60,
+          40
+        ],
+        "spacing": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "responsive": {
+          "620": {
+            "padding": [
+              32,
+              32,
+              32,
+              32
+            ],
+            "spacing": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "type": "radius",
+        "radius": 0
+      },
+      {
+        "type": "shadows",
+        "boxShadow": {
+          "x": 0,
+          "y": 2,
+          "blur": 4,
+          "hide": true,
+          "color": {
+            "a": 0.1,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "spread": 0
+        },
+        "textShadow": {
+          "x": 0,
+          "y": 0,
+          "blur": 100,
+          "hide": true,
+          "color": {
+            "a": 1,
+            "b": 0,
+            "g": 4,
+            "r": 0
+          }
+        }
+      }
+    ],
+    "dndId": "8d3865c5-83d4-4a14-9d06-706918505eb2",
+    "dndCollapsed": true,
+    "depth": 0,
+    "index": 4,
+    "elmId": "module-1f11ec9e"
+  },
+  {
+    "id": "2d6c46bc-2269-4912-acfc-625d77568d38",
+    "name": "Footer",
+    "items": [
+      {
+        "type": "grid",
+        "itemsSize": "fill",
+        "itemsAlignment": "top center",
+        "itemsSpacings": {
+          "vertical": 30,
+          "horizontal": "0"
+        },
+        "columns": "",
+        "shouldCollapseOnMobile": true,
+        "responsive": {
+          "620": {
+            "itemsSpacings": {
+              "vertical": 30,
+              "horizontal": 0
+            }
+          }
+        },
+        "items": [
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "fill",
+            "itemsAlignment": "top center",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Say Hello. Anytime.</span></div>",
+                "type": "text",
+                "align": "center",
+                "color": "#fbeec2",
+                "fontSize": "32px",
+                "fontStyle": "700",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "120%",
+                "letterSpacing": "0px",
+                "dndId": "cd51f8af-dc37-47ad-987a-8bda3826d1a5",
+                "dndParentId": "bc270d67-f1a3-4536-85e5-5d0cc7f194ae",
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    8,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "depth": 3,
+                "index": 0,
+                "size": {
+                  "width": "100%",
+                  "height": "",
+                  "help": null,
+                  "heightRatio": null,
+                  "widthRatio": null,
+                  "changed": "width"
+                },
+                "elmId": "text-a17230a0"
+              },
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Reply to this email or call to connect with us.</span></div>",
+                "type": "text",
+                "color": "#ffffff",
+                "fontSize": "14px",
+                "fontStyle": "regular",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "a06b7a5f-0f45-4e8d-91de-8c2fdaadf6f6",
+                "dndParentId": "bc270d67-f1a3-4536-85e5-5d0cc7f194ae",
+                "align": "center",
+                "letterSpacing": "-0px",
+                "depth": 3,
+                "index": 1,
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    24,
+                    0
+                  ],
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "spacing",
+                    "position": 2
+                  }
+                },
+                "elmId": "text-8efe7b16"
+              },
+              {
+                "link": "https://designmodo.com/postcards",
+                "text": "<div><span style=\"white-space: pre-wrap;\">+1 648 456 7899</span></div>",
+                "type": "button",
+                "color": "#ffffff",
+                "radius": {
+                  "value": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "hide": true
+                },
+                "fontSize": 16,
+                "spacings": {
+                  "spacing": [
+                    0,
+                    0,
+                    16,
+                    0
+                  ],
+                  "padding": [
+                    12,
+                    20,
+                    12,
+                    20
+                  ],
+                  "data": {
+                    "isMixed": false,
+                    "type": "padding",
+                    "position": 2
+                  }
+                },
+                "fontStyle": "500",
+                "fontFamily": "Fira Sans",
+                "lineHeight": 24,
+                "letterSpacing": "-0px",
+                "backgroundColor": false,
+                "dndId": "47f3c09f-0618-4d52-ba14-4ce99e30de83",
+                "dndParentId": "bc270d67-f1a3-4536-85e5-5d0cc7f194ae",
+                "fixedSize": {
+                  "width": 168,
+                  "height": 48
+                },
+                "prevBackgroundColor": "#1595e7",
+                "border": {
+                  "color": {
+                    "top": "#ffffff",
+                    "right": "#ffffff",
+                    "bottom": "#ffffff",
+                    "left": "#ffffff"
+                  },
+                  "style": {
+                    "top": "solid",
+                    "right": "solid",
+                    "bottom": "solid",
+                    "left": "solid"
+                  },
+                  "width": {
+                    "top": 1,
+                    "right": 1,
+                    "bottom": 1,
+                    "left": 1
+                  },
+                  "hide": false
+                },
+                "depth": 3,
+                "index": 2,
+                "textAlign": "center",
+                "hide": false,
+                "hideMobile": false,
+                "elmId": "button-b13a35ab"
+              }
+            ],
+            "dndId": "bc270d67-f1a3-4536-85e5-5d0cc7f194ae",
+            "dndParentId": "15165f43-16d3-4eb3-9675-601b2fb0c98f",
+            "depth": 2,
+            "index": 0,
+            "elmId": "gridItem-4e919b95"
+          }
+        ],
+        "dndId": "15165f43-16d3-4eb3-9675-601b2fb0c98f",
+        "dndParentId": "b679458f-d2fc-4919-98aa-9fc99f5d25f1",
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            16,
+            0
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 2
+          }
+        },
+        "dndCollapsed": false,
+        "depth": 1,
+        "index": 0,
+        "elmId": "grid-9c60c368"
+      },
+      {
+        "type": "grid",
+        "itemsSize": "hug",
+        "itemsAlignment": "middle center",
+        "itemsSpacings": {
+          "vertical": 0,
+          "horizontal": 30
+        },
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            24,
+            0
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 2
+          }
+        },
+        "responsive": {
+          "620": {
+            "itemsSpacings": {
+              "vertical": 0,
+              "horizontal": 20
+            }
+          }
+        },
+        "items": [
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "alt": "",
+                "value": "<svg aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fab\" data-icon=\"square-facebook\" class=\"svg-inline--fa fa-square-facebook \" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\" style=\"background-color: transparent; padding: 5px;\"><path fill=\"currentColor\" d=\"M400 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 48h137.25V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.27c-30.81 0-40.42 19.12-40.42 38.73V256h68.78l-11 71.69h-57.78V480H400a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48z\"></path></svg>",
+                "link": "",
+                "size": {
+                  "width": "32px",
+                  "height": "",
+                  "help": "Default size: 20x20px",
+                  "heightRatio": 1,
+                  "widthRatio": 1,
+                  "changed": "width"
+                },
+                "type": "icon",
+                "name": "FacebookSquare",
+                "color": "#ffffff",
+                "dndId": "d3b37f35-b374-4ffb-9051-600620a0d63d",
+                "dndParentId": "ec1eccca-072d-48c4-8c31-2c9a5fa68169",
+                "depth": 3,
+                "index": 0,
+                "elmId": "icon-25a9c9ff"
+              }
+            ],
+            "dndId": "ec1eccca-072d-48c4-8c31-2c9a5fa68169",
+            "dndParentId": "50aeae28-4d4b-4b13-84d8-341b1d3ce139",
+            "depth": 2,
+            "index": 0,
+            "spacings": {
+              "spacing": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "padding",
+                "position": 2
+              }
+            },
+            "backgroundColor": false,
+            "radius": {
+              "value": [
+                195,
+                195,
+                195,
+                195
+              ],
+              "hide": false
+            },
+            "prevBackgroundColor": "#1d3425",
+            "elmId": "gridItem-18cfd728"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "alt": "",
+                "value": "<svg aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fab\" data-icon=\"twitter\" class=\"svg-inline--fa fa-twitter \" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" style=\"background-color: transparent; padding: 5px;\"><path fill=\"currentColor\" d=\"M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z\"></path></svg>",
+                "link": "",
+                "size": {
+                  "width": "32px",
+                  "height": "",
+                  "help": "Default size: 20x20px",
+                  "heightRatio": 0.8695652173913043,
+                  "widthRatio": 1.15,
+                  "changed": "width"
+                },
+                "type": "icon",
+                "name": "TwitterX",
+                "color": "#ffffff",
+                "dndId": "c15994c8-b491-40f7-ad0a-0bad29a3b3c6",
+                "dndParentId": "c6e085eb-074e-4a17-b410-20fa6011e5f3",
+                "depth": 3,
+                "index": 0,
+                "elmId": "icon-7c79e483"
+              }
+            ],
+            "dndId": "c6e085eb-074e-4a17-b410-20fa6011e5f3",
+            "dndParentId": "50aeae28-4d4b-4b13-84d8-341b1d3ce139",
+            "depth": 2,
+            "index": 1,
+            "spacings": {
+              "spacing": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "padding",
+                "position": 3
+              }
+            },
+            "backgroundColor": false,
+            "radius": {
+              "value": [
+                282,
+                282,
+                282,
+                282
+              ],
+              "hide": false
+            },
+            "prevBackgroundColor": "#1d3425",
+            "elmId": "gridItem-0e26f7bf"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "alt": "",
+                "value": "<svg aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fab\" data-icon=\"instagram\" class=\"svg-inline--fa fa-instagram \" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path fill=\"currentColor\" d=\"M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z\"></path></svg>",
+                "link": "",
+                "size": {
+                  "width": "32px",
+                  "height": "",
+                  "help": "Default size: 20x20px",
+                  "heightRatio": 0.9523809523809524,
+                  "widthRatio": 1.05,
+                  "changed": "width"
+                },
+                "type": "icon",
+                "name": "Instagram",
+                "color": "#ffffff",
+                "dndId": "cb09f04a-538c-4428-be10-5e9b60bef41e",
+                "dndParentId": "67715c58-4313-436d-ad5c-31cfb63b69ee",
+                "depth": 3,
+                "index": 0,
+                "elmId": "icon-7c4ed221"
+              }
+            ],
+            "dndId": "67715c58-4313-436d-ad5c-31cfb63b69ee",
+            "dndParentId": "50aeae28-4d4b-4b13-84d8-341b1d3ce139",
+            "depth": 2,
+            "index": 2,
+            "spacings": {
+              "spacing": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "padding",
+                "position": 2
+              }
+            },
+            "backgroundColor": false,
+            "radius": {
+              "value": [
+                282,
+                282,
+                282,
+                282
+              ],
+              "hide": false
+            },
+            "prevBackgroundColor": "#1d3425",
+            "elmId": "gridItem-eb42cb8a"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "alt": "",
+                "value": "<svg aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fab\" data-icon=\"pinterest\" class=\"svg-inline--fa fa-pinterest\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 496 512\" style=\"background-color: transparent; padding: 5px;\"><path fill=\"currentColor\" d=\"M496 256c0 137-111 248-248 248-25.6 0-50.2-3.9-73.4-11.1 10.1-16.5 25.2-43.5 30.8-65 3-11.6 15.4-59 15.4-59 8.1 15.4 31.7 28.5 56.8 28.5 74.8 0 128.7-68.8 128.7-154.3 0-81.9-66.9-143.2-152.9-143.2-107 0-163.9 71.8-163.9 150.1 0 36.4 19.4 81.7 50.3 96.1 4.7 2.2 7.2 1.2 8.3-3.3.8-3.4 5-20.3 6.9-28.1.6-2.5.3-4.7-1.7-7.1-10.1-12.5-18.3-35.3-18.3-56.6 0-54.7 41.4-107.6 112-107.6 60.9 0 103.6 41.5 103.6 100.9 0 67.1-33.9 113.6-78 113.6-24.3 0-42.6-20.1-36.7-44.8 7-29.5 20.5-61.3 20.5-82.6 0-19-10.2-34.9-31.4-34.9-24.9 0-44.9 25.7-44.9 60.2 0 22 7.4 36.8 7.4 36.8s-24.5 103.8-29 123.2c-5 21.4-3 51.6-.9 71.2C65.4 450.9 0 361.1 0 256 0 119 111 8 248 8s248 111 248 248z\"></path></svg>",
+                "link": "",
+                "size": {
+                  "width": "32px",
+                  "height": "",
+                  "help": "Default size: 20x20px",
+                  "heightRatio": 1,
+                  "widthRatio": 1,
+                  "changed": "width"
+                },
+                "type": "icon",
+                "name": "Pinterest",
+                "color": "#ffffff",
+                "dndId": "5b06e2ea-688b-4f14-a35e-570947b0e530",
+                "dndParentId": "905b6452-aca8-46a2-94dd-8c195028ac62",
+                "depth": 3,
+                "index": 0,
+                "elmId": "icon-18c99c3a"
+              }
+            ],
+            "dndId": "905b6452-aca8-46a2-94dd-8c195028ac62",
+            "dndParentId": "50aeae28-4d4b-4b13-84d8-341b1d3ce139",
+            "depth": 2,
+            "index": 3,
+            "backgroundColor": false,
+            "spacings": {
+              "spacing": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "padding",
+                "position": 1
+              }
+            },
+            "radius": {
+              "value": [
+                279,
+                279,
+                279,
+                279
+              ],
+              "hide": false
+            },
+            "prevBackgroundColor": "#1d3425",
+            "elmId": "gridItem-b4db5b3a"
+          }
+        ],
+        "dndId": "50aeae28-4d4b-4b13-84d8-341b1d3ce139",
+        "dndParentId": "b679458f-d2fc-4919-98aa-9fc99f5d25f1",
+        "dndCollapsed": false,
+        "depth": 1,
+        "index": 1,
+        "elmId": "grid-3aa29c53"
+      },
+      {
+        "type": "grid",
+        "itemsSize": "hug",
+        "itemsAlignment": "middle center",
+        "itemsSpacings": {
+          "vertical": 0,
+          "horizontal": 16
+        },
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            24,
+            0
+          ],
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 2
+          }
+        },
+        "responsive": {
+          "620": {
+            "itemsSpacings": {
+              "vertical": 0,
+              "horizontal": 20
+            }
+          }
+        },
+        "items": [
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Location</span></div>",
+                "type": "text",
+                "color": "#ffffff",
+                "fontSize": "14px",
+                "fontStyle": "regular",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "7557801f-4c38-4d8e-95e5-b22ee48dfa6a",
+                "dndParentId": "6070ea32-54d1-4ba0-a087-64390cac05c4",
+                "letterSpacing": "-0px",
+                "depth": 3,
+                "index": 0,
+                "hide": false,
+                "hideMobile": false,
+                "elmId": "text-86b04867"
+              }
+            ],
+            "dndId": "6070ea32-54d1-4ba0-a087-64390cac05c4",
+            "dndParentId": "57ce7417-203c-4c67-b8f5-c5e7b8bc8a27",
+            "depth": 2,
+            "index": 0,
+            "elmId": "gridItem-79f33c43"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">|</span></div>",
+                "type": "text",
+                "color": "#ffffff",
+                "fontSize": "14px",
+                "fontStyle": "regular",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "f82e597a-7b10-4d28-90ba-b50ff9a7c351",
+                "dndParentId": "0afa330a-5330-4106-86fe-07207000b734",
+                "letterSpacing": "-0px",
+                "depth": 3,
+                "index": 0,
+                "elmId": "text-e330ba02"
+              }
+            ],
+            "dndId": "0afa330a-5330-4106-86fe-07207000b734",
+            "dndParentId": "57ce7417-203c-4c67-b8f5-c5e7b8bc8a27",
+            "depth": 2,
+            "index": 1,
+            "elmId": "gridItem-769d91b1"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Contact</span></div>",
+                "type": "text",
+                "color": "#ffffff",
+                "fontSize": "14px",
+                "fontStyle": "regular",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "677c206f-5991-403e-a6ef-ae0787c8efd4",
+                "dndParentId": "1645a9f1-7ee5-47e5-9656-0f5af11060e9",
+                "letterSpacing": "-0px",
+                "depth": 3,
+                "index": 0,
+                "name": "Location",
+                "elmId": "text-566481e6"
+              }
+            ],
+            "dndId": "1645a9f1-7ee5-47e5-9656-0f5af11060e9",
+            "dndParentId": "57ce7417-203c-4c67-b8f5-c5e7b8bc8a27",
+            "depth": 2,
+            "index": 2,
+            "dndCollapsed": false,
+            "elmId": "gridItem-d883d66b"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">|</span></div>",
+                "type": "text",
+                "color": "#ffffff",
+                "fontSize": "14px",
+                "fontStyle": "regular",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "77d2c8a2-0c3c-4c27-bc7c-17de737830a1",
+                "dndParentId": "61963ad9-455a-44e7-a165-250d555453a8",
+                "letterSpacing": "-0px",
+                "depth": 3,
+                "index": 0,
+                "elmId": "text-b23f1504"
+              }
+            ],
+            "dndId": "61963ad9-455a-44e7-a165-250d555453a8",
+            "dndParentId": "57ce7417-203c-4c67-b8f5-c5e7b8bc8a27",
+            "depth": 2,
+            "index": 3,
+            "dndCollapsed": false,
+            "elmId": "gridItem-0b7871db"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Help</span></div>",
+                "type": "text",
+                "color": "#ffffff",
+                "fontSize": "14px",
+                "fontStyle": "regular",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "60cbbf33-8ed2-4107-b64c-72fcf1a0c27f",
+                "dndParentId": "2f5bff31-593e-4544-a594-1a49c672dbeb",
+                "letterSpacing": "-0px",
+                "depth": 3,
+                "index": 0,
+                "name": "Location",
+                "elmId": "text-1c12b4d9"
+              }
+            ],
+            "dndId": "2f5bff31-593e-4544-a594-1a49c672dbeb",
+            "dndParentId": "57ce7417-203c-4c67-b8f5-c5e7b8bc8a27",
+            "depth": 2,
+            "index": 4,
+            "dndCollapsed": false,
+            "elmId": "gridItem-edabbafe"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">|</span></div>",
+                "type": "text",
+                "color": "#ffffff",
+                "fontSize": "14px",
+                "fontStyle": "regular",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "976185a9-225b-4e39-b7ac-dc865698efe4",
+                "dndParentId": "636716cc-ac4d-46c9-8140-811d8b31d455",
+                "letterSpacing": "-0px",
+                "depth": 3,
+                "index": 0,
+                "elmId": "text-8e89b24c"
+              }
+            ],
+            "dndId": "636716cc-ac4d-46c9-8140-811d8b31d455",
+            "dndParentId": "57ce7417-203c-4c67-b8f5-c5e7b8bc8a27",
+            "depth": 2,
+            "index": 5,
+            "dndCollapsed": false,
+            "elmId": "gridItem-a3217395"
+          },
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "middle center",
+            "items": [
+              {
+                "text": "<div><span style=\"white-space: pre-wrap;\">Privacy</span></div>",
+                "type": "text",
+                "color": "#ffffff",
+                "fontSize": "14px",
+                "fontStyle": "regular",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "20px",
+                "size": {
+                  "width": "100%",
+                  "height": ""
+                },
+                "dndId": "c06931e4-1bed-471e-a195-62c1051da75b",
+                "dndParentId": "fdc5367b-7578-4484-b36f-29814f0a39fa",
+                "letterSpacing": "-0px",
+                "depth": 3,
+                "index": 0,
+                "name": "Location",
+                "elmId": "text-1432a7d2"
+              }
+            ],
+            "dndId": "fdc5367b-7578-4484-b36f-29814f0a39fa",
+            "dndParentId": "57ce7417-203c-4c67-b8f5-c5e7b8bc8a27",
+            "depth": 2,
+            "index": 6,
+            "dndCollapsed": false,
+            "elmId": "gridItem-fcfce176"
+          }
+        ],
+        "dndId": "57ce7417-203c-4c67-b8f5-c5e7b8bc8a27",
+        "dndParentId": "b679458f-d2fc-4919-98aa-9fc99f5d25f1",
+        "dndCollapsed": false,
+        "depth": 1,
+        "index": 2,
+        "elmId": "grid-f01ca8d6"
+      },
+      {
+        "text": "<div><span style=\"font-weight: 400;font-style: normal;white-space: pre-wrap;\">King Street, 2901 Marmara Road, New York City, Washington, 98122-1090, United States of America.</span></div>",
+        "type": "text",
+        "align": "center",
+        "color": "#ffffff",
+        "fontSize": 14,
+        "fontStyle": "regular",
+        "spacings": {
+          "spacing": [
+            0,
+            0,
+            20,
+            0
+          ],
+          "padding": [
+            0,
+            60,
+            0,
+            60
+          ],
+          "data": {
+            "isMixed": false,
+            "type": "spacing",
+            "position": 2
+          }
+        },
+        "fontFamily": "Fira Sans",
+        "lineHeight": "140%",
+        "letterSpacing": "-0px",
+        "dndId": "0b040f45-23b0-411c-84a2-8ef472a26552",
+        "dndParentId": "b679458f-d2fc-4919-98aa-9fc99f5d25f1",
+        "depth": 1,
+        "index": 3,
+        "responsive": {
+          "620": {
+            "lineHeight": "120%",
+            "align": "center",
+            "spacings": {
+              "spacing": [
+                0,
+                0,
+                20,
+                0
+              ],
+              "padding": [
+                0,
+                16,
+                0,
+                16
+              ],
+              "data": {
+                "isMixed": false,
+                "type": "padding",
+                "position": 1
+              }
+            }
+          }
+        },
+        "elmId": "text-755f4723"
+      },
+      {
+        "type": "grid",
+        "itemsSize": "hug",
+        "itemsAlignment": "top center",
+        "itemsSpacings": {
+          "vertical": 0,
+          "horizontal": 0
+        },
+        "items": [
+          {
+            "type": "gridItem",
+            "height": "hug",
+            "width": "hug",
+            "itemsAlignment": "top center",
+            "items": [
+              {
+                "link": "",
+                "text": "<div><span style=\"font-weight: 400;font-style: normal;color: rgb(255, 255, 255);white-space: pre-wrap;\">No longer want to receive these emails?</span></div><div><span style=\"font-weight: 400;font-style: normal;color: rgb(255, 255, 255);white-space: pre-wrap;\">﻿</span><a href=\"https://designmodo.com/postcards\" data-id=\"5066dc4a-e475-42b6-bfaa-7f99ae373305\" style=\"text-decoration: none; color: inherit; line-height: 1;\"><span style=\"text-decoration: underline;font-weight: 400;font-style: normal;color: rgb(255, 255, 255);white-space: pre-wrap;\">Unsubscribe</span></a><span style=\"font-weight: 400;font-style: normal;color: rgb(255, 255, 255);white-space: pre-wrap;\">, </span><a href=\"https://designmodo.com/postcards\" data-id=\"0e799185-0511-433c-a497-13a9659f8281\" style=\"text-decoration: none; color: inherit; line-height: 1;\"><span style=\"text-decoration: underline;font-weight: 400;font-style: normal;color: rgb(255, 255, 255);white-space: pre-wrap;\">Manage Preferences</span></a><span style=\"font-weight: 400;font-style: normal;color: rgb(255, 255, 255);white-space: pre-wrap;\">, or </span><a href=\"https://designmodo.com/postcards\" data-id=\"5b65e8be-72e5-4fb8-b074-94120fe16468\" style=\"text-decoration: none; color: inherit; line-height: 1;\"><span style=\"text-decoration: underline;font-weight: 400;font-style: normal;color: rgb(255, 255, 255);white-space: pre-wrap;\">View our Privacy Policy</span></a><span style=\"text-decoration: underline;font-weight: 400;font-style: normal;color: rgb(255, 255, 255);white-space: pre-wrap;\">.</span></div>",
+                "type": "link",
+                "color": "#1d3425",
+                "fontSize": 14,
+                "fontStyle": "500",
+                "fontFamily": "Fira Sans",
+                "lineHeight": "140%",
+                "dndId": "876405ed-ed64-4090-9a11-55581c7c68fa",
+                "dndParentId": "59344d43-a088-4ae4-92f7-fabb0905d2b1",
+                "depth": 3,
+                "index": 0,
+                "letterSpacing": "-0px",
+                "align": "center",
+                "elmId": "link-7381395d"
+              }
+            ],
+            "dndId": "59344d43-a088-4ae4-92f7-fabb0905d2b1",
+            "dndParentId": "fa39f3b8-26de-42eb-af88-ba9aa8347168",
+            "depth": 2,
+            "index": 0,
+            "elmId": "gridItem-79c5e3b8"
+          }
+        ],
+        "dndId": "fa39f3b8-26de-42eb-af88-ba9aa8347168",
+        "dndParentId": "b679458f-d2fc-4919-98aa-9fc99f5d25f1",
+        "depth": 1,
+        "index": 4,
+        "elmId": "grid-9b6fdfb1"
+      }
+    ],
+    "settings": [
+      {
+        "type": "backgroundColor",
+        "color": "#243261",
+        "prevColor": "#243261"
+      },
+      {
+        "url": "",
+        "type": "backgroundImage"
+      },
+      {
+        "type": "spacings",
+        "padding": [
+          40,
+          40,
+          24,
+          40
+        ],
+        "spacing": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "responsive": {
+          "620": {
+            "padding": [
+              32,
+              32,
+              32,
+              32
+            ],
+            "spacing": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "type": "radius",
+        "radius": 0
+      },
+      {
+        "type": "shadows",
+        "boxShadow": {
+          "x": 0,
+          "y": 2,
+          "blur": 4,
+          "hide": true,
+          "color": {
+            "a": 0.1,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "spread": 0
+        },
+        "textShadow": {
+          "x": 0,
+          "y": 0,
+          "blur": 100,
+          "hide": true,
+          "color": {
+            "a": 1,
+            "b": 0,
+            "g": 4,
+            "r": 0
+          }
+        }
+      }
+    ],
+    "dndId": "b679458f-d2fc-4919-98aa-9fc99f5d25f1",
+    "depth": 0,
+    "index": 5,
+    "dndCollapsed": true,
+    "elmId": "module-1b69ce1b"
+  }
+]

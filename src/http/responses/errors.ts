@@ -36,10 +36,10 @@ export class E_REQUEST_EXCEPTION extends Error {
     )
   }
 
-  public static E_OPERATION_FAILED(message?: string) {
+  public static E_OPERATION_FAILED(message?: string, payload?: any) {
     return new E_REQUEST_EXCEPTION(
       `Internal server error${message ? `: ${message}` : "."}`,
-      {},
+      payload,
       500,
     )
   }
@@ -49,8 +49,8 @@ export function E_UNAUTHORIZED(message?: string): never {
   throw E_REQUEST_EXCEPTION.E_UNAUTHORIZED(message)
 }
 
-export function E_OPERATION_FAILED(message?: string) {
-  throw E_REQUEST_EXCEPTION.E_OPERATION_FAILED(message)
+export function E_OPERATION_FAILED(message?: string, payload?: any) {
+  throw E_REQUEST_EXCEPTION.E_OPERATION_FAILED(message, payload)
 }
 
 export function E_VALIDATION_FAILED(

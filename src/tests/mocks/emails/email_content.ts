@@ -5,9 +5,9 @@ export function getDefaultEmailContentSchema(): EmailContentSchemaDto {
     sections: [],
     container: {
       styles: {
-        backgroundColor: "#3CEDB9",
+        backgroundColor: "#F4F4F4",
         margin: { top: 0, left: 0, right: 0, bottom: 0 },
-        padding: { top: 24, left: 48, right: 48, bottom: 24 },
+        padding: { top: 20, left: 0, right: 0, bottom: 20 },
         borderRadius: { top: 0, left: 0, right: 0, bottom: 0 },
         fontFamily: {
           name: "Montserrat",
@@ -17,21 +17,14 @@ export function getDefaultEmailContentSchema(): EmailContentSchemaDto {
     },
     wrapper: {
       styles: {
-        backgroundColor: "red",
+        backgroundColor: "#243361",
         margin: { top: 0, left: 0, right: 0, bottom: 0 },
-        padding: { top: 32, left: 24, right: 24, bottom: 32 },
         borderRadius: { top: 0, left: 0, right: 0, bottom: 0 },
         fontFamily: {
           name: "Arial",
           url: "https://fonts.googleapis.com/css2?family=Arial:wght@400;500;600;700&display=swap",
         },
         "min-height": 750,
-        border: {
-          top: 2,
-          left: 2,
-          right: 2,
-          bottom: 2,
-        },
         borderColor: {
           top: "#000",
           left: "#000",

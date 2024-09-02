@@ -1,5 +1,6 @@
 // takes in a structured json, returns mjml template which further be converted to html for the email
 import {
+  EmailContentCorneredStyle,
   EmailContentSchemaDto,
   EmailContentStyleSchemaDto,
   EmailSectionSchemaDto,
@@ -13,9 +14,7 @@ export class EmailBuilderTool {
     styles: Record<string, string | number>
   }[] = []
 
-  private fontFamilies: Required<
-    EmailContentStyleSchemaDto["fontFamily"]
-  >[] = []
+  private fontFamilies: EmailContentStyleSchemaDto["fontFamily"][] = []
   //
   constructor(private schema: EmailContentSchemaDto) {}
 
@@ -53,36 +52,52 @@ export class EmailBuilderTool {
     }
   }
 
-  private getElementAttributes(
-    styles: EmailContentStyleSchemaDto,
-    type: EmailSectionSchemaDto["type"],
+  private getElementProperties(
+    element: EmailContentSchemaDto["sections"][number],
   ) {
-    const attributes: Record<string, string> = {}
-
-    if (
-      styles.padding &&
-      (styles.padding.top ||
-        styles.padding.right ||
-        styles.padding.bottom ||
-        styles.padding.left)
-    ) {
-      attributes["padding"] =
-        `${styles.padding.top}px ${styles.padding.right}px ${styles.padding.bottom}px ${styles.padding.left}px`
+    const properties: Record<string, string> = {}
+    if (element.type === "button") {
+      properties["href"] = element.properties?.href?.url ?? "#"
     }
 
-    if (
-      styles.margin &&
-      (styles.margin.top ||
-        styles.margin.right ||
-        styles.margin.bottom ||
-        styles.margin.left)
-    ) {
+    return Object.keys(properties)
+      .map((attribute) => `${attribute}="${properties[attribute]}"`)
+      .join(" ")
+  }
+
+  private getElementAttributes(
+    element: EmailContentSchemaDto["sections"][number],
+  ) {
+    const { styles = {}, type } = element
+    const attributes: Record<string, string> = {}
+
+    attributes["padding"] = this.getPadding(styles?.padding)
+
+    const typesSupportingMargin = [""]
+
+    if (element.type === "button") {
+      attributes["href"] = element.properties?.href?.url ?? "#"
+    }
+
+    if (typesSupportingMargin.includes(type)) {
       attributes["margin"] =
-        `${styles.margin.top}px ${styles.margin.right}px ${styles.margin.bottom}px ${styles.margin.left}px`
+        `${styles?.margin?.top ?? 0}px ${styles?.margin?.right ?? 0}px ${styles?.margin?.bottom ?? 0}px ${styles?.margin?.left ?? 0}px`
     }
 
     if (styles.backgroundColor) {
       attributes["background-color"] = styles.backgroundColor
+    }
+
+    const typesSupportingVerticalAlign = ["grid-item"]
+
+    const typesSupportingHorizontalAlign = ["image", "button"]
+
+    if (typesSupportingHorizontalAlign.includes(type)) {
+      attributes["align"] = styles.horizontalAlign ?? "left"
+    }
+
+    if (typesSupportingVerticalAlign.includes(type)) {
+      attributes["vertical-align"] = styles.verticalAlign ?? "middle"
     }
 
     if (styles.width) {
@@ -96,13 +111,17 @@ export class EmailBuilderTool {
         `${styles.fontFamily?.name}, ${this.schema.container.styles.fontFamily?.name}`
     }
 
+    if (styles.color) {
+      attributes["color"] = styles.color
+    }
+
     return Object.keys(attributes)
       .map((attribute) => `${attribute}="${attributes[attribute]}"`)
       .join(" ")
   }
 
   private getPadding(padding: EmailContentStyleSchemaDto["padding"]) {
-    return `${padding?.top}px ${padding?.right}px ${padding?.bottom}px ${padding?.left}px`
+    return `${padding?.top ?? 0}px ${padding?.right ?? 0}px ${padding?.bottom ?? 0}px ${padding?.left ?? 0}px`
   }
 
   private getFontFamilyStyles() {
@@ -119,28 +138,129 @@ export class EmailBuilderTool {
     return `${this.inlineStyles.map((style) => `.${style.id} { ${Object.keys(style.styles).map((styleKey) => `${styleKey}: ${style.styles[styleKey]}`)} }`)}`
   }
 
-  private buildSections(
-    elements: EmailContentSchemaDto["sections"],
+  private buildSections() {
+    return this.schema.sections.map(
+      (section) =>
+        `<mj-wrapper ${this.getElementAttributes(section)}>${this.buildElement(section)}</mj-wrapper>`,
+    )
+  }
+
+  private getRawHTMLElementStyles(
+    element: EmailContentSchemaDto["sections"][number],
+  ) {
+    return `style="${this.getRawCssStyles(element).join(";")}"`
+  }
+
+  private getRawCssStyles(
+    element: EmailContentSchemaDto["sections"][number],
+  ) {
+    if (!element.styles) {
+      return []
+    }
+
+    let styleAttributes: string[] = []
+
+    for (const styleKey in element.styles) {
+      const key = styleKey as keyof typeof element.styles
+      const style = element.styles[key]
+
+      switch (key) {
+        case "backgroundColor":
+          styleAttributes.push(`background-color: ${style}`)
+          break
+        case "color":
+          styleAttributes.push(`color: ${style}`)
+        case "borderRadius":
+          const values = style as EmailContentCorneredStyle
+
+          if (values.top || values.bottom || values.left || values.right) {
+            styleAttributes.push(
+              `border-radius: ${values?.top ?? 0}px;${values?.right ?? 0}px;${values?.bottom ?? 0}px;${values?.left ?? 0}px;`,
+            )
+          }
+        case "textDecoration":
+          styleAttributes.push(`text-decoration: ${style}`)
+
+        default:
+          break
+      }
+    }
+
+    return styleAttributes
+  }
+
+  private addFontFamily(
+    fontFamily: EmailContentStyleSchemaDto["fontFamily"],
+  ) {
+    const familyExists = this.fontFamilies.find(
+      (font) => font?.name === fontFamily?.name,
+    )
+
+    if (!familyExists) {
+      this.fontFamilies.push(fontFamily)
+    }
+  }
+
+  private buildElement(
+    element: EmailContentSchemaDto["sections"][number],
+    nestedInGrid = false,
   ): string {
-    return elements
+    if (!element.elements || element.elements.length === 0) {
+      return ""
+    }
+
+    // are all elements text ? if yes, we are building text.
+    const isTextCombination = element.elements.every(
+      (element) => element.type === "text",
+    )
+
+    if (isTextCombination) {
+      // handle button text
+      const textChunks = element.elements.map(
+        (text) =>
+          `<span ${this.getRawHTMLElementStyles(text)}>${text.value}</span>`,
+      )
+
+      return element.type === "button"
+        ? textChunks.join("")
+        : `<mj-text padding="0">${textChunks.join("\n")}</mj-text>`
+    }
+
+    return element.elements
       .map((element) => {
         const id = cuid()
 
         this.getClassBasedCssStyles(id, element.styles)
 
         if (element.styles.fontFamily) {
-          this.fontFamilies.push(element.styles.fontFamily)
+          this.addFontFamily(element.styles.fontFamily)
+        }
+
+        if (element.type === "grid" && nestedInGrid) {
+          return `<mj-table><tr>${this.buildElement(element, true)}</tr></mj-table>`
+        }
+
+        if (element.type === "grid-item" && nestedInGrid) {
+          return `<td>${this.buildElement(element, true)}</td>`
         }
 
         switch (element.type) {
+          // case "section":
+          //   return /* html */ `<mj-wrapper css-class="${id}" ${this.getElementAttributes(element)}>${this.buildElement(element, true)}</mj-wrapper>`
           case "grid":
-            return /* html */ `<mj-section css-class="${id}" ${this.getElementAttributes(element.styles, element.type)}>
-          ${this.buildSections(element.elements ?? [])}
-          </mj-section>`
+            return /* html */ `<mj-section ${this.getElementAttributes(element)}>
+              ${this.buildElement(element)}
+            </mj-section>`
           case "grid-item":
-            return /* html */ `<mj-column ${this.getElementAttributes(element.styles, element.type)}>${this.buildSections(element.elements ?? [])}</mj-column>`
+            return /* html */ `<mj-column ${this.getElementAttributes(element)}>${this.buildElement(element, true)}</mj-column>`
           case "button":
-            return /* html */ `<mj-button ${this.getElementAttributes(element.styles, element.type)}></mj-button>`
+            if (nestedInGrid) {
+              return `<a ${this.getElementProperties(element)} ${this.getRawHTMLElementStyles(element)}>${this.buildElement(element, true)}</a>`
+            }
+
+            return /* html */ `<mj-button ${this.getElementAttributes(element)}>${this.buildElement(element)}</mj-button>`
+          case "image":
+            return /* html */ `<mj-image ${this.getElementAttributes(element)} src="${element.value}" />`
           default:
             return ""
         }
@@ -153,9 +273,12 @@ export class EmailBuilderTool {
       this.fontFamilies.push(this.schema.container.styles.fontFamily)
     }
 
-    const sectionContent = this.buildSections(this.schema.sections)
+    const sectionContent = this.buildSections()
 
     this.getClassBasedCssStyles("wrapper", this.schema.wrapper.styles)
+
+    //  <mj-wrapper css-class="wrapper" ${this.getElementAttributes({ type: "container", ...this.schema.wrapper })}>
+    //  </mj-wrapper>
 
     return /* html */ `
     <mjml>
@@ -167,11 +290,22 @@ export class EmailBuilderTool {
             ${this.getInlineStyles()}
          </mj-style>
          ${this.getFontFamilyStyles()}
+         <mj-style inline="inline">
+            @media only screen and (max-width: 600px) {}
+            @media only screen and (min-width:480px) {
+              .show-on-desktop {
+                display: block !important;
+              }
+            }
+            @media only screen and (max-width:479px) {
+              .hide-on-mobile {
+                display: none !important;
+              }
+            }
+         </mj-style>
       </mj-head>
-      <mj-body css-class="body" background-color="${this.schema.container.styles.backgroundColor}">
-         <mj-wrapper css-class="wrapper" ${this.getElementAttributes(this.schema.wrapper.styles, "container")}>
-            ${sectionContent}
-         </mj-wrapper>
+      <mj-body background-color="${this.schema.container.styles.backgroundColor}">
+         ${sectionContent}
       </mj-body>
    </mjml>`
   }
