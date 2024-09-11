@@ -60,6 +60,7 @@ export interface TeamUsagePayload {
   startOfMonth: string
   freeCredits: number
   apiKey: string
+  domain: string
   encryptedDkimPrivateKey: string
   returnPathSubDomain: string
   returnPathDomainCnameValue: string
@@ -83,6 +84,10 @@ export class TeamUsage {
     return `${this.HASH_PREFIX}:${this.teamId}`
   }
 
+  private domainKey(domain: string) {
+    return `${this.HASH_PREFIX}:domain:${domain}`
+  }
+
   async get() {
     return this.redis.hgetall(
       this.key(),
@@ -90,13 +95,16 @@ export class TeamUsage {
   }
 
   async set(payload: Partial<TeamUsagePayload>) {
-    return this.redis.hmset(
-      this.key(),
-      Object.fromEntries(
-        Object.entries(payload).filter(
-          ([_, value]) => value !== undefined,
+    await Promise.all([
+      this.redis.hmset(
+        this.key(),
+        Object.fromEntries(
+          Object.entries(payload).filter(
+            ([_, value]) => value !== undefined,
+          ),
         ),
       ),
-    )
+      this.redis.set(this.domainKey(payload.domain as string), this.key()),
+    ])
   }
 }

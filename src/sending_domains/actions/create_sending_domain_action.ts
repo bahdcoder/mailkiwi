@@ -44,6 +44,7 @@ export class CreateSendingDomainAction {
             dkimSubDomain, // 20241112010101._domainkey
           }),
           this.teamRepository.usage(teamId).set({
+            domain: payload.name,
             encryptedDkimPrivateKey: dkimPrivateKey.release(),
             returnPathSubDomain: this.config.software.bounceSubdomain,
             returnPathDomainCnameValue: this.config.software.bounceHost,

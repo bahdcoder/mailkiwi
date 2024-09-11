@@ -29,16 +29,16 @@ exports.connect_io_redis = function () {
   })
 }
 
+exports.process_email_job = async function (job) {
+  const plugin = this
+}
+
 exports.start_queue_worker = function (next, server) {
   const plugin = this
 
   const outbound_queue_worker = new Worker(
     OUTBOUND_QUEUE_EMAILS,
-    async (job) => {
-      const { message_stream, ...transaction_payload } = job.data
-
-      plugin.loginfo("Processing queue job: ", job.data.uuid)
-    },
+    plugin.process_email_job,
     { connection: this.ioredis },
   )
 
@@ -67,6 +67,7 @@ exports.hook_queue_outbound = function (next, connection, params) {
       .add(connection.transaction.uuid, {
         message_stream: buffer.toString(),
         ...transaction_payload,
+        connection_notes: connection.notes,
       })
       .then(() => {
         plugin.loginfo(

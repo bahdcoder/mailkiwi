@@ -18,6 +18,9 @@ const encryption_settings = {
   iv_delimiter: ":",
 }
 
+exports.known_keys = known_keys
+exports.encryption_settings = encryption_settings
+
 exports.get_redis_connection_details = function () {
   const parsed_url = url.parse(process.env.REDIS_URL)
 

@@ -123,6 +123,10 @@ const DEFAULT_BOUNCE_SUBDOMAIN = "kb"
 // But we will track bounces per minute and per hour per customer, and temporarily pause sending for a sender in some scenarios.
 // Pausing only pauses the queue of emails for this sender, but continues to receive email via smtp and http api.
 
+const EVENT_TRACKING_DOMAIN = "e.kbmta.net"
+
+const EU_EVENT_TRACKING_DOMAIN = "eu.e.kbmta.net"
+
 export const config = {
   ...env,
   software: {

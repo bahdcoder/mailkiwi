@@ -3,7 +3,8 @@
   "dependencies": {
     "Haraka": "^3.0.3",
     "haraka-plugin-dkim": "^1.0.5",
-    "env-cmd": "^10.1.0"
+    "env-cmd": "^10.1.0",
+    "bullmq": "^5.12.10"
   },
   "scripts": {
     "haraka:dev": "env-cmd -e email-server haraka -c ./haraka"

@@ -77,14 +77,17 @@
 ## Email sending infrastructure
 
 1. HAProxy load balancer for email routing to different server ip addresses.
-   - HAProxy handles TLS and TLS Termination.
+   - HAProxy could be hosted in Kubernetes/Nomad cluster
+   - Mail servers are completely not exposed to the internet.
+   - HAProxy load balancer is exposed to the internet.
+   - HAProxy load balancer is configured to route traffic to different server ip addresses (which live outside of the cluster).
 2. Haraka instances running behind load balancer.
 3. Haraka instances connecting to redis to authenticate incoming SMTP connections.
    - Haraka also checks for rate limiting.
+   - Perhaps mail servers should have their own Redis cluster.
    - If IP warming is configured, Haraka also does IP warming rate limits for the email client that connected.
 4. Haraka instances pick which IP to use for relaying/sending, from our subnet of ip addresses
 
-   -
    - Completely isolate subnets used for transactional and marketing infrastructure. 2 different infrastructures. Ideally 2 different email servers.
    - When customers use the SMTP to send emails, Haraka automatically qualifies them as transactional email
    - When an email is coming from Kibamail, then these emails are marketing emails.

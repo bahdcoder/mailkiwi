@@ -21,10 +21,23 @@
   - [ ] Setup PTR for ip addresses pointing to `eu-mta1.kbmta.net`
   - [ ] Setup PTR for ip addresses pointing to `eu-mta2.kbmta.net`
 - [ ] Setup `kibamail.com` to be the first customer of the email platform. It's DNS settings (CNAME and DKIM) should be configured correctly
-
   - [ ] `support@kibamail.com` should send using kibamail infrastructure.
+- [ ] All domains should expose WHOIS information, pointing to the registered company details of Kibamail
+- [ ] Implement all email best practices from the following provider docs:
 
+  - [ ] [Mailgun](https://documentation.mailgun.com/docs/mailgun/email-best-practices/best_practices/)
+  - [ ] Postmark
+
+- [ ] Fully comply with all Yahoo email [practices](https://senders.yahooinc.com/best-practices/)
+- [ ] Fully comply with all iredmail [practices](https://docs.iredmail.org/setup.dns.html) including those of providers mentioned in this document like Outlook, Google, Yahoo.
+- [ ] Fully implemented everything in the [emailtooltester.com checklist](https://www.emailtooltester.com/wp-content/uploads/2024/04/Deliverability-checklist-EmailTooltester-V2.pdf)
+- [ ] Handle all Outlook [SMTP error codes](https://sendersupport.olc.protection.outlook.com/pm/troubleshooting)
 - [ ] Perform all the above infrastructure set up for `kbmta-dev.net`
+- [ ] Perform ip address subnet investigation following guide [ip-background-check](./ip-background-check.md)
+- [ ] Research and pick the right digital certificates (TLS,SSL,HTTPS) providers for high reputation building (or trust).
+- [ ] Consider purchasing Address verified Certs from Hetzner (Thawte)
+- [ ] Comply with all [Gmail outbound requirements here](https://support.google.com/a/answer/81126?visit_id=638615783532703500-624414999&rd=1)
+- [ ] Email best practices [Mailop](https://www.mailop.org/best-practices/)
 
 ## Email server configuration
 
