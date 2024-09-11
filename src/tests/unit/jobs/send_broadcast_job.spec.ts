@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker"
-import { Job } from "bullmq"
 import { eq } from "drizzle-orm"
-import { describe, test, vi } from "vitest"
+import { describe, test } from "vitest"
 
 import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.ts"
 import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_contact_job.ts"
@@ -24,7 +23,6 @@ import {
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.ts"
 
 describe("Send broadcast job", () => {
   test("queues send email jobs for all contacts in audience for the broadcast", async ({
@@ -46,7 +44,7 @@ describe("Send broadcast job", () => {
 
     const contactsForAudience = 13
 
-    const contactIds = faker.helpers.multiple(cuid, {
+    const contactIds = faker.helpers.multiple(faker.number.int, {
       count: contactsForAudience,
     })
 
@@ -113,12 +111,9 @@ describe("Send broadcast job", () => {
       updateWithValidContent: true,
     })
 
-    const segmentId = cuid()
-
     const emailStartsWith = faker.string.uuid()
 
-    await database.insert(segments).values({
-      id: segmentId,
+    const segmentInsert = await database.insert(segments).values({
       audienceId: audience.id,
       name: faker.lorem.words(3),
       conditions: [
@@ -130,6 +125,8 @@ describe("Send broadcast job", () => {
       ],
     })
 
+    const segmentId = segmentInsert?.[0]?.insertId
+
     await database
       .update(broadcasts)
       .set({ segmentId })
@@ -137,7 +134,7 @@ describe("Send broadcast job", () => {
 
     const contactsForAudience = 6
 
-    const contactIds = faker.helpers.multiple(cuid, {
+    const contactIds = faker.helpers.multiple(faker.number.int, {
       count: contactsForAudience,
     })
 

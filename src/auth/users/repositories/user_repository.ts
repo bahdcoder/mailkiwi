@@ -20,18 +20,15 @@ export class UserRepository extends BaseRepository {
   }
 
   async create(user: CreateUserDto) {
-    const id = cuid2.createId()
-
-    await this.database
+    const result = await this.database
       .insert(users)
       .values({
         ...user,
-        id,
         password: await scrypt().make(user.password),
       })
       .execute()
 
-    return { id }
+    return { id: this.primaryKey(result) }
   }
 
   async findByEmail(email: string) {
@@ -40,7 +37,7 @@ export class UserRepository extends BaseRepository {
     })
   }
 
-  async findById(id?: string | null, args?: FindUserByIdArgs) {
+  async findById(id?: number | null, args?: FindUserByIdArgs) {
     if (!id) return null
 
     return this.database.query.users.findFirst({

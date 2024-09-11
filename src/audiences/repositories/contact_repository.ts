@@ -43,7 +43,7 @@ export class ContactRepository extends BaseRepository {
     return { id: contactId }
   }
 
-  async attachTags(contactId: string, tagIds: string[]) {
+  async attachTags(contactId: number, tagIds: number[]) {
     const existingTags = await this.database.query.tagsOnContacts.findMany(
       {
         where: eq(tagsOnContacts.contactId, contactId),

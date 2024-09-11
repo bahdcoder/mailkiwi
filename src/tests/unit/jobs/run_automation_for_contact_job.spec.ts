@@ -17,6 +17,7 @@ import { contacts } from "@/database/schema/schema.ts"
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.ts"
 import { cuid } from "@/shared/utils/cuid/cuid.ts"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
 
 describe("Run automation for contact job", () => {
   test("successfully runs an automation job for a contact by queueing next job", async ({
@@ -33,11 +34,11 @@ describe("Run automation for contact job", () => {
         audienceId: audience.id,
       })
 
-    const contactId = cuid()
-
-    await database
+    const contactInsert = await database
       .insert(contacts)
-      .values(createFakeContact(audience.id, { id: contactId }))
+      .values(createFakeContact(audience.id))
+
+    const contactId = fromQueryResultToPrimaryKey(contactInsert)
 
     // Insert automation steps for contacts before starting to process job.
 
@@ -74,26 +75,23 @@ describe("Run automation for contact job", () => {
 
     const database = makeDatabase()
 
-    const { id: automationId, receiveWelcomeEmailautomationStepId } =
-      await seedAutomation({
-        audienceId: audience.id,
-        triggerConditions: [
-          {
-            field: "email",
-            operation: "endsWith",
-            value: "@gmail.com",
-          },
-        ],
-      })
+    const { id: automationId } = await seedAutomation({
+      audienceId: audience.id,
+      triggerConditions: [
+        {
+          field: "email",
+          operation: "endsWith",
+          value: "@gmail.com",
+        },
+      ],
+    })
 
-    const contactId = cuid()
-
-    await database.insert(contacts).values(
+    const insertContactResult = await database.insert(contacts).values(
       createFakeContact(audience.id, {
-        id: contactId,
         email: faker.internet.exampleEmail(),
       }),
     )
+    const contactId = fromQueryResultToPrimaryKey(insertContactResult)
 
     const result = await new RunAutomationForContactJob().handle({
       database,
@@ -126,13 +124,11 @@ describe("Run automation for contact job", () => {
       audienceId: audience.id,
     })
 
-    const contactId = cuid()
+    const insertContactResult = await database
+      .insert(contacts)
+      .values(createFakeContact(audience.id))
 
-    await database.insert(contacts).values(
-      createFakeContact(audience.id, {
-        id: contactId,
-      }),
-    )
+    const contactId = fromQueryResultToPrimaryKey(insertContactResult)
 
     const result = await new RunAutomationForContactJob().handle({
       database,

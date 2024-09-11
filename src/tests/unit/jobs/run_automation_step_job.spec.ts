@@ -39,7 +39,7 @@ describe("Run automation step job", () => {
     const totalContacts = 373
     const totalContactsNotAtStep = 32
 
-    const contactIds = faker.helpers.multiple(cuid, {
+    const contactIds = faker.helpers.multiple(faker.number.int, {
       count: totalContacts,
     })
 
@@ -76,7 +76,7 @@ describe("Run automation step job", () => {
       contactIds.map((contactId) => ({
         contactId,
         status: "PENDING" as const,
-        automationStepId: automationStepSendEmail?.id ?? "",
+        automationStepId: automationStepSendEmail?.id as number,
       })),
     )
 
@@ -84,7 +84,7 @@ describe("Run automation step job", () => {
       database,
       redis: makeRedis(),
       payload: {
-        automationStepId: automationStepSendEmail?.id ?? "",
+        automationStepId: automationStepSendEmail?.id as number,
       },
     })
 

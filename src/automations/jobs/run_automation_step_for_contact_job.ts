@@ -11,8 +11,8 @@ import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 
 export interface RunAutomationStepForContactJobPayload {
-  automationStepId: string
-  contactId: string
+  automationStepId: number
+  contactId: number
 }
 
 export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepForContactJobPayload> {

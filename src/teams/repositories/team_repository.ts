@@ -18,19 +18,16 @@ export class TeamRepository extends BaseRepository {
     super()
   }
 
-  async create(payload: CreateTeamDto, userId: string) {
-    const id = this.cuid()
-
-    await this.database.insert(teams).values({
+  async create(payload: CreateTeamDto, userId: number) {
+    const insertResult = await this.database.insert(teams).values({
       ...payload,
-      id,
       userId,
     })
 
-    return { id }
+    return { id: this.primaryKey(insertResult) }
   }
 
-  async findUserDefaultTeam(userId: string) {
+  async findUserDefaultTeam(userId: number) {
     return this.database.query.teams.findFirst({
       where: eq(teams.userId, userId),
       with: {
@@ -39,7 +36,7 @@ export class TeamRepository extends BaseRepository {
     })
   }
 
-  async findById(teamId: string) {
+  async findById(teamId: number) {
     const team = await this.database.query.teams.findFirst({
       where: eq(teams.id, teamId),
       with: {
@@ -50,7 +47,7 @@ export class TeamRepository extends BaseRepository {
     return team
   }
 
-  usage(teamId: string) {
+  usage(teamId: number) {
     return container.make(TeamUsage).forTeam(teamId)
   }
 }
@@ -70,11 +67,11 @@ export interface TeamUsagePayload {
 
 export class TeamUsage {
   private HASH_PREFIX = "TEAM"
-  private teamId: string
+  private teamId: number
 
   constructor(private redis = makeRedis()) {}
 
-  forTeam(teamId: string) {
+  forTeam(teamId: number) {
     this.teamId = teamId
 
     return this

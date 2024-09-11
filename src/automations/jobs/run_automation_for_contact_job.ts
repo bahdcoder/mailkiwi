@@ -15,8 +15,8 @@ import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { Queue } from "@/shared/queue/queue.js"
 
 export interface RunAutomationForContactJobPayload {
-  automationId: string
-  contactId: string
+  automationId: number
+  contactId: number
 }
 
 export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJobPayload> {

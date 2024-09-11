@@ -14,7 +14,7 @@ import { Queue } from "@/shared/queue/queue.js"
 import { Paginator } from "@/shared/utils/pagination/paginator.ts"
 
 export interface RunAutomationStepJobPayload {
-  automationStepId: string
+  automationStepId: number
 }
 
 export class RunAutomationStepJob extends BaseJob<RunAutomationStepJobPayload> {

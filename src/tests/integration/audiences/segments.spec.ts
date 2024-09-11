@@ -143,7 +143,7 @@ describe("Audience segments", () => {
         ),
     )
 
-    const segmentId = cuid()
+    const segmentId = faker.number.int()
 
     await database.insert(segments).values({
       id: segmentId,
@@ -185,7 +185,7 @@ describe("Audience segments", () => {
           .map(() => createFakeContact(audience.id)),
       )
 
-    const tagIds = faker.helpers.multiple(() => cuid(), {
+    const tagIds = faker.helpers.multiple(faker.number.int, {
       count: 3,
     })
 
@@ -204,7 +204,7 @@ describe("Audience segments", () => {
       max: 17,
     })
 
-    const segmentContactIds = faker.helpers.multiple(() => cuid(), {
+    const segmentContactIds = faker.helpers.multiple(faker.number.int, {
       count: countForSegment,
     })
 
@@ -224,7 +224,7 @@ describe("Audience segments", () => {
       await container.make(ContactRepository).attachTags(contactId, tagIds)
     }
 
-    const segmentId = cuid()
+    const segmentId = faker.number.int()
 
     await database.insert(segments).values({
       id: segmentId,
@@ -271,7 +271,7 @@ describe("Audience segments", () => {
         .map(() => createFakeContact(audience.id)),
     )
 
-    const tagIds = faker.helpers.multiple(() => cuid(), {
+    const tagIds = faker.helpers.multiple(faker.number.int, {
       count: 3,
     })
 
@@ -290,7 +290,7 @@ describe("Audience segments", () => {
       max: 17,
     })
 
-    const segmentContactIds = faker.helpers.multiple(() => cuid(), {
+    const segmentContactIds = faker.helpers.multiple(faker.number.int, {
       count: countForSegment,
     })
 
@@ -314,7 +314,7 @@ describe("Audience segments", () => {
       await container.make(ContactRepository).attachTags(contactId, tagIds)
     }
 
-    const segmentId = cuid()
+    const segmentId = faker.number.int()
 
     await database.insert(segments).values({
       id: segmentId,

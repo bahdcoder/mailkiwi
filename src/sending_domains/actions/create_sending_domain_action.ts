@@ -23,7 +23,7 @@ export class CreateSendingDomainAction {
     ),
   ) {}
 
-  async handle(payload: CreateAudienceDto, teamId: string) {
+  async handle(payload: CreateAudienceDto, teamId: number) {
     const {
       publicKey: dkimPublicKey,
       encrypted: { privateKey: dkimPrivateKey },

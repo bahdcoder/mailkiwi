@@ -32,7 +32,7 @@ export class EmailContentRepository extends BaseRepository {
 
   async bulkUpdate(
     payload: (EmailContentVariant & {
-      emailContentId: string
+      emailContentId: number
     })[],
   ) {
     await Promise.all(
@@ -52,11 +52,11 @@ export class EmailContentRepository extends BaseRepository {
     let emailContentId = broadcast.emailContentId
 
     if (!emailContentId) {
-      emailContentId = this.cuid()
-
-      await this.database
+      const emailContentInsert = await this.database
         .insert(emailContents)
-        .values({ id: emailContentId, ...payload })
+        .values({ ...payload })
+
+      emailContentId = this.primaryKey(emailContentInsert)
 
       await this.database
         .update(broadcasts)

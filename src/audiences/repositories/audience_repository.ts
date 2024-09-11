@@ -23,25 +23,22 @@ export class AudienceRepository extends BaseRepository {
     return []
   }
 
-  async findById(audienceId: string) {
+  async findById(audienceId: number) {
     return this.database.query.audiences.findFirst({
       where: eq(audiences.id, audienceId),
     })
   }
 
-  async createAudience(payload: CreateAudienceDto, teamId: string) {
-    const id = this.cuid()
-
-    await this.database.insert(audiences).values({
-      id,
+  async create(payload: CreateAudienceDto, teamId: number) {
+    const result = await this.database.insert(audiences).values({
       name: payload.name,
       teamId,
     })
 
-    return { id }
+    return { id: this.primaryKey(result) }
   }
 
-  async updateAudience(payload: CreateAudienceDto, audienceId: string) {
+  async update(payload: CreateAudienceDto, audienceId: number) {
     await this.database
       .update(audiences)
       .set(payload)

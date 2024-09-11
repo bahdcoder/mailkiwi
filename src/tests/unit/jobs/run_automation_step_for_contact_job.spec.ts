@@ -21,6 +21,7 @@ import {
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { MailBuilder, Mailer } from "@/shared/mailers/mailer.js"
 import { cuid } from "@/shared/utils/cuid/cuid.ts"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
 
 import { container } from "@/utils/typi.ts"
 
@@ -50,17 +51,17 @@ describe("Run automation step for contact job", () => {
       return new FakeMailer({} as any) as any
     })
 
-    const contactId = cuid()
-
-    await database
+    const contactInsertResult = await database
       .insert(contacts)
-      .values(createFakeContact(audience.id, { id: contactId }))
+      .values(createFakeContact(audience.id))
+
+    const contactId = fromQueryResultToPrimaryKey(contactInsertResult)
 
     await new RunAutomationStepForContactJob().handle({
       database,
       payload: {
-        automationStepId: receiveWelcomeEmailautomationStepId as string,
-        contactId: contactId,
+        automationStepId: receiveWelcomeEmailautomationStepId as number,
+        contactId,
       },
       redis,
     })
@@ -73,7 +74,7 @@ describe("Run automation step for contact job", () => {
           eq(contactAutomationSteps.contactId, contactId),
           eq(
             contactAutomationSteps.automationStepId,
-            receiveWelcomeEmailautomationStepId ?? "",
+            receiveWelcomeEmailautomationStepId as number,
           ),
           eq(contactAutomationSteps.status, "COMPLETED"),
         ),
@@ -104,11 +105,11 @@ describe("Run automation step for contact job", () => {
         audienceId: audience.id,
       })
 
-    const contactId = cuid()
-
-    await database
+    const contactInsert = await database
       .insert(contacts)
-      .values(createFakeContact(audience.id, { id: contactId }))
+      .values(createFakeContact(audience.id))
+
+    const contactId = fromQueryResultToPrimaryKey(contactInsert)
 
     // Insert automation steps for contacts before starting to process job.
 
@@ -116,8 +117,8 @@ describe("Run automation step for contact job", () => {
       database,
       redis,
       payload: {
-        automationStepId: attachesTagsAutomationStepId as string,
-        contactId: contactId,
+        automationStepId: attachesTagsAutomationStepId as number,
+        contactId,
       },
     })
 
@@ -127,7 +128,7 @@ describe("Run automation step for contact job", () => {
           eq(contactAutomationSteps.contactId, contactId),
           eq(
             contactAutomationSteps.automationStepId,
-            attachesTagsAutomationStepId ?? "",
+            attachesTagsAutomationStepId as number,
           ),
           eq(contactAutomationSteps.status, "COMPLETED"),
         ),
@@ -158,11 +159,11 @@ describe("Run automation step for contact job", () => {
         audienceId: audience.id,
       })
 
-    const contactId = cuid()
-
-    await database
+    const contactInsert = await database
       .insert(contacts)
-      .values(createFakeContact(audience.id, { id: contactId }))
+      .values(createFakeContact(audience.id))
+
+    const contactId = contactInsert?.[0]?.insertId
 
     await container
       .resolve(ContactRepository)
@@ -172,7 +173,7 @@ describe("Run automation step for contact job", () => {
       database,
       redis,
       payload: {
-        automationStepId: detachesTagsAutomationStepId as string,
+        automationStepId: detachesTagsAutomationStepId as number,
         contactId: contactId,
       },
     })
@@ -183,7 +184,7 @@ describe("Run automation step for contact job", () => {
           eq(contactAutomationSteps.contactId, contactId),
           eq(
             contactAutomationSteps.automationStepId,
-            detachesTagsAutomationStepId ?? "",
+            detachesTagsAutomationStepId as number,
           ),
           eq(contactAutomationSteps.status, "COMPLETED"),
         ),

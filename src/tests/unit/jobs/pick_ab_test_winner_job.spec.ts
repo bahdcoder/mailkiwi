@@ -64,7 +64,7 @@ describe("Pick A/B Test winner", () => {
       weights: testAbVariantWeights,
     })
 
-    const contactIds = faker.helpers.multiple(cuid, {
+    const contactIds = faker.helpers.multiple(faker.number.int, {
       count: contactsForAudience,
     })
 

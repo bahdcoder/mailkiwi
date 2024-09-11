@@ -22,6 +22,7 @@ import {
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
 
 export const refreshRedisDatabase = async () => {
   const redis = makeRedis()
@@ -49,7 +50,7 @@ export const refreshDatabase = async () => {
 
 export const seedAutomation = async (
   automation: {
-    audienceId: string
+    audienceId: number
     name?: string
     description?: string
     triggerConditions?: ContactFilterCondition[]
@@ -57,42 +58,43 @@ export const seedAutomation = async (
   createSteps = true,
 ) => {
   const database = makeDatabase()
-  const automationId = cuid()
 
-  await database.insert(automations).values({
-    id: automationId,
-    name: automation.name ?? "Book launch",
-    audienceId: automation.audienceId,
-    description: automation.description ?? "Book launch",
-  })
+  const insertAutomationResult = await database
+    .insert(automations)
+    .values({
+      name: automation.name ?? "Book launch",
+      audienceId: automation.audienceId,
+      description: automation.description ?? "Book launch",
+    })
+
+  const automationId = fromQueryResultToPrimaryKey(insertAutomationResult)
 
   if (!createSteps) {
     return { id: automationId }
   }
 
-  const emailId = cuid()
-  const emailContentId = cuid()
+  const insertEmailContentResult = await database
+    .insert(emailContents)
+    .values(createFakeEmailContent())
 
-  await database.insert(emailContents).values({
-    id: emailContentId,
-    ...createFakeEmailContent(),
-  })
+  const emailContentId = insertEmailContentResult?.[0]?.insertId
 
-  await database.insert(emails).values({
-    id: emailId,
-    title: faker.lorem.words(2),
-    type: "AUTOMATION",
-    audienceId: automation.audienceId,
-    emailContentId,
-  })
+  const insertAutomationEmailResult = await database
+    .insert(emails)
+    .values({
+      title: faker.lorem.words(2),
+      type: "AUTOMATION",
+      audienceId: automation.audienceId,
+      emailContentId,
+    })
+
+  const emailId = fromQueryResultToPrimaryKey(insertAutomationEmailResult)
 
   // Now create sample data for a automation that looks like this:
-  const startingTriggerAutomationStepId = cuid()
 
-  await database
+  const startingTriggerAutomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: startingTriggerAutomationStepId,
       automationId,
       type: "TRIGGER",
       subtype: "TRIGGER_CONTACT_SUBSCRIBED",
@@ -102,12 +104,12 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const receiveWelcomeEmailautomationStepId = cuid()
+  const startingTriggerAutomationStepId =
+    startingTriggerAutomationStepResult?.[0]?.insertId
 
-  await database
+  const receiveWelcomeEmailautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: receiveWelcomeEmailautomationStepId,
       automationId,
       parentId: startingTriggerAutomationStepId,
       type: "ACTION",
@@ -116,25 +118,27 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const attachesTagsAutomationStepId = cuid()
+  const receiveWelcomeEmailautomationStepId = fromQueryResultToPrimaryKey(
+    receiveWelcomeEmailautomationStepResult,
+  )
 
-  const attachTagIds = [cuid(), cuid()]
+  let attachTagIds = [0, 0]
 
-  await database
-    .insert(tags)
-    .values(
-      attachTagIds.map((id) => ({
-        id,
+  for (const [idx] of attachTagIds.entries()) {
+    const insertTagsResult = await database
+      .insert(tags)
+      .values({
         name: faker.lorem.words(2),
         audienceId: automation.audienceId,
-      })),
-    )
-    .execute()
+      })
+      .execute()
 
-  await database
+    attachTagIds[idx] = fromQueryResultToPrimaryKey(insertTagsResult)
+  }
+
+  const attachesTagsAutomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: attachesTagsAutomationStepId,
       automationId,
       parentId: receiveWelcomeEmailautomationStepId,
       type: "ACTION",
@@ -143,12 +147,13 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const waitsTwoDaysAutomationStepId = cuid()
+  const attachesTagsAutomationStepId = fromQueryResultToPrimaryKey(
+    attachesTagsAutomationStepResult,
+  )
 
-  await database
+  const waitsTwoDaysAutomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: waitsTwoDaysAutomationStepId,
       automationId,
       parentId: attachesTagsAutomationStepId,
       type: "RULE",
@@ -157,25 +162,27 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const detachesTagsAutomationStepId = cuid()
+  const waitsTwoDaysAutomationStepId = fromQueryResultToPrimaryKey(
+    waitsTwoDaysAutomationStepResult,
+  )
 
-  const detachTagIds = [cuid(), cuid()]
+  let detachTagIds = [0, 0]
 
-  await database
-    .insert(tags)
-    .values(
-      detachTagIds.map((id) => ({
-        id,
+  for (const [idx] of detachTagIds.entries()) {
+    const insertResult = await database
+      .insert(tags)
+      .values({
         name: faker.lorem.words(2),
         audienceId: automation.audienceId,
-      })),
-    )
-    .execute()
+      })
+      .execute()
 
-  await database
+    detachTagIds[idx] = fromQueryResultToPrimaryKey(insertResult)
+  }
+
+  const detachesTagsAutomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: detachesTagsAutomationStepId,
       automationId,
       parentId: waitsTwoDaysAutomationStepId,
       type: "ACTION",
@@ -184,12 +191,13 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const receiveSecondEmailEmailautomationStepId = cuid()
+  const detachesTagsAutomationStepId = fromQueryResultToPrimaryKey(
+    detachesTagsAutomationStepResult,
+  )
 
-  await database
+  const receiveSecondEmailEmailautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: receiveSecondEmailEmailautomationStepId,
       automationId,
       parentId: detachesTagsAutomationStepId,
       type: "ACTION",
@@ -198,12 +206,12 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const waitsOneDayAutomationStepId = cuid()
+  const receiveSecondEmailEmailautomationStepId =
+    receiveSecondEmailEmailautomationStepResult?.[0]?.insertId
 
-  await database
+  const waitsOneDayAutomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: waitsOneDayAutomationStepId,
       automationId,
       parentId: receiveSecondEmailEmailautomationStepId,
       type: "RULE",
@@ -211,13 +219,13 @@ export const seedAutomation = async (
       configuration: { delay: 1440 }, // delay is in minutes
     })
     .execute()
+  const waitsOneDayAutomationStepId = fromQueryResultToPrimaryKey(
+    waitsOneDayAutomationStepResult,
+  )
 
-  const ifElseBranchautomationStepId = cuid()
-
-  await database
+  const ifElseBranchautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: ifElseBranchautomationStepId,
       automationId,
       parentId: waitsOneDayAutomationStepId,
       type: "RULE",
@@ -233,13 +241,13 @@ export const seedAutomation = async (
       },
     })
     .execute()
+  const ifElseBranchautomationStepId = fromQueryResultToPrimaryKey(
+    ifElseBranchautomationStepResult,
+  )
 
-  const hasTagReceivesThankYouautomationStepId = cuid()
-
-  await database
+  const hasTagReceivesThankYouautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: hasTagReceivesThankYouautomationStepId,
       automationId,
       parentId: ifElseBranchautomationStepId,
       type: "ACTION",
@@ -250,13 +258,12 @@ export const seedAutomation = async (
       branchIndex: 0,
     })
     .execute()
+  const hasTagReceivesThankYouautomationStepId =
+    fromQueryResultToPrimaryKey(hasTagReceivesThankYouautomationStepResult)
 
-  const hasTagWait4DaysautomationStepId = cuid()
-
-  await database
+  const hasTagWait4DaysautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: hasTagWait4DaysautomationStepId,
       automationId,
       parentId: hasTagReceivesThankYouautomationStepId,
       type: "RULE",
@@ -265,28 +272,29 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const hasTagAddToAudienceautomationId = cuid()
+  const hasTagWait4DaysautomationStepId = fromQueryResultToPrimaryKey(
+    hasTagWait4DaysautomationStepResult,
+  )
 
-  await database
+  const hasTagAddToAudienceautomationResult = await database
     .insert(automationSteps)
     .values({
-      id: hasTagAddToAudienceautomationId,
       automationId,
       parentId: hasTagWait4DaysautomationStepId,
       type: "ACTION",
       subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
       configuration: {
-        audienceId: "akc34b1k27xrgy0c6qygcefe",
+        audienceId: 0,
       },
     })
     .execute()
+  const hasTagAddToAudienceautomationId = fromQueryResultToPrimaryKey(
+    hasTagAddToAudienceautomationResult,
+  )
 
-  const hasTagWait1DayautomationStepId = cuid()
-
-  await database
+  const hasTagWait1DayautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: hasTagWait1DayautomationStepId,
       automationId,
       parentId: hasTagAddToAudienceautomationId,
       type: "RULE",
@@ -294,13 +302,13 @@ export const seedAutomation = async (
       configuration: { delay: 1440 },
     })
     .execute()
+  const hasTagWait1DayautomationStepId = fromQueryResultToPrimaryKey(
+    hasTagWait1DayautomationStepResult,
+  )
 
-  const hasTagSendDiscountautomationStepId = cuid()
-
-  await database
+  const hasTagSendDiscountautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: hasTagSendDiscountautomationStepId,
       automationId,
       parentId: hasTagWait1DayautomationStepId,
       type: "ACTION",
@@ -308,13 +316,13 @@ export const seedAutomation = async (
       configuration: { emailId },
     })
     .execute()
+  const hasTagSendDiscountautomationStepId = fromQueryResultToPrimaryKey(
+    hasTagSendDiscountautomationStepResult,
+  )
 
-  const hasTagEndautomationStepId = cuid()
-
-  await database
+  const hasTagEndautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: hasTagEndautomationStepId,
       automationId,
       parentId: hasTagSendDiscountautomationStepId,
       type: "END",
@@ -323,29 +331,32 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const notHasTagReceives80PercentDiscountEmailautomationStepId = cuid()
+  const hasTagEndautomationStepId = fromQueryResultToPrimaryKey(
+    hasTagEndautomationStepResult,
+  )
 
-  await database
+  const notHasTagReceives80PercentDiscountEmailautomationStepResult =
+    await database
+      .insert(automationSteps)
+      .values({
+        automationId,
+        parentId: ifElseBranchautomationStepId,
+        type: "ACTION",
+        subtype: "ACTION_SEND_EMAIL",
+        configuration: {
+          emailId,
+        },
+        branchIndex: 1,
+      })
+      .execute()
+  const notHasTagReceives80PercentDiscountEmailautomationStepId =
+    fromQueryResultToPrimaryKey(
+      notHasTagReceives80PercentDiscountEmailautomationStepResult,
+    )
+
+  const notHasTagWait3DaysautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: notHasTagReceives80PercentDiscountEmailautomationStepId,
-      automationId,
-      parentId: ifElseBranchautomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_SEND_EMAIL",
-      configuration: {
-        emailId,
-      },
-      branchIndex: 1,
-    })
-    .execute()
-
-  const notHasTagWait3DaysautomationStepId = cuid()
-
-  await database
-    .insert(automationSteps)
-    .values({
-      id: notHasTagWait3DaysautomationStepId,
       automationId,
       parentId: notHasTagReceives80PercentDiscountEmailautomationStepId,
       type: "RULE",
@@ -357,12 +368,13 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const secondIfElseBranchautomationStepId = cuid()
+  const notHasTagWait3DaysautomationStepId = fromQueryResultToPrimaryKey(
+    notHasTagWait3DaysautomationStepResult,
+  )
 
-  await database
+  const secondIfElseBranchautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: secondIfElseBranchautomationStepId,
       automationId,
       parentId: notHasTagWait3DaysautomationStepId,
       type: "RULE",
@@ -379,15 +391,15 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const isGmailautomationStepId = cuid()
+  const secondIfElseBranchautomationStepId = fromQueryResultToPrimaryKey(
+    secondIfElseBranchautomationStepResult,
+  )
 
-  await database
+  const isGmailautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: isGmailautomationStepId,
       automationId,
       parentId: secondIfElseBranchautomationStepId,
-
       type: "ACTION",
       subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
       configuration: { type: "END" },
@@ -395,12 +407,13 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const isNotGmailGetDiscountautomationStepId = cuid()
+  const isGmailautomationStepId = fromQueryResultToPrimaryKey(
+    isGmailautomationStepResult,
+  )
 
-  await database
+  const isNotGmailGetDiscountautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: isNotGmailGetDiscountautomationStepId,
       automationId,
       parentId: secondIfElseBranchautomationStepId,
       type: "ACTION",
@@ -412,12 +425,12 @@ export const seedAutomation = async (
     })
     .execute()
 
-  const isNotGmailWait5DaysautomationStepId = cuid()
+  const isNotGmailGetDiscountautomationStepId =
+    fromQueryResultToPrimaryKey(isNotGmailGetDiscountautomationStepResult)
 
-  await database
+  const isNotGmailWait5DaysautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: isNotGmailWait5DaysautomationStepId,
       automationId,
       parentId: isNotGmailGetDiscountautomationStepId,
       type: "RULE",
@@ -426,13 +439,13 @@ export const seedAutomation = async (
       branchIndex: 1,
     })
     .execute()
+  const isNotGmailWait5DaysautomationStepId = fromQueryResultToPrimaryKey(
+    isNotGmailWait5DaysautomationStepResult,
+  )
 
-  const thirdIfElseBranchautomationStepId = cuid()
-
-  await database
+  const thirdIfElseBranchautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: thirdIfElseBranchautomationStepId,
       automationId,
       parentId: isNotGmailWait5DaysautomationStepId,
       type: "RULE",
@@ -442,46 +455,48 @@ export const seedAutomation = async (
           {
             field: "tags",
             operation: "contains",
-            value: ["brkkbrxhehqq0msk3jn8e02e"],
+            value: [0],
           },
         ],
       },
     })
     .execute()
+  const thirdIfElseBranchautomationStepId = fromQueryResultToPrimaryKey(
+    thirdIfElseBranchautomationStepResult,
+  )
 
-  const purchasedBookautomationStepId = cuid()
-
-  await database
+  const purchasedBookautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: purchasedBookautomationStepId,
       automationId,
       parentId: thirdIfElseBranchautomationStepId,
       type: "ACTION",
       subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
       configuration: {
-        audienceId: "akc34b1k27xrgy0c6qygcefe",
+        audienceId: 0,
       },
       branchIndex: 0,
     })
     .execute()
 
-  const notPurchasedBookautomationStepId = cuid()
-
-  await database
+  const notPurchasedBookautomationStepResult = await database
     .insert(automationSteps)
     .values({
-      id: notPurchasedBookautomationStepId,
       automationId,
       parentId: thirdIfElseBranchautomationStepId,
       type: "ACTION",
       subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
       configuration: {
-        audienceId: "akc34b1k27xrgy0c6qygcefe",
+        audienceId: 0,
       },
       branchIndex: 1,
     })
     .execute()
+
+  const notPurchasedBookautomationStepId = fromQueryResultToPrimaryKey(
+    notPurchasedBookautomationStepResult,
+  )
+
   // Starting point: User subscribes to email list ✅
   // Next automation point: Receives a welcome email ✅
   // Next automation point: Waits 2 days ✅

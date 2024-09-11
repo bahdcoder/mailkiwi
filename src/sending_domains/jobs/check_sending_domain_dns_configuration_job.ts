@@ -12,7 +12,7 @@ import { Queue } from "@/shared/queue/queue.ts"
 import { container } from "@/utils/typi.ts"
 
 export interface CheckSendingDomainDnsConfigurationJobPayload {
-  sendingDomainId: string
+  sendingDomainId: number
 }
 
 export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingDomainDnsConfigurationJobPayload> {
