@@ -82,49 +82,9 @@ services:
     volumes:
       - ./dnsmasq/nginx.conf:/etc/nginx/nginx.conf
 
-  haraka:
-    build:
-      context: ..
-      dockerfile: docker/haraka.dockerfile
-    container_name: haraka
-    networks:
-      kibamail-network:
-        ipv4_address: 172.20.0.9
-    dns:
-      - 172.20.0.2
-    ports:
-      - "1025:587"
-    volumes:
-      - ../src/haraka:/app/haraka
-
-  rspamd:
-    image: rspamd/rspamd:latest
-    container_name: rspamd
-    networks:
-      kibamail-network:
-        ipv4_address: 172.20.0.11
-    ports:
-      - "11333:11333"
-    volumes:
-      - rspamd_data:/var/lib/rspamd
-    restart: unless-stopped
-
-  spamassassin:
-    image: axllent/spamassassin:latest
-    container_name: spamassassin
-    networks:
-      kibamail-network:
-        ipv4_address: 172.20.0.12
-    ports:
-      - "5587:783"
-    restart: unless-stopped
-    environment:
-      - DNS_CHECKS=true
-
 volumes:
   mysql_data:
   clickhouse_data:
-  rspamd_data:
   redis_data:
 
 networks:
