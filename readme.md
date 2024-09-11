@@ -162,3 +162,16 @@
    2. Start 4 haraka processes using PM2 on port 25565, 25566, 25567, 25568. HaProxy balances traffic to these 4 servers equally.
    3. Each instance
 2. Everything else is deployed to the cloud on hetzner: A nomad or Kubernetes cluster running Clickhouse, MySQL, Kafka, Redis, and NodeJS services (docker images). With a Hetzner load balancer sending traffic to the nomad cluster (NodeJS services).
+
+# RBAC planning
+
+- [ ] A user can create unlimited projects (teams)
+- [ ] A user can invite unlimited members to a project
+- [ ] Each member of a project can have one of three roles:
+  > - [ ] Administrator -> Can invite new members, remove members, manage domains, settings, etc. All teams have by default one admin, the owner/creator of the team.
+  > - [ ] Manager -> Can do everything, but cannot manage billing, domains, or export data
+  > - [ ] Author -> Can create / edit / delete everything, but cannot launch campaigns, send broadcasts, etc
+  > - [ ] Guest -> Can view reports / view campaigns, but nothing more.
+- [ ] User fetch endpoint returns a list of all their teams
+- [ ] Users can secure their accounts via two factor authentication
+- [ ]
