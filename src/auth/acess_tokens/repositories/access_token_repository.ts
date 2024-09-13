@@ -10,9 +10,9 @@ import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
 
 export class AccessTokenRepository extends BaseRepository {
-  protected tokenSecretLength = 40
+  protected tokenSecretLength = 24
   protected tokenExpiresIn = 1000 * 60
-  protected opaqueAccessTokenPrefix = "oat_"
+  protected opaqueAccessTokenPrefix = "kbm_"
 
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
@@ -33,8 +33,6 @@ export class AccessTokenRepository extends BaseRepository {
     await this.database.insert(accessTokens).values({
       id,
       ...(type === "user" ? { userId: owner.id } : { teamId: owner.id }),
-      type: "bearer",
-      // abilities: ["read", "write"],
       hash: transientAccessToken.hash,
       expiresAt: transientAccessToken.expiresAt,
     })
@@ -42,13 +40,11 @@ export class AccessTokenRepository extends BaseRepository {
     const instance = new AccessToken({
       identifier: id,
       tokenableId: owner.id,
-      type: "bearer",
       prefix: this.opaqueAccessTokenPrefix,
       secret: transientAccessToken.secret,
       createdAt: new Date(),
       lastUsedAt: new Date(),
       updatedAt: new Date(),
-      abilities: ["read", "write"],
       hash: transientAccessToken.hash,
       name: "token",
       expiresAt: transientAccessToken.expiresAt as Date,
@@ -78,13 +74,11 @@ export class AccessTokenRepository extends BaseRepository {
     const accessTokenInstance = new AccessToken({
       identifier: accessToken.id,
       tokenableId: accessToken.userId as string,
-      type: accessToken.type,
       prefix: this.opaqueAccessTokenPrefix,
       createdAt: accessToken.createdAt,
       lastUsedAt: accessToken.lastUsedAt,
       updatedAt: accessToken.createdAt,
       expiresAt: accessToken.expiresAt,
-      abilities: ["read", "write"],
       hash: accessToken.hash,
       name: "Authentication token.",
     })

@@ -23,4 +23,6 @@ export class SendTransactionalEmailJob extends BaseJob<SendTransactionalEmailJob
 
     return { success: true, output: "Success" }
   }
+
+  async failed() {}
 }

@@ -86,4 +86,6 @@ export class RunAutomationStepJob extends BaseJob<RunAutomationStepJobPayload> {
 
     return this.done()
   }
+
+  async failed() {}
 }

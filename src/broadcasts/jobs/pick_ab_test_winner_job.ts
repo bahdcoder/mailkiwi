@@ -20,4 +20,6 @@ export class PickAbTestWinnerJob extends BaseJob<PickAbTestWinnerJobPayload> {
   }: JobContext<PickAbTestWinnerJobPayload>) {
     return this.done()
   }
+
+  async failed() {}
 }

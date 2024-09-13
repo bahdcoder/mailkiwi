@@ -13,7 +13,7 @@ import { broadcasts } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
-describe("Create broadcasts", () => {
+describe("@broadcasts create", () => {
   test("can create a broadcast for an audience", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
@@ -95,7 +95,7 @@ describe("Create broadcasts", () => {
   })
 })
 
-describe("Update broadcasts", () => {
+describe("@broadcasts update", () => {
   test("can update a broadcast with valid data", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
@@ -295,7 +295,7 @@ describe("Update broadcasts", () => {
   })
 })
 
-describe("Delete broadcasts", () => {
+describe("@broadcasts delete", () => {
   test("cannot delete a broadcast from another team", async ({
     expect,
   }) => {
@@ -342,7 +342,7 @@ describe("Delete broadcasts", () => {
   })
 })
 
-describe("Send Broadcast", () => {
+describe("@broadcasts send", () => {
   test("can queue a broadcast for sending", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()

@@ -71,4 +71,6 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
 
     return { success: true, output: "Success." }
   }
+
+  async failed() {}
 }

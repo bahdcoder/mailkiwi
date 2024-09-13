@@ -22,7 +22,7 @@ import { Encryption } from "@/shared/utils/encryption/encryption.ts"
 
 import { container } from "@/utils/typi.ts"
 
-describe("API Token Generation", () => {
+describe("@auth API Token Generation", () => {
   test("can generate an api token for api and smtp access", async ({
     expect,
   }) => {

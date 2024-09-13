@@ -74,4 +74,6 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
 
     return this.done()
   }
+
+  async failed() {}
 }

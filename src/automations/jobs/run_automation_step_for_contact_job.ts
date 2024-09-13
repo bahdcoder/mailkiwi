@@ -81,4 +81,6 @@ export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepFor
     // save the results to automation results for contact
     return this.done()
   }
+
+  async failed() {}
 }

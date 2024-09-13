@@ -34,14 +34,7 @@ export class AudienceController extends BaseController {
   async store(ctx: HonoContext) {
     const data = await this.validate(ctx, CreateAudienceSchema)
 
-    const team = this.ensureTeam(ctx)
-
-    if (
-      !container
-        .make(AudiencePolicy)
-        .canCreate(team, ctx.get("accessToken")?.userId)
-    )
-      throw E_UNAUTHORIZED()
+    const team = this.ensureCanManage(ctx)
 
     const audience = await container
       .make(CreateAudienceAction)
@@ -53,16 +46,11 @@ export class AudienceController extends BaseController {
   async update(ctx: HonoContext) {
     const data = await this.validate(ctx, CreateAudienceSchema)
 
-    const team = this.ensureTeam(ctx)
-    const accessToken = ctx.get("accessToken")
+    const team = this.ensureCanManage(ctx)
 
-    const policy = container.resolve(AudiencePolicy)
-
-    if (!policy.canCreate(team, accessToken.userId)) throw E_UNAUTHORIZED()
-
-    const action = container.resolve(UpdateAudienceAction)
-
-    const audience = await action.handle(data, team.id)
+    const audience = container
+      .resolve(UpdateAudienceAction)
+      .handle(data, team.id)
 
     return ctx.json(audience)
   }

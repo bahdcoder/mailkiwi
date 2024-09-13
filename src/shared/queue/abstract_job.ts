@@ -33,50 +33,8 @@ export abstract class BaseJob<T extends object = object> {
     return { success: false, output }
   }
 
-  processPromises<T>(
-    items: PromiseItem<T>[],
-    concurrency: number,
-  ): Promise<(T | undefined)[]> {
-    let index = 0
-    const results: (T | undefined)[] = new Array(items.length)
-
-    const runNext = async (): Promise<void> => {
-      if (index >= items.length) return
-
-      const currentIndex = index++
-      const [promiseFn, errorHandler] = items[currentIndex]
-
-      try {
-        const result = await promiseFn()
-        results[currentIndex] = result
-      } catch (error) {
-        await errorHandler(error as Error)
-        results[currentIndex] = undefined
-      }
-
-      await runNext()
-    }
-
-    return new Promise<(T | undefined)[]>((resolve) => {
-      const runBatch = async () => {
-        const batch = Array(Math.min(concurrency, items.length))
-          .fill(null)
-          .map(() => runNext())
-
-        await Promise.all(batch)
-
-        if (index < items.length) {
-          await runBatch()
-        } else {
-          resolve(results)
-        }
-      }
-
-      runBatch()
-    })
-  }
-
   abstract handle(ctx: JobContext<T>): Promise<JobHandlerResponse>
+  abstract failed(ctx: JobContext<T>): Promise<void>
 }
 
 export type AbstractJobType<T extends object = object> = {

@@ -5,7 +5,7 @@ import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-describe("Teams", () => {
+describe("@teams", () => {
   test("can fetch a single team", async ({ expect }) => {
     await refreshDatabase()
 

@@ -32,6 +32,15 @@ export type EnvVariables = {
   SMTP_PORT: number
   SMTP_USER: string
   SMTP_PASS: string
+  SMTP_MAIL_FROM: string
+
+  SECRETS_STORE_URL: string
+  SECRETS_STORE_TOKEN: string
+
+  FILE_UPLOADS_ACCESS_KEY: string
+  FILE_UPLOADS_ACCESS_SECRET: string
+  FILE_UPLOADS_ENDPOINT: string
+  FILE_UPLOADS_PORT: string
 }
 
 export type ConfigVariables = typeof config
@@ -51,6 +60,8 @@ const envValidationSchema = object({
     nonEmpty(),
     url(),
   ),
+  SECRETS_STORE_URL: pipe(string(), nonEmpty()),
+  SECRETS_STORE_TOKEN: pipe(string(), nonEmpty()),
   CLICKHOUSE_DATABASE_URL: pipe(string(), nonEmpty()),
   REDIS_URL: pipe(string(), nonEmpty()),
   DATABASE_URL: pipe(string(), nonEmpty()),
@@ -59,6 +70,12 @@ const envValidationSchema = object({
   SMTP_PORT: number(),
   SMTP_USER: pipe(string(), nonEmpty()),
   SMTP_PASS: pipe(string(), nonEmpty()),
+  SMTP_MAIL_FROM: pipe(string(), nonEmpty()),
+
+  FILE_UPLOADS_ACCESS_KEY: pipe(string(), nonEmpty()),
+  FILE_UPLOADS_ACCESS_SECRET: pipe(string(), nonEmpty()),
+  FILE_UPLOADS_ENDPOINT: pipe(string(), nonEmpty()),
+  FILE_UPLOADS_PORT: pipe(string(), nonEmpty()),
 })
 
 const parsed = safeParse(envValidationSchema, {

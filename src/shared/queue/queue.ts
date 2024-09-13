@@ -33,6 +33,11 @@ export const SendingDomainsQueue = () =>
     connection: makeRedis(),
   })
 
+export const ContactsQueue = () =>
+  new BullQueue(AVAILABLE_QUEUES.contacts, {
+    connection: makeRedis(),
+  })
+
 export class Queues {
   broadcasts = BroadcastsQueue
   abTestsBroadcasts = AbTestsBroadcastsQueue
@@ -40,6 +45,7 @@ export class Queues {
   accounts = AccountsQueue
   transactional = TransactionalQueue
   sending_domains = SendingDomainsQueue
+  contacts = ContactsQueue
 }
 
 export const Queue = new Queues()

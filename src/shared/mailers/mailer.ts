@@ -92,13 +92,12 @@ export class MailBuilder {
 
     // Run function to personalise mail object content based on personalise object.
 
-    const messageId = `${cuid()}-${uuidV4()}@kibamail.com`
+    const messageId = `${uuidV4()}@kibamail.com`
 
     try {
       await this.transport.sendMail({
-        messageId,
-        from: `${this.mail.from.name} <${this.mail.from.email}>`,
-        to: `${this.mail.to.name} <${this.mail.to.email}>`,
+        from: `${this.mail.from.name ?? ""}<${this.mail.from.email}>`,
+        to: `${this.mail.to.name ?? ""}<${this.mail.to.email}>`,
         subject: this.mail.subject,
         text: this.mail.content?.text as string,
         html: this.mail.content?.html,

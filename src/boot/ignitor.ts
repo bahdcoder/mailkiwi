@@ -7,10 +7,12 @@ import { BroadcastController } from "@/broadcasts/controllers/broadcast_controll
 
 import { AudienceController } from "@/audiences/controllers/audience_controller.js"
 import { ContactController } from "@/audiences/controllers/contact_controller.ts"
+import { ContactImportController } from "@/audiences/controllers/contact_import_controller.ts"
 import { SegmentController } from "@/audiences/controllers/segment_controller.ts"
 import { TagController } from "@/audiences/controllers/tag_controller.ts"
 
 import { TeamController } from "@/teams/controllers/team_controller.ts"
+import { TeamMembershipController } from "@/teams/controllers/team_membership_controller.ts"
 
 import { AuthController } from "@/auth/controllers/auth_controller.ts"
 import { UserController } from "@/auth/controllers/user_controller.js"
@@ -115,6 +117,8 @@ export class Ignitor {
     container.resolve(UserController)
     container.resolve(ContactController)
     container.resolve(TeamController)
+    container.resolve(ContactImportController)
+    container.resolve(TeamMembershipController)
     container.resolve(MailerWebhooksContorller)
     container.resolve(SendingDomainController)
     container.resolve(RootController)

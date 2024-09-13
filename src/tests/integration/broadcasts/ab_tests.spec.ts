@@ -17,7 +17,7 @@ import { abTestVariants, broadcasts } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
-describe("Update broadcasts", () => {
+describe("@broadcasts update broadcasts", () => {
   test("can update a broadcast with ab test variants", async ({
     expect,
   }) => {

@@ -2,6 +2,7 @@ import { Secret } from "@poppinss/utils"
 import type { Next } from "hono"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
+import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
 
 import type { HonoContext } from "@/server/types.js"
 
@@ -11,9 +12,8 @@ import { container } from "@/utils/typi.js"
 
 export class AccessTokenMiddleware {
   constructor(
-    private accessTokenRepository: AccessTokenRepository = container.make(
-      AccessTokenRepository,
-    ),
+    private accessTokenRepository = container.make(AccessTokenRepository),
+    private userRepository = container.make(UserRepository),
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
@@ -33,7 +33,16 @@ export class AccessTokenMiddleware {
       throw E_UNAUTHORIZED()
     }
 
+    const user = await this.userRepository.findById(
+      accessToken.accessToken.userId,
+    )
+
+    if (!user) {
+      throw E_UNAUTHORIZED()
+    }
+
     ctx.set("accessToken", accessToken.accessToken)
+    ctx.set("user", user)
 
     await next()
   }

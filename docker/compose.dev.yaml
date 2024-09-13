@@ -9,7 +9,3 @@ services:
   clickhouse:
     environment:
       CLICKHOUSE_DB: kibamail
-
-volumes:
-  mysql_data:
-    name: mysql_dev_data

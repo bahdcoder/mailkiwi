@@ -1,4 +1,4 @@
-import cuid2 from "@paralleldrive/cuid2"
+import bcrypt from "bcrypt"
 import { eq } from "drizzle-orm"
 
 import type { CreateUserDto } from "@/auth/users/dto/create_user_dto.js"
@@ -12,7 +12,6 @@ import { users } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
-import { scrypt } from "@/shared/utils/hash/scrypt.js"
 
 export class UserRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -20,14 +19,14 @@ export class UserRepository extends BaseRepository {
   }
 
   async create(user: CreateUserDto) {
-    const id = cuid2.createId()
+    const id = this.cuid()
 
     await this.database
       .insert(users)
       .values({
         ...user,
         id,
-        password: await scrypt().make(user.password),
+        password: await bcrypt.hash(user.password, 10),
       })
       .execute()
 
@@ -57,6 +56,6 @@ export class UserRepository extends BaseRepository {
       return null
     }
 
-    return scrypt().verify(user.password, password)
+    return bcrypt.compare(password, user.password)
   }
 }

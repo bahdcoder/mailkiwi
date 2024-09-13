@@ -218,4 +218,6 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
       { delay: pickWinnerJobDelay },
     )
   }
+
+  async failed() {}
 }

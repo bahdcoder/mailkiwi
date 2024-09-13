@@ -22,7 +22,7 @@ import { cuid } from "@/shared/utils/cuid/cuid.ts"
 
 import { container } from "@/utils/typi.ts"
 
-describe("Audience segments", () => {
+describe("@auudience segments", () => {
   test("can create an audience segment", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
