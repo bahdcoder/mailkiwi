@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker"
-import { eq, lt } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
@@ -9,20 +8,13 @@ import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
 import { makeRequestAsUser } from "@/tests/utils/http.ts"
 
-import {
-  contacts,
-  emails,
-  segments,
-  tags,
-  tagsOnContacts,
-} from "@/database/schema/schema.ts"
+import { contacts, segments, tags } from "@/database/schema/schema.ts"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.ts"
 
 import { container } from "@/utils/typi.ts"
 
-describe("@auudience segments", () => {
+describe("@audience segments", () => {
   test("can create an audience segment", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
@@ -52,7 +44,7 @@ describe("@auudience segments", () => {
 
     expect(savedSegment).toEqual([
       {
-        id: expect.any(String),
+        id: expect.any(Number),
         name: payload.name,
         audienceId: audience.id,
         conditions: [
@@ -122,7 +114,11 @@ describe("@auudience segments", () => {
       .insert(contacts)
       .values(
         faker.helpers
-          .multiple(faker.lorem.word, { count: 100 })
+          .multiple(
+            () =>
+              `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+            { count: 100 },
+          )
           .map(() => createFakeContact(audience.id)),
       )
 
@@ -191,7 +187,7 @@ describe("@auudience segments", () => {
 
     await database.insert(tags).values(
       faker.helpers
-        .multiple(faker.lorem.word, { count: 10 })
+        .multiple(faker.string.uuid, { count: 10 })
         .map((name, idx) => ({
           id: tagIds[idx],
           name,
@@ -265,9 +261,13 @@ describe("@auudience segments", () => {
 
     await database.insert(contacts).values(
       faker.helpers
-        .multiple(faker.lorem.word, {
-          count: countForNonSegment,
-        })
+        .multiple(
+          () =>
+            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          {
+            count: countForNonSegment,
+          },
+        )
         .map(() => createFakeContact(audience.id)),
     )
 
@@ -277,7 +277,11 @@ describe("@auudience segments", () => {
 
     await database.insert(tags).values(
       faker.helpers
-        .multiple(faker.lorem.word, { count: 10 })
+        .multiple(
+          () =>
+            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          { count: 10 },
+        )
         .map((name, idx) => ({
           id: tagIds[idx],
           name,
@@ -296,9 +300,13 @@ describe("@auudience segments", () => {
 
     await database.insert(contacts).values(
       faker.helpers
-        .multiple(faker.lorem.word, {
-          count: countForSegment,
-        })
+        .multiple(
+          () =>
+            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          {
+            count: countForSegment,
+          },
+        )
         .map((_, idx) =>
           createFakeContact(audience.id, {
             id: segmentContactIds[idx],

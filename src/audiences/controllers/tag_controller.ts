@@ -1,7 +1,8 @@
 import { CreateTagAction } from "@/audiences/actions/tags/create_tag_action.js"
 import { DeleteTagAction } from "@/audiences/actions/tags/delete_tag_action.js"
-import { AudienceValidationAndAuthorizationConcern } from "@/audiences/concerns/audience_validation_concern.ts"
 import { CreateTagSchema } from "@/audiences/dto/tags/create_tag_dto.js"
+
+import { Audience, Tag } from "@/database/schema/database_schema_types.ts"
 
 import type { HonoInstance } from "@/server/hono.js"
 import type { HonoContext } from "@/server/types.js"
@@ -12,12 +13,7 @@ import { BaseController } from "@/shared/controllers/base_controller.js"
 import { container } from "@/utils/typi.js"
 
 export class TagController extends BaseController {
-  constructor(
-    private app: HonoInstance = makeApp(),
-    private audienceValidationAndAuthorizationConcern = container.make(
-      AudienceValidationAndAuthorizationConcern,
-    ),
-  ) {
+  constructor(private app: HonoInstance = makeApp()) {
     super()
 
     this.app.defineRoutes(
@@ -32,15 +28,9 @@ export class TagController extends BaseController {
   }
 
   async create(ctx: HonoContext) {
-    const audience =
-      await this.audienceValidationAndAuthorizationConcern.ensureAudienceExists(
-        ctx,
-      )
+    await this.ensureExists<Audience>(ctx, "audienceId")
 
-    await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      audience,
-    )
+    this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, CreateTagSchema)
     const audienceId = parseInt(ctx.req.param("audienceId"))
@@ -53,20 +43,15 @@ export class TagController extends BaseController {
   }
 
   async delete(ctx: HonoContext) {
-    const tagId = parseInt(ctx.req.param("tagId"))
+    const [, tag] = await Promise.all([
+      this.ensureExists<Audience>(ctx, "audienceId"),
+      this.ensureExists<Tag>(ctx, "tagId"),
+    ])
 
-    const audience =
-      await this.audienceValidationAndAuthorizationConcern.ensureAudienceExists(
-        ctx,
-      )
+    this.ensureCanAuthor(ctx)
 
-    await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      audience,
-    )
+    await container.resolve(DeleteTagAction).handle(tag.id)
 
-    await container.resolve(DeleteTagAction).handle(tagId)
-
-    return ctx.json({ id: tagId }, 200)
+    return ctx.json({ id: tag.id }, 200)
   }
 }

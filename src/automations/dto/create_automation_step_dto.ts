@@ -209,17 +209,17 @@ export const CreateAutomationStepDto = pipeAsync(
   }, "The configuration object is malformed for ACTION_UPDATE_CONTACT_ATTRIBUTES."),
   checkAsync(async (input) => {
     if (input.subtype === "ACTION_SEND_EMAIL") {
-      return safeParse(pipe(string(), nonEmpty()), input.emailId).success
+      return safeParse(number(), input.emailId).success
     }
 
     return true
-  }, "The emailId must be present for subtype ACTION_SEND_EMAIL."),
+  }, "The emailId must be present and valid for subtype ACTION_SEND_EMAIL."),
   checkAsync(async (input) => {
     if (
       input.subtype === "ACTION_ADD_TAG" ||
       input.subtype === "ACTION_REMOVE_TAG"
     ) {
-      return safeParse(pipe(string(), nonEmpty()), input.tagId).success
+      return safeParse(number(), input.tagId).success
     }
 
     return true
@@ -229,8 +229,7 @@ export const CreateAutomationStepDto = pipeAsync(
       input.subtype === "ACTION_SUBSCRIBE_TO_AUDIENCE" ||
       input.subtype === "ACTION_UNSUBSCRIBE_FROM_AUDIENCE"
     ) {
-      return safeParse(pipe(string(), nonEmpty()), input.audienceId)
-        .success
+      return safeParse(number(), input.audienceId).success
     }
 
     return true

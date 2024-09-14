@@ -6,8 +6,10 @@ import {
 } from "valibot"
 
 import { TeamPolicy } from "@/audiences/policies/team_policy.ts"
-
-import { Team } from "@/database/schema/database_schema_types.ts"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.ts"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+import { TagRepository } from "@/audiences/repositories/tag_repository.ts"
 
 import type { HonoContext } from "@/server/types.js"
 
@@ -16,27 +18,41 @@ import {
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
 
-import { TeamWithMembers } from "@/shared/types/team.ts"
+import { BaseRepository } from "@/shared/repositories/base_repository.ts"
 
 import { container } from "@/utils/typi.ts"
 
+type ControllerParams = "importId" | "audienceId" | "contactId" | "tagId"
 export class BaseController {
-  private commonControllerParams = ["importId", "audienceId", "contactId"]
+  private commonControllerParams: ControllerParams[] = [
+    "importId",
+    "audienceId",
+    "contactId",
+    "tagId",
+  ]
+
+  protected getParameter(ctx: HonoContext, param: ControllerParams) {
+    const id = parseInt(ctx.req.param(param))
+
+    if (isNaN(id) || !id) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: `Invalid ${param} provided.`,
+          field: param,
+        },
+      ])
+    }
+
+    return id
+  }
 
   protected async validate<
     T extends BaseSchema<any, any, any> | BaseSchemaAsync<any, any, any>,
   >(ctx: HonoContext, schema: T): Promise<InferInput<T>> {
     const payload = await ctx.req.json()
 
-    const params: Record<string, string> = {}
-
-    for (const param of this.commonControllerParams) {
-      params[param] = ctx.req.param(param)
-    }
-
     const { success, issues, output } = await safeParseAsync(schema, {
       ...payload,
-      params,
     })
 
     if (!success) throw E_VALIDATION_FAILED(issues)
@@ -104,6 +120,22 @@ export class BaseController {
     return team
   }
 
+  protected ensureCanAuthor(ctx: HonoContext) {
+    const team = this.ensureTeam(ctx)
+
+    const teamPolicy = container.make(TeamPolicy)
+
+    const canManage = teamPolicy.canAuthor(team, this.user(ctx)?.id)
+
+    if (!canManage) {
+      throw E_UNAUTHORIZED(
+        "You are not authorised to perform this action on this team.",
+      )
+    }
+
+    return team
+  }
+
   protected user(ctx: HonoContext) {
     return ctx.get("user")
   }
@@ -123,5 +155,43 @@ export class BaseController {
         "You are not authorized to perform this action.",
       )
     }
+  }
+
+  protected async ensureExists<T>(
+    ctx: HonoContext,
+    param: (typeof this.commonControllerParams)[number],
+  ) {
+    const repositories = {
+      contactId: ContactRepository,
+      audienceId: AudienceRepository,
+      importId: ContactImportRepository,
+      tagId: TagRepository,
+    } as const
+
+    // FIX types around common interface
+    const repository = container.make(repositories[param] as any) as any
+
+    const entity = await repository.findById(this.getParameter(ctx, param))
+
+    if (entity?.teamId) {
+      const team = this.ensureTeam(ctx)
+
+      if (team.id !== entity.teamId) {
+        throw E_UNAUTHORIZED(
+          `You are not authorized to perform this action on team ${team.id} and ${param} ${entity.id}`,
+        )
+      }
+    }
+
+    if (!entity) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: `Invalid ${param} provided.`,
+          field: param,
+        },
+      ])
+    }
+
+    return entity as T
   }
 }

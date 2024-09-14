@@ -1,8 +1,9 @@
 import { CreateContactImportAction } from "@/audiences/actions/contact_imports/create_contact_import_action.ts"
 import { UpdateContactImportSettingsAction } from "@/audiences/actions/contact_imports/update_contact_import_settings_action.ts"
-import { AudienceValidationAndAuthorizationConcern } from "@/audiences/concerns/audience_validation_concern.ts"
 import { UpdateContactImportSettings } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.ts"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
+
+import { Audience } from "@/database/schema/database_schema_types.ts"
 
 import type { HonoContext } from "@/server/types.js"
 
@@ -18,9 +19,6 @@ export class ContactImportController extends BaseController {
     private app = makeApp(),
     private contactImportRepository = container.make(
       ContactImportRepository,
-    ),
-    private audienceConcern = container.make(
-      AudienceValidationAndAuthorizationConcern,
     ),
   ) {
     super()
@@ -39,7 +37,7 @@ export class ContactImportController extends BaseController {
   async create(ctx: HonoContext) {
     const form = await ctx.req.formData()
 
-    const audience = await this.audienceConcern.ensureAudienceExists(ctx)
+    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
 
     this.ensureBelongsToTeam(ctx, audience)
 
@@ -53,7 +51,7 @@ export class ContactImportController extends BaseController {
   }
 
   async update(ctx: HonoContext) {
-    const audience = await this.audienceConcern.ensureAudienceExists(ctx)
+    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
 
     this.ensureBelongsToTeam(ctx, audience)
 

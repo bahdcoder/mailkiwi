@@ -3,17 +3,18 @@ import { GetContactsAction } from "@/audiences/actions/contacts/get_contacts_act
 import { UpdateContactAction } from "@/audiences/actions/contacts/update_contact_action.js"
 import { AttachTagsToContactAction } from "@/audiences/actions/tags/attach_tags_to_contact_action.js"
 import { DetachTagsFromContactAction } from "@/audiences/actions/tags/detach_tags_from_contact_action.js"
-import { AudienceValidationAndAuthorizationConcern } from "@/audiences/concerns/audience_validation_concern.ts"
 import { CreateContactSchema } from "@/audiences/dto/contacts/create_contact_dto.js"
 import { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js"
 import { AttachTagsToContactDto } from "@/audiences/dto/tags/attach_tags_to_contact_dto.js"
 import { DetachTagsFromContactDto } from "@/audiences/dto/tags/detach_tags_from_contact_dto.js"
-import { AudiencePolicy } from "@/audiences/policies/audience_policy.js"
+
+import {
+  Audience,
+  Contact,
+} from "@/database/schema/database_schema_types.ts"
 
 import type { HonoInstance } from "@/server/hono.js"
 import type { HonoContext } from "@/server/types.js"
-
-import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
@@ -21,12 +22,7 @@ import { BaseController } from "@/shared/controllers/base_controller.js"
 import { container } from "@/utils/typi.js"
 
 export class ContactController extends BaseController {
-  constructor(
-    private app: HonoInstance = makeApp(),
-    private audienceValidationAndAuthorizationConcern: AudienceValidationAndAuthorizationConcern = container.make(
-      AudienceValidationAndAuthorizationConcern,
-    ),
-  ) {
+  constructor(private app: HonoInstance = makeApp()) {
     super()
 
     this.app.defineRoutes(
@@ -57,95 +53,67 @@ export class ContactController extends BaseController {
   }
 
   async store(ctx: HonoContext) {
-    const audience =
-      await this.audienceValidationAndAuthorizationConcern.ensureAudienceExists(
-        ctx,
-      )
-    await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      audience,
-    )
+    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
+
+    this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, CreateContactSchema)
 
-    const team = this.ensureTeam(ctx)
-
-    const policy = container.resolve(AudiencePolicy)
-
-    if (!policy.canCreate(team, ctx.get("accessToken").userId))
-      throw E_UNAUTHORIZED()
-
-    const action = container.resolve(CreateContactAction)
-
-    const contact = await action.handle(
-      data,
-      parseInt(ctx.req.param("audienceId")),
-    )
+    const contact = await container
+      .resolve(CreateContactAction)
+      .handle(data, audience.id)
 
     return ctx.json(contact)
   }
 
   async update(ctx: HonoContext) {
-    const audience =
-      await this.audienceValidationAndAuthorizationConcern.ensureAudienceExists(
-        ctx,
-      )
-    await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      audience,
-    )
+    const [, contact] = await Promise.all([
+      this.ensureExists<Audience>(ctx, "audienceId"),
+      this.ensureExists<Contact>(ctx, "contactId"),
+    ])
 
-    const contactId = parseInt(ctx.req.param("contactId"))
+    this.ensureCanAuthor(ctx)
+
     const data = await this.validate(ctx, UpdateContactDto)
 
-    const action = container.resolve(UpdateContactAction)
+    const { id } = await container
+      .resolve(UpdateContactAction)
+      .handle(contact.id, data)
 
-    const updatedContact = await action.handle(contactId, data)
-
-    return ctx.json(updatedContact, 200)
+    return ctx.json({ id }, 200)
   }
 
   async attachTags(ctx: HonoContext) {
-    const audience =
-      await this.audienceValidationAndAuthorizationConcern.ensureAudienceExists(
-        ctx,
-      )
-    await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      audience,
-    )
+    const [, contact] = await Promise.all([
+      this.ensureExists<Audience>(ctx, "audienceId"),
+      this.ensureExists<Contact>(ctx, "contactId"),
+    ])
 
-    const contactId = parseInt(ctx.req.param("contactId"))
+    this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, AttachTagsToContactDto)
 
     await container
       .resolve(AttachTagsToContactAction)
-      .handle(contactId, data)
+      .handle(contact.id, data)
 
-    return ctx.json({ id: contactId })
+    return ctx.json({ id: contact.id })
   }
 
   async detachTags(ctx: HonoContext) {
-    const audience =
-      await this.audienceValidationAndAuthorizationConcern.ensureAudienceExists(
-        ctx,
-      )
-    await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      audience,
-    )
+    const [, contact] = await Promise.all([
+      this.ensureExists<Audience>(ctx, "audienceId"),
+      this.ensureExists<Contact>(ctx, "contactId"),
+    ])
 
-    const contactId = parseInt(ctx.req.param("contactId"))
+    this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, DetachTagsFromContactDto)
 
-    const action = container.resolve(DetachTagsFromContactAction)
-
     await container
       .resolve(DetachTagsFromContactAction)
-      .handle(contactId, data)
+      .handle(contact.id, data)
 
-    return ctx.json({ id: contactId })
+    return ctx.json({ id: contact.id })
   }
 }

@@ -1,6 +1,7 @@
-import { AudienceValidationAndAuthorizationConcern } from "@/audiences/concerns/audience_validation_concern.ts"
 import { CreateSegmentSchema } from "@/audiences/dto/segments/create_segment_dto.js"
 import { SegmentRepository } from "@/audiences/repositories/segment_repository.ts"
+
+import { Audience } from "@/database/schema/database_schema_types.ts"
 
 import type { HonoContext } from "@/server/types.ts"
 
@@ -12,9 +13,6 @@ import { container } from "@/utils/typi.ts"
 export class SegmentController extends BaseController {
   constructor(
     private app = makeApp(),
-    private audienceValidationAndAuthorizationConcern = container.make(
-      AudienceValidationAndAuthorizationConcern,
-    ),
     private segmentRepository = container.make(SegmentRepository),
   ) {
     super()
@@ -31,14 +29,9 @@ export class SegmentController extends BaseController {
   }
 
   async create(ctx: HonoContext) {
-    const audience =
-      await this.audienceValidationAndAuthorizationConcern.ensureAudienceExists(
-        ctx,
-      )
-    await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      audience,
-    )
+    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
+
+    this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, CreateSegmentSchema)
 
@@ -51,14 +44,9 @@ export class SegmentController extends BaseController {
   }
 
   async delete(ctx: HonoContext) {
-    const audience =
-      await this.audienceValidationAndAuthorizationConcern.ensureAudienceExists(
-        ctx,
-      )
-    await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      audience,
-    )
+    await this.ensureExists<Audience>(ctx, "audienceId")
+
+    this.ensureCanAuthor(ctx)
 
     const segmentId = parseInt(ctx.req.param("segmentId"))
 

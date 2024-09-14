@@ -1,9 +1,9 @@
-import { AudienceValidationAndAuthorizationConcern } from "@/audiences/concerns/audience_validation_concern.js"
-
 import { CreateAutomationAction } from "@/automations/actions/create_automation_action.js"
 import { CreateAutomationStepAction } from "@/automations/actions/create_automation_step_action.js"
 import { CreateAutomationSchema } from "@/automations/dto/create_automation_dto.js"
 import { CreateAutomationStepDto } from "@/automations/dto/create_automation_step_dto.js"
+
+import { Audience } from "@/database/schema/database_schema_types.ts"
 
 import type { HonoInstance } from "@/server/hono.js"
 import type { HonoContext } from "@/server/types.js"
@@ -14,13 +14,7 @@ import { BaseController } from "@/shared/controllers/base_controller.js"
 import { container } from "@/utils/typi.js"
 
 export class AutomationController extends BaseController {
-  constructor(
-    private app: HonoInstance = makeApp(),
-
-    private audienceValidationAndAuthorizationConcern: AudienceValidationAndAuthorizationConcern = container.make(
-      AudienceValidationAndAuthorizationConcern,
-    ),
-  ) {
+  constructor(private app: HonoInstance = makeApp()) {
     super()
 
     this.app.defineRoutes(
@@ -53,14 +47,9 @@ export class AutomationController extends BaseController {
   }
 
   async createStep(ctx: HonoContext) {
-    const audience =
-      await this.audienceValidationAndAuthorizationConcern.ensureAudienceExists(
-        ctx,
-      )
-    await this.audienceValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      audience,
-    )
+    await this.ensureExists<Audience>(ctx, "audienceId")
+
+    this.ensureCanAuthor(ctx)
 
     const automationId = parseInt(ctx.req.param("automationId"))
 

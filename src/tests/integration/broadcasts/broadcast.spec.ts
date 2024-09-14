@@ -142,7 +142,7 @@ describe("@broadcasts update", () => {
       method: "PUT",
       path: `/broadcasts/${broadcastId}`,
       body: {
-        audienceId: faker.string.uuid(),
+        audienceId: faker.number.int(),
       },
     })
 
@@ -231,7 +231,7 @@ describe("@broadcasts update", () => {
 
     const response = await makeRequestAsUser(user, {
       method: "PUT",
-      path: `/broadcasts/${faker.string.uuid()}`,
+      path: `/broadcasts/${faker.number.int()}`,
       body: {
         name: faker.lorem.words(3),
       },

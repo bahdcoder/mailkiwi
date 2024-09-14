@@ -18,7 +18,6 @@ import {
 } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
 import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
 
 describe("@automations", () => {
@@ -517,7 +516,7 @@ describe("@automations step validation", () => {
         type: "ACTION",
         subtype: "ACTION_SEND_EMAIL",
         configuration: {},
-        emailId: cuid(),
+        emailId: faker.number.int(),
       },
     })
 
@@ -547,7 +546,7 @@ describe("@automations step validation", () => {
         type: "ACTION",
         subtype: "ACTION_ADD_TAG",
         configuration: {},
-        tagId: cuid(),
+        tagId: faker.number.int(),
       },
     })
 
@@ -579,7 +578,7 @@ describe("@automations step validation", () => {
         type: "ACTION",
         subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
         configuration: {},
-        audienceId: cuid(),
+        audienceId: faker.number.int(),
       },
     })
 

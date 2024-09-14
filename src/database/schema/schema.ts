@@ -17,9 +17,9 @@ import {
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
 
 const primaryKeyBigInt = <TName extends string>(name: TName) =>
-  bigint(name, { mode: "number", unsigned: true }).autoincrement()
+  bigint(name, { mode: "number", unsigned: true })
 
-const id = primaryKeyBigInt("id").primaryKey()
+const id = primaryKeyBigInt("id").primaryKey().autoincrement()
 
 export type ContactFilterCondition = {
   field: CreateSegmentDto["conditions"][number]["field"]
@@ -106,7 +106,7 @@ export const webhooks = mysqlTable("webhooks", {
     "TAG_ADDED",
     "TAG_REMOVED",
   ]),
-  teamId: bigint("teamId", { mode: "bigint" })
+  teamId: primaryKeyBigInt("teamId")
     .references(() => teams.id)
     .notNull(),
 })
@@ -185,7 +185,7 @@ export const contacts = mysqlTable(
     emailVerificationTokenExpiresAt: timestamp(
       "emailVerificationTokenExpiresAt",
     ),
-    contactImportId: varchar("contactImportId", { length: 32 }).references(
+    contactImportId: primaryKeyBigInt("contactImportId").references(
       () => contactImports.id,
     ),
     attributes: json("attributes").$type<Record<string, any>>(),
@@ -313,9 +313,9 @@ export const broadcasts = mysqlTable("broadcasts", {
       onDelete: "cascade",
     },
   ),
-  winningAbTestVariantId: bigint("winningAbTestVariantId", {
-    mode: "bigint",
-  }).references((): AnyMySqlColumn => abTestVariants.id, {
+  winningAbTestVariantId: primaryKeyBigInt(
+    "winningAbTestVariantId",
+  ).references((): AnyMySqlColumn => abTestVariants.id, {
     onDelete: "cascade",
   }),
   // waitingTimeToPickWinner

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "7d2df30f-ec44-4190-94d6-01a596785725",
+  "id": "832e7fe7-713e-4dda-ab9a-c3c6778141af",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -9,21 +9,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "broadcastId": {
           "name": "broadcastId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "emailContentId": {
           "name": "emailContentId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -85,21 +85,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "userId": {
           "name": "userId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -177,10 +177,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "name": {
           "name": "name",
@@ -191,7 +191,7 @@
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -229,14 +229,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "automationId": {
           "name": "automationId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -265,7 +265,7 @@
         },
         "parentId": {
           "name": "parentId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -286,21 +286,21 @@
         },
         "emailId": {
           "name": "emailId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "tagId": {
           "name": "tagId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -367,10 +367,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "name": {
           "name": "name",
@@ -388,7 +388,7 @@
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -419,10 +419,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "name": {
           "name": "name",
@@ -433,21 +433,21 @@
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "segmentId": {
           "name": "segmentId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -468,14 +468,14 @@
         },
         "emailContentId": {
           "name": "emailContentId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "winningAbTestVariantId": {
           "name": "winningAbTestVariantId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -587,21 +587,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "automationStepId": {
           "name": "automationStepId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "contactId": {
           "name": "contactId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -691,7 +691,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "fileIdentifier": {
+          "name": "fileIdentifier",
+          "type": "varchar(32)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -705,7 +712,7 @@
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -774,17 +781,22 @@
           "columns": ["id"]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "contactImports_fileIdentifier_unique": {
+          "name": "contactImports_fileIdentifier_unique",
+          "columns": ["fileIdentifier"]
+        }
+      }
     },
     "contacts": {
       "name": "contacts",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "firstName": {
           "name": "firstName",
@@ -830,7 +842,7 @@
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -851,7 +863,7 @@
         },
         "contactImportId": {
           "name": "contactImportId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -911,10 +923,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "fromName": {
           "name": "fromName",
@@ -995,10 +1007,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "type": {
           "name": "type",
@@ -1016,14 +1028,14 @@
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "emailContentId": {
           "name": "emailContentId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1063,10 +1075,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "name": {
           "name": "name",
@@ -1077,7 +1089,7 @@
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1115,10 +1127,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "name": {
           "name": "name",
@@ -1129,7 +1141,7 @@
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1209,10 +1221,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "url": {
           "name": "url",
@@ -1261,10 +1273,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "name": {
           "name": "name",
@@ -1282,7 +1294,7 @@
         },
         "audienceId": {
           "name": "audienceId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1306,28 +1318,33 @@
           "columns": ["id"]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "tagNameAudienceIdKey": {
+          "name": "tagNameAudienceIdKey",
+          "columns": ["name", "audienceId"]
+        }
+      }
     },
     "tagsOnContacts": {
       "name": "tagsOnContacts",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "tagId": {
           "name": "tagId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "contactId": {
           "name": "contactId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1385,14 +1402,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "userId": {
           "name": "userId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1406,7 +1423,7 @@
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1475,10 +1492,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "name": {
           "name": "name",
@@ -1489,7 +1506,7 @@
         },
         "userId": {
           "name": "userId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1541,10 +1558,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "email": {
           "name": "email",
@@ -1595,10 +1612,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(40)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "name": {
           "name": "name",
@@ -1623,7 +1640,7 @@
         },
         "teamId": {
           "name": "teamId",
-          "type": "varchar(32)",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

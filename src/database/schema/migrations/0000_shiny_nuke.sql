@@ -1,7 +1,7 @@
 CREATE TABLE `abTestVariants` (
-	`id` varchar(40) NOT NULL,
-	`broadcastId` varchar(32) NOT NULL,
-	`emailContentId` varchar(32) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
+	`broadcastId` bigint unsigned NOT NULL,
+	`emailContentId` bigint unsigned NOT NULL,
 	`name` varchar(50) NOT NULL,
 	`weight` int NOT NULL DEFAULT 1,
 	`sendAt` timestamp,
@@ -9,9 +9,9 @@ CREATE TABLE `abTestVariants` (
 );
 --> statement-breakpoint
 CREATE TABLE `accessTokens` (
-	`id` varchar(40) NOT NULL,
-	`userId` varchar(32),
-	`teamId` varchar(32),
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
+	`userId` bigint unsigned,
+	`teamId` bigint unsigned,
 	`name` varchar(32),
 	`hash` varchar(100) NOT NULL,
 	`createdAt` timestamp NOT NULL DEFAULT (now()),
@@ -21,46 +21,46 @@ CREATE TABLE `accessTokens` (
 );
 --> statement-breakpoint
 CREATE TABLE `audiences` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`name` varchar(50) NOT NULL,
-	`teamId` varchar(32) NOT NULL,
+	`teamId` bigint unsigned NOT NULL,
 	`knownAttributes` json,
 	CONSTRAINT `audiences_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `automationSteps` (
-	`id` varchar(40) NOT NULL,
-	`automationId` varchar(32) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
+	`automationId` bigint unsigned NOT NULL,
 	`type` enum('TRIGGER','ACTION','RULE','END') NOT NULL,
 	`status` enum('DRAFT','ACTIVE','PAUSED','ARCHIVED') NOT NULL DEFAULT 'DRAFT',
 	`subtype` enum('TRIGGER_CONTACT_SUBSCRIBED','TRIGGER_CONTACT_UNSUBSCRIBED','TRIGGER_CONTACT_TAG_ADDED','TRIGGER_CONTACT_TAG_REMOVED','TRIGGER_API_MANUAL','ACTION_SEND_EMAIL','ACTION_ADD_TAG','ACTION_REMOVE_TAG','ACTION_SUBSCRIBE_TO_AUDIENCE','ACTION_UNSUBSCRIBE_FROM_AUDIENCE','ACTION_UPDATE_CONTACT_ATTRIBUTES','RULE_IF_ELSE','RULE_WAIT_FOR_DURATION','RULE_PERCENTAGE_SPLIT','RULE_WAIT_FOR_TRIGGER','END') NOT NULL,
-	`parentId` varchar(32),
+	`parentId` bigint unsigned,
 	`branchIndex` int,
 	`configuration` json NOT NULL,
-	`emailId` varchar(32),
-	`tagId` varchar(32),
-	`audienceId` varchar(32),
+	`emailId` bigint unsigned,
+	`tagId` bigint unsigned,
+	`audienceId` bigint unsigned,
 	CONSTRAINT `automationSteps_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `automations` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`name` varchar(50) NOT NULL,
 	`description` varchar(512),
-	`audienceId` varchar(32) NOT NULL,
+	`audienceId` bigint unsigned NOT NULL,
 	CONSTRAINT `automations_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `broadcasts` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`name` varchar(255) NOT NULL,
-	`audienceId` varchar(32) NOT NULL,
-	`segmentId` varchar(32),
-	`teamId` varchar(32) NOT NULL,
+	`audienceId` bigint unsigned NOT NULL,
+	`segmentId` bigint unsigned,
+	`teamId` bigint unsigned NOT NULL,
 	`trackClicks` boolean,
 	`trackOpens` boolean,
-	`emailContentId` varchar(32),
-	`winningAbTestVariantId` varchar(32),
+	`emailContentId` bigint unsigned,
+	`winningAbTestVariantId` bigint unsigned,
 	`waitingTimeToPickWinner` int DEFAULT 4,
 	`status` enum('SENT','SENDING','DRAFT','QUEUED_FOR_SENDING','SENDING_FAILED','DRAFT_ARCHIVED','ARCHIVED') DEFAULT 'DRAFT',
 	`isAbTest` boolean NOT NULL DEFAULT false,
@@ -71,9 +71,9 @@ CREATE TABLE `broadcasts` (
 );
 --> statement-breakpoint
 CREATE TABLE `contactAutomationSteps` (
-	`id` varchar(40) NOT NULL,
-	`automationStepId` varchar(32) NOT NULL,
-	`contactId` varchar(32) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
+	`automationStepId` bigint unsigned NOT NULL,
+	`contactId` bigint unsigned NOT NULL,
 	`status` enum('PENDING','ACTIVE','COMPLETED','FAILED','HALTED') DEFAULT 'PENDING',
 	`haltedAt` timestamp,
 	`failedAt` timestamp,
@@ -85,30 +85,32 @@ CREATE TABLE `contactAutomationSteps` (
 );
 --> statement-breakpoint
 CREATE TABLE `contactImports` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
+	`fileIdentifier` varchar(32) NOT NULL,
 	`name` varchar(50),
-	`audienceId` varchar(32) NOT NULL,
+	`audienceId` bigint unsigned NOT NULL,
 	`url` varchar(100) NOT NULL,
 	`status` enum('PENDING','PROCESSING','FAILED','SUCCESS'),
 	`subscribeAllContacts` boolean DEFAULT true,
 	`updateExistingContacts` boolean DEFAULT true,
 	`createdAt` timestamp DEFAULT (now()),
 	`attributesMap` json NOT NULL,
-	CONSTRAINT `contactImports_id` PRIMARY KEY(`id`)
+	CONSTRAINT `contactImports_id` PRIMARY KEY(`id`),
+	CONSTRAINT `contactImports_fileIdentifier_unique` UNIQUE(`fileIdentifier`)
 );
 --> statement-breakpoint
 CREATE TABLE `contacts` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`firstName` varchar(50),
 	`lastName` varchar(50),
 	`email` varchar(80) NOT NULL,
 	`avatarUrl` varchar(256),
 	`subscribedAt` timestamp,
 	`unsubscribedAt` timestamp,
-	`audienceId` varchar(32) NOT NULL,
+	`audienceId` bigint unsigned NOT NULL,
 	`emailVerificationToken` varchar(100),
 	`emailVerificationTokenExpiresAt` timestamp,
-	`contactImportId` varchar(32),
+	`contactImportId` bigint unsigned,
 	`attributes` json,
 	`createdAt` timestamp DEFAULT (now()),
 	CONSTRAINT `contacts_id` PRIMARY KEY(`id`),
@@ -116,7 +118,7 @@ CREATE TABLE `contacts` (
 );
 --> statement-breakpoint
 CREATE TABLE `emailContents` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`fromName` varchar(255),
 	`fromEmail` varchar(255),
 	`replyToEmail` varchar(255),
@@ -130,26 +132,26 @@ CREATE TABLE `emailContents` (
 );
 --> statement-breakpoint
 CREATE TABLE `emails` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`type` enum('AUTOMATION','TRANSACTIONAL') NOT NULL,
 	`title` varchar(50) NOT NULL,
-	`audienceId` varchar(32) NOT NULL,
-	`emailContentId` varchar(32),
+	`audienceId` bigint unsigned NOT NULL,
+	`emailContentId` bigint unsigned,
 	CONSTRAINT `emails_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `segments` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`name` varchar(255) NOT NULL,
-	`audienceId` varchar(32) NOT NULL,
+	`audienceId` bigint unsigned NOT NULL,
 	`conditions` json NOT NULL,
 	CONSTRAINT `segments_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `sendingDomains` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`name` varchar(100) NOT NULL,
-	`teamId` varchar(32) NOT NULL,
+	`teamId` bigint unsigned NOT NULL,
 	`dkimSubDomain` varchar(120) NOT NULL,
 	`dkimPublicKey` text NOT NULL,
 	`dkimPrivateKey` text NOT NULL,
@@ -161,7 +163,7 @@ CREATE TABLE `sendingDomains` (
 );
 --> statement-breakpoint
 CREATE TABLE `settings` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`url` varchar(256),
 	`domain` varchar(50) NOT NULL,
 	`installedSslCertificate` boolean NOT NULL DEFAULT false,
@@ -171,27 +173,28 @@ CREATE TABLE `settings` (
 );
 --> statement-breakpoint
 CREATE TABLE `tags` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`name` varchar(256) NOT NULL,
 	`description` varchar(256),
-	`audienceId` varchar(32) NOT NULL,
-	CONSTRAINT `tags_id` PRIMARY KEY(`id`)
+	`audienceId` bigint unsigned NOT NULL,
+	CONSTRAINT `tags_id` PRIMARY KEY(`id`),
+	CONSTRAINT `tagNameAudienceIdKey` UNIQUE(`name`,`audienceId`)
 );
 --> statement-breakpoint
 CREATE TABLE `tagsOnContacts` (
-	`id` varchar(40) NOT NULL,
-	`tagId` varchar(32) NOT NULL,
-	`contactId` varchar(32) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
+	`tagId` bigint unsigned NOT NULL,
+	`contactId` bigint unsigned NOT NULL,
 	`assignedAt` timestamp,
 	CONSTRAINT `tagsOnContacts_id` PRIMARY KEY(`id`),
 	CONSTRAINT `tagsOnContactsTagIdContactIdKey` UNIQUE(`tagId`,`contactId`)
 );
 --> statement-breakpoint
 CREATE TABLE `teamMemberships` (
-	`id` varchar(40) NOT NULL,
-	`userId` varchar(32),
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
+	`userId` bigint unsigned,
 	`email` varchar(50) NOT NULL,
-	`teamId` varchar(32) NOT NULL,
+	`teamId` bigint unsigned NOT NULL,
 	`role` enum('ADMINISTRATOR','MANAGER','AUTHOR','GUEST'),
 	`status` enum('PENDING','ACTIVE'),
 	`invitedAt` timestamp NOT NULL DEFAULT (now()),
@@ -200,9 +203,9 @@ CREATE TABLE `teamMemberships` (
 );
 --> statement-breakpoint
 CREATE TABLE `teams` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`name` varchar(100) NOT NULL,
-	`userId` varchar(32) NOT NULL,
+	`userId` bigint unsigned NOT NULL,
 	`trackClicks` boolean,
 	`trackOpens` boolean,
 	`broadcastEditor` enum('DEFAULT','MARKDOWN'),
@@ -210,7 +213,7 @@ CREATE TABLE `teams` (
 );
 --> statement-breakpoint
 CREATE TABLE `users` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`email` varchar(80) NOT NULL,
 	`name` varchar(80),
 	`avatarUrl` varchar(256),
@@ -220,11 +223,11 @@ CREATE TABLE `users` (
 );
 --> statement-breakpoint
 CREATE TABLE `webhooks` (
-	`id` varchar(40) NOT NULL,
+	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`name` varchar(50) NOT NULL,
 	`url` varchar(256) NOT NULL,
 	`webhookEvent` enum('ALL_EVENTS','CONTACT_ADDED','CONTACT_REMOVED','CONTACT_TAG_ADDED','CONTACT_TAG_REMOVED','BROADCAST_SENT','BROADCAST_PAUSED','BROADCAST_EMAIL_OPENED','BROADCAST_EMAIL_LINK_CLICKED','AUDIENCE_ADDED','TAG_ADDED','TAG_REMOVED'),
-	`teamId` varchar(32) NOT NULL,
+	`teamId` bigint unsigned NOT NULL,
 	CONSTRAINT `webhooks_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

@@ -42,7 +42,7 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
 
     const csvStream = await makeMinioClient()
       .bucket("contacts")
-      .name(`${contactImport.id}.csv`)
+      .name(`${contactImport.fileIdentifier}.csv`)
       .read()
 
     const parser = csvStream.pipe(CsvParser())

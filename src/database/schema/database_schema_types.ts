@@ -22,6 +22,7 @@ import type { makeDatabase } from "@/shared/container/index.js"
 
 export type Setting = InferSelectModel<typeof settings>
 export type Audience = InferSelectModel<typeof audiences>
+export type Tag = InferSelectModel<typeof tags>
 export type Contact = InferSelectModel<typeof contacts>
 export type User = InferSelectModel<typeof users>
 export type Broadcast = InferSelectModel<typeof broadcasts>

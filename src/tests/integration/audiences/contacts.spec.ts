@@ -180,6 +180,7 @@ describe("@contacts update", () => {
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
+
     const { id: contactId } = await createContactResponse.json()
 
     const updateData = {
@@ -295,16 +296,20 @@ describe("@contacts update", () => {
     expect,
   }) => {
     await refreshDatabase()
-    const { user, audience } = await createUser()
+    const { user, audience, team } = await createUser()
     const { user: unauthorizedUser } = await createUser()
     const database = makeDatabase()
 
     // Create a contact
-    const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
-      path: `/audiences/${audience.id}/contacts`,
-      body: { email: faker.internet.email() },
-    })
+    const createContactResponse = await makeRequestAsUser(
+      user,
+      {
+        method: "POST",
+        path: `/audiences/${audience.id}/contacts`,
+        body: { email: faker.internet.email() },
+      },
+      team.id,
+    )
     const { id: contactId } = await createContactResponse.json()
 
     const updateData = {

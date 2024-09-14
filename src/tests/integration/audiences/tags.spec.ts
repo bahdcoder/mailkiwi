@@ -15,7 +15,7 @@ describe("@tags create", () => {
     await refreshDatabase()
 
     const { user, audience } = await createUser()
-    const payload = { name: faker.lorem.word() }
+    const payload = { name: faker.string.uuid() + faker.lorem.word() }
 
     // Act
     const response = await makeRequestAsUser(user, {
@@ -60,9 +60,9 @@ describe("@tags create", () => {
   }) => {
     // Arrange
     await refreshDatabase()
-    const { user, audience } = await createUser()
-    const { user: otherUser } = await createUser()
-    const payload = { name: faker.lorem.word() }
+    const { audience } = await createUser()
+    const { user: otherUser, team } = await createUser()
+    const payload = { name: faker.string.uuid() + faker.lorem.word() }
 
     // Act
     const response = await makeRequestAsUser(otherUser, {
@@ -76,7 +76,7 @@ describe("@tags create", () => {
     // Assert
     expect(response.status).toBe(401)
     expect(json.message).toBe(
-      "Unauthorized: This audience does not belong to your team.",
+      `Unauthorized: You are not authorized to perform this action on team ${team.id} and audienceId ${audience.id}`,
     )
   })
 
@@ -86,7 +86,7 @@ describe("@tags create", () => {
     // Arrange
     await refreshDatabase()
     const { user } = await createUser()
-    const payload = { name: faker.lorem.word() }
+    const payload = { name: faker.string.uuid() + faker.lorem.word() }
     const invalidAudienceId = faker.string.uuid()
 
     // Act
@@ -110,7 +110,7 @@ describe("@tags create", () => {
     // Arrange
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const tagName = faker.lorem.word()
+    const tagName = faker.string.uuid() + faker.lorem.word()
     const database = makeDatabase()
 
     await database.insert(tags).values({
@@ -139,7 +139,7 @@ describe("@tags delete", () => {
     // Arrange
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const tagName = faker.lorem.word()
+    const tagName = faker.string.uuid() + faker.lorem.word()
 
     const createResponse = await makeRequestAsUser(user, {
       method: "POST",
@@ -173,7 +173,7 @@ describe("@tags delete", () => {
     const { user, audience } = await createUser()
     const { user: otherUser } = await createUser()
 
-    const tagName = faker.lorem.word()
+    const tagName = faker.string.uuid() + faker.lorem.word()
 
     const createResponse = await makeRequestAsUser(user, {
       method: "POST",
@@ -225,7 +225,7 @@ describe("@tags attach to contacts", () => {
       const createTagResponse = await makeRequestAsUser(user, {
         method: "POST",
         path: `/audiences/${audience.id}/tags`,
-        body: { name: faker.lorem.word() },
+        body: { name: faker.string.uuid() + faker.lorem.word() },
       })
       const { id } = await createTagResponse.json()
       tagIds.push(id)
@@ -250,13 +250,11 @@ describe("@tags attach to contacts", () => {
   })
 
   test("can only attach valid tags", async ({ expect }) => {
-    // Arrange
     await refreshDatabase()
 
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
-    // Create a contact
     const createContactResponse = await makeRequestAsUser(user, {
       method: "POST",
       path: `/audiences/${audience.id}/contacts`,
@@ -264,20 +262,19 @@ describe("@tags attach to contacts", () => {
     })
     const { id: contactId } = await createContactResponse.json()
 
-    // Create 2 valid tags
     const validTagIds = []
     for (let i = 0; i < 2; i++) {
       const createTagResponse = await makeRequestAsUser(user, {
         method: "POST",
         path: `/audiences/${audience.id}/tags`,
-        body: { name: faker.lorem.word() },
+        body: { name: faker.string.uuid() + faker.lorem.word() },
       })
       const { id } = await createTagResponse.json()
       validTagIds.push(id)
     }
 
     // Add an invalid tag ID
-    const invalidTagId = faker.string.uuid()
+    const invalidTagId = faker.number.int()
     const tagIds = [...validTagIds, invalidTagId]
 
     // Act
@@ -324,7 +321,7 @@ describe("@tags attach to contacts", () => {
     const createTagResponse = await makeRequestAsUser(user, {
       method: "POST",
       path: `/audiences/${audience.id}/tags`,
-      body: { name: faker.lorem.word() },
+      body: { name: faker.string.uuid() + faker.lorem.word() },
     })
     const { id: tagId } = await createTagResponse.json()
 
@@ -361,7 +358,7 @@ describe("@tags detach from contacts", () => {
       const createTagResponse = await makeRequestAsUser(user, {
         method: "POST",
         path: `/audiences/${audience.id}/tags`,
-        body: { name: faker.lorem.word() },
+        body: { name: faker.string.uuid() + faker.lorem.word() },
       })
       const { id } = await createTagResponse.json()
       tagIds.push(id)
@@ -412,7 +409,7 @@ describe("@tags detach from contacts", () => {
       const createTagResponse = await makeRequestAsUser(user, {
         method: "POST",
         path: `/audiences/${audience.id}/tags`,
-        body: { name: faker.lorem.word() },
+        body: { name: faker.string.uuid() + faker.lorem.word() },
       })
       const { id } = await createTagResponse.json()
       attachedTagIds.push(id)
@@ -429,7 +426,7 @@ describe("@tags detach from contacts", () => {
       const createTagResponse = await makeRequestAsUser(user, {
         method: "POST",
         path: `/audiences/${audience.id}/tags`,
-        body: { name: faker.lorem.word() },
+        body: { name: faker.string.uuid() + faker.lorem.word() },
       })
       const { id } = await createTagResponse.json()
       unattachedTagIds.push(id)
@@ -465,7 +462,7 @@ describe("@tags detach from contacts", () => {
     const { id: contactId } = await createContactResponse.json()
 
     // Try to detach with invalid tag IDs
-    const invalidTagIds = [faker.string.uuid(), faker.string.uuid()]
+    const invalidTagIds = [faker.number.int(), faker.number.int()]
 
     const detachResponse = await makeRequestAsUser(user, {
       method: "POST",
@@ -504,7 +501,7 @@ describe("@tags detach from contacts", () => {
     const createTagResponse = await makeRequestAsUser(user, {
       method: "POST",
       path: `/audiences/${audience.id}/tags`,
-      body: { name: faker.lorem.word() },
+      body: { name: faker.string.uuid() + faker.lorem.word() },
     })
     const { id: tagId } = await createTagResponse.json()
     await makeRequestAsUser(user, {
