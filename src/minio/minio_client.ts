@@ -3,6 +3,8 @@ import { Readable } from "stream"
 
 import { makeEnv } from "@/shared/container/index.ts"
 
+import { container } from "@/utils/typi.ts"
+
 type BucketName = "contacts" | "attachments" | "emails"
 
 export class MinioClient {
@@ -16,6 +18,7 @@ export class MinioClient {
 
   private bucketName: string
   private objectName: string
+  private itemMetadata: Record<string, string>
 
   bucket(name: BucketName) {
     this.bucketName = name
@@ -39,10 +42,22 @@ export class MinioClient {
     }
   }
 
+  metadata(itemMetadata: Record<string, string>) {
+    this.itemMetadata = itemMetadata
+
+    return this
+  }
+
   async write(stream: Readable) {
     await this.ensureBucketExists()
 
-    await this.client.putObject(this.bucketName, this.objectName, stream)
+    await this.client.putObject(
+      this.bucketName,
+      this.objectName,
+      stream,
+      undefined,
+      this.itemMetadata ?? undefined,
+    )
 
     return {
       url: `/${this.bucketName}/${this.objectName}`,
@@ -52,8 +67,16 @@ export class MinioClient {
   async read() {
     return this.client.getObject(this.bucketName, this.objectName)
   }
+
+  async presignedUrl(expiresIn?: number) {
+    return this.client.presignedGetObject(
+      this.bucketName,
+      this.objectName,
+      expiresIn,
+    )
+  }
 }
 
 export function makeMinioClient() {
-  return new MinioClient()
+  return container.make(MinioClient)
 }

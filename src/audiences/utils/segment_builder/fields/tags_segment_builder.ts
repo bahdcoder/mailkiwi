@@ -11,8 +11,8 @@ import { makeDatabase } from "@/shared/container/index.js"
 
 export class TagsSegmentBuilder extends FieldSegmentBuilder {
   constructor(
-    protected operation: CreateSegmentDto["conditions"][number]["operation"],
-    protected value: CreateSegmentDto["conditions"][number]["value"],
+    protected operation: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number]["operation"],
+    protected value: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number]["value"],
   ) {
     super(operation, value)
   }

@@ -1,6 +1,5 @@
 import { type SQL, type SQLWrapper, and, asc, eq, sql } from "drizzle-orm"
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
 
 import type { DrizzleClient } from "@/database/client.ts"
@@ -17,10 +16,7 @@ export class ContactsConcern {
 
     if (this.broadcast.segment) {
       segmentQueryConditions.push(
-        new SegmentBuilder(
-          this.broadcast.segment
-            .conditions as CreateSegmentDto["conditions"],
-        ).build(),
+        new SegmentBuilder(this.broadcast.segment.filterGroups).build(),
       )
     }
 

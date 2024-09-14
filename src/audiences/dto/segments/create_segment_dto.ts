@@ -13,43 +13,44 @@ import {
   union,
 } from "valibot"
 
+export const FilterConditionSchema = object({
+  field: picklist([
+    "email",
+    "firstName",
+    "lastName",
+    "subscribedAt",
+    "tags",
+  ]),
+  operation: picklist([
+    "eq",
+    "ne",
+    "gt",
+    "lt",
+    "gte",
+    "lte",
+    "in",
+    "nin",
+    "startsWith",
+    "endsWith",
+    "contains",
+    "notContains",
+  ]),
+  value: union([string(), array(string()), number(), array(number())]),
+})
+
+export const FilterConditionGroupSchema = object({
+  type: picklist(["AND", "OR"]),
+  conditions: array(FilterConditionSchema),
+})
+
+export const FilterGroupsSchema = object({
+  type: picklist(["AND", "OR"]),
+  groups: array(FilterConditionGroupSchema),
+})
+
 export const CreateSegmentSchema = object({
   name: pipe(string(), nonEmpty()),
-  conditions: pipe(
-    array(
-      object({
-        field: picklist([
-          "email",
-          "firstName",
-          "lastName",
-          "subscribedAt",
-          "tags",
-        ]),
-        operation: picklist([
-          "eq",
-          "ne",
-          "gt",
-          "lt",
-          "gte",
-          "lte",
-          "in",
-          "nin",
-          "startsWith",
-          "endsWith",
-          "contains",
-          "notContains",
-        ]),
-        value: union([
-          string(),
-          array(string()),
-          number(),
-          array(number()),
-        ]),
-      }),
-    ),
-    minLength(1),
-    maxLength(5),
-  ),
+  filterGroups: FilterGroupsSchema,
 })
 
 export type CreateSegmentDto = InferInput<typeof CreateSegmentSchema>

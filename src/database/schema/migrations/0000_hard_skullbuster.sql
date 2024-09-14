@@ -144,7 +144,7 @@ CREATE TABLE `segments` (
 	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`audienceId` bigint unsigned NOT NULL,
-	`conditions` json NOT NULL,
+	`filterGroups` json NOT NULL,
 	CONSTRAINT `segments_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

@@ -11,6 +11,7 @@ import { makeRequestAsUser } from "@/tests/utils/http.ts"
 import { contacts, segments, tags } from "@/database/schema/schema.ts"
 
 import { makeDatabase } from "@/shared/container/index.js"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
 
 import { container } from "@/utils/typi.ts"
 
@@ -23,13 +24,21 @@ describe("@audience segments", () => {
 
     const payload = {
       name: faker.lorem.words(3),
-      conditions: [
-        {
-          field: "email",
-          operation: "endsWith",
-          value: "@gmail.com",
-        },
-      ],
+      filterGroups: {
+        type: "AND",
+        groups: [
+          {
+            type: "AND",
+            conditions: [
+              {
+                field: "email",
+                operation: "endsWith",
+                value: "@gmail.com",
+              },
+            ],
+          },
+        ],
+      },
     }
 
     const response = await makeRequestAsUser(user, {
@@ -47,13 +56,21 @@ describe("@audience segments", () => {
         id: expect.any(Number),
         name: payload.name,
         audienceId: audience.id,
-        conditions: [
-          {
-            field: "email",
-            value: "@gmail.com",
-            operation: "endsWith",
-          },
-        ],
+        filterGroups: {
+          type: "AND",
+          groups: [
+            {
+              type: "AND",
+              conditions: [
+                {
+                  field: "email",
+                  operation: "endsWith",
+                  value: "@gmail.com",
+                },
+              ],
+            },
+          ],
+        },
       },
     ])
   })
@@ -68,13 +85,21 @@ describe("@audience segments", () => {
 
     const payload = {
       name: faker.lorem.words(3),
-      conditions: [
-        {
-          field: "fame",
-          operation: "endsWith",
-          value: "@gmail.com",
-        },
-      ],
+      filterGroups: {
+        type: "AND",
+        groups: [
+          {
+            type: "OR",
+            conditions: [
+              {
+                field: "fame",
+                operation: "endsWith",
+                value: "@gmail.com",
+              },
+            ],
+          },
+        ],
+      },
     }
 
     const response = await makeRequestAsUser(user, {
@@ -90,7 +115,7 @@ describe("@audience segments", () => {
         {
           message:
             'Invalid type: Expected "email" | "firstName" | "lastName" | "subscribedAt" | "tags" but received "fame"',
-          field: "conditions",
+          field: "filterGroups",
         },
       ],
     })
@@ -139,20 +164,27 @@ describe("@audience segments", () => {
         ),
     )
 
-    const segmentId = faker.number.int()
-
-    await database.insert(segments).values({
-      id: segmentId,
+    const result = await database.insert(segments).values({
       audienceId: audience.id,
       name: faker.lorem.words(3),
-      conditions: [
-        {
-          field: "email",
-          operation: "startsWith",
-          value: emailStartsWith,
-        },
-      ],
+      filterGroups: {
+        type: "OR",
+        groups: [
+          {
+            type: "AND",
+            conditions: [
+              {
+                field: "email",
+                operation: "startsWith",
+                value: emailStartsWith,
+              },
+            ],
+          },
+        ],
+      },
     })
+
+    const segmentId = fromQueryResultToPrimaryKey(result)
 
     const response = await makeRequestAsUser(user, {
       method: "GET",
@@ -226,13 +258,21 @@ describe("@audience segments", () => {
       id: segmentId,
       audienceId: audience.id,
       name: faker.lorem.words(3),
-      conditions: [
-        {
-          field: "tags",
-          operation: "contains",
-          value: [tagIds[0], tagIds[1]],
-        },
-      ],
+      filterGroups: {
+        type: "AND",
+        groups: [
+          {
+            type: "AND",
+            conditions: [
+              {
+                field: "tags",
+                operation: "contains",
+                value: [tagIds[0], tagIds[1]],
+              },
+            ],
+          },
+        ],
+      },
     })
 
     const response = await makeRequestAsUser(user, {
@@ -328,13 +368,21 @@ describe("@audience segments", () => {
       id: segmentId,
       audienceId: audience.id,
       name: faker.lorem.words(3),
-      conditions: [
-        {
-          field: "tags",
-          operation: "notContains",
-          value: [tagIds[0], tagIds[1]],
-        },
-      ],
+      filterGroups: {
+        type: "AND",
+        groups: [
+          {
+            type: "AND",
+            conditions: [
+              {
+                field: "tags",
+                operation: "notContains",
+                value: [tagIds[0], tagIds[1]],
+              },
+            ],
+          },
+        ],
+      },
     })
 
     const response = await makeRequestAsUser(user, {

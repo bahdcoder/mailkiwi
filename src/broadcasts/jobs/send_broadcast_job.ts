@@ -1,7 +1,6 @@
 import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js"
 import { type SQLWrapper, and, eq } from "drizzle-orm"
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
 
 import { broadcasts, contacts } from "@/database/schema/schema.js"
@@ -46,14 +45,11 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
 
     if (broadcast.segment) {
       segmentQueryConditions.push(
-        new SegmentBuilder(
-          broadcast.segment.conditions as CreateSegmentDto["conditions"],
-        ).build(),
+        new SegmentBuilder(broadcast.segment.filterGroups).build(),
       )
     }
 
     const batchSize = 75
-    const totalContacts = 0
     const totalBatches = 1
 
     // Here we're just blasting out all those emails.

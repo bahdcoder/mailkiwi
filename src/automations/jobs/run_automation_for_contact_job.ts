@@ -47,8 +47,7 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
       where: and(
         eq(contacts.id, payload.contactId),
         new SegmentBuilder(
-          (trigger.configuration as TRIGGER_CONFIGURATION)?.conditions ??
-            [],
+          (trigger.configuration as TRIGGER_CONFIGURATION)?.filterGroups,
         ).build(),
       ),
     })

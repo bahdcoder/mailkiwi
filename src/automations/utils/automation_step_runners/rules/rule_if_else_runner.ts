@@ -63,7 +63,7 @@ export class AddTagAutomationStepRunner
       .where(
         and(
           eq(contacts.id, this.contact.id),
-          new SegmentBuilder(configuration.conditions).build(),
+          new SegmentBuilder(configuration.filterGroups).build(),
         ),
       )
       .limit(1)

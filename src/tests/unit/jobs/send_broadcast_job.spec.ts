@@ -116,13 +116,21 @@ describe("Send broadcast job", () => {
     const segmentInsert = await database.insert(segments).values({
       audienceId: audience.id,
       name: faker.lorem.words(3),
-      conditions: [
-        {
-          field: "email",
-          operation: "startsWith",
-          value: emailStartsWith,
-        },
-      ],
+      filterGroups: {
+        type: "AND",
+        groups: [
+          {
+            type: "AND",
+            conditions: [
+              {
+                field: "email",
+                operation: "startsWith",
+                value: emailStartsWith,
+              },
+            ],
+          },
+        ],
+      },
     })
 
     const segmentId = segmentInsert?.[0]?.insertId

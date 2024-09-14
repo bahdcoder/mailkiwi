@@ -101,7 +101,15 @@ export const seedAutomation = async (
       type: "TRIGGER",
       subtype: "TRIGGER_CONTACT_SUBSCRIBED",
       configuration: {
-        conditions: automation.triggerConditions ?? [],
+        filterGroups: {
+          type: "AND",
+          groups: [
+            {
+              type: "AND",
+              conditions: automation.triggerConditions ?? [],
+            },
+          ],
+        },
       },
     })
     .execute()
@@ -233,13 +241,21 @@ export const seedAutomation = async (
       type: "RULE",
       subtype: "RULE_IF_ELSE",
       configuration: {
-        conditions: [
-          {
-            field: "tags",
-            operation: "contains",
-            value: ["gjdbbgfyz6e9m3tk99ezp084"],
-          },
-        ],
+        filterGroups: {
+          type: "AND",
+          groups: [
+            {
+              type: "AND",
+              conditions: [
+                {
+                  field: "tags",
+                  operation: "contains",
+                  value: ["gjdbbgfyz6e9m3tk99ezp084"],
+                },
+              ],
+            },
+          ],
+        },
       },
     })
     .execute()
@@ -382,13 +398,21 @@ export const seedAutomation = async (
       type: "RULE",
       subtype: "RULE_IF_ELSE",
       configuration: {
-        conditions: [
-          {
-            field: "email",
-            operation: "endsWith",
-            value: ["@gmail.com"],
-          },
-        ],
+        filterGroups: {
+          type: "AND",
+          groups: [
+            {
+              type: "AND",
+              conditions: [
+                {
+                  field: "email",
+                  operation: "endsWith",
+                  value: ["@gmail.com"],
+                },
+              ],
+            },
+          ],
+        },
       },
     })
     .execute()
@@ -453,13 +477,21 @@ export const seedAutomation = async (
       type: "RULE",
       subtype: "RULE_IF_ELSE",
       configuration: {
-        conditions: [
-          {
-            field: "tags",
-            operation: "contains",
-            value: [0],
-          },
-        ],
+        filterGroups: {
+          type: "AND",
+          groups: [
+            {
+              type: "AND",
+              conditions: [
+                {
+                  field: "tags",
+                  operation: "contains",
+                  value: [0],
+                },
+              ],
+            },
+          ],
+        },
       },
     })
     .execute()

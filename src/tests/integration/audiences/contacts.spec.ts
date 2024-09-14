@@ -9,6 +9,7 @@ import { ContactImportRepository } from "@/audiences/repositories/contact_import
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.ts"
 
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import {
   refreshDatabase,
@@ -403,4 +404,52 @@ describe("@contacts imports", () => {
   })
 
   test("can only import valid csv files", async ({}) => {})
+})
+
+describe("@contacts exports", () => {
+  test("can export all contacts matching provided filterGroups", async ({
+    expect,
+  }) => {
+    await refreshDatabase()
+    await refreshRedisDatabase()
+    const { user, audience } = await createUser()
+
+    const filterGroups = {
+      type: "OR",
+      groups: [
+        {
+          type: "AND",
+          conditions: [
+            {
+              field: "email",
+              operation: "startsWith",
+              value: "xx",
+            },
+          ],
+        },
+        {
+          type: "AND",
+          conditions: [
+            {
+              field: "firstName",
+              operation: "contains",
+              value: "xxx",
+            },
+          ],
+        },
+      ],
+    }
+
+    await makeRequestAsUser(user, {
+      method: "POST",
+      path: `/audiences/${audience.id}/exports`,
+      body: {
+        filterGroups,
+      },
+    })
+
+    const jobs = await Queue.contacts().getJobs()
+
+    expect(jobs[0].data.filterGroups).toMatchObject(filterGroups)
+  })
 })

@@ -22,9 +22,19 @@ const primaryKeyBigInt = <TName extends string>(name: TName) =>
 const id = primaryKeyBigInt("id").primaryKey().autoincrement()
 
 export type ContactFilterCondition = {
-  field: CreateSegmentDto["conditions"][number]["field"]
-  operation: CreateSegmentDto["conditions"][number]["operation"]
-  value: string | number | string[] | number[]
+  field: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number]["field"]
+  operation: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number]["operation"]
+  value: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number]["value"]
+}
+
+export type ContactFilterGroup = {
+  type: "AND" | "OR"
+  conditions: ContactFilterCondition[]
+}
+
+export type ContactFilterGroups = {
+  type: "AND" | "OR"
+  groups: ContactFilterGroup[]
 }
 
 // Tables
@@ -396,11 +406,11 @@ export type RULE_WAIT_FOR_DURATION_CONFIGURATION = {
 }
 
 export type RULE_IF_ELSE_CONFIGURATION = {
-  conditions: ContactFilterCondition[]
+  filterGroups: ContactFilterGroups
 }
 
 export type TRIGGER_CONFIGURATION = {
-  conditions: ContactFilterCondition[]
+  filterGroups: ContactFilterGroups
 }
 
 export type END_CONFIGURATION = {
@@ -455,8 +465,8 @@ export const segments = mysqlTable("segments", {
   audienceId: primaryKeyBigInt("audienceId")
     .references(() => audiences.id)
     .notNull(),
-  conditions: json("conditions")
-    .$type<ContactFilterCondition[]>()
+  filterGroups: json("filterGroups")
+    .$type<ContactFilterGroups>()
     .notNull(),
 })
 

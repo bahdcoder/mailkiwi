@@ -1,18 +1,14 @@
-import { type SQLWrapper, and, eq, gte, like, lte } from "drizzle-orm"
+import { type SQLWrapper, and, eq, gte, like, lte, not } from "drizzle-orm"
 import type { AnyMySqlColumn } from "drizzle-orm/mysql-core"
 
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
-
-import { contacts } from "@/database/schema/schema.ts"
-
-import { E_OPERATION_FAILED } from "@/http/responses/errors.ts"
 
 export class FieldSegmentBuilder {
   protected field: AnyMySqlColumn
 
   constructor(
-    protected operation: CreateSegmentDto["conditions"][number]["operation"],
-    protected value: CreateSegmentDto["conditions"][number]["value"],
+    protected operation: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number]["operation"],
+    protected value: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number]["value"],
   ) {}
 
   forField(field: AnyMySqlColumn) {
@@ -40,6 +36,12 @@ export class FieldSegmentBuilder {
       case "lte":
         queryConditions.push(this.buildLteOperation())
         break
+      case "contains":
+        queryConditions.push(this.buildContainsOperation())
+        break
+      case "notContains":
+        queryConditions.push(this.buildNotContainsOperation())
+        break
       default:
         break
     }
@@ -65,5 +67,13 @@ export class FieldSegmentBuilder {
 
   buildEndsWithOperation() {
     return like(this.field, `%${this.value}`)
+  }
+
+  buildContainsOperation() {
+    return like(this.field, `%${this.value}%`)
+  }
+
+  buildNotContainsOperation() {
+    return not(like(this.field, `%${this.value}%`))
   }
 }

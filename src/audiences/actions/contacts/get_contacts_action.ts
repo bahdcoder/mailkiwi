@@ -1,6 +1,5 @@
 import { type SQLWrapper, eq, inArray } from "drizzle-orm"
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { SegmentRepository } from "@/audiences/repositories/segment_repository.ts"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
@@ -68,9 +67,7 @@ export class GetContactsAction {
         ])
 
       queryConditions.push(
-        new SegmentBuilder(
-          segment.conditions as CreateSegmentDto["conditions"],
-        ).build(),
+        new SegmentBuilder(segment.filterGroups).build(),
       )
     }
 

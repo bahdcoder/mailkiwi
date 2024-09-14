@@ -29,7 +29,6 @@ export class SendTeamMemberInviteJob extends BaseJob<SendTeamMemberInviteJobPayl
       .findById(payload.inviteId)
 
     if (!invite) {
-      // maybe invite was deleted by user immediately after. just ignore.
       return this.done()
     }
 
