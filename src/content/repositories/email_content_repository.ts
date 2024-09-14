@@ -18,16 +18,13 @@ export class EmailContentRepository extends BaseRepository {
   }
 
   async bulkCreate(payload: EmailContentVariant[]) {
-    const ids = payload.map(() => this.cuid())
-
-    await this.database.insert(emailContents).values(
-      payload.map((content, idx) => ({
-        ...content,
-        id: ids[idx],
-      })),
+    const results = await Promise.all(
+      payload.map((content) =>
+        this.database.insert(emailContents).values(content),
+      ),
     )
 
-    return ids
+    return results.map((result) => this.primaryKey(result))
   }
 
   async bulkUpdate(

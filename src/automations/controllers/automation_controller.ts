@@ -46,7 +46,7 @@ export class AutomationController extends BaseController {
 
     const automation = await action.handle(
       data,
-      ctx.req.param("audienceId"),
+      parseInt(ctx.req.param("audienceId")),
     )
 
     return ctx.json(automation)
@@ -62,7 +62,7 @@ export class AutomationController extends BaseController {
       audience,
     )
 
-    const automationId = ctx.req.param("automationId")
+    const automationId = parseInt(ctx.req.param("automationId"))
 
     const data = await this.validate(ctx, CreateAutomationStepDto)
 

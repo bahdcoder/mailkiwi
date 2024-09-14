@@ -19,7 +19,7 @@ export class AccessTokenRepository extends BaseRepository {
   }
 
   async createAccessToken(
-    owner: { id: string },
+    owner: { id: number },
     type: "user" | "team" = "user",
   ) {
     const transientAccessToken = AccessToken.createTransientToken(
@@ -28,14 +28,13 @@ export class AccessTokenRepository extends BaseRepository {
       this.tokenExpiresIn,
     )
 
-    const id = this.cuid()
-
-    await this.database.insert(accessTokens).values({
-      id,
+    const result = await this.database.insert(accessTokens).values({
       ...(type === "user" ? { userId: owner.id } : { teamId: owner.id }),
       hash: transientAccessToken.hash,
       expiresAt: transientAccessToken.expiresAt,
     })
+
+    const id = this.primaryKey(result)
 
     const instance = new AccessToken({
       identifier: id,
@@ -73,7 +72,7 @@ export class AccessTokenRepository extends BaseRepository {
 
     const accessTokenInstance = new AccessToken({
       identifier: accessToken.id,
-      tokenableId: accessToken.userId as string,
+      tokenableId: accessToken.userId as number,
       prefix: this.opaqueAccessTokenPrefix,
       createdAt: accessToken.createdAt,
       lastUsedAt: accessToken.lastUsedAt,

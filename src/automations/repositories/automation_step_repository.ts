@@ -15,18 +15,15 @@ export class AutomationStepRepository extends BaseRepository {
   }
 
   async create(
-    automationId: string,
+    automationId: number,
     { configuration, ...payload }: CreateAutomationStepDto,
   ) {
-    const id = this.cuid()
-
-    await this.database.insert(automationSteps).values({
+    const result = await this.database.insert(automationSteps).values({
       ...payload,
-      id,
       automationId,
       configuration: configuration as AutomationStepConfiguration,
     })
 
-    return { id }
+    return { id: this.primaryKey(result) }
   }
 }

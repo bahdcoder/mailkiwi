@@ -27,7 +27,7 @@ export class TeamController {
   }
 
   async show(ctx: HonoContext) {
-    const teamId = ctx.req.param("teamId")
+    const teamId = parseInt(ctx.req.param("teamId"))
 
     const team = await this.teamRepository.findById(teamId)
 

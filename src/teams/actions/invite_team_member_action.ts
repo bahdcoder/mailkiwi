@@ -18,7 +18,7 @@ export class InviteTeamMemberAction {
     ),
   ) {}
 
-  handle = async (payload: InviteTeamMemberDto, teamId: string) => {
+  handle = async (payload: InviteTeamMemberDto, teamId: number) => {
     const userExists = await this.userRepository.findByEmail(payload.email)
 
     const { id: inviteId } = await this.teamMembershipRepository.create({

@@ -102,7 +102,7 @@ export class BroadcastController extends BaseController {
       ctx,
       broadcast,
     )
-    const id = ctx.req.param("broadcastId")
+    const id = parseInt(ctx.req.param("broadcastId"))
 
     await container.resolve(DeleteBroadcastAction).handle(id)
 

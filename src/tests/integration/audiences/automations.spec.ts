@@ -19,6 +19,7 @@ import {
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
 
 describe("@automations", () => {
   test("experimenting with automations", async ({ expect }) => {
@@ -34,8 +35,8 @@ describe("@automations", () => {
     })
 
     interface AutomationStep {
-      id: string
-      parentId: string | null
+      id: number
+      parentId: number | null
       subtype: string
       branchIndex: number | null
     }
@@ -54,7 +55,7 @@ describe("@automations", () => {
         nodeMap[step.id] = { ...step }
       }
 
-      function processNode(nodeId: string): FlatTreeNode[] {
+      function processNode(nodeId: number): FlatTreeNode[] {
         const node = nodeMap[nodeId]
         const result: FlatTreeNode[] = [node]
 
@@ -149,14 +150,13 @@ describe("@automations", () => {
     )
     const database = makeDatabase()
 
-    const emailId = cuid()
-
-    await database.insert(emails).values({
-      id: emailId,
+    const result = await database.insert(emails).values({
       title: faker.lorem.words(2),
       type: "AUTOMATION",
       audienceId: audience.id,
     })
+
+    const emailId = fromQueryResultToPrimaryKey(result)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -191,13 +191,12 @@ describe("@automations", () => {
     )
     const database = makeDatabase()
 
-    const tagId = cuid()
-
-    await database.insert(tags).values({
-      id: tagId,
+    const result = await database.insert(tags).values({
       name: faker.lorem.word(),
       audienceId: audience.id,
     })
+
+    const tagId = fromQueryResultToPrimaryKey(result)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -230,13 +229,12 @@ describe("@automations", () => {
     )
     const database = makeDatabase()
 
-    const audienceId = cuid()
-
-    await database.insert(audiences).values({
-      id: audienceId,
+    const result = await database.insert(audiences).values({
       name: faker.lorem.word(),
       teamId: user?.teams?.[0]?.id,
     })
+
+    const audienceId = fromQueryResultToPrimaryKey(result)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",

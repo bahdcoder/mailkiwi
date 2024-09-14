@@ -43,7 +43,7 @@ export class TagController extends BaseController {
     )
 
     const data = await this.validate(ctx, CreateTagSchema)
-    const audienceId = ctx.req.param("audienceId")
+    const audienceId = parseInt(ctx.req.param("audienceId"))
 
     const action = container.resolve<CreateTagAction>(CreateTagAction)
 
@@ -53,7 +53,7 @@ export class TagController extends BaseController {
   }
 
   async delete(ctx: HonoContext) {
-    const tagId = ctx.req.param("tagId")
+    const tagId = parseInt(ctx.req.param("tagId"))
 
     const audience =
       await this.audienceValidationAndAuthorizationConcern.ensureAudienceExists(

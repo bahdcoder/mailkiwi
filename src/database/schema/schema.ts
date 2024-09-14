@@ -49,7 +49,6 @@ export const accessTokens = mysqlTable("accessTokens", {
   id,
   userId: primaryKeyBigInt("userId").references(() => users.id),
   teamId: primaryKeyBigInt("teamId").references(() => teams.id),
-  type: varchar("type", { length: 16 }).notNull(),
   name: varchar("name", { length: 32 }),
   hash: varchar("hash", { length: 100 }).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -137,8 +136,11 @@ export const audiences = mysqlTable("audiences", {
 
 export const contactImports = mysqlTable("contactImports", {
   id,
+  fileIdentifier: varchar("fileIdentifier", { length: 32 })
+    .unique()
+    .notNull(),
   name: varchar("name", { length: 50 }),
-  audienceId: varchar("audienceId", { length: 32 })
+  audienceId: primaryKeyBigInt("audienceId")
     .references(() => audiences.id)
     .notNull(),
   uploadUrl: varchar("url", { length: 100 }).notNull(),
@@ -159,7 +161,7 @@ export const contactImports = mysqlTable("contactImports", {
       headers: string[]
       attributes: string[]
       tags: string[] // for each of these, save a new tag to the tags table for this audience.
-      tagIds: string[]
+      tagIds: number[]
     }>()
     .notNull(),
 })
@@ -197,14 +199,23 @@ export const contacts = mysqlTable(
   }),
 )
 
-export const tags = mysqlTable("tags", {
-  id,
-  name: varchar("name", { length: 256 }).notNull(),
-  description: varchar("description", { length: 256 }),
-  audienceId: primaryKeyBigInt("audienceId")
-    .references(() => audiences.id)
-    .notNull(),
-})
+export const tags = mysqlTable(
+  "tags",
+  {
+    id,
+    name: varchar("name", { length: 256 }).notNull(),
+    description: varchar("description", { length: 256 }),
+    audienceId: primaryKeyBigInt("audienceId")
+      .references(() => audiences.id)
+      .notNull(),
+  },
+  (table) => ({
+    tagNameAudienceIdKey: unique("tagNameAudienceIdKey").on(
+      table.name,
+      table.audienceId,
+    ),
+  }),
+)
 
 export const tagsOnContacts = mysqlTable(
   "tagsOnContacts",

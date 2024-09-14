@@ -52,7 +52,7 @@ export const CreateAutomationStepDto = pipeAsync(
       ]),
     ),
     parentId: pipeAsync(
-      optional(string()),
+      optional(number()),
       checkAsync(async (input) => {
         if (!input) return true
 
@@ -75,7 +75,7 @@ export const CreateAutomationStepDto = pipeAsync(
       }, "The parentId must be a valid automation step ID and must not be linked to another automation step."),
     ),
     emailId: pipeAsync(
-      optional(string()),
+      optional(number()),
       checkAsync(async (input) => {
         if (!input) return true
 
@@ -89,7 +89,7 @@ export const CreateAutomationStepDto = pipeAsync(
       }),
     ),
     audienceId: pipeAsync(
-      optional(string()),
+      optional(number()),
       checkAsync(async (input) => {
         if (!input) return true
 
@@ -103,7 +103,7 @@ export const CreateAutomationStepDto = pipeAsync(
       }),
     ),
     tagId: pipeAsync(
-      optional(string()),
+      optional(number()),
       checkAsync(async (input) => {
         if (!input) return true
 

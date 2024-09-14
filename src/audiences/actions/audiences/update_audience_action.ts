@@ -8,8 +8,8 @@ export class UpdateAudienceAction {
     private audienceRepository = container.make(AudienceRepository),
   ) {}
 
-  handle = async (payload: CreateAudienceDto, audienceId: string) => {
-    const audience = await this.audienceRepository.updateAudience(
+  handle = async (payload: CreateAudienceDto, audienceId: number) => {
+    const audience = await this.audienceRepository.update(
       payload,
       audienceId,
     )

@@ -3,6 +3,7 @@ import {
   type InferInput,
   checkAsync,
   nonEmpty,
+  number,
   object,
   objectAsync,
   optional,
@@ -18,7 +19,7 @@ import { makeDatabase } from "@/shared/container/index.js"
 export const CreateBroadcastDto = objectAsync({
   name: pipe(string(), nonEmpty()),
   audienceId: pipeAsync(
-    string(),
+    number(),
     checkAsync(async (value) => {
       const database = makeDatabase()
 

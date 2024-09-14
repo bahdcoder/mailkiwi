@@ -4,24 +4,19 @@ import { sql } from "drizzle-orm"
 import { DateTime } from "luxon"
 
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+import { TagRepository } from "@/audiences/repositories/tag_repository.ts"
 
-import { DrizzleClient } from "@/database/client.ts"
-import {
-  contacts,
-  tags,
-  tagsOnContacts,
-} from "@/database/schema/schema.ts"
+import { contacts, tagsOnContacts } from "@/database/schema/schema.ts"
 
 import { makeEnv } from "@/shared/container/index.ts"
-import { Mailer } from "@/shared/mailers/mailer.ts"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { cuid } from "@/shared/utils/cuid/cuid.ts"
 
 import { container } from "@/utils/typi.ts"
 
 export interface ImportContactsJobPayload {
-  contactImportId: string
+  contactImportId: number
 }
 
 export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
@@ -72,17 +67,17 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
     await database.transaction(async (tx) => {
       // bulk insert all new tags
       const tagsToCreate = contactImport.attributesMap.tags.map((tag) => ({
-        id: cuid(),
         name: tag,
         audienceId: contactImport.audienceId,
       }))
 
-      if (tagsToCreate.length > 0) {
-        await tx.insert(tags).values(tagsToCreate)
-      }
+      const createdTags = await container
+        .make(TagRepository)
+        .transaction(tx)
+        .bulkCreate(tagsToCreate)
 
       const tagIdsToAttachToContacts = [
-        ...tagsToCreate.map((tag) => tag.id),
+        ...createdTags.map((tag) => tag.id),
         ...contactImport.attributesMap.tagIds,
       ]
 
@@ -98,7 +93,6 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
           }
 
           return {
-            id: cuid(),
             email: row[contactImport.attributesMap.email],
             firstName: row[contactImport.attributesMap.firstName],
             lastName: row[contactImport.attributesMap.lastName],
@@ -110,10 +104,10 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
           }
         })
 
-        await tx
-          .insert(contacts)
-          .values(values)
-          .onDuplicateKeyUpdate({
+        const createdContacts = await container
+          .make(ContactRepository)
+          .transaction(tx)
+          .bulkCreate(values, {
             set: contactImport.updateExistingContacts
               ? {
                   firstName: sql`values(${contacts.firstName})`,
@@ -124,7 +118,7 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
               : {},
           })
 
-        const contactIds = values.map((value) => value.id)
+        const contactIds = createdContacts.map((value) => value.id)
 
         const attachTagsToContacts = tagIdsToAttachToContacts
           .map((tagId) =>

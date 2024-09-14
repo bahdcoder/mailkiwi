@@ -14,7 +14,7 @@ export class AccessToken {
   static decode(
     prefix: string,
     value: string,
-  ): null | { identifier: string; secret: Secret<string> } {
+  ): null | { identifier: number; secret: Secret<string> } {
     if (typeof value !== "string" || !value.startsWith(`${prefix}`)) {
       return null
     }
@@ -39,7 +39,7 @@ export class AccessToken {
     }
 
     return {
-      identifier: decodedIdentifier,
+      identifier: parseInt(decodedIdentifier),
       secret: new Secret(decodedSecret),
     }
   }

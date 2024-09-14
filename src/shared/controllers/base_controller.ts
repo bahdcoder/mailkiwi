@@ -46,7 +46,7 @@ export class BaseController {
 
   protected ensureBelongsToTeam(
     ctx: HonoContext,
-    entity: { teamId: string },
+    entity: { teamId: number },
   ) {
     const team = this.ensureTeam(ctx)
 
@@ -114,7 +114,7 @@ export class BaseController {
 
   protected ensureAuthorized(
     ctx: HonoContext,
-    authorizedUserIds: string[],
+    authorizedUserIds: number[],
   ) {
     const userId = ctx.get("user")?.id
 

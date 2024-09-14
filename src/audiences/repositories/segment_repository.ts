@@ -16,20 +16,20 @@ export class SegmentRepository extends BaseRepository {
   }
 
   async create(payload: InsertSegment) {
-    const id = this.cuid()
+    const result = await this.database
+      .insert(segments)
+      .values({ ...payload })
 
-    await this.database.insert(segments).values({ ...payload, id })
-
-    return { id }
+    return { id: this.primaryKey(result) }
   }
 
-  async delete(segmentId: string) {
+  async delete(segmentId: number) {
     await this.database.delete(segments).where(eq(segments.id, segmentId))
 
     return { id: segmentId }
   }
 
-  findById(segmentId: string) {
+  findById(segmentId: number) {
     return this.database.query.segments.findFirst({
       where: eq(segments.id, segmentId),
     })

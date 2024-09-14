@@ -16,7 +16,7 @@ type HeaderMap = {
   attributes: string[]
   headers: string[]
   tags: string[]
-  tagIds: string[]
+  tagIds: number[]
 }
 
 type FieldType = keyof Omit<
@@ -31,14 +31,14 @@ export class CreateContactImportAction {
     ),
   ) {}
 
-  handle = async (file: File, audienceId: string) => {
-    const id = cuid()
+  handle = async (file: File, audienceId: number) => {
+    const fileIdentifier = cuid()
 
     const extension = mime.extension(file.type) ?? "csv"
 
     const minio = makeMinioClient()
       .bucket("contacts")
-      .name(`${id}.${extension}`)
+      .name(`${fileIdentifier}.${extension}`)
 
     const { url } = await minio.write(Readable.from(file.stream()))
 
@@ -46,11 +46,11 @@ export class CreateContactImportAction {
 
     const headers = await this.readHeadersAndFirstNRows(stream)
 
-    await this.contactImportRepository.create({
-      id,
+    const { id } = await this.contactImportRepository.create({
       uploadUrl: url,
       audienceId,
       status: "PENDING",
+      fileIdentifier,
       attributesMap: this.mapCsvHeaders(headers),
     })
 

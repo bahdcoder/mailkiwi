@@ -47,8 +47,8 @@ export class ContactController extends BaseController {
     const paginatedContacts = await container
       .make(GetContactsAction)
       .handle(
-        ctx.req.param("audienceId"),
-        ctx.req.query("segmentId"),
+        parseInt(ctx.req.param("audienceId")),
+        parseInt(ctx.req.query("segmentId") as string),
         Number.parseInt(ctx.req.query("page") ?? "1"),
         Number.parseInt(ctx.req.query("perPage") ?? "10"),
       )
@@ -77,7 +77,10 @@ export class ContactController extends BaseController {
 
     const action = container.resolve(CreateContactAction)
 
-    const contact = await action.handle(data, ctx.req.param("audienceId"))
+    const contact = await action.handle(
+      data,
+      parseInt(ctx.req.param("audienceId")),
+    )
 
     return ctx.json(contact)
   }
@@ -92,7 +95,7 @@ export class ContactController extends BaseController {
       audience,
     )
 
-    const contactId = ctx.req.param("contactId")
+    const contactId = parseInt(ctx.req.param("contactId"))
     const data = await this.validate(ctx, UpdateContactDto)
 
     const action = container.resolve(UpdateContactAction)
@@ -112,7 +115,7 @@ export class ContactController extends BaseController {
       audience,
     )
 
-    const contactId = ctx.req.param("contactId")
+    const contactId = parseInt(ctx.req.param("contactId"))
 
     const data = await this.validate(ctx, AttachTagsToContactDto)
 
@@ -133,7 +136,7 @@ export class ContactController extends BaseController {
       audience,
     )
 
-    const contactId = ctx.req.param("contactId")
+    const contactId = parseInt(ctx.req.param("contactId"))
 
     const data = await this.validate(ctx, DetachTagsFromContactDto)
 

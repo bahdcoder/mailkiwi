@@ -3,10 +3,10 @@ import {
   type InferInput,
   array,
   checkAsync,
+  number,
   objectAsync,
   pipe,
   pipeAsync,
-  string,
 } from "valibot"
 
 import { tags } from "@/database/schema/schema.js"
@@ -15,7 +15,7 @@ import { makeDatabase } from "@/shared/container/index.js"
 
 export const AttachTagsToContactDto = objectAsync({
   tags: pipeAsync(
-    array(string()),
+    array(number()),
     checkAsync(async (input) => {
       const database = makeDatabase()
 

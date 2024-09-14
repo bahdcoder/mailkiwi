@@ -1,8 +1,5 @@
-import { Secret } from "@poppinss/utils"
 import { and, eq, or, sql } from "drizzle-orm"
 import { DateTime } from "luxon"
-
-import type { CreateTeamDto } from "@/teams/dto/create_team_dto.js"
 
 import {
   InsertTeamMembership,
@@ -25,20 +22,17 @@ export class TeamMembershipRepository extends BaseRepository {
   }
 
   async create(payload: InsertTeamMembership) {
-    const id = this.cuid()
-
-    await this.database.insert(teamMemberships).values({
-      id,
+    const result = await this.database.insert(teamMemberships).values({
       status: "PENDING",
       ...payload,
       invitedAt: DateTime.now().toJSDate(),
       expiresAt: DateTime.now().plus({ days: 7 }).toJSDate(),
     })
 
-    return { id }
+    return { id: this.primaryKey(result) }
   }
 
-  async membershipExists(email: string, teamId: string) {
+  async membershipExists(email: string, teamId: number) {
     const membership = await this.database
       .select()
       .from(teamMemberships)
@@ -60,7 +54,7 @@ export class TeamMembershipRepository extends BaseRepository {
     return membership.length > 0
   }
 
-  async findUserDefaultTeam(userId: string) {
+  async findUserDefaultTeam(userId: number) {
     return this.database.query.teams.findFirst({
       where: eq(teams.userId, userId),
       with: {
@@ -69,7 +63,7 @@ export class TeamMembershipRepository extends BaseRepository {
     })
   }
 
-  async findById(membershipId: string) {
+  async findById(membershipId: number) {
     const membership = await this.database.query.teamMemberships.findFirst(
       {
         where: eq(teamMemberships.id, membershipId),
@@ -83,7 +77,7 @@ export class TeamMembershipRepository extends BaseRepository {
   }
 
   async update(
-    membershipId: string,
+    membershipId: number,
     payload: UpdateSetTeamMembershipInput,
   ) {
     return this.database
@@ -92,7 +86,7 @@ export class TeamMembershipRepository extends BaseRepository {
       .where(eq(teamMemberships.id, membershipId))
   }
 
-  async delete(membershipId: string) {
+  async delete(membershipId: number) {
     return this.database
       .delete(teamMemberships)
       .where(eq(teamMemberships.id, membershipId))
@@ -105,7 +99,7 @@ export class TeamMembershipRepository extends BaseRepository {
       return null
     }
 
-    const invite = await this.findById(decodedToken.original)
+    const invite = await this.findById(parseInt(decodedToken.original))
 
     return invite
   }

@@ -35,7 +35,7 @@ describe("@contacts import job", () => {
       database,
       redis,
       payload: {
-        contactImportId: contactImport?.id as string,
+        contactImportId: contactImport?.id as number,
       },
     })
 
@@ -98,12 +98,12 @@ describe("@contacts import job", () => {
       database,
       redis,
       payload: {
-        contactImportId: contactImport?.id as string,
+        contactImportId: contactImport?.id as number,
       },
     })
     const updatedContactImport = await container
       .make(ContactImportRepository)
-      .findById(contactImport?.id as string)
+      .findById(contactImport?.id as number)
 
     expect(updatedContactImport?.status).toEqual("FAILED")
   })

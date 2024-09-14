@@ -24,7 +24,7 @@ import { hoursToSeconds } from "@/utils/dates.ts"
 import { container } from "@/utils/typi.ts"
 
 export interface SendAbTestBroadcastJobPayload {
-  broadcastId: string
+  broadcastId: number
 }
 
 export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayload> {
@@ -146,7 +146,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     return this.done()
   }
 
-  private async getBroadcast(broadcastId: string) {
+  private async getBroadcast(broadcastId: number) {
     const broadcast = await this.database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, broadcastId),
       with: {

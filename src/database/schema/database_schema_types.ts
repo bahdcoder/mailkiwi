@@ -10,6 +10,7 @@ import type {
   segments,
   sendingDomains,
   settings,
+  tags,
   teamMemberships,
   teams,
   users,
@@ -54,6 +55,8 @@ export type AbTestVariant = typeof abTestVariants.$inferSelect
 export type Segment = typeof segments.$inferSelect
 export type InsertSegment = typeof segments.$inferInsert
 
+export type InsertTag = typeof tags.$inferInsert
+export type InsertContact = typeof contacts.$inferInsert
 export type InsertContactImport = typeof contactImports.$inferInsert
 export type InsertTeamMembership = typeof teamMemberships.$inferInsert
 export type InsertSendingDomain = typeof sendingDomains.$inferInsert

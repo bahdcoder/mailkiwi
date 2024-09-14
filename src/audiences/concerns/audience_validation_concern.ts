@@ -20,7 +20,7 @@ export class AudienceValidationAndAuthorizationConcern {
 
   public async ensureAudienceExists(ctx: HonoContext) {
     const audience = await this.audienceRepository.findById(
-      ctx.req.param("audienceId"),
+      parseInt(ctx.req.param("audienceId")),
     )
 
     if (!audience) {

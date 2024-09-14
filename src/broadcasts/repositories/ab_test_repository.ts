@@ -23,13 +23,14 @@ export class AbTestVariantRepository extends BaseRepository {
   }
 
   async create(payload: InsertAbTestVariant) {
-    const id = this.cuid()
-    await this.database.insert(abTestVariants).values({ id, ...payload })
+    const result = await this.database
+      .insert(abTestVariants)
+      .values({ ...payload })
 
-    return { id }
+    return { id: this.primaryKey(result) }
   }
 
-  async findById(variantId: string) {
+  async findById(variantId: number) {
     return this.database
       .select({
         id: abTestVariants.id,
@@ -42,7 +43,7 @@ export class AbTestVariantRepository extends BaseRepository {
 
   async bulkUpsertVariants(
     variants: EmailContentVariant[],
-    broadcastId: string,
+    broadcastId: number,
   ) {
     const variantsToInsert = variants.filter(
       (variant) => !variant.abTestVariantId,
@@ -54,7 +55,7 @@ export class AbTestVariantRepository extends BaseRepository {
 
     const emailContentIdsToUpdate = await Promise.all(
       variantsToUpdate.map((variant) =>
-        this.findById(variant.abTestVariantId as string),
+        this.findById(variant.abTestVariantId as number),
       ),
     )
 

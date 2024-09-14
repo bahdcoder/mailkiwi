@@ -60,7 +60,7 @@ export class SegmentController extends BaseController {
       audience,
     )
 
-    const segmentId = ctx.req.param("segmentId")
+    const segmentId = parseInt(ctx.req.param("segmentId"))
 
     await this.segmentRepository.delete(segmentId)
 

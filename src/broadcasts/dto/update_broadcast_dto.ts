@@ -56,7 +56,7 @@ const EmailContentVariant = object({
   weight: number(),
 
   // only when updating a variant email content.
-  abTestVariantId: optional(string()),
+  abTestVariantId: optional(number()),
 })
 
 export const UpdateBroadcastDto = pipeAsync(
@@ -70,7 +70,7 @@ export const UpdateBroadcastDto = pipeAsync(
     ),
 
     audienceId: pipeAsync(
-      optional(string()),
+      optional(number()),
       checkAsync(async (value) => {
         if (!value) return true
         const database = makeDatabase()
@@ -84,7 +84,7 @@ export const UpdateBroadcastDto = pipeAsync(
     ),
 
     segmentId: pipeAsync(
-      optional(string()),
+      optional(number()),
       checkAsync(async (value) => {
         if (!value) return true
 
@@ -139,7 +139,7 @@ export const UpdateBroadcastDto = pipeAsync(
 
     const variantIds = input.emailContentVariants
       .map((variant) => variant.abTestVariantId)
-      .filter((id) => id) as string[]
+      .filter((id) => id) as number[]
 
     if (variantIds.length === 0) {
       return true

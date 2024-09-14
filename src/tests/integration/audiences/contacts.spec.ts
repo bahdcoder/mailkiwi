@@ -60,7 +60,7 @@ export const setupImport = async (
       body: form,
       headers: {
         authorization: `Bearer ${accessToken.toJSON().token}`,
-        [makeConfig().software.teamHeader]: team.id,
+        [makeConfig().software.teamHeader]: team.id.toString(),
       },
     },
   )
@@ -77,7 +77,7 @@ export const setupImport = async (
       .make(CreateTagAction)
       .handle({ name: faker.lorem.word() }, audience.id)
 
-    const response = await makeRequestAsUser(user, {
+    await makeRequestAsUser(user, {
       method: "PUT",
       path: `/audiences/${audience.id}/imports/${importId}`,
       body: {

@@ -26,7 +26,7 @@ export class BroadcastValidationAndAuthorizationConcern {
     opts?: { loadAbTestVariants?: boolean },
   ) {
     const broadcast = await this.broadcastRepository.findById(
-      ctx.req.param("broadcastId"),
+      parseInt(ctx.req.param("broadcastId")),
       opts,
     )
 

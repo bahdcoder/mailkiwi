@@ -7,6 +7,7 @@ import {
   maxLength,
   minLength,
   nonEmpty,
+  number,
   objectAsync,
   optional,
   pipe,
@@ -23,7 +24,7 @@ export const UpdateContactImportSettings = objectAsync({
   updateExistingContacts: optional(boolean()),
   tags: array(pipe(string(), minLength(4), maxLength(50))), // new tags to be created
   tagIds: pipeAsync(
-    array(string()),
+    array(number()),
     checkAsync(async (input) => {
       const database = makeDatabase()
 

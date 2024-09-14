@@ -11,7 +11,7 @@ import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { Queue } from "@/shared/queue/queue.js"
 
 export interface SendBroadcastJobPayload {
-  broadcastId: string
+  broadcastId: number
 }
 
 export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {

@@ -11,8 +11,8 @@ import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 
 export interface SendBroadcastToContactPayload {
-  broadcastId: string
-  contactId: string
+  broadcastId: number
+  contactId: number
 }
 
 export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayload> {

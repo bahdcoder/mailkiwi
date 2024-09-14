@@ -9,7 +9,6 @@ import { makeRequestAsUser } from "@/tests/utils/http.js"
 import { tags, tagsOnContacts } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 describe("@tags create", () => {
   test("can create a tag into the database", async ({ expect }) => {
@@ -113,8 +112,8 @@ describe("@tags create", () => {
     const { user, audience } = await createUser()
     const tagName = faker.lorem.word()
     const database = makeDatabase()
+
     await database.insert(tags).values({
-      id: cuid(),
       name: tagName,
       audienceId: audience.id,
     })

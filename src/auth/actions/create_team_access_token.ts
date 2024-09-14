@@ -15,7 +15,7 @@ export class CreateTeamAccessTokenAction {
     private env = makeEnv(),
   ) {}
 
-  handle = async (teamId: string) => {
+  handle = async (teamId: number) => {
     const { accessToken } = await this.database.transaction(async (tx) => {
       const accessToken =
         await this.accessTokenRepository.createAccessToken(

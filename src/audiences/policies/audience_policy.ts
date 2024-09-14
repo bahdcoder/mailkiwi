@@ -1,7 +1,7 @@
 import type { TeamWithMembers } from "@/shared/types/team.js"
 
 export class AudiencePolicy {
-  canCreate(team: TeamWithMembers, userId: string | null) {
+  canCreate(team: TeamWithMembers, userId: number | null) {
     if (team?.userId === userId) return true
 
     const membership = team?.members.find(

@@ -26,7 +26,7 @@ import { container } from "@/utils/typi.js"
 
 export async function createBroadcastForUser(
   user: User,
-  audienceId: string,
+  audienceId: number,
   options?: {
     updateWithValidContent?: boolean
     updateWithABTestsContent?: boolean
@@ -106,7 +106,7 @@ export const createUser = async ({
   const teamRepository = container.resolve(TeamRepository)
   const teamObject = await teamRepository.findById(team.id)
 
-  const audience = await audienceRepository.createAudience(
+  const audience = await audienceRepository.create(
     { name: "Newsletter" },
     team.id,
   )

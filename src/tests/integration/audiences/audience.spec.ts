@@ -108,7 +108,7 @@ describe("@audiences", () => {
       },
       headers: {
         [makeConfig().software.teamHeader]:
-          unauthorizedUser?.teams?.[0]?.id,
+          unauthorizedUser?.teams?.[0]?.id?.toString(),
       },
     })
 

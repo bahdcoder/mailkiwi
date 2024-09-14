@@ -15,7 +15,7 @@ export class AutomationRepository extends BaseRepository {
   }
 
   async findById(
-    automationId: string,
+    automationId: number,
     args?: Partial<FindAutomationByIdArgs>,
   ) {
     return this.database.query.automations.findFirst({
@@ -25,14 +25,14 @@ export class AutomationRepository extends BaseRepository {
   }
 
   async create(payload: CreateAutomationDto, audienceId: number) {
-    await this.database
+    const result = await this.database
       .insert(automations)
       .values({ ...payload, audienceId })
 
-    return { id }
+    return { id: this.primaryKey(result) }
   }
 
-  async update(payload: CreateAutomationDto, automationId: string) {
+  async update(payload: CreateAutomationDto, automationId: number) {
     await this.database
       .update(automations)
       .set(payload)

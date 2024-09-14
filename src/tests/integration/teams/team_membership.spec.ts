@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker"
-import assert from "assert"
 import { DateTime } from "luxon"
 import { describe, test } from "vitest"
 
@@ -46,7 +45,7 @@ export const setup = async (email?: string, role?: string) => {
 
     const token = container
       .make(SignedUrlManager)
-      .encode(invite?.id as string, {})
+      .encode(invite?.id?.toString() as string, {})
 
     return { teamWithMembers, invite, token }
   }

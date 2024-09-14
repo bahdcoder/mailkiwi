@@ -17,15 +17,16 @@ export class BroadcastRepository extends BaseRepository {
     super()
   }
 
-  async create(data: CreateBroadcastDto, teamId: string) {
-    const id = this.cuid()
-    await this.database.insert(broadcasts).values({ ...data, id, teamId })
+  async create(data: CreateBroadcastDto, teamId: number) {
+    const result = await this.database
+      .insert(broadcasts)
+      .values({ ...data, teamId })
 
-    return { id }
+    return { id: this.primaryKey(result) }
   }
 
   async update(
-    id: string,
+    id: number,
     { sendAt, ...payload }: Partial<UpdateSetBroadcastInput>,
   ) {
     await this.database
@@ -38,13 +39,13 @@ export class BroadcastRepository extends BaseRepository {
     return { id }
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
     await this.database.delete(broadcasts).where(eq(broadcasts.id, id))
 
     return { id }
   }
 
-  async findById(id: string, opts?: { loadAbTestVariants?: boolean }) {
+  async findById(id: number, opts?: { loadAbTestVariants?: boolean }) {
     const broadcast = await this.database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, id),
       with: {
