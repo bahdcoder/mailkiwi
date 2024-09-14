@@ -87,4 +87,6 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
 
     return this.done()
   }
+
+  async failed() {}
 }

@@ -15,15 +15,23 @@ These are organised in order of implementation priority:
 
 ### Mailchimp
 
-- [ ] User roles
-- [ ] Seats
+- [x] User roles
+  - [x] Invite members
+  - [x] Accept invites
+  - [x] Reject invites
+  - [x] Revoke member access
+  - [x] View all members
+  - [x] Role based access control methods (administrator, manager, author, guest)
+- [x] Seats (In our case, unlimited seats)
 - [ ] Audiences
-- [ ] Contacts
-  - [ ] Contact profiles
-  - [ ] Detailed contact activities
-  - [ ] Notes
-  - [ ] Tags
-  - [ ]
+  - [ ] Contacts
+    - [ ] Contact profiles
+    - [ ] Detailed contact activities
+    - [ ] Notes
+    - [ ] Tags
+    - [ ] Import contacts
+    - [ ] Export contacts
+    - [ ] Add contacts to audiences
 - [ ] Segmentation
   - [ ] Personalised emails
   - [ ] Segment based on specific campaign activity (Clicks, Email Opens)
@@ -49,7 +57,6 @@ These are organised in order of implementation priority:
     - [ ] Per day Performance
     - [ ] Per week Performance
     - [ ] Per month performance
-  -
 
 ### Active campaign
 

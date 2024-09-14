@@ -11,7 +11,7 @@ import { tags, tagsOnContacts } from "@/database/schema/schema.js"
 import { makeDatabase } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-describe("Create tags", () => {
+describe("@tags create", () => {
   test("can create a tag into the database", async ({ expect }) => {
     await refreshDatabase()
 
@@ -135,7 +135,7 @@ describe("Create tags", () => {
   })
 })
 
-describe("Delete tags", () => {
+describe("@tags delete", () => {
   test("can delete a tag that exists", async ({ expect }) => {
     // Arrange
     await refreshDatabase()
@@ -203,7 +203,7 @@ describe("Delete tags", () => {
   })
 })
 
-describe("Attach tags to contacts", () => {
+describe("@tags attach to contacts", () => {
   test("can attach 5 tags to a contact in an audience", async ({
     expect,
   }) => {
@@ -340,7 +340,7 @@ describe("Attach tags to contacts", () => {
   })
 })
 
-describe("Detach tags from Contacts", () => {
+describe("@tags detach from contacts", () => {
   test("can detach a list of tags from a contact", async ({ expect }) => {
     await refreshDatabase()
 

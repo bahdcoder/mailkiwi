@@ -9,7 +9,7 @@ import { users } from "@/database/schema/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
 
-describe("User registration", () => {
+describe("@auth user registration", () => {
   test("can register a new user account", async ({ expect }) => {
     const database = makeDatabase()
 
@@ -89,7 +89,7 @@ describe("User registration", () => {
   })
 })
 
-describe("User login", () => {
+describe("@auth user login", () => {
   test("a user can login to their account and get a valid access token", async ({
     expect,
   }) => {
@@ -106,7 +106,6 @@ describe("User login", () => {
     const json = await response.json()
 
     expect(response.status).toBe(200)
-    expect(json.accessToken.type).toBe("bearer")
     expect(json.accessToken.token).toBeDefined()
     expect(() => new Date(json.accessToken.expiresAt)).not.toThrowError()
 
@@ -118,8 +117,6 @@ describe("User login", () => {
     })
 
     const profile = await profileResponse.json()
-
-    // d({ profile })
 
     expect(profile.id).toBe(user.id)
     expect(profile.name).toBe(user.name)

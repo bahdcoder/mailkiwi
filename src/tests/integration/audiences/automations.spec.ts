@@ -20,7 +20,7 @@ import {
 import { makeDatabase } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-describe("Contact automations", () => {
+describe("@automations", () => {
   test("experimenting with automations", async ({ expect }) => {
     await refreshDatabase()
     const { audience } = await createUser()
@@ -259,7 +259,7 @@ describe("Contact automations", () => {
   })
 })
 
-describe("Automation Steps", () => {
+describe("@automations steps", () => {
   test("can create a valid automation step for an automation", async ({
     expect,
   }) => {
@@ -385,7 +385,7 @@ describe("Automation Steps", () => {
   })
 })
 
-describe("Automation Step Validation", () => {
+describe("@automations step validation", () => {
   test("validates TRIGGER subtype", async ({ expect }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
@@ -669,7 +669,7 @@ describe("Automation Step Validation", () => {
   })
 })
 
-describe("Run automations", () => {
+describe("@automations run", () => {
   test("can run all automation actions for an automation", async ({
     expect,
   }) => {

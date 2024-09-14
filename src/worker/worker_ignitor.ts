@@ -8,6 +8,8 @@ import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_cont
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import type { BaseJob } from "@/shared/queue/abstract_job.js"
 
+import { container } from "@/utils/typi.ts"
+
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<any, any, string>[] = []
   private jobs: Map<string, new () => BaseJob<object>> = new Map()
@@ -44,11 +46,27 @@ export class WorkerIgnitor extends Ignitor {
       return
     }
 
-    await new Executor().handle({
+    const executor = container.make(Executor)
+
+    const ctx = {
       payload: job.data,
       redis: makeRedis(),
       database: makeDatabase(),
-    })
+    }
+
+    try {
+      const response = await executor.handle(ctx)
+
+      if (!response.success) {
+        throw new Error("Job processing failed.")
+      }
+    } catch (error) {
+      if (job.attemptsMade >= (job?.opts?.attempts ?? 1)) {
+        await executor?.failed(ctx)
+      }
+
+      throw error
+    }
   }
 
   listen(queueNames: string[]) {

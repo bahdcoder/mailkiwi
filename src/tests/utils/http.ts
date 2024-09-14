@@ -42,6 +42,7 @@ export async function makeRequestAsUser(
     body?: object
     headers?: Record<string, string>
   },
+  teamId?: string,
 ) {
   const accessTokenRepository = container.resolve<AccessTokenRepository>(
     AccessTokenRepository,
@@ -57,9 +58,8 @@ export async function makeRequestAsUser(
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${accessToken.toJSON().token}`,
-      [makeConfig().software.teamHeader]: (
-        user as User & { teams: Team[] }
-      )?.teams?.[0]?.id,
+      [makeConfig().software.teamHeader]:
+        teamId ?? (user as User & { teams: Team[] })?.teams?.[0]?.id,
       ...restOfOptions.headers,
     },
   })

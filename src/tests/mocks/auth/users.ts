@@ -5,14 +5,17 @@ import { eq } from "drizzle-orm"
 
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
+import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
 
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import type {
   Team,
+  TeamMembership,
   User,
 } from "@/database/schema/database_schema_types.js"
 import { users } from "@/database/schema/schema.js"
@@ -82,9 +85,11 @@ export async function createBroadcastForUser(
 
 export const createUser = async ({
   createBroadcast,
+  createEntireTeam,
 }: {
   createMailerWithIdentity?: boolean
   createBroadcast?: boolean
+  createEntireTeam?: boolean
 } = {}) => {
   const database = makeDatabase()
 
@@ -121,10 +126,75 @@ export const createUser = async ({
     })
   }
 
+  let administratorUser: User = undefined as unknown as User
+  let managerUser: User = undefined as unknown as User
+  let authorUser: User = undefined as unknown as User
+  let guestUser: User = undefined as unknown as User
+
+  if (createEntireTeam) {
+    let [administrator, manager, author, guest] = await Promise.all([
+      registerUserAction.handle({
+        name: faker.person.fullName(),
+        email: faker.internet.exampleEmail(),
+        password: "password",
+      }),
+      registerUserAction.handle({
+        name: faker.person.fullName(),
+        email: faker.internet.exampleEmail(),
+        password: "password",
+      }),
+      registerUserAction.handle({
+        name: faker.person.fullName(),
+        email: faker.internet.exampleEmail(),
+        password: "password",
+      }),
+      registerUserAction.handle({
+        name: faker.person.fullName(),
+        email: faker.internet.exampleEmail(),
+        password: "password",
+      }),
+    ])
+
+    const teamMembershipRepository = container.make(
+      TeamMembershipRepository,
+    )
+
+    for (const [member, role] of [
+      [administrator, "ADMINISTRATOR"],
+      [manager, "MANAGER"],
+      [author, "AUTHOR"],
+      [guest, "GUEST"],
+    ] as const) {
+      await teamMembershipRepository.create({
+        status: "ACTIVE",
+        expiresAt: new Date(),
+        role: role as TeamMembership["role"],
+        email: "",
+        userId: member?.user?.id,
+        teamId: team.id,
+      })
+    }
+
+    const userRepository = container.make(UserRepository)
+
+    administratorUser = (await userRepository.findById(
+      administrator.user.id,
+    )) as User
+    managerUser = (await userRepository.findById(manager.user.id)) as User
+
+    authorUser = (await userRepository.findById(author.user.id)) as User
+
+    guestUser = (await userRepository.findById(guest.user.id)) as User
+  }
+
   return {
     user: freshUser,
     team: teamObject as Team,
     audience,
+    administratorUser,
+    managerUser,
+    guestUser,
+    authorUser,
     broadcastId,
   }
 }

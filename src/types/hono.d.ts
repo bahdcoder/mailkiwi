@@ -5,7 +5,7 @@ import type {
   User,
 } from "@/database/schema/database_schema_types.js"
 
-import type { TeamWithMembers } from "@/shared/types/team"
+import type { TeamWithMembers } from "@/shared/types/team.js"
 
 declare module "hono" {
   interface ContextVariableMap {

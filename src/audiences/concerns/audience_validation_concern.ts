@@ -14,9 +14,7 @@ import { container } from "@/utils/typi.js"
 
 export class AudienceValidationAndAuthorizationConcern {
   constructor(
-    private audienceRepository: AudienceRepository = container.make(
-      AudienceRepository,
-    ),
+    private audienceRepository = container.make(AudienceRepository),
     private teamPolicy: TeamPolicy = container.make(TeamPolicy),
   ) {}
 
@@ -44,9 +42,7 @@ export class AudienceValidationAndAuthorizationConcern {
       throw E_UNAUTHORIZED("This audience does not belong to your team.")
     }
 
-    if (
-      !this.teamPolicy.canAdministrate(team, ctx.get("accessToken").userId)
-    ) {
+    if (!this.teamPolicy.canManage(team, ctx.get("accessToken").userId)) {
       throw E_UNAUTHORIZED(
         "You do not have permission to perform this action.",
       )

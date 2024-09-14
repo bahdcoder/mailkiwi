@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "73cfe048-17c3-4cfb-93a4-6ff88b9ad490",
+  "id": "7d2df30f-ec44-4190-94d6-01a596785725",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -102,13 +102,6 @@
           "type": "varchar(32)",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
-        },
-        "type": {
-          "name": "type",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
           "autoincrement": false
         },
         "name": {
@@ -693,6 +686,96 @@
       },
       "uniqueConstraints": {}
     },
+    "contactImports": {
+      "name": "contactImports",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "audienceId": {
+          "name": "audienceId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('PENDING','PROCESSING','FAILED','SUCCESS')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "subscribeAllContacts": {
+          "name": "subscribeAllContacts",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "updateExistingContacts": {
+          "name": "updateExistingContacts",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "attributesMap": {
+          "name": "attributesMap",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "contactImports_audienceId_audiences_id_fk": {
+          "name": "contactImports_audienceId_audiences_id_fk",
+          "tableFrom": "contactImports",
+          "tableTo": "audiences",
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "contactImports_id": {
+          "name": "contactImports_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "contacts": {
       "name": "contacts",
       "columns": {
@@ -766,6 +849,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "contactImportId": {
+          "name": "contactImportId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "attributes": {
           "name": "attributes",
           "type": "json",
@@ -789,6 +879,15 @@
           "tableFrom": "contacts",
           "tableTo": "audiences",
           "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "contacts_contactImportId_contactImports_id_fk": {
+          "name": "contacts_contactImportId_contactImports_id_fk",
+          "tableFrom": "contacts",
+          "tableTo": "contactImports",
+          "columnsFrom": ["contactImportId"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -1314,7 +1413,7 @@
         },
         "role": {
           "name": "role",
-          "type": "enum('ADMINISTRATOR','USER')",
+          "type": "enum('ADMINISTRATOR','MANAGER','AUTHOR','GUEST')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

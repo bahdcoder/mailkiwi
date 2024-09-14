@@ -119,9 +119,10 @@ export const teamMemberships = mysqlTable("teamMemberships", {
   teamId: primaryKeyBigInt("teamId")
     .references(() => teams.id)
     .notNull(),
-  role: mysqlEnum("role", ["ADMINISTRATOR", "USER"]),
+  role: mysqlEnum("role", ["ADMINISTRATOR", "MANAGER", "AUTHOR", "GUEST"]),
   status: mysqlEnum("status", ["PENDING", "ACTIVE"]),
   invitedAt: timestamp("invitedAt").defaultNow().notNull(),
+  // invite expiration
   expiresAt: timestamp("expiresAt").notNull(),
 })
 
@@ -132,6 +133,35 @@ export const audiences = mysqlTable("audiences", {
     .references(() => teams.id)
     .notNull(),
   knownAttributesKeys: json("knownAttributes").$type<string[]>(),
+})
+
+export const contactImports = mysqlTable("contactImports", {
+  id,
+  name: varchar("name", { length: 50 }),
+  audienceId: varchar("audienceId", { length: 32 })
+    .references(() => audiences.id)
+    .notNull(),
+  uploadUrl: varchar("url", { length: 100 }).notNull(),
+  status: mysqlEnum("status", [
+    "PENDING",
+    "PROCESSING",
+    "FAILED",
+    "SUCCESS",
+  ]),
+  subscribeAllContacts: boolean("subscribeAllContacts").default(true),
+  updateExistingContacts: boolean("updateExistingContacts").default(true),
+  createdAt: timestamp("createdAt").defaultNow(),
+  attributesMap: json("attributesMap")
+    .$type<{
+      email: string
+      firstName: string
+      lastName: string
+      headers: string[]
+      attributes: string[]
+      tags: string[] // for each of these, save a new tag to the tags table for this audience.
+      tagIds: string[]
+    }>()
+    .notNull(),
 })
 
 export const contacts = mysqlTable(
@@ -152,6 +182,9 @@ export const contacts = mysqlTable(
     }),
     emailVerificationTokenExpiresAt: timestamp(
       "emailVerificationTokenExpiresAt",
+    ),
+    contactImportId: varchar("contactImportId", { length: 32 }).references(
+      () => contactImports.id,
     ),
     attributes: json("attributes").$type<Record<string, any>>(),
     createdAt: timestamp("createdAt").defaultNow(),
@@ -555,6 +588,7 @@ export const AudienceRelations = relations(audiences, ({ one, many }) => ({
     references: [teams.id],
   }),
   contacts: many(contacts),
+  imports: many(contactImports),
 }))
 
 export const ContactRelations = relations(contacts, ({ one, many }) => ({

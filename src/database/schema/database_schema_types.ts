@@ -4,6 +4,7 @@ import type {
   audiences,
   automationSteps,
   broadcasts,
+  contactImports,
   contacts,
   emailContents,
   segments,
@@ -14,7 +15,7 @@ import type {
   users,
 } from "./schema.js"
 import type { InferSelectModel } from "drizzle-orm"
-import type { SQLiteUpdateSetSource } from "drizzle-orm/sqlite-core"
+import type { MySqlUpdateSetSource } from "drizzle-orm/mysql-core"
 
 import type { makeDatabase } from "@/shared/container/index.js"
 
@@ -39,20 +40,31 @@ export type FindAutomationByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>["query"]["automations"]["findFirst"]
 >[0]
 
-export type UpdateSetContactInput = SQLiteUpdateSetSource<typeof contacts>
+export type UpdateSetContactInput = MySqlUpdateSetSource<typeof contacts>
 export type UpdateSetBroadcastInput = Omit<
-  SQLiteUpdateSetSource<typeof broadcasts>,
+  MySqlUpdateSetSource<typeof broadcasts>,
   "sendAt"
 > & { sendAt: string | undefined }
+export type UpdateSetTeamMembershipInput = MySqlUpdateSetSource<
+  typeof teamMemberships
+>
 
+export type ContactImport = typeof contactImports.$inferSelect
 export type AbTestVariant = typeof abTestVariants.$inferSelect
 export type Segment = typeof segments.$inferSelect
 export type InsertSegment = typeof segments.$inferInsert
 
+export type InsertContactImport = typeof contactImports.$inferInsert
+export type InsertTeamMembership = typeof teamMemberships.$inferInsert
 export type InsertSendingDomain = typeof sendingDomains.$inferInsert
 export type InsertAbTestVariant = typeof abTestVariants.$inferInsert
-export type UpdateAbTestVariant = SQLiteUpdateSetSource<
+
+export type UpdateAbTestVariant = MySqlUpdateSetSource<
   typeof abTestVariants
+>
+
+export type UpdateContactImport = MySqlUpdateSetSource<
+  typeof contactImports
 >
 
 export type AutomationStep = typeof automationSteps.$inferSelect

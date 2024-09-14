@@ -7,6 +7,7 @@ export default defineConfig({
       provider: "v8",
     },
     setupFiles: ["src/tests/setup.ts"],
+    hideSkippedTests: true,
     exclude: [...configDefaults.exclude, "**/build/**"],
     reporters: ["verbose"],
     poolOptions: {

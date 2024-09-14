@@ -10,13 +10,6 @@ import { CRC32 } from "@/auth/acess_tokens/utils/crc32.js"
 
 import string from "@/shared/utils/string.js"
 
-/**
- * Access token represents a token created for a user to authenticate
- * using the auth module.
- *
- * It encapsulates the logic of creating an opaque token, generating
- * its hash and verifying its hash.
- */
 export class AccessToken {
   static decode(
     prefix: string,
@@ -138,7 +131,6 @@ export class AccessToken {
   constructor(attributes: {
     identifier: string | number | bigint
     tokenableId: string | number | bigint
-    type: string
     hash: string
     createdAt: Date
     updatedAt: Date
@@ -147,18 +139,15 @@ export class AccessToken {
     name: string | null
     prefix?: string
     secret?: Secret<string>
-    abilities?: string[]
   }) {
     this.identifier = attributes.identifier
     this.tokenableId = attributes.tokenableId
     this.name = attributes.name
     this.hash = attributes.hash
-    this.type = attributes.type
     this.createdAt = attributes.createdAt
     this.updatedAt = attributes.updatedAt
     this.expiresAt = attributes.expiresAt
     this.lastUsedAt = attributes.lastUsedAt
-    this.abilities = attributes.abilities || ["*"]
 
     /**
      * Compute value when secret is provided
@@ -174,31 +163,6 @@ export class AccessToken {
           attributes.secret.release(),
         )}`,
       )
-    }
-  }
-
-  /**
-   * Check if the token allows the given ability.
-   */
-  allows(ability: string) {
-    return this.abilities.includes(ability) || this.abilities.includes("*")
-  }
-
-  /**
-   * Check if the token denies the ability.
-   */
-  denies(ability: string) {
-    return (
-      !this.abilities.includes(ability) && !this.abilities.includes("*")
-    )
-  }
-
-  /**
-   * Authorize ability access using the current access token
-   */
-  authorize(ability: string) {
-    if (this.denies(ability)) {
-      throw new RuntimeException("UNAUTHORIZED_ACCESS")
     }
   }
 
@@ -229,10 +193,8 @@ export class AccessToken {
 
   toJSON() {
     return {
-      type: "bearer",
       name: this.name,
       token: this.value ? this.value.release() : undefined,
-      abilities: this.abilities,
       lastUsedAt: this.lastUsedAt,
       expiresAt: this.expiresAt,
     }

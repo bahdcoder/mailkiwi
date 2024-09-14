@@ -175,3 +175,18 @@
 - [ ] User fetch endpoint returns a list of all their teams
 - [ ] Users can secure their accounts via two factor authentication
 - [ ]
+
+# Pricing plans
+
+- [ ] $0.25 per 1,000 emails. That's it. It's that simple. No more noise.
+- [ ] -> 10,000 free emails per month
+- [ ] Sending 25,000 emails in a month:
+  - your total is 25,000 - 10,000 = 15,000 / 1,000 = 15 x $0.25 = $3.75
+- [ ] Sending 250,000 emails in a month:
+
+  - your total is 250,000 - 10,000 = 240,000 / 1,000 = 240 x $0.25 = $60
+
+- Calculation of entire infrastructure: $5000 per year ($600 per month)
+  - Infrastructure can send max 500,000 emails per hour
+  - Total per month (30 days, 10 hours a day): 30 x 10 x 500,000 = 150,000,000 emails per month
+  - Cost per email: 150,000,000 / 600 = $0.000004 per email

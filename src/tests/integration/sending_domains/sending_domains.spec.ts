@@ -16,7 +16,7 @@ import { Encryption } from "@/shared/utils/encryption/encryption.ts"
 
 import { container } from "@/utils/typi.ts"
 
-describe("Sending domains", () => {
+describe("@domains", () => {
   test("can create unique sending domains for a team", async ({
     expect,
   }) => {

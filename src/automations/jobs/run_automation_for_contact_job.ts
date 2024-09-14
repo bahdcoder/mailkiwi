@@ -85,4 +85,6 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
 
     return this.done()
   }
+
+  async failed() {}
 }

@@ -5,6 +5,7 @@ export const AVAILABLE_QUEUES = {
   automations: "automations",
   accounts: "accounts",
   sending_domains: "sending_domains",
+  contacts: "contacts",
 } as const
 
 export type AVAILABLE_QUEUE_TYPE = keyof typeof AVAILABLE_QUEUES
