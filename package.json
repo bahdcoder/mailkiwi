@@ -113,7 +113,6 @@
     "undici": "^6.19.8",
     "uuid": "^10.0.0",
     "valibot": "^0.36.0",
-    "zone-mta": "3.9.6",
     "zonemta-avast": "1.0.0",
     "zonemta-delivery-counters": "1.0.1",
     "zonemta-limiter": "1.0.0",
