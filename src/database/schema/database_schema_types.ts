@@ -43,6 +43,7 @@ export type FindAutomationByIdArgs = Parameters<
 >[0]
 
 export type UpdateSetContactInput = MySqlUpdateSetSource<typeof contacts>
+export type UpdateSetAudienceInput = MySqlUpdateSetSource<typeof audiences>
 export type UpdateSetBroadcastInput = Omit<
   MySqlUpdateSetSource<typeof broadcasts>,
   "sendAt"

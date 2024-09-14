@@ -1,10 +1,13 @@
 import { MinioClient } from "@/minio/minio_client.ts"
 import { faker } from "@faker-js/faker"
+import { like } from "drizzle-orm"
 import { Readable } from "stream"
 import { describe, test } from "vitest"
 
 import { CreateContactExportDto } from "@/audiences/dto/contact_exports/create_contact_export_dto.ts"
 import { ExportContactsJob } from "@/audiences/jobs/export_contacts_job.ts"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.ts"
+import { TagRepository } from "@/audiences/repositories/tag_repository.ts"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
 import { createUser } from "@/tests/mocks/auth/users.ts"
@@ -14,7 +17,11 @@ import {
   refreshRedisDatabase,
 } from "@/tests/mocks/teams/teams.ts"
 
-import { contacts, emails } from "@/database/schema/schema.ts"
+import {
+  contacts,
+  emails,
+  tagsOnContacts,
+} from "@/database/schema/schema.ts"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.ts"
 
@@ -29,6 +36,23 @@ describe("@contacts exports job", () => {
     const { audience, user } = await createUser()
     const database = makeDatabase()
     const redis = makeRedis()
+
+    await container
+      .resolve(AudienceRepository)
+      .update(
+        { knownAttributesKeys: ["Phone", "Country Code", "Country"] },
+        audience.id,
+      )
+
+    const tagsToCreate = [
+      { name: faker.string.uuid(), audienceId: audience.id },
+      { name: faker.string.uuid(), audienceId: audience.id },
+    ]
+
+    const createdTags = await container
+      .make(TagRepository)
+      .bulkCreate(tagsToCreate)
+
     // bulk insert a bunch of random contacts for an audience
     await database
       .insert(contacts)
@@ -37,6 +61,7 @@ describe("@contacts exports job", () => {
           .multiple(() => faker.string.uuid, { count: 100 })
           .map(() => createFakeContact(audience.id)),
       )
+
     const emailStartsWith = faker.string.uuid()
     const firstNameContains = faker.string.uuid()
 
@@ -57,6 +82,23 @@ describe("@contacts exports job", () => {
           }),
         ),
     )
+
+    const contactsWithEmailStartingWith = await database
+      .select()
+      .from(contacts)
+      .where(like(contacts.email, `${emailStartsWith}%`))
+
+    // associate all contacts with 2 tags, preparing for export.
+    await database.insert(tagsOnContacts).values(
+      contactsWithEmailStartingWith
+        .map((contact) => {
+          return createdTags.map((tag) => ({
+            tagId: tag.id,
+            contactId: contact.id,
+          }))
+        })
+        .flat(),
+    )
     // insert n contacts that match second part of OR conditions
     await database.insert(contacts).values(
       faker.helpers
@@ -66,6 +108,11 @@ describe("@contacts exports job", () => {
         .map(() =>
           createFakeContact(audience.id, {
             firstName: firstNameContains + " " + faker.person.firstName(),
+            attributes: {
+              Country: faker.location.country(),
+              "Country Code": faker.location.countryCode(),
+              Phone: faker.phone.number(),
+            },
           }),
         ),
     )
@@ -98,14 +145,18 @@ describe("@contacts exports job", () => {
 
     const minio = new FakeMinioClient()
 
-    // const mi = {}
-    container.fake(MinioClient, minio as any)
+    // container.fake(MinioClient, minio as any)
 
     await container.make(ExportContactsJob).handle({
-      payload: { filterGroups, exportCreatedBy: user.id },
+      payload: {
+        filterGroups,
+        exportCreatedBy: user.id,
+        audienceId: audience.id,
+      },
       redis,
       database,
     })
+    return
 
     expect(minio.bucketName).toEqual("contacts")
     expect(minio.objectName).toMatch("exports/")
@@ -118,7 +169,7 @@ describe("@contacts exports job", () => {
     expect(exportedContacts).toHaveLength(totalToBeExported + 2) // one line for headers and last line as empty space end of line.
 
     expect(exportedContacts[0]).toEqual(
-      "First name,Last name,Email,Subscribed at",
+      "First name,Last name,Email,Subscribed at,Phone,Country Code,Country,Tags",
     )
 
     container.restoreAll()

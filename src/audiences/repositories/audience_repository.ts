@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm"
 import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
+import { UpdateSetAudienceInput } from "@/database/schema/database_schema_types.ts"
 import { audiences } from "@/database/schema/schema.js"
 
 import { ContainerKey } from "@/shared/container/index.js"
@@ -38,7 +39,7 @@ export class AudienceRepository extends BaseRepository {
     return { id: this.primaryKey(result) }
   }
 
-  async update(payload: CreateAudienceDto, audienceId: number) {
+  async update(payload: UpdateSetAudienceInput, audienceId: number) {
     await this.database
       .update(audiences)
       .set(payload)

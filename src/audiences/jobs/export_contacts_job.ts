@@ -1,7 +1,7 @@
 import { makeMinioClient } from "@/minio/minio_client.ts"
 import { sentenceCase } from "change-case"
 import { stringify as csvStringify } from "csv-stringify"
-import { and } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { DateTime } from "luxon"
 import { Readable } from "stream"
 
@@ -10,8 +10,11 @@ import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builde
 
 import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
 
-import { Contact } from "@/database/schema/database_schema_types.ts"
-import { contacts } from "@/database/schema/schema.ts"
+import {
+  Audience,
+  Contact,
+} from "@/database/schema/database_schema_types.ts"
+import { audiences, contacts } from "@/database/schema/schema.ts"
 
 import { makeEnv } from "@/shared/container/index.ts"
 import { Mailer } from "@/shared/mailers/mailer.ts"
@@ -23,6 +26,7 @@ import { container } from "@/utils/typi.ts"
 
 export interface ExportContactsJobPayload {
   filterGroups: CreateContactExportDto["filterGroups"]
+  audienceId: number
   exportCreatedBy: number
 }
 
@@ -37,43 +41,66 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     return AVAILABLE_QUEUES.contacts
   }
 
-  private databaseColumnsToCsvHeaders() {
+  private databaseColumnsToCsvHeaders(audience: Audience) {
     return [
       {
         field: "firstName",
         formatter(value: string) {
           return value
         },
+        isAttribute: false,
       },
       {
         field: "lastName",
         formatter(value: string) {
           return value
         },
+        isAttribute: false,
       },
       {
         field: "email",
         formatter(value: string) {
           return value
         },
+        isAttribute: false,
       },
       {
         field: "subscribedAt",
         formatter(value: Date) {
           return DateTime.fromJSDate(value).toFormat("yyyy-mm-dd hh:mm:ss")
         },
+        isAttribute: false,
       },
+      ...(audience.knownAttributesKeys ?? []).map((attributeKey) => ({
+        field: attributeKey,
+        formatter(value: string) {
+          return value
+        },
+        isAttribute: true,
+      })),
     ]
   }
 
-  private prepareContactsToCsv(contactsToExport: Contact[]) {
+  private prepareContactsToCsv(
+    contactsToExport: Contact[],
+    audience: Audience,
+  ) {
     return contactsToExport.map((contact: Record<string, any>) => {
       const fields: Record<string, any> = {}
-      this.databaseColumnsToCsvHeaders().forEach(
-        ({ field, formatter }) => {
-          fields[sentenceCase(field)] = formatter(contact[field])
+
+      this.databaseColumnsToCsvHeaders(audience).forEach(
+        ({ field, formatter, isAttribute }) => {
+          if (isAttribute) {
+            fields[field] = formatter(contact?.attributes?.[field])
+          } else {
+            fields[sentenceCase(field)] = formatter(contact[field])
+          }
         },
       )
+
+      fields["Tags"] = contact.tags
+        ?.map((tag: { tag: { name: string } }) => tag.tag.name)
+        .join(",")
 
       return fields
     })
@@ -84,13 +111,35 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     payload,
   }: JobContext<ExportContactsJobPayload>) {
     const env = makeEnv()
-    const filteredContacts = await database
-      .select()
-      .from(contacts)
-      .where(and(new SegmentBuilder(payload.filterGroups).build()))
+
+    const filteredContacts = await database.query.contacts.findMany({
+      where: and(
+        new SegmentBuilder(payload.filterGroups).build(),
+        eq(contacts.audienceId, payload.audienceId),
+      ),
+      with: {
+        tags: {
+          with: {
+            tag: true,
+          },
+        },
+      },
+    })
+
+    if (filteredContacts.length === 0) {
+      return this.done("No contacts to export.")
+    }
+
+    const audience = await database.query.audiences.findFirst({
+      where: eq(audiences.id, payload.audienceId),
+    })
+
+    if (!audience) {
+      return this.fail(`The audience could not be found.`)
+    }
 
     const readableCsvStream = Readable.from(
-      this.prepareContactsToCsv(filteredContacts),
+      this.prepareContactsToCsv(filteredContacts, audience),
     )
 
     const fileStream = csvStringify({
