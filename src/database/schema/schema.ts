@@ -200,6 +200,34 @@ export const contacts = mysqlTable(
     ),
     attributes: json("attributes").$type<Record<string, any>>(),
     createdAt: timestamp("createdAt").defaultNow(),
+
+    // activity window queryes: Active Campaign
+
+    // In the last [days, weeks, months, years], Between [exact dates, today, yesterday, relative dates], Ever
+
+    // Has opened -> lastOpenedAutomationEmailAt, lastOpenedBroadcastEmailAt
+    // Has not opened -> lastOpenedAutomationEmailAt, lastOpenedBroadcastEmailAt
+    // Has been sent -> lastSentBroadcastEmailAt, lastSentAutomationEmailAt
+    // Has not been sent -> lastSentBroadcastEmailAt, lastSentAutomationEmailAt
+    // Has clicked on a link -> lastClickedAutomationEmailLinkAt, lastClickedBroadcastEmailLinkAt
+    // Has not clicked on a link -> lastClickedAutomationEmailLinkAt, lastClickedBroadcastEmailLinkAt
+
+    // Has replied -> TODO
+    // Has not replied -> TODO
+
+    // lastSentBroadcastEmailAt - Date
+    // lastSentAutomationEmailAt - Date
+    // lastOpenedBroadcastEmailAt - Date
+    // lastOpenedAutomationEmailAt - Date
+    // lastClickedAutomationEmailLinkAt - Date
+    // lastClickedBroadcastEmailLinkAt - Date
+
+    // BELOW ARE PERFORMANCE KILLER FIELDS BUT COULD BE REALLY USEFUL ?
+
+    // openedCampaignsIds - string[]
+    // clickedLinksInBroadcastsIds - string[]
+    // clickedLinksInAutomationEmailsIds - string[]
+    //
   },
   (table) => ({
     ContactEmailAudienceIdKey: unique("ContactEmailAudienceIdKey").on(
@@ -498,171 +526,4 @@ export const contactAutomationSteps = mysqlTable(
     createdAt: timestamp("createdAt"),
     output: json("output").$type<string[]>(),
   },
-)
-
-// Relations remain the same as in the original file
-
-// Relations
-export const userRelations = relations(users, ({ many }) => ({
-  teams: many(teams),
-  accessTokens: many(accessTokens),
-  memberships: many(teamMemberships),
-}))
-
-export const teamRelations = relations(teams, ({ one, many }) => ({
-  owner: one(users, {
-    fields: [teams.userId],
-    references: [users.id],
-  }),
-  members: many(teamMemberships),
-  webhooks: many(webhooks),
-  accessTokens: many(accessTokens),
-  audiences: many(audiences),
-}))
-
-export const accessTokenRelations = relations(accessTokens, ({ one }) => ({
-  user: one(users, {
-    fields: [accessTokens.userId],
-    references: [users.id],
-  }),
-  team: one(teams, {
-    fields: [accessTokens.teamId],
-    references: [teams.id],
-  }),
-}))
-
-export const broadcastRelations = relations(
-  broadcasts,
-  ({ one, many }) => ({
-    audience: one(audiences, {
-      fields: [broadcasts.audienceId],
-      references: [audiences.id],
-    }),
-    emailContent: one(emailContents, {
-      fields: [broadcasts.emailContentId],
-      references: [emailContents.id],
-    }),
-    team: one(teams, {
-      fields: [broadcasts.teamId],
-      references: [teams.id],
-    }),
-    segment: one(segments, {
-      fields: [broadcasts.segmentId],
-      references: [segments.id],
-    }),
-    abTestVariants: many(abTestVariants, {
-      relationName: "abTestVariants",
-    }),
-    winningAbTestVariant: one(abTestVariants, {
-      fields: [broadcasts.winningAbTestVariantId],
-      references: [abTestVariants.id],
-    }),
-  }),
-)
-
-export const abTestVariantRelations = relations(
-  abTestVariants,
-  ({ one }) => ({
-    broadcast: one(broadcasts, {
-      fields: [abTestVariants.broadcastId],
-      references: [broadcasts.id],
-      relationName: "abTestVariants",
-    }),
-    emailContent: one(emailContents, {
-      fields: [abTestVariants.emailContentId],
-      references: [emailContents.id],
-    }),
-  }),
-)
-
-export const emailRelations = relations(emails, ({ one }) => ({
-  emailContent: one(emailContents, {
-    fields: [emails.emailContentId],
-    references: [emailContents.id],
-  }),
-}))
-
-export const WebhookRelations = relations(webhooks, ({ one }) => ({
-  team: one(teams, {
-    fields: [webhooks.teamId],
-    references: [teams.id],
-  }),
-}))
-
-export const TeamMembershipRelations = relations(
-  teamMemberships,
-  ({ one }) => ({
-    user: one(users, {
-      fields: [teamMemberships.userId],
-      references: [users.id],
-    }),
-    team: one(teams, {
-      fields: [teamMemberships.teamId],
-      references: [teams.id],
-    }),
-  }),
-)
-
-export const AudienceRelations = relations(audiences, ({ one, many }) => ({
-  team: one(teams, {
-    fields: [audiences.teamId],
-    references: [teams.id],
-  }),
-  contacts: many(contacts),
-  imports: many(contactImports),
-}))
-
-export const ContactRelations = relations(contacts, ({ one, many }) => ({
-  audience: one(audiences, {
-    fields: [contacts.audienceId],
-    references: [audiences.id],
-  }),
-  tags: many(tagsOnContacts),
-}))
-
-export const TagRelations = relations(tags, ({ many }) => ({
-  contacts: many(tagsOnContacts),
-}))
-
-export const TagsOnContactsRelations = relations(
-  tagsOnContacts,
-  ({ one }) => ({
-    tag: one(tags, {
-      fields: [tagsOnContacts.tagId],
-      references: [tags.id],
-    }),
-    contact: one(contacts, {
-      fields: [tagsOnContacts.contactId],
-      references: [contacts.id],
-    }),
-  }),
-)
-
-export const automationRelations = relations(
-  automations,
-  ({ one, many }) => ({
-    audience: one(audiences, {
-      fields: [automations.audienceId],
-      references: [audiences.id],
-    }),
-    steps: many(automationSteps),
-  }),
-)
-
-export const automationStepsRelations = relations(
-  automationSteps,
-  ({ one, many }) => ({
-    automation: one(automations, {
-      fields: [automationSteps.automationId],
-      references: [automations.id],
-    }),
-    parent: one(automationSteps, {
-      fields: [automationSteps.parentId],
-      references: [automationSteps.id],
-      relationName: "steps",
-    }),
-    steps: many(automationSteps, {
-      relationName: "steps",
-    }),
-  }),
 )

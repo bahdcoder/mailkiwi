@@ -45,7 +45,8 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       return this.fail("Broadcast or contact not found.")
     }
 
-    const broadcastWithContent = broadcast as BroadcastWithEmailContent
+    const broadcastWithContent =
+      broadcast as unknown as BroadcastWithEmailContent
 
     const [response, error] = await Mailer.from(
       broadcastWithContent.emailContent.fromEmail,

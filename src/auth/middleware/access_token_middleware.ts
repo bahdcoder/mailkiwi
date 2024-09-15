@@ -34,7 +34,7 @@ export class AccessTokenMiddleware {
     }
 
     const user = await this.userRepository.findById(
-      accessToken.accessToken.userId,
+      accessToken.accessToken.userId as number,
     )
 
     if (!user) {
