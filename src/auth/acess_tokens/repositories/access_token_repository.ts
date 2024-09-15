@@ -62,9 +62,11 @@ export class AccessTokenRepository extends BaseRepository {
       return null
     }
 
-    const accessToken = await this.database.query.accessTokens.findFirst({
-      where: eq(accessTokens.id, decodedToken.identifier),
-    })
+    const [accessToken] = await this.database
+      .select()
+      .from(accessTokens)
+      .where(eq(accessTokens.id, decodedToken.identifier))
+      .limit(1)
 
     if (!accessToken) {
       return null

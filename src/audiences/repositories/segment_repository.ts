@@ -29,9 +29,12 @@ export class SegmentRepository extends BaseRepository {
     return { id: segmentId }
   }
 
-  findById(segmentId: number) {
-    return this.database.query.segments.findFirst({
-      where: eq(segments.id, segmentId),
-    })
+  async findById(segmentId: number) {
+    const [segment] = await this.database
+      .select()
+      .from(segments)
+      .where(eq(segments.id, segmentId))
+
+    return segment
   }
 }

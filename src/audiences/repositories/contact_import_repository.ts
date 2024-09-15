@@ -31,8 +31,11 @@ export class ContactImportRepository extends BaseRepository {
   }
 
   async findById(importId: number) {
-    return this.database.query.contactImports.findFirst({
-      where: eq(contactImports.id, importId),
-    })
+    const [contactImport] = await this.database
+      .select()
+      .from(contactImports)
+      .where(eq(contactImports.id, importId))
+
+    return contactImport
   }
 }

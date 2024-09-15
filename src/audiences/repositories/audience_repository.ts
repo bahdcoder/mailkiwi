@@ -25,9 +25,12 @@ export class AudienceRepository extends BaseRepository {
   }
 
   async findById(audienceId: number) {
-    return this.database.query.audiences.findFirst({
-      where: eq(audiences.id, audienceId),
-    })
+    const [audience] = await this.database
+      .select()
+      .from(audiences)
+      .where(eq(audiences.id, audienceId))
+
+    return audience
   }
 
   async create(payload: CreateAudienceDto, teamId: number) {

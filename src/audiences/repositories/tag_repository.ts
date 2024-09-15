@@ -15,9 +15,7 @@ export class TagRepository extends BaseRepository {
   }
 
   async findById(id: number) {
-    return this.database.query.tags.findFirst({
-      where: eq(tags.id, id),
-    })
+    return this.findFirst({ where: eq(tags.id, id) })
   }
 
   async delete(id: number) {
@@ -26,9 +24,13 @@ export class TagRepository extends BaseRepository {
   }
 
   async findFirst(args: { where: SQL | undefined }) {
-    return this.database.query.tags.findFirst({
-      where: args.where,
-    })
+    const [tag] = await this.database
+      .select()
+      .from(tags)
+      .where(args.where)
+      .limit(1)
+
+    return tag
   }
 
   async create(payload: CreateTagDto, audienceId: number) {

@@ -11,20 +11,24 @@ import {
   string,
 } from "valibot"
 
+import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
+
 import { users } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
+
+import { container } from "@/utils/typi.ts"
 
 export const CreateUserSchema = objectAsync({
   email: pipeAsync(
     string(),
     email(),
     checkAsync(async (input) => {
-      const database = makeDatabase()
+      await container.make(UserRepository).findByEmail(input)
 
-      const userExists = await database.query.users.findFirst({
-        where: eq(users.email, input),
-      })
+      const userExists = await container
+        .make(UserRepository)
+        .findByEmail(input)
 
       return userExists === undefined
     }, "A user with this email already exists."),

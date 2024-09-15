@@ -6,6 +6,7 @@ import { DateTime } from "luxon"
 import { Readable } from "stream"
 
 import { CreateContactExportDto } from "@/audiences/dto/contact_exports/create_contact_export_dto.ts"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.ts"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
 
@@ -126,9 +127,9 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
       return this.done("No contacts to export.")
     }
 
-    const audience = await database.query.audiences.findFirst({
-      where: eq(audiences.id, payload.audienceId),
-    })
+    const audience = await container
+      .make(AudienceRepository)
+      .findById(payload.audienceId)
 
     if (!audience) {
       return this.fail(`The audience could not be found.`)

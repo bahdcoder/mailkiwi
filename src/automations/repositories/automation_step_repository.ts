@@ -37,4 +37,13 @@ export class AutomationStepRepository extends BaseRepository {
 
     return step
   }
+
+  async findByParentId(automationStepId: number) {
+    const [step] = await this.database
+      .select()
+      .from(automationSteps)
+      .where(eq(automationSteps.parentId, automationStepId))
+
+    return step
+  }
 }

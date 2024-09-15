@@ -18,6 +18,8 @@ import {
   union,
 } from "valibot"
 
+import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.ts"
+
 import {
   audiences,
   automationStepSubtypes,
@@ -31,6 +33,8 @@ import {
 } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
+
+import { container } from "@/utils/typi.ts"
 
 const configurationSchema = record(
   string(),
@@ -58,14 +62,14 @@ export const CreateAutomationStepDto = pipeAsync(
 
         const database = makeDatabase()
 
+        const automationStepRepository = container.make(
+          AutomationStepRepository,
+        )
+
         const [automationStep, automationStepWithParent] =
           await Promise.all([
-            database.query.automationSteps.findFirst({
-              where: eq(automationSteps.id, input),
-            }),
-            database.query.automationSteps.findFirst({
-              where: eq(automationSteps.parentId, input),
-            }),
+            automationStepRepository.findById(input),
+            automationStepRepository.findByParentId(input),
           ])
 
         return (
