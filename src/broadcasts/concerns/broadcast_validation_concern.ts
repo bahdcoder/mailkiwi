@@ -27,7 +27,6 @@ export class BroadcastValidationAndAuthorizationConcern {
   ) {
     const broadcast = await this.broadcastRepository.findById(
       parseInt(ctx.req.param("broadcastId")),
-      opts,
     )
 
     if (!broadcast) {

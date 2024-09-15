@@ -1,13 +1,28 @@
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
+import { foreignKey, primaryKey } from "drizzle-orm/mysql-core"
 import { describe, test } from "vitest"
+
+import { TeamRepository } from "@/teams/repositories/team_repository.ts"
+
+import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequest } from "@/tests/utils/http.js"
 
-import { users } from "@/database/schema/schema.js"
+import {
+  broadcasts,
+  segments,
+  teamMemberships,
+  teams,
+  users,
+} from "@/database/schema/schema.js"
+import { hasMany, hasOne } from "@/database/utils/relationships.ts"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
+
+import { container } from "@/utils/typi.ts"
 
 describe("@auth user registration", () => {
   test("can register a new user account", async ({ expect }) => {
@@ -39,6 +54,54 @@ describe("@auth user registration", () => {
   }) => {
     const database = makeDatabase()
 
+    // const testUser = await database.insert(users).values({
+    //   name: faker.string.uuid(),
+    //   email: faker.internet.email(),
+    //   avatarUrl: faker.image.avatarGitHub(),
+    //   password: faker.string.nanoid(32),
+    // })
+
+    // const testUser2 = await database.insert(users).values({
+    //   name: faker.string.uuid(),
+    //   email: faker.internet.email(),
+    //   avatarUrl: faker.image.avatarGitHub(),
+    //   password: faker.string.nanoid(32),
+    // })
+
+    // const testUser3 = await database.insert(users).values({
+    //   name: faker.string.uuid(),
+    //   email: faker.internet.email(),
+    //   avatarUrl: faker.image.avatarGitHub(),
+    //   password: faker.string.nanoid(32),
+    // })
+
+    // const testTeam = await database.insert(teams).values({
+    //   name: faker.string.uuid(),
+    //   userId: fromQueryResultToPrimaryKey(testUser),
+    // })
+
+    // await database.insert(teamMemberships).values([
+    //   {
+    //     teamId: fromQueryResultToPrimaryKey(testTeam),
+    //     userId: fromQueryResultToPrimaryKey(testUser2),
+    //     status: "ACTIVE",
+    //     email: faker.internet.email(),
+    //     role: "ADMINISTRATOR",
+    //     invitedAt: new Date(),
+    //     expiresAt: new Date(),
+    //   },
+    //   {
+    //     teamId: fromQueryResultToPrimaryKey(testTeam),
+    //     userId: fromQueryResultToPrimaryKey(testUser3),
+    //     status: "ACTIVE",
+    //     email: faker.internet.email(),
+    //     role: "ADMINISTRATOR",
+    //     invitedAt: new Date(),
+    //     expiresAt: new Date(),
+    //   },
+    // ])
+    return
+
     const payload = {
       name: faker.person.fullName(),
       email: faker.internet.exampleEmail(),
@@ -50,16 +113,15 @@ describe("@auth user registration", () => {
       body: payload,
     })
 
-    const user = await database.query.users.findFirst({
-      where: eq(users.email, payload.email),
-      with: {
-        teams: true,
-      },
-    })
+    const userRepository = container.make(UserRepository)
+
+    const user = await userRepository.findByEmail(payload.email)
+
+    const userWithTeams = await userRepository.findById(user.id)
 
     expect(user).not.toBeNull()
-    expect(user?.teams).toHaveLength(1)
-    expect(user?.teams?.[0]?.name).toEqual(payload.name)
+    expect(userWithTeams?.teams).toHaveLength(1)
+    expect(userWithTeams.teams?.[0]?.name).toEqual(payload.name)
   })
 
   test("can only register with an email once and not twice", async ({

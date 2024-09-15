@@ -4,7 +4,8 @@ import type { CreateAutomationDto } from "@/automations/dto/create_automation_dt
 
 import type { DrizzleClient } from "@/database/client.js"
 import type { FindAutomationByIdArgs } from "@/database/schema/database_schema_types.js"
-import { automations } from "@/database/schema/schema.js"
+import { automationSteps, automations } from "@/database/schema/schema.js"
+import { hasMany } from "@/database/utils/relationships.ts"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
@@ -14,14 +15,20 @@ export class AutomationRepository extends BaseRepository {
     super()
   }
 
-  async findById(
-    automationId: number,
-    args?: Partial<FindAutomationByIdArgs>,
-  ) {
-    return this.database.query.automations.findFirst({
-      where: eq(automations.id, automationId),
-      ...args,
-    })
+  private hasManySteps = hasMany(this.database, {
+    from: automations,
+    to: automationSteps,
+    primaryKey: automations.id,
+    foreignKey: automationSteps.automationId,
+    relationName: "steps",
+  })
+
+  async findById(automationId: number) {
+    const result = await this.hasManySteps((query) =>
+      query.where(eq(automations.id, automationId)),
+    )
+
+    return result[0]
   }
 
   async create(payload: CreateAutomationDto, audienceId: number) {

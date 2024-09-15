@@ -3,6 +3,8 @@ import { PickAbTestWinnerJob } from "./pick_ab_test_winner_job.ts"
 import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js"
 import { asc, count, eq } from "drizzle-orm"
 
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
 
 import type { DrizzleClient } from "@/database/client.js"
@@ -106,11 +108,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     this.contactsConcern.broadcast = this.broadcast
     this.contactsConcern.database = database
 
-    if (
-      !this.broadcast ||
-      !this.broadcast.audience ||
-      !this.broadcast.team
-    ) {
+    if (!this.broadcast || !this.broadcast.audience) {
       return this.fail(
         "Broadcast or audience or team not properly provided.",
       )
@@ -147,19 +145,11 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
   }
 
   private async getBroadcast(broadcastId: number) {
-    const broadcast = await this.database.query.broadcasts.findFirst({
-      where: eq(broadcasts.id, broadcastId),
-      with: {
-        team: true,
-        abTestVariants: {
-          orderBy: asc(abTestVariants.weight),
-        },
-        audience: true,
-        segment: true,
-      },
-    })
+    const broadcast = await container
+      .make(BroadcastRepository)
+      .findByIdWithAbTestVariants(broadcastId)
 
-    return broadcast as BroadcastWithSegmentAndAbTestVariants
+    return broadcast as unknown as BroadcastWithSegmentAndAbTestVariants
   }
 
   private async getTotalContacts() {

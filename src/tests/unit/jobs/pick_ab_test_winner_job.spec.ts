@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm"
 import { describe, test, vi } from "vitest"
 
 import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.ts"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
 import {
@@ -22,9 +23,9 @@ import {
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.ts"
 
 import { hoursToSeconds } from "@/utils/dates.ts"
+import { container } from "@/utils/typi.ts"
 
 describe("Pick A/B Test winner", () => {
   test("picks A/B test winner for click rate winning criteria", async ({
@@ -86,9 +87,9 @@ describe("Pick A/B Test winner", () => {
       payload: { broadcastId },
     })
 
-    const broadcast = await database.query.broadcasts.findFirst({
-      where: eq(broadcasts.id, broadcastId),
-    })
+    const broadcast = await container
+      .make(BroadcastRepository)
+      .findById(broadcastId)
 
     const jobsFromBroadcastsQueue = await Queue.broadcasts().getJobs()
     const jobsFromAbTestBroadcastQueue =
@@ -135,11 +136,13 @@ describe("Pick A/B Test winner", () => {
     )
   })
 
-  test("picks A/B test winner for open rate winning criteria", async ({
-    expect,
-  }) => {})
+  test.todo(
+    "picks A/B test winner for open rate winning criteria",
+    async ({ expect }) => {},
+  )
 
-  test("picks A/B test winner for open rate winning criteria", async ({
-    expect,
-  }) => {})
+  test.todo(
+    "picks A/B test winner for open rate winning criteria",
+    async ({ expect }) => {},
+  )
 })

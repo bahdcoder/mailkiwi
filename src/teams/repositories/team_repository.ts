@@ -3,10 +3,12 @@ import { eq } from "drizzle-orm"
 
 import type { CreateTeamDto } from "@/teams/dto/create_team_dto.js"
 
-import { teams } from "@/database/schema/schema.js"
+import { teamMemberships, teams, users } from "@/database/schema/schema.js"
+import { hasMany } from "@/database/utils/relationships.ts"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { TeamWithMembers } from "@/shared/types/team.ts"
 
 import { container } from "@/utils/typi.ts"
 
@@ -18,6 +20,14 @@ export class TeamRepository extends BaseRepository {
     super()
   }
 
+  private hasManyMemberships = hasMany(this.database, {
+    from: teams,
+    to: teamMemberships,
+    primaryKey: teams.id,
+    foreignKey: teamMemberships.teamId,
+    relationName: "members",
+  })
+
   async create(payload: CreateTeamDto, userId: number) {
     const insertResult = await this.database.insert(teams).values({
       ...payload,
@@ -28,23 +38,29 @@ export class TeamRepository extends BaseRepository {
   }
 
   async findUserDefaultTeam(userId: number) {
-    return this.database.query.teams.findFirst({
-      where: eq(teams.userId, userId),
-      with: {
-        members: true,
-      },
-    })
+    const team = await this.hasManyMemberships((query) =>
+      query
+        .leftJoin(users, eq(users.id, teamMemberships.userId))
+        .where(eq(teams.userId, userId))
+        .limit(1),
+    )
+
+    return team[0]
   }
 
   async findById(teamId: number) {
-    const team = await this.database.query.teams.findFirst({
-      where: eq(teams.id, teamId),
-      with: {
-        members: true,
-      },
-    })
+    const team = await this.hasManyMemberships(
+      (query) =>
+        query
+          .leftJoin(users, eq(users.id, teamMemberships.userId))
+          .where(eq(teams.id, teamId)),
+      (row) => ({
+        ...row["teamMemberships"],
+        user: row?.["users"],
+      }),
+    )
 
-    return team
+    return team[0]
   }
 
   usage(teamId: number) {

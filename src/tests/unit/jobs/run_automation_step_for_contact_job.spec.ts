@@ -26,7 +26,7 @@ import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_key
 import { container } from "@/utils/typi.ts"
 
 describe("Run automation step for contact job", () => {
-  test("automation step action: send email for a contact", async ({
+  test.only("automation step action: send email for a contact", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -68,9 +68,11 @@ describe("Run automation step for contact job", () => {
 
     expect(fakeSendFn.mock.calls).toHaveLength(1)
 
-    const completed =
-      await database.query.contactAutomationSteps.findFirst({
-        where: and(
+    const [completed] = await database
+      .select()
+      .from(contactAutomationSteps)
+      .where(
+        and(
           eq(contactAutomationSteps.contactId, contactId),
           eq(
             contactAutomationSteps.automationStepId,
@@ -78,7 +80,7 @@ describe("Run automation step for contact job", () => {
           ),
           eq(contactAutomationSteps.status, "COMPLETED"),
         ),
-      })
+      )
 
     expect(completed).toBeDefined()
 

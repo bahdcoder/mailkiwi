@@ -1,14 +1,20 @@
-import { and, eq, inArray, or } from "drizzle-orm"
+import { SQL, SQLWrapper, and, eq, inArray, or } from "drizzle-orm"
 import { MySqlInsertOnDuplicateKeyUpdateConfig } from "drizzle-orm/mysql-core"
 
 import type { CreateContactDto } from "@/audiences/dto/contacts/create_contact_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
 import type {
+  ContactWithTags,
   InsertContact,
   UpdateSetContactInput,
 } from "@/database/schema/database_schema_types.js"
-import { contacts, tagsOnContacts } from "@/database/schema/schema.js"
+import {
+  contacts,
+  tags,
+  tagsOnContacts,
+} from "@/database/schema/schema.js"
+import { hasMany } from "@/database/utils/relationships.ts"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
@@ -126,5 +132,38 @@ export class ContactRepository extends BaseRepository {
       )
 
     return { id: contactId }
+  }
+
+  async findAllContactsWithTags(
+    filters: SQL | undefined,
+  ): Promise<ContactWithTags[]> {
+    const contactsWithTags = await this.database
+      .select()
+      .from(contacts)
+      .where(filters)
+      .leftJoin(tagsOnContacts, eq(tagsOnContacts.contactId, contacts.id))
+      .leftJoin(tags, eq(tags.id, tagsOnContacts.tagId))
+
+    const groupedContacts = contactsWithTags.reduce(
+      (acc, row) => {
+        const contactId = row.contacts.id
+        if (!acc[contactId]) {
+          acc[contactId] = {
+            ...row.contacts,
+            tags: [],
+          }
+        }
+        if (row.tagsOnContacts && row.tags) {
+          acc[contactId].tags.push({
+            ...row.tagsOnContacts,
+            tag: row.tags,
+          })
+        }
+        return acc
+      },
+      {} as Record<number, any>,
+    )
+
+    return Object.values(groupedContacts)
   }
 }

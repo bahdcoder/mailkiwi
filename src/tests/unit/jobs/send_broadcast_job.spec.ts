@@ -24,7 +24,7 @@ import {
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
 
-describe("Send broadcast job", () => {
+describe("@broadcasts send job", () => {
   test("queues send email jobs for all contacts in audience for the broadcast", async ({
     expect,
   }) => {

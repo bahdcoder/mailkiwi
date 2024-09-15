@@ -6,6 +6,7 @@ import { DateTime } from "luxon"
 import { Readable } from "stream"
 
 import { CreateContactExportDto } from "@/audiences/dto/contact_exports/create_contact_export_dto.ts"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
 
 import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
@@ -112,19 +113,14 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
   }: JobContext<ExportContactsJobPayload>) {
     const env = makeEnv()
 
-    const filteredContacts = await database.query.contacts.findMany({
-      where: and(
-        new SegmentBuilder(payload.filterGroups).build(),
-        eq(contacts.audienceId, payload.audienceId),
-      ),
-      with: {
-        tags: {
-          with: {
-            tag: true,
-          },
-        },
-      },
-    })
+    const filteredContacts = await container
+      .make(ContactRepository)
+      .findAllContactsWithTags(
+        and(
+          new SegmentBuilder(payload.filterGroups).build(),
+          eq(contacts.audienceId, payload.audienceId),
+        ),
+      )
 
     if (filteredContacts.length === 0) {
       return this.done("No contacts to export.")

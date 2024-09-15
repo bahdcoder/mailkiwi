@@ -6,6 +6,7 @@ import {
   UpdateSetTeamMembershipInput,
 } from "@/database/schema/database_schema_types.ts"
 import { teamMemberships, teams, users } from "@/database/schema/schema.js"
+import { belongsTo, hasOne } from "@/database/utils/relationships.ts"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
@@ -20,6 +21,14 @@ export class TeamMembershipRepository extends BaseRepository {
   ) {
     super()
   }
+
+  private belongsToUser = belongsTo(this.database, {
+    from: teamMemberships,
+    to: users,
+    primaryKey: users.id,
+    foreignKey: teamMemberships.userId,
+    relationName: "user",
+  })
 
   async create(payload: InsertTeamMembership) {
     const result = await this.database.insert(teamMemberships).values({
@@ -64,16 +73,11 @@ export class TeamMembershipRepository extends BaseRepository {
   }
 
   async findById(membershipId: number) {
-    const membership = await this.database.query.teamMemberships.findFirst(
-      {
-        where: eq(teamMemberships.id, membershipId),
-        with: {
-          user: true,
-        },
-      },
+    const membership = await this.belongsToUser((query) =>
+      query.where(eq(teamMemberships.id, membershipId)),
     )
 
-    return membership
+    return membership?.[0]
   }
 
   async update(

@@ -13,6 +13,9 @@ import {
   SendBroadcastSchema,
 } from "@/broadcasts/dto/send_broadcast_dto.js"
 import { UpdateBroadcastDto } from "@/broadcasts/dto/update_broadcast_dto.js"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+
+import { Broadcast } from "@/database/schema/database_schema_types.ts"
 
 import type { HonoContext } from "@/server/types.js"
 
@@ -66,11 +69,10 @@ export class BroadcastController extends BaseController {
   }
 
   create = async (ctx: HonoContext) => {
-    await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-    )
+    this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, CreateBroadcastDto)
+
     const broadcast = await container
       .resolve(CreateBroadcastAction)
       .handle(data, ctx.get("team").id)
@@ -83,30 +85,21 @@ export class BroadcastController extends BaseController {
       await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
         ctx,
       )
-    await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      broadcast,
-    )
+    this.ensureCanView(ctx)
 
-    return ctx.json(
-      await container.make(GetBroadcastAction).handle(broadcast),
-    )
+    return ctx.json(broadcast)
   }
 
   delete = async (ctx: HonoContext) => {
-    const broadcast =
-      await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
-        ctx,
-      )
-    await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
+    this.ensureCanManage(ctx)
+    const broadcast = await this.ensureExists<Broadcast>(
       ctx,
-      broadcast,
+      "broadcastId",
     )
-    const id = parseInt(ctx.req.param("broadcastId"))
 
-    await container.resolve(DeleteBroadcastAction).handle(id)
+    await container.resolve(DeleteBroadcastAction).handle(broadcast.id)
 
-    return ctx.json({ id })
+    return ctx.json({ id: broadcast.id })
   }
 
   update = async (ctx: HonoContext) => {
@@ -114,10 +107,7 @@ export class BroadcastController extends BaseController {
       await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
         ctx,
       )
-    await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-      broadcast,
-    )
+    this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, UpdateBroadcastDto)
 
@@ -129,14 +119,19 @@ export class BroadcastController extends BaseController {
   }
 
   send = async (ctx: HonoContext) => {
-    const broadcast =
-      await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
-        ctx,
-        { loadAbTestVariants: true },
-      )
-    await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-    )
+    this.ensureCanManage(ctx)
+    const broadcast = await container
+      .make(BroadcastRepository)
+      .findByIdWithAbTestVariants(parseInt(ctx.req.param("broadcastId")))
+
+    if (!broadcast) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: "Invalid broadcast ID provided.",
+          field: "broadcastId",
+        },
+      ])
+    }
 
     if (broadcast.status !== "DRAFT")
       throw E_VALIDATION_FAILED([

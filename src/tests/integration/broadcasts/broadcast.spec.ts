@@ -2,6 +2,8 @@ import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+
 import {
   createBroadcastForUser,
   createUser,
@@ -9,9 +11,11 @@ import {
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { broadcasts } from "@/database/schema/schema.js"
+import { broadcasts, emailContents } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
+
+import { container } from "@/utils/typi.ts"
 
 describe("@broadcasts create", () => {
   test("can create a broadcast for an audience", async ({ expect }) => {
@@ -98,9 +102,13 @@ describe("@broadcasts create", () => {
 describe("@broadcasts update", () => {
   test("can update a broadcast with valid data", async ({ expect }) => {
     await refreshDatabase()
+
     const { user, audience } = await createUser()
+    const broadcastId = await createBroadcastForUser(user, audience.id, {
+      updateWithABTestsContent: true,
+      updateWithValidContent: true,
+    })
     const database = makeDatabase()
-    const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const updateData = {
       name: faker.lorem.words(3),
@@ -121,14 +129,23 @@ describe("@broadcasts update", () => {
     })
 
     expect(response.status).toBe(200)
-    const updatedBroadcast = await database.query.broadcasts.findFirst({
-      where: eq(broadcasts.id, broadcastId),
-      with: {
-        emailContent: true,
-      },
-    })
 
-    expect(updatedBroadcast).toMatchObject(updateData)
+    const updatedBroadcast = await database
+      .select()
+      .from(broadcasts)
+      .where(eq(broadcasts.id, broadcastId))
+
+    const emailContent = await database
+      .select()
+      .from(emailContents)
+      .where(
+        eq(
+          emailContents.id,
+          updatedBroadcast?.[0].emailContentId as number,
+        ),
+      )
+
+    expect(emailContent[0]).toMatchObject(updateData.emailContent)
   })
 
   test("cannot update a broadcast with an invalid audience ID", async ({
@@ -212,12 +229,9 @@ describe("@broadcasts update", () => {
 
     expect(response.status).toBe(200)
 
-    const updatedBroadcast = await database.query.broadcasts.findFirst({
-      where: eq(broadcasts.id, broadcastId),
-      with: {
-        emailContent: true,
-      },
-    })
+    const updatedBroadcast = await container
+      .make(BroadcastRepository)
+      .findByIdWithAbTestVariants(broadcastId)
 
     expect(updatedBroadcast?.emailContent?.subject).toBe(
       updateData.emailContent.subject,
@@ -313,11 +327,9 @@ describe("@broadcasts delete", () => {
 
     expect(response.status).toBe(401)
 
-    const database = makeDatabase()
-
-    const broadcast = await database.query.broadcasts.findFirst({
-      where: eq(broadcasts.id, broadcastId),
-    })
+    const broadcast = await container
+      .make(BroadcastRepository)
+      .findById(broadcastId)
     expect(broadcast).toBeDefined()
   })
 
@@ -349,6 +361,7 @@ describe("@broadcasts send", () => {
 
     const broadcastId = await createBroadcastForUser(user, audience.id, {
       updateWithValidContent: true,
+      updateWithABTestsContent: true,
     })
 
     const response = await makeRequestAsUser(user, {
@@ -386,7 +399,7 @@ describe("@broadcasts send", () => {
     // TODO: Check redis for queued job.
   })
 
-  test("cannot queue a broadcast if the aws account has sending disabled", async ({
+  test("cannot queue a broadcast if the account has sending disabled", async ({
     expect,
   }) => {
     await refreshDatabase()

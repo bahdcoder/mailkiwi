@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm"
+
 import type { CreateAutomationStepDto } from "@/automations/dto/create_automation_step_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
@@ -25,5 +27,14 @@ export class AutomationStepRepository extends BaseRepository {
     })
 
     return { id: this.primaryKey(result) }
+  }
+
+  async findById(automationStepId: number) {
+    const [step] = await this.database
+      .select()
+      .from(automationSteps)
+      .where(eq(automationSteps.id, automationStepId))
+
+    return step
   }
 }

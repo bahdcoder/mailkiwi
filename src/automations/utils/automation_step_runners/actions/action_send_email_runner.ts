@@ -1,3 +1,4 @@
+import { EmailRepository } from "@/emails/repositories/email_repository.ts"
 import { eq } from "drizzle-orm"
 
 import type {
@@ -17,6 +18,8 @@ import {
 
 import { Mailer } from "@/shared/mailers/mailer.ts"
 
+import { container } from "@/utils/typi.ts"
+
 export class SendEmailAutomationStepRunner
   implements AutomationStepRunnerContract
 {
@@ -25,19 +28,16 @@ export class SendEmailAutomationStepRunner
     private contact: Contact,
   ) {}
 
-  async run({ database, redis }: AutomationStepRunnerContext) {
+  async run({ redis }: AutomationStepRunnerContext) {
     const configuration = this.automationStep
       .configuration as ACTION_SEND_EMAIL_CONFIGURATION
 
-    const email = await database.query.emails.findFirst({
-      where: eq(emails.id, configuration.emailId),
-      with: {
-        emailContent: true,
-      },
-    })
+    const email = await container
+      .make(EmailRepository)
+      .findById(configuration.emailId)
 
     // Email might have been deleted. Do nothing.
-    if (!email || !email.emailContent) {
+    if (!email || !email?.emailContent) {
       return
     }
 

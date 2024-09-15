@@ -18,7 +18,7 @@ import type {
   TeamMembership,
   User,
 } from "@/database/schema/database_schema_types.js"
-import { users } from "@/database/schema/schema.js"
+import { teams, users } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
@@ -41,6 +41,7 @@ export async function createBroadcastForUser(
       audienceId,
     },
   })
+
   const { id } = await response.json()
 
   if (options?.updateWithValidContent) {
@@ -111,12 +112,7 @@ export const createUser = async ({
     team.id,
   )
 
-  const freshUser = (await database.query.users.findFirst({
-    where: eq(users.id, user.id),
-    with: {
-      teams: true,
-    },
-  })) as User & { teams: Team[] }
+  const freshUser = await container.make(UserRepository).findById(user.id)
 
   let broadcastId: string | undefined = undefined
 

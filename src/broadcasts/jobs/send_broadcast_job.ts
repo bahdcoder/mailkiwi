@@ -1,6 +1,8 @@
 import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js"
 import { type SQLWrapper, and, eq } from "drizzle-orm"
 
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
 
 import { broadcasts, contacts } from "@/database/schema/schema.js"
@@ -8,6 +10,8 @@ import { broadcasts, contacts } from "@/database/schema/schema.js"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { Queue } from "@/shared/queue/queue.js"
+
+import { container } from "@/utils/typi.ts"
 
 export interface SendBroadcastJobPayload {
   broadcastId: number
@@ -26,16 +30,11 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
     database,
     payload,
   }: JobContext<SendBroadcastJobPayload>) {
-    const broadcast = await database.query.broadcasts.findFirst({
-      where: eq(broadcasts.id, payload.broadcastId),
-      with: {
-        team: true,
-        audience: true,
-        segment: true,
-      },
-    })
+    const broadcast = await container
+      .make(BroadcastRepository)
+      .findByIdWithAbTestVariants(payload.broadcastId)
 
-    if (!broadcast || !broadcast.audience || !broadcast.team) {
+    if (!broadcast || !broadcast.audienceId) {
       return this.fail(
         "Broadcast or audience or team not properly provided.",
       )
@@ -60,7 +59,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
         .from(contacts)
         .where(
           and(
-            eq(contacts.audienceId, broadcast.audience.id),
+            eq(contacts.audienceId, broadcast.audienceId),
             ...segmentQueryConditions,
           ),
         )

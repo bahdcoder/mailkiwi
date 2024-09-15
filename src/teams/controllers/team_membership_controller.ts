@@ -1,16 +1,14 @@
-import { TeamPolicy } from "@/audiences/policies/team_policy.js"
-
 import { AcceptTeamMemberInviteAction } from "@/teams/actions/accept_team_member_invite_action.ts"
 import { InviteTeamMemberAction } from "@/teams/actions/invite_team_member_action.ts"
 import { RejectTeamMemberInviteAction } from "@/teams/actions/reject_team_member_invite_action.ts"
 import { RevokeTeamMemberAccessAction } from "@/teams/actions/revoke_team_member_access_action.ts"
 import { InviteTeamMember } from "@/teams/dto/invite_team_member_dto.ts"
 import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
 
-import type { HonoInstance } from "@/server/hono.js"
+import { TeamMembership } from "@/database/schema/database_schema_types.ts"
+
 import type { HonoContext } from "@/server/types.js"
 
 import {
@@ -28,7 +26,6 @@ export class TeamMembershipController extends BaseController {
     private teamMembershipRepository = container.make(
       TeamMembershipRepository,
     ),
-    private userRepository = container.make(UserRepository),
     private app = makeApp(),
   ) {
     super()
@@ -116,7 +113,10 @@ export class TeamMembershipController extends BaseController {
   }
 
   async revokeAccess(ctx: HonoContext) {
-    const invite = await this.ensureValidInviteId(ctx)
+    const invite = await this.ensureExists<TeamMembership>(
+      ctx,
+      "membershipId",
+    )
 
     if (this.user(ctx).id !== invite.userId) {
       this.ensureCanAdministrate(ctx)

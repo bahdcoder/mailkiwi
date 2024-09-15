@@ -5,11 +5,15 @@ import {
   safeParseAsync,
 } from "valibot"
 
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+
 import { TeamPolicy } from "@/audiences/policies/team_policy.ts"
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.ts"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
 import { TagRepository } from "@/audiences/repositories/tag_repository.ts"
+
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
 
 import type { HonoContext } from "@/server/types.js"
 
@@ -22,13 +26,21 @@ import { BaseRepository } from "@/shared/repositories/base_repository.ts"
 
 import { container } from "@/utils/typi.ts"
 
-type ControllerParams = "importId" | "audienceId" | "contactId" | "tagId"
+type ControllerParams =
+  | "importId"
+  | "audienceId"
+  | "contactId"
+  | "tagId"
+  | "broadcastId"
+  | "membershipId"
 export class BaseController {
   private commonControllerParams: ControllerParams[] = [
     "importId",
     "audienceId",
     "contactId",
+    "broadcastId",
     "tagId",
+    "membershipId",
   ]
 
   protected getParameter(ctx: HonoContext, param: ControllerParams) {
@@ -136,6 +148,22 @@ export class BaseController {
     return team
   }
 
+  protected ensureCanView(ctx: HonoContext) {
+    const team = this.ensureTeam(ctx)
+
+    const teamPolicy = container.make(TeamPolicy)
+
+    const canView = teamPolicy.canView(team, this.user(ctx)?.id)
+
+    if (!canView) {
+      throw E_UNAUTHORIZED(
+        "You are not authorised to perform this action on this team.",
+      )
+    }
+
+    return team
+  }
+
   protected user(ctx: HonoContext) {
     return ctx.get("user")
   }
@@ -159,16 +187,17 @@ export class BaseController {
 
   protected async ensureExists<T>(
     ctx: HonoContext,
-    param: (typeof this.commonControllerParams)[number],
+    param: ControllerParams,
   ) {
     const repositories = {
       contactId: ContactRepository,
       audienceId: AudienceRepository,
       importId: ContactImportRepository,
       tagId: TagRepository,
+      broadcastId: BroadcastRepository,
+      membershipId: TeamMembershipRepository,
     } as const
 
-    // FIX types around common interface
     const repository = container.make(repositories[param] as any) as any
 
     const entity = await repository.findById(this.getParameter(ctx, param))

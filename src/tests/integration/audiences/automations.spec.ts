@@ -2,6 +2,8 @@ import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
+import { AutomationRepository } from "@/automations/repositories/automation_repository.ts"
+
 import { createUser } from "@/tests/mocks/auth/users.js"
 import {
   refreshDatabase,
@@ -19,6 +21,8 @@ import {
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
+
+import { container } from "@/utils/typi.ts"
 
 describe("@automations", () => {
   test("experimenting with automations", async ({ expect }) => {
@@ -96,12 +100,9 @@ describe("@automations", () => {
       return flatTree
     }
 
-    const automationFetch = await database.query.automations.findFirst({
-      where: eq(automations.id, automation.id),
-      with: {
-        steps: true,
-      },
-    })
+    const automationFetch = await container
+      .make(AutomationRepository)
+      .findById(automation.id)
 
     const tree = createFlatAutomationTree(
       automationFetch?.steps ?? [],

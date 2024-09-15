@@ -7,8 +7,10 @@ import type { DrizzleClient } from "@/database/client.js"
 import type {
   FindUserByIdArgs,
   User,
+  UserWithTeams,
 } from "@/database/schema/database_schema_types.js"
-import { users } from "@/database/schema/schema.js"
+import { teams, users } from "@/database/schema/schema.js"
+import { hasMany } from "@/database/utils/relationships.ts"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
@@ -17,6 +19,14 @@ export class UserRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
+
+  private hasManyTeams = hasMany(this.database, {
+    from: users,
+    to: teams,
+    primaryKey: users.id,
+    foreignKey: teams.userId,
+    relationName: "teams",
+  })
 
   async create(user: CreateUserDto) {
     const result = await this.database
@@ -31,18 +41,21 @@ export class UserRepository extends BaseRepository {
   }
 
   async findByEmail(email: string) {
-    return this.database.query.users.findFirst({
-      where: eq(users.email, email),
-    })
+    const results = await this.database
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1)
+
+    return results?.[0]
   }
 
-  async findById(id?: number | null, args?: FindUserByIdArgs) {
-    if (!id) return null
+  async findById(id: number) {
+    const userWithTeams = await this.hasManyTeams((query) =>
+      query.where(eq(users.id, id)),
+    )
 
-    return this.database.query.users.findFirst({
-      where: eq(users.id, id),
-      ...args,
-    })
+    return userWithTeams[0]
   }
 
   async authenticateUserPassword(

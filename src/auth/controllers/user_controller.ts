@@ -19,15 +19,7 @@ export class UserController extends BaseController {
   }
 
   async profile(ctx: HonoContext) {
-    const user = await this.userRepository.findById(this.user(ctx).id, {
-      with: {
-        teams: {
-          with: {
-            members: true,
-          },
-        },
-      },
-    })
+    const user = await this.userRepository.findById(this.user(ctx).id)
 
     return ctx.json(user)
   }

@@ -28,7 +28,7 @@ import { makeDatabase, makeRedis } from "@/shared/container/index.ts"
 import { container } from "@/utils/typi.ts"
 
 describe("@contacts exports job", () => {
-  test.only("exports only contacts that match the filter groups criteria", async ({
+  test("exports only contacts that match the filter groups criteria", async ({
     expect,
   }) => {
     await refreshDatabase()
@@ -145,7 +145,7 @@ describe("@contacts exports job", () => {
 
     const minio = new FakeMinioClient()
 
-    // container.fake(MinioClient, minio as any)
+    container.fake(MinioClient, minio as any)
 
     await container.make(ExportContactsJob).handle({
       payload: {
@@ -156,7 +156,6 @@ describe("@contacts exports job", () => {
       redis,
       database,
     })
-    return
 
     expect(minio.bucketName).toEqual("contacts")
     expect(minio.objectName).toMatch("exports/")

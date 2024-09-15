@@ -9,9 +9,9 @@ import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_t
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.ts"
-import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
+import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { accessTokens, teams, users } from "@/database/schema/schema.js"
+import { accessTokens } from "@/database/schema/schema.js"
 
 import {
   makeApp,
@@ -36,10 +36,11 @@ describe("@auth API Token Generation", () => {
       path: "/auth/api-keys",
     })
 
-    const accessKeysFromDatabase =
-      await database.query.accessTokens.findFirst({
-        where: eq(accessTokens.teamId, team.id),
-      })
+    const [accessKeysFromDatabase] = await database
+      .select()
+      .from(accessTokens)
+      .where(eq(accessTokens.teamId, team.id))
+      .limit(1)
 
     expect(response.status).toBe(200)
 

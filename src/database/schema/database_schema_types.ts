@@ -11,6 +11,7 @@ import type {
   sendingDomains,
   settings,
   tags,
+  tagsOnContacts,
   teamMemberships,
   teams,
   users,
@@ -33,7 +34,7 @@ export type BroadcastWithoutContent = Omit<
 export type AccessToken = InferSelectModel<typeof accessTokens>
 export type Team = InferSelectModel<typeof teams>
 export type TeamMembership = InferSelectModel<typeof teamMemberships>
-
+export type TagOnContact = InferSelectModel<typeof tagsOnContacts>
 export type FindUserByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>["query"]["users"]["findFirst"]
 >[0]
@@ -99,3 +100,10 @@ export type BroadcastWithSegmentAndAbTestVariants =
     audience: Audience
     team: Team
   }
+
+export type UserWithTeams = User & { teams: Team }
+export type ContactWithTags = Contact & {
+  tags: (TagOnContact & {
+    tag: Tag
+  })[]
+}

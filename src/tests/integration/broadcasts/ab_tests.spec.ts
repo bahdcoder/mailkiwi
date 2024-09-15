@@ -2,6 +2,8 @@ import { faker } from "@faker-js/faker"
 import { asc, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+
 import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
@@ -17,13 +19,14 @@ import { abTestVariants, broadcasts } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
+import { container } from "@/utils/typi.ts"
+
 describe("@broadcasts update broadcasts", () => {
   test("can update a broadcast with ab test variants", async ({
     expect,
   }) => {
     await refreshDatabase()
     const { user, audience } = await createUser()
-    const database = makeDatabase()
     const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const abTestVariantsMock = [
@@ -45,18 +48,10 @@ describe("@broadcasts update broadcasts", () => {
     })
 
     expect(response.status).toBe(200)
-    const updatedBroadcast = await database.query.broadcasts.findFirst({
-      where: eq(broadcasts.id, broadcastId),
-      with: {
-        emailContent: true,
-        abTestVariants: {
-          orderBy: asc(abTestVariants.weight),
-          with: {
-            emailContent: true,
-          },
-        },
-      },
-    })
+
+    const updatedBroadcast = await container
+      .make(BroadcastRepository)
+      .findByIdWithAbTestVariants(broadcastId)
 
     expect(updatedBroadcast?.isAbTest).toBe(true)
 
@@ -86,7 +81,11 @@ describe("@broadcasts update broadcasts", () => {
       }),
     )
 
-    expect(variantsEmailContent).toStrictEqual(abTestVariantsMock)
+    const orderedEmailContent = variantsEmailContent?.sort(
+      (A, B) => (A.weight as number) - (B.weight as number),
+    )
+
+    expect(orderedEmailContent).toStrictEqual(abTestVariantsMock)
   })
 
   test("cannot update ab test variants if weights sum up to more than 100", async ({
@@ -128,18 +127,9 @@ describe("@broadcasts update broadcasts", () => {
       ],
     })
 
-    const updatedBroadcast = await database.query.broadcasts.findFirst({
-      where: eq(broadcasts.id, broadcastId),
-      with: {
-        emailContent: true,
-        abTestVariants: {
-          orderBy: asc(abTestVariants.weight),
-          with: {
-            emailContent: true,
-          },
-        },
-      },
-    })
+    const updatedBroadcast = await container
+      .make(BroadcastRepository)
+      .findById(broadcastId)
 
     expect(updatedBroadcast?.isAbTest).toBe(false)
   })

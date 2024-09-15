@@ -1,6 +1,10 @@
 import { AutomationStepRunner } from "../utils/automation_step_runners/automation_step_runner.ts"
 import { and, eq } from "drizzle-orm"
 
+import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+
+import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.ts"
+
 import {
   automationSteps,
   contactAutomationSteps,
@@ -9,6 +13,8 @@ import {
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+
+import { container } from "@/utils/typi.ts"
 
 export interface RunAutomationStepForContactJobPayload {
   automationStepId: number
@@ -29,23 +35,24 @@ export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepFor
     payload,
     redis,
   }: JobContext<RunAutomationStepForContactJobPayload>) {
-    const [automationStep, contact, contactAutomationStep] =
+    const [automationStep, contact, [contactAutomationStep]] =
       await Promise.all([
-        database.query.automationSteps.findFirst({
-          where: eq(automationSteps.id, payload.automationStepId),
-        }),
-        database.query.contacts.findFirst({
-          where: eq(contacts.id, payload.contactId),
-        }),
-        database.query.contactAutomationSteps.findFirst({
-          where: and(
-            eq(contactAutomationSteps.contactId, payload.contactId),
-            eq(
-              contactAutomationSteps.automationStepId,
-              payload.automationStepId,
+        container
+          .make(AutomationStepRepository)
+          .findById(payload.automationStepId),
+        container.make(ContactRepository).findById(payload.contactId),
+        await database
+          .select()
+          .from(contactAutomationSteps)
+          .where(
+            and(
+              eq(contactAutomationSteps.contactId, payload.contactId),
+              eq(
+                contactAutomationSteps.automationStepId,
+                payload.automationStepId,
+              ),
             ),
           ),
-        }),
       ])
 
     if (contactAutomationStep) {
