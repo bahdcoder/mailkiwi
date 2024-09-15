@@ -23,3 +23,12 @@
 1. Need to add clickhouse to the stack for analytics queries
 2. Cluster management as we grow will require hiring, and we're broke broke.
 3. Redundancy at the start will be hard.
+
+# Other notes
+
+1. When I run migrations against TiDB, it performs significantly slower.
+2. When I run a multi process seed script, I noticed TiDB writes were really fast (not faster than MySQL, but again no degraded performance). Script did not complete due to duplicates in primary keys as TiDB was running in cluster mode.
+
+# Final thoughts
+
+TiDB might be worth a shot when going live. For now, the decision is to keep this code base compatible with both databases, and when setting up the devops part of the project, make the database decision then.
