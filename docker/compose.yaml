@@ -98,6 +98,20 @@ services:
       kibamail-network:
         ipv4_address: 172.20.0.9
 
+  kumomta-sink:
+    container_name: kumomta-sink
+    hostname: sinkinator
+    image: ghcr.io/kumocorp/kumomta-dev:latest
+    volumes:
+      - ./kumomta/policy:/opt/kumomta/etc/policy
+    restart: unless-stopped
+    ports:
+      - 5610:25
+      - 5611:8000
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.10
+
 volumes:
   mysql_data:
   clickhouse_data:
