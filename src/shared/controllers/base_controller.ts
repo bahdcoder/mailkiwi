@@ -22,8 +22,6 @@ import {
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
 
-import { BaseRepository } from "@/shared/repositories/base_repository.ts"
-
 import { container } from "@/utils/typi.ts"
 
 type ControllerParams =
@@ -34,15 +32,6 @@ type ControllerParams =
   | "broadcastId"
   | "membershipId"
 export class BaseController {
-  private commonControllerParams: ControllerParams[] = [
-    "importId",
-    "audienceId",
-    "contactId",
-    "broadcastId",
-    "tagId",
-    "membershipId",
-  ]
-
   protected getParameter(ctx: HonoContext, param: ControllerParams) {
     const id = parseInt(ctx.req.param(param))
 

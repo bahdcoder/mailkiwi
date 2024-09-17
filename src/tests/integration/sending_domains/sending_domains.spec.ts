@@ -45,16 +45,17 @@ describe("@domains", () => {
     expect(checkDnsJobs[0]?.delay).toEqual(60000) // wait 60 seconds before running job
     expect(checkDnsJobs[0]?.data?.sendingDomainId).toEqual(domains[0].id)
 
-    const teamUsage = await container
+    const teamDkim = await container
       .make(TeamRepository)
-      .usage(team.id)
+      .dkim()
+      .forDomain(domains[0].name)
       .get()
 
-    expect(teamUsage?.encryptedDkimPrivateKey).toEqual(
+    expect(teamDkim?.encryptedDkimPrivateKey).toEqual(
       domains[0]?.dkimPrivateKey,
     )
     const dkimPrivateKey = new Encryption(makeEnv().APP_KEY)
-      .decrypt(teamUsage?.encryptedDkimPrivateKey)
+      .decrypt(teamDkim?.encryptedDkimPrivateKey)
       ?.release() as string
 
     /**

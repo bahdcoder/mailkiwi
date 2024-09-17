@@ -13,6 +13,7 @@ CREATE TABLE `accessTokens` (
 	`userId` bigint unsigned,
 	`teamId` bigint unsigned,
 	`name` varchar(32),
+	`username` varchar(32),
 	`hash` varchar(100) NOT NULL,
 	`createdAt` timestamp NOT NULL DEFAULT (now()),
 	`lastUsedAt` timestamp NOT NULL DEFAULT (now()),

@@ -60,6 +60,7 @@ export const accessTokens = mysqlTable("accessTokens", {
   userId: primaryKeyBigInt("userId").references(() => users.id),
   teamId: primaryKeyBigInt("teamId").references(() => teams.id),
   name: varchar("name", { length: 32 }),
+  username: varchar("username", { length: 32 }),
   hash: varchar("hash", { length: 100 }).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   lastUsedAt: timestamp("lastUsedAt").defaultNow().notNull(),
@@ -96,6 +97,9 @@ export const sendingDomains = mysqlTable("sendingDomains", {
   }).notNull(),
   dkimVerifiedAt: timestamp("dkimVerifiedAt"),
   returnPathDomainVerifiedAt: timestamp("returnPathDomainVerifiedAt"),
+  // Configure a SENDING_IP and a BACKUP_SENDING_IP for this domain.
+  // That way, we consistently send to a specific customer from a specific IP address as per ESP guidelines.
+  // Configure a BACKUP_SENDING_IP in the case where the SENDING_IP is throttled or any weird scenarios.
 })
 
 export const webhooks = mysqlTable("webhooks", {

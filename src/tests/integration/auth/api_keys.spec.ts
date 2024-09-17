@@ -27,32 +27,32 @@ describe("@auth API Token Generation", () => {
     expect,
   }) => {
     await refreshRedisDatabase()
-    const database = makeDatabase()
 
-    const { user, team } = await createUser()
+    const { user } = await createUser()
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
       path: "/auth/api-keys",
     })
 
-    const [accessKeysFromDatabase] = await database
-      .select()
-      .from(accessTokens)
-      .where(eq(accessTokens.teamId, team.id))
-      .limit(1)
+    const json = await response.json()
 
     expect(response.status).toBe(200)
+    expect(json).toEqual({
+      username: expect.any(String),
+      passwd: expect.any(String),
+    })
 
-    const teamUsage = await container
+    const teamApiKey = await container
       .make(TeamRepository)
-      .usage(team.id)
+      .apiKeys()
+      .username(json.username)
       .get()
 
-    expect(teamUsage.apiKey).toBeDefined()
+    expect(teamApiKey).toBeDefined()
 
     const decryptedApiKey = new Encryption(makeEnv().APP_KEY).decrypt(
-      teamUsage.apiKey,
+      teamApiKey as string,
     )
 
     const verifiedToken = await container

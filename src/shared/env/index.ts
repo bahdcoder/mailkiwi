@@ -41,6 +41,8 @@ export type EnvVariables = {
   FILE_UPLOADS_ACCESS_SECRET: string
   FILE_UPLOADS_ENDPOINT: string
   FILE_UPLOADS_PORT: string
+
+  MTA_ACCESS_TOKEN: Secret<string>
 }
 
 export type ConfigVariables = typeof config
@@ -50,13 +52,13 @@ const DEFAULT_PORT = "5566"
 const envValidationSchema = object({
   PORT: optional(string(), DEFAULT_PORT),
   HOST: pipe(
-    optional(string(), `http://localhost:${DEFAULT_PORT}`),
+    optional(string(), `http://127.0.0.1:${DEFAULT_PORT}`),
     nonEmpty(),
     ip(),
   ),
   APP_KEY: pipe(string(), nonEmpty(), minLength(32), maxLength(32)),
   APP_URL: pipe(
-    optional(string(), `http://localhost:${DEFAULT_PORT}`),
+    optional(string(), `http://127.0.0.1:${DEFAULT_PORT}`),
     nonEmpty(),
     url(),
   ),
@@ -71,6 +73,8 @@ const envValidationSchema = object({
   SMTP_USER: pipe(string(), nonEmpty()),
   SMTP_PASS: pipe(string(), nonEmpty()),
   SMTP_MAIL_FROM: pipe(string(), nonEmpty()),
+
+  MTA_ACCESS_TOKEN: pipe(string(), nonEmpty()),
 
   FILE_UPLOADS_ACCESS_KEY: pipe(string(), nonEmpty()),
   FILE_UPLOADS_ACCESS_SECRET: pipe(string(), nonEmpty()),
@@ -91,13 +95,18 @@ if (!parsed.success) {
   })
 }
 
-const parsedOutput = parsed.output as Omit<EnvVariables, "APP_KEY"> & {
+const parsedOutput = parsed.output as Omit<
+  EnvVariables,
+  "APP_KEY" | "MTA_ACCESS_TOKEN"
+> & {
   APP_KEY: string
+  MTA_ACCESS_TOKEN: string
 }
 
 export const env = {
   ...parsedOutput,
-  APP_KEY: new Secret(parsedOutput.APP_KEY as string),
+  APP_KEY: new Secret(parsedOutput.APP_KEY),
+  MTA_ACCESS_TOKEN: new Secret(parsedOutput.MTA_ACCESS_TOKEN),
 } as EnvVariables
 
 env.isTest = env.NODE_ENV === "test"

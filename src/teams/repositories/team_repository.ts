@@ -8,7 +8,6 @@ import { hasMany } from "@/database/utils/relationships.ts"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
-import { TeamWithMembers } from "@/shared/types/team.ts"
 
 import { container } from "@/utils/typi.ts"
 
@@ -63,17 +62,16 @@ export class TeamRepository extends BaseRepository {
     return team[0]
   }
 
-  usage(teamId: number) {
-    return container.make(TeamUsage).forTeam(teamId)
+  dkim() {
+    return container.make(CachedDomainDkim)
+  }
+
+  apiKeys() {
+    return container.make(CachedTeamApiKeys)
   }
 }
 
-export interface TeamUsagePayload {
-  availableCredits: number
-  startOfMonth: string
-  freeCredits: number
-  apiKey: string
-  domain: string
+export interface CachedDkimHash {
   encryptedDkimPrivateKey: string
   returnPathSubDomain: string
   returnPathDomainCnameValue: string
@@ -81,43 +79,74 @@ export interface TeamUsagePayload {
   dkimPublicKey: string
 }
 
-export class TeamUsage {
-  private HASH_PREFIX = "TEAM"
-  private teamId: number
+export class CachedTeamApiKeys {
+  private KEY_PREFIX = "API_KEY"
 
   constructor(private redis = makeRedis()) {}
 
-  forTeam(teamId: number) {
-    this.teamId = teamId
+  private pair = {
+    username: "",
+    apiKey: new Secret(""),
+  }
+
+  async destroy() {
+    await this.redis.del(this.key())
+  }
+
+  username(username: string) {
+    this.pair.username = username
+
+    return this
+  }
+
+  get() {
+    return this.redis.get(this.key())
+  }
+
+  private key() {
+    return `${this.KEY_PREFIX}:${this.pair.username}`
+  }
+
+  apiKey(apiKey: Secret<string>) {
+    this.pair.apiKey = apiKey
+
+    return this
+  }
+
+  async save() {
+    await this.redis.set(this.key(), this.pair.apiKey.release())
+  }
+}
+
+export class CachedDomainDkim {
+  private HASH_PREFIX = "DOMAIN"
+  private domain: string
+
+  constructor(private redis = makeRedis()) {}
+
+  forDomain(domain: string) {
+    this.domain = domain
 
     return this
   }
 
   private key() {
-    return `${this.HASH_PREFIX}:${this.teamId}`
-  }
-
-  private domainKey(domain: string) {
-    return `${this.HASH_PREFIX}:domain:${domain}`
+    return `${this.HASH_PREFIX}:${this.domain}`
   }
 
   async get() {
     return this.redis.hgetall(
       this.key(),
-    ) as unknown as Promise<TeamUsagePayload>
+    ) as unknown as Promise<CachedDkimHash>
   }
 
-  async set(payload: Partial<TeamUsagePayload>) {
-    await Promise.all([
-      this.redis.hmset(
-        this.key(),
-        Object.fromEntries(
-          Object.entries(payload).filter(
-            ([_, value]) => value !== undefined,
-          ),
-        ),
-      ),
-      this.redis.set(this.domainKey(payload.domain as string), this.key()),
-    ])
+  async save(payload: Partial<CachedDkimHash>) {
+    await this.redis.hmset(this.key(), {
+      encryptedDkimPrivateKey: payload.encryptedDkimPrivateKey,
+      returnPathSubDomain: payload.returnPathSubDomain,
+      dkimSubDomain: payload.dkimSubDomain,
+      returnPathDomainCnameValue: payload.returnPathDomainCnameValue,
+      dkimPublicKey: payload.dkimPublicKey,
+    })
   }
 }

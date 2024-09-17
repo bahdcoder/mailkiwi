@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm"
+
 import type { InsertSendingDomain } from "@/database/schema/database_schema_types.ts"
 import { sendingDomains } from "@/database/schema/schema.ts"
 
@@ -17,5 +19,14 @@ export class SendingDomainRepository extends BaseRepository {
       })
 
     return { id: this.primaryKey(insertResult) }
+  }
+
+  async findById(sendingDomainId: number) {
+    const [sendingDomain] = await this.database
+      .select()
+      .from(sendingDomains)
+      .where(eq(sendingDomains.id, sendingDomainId))
+
+    return sendingDomain
   }
 }

@@ -10,7 +10,7 @@ import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
 
 export class AccessTokenRepository extends BaseRepository {
-  protected tokenSecretLength = 24
+  protected tokenSecretLength = 16
   protected tokenExpiresIn = 1000 * 60
   protected opaqueAccessTokenPrefix = "kbm_"
 
@@ -19,7 +19,7 @@ export class AccessTokenRepository extends BaseRepository {
   }
 
   async createAccessToken(
-    owner: { id: number },
+    owner: { id: number; username?: string },
     type: "user" | "team" = "user",
   ) {
     const transientAccessToken = AccessToken.createTransientToken(
@@ -30,6 +30,7 @@ export class AccessTokenRepository extends BaseRepository {
 
     const result = await this.database.insert(accessTokens).values({
       ...(type === "user" ? { userId: owner.id } : { teamId: owner.id }),
+      username: owner?.username,
       hash: transientAccessToken.hash,
       expiresAt: transientAccessToken.expiresAt,
     })

@@ -12,15 +12,17 @@ import { env } from "@/shared/env/index.js"
 
 import { container } from "@/utils/typi.js"
 
+export type RouteOptions = {
+  middleware?: MiddlewareHandler[]
+  prefix?: string
+}
+
 export type HonoInstance = BaseHono<{
   Bindings: HttpBindings
 }> & {
   defineRoutes: (
     routes: HonoRouteDefinition[],
-    routeOptions?: {
-      middleware?: MiddlewareHandler[]
-      prefix?: string
-    },
+    routeOptions?: RouteOptions,
   ) => void
 }
 
@@ -56,6 +58,38 @@ export class Hono
     return this
   }
 
+  protected getRoutePath(path: string, prefix?: string) {
+    return `${prefix?.replace(/^\/|\/$/g, "")}${path === "/" ? "" : "/"}${path?.replace(/^\/|\/$/g, "")}`
+  }
+
+  protected defineRoutesForMiddleware(
+    route: HonoRouteDefinition,
+    resolvedPath: string,
+    middleware: MiddlewareHandler[],
+  ) {
+    const [method, , handler] = route
+
+    switch (method) {
+      case "GET":
+        this.get(resolvedPath, ...middleware, handler)
+        break
+      case "DELETE":
+        this.delete(resolvedPath, ...middleware, handler)
+        break
+      case "PATCH":
+        this.patch(resolvedPath, ...middleware, handler)
+        break
+      case "PUT":
+        this.put(resolvedPath, ...middleware, handler)
+        break
+      case "POST":
+        this.post(resolvedPath, ...middleware, handler)
+        break
+      default:
+        break
+    }
+  }
+
   defineRoutes(
     routes: HonoRouteDefinition[],
     routeOptions?: {
@@ -68,32 +102,11 @@ export class Hono
       container.resolve(TeamMiddleware).handle,
     ]
 
-    const getPath = (path: string) => {
-      return `${routeOptions?.prefix?.replace(/^\/|\/$/g, "")}${path === "/" ? "" : "/"}${path?.replace(/^\/|\/$/g, "")}`
-    }
+    for (const route of routes) {
+      const [, path] = route
+      const resolvedPath = this.getRoutePath(path, routeOptions?.prefix)
 
-    for (const [method, path, handler] of routes) {
-      const resolvedPath = getPath(path)
-
-      switch (method) {
-        case "GET":
-          this.get(resolvedPath, ...middleware, handler)
-          break
-        case "DELETE":
-          this.delete(resolvedPath, ...middleware, handler)
-          break
-        case "PATCH":
-          this.patch(resolvedPath, ...middleware, handler)
-          break
-        case "PUT":
-          this.put(resolvedPath, ...middleware, handler)
-          break
-        case "POST":
-          this.post(resolvedPath, ...middleware, handler)
-          break
-        default:
-          break
-      }
+      this.defineRoutesForMiddleware(route, resolvedPath, middleware)
     }
   }
 }

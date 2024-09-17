@@ -5,6 +5,7 @@ import { describe, test, vi } from "vitest"
 
 import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.ts"
 import { CheckSendingDomainDnsConfigurationJob } from "@/sending_domains/jobs/check_sending_domain_dns_configuration_job.ts"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.ts"
 
 import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.ts"
 
@@ -25,6 +26,31 @@ import { Queue } from "@/shared/queue/queue.ts"
 
 import { container } from "@/utils/typi.ts"
 
+export const setupDomainForDnsChecks = async () => {
+  await refreshDatabase()
+
+  const { team } = await createUser()
+
+  const TEST_DOMAIN = faker.internet.domainName()
+
+  const { id: sendingDomainId } = await container
+    .make(CreateSendingDomainAction)
+    .handle({ name: TEST_DOMAIN }, team.id)
+
+  const sendingDomain = await container
+    .make(SendingDomainRepository)
+    .findById(sendingDomainId)
+
+  const records = container
+    .make(DnsConfigurationTool)
+    .forDomain(TEST_DOMAIN)
+    .getRecords(
+      sendingDomain?.dkimPublicKey as string,
+      sendingDomain?.dkimSubDomain as string,
+    )
+
+  return { records, sendingDomain, sendingDomainId, TEST_DOMAIN, team }
+}
 describe("Sending domain dns configuration check", () => {
   test("marks sending domain as verified when dns records are correctly configured", async ({
     expect,
@@ -32,25 +58,9 @@ describe("Sending domain dns configuration check", () => {
     await refreshDatabase()
     const config = makeConfig()
     const database = makeDatabase()
-    const { team } = await createUser()
 
-    const TEST_DOMAIN = faker.internet.domainName()
-
-    const { id: sendingDomainId } = await container
-      .make(CreateSendingDomainAction)
-      .handle({ name: TEST_DOMAIN }, team.id)
-
-    const sendingDomain = await database.query.sendingDomains.findFirst({
-      where: eq(sendingDomains.id, sendingDomainId),
-    })
-
-    const records = container
-      .make(DnsConfigurationTool)
-      .forDomain(TEST_DOMAIN)
-      .getRecords(
-        sendingDomain?.dkimPublicKey as string,
-        sendingDomain?.dkimSubDomain as string,
-      )
+    const { records, sendingDomain, sendingDomainId, TEST_DOMAIN } =
+      await setupDomainForDnsChecks()
 
     const mockResolveCname = vi
       .spyOn(dns, "resolveCname")

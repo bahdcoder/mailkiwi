@@ -11,6 +11,7 @@ import { container } from "@/utils/typi.js"
 
 export enum ContainerKey {
   app = "app",
+  mtaHelperApp = "mtaHelperApp",
   env = "env",
   redis = "redis",
   config = "config",
@@ -21,6 +22,9 @@ export enum ContainerKey {
 
 export const makeApp = () =>
   container.singleton<HonoInstance>(ContainerKey.app)
+
+export const makeMtaHelperApp = () =>
+  container.singleton<HonoInstance>(ContainerKey.mtaHelperApp)
 
 export const makeEnv = () => container.make<EnvVariables>(ContainerKey.env)
 

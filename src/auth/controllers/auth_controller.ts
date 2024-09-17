@@ -53,11 +53,11 @@ export class AuthController extends BaseController {
   }
 
   async createApiKey(ctx: HonoContext) {
-    const accessToken = await container
+    const { accessToken, username } = await container
       .make(CreateTeamAccessTokenAction)
       .handle(ctx.get("team").id)
 
-    return ctx.json(accessToken.toJSON())
+    return ctx.json({ passwd: accessToken.toJSON()?.token, username })
   }
 
   async login(ctx: HonoContext) {

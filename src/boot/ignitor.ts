@@ -1,26 +1,26 @@
 import "./globals"
 import { RootController } from "@/views/controllers/root_controller.js"
-import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.ts"
+import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.js"
 import type { Redis } from "ioredis"
 
-import { BroadcastController } from "@/broadcasts/controllers/broadcast_controller.ts"
+import { BroadcastController } from "@/broadcasts/controllers/broadcast_controller.js"
 
 import { AudienceController } from "@/audiences/controllers/audience_controller.js"
-import { ContactController } from "@/audiences/controllers/contact_controller.ts"
-import { ContactExportController } from "@/audiences/controllers/contact_export_controller.ts"
-import { ContactImportController } from "@/audiences/controllers/contact_import_controller.ts"
-import { SegmentController } from "@/audiences/controllers/segment_controller.ts"
-import { TagController } from "@/audiences/controllers/tag_controller.ts"
+import { ContactController } from "@/audiences/controllers/contact_controller.js"
+import { ContactExportController } from "@/audiences/controllers/contact_export_controller.js"
+import { ContactImportController } from "@/audiences/controllers/contact_import_controller.js"
+import { SegmentController } from "@/audiences/controllers/segment_controller.js"
+import { TagController } from "@/audiences/controllers/tag_controller.js"
 
-import { TeamController } from "@/teams/controllers/team_controller.ts"
-import { TeamMembershipController } from "@/teams/controllers/team_membership_controller.ts"
+import { TeamController } from "@/teams/controllers/team_controller.js"
+import { TeamMembershipController } from "@/teams/controllers/team_membership_controller.js"
 
-import { AuthController } from "@/auth/controllers/auth_controller.ts"
+import { AuthController } from "@/auth/controllers/auth_controller.js"
 import { UserController } from "@/auth/controllers/user_controller.js"
 
 import { AutomationController } from "@/automations/controllers/automation_controller.js"
 
-import { SendingDomainController } from "@/sending_domains/controllers/sending_domain_controller.ts"
+import { SendingDomainController } from "@/sending_domains/controllers/sending_domain_controller.js"
 
 import {
   type DrizzleClient,
@@ -41,10 +41,8 @@ import {
   config,
   env,
 } from "@/shared/env/index.js"
-import { Mailer } from "@/shared/mailers/mailer.js"
-import type { MailerDriver } from "@/shared/mailers/mailer_types.js"
 
-import { createRedisDatabaseInstance } from "@/redis/redis_client.ts"
+import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
 
 import { container } from "@/utils/typi.js"
 

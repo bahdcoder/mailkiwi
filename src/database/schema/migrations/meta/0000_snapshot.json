@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "6fb1ad46-dead-43a9-a0a2-e2a68582e99b",
+  "id": "fbea7ff1-05a8-4227-ab49-bf2713189567",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -116,6 +116,13 @@
         },
         "name": {
           "name": "name",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "username": {
+          "name": "username",
           "type": "varchar(32)",
           "primaryKey": false,
           "notNull": false,
