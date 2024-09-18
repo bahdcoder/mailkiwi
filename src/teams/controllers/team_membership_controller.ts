@@ -9,8 +9,6 @@ import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
 
 import { TeamMembership } from "@/database/schema/database_schema_types.ts"
 
-import type { HonoContext } from "@/server/types.js"
-
 import {
   E_UNAUTHORIZED,
   E_VALIDATION_FAILED,
@@ -18,6 +16,7 @@ import {
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.ts"
+import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 

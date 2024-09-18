@@ -1,12 +1,11 @@
-import type { HonoInstance } from "@/server/hono.js"
-import type { HonoContext } from "@/server/types.js"
-
 import {
   ContainerKey,
   makeApp,
   makeEnv,
 } from "@/shared/container/index.js"
 import type { EnvVariables } from "@/shared/env/index.js"
+import type { HonoInstance } from "@/shared/server/hono.js"
+import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 

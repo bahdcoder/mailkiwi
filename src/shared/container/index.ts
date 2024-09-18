@@ -3,28 +3,39 @@ import type { Connection } from "mysql2"
 
 import type { DrizzleClient } from "@/database/client.js"
 
-import type { HonoInstance } from "@/server/hono.js"
-
 import type { ConfigVariables, EnvVariables } from "@/shared/env/index.js"
+import type { HonoInstance } from "@/shared/server/hono.js"
 
 import { container } from "@/utils/typi.js"
 
 export enum ContainerKey {
+  // Apps
   app = "app",
-  mtaHelperApp = "mtaHelperApp",
+  mtaAuthenticatorApp = "mtaAuthenticatorApp",
+  mtaLogProcessorApp = "mtaLogProcessorApp",
+
+  // Configs
   env = "env",
-  redis = "redis",
   config = "config",
+
+  // databases
+
+  redis = "redis",
   database = "database",
-  viteManifestFile = "viteManifestFile",
   databaseConnection = "databaseConnection",
+
+  // Frontend assets
+  viteManifestFile = "viteManifestFile",
 }
 
 export const makeApp = () =>
   container.singleton<HonoInstance>(ContainerKey.app)
 
-export const makeMtaHelperApp = () =>
-  container.singleton<HonoInstance>(ContainerKey.mtaHelperApp)
+export const makeMtaAuthenticatorApp = () =>
+  container.singleton<HonoInstance>(ContainerKey.mtaAuthenticatorApp)
+
+export const makeMtaLogProcessorApp = () =>
+  container.singleton<HonoInstance>(ContainerKey.mtaLogProcessorApp)
 
 export const makeEnv = () => container.make<EnvVariables>(ContainerKey.env)
 

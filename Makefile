@@ -20,6 +20,7 @@ help:
 	@echo "  make test-watch    - Run tests in watch mode"
 	@echo "  make up            - Start development environment"
 	@echo "  make run-command CMD='your command'  - Run a custom command in the kibamail container"
+	@echo "  make kumo          - Run KumoMTA dev container with mounted volume"
 
 # Build the application
 build:
@@ -50,7 +51,7 @@ test-watch:
 	@echo "Running tests in watch mode..."
 	docker-compose $(COMPOSE_TEST) run --rm kibamail pnpm test:watch
 
-# Run tests in watch mode
+# Run a custom command
 run:
 	@if [ -z "$(cmd)" ]; then \
 		echo "Please provide a command using cmd='your command'"; \
@@ -67,4 +68,21 @@ dev-test:
 	@echo "Starting all services for test environment..."
 	docker-compose $(COMPOSE_TEST) up -d
 
-.PHONY: help build down app-build test test-watch up
+# Run KumoMTA dev container with mounted volume
+kumo:
+	@echo "Running KumoMTA dev container with mounted policy directory..."
+	docker run \
+		-e HOSTNAME=kumomta \
+		-e CREDS_HTTP_ACCESS_TOKEN=tSv1rimOykRimRB7XgLtYDctSv1rimOykRimRB7XgLtYDc \
+		-e CREDS_HTTP_SERVER_HOST=host.docker.internal \
+		-e LOGS_HTTP_SERVER_HOST=host.docker.internal \
+		-e LOGS_HTTP_SERVER_PORT=5798 \
+		-p 5990:25 \
+		--dns 172.20.0.2 \
+		--network kibamail_kibamail-network \
+		-v $(shell pwd)/src/kumomta/policy:/opt/kumomta/etc/policy \
+		-v $(shell pwd)/src/kumomta/data:/var/log/kumomta\
+		-v $(shell pwd)/src/kumomta/spool:/var/spool/kumomta\
+		ghcr.io/kumocorp/kumomta-dev:latest
+
+.PHONY: help build down app-build app-build-prod test test-watch run dev dev-test kumo

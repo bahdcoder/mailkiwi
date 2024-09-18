@@ -1,9 +1,8 @@
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import type { HonoContext } from "@/server/types.js"
-
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.ts"
+import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 

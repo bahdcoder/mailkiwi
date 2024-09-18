@@ -152,9 +152,9 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
               Path.dirname(fileURLToPath(import.meta.url)),
               "..",
               "tests",
-              "mocks",
+              "snapshots",
               "emails",
-              "hotel-booking.html",
+              "foundation-emails-2.html",
             ),
             "utf-8",
           ),
@@ -177,7 +177,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     .make(AccessTokenRepository)
     .createAccessToken(user)
 
-  const teamAccessToken = await container
+  const { username, accessToken: teamAccessToken } = await container
     .make(CreateTeamAccessTokenAction)
     .handle(team.id)
 
@@ -192,7 +192,8 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
           userId: user.id,
           teamId: team.id,
           accessToken: accessToken.toJSON().token,
-          teamAccessToken: teamAccessToken.toJSON().token,
+          smtpUsername: username,
+          smtpPassword: teamAccessToken.toJSON().token,
         },
       ],
       [{ teamId: team.id }],

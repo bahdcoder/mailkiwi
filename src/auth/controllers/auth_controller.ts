@@ -7,13 +7,11 @@ import { CreateUserSchema } from "@/auth/users/dto/create_user_dto.js"
 import { LoginUserSchema } from "@/auth/users/dto/login_user_dto.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import type { HonoInstance } from "@/server/hono.js"
-import type { HonoContext } from "@/server/types.js"
-
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
+import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 

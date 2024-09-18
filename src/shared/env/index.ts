@@ -16,6 +16,8 @@ import {
 
 export type EnvVariables = {
   PORT: number
+  MTA_AUTHENTICATOR_PORT: number
+  MTA_LOG_PROCESSOR_PORT: number
   HOST: string
   APP_KEY: Secret<string>
   APP_URL: string
@@ -47,10 +49,18 @@ export type EnvVariables = {
 
 export type ConfigVariables = typeof config
 
-const DEFAULT_PORT = "5566"
+const DEFAULT_PORT = parseInt("5566")
 
 const envValidationSchema = object({
-  PORT: optional(string(), DEFAULT_PORT),
+  PORT: optional(string(), DEFAULT_PORT.toString()),
+  MTA_AUTHENTICATOR_PORT: optional(
+    string(),
+    (DEFAULT_PORT + 1).toString(),
+  ),
+  MTA_LOG_PROCESSOR_PORT: optional(
+    string(),
+    (DEFAULT_PORT + 2).toString(),
+  ),
   HOST: pipe(
     optional(string(), `http://127.0.0.1:${DEFAULT_PORT}`),
     nonEmpty(),

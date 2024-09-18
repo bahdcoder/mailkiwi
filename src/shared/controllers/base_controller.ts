@@ -15,12 +15,12 @@ import { TagRepository } from "@/audiences/repositories/tag_repository.ts"
 
 import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
 
-import type { HonoContext } from "@/server/types.js"
-
 import {
   E_UNAUTHORIZED,
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
+
+import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.ts"
 

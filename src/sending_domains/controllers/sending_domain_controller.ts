@@ -1,10 +1,9 @@
 import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.ts"
 import { CreateSendingDomainSchema } from "@/sending_domains/dto/create_sending_domain_dto.ts"
 
-import type { HonoContext } from "@/server/types.js"
-
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
+import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.ts"
 

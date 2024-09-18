@@ -1,21 +1,24 @@
-import { IgnitorMtaHelper } from "@/boot/ignitor_mta_helper.ts"
+import { IgnitorMtaAuthenticator } from "@/kumomta/ignitor/ignitor_mta_authenticator.js"
 import { describe, test } from "vitest"
 
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.ts"
 
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.ts"
 
-import { makeEnv, makeMtaHelperApp } from "@/shared/container/index.ts"
+import {
+  makeEnv,
+  makeMtaAuthenticatorApp,
+} from "@/shared/container/index.ts"
 
 import { container } from "@/utils/typi.ts"
 
-new IgnitorMtaHelper().boot()
+new IgnitorMtaAuthenticator().boot()
 
 describe("@mta Http server", () => {
   test("can fetch dkim records for a domain", async ({ expect }) => {
     const { TEST_DOMAIN } = await setupDomainForDnsChecks()
 
-    const app = makeMtaHelperApp()
+    const app = makeMtaAuthenticatorApp()
 
     const response = await app.request("/dkim", {
       method: "POST",
@@ -38,7 +41,7 @@ describe("@mta Http server", () => {
   }) => {
     const { TEST_DOMAIN } = await setupDomainForDnsChecks()
 
-    const app = makeMtaHelperApp()
+    const app = makeMtaAuthenticatorApp()
 
     const response = await app.request("/dkim", {
       method: "POST",
@@ -59,7 +62,7 @@ describe("@mta Http server", () => {
 
     const apiKey = accessToken.toJSON().token as string
 
-    const app = makeMtaHelperApp()
+    const app = makeMtaAuthenticatorApp()
 
     const response = await app.request("/smtp/auth", {
       method: "POST",
@@ -84,7 +87,7 @@ describe("@mta Http server", () => {
       .make(CreateTeamAccessTokenAction)
       .handle(team.id)
 
-    const app = makeMtaHelperApp()
+    const app = makeMtaAuthenticatorApp()
 
     const response = await app.request("/smtp/auth", {
       method: "POST",

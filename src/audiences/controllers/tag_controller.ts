@@ -4,11 +4,10 @@ import { CreateTagSchema } from "@/audiences/dto/tags/create_tag_dto.js"
 
 import { Audience, Tag } from "@/database/schema/database_schema_types.ts"
 
-import type { HonoInstance } from "@/server/hono.js"
-import type { HonoContext } from "@/server/types.js"
-
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
+import type { HonoInstance } from "@/shared/server/hono.js"
+import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 

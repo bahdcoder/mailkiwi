@@ -5,9 +5,8 @@ import type {
   User,
 } from "@/database/schema/database_schema_types.js"
 
-import type { HTTPMethods } from "@/server/types.js"
-
 import { makeApp, makeConfig } from "@/shared/container/index.js"
+import type { HTTPMethods } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 

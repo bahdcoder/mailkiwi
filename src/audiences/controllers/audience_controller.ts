@@ -3,12 +3,11 @@ import { UpdateAudienceAction } from "@/audiences/actions/audiences/update_audie
 import { CreateAudienceSchema } from "@/audiences/dto/audiences/create_audience_dto.js"
 import { AudiencePolicy } from "@/audiences/policies/audience_policy.js"
 
-import type { HonoContext } from "@/server/types.js"
-
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
+import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 

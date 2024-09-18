@@ -2,9 +2,8 @@ import type { Next } from "hono"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
-import type { HonoContext } from "@/server/types.js"
-
 import { makeConfig } from "@/shared/container/index.js"
+import type { HonoContext } from "@/shared/server/types.js"
 import { TeamWithMembers } from "@/shared/types/team.ts"
 
 import { container } from "@/utils/typi.js"

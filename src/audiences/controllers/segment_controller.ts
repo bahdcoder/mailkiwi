@@ -3,10 +3,9 @@ import { SegmentRepository } from "@/audiences/repositories/segment_repository.t
 
 import { Audience } from "@/database/schema/database_schema_types.ts"
 
-import type { HonoContext } from "@/server/types.ts"
-
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.ts"
+import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.ts"
 

@@ -2,15 +2,14 @@ import { TeamPolicy } from "@/audiences/policies/team_policy.js"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
-import type { HonoInstance } from "@/server/hono.js"
-import type { HonoContext } from "@/server/types.js"
-
 import {
   E_UNAUTHORIZED,
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
+import type { HonoInstance } from "@/shared/server/hono.js"
+import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 

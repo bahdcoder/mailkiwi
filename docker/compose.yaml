@@ -1,4 +1,15 @@
 services:
+  dnsmasq:
+    build:
+      context: ./dnsmasq
+      dockerfile: dnsmasq.dockerfile
+    container_name: dnsmasq
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - ./dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
+
   pd0:
     image: pingcap/pd:nightly
     container_name: tidb-pd
@@ -129,6 +140,35 @@ services:
     networks:
       kibamail-network:
         ipv4_address: 172.20.0.9
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    ports:
+      - 5571:1025
+      - 5572:8025
+    environment:
+      MP_MAX_MESSAGES: 500000
+      MP_SMTP_DISABLE_RDNS: true
+      SMTP_USER: kibamail
+      SMTP_PASS: password
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.6
+
+  smtp_proxy:
+    image: nginx:alpine
+    container_name: smtp_proxy
+    networks:
+      kibamail-network:
+        ipv4_address: 172.20.0.8
+    ports:
+      - "25:25"
+    volumes:
+      - ./dnsmasq/nginx.conf:/etc/nginx/nginx.conf
 
   kumomta-sink:
     container_name: kumomta-sink
