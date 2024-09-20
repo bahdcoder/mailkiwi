@@ -67,7 +67,6 @@ export const apiEnv = makeExtraAppConfigurations(
       // Databases
       REDIS_URL: redisDatabaseUrl(),
       DATABASE_URL: mysqlDatabaseUrl(),
-      CLICKHOUSE_DATABASE_URL: str(),
 
       // MTA SMTP
       SMTP_HOST: host(),
