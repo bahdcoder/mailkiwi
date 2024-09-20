@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 
 import { ContainerKey, makeApp } from "@/shared/container/index.js"
 import type { HonoInstance } from "@/shared/server/hono.js"

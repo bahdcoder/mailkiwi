@@ -3,7 +3,7 @@ import { CreateAutomationStepAction } from "@/automations/actions/create_automat
 import { CreateAutomationSchema } from "@/automations/dto/create_automation_dto.js"
 import { CreateAutomationStepDto } from "@/automations/dto/create_automation_step_dto.js"
 
-import { Audience } from "@/database/schema/database_schema_types.ts"
+import { Audience } from "@/database/schema/database_schema_types.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"

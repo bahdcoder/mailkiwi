@@ -4,10 +4,10 @@ import type { CreateUserDto } from "@/auth/users/dto/create_user_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
 import { teams, users } from "@/database/schema/schema.js"
-import { hasMany } from "@/database/utils/relationships.ts"
+import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_repository.ts"
+import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_repository.js"
 
 export class UserRepository extends ScryptTokenRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

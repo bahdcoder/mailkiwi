@@ -1,20 +1,20 @@
 import { count, desc } from "drizzle-orm"
 import { describe, test } from "vitest"
 
-import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.ts"
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
+import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.js"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
-import { setupImport } from "@/tests/integration/audiences/contacts.spec.ts"
+import { setupImport } from "@/tests/integration/audiences/contacts.spec.js"
 import {
   refreshDatabase,
   refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.ts"
+} from "@/tests/mocks/teams/teams.js"
 
-import { contacts, tagsOnContacts } from "@/database/schema/schema.ts"
+import { contacts, tagsOnContacts } from "@/database/schema/schema.js"
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.ts"
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 describe("@contacts import job", () => {
   test(

@@ -2,7 +2,7 @@ import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_reposit
 
 import type { Broadcast } from "@/database/schema/database_schema_types.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class GetBroadcastAction {
   constructor(

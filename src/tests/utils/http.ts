@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
@@ -9,7 +9,7 @@ import type {
 
 import { makeApp } from "@/shared/container/index.js"
 import type { HTTPMethods } from "@/shared/server/types.js"
-import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.ts"
+import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.js"
 
 import { container } from "@/utils/typi.js"
 

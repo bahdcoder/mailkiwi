@@ -1,14 +1,14 @@
-import { RunAutomationStepForContactJob } from "./run_automation_step_for_contact_job.ts"
+import { RunAutomationStepForContactJob } from "./run_automation_step_for_contact_job.js"
 import { and, eq } from "drizzle-orm"
 
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
+import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
 import {
   type TRIGGER_CONFIGURATION,
   automationSteps,
   contactAutomationSteps,
   contacts,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"

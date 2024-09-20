@@ -11,7 +11,7 @@ import type {
   MySqlSelect,
 } from "drizzle-orm/mysql-core"
 
-import { E_OPERATION_FAILED } from "@/http/responses/errors.ts"
+import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

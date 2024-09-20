@@ -2,30 +2,30 @@ import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { describe, test, vi } from "vitest"
 
-import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.ts"
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.js"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import {
   createBroadcastForUser,
   createUser,
-} from "@/tests/mocks/auth/users.ts"
+} from "@/tests/mocks/auth/users.js"
 import {
   refreshDatabase,
   refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.ts"
+} from "@/tests/mocks/teams/teams.js"
 
 import {
   abTestVariants,
   broadcasts,
   contacts,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
 
-import { hoursToSeconds } from "@/utils/dates.ts"
-import { container } from "@/utils/typi.ts"
+import { hoursToSeconds } from "@/utils/dates.js"
+import { container } from "@/utils/typi.js"
 
 describe("Pick A/B Test winner", () => {
   test("picks A/B test winner for click rate winning criteria", async ({

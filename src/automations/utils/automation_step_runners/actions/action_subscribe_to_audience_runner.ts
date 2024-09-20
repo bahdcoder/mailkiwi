@@ -1,4 +1,4 @@
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.ts"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 
 import type {
   AutomationStepRunnerContext,
@@ -12,9 +12,9 @@ import type {
 import {
   type ACTION_SUBSCRIBE_TO_AUDIENCE_CONFIGURATION,
   contacts,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class SubscribeToAudienceAutomationStepRunner
   implements AutomationStepRunnerContract

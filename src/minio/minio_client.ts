@@ -1,8 +1,8 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import { Client } from "minio"
 import { Readable } from "stream"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 type BucketName = "contacts" | "attachments" | "emails"
 

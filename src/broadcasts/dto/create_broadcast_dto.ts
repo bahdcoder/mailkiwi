@@ -12,7 +12,7 @@ import {
   string,
 } from "valibot"
 
-import { audiences } from "@/database/schema/schema.ts"
+import { audiences } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

@@ -76,9 +76,8 @@ kumo:
 	@echo "Running KumoMTA dev container with mounted policy directory..."
 	docker run \
 		-e HOSTNAME=kumomta \
-		-e CREDS_HTTP_ACCESS_TOKEN=tSv1rimOykRimRB7XgLtYDctSv1rimOykRimRB7XgLtYDc \
-		-e CREDS_HTTP_SERVER=http://host.docker.internal:4251 \
-		-e LOGS_HTTP_SERVER=http://host.docker.internal:2578 \
+		-e API_HTTP_ACCESS_TOKEN=tSv1rimOykRimRB7XgLtYDctSv1rimOykRimRB7XgLtYDc \
+		-e API_HTTP_SERVER=http://host.docker.internal:5566 \
 		-p 6235:8000 \
 		-p 5990:25 \
 		--network kibamail_kibamail-network \

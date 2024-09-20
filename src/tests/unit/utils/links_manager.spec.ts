@@ -1,11 +1,11 @@
-import { ApiEnvVariables } from "@/api/env/api_env.ts"
+import { ApiEnvVariables } from "@/api/env/api_env.js"
 import { Secret } from "@poppinss/utils"
 import { beforeEach, describe, expect, test } from "vitest"
 
 import {
   SignedUrlManager,
   type UrlMetadata,
-} from "@/shared/utils/links/signed_url_manager.ts"
+} from "@/shared/utils/links/signed_url_manager.js"
 
 describe("@link-manager Link manager ", () => {
   let linkManager: SignedUrlManager

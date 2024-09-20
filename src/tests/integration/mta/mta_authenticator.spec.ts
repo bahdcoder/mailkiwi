@@ -1,33 +1,35 @@
-import { mtaAuthenticatorEnv } from "@/kumomta/env/mta_authenticator_env.ts"
-import { IgnitorMtaAuthenticator } from "@/kumomta/ignitor/ignitor_mta_authenticator.js"
+import { apiEnv } from "@/api/env/api_env.js"
 import { describe, test } from "vitest"
 
-import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.ts"
+import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 
-import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.ts"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
-import { makeMtaAuthenticatorApp } from "@/shared/container/index.ts"
+import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 
-import { container } from "@/utils/typi.ts"
+import { makeApp } from "@/shared/container/index.js"
 
-new IgnitorMtaAuthenticator().boot()
+import { container } from "@/utils/typi.js"
 
 describe("@mta Http server", () => {
   test("can fetch dkim records for a domain", async ({ expect }) => {
     const { TEST_DOMAIN } = await setupDomainForDnsChecks()
 
-    const app = makeMtaAuthenticatorApp()
+    const app = makeApp()
 
-    const response = await app.request("/dkim", {
+    const response = await app.request("/mta/dkim", {
       method: "POST",
       headers: {
-        "x-mta-access-token":
-          mtaAuthenticatorEnv.MTA_ACCESS_TOKEN.release(),
+        "x-mta-access-token": apiEnv.MTA_ACCESS_TOKEN.release(),
       },
       body: JSON.stringify({ domain: TEST_DOMAIN }),
     })
 
     const json = await response.json()
+
+    const sendingDomain = await container
+      .make(SendingDomainRepository)
+      .findById(json.id)
 
     expect(json.returnPathSubDomain).toBe("kb")
     expect(json.dkimSubDomain).toContain("._domainkey")
@@ -40,9 +42,9 @@ describe("@mta Http server", () => {
   }) => {
     const { TEST_DOMAIN } = await setupDomainForDnsChecks()
 
-    const app = makeMtaAuthenticatorApp()
+    const app = makeApp()
 
-    const response = await app.request("/dkim", {
+    const response = await app.request("/mta/dkim", {
       method: "POST",
       body: JSON.stringify({ domain: TEST_DOMAIN }),
     })
@@ -61,17 +63,16 @@ describe("@mta Http server", () => {
 
     const apiKey = accessSecret.release()
 
-    const app = makeMtaAuthenticatorApp()
+    const app = makeApp()
 
-    const response = await app.request("/smtp/auth", {
+    const response = await app.request("/mta/smtp/auth", {
       method: "POST",
       body: JSON.stringify({
         passwd: apiKey,
         username: accessKey,
       }),
       headers: {
-        "x-mta-access-token":
-          mtaAuthenticatorEnv.MTA_ACCESS_TOKEN.release(),
+        "x-mta-access-token": apiEnv.MTA_ACCESS_TOKEN.release(),
       },
     })
 
@@ -87,17 +88,16 @@ describe("@mta Http server", () => {
       .make(CreateTeamAccessTokenAction)
       .handle(team.id)
 
-    const app = makeMtaAuthenticatorApp()
+    const app = makeApp()
 
-    const response = await app.request("/smtp/auth", {
+    const response = await app.request("/mta/smtp/auth", {
       method: "POST",
       body: JSON.stringify({
         passwd: "wrong-api-key",
         username: accessKey,
       }),
       headers: {
-        "x-mta-access-token":
-          mtaAuthenticatorEnv.MTA_ACCESS_TOKEN.release(),
+        "x-mta-access-token": apiEnv.MTA_ACCESS_TOKEN.release(),
       },
     })
 

@@ -1,11 +1,11 @@
-import { FieldSegmentBuilder } from "./base_field_segment_builder.ts"
+import { FieldSegmentBuilder } from "./base_field_segment_builder.js"
 import { type SQLWrapper, and, eq, inArray, notInArray } from "drizzle-orm"
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
-import { contacts, tagsOnContacts } from "@/database/schema/schema.ts"
+import { contacts, tagsOnContacts } from "@/database/schema/schema.js"
 
-import { E_OPERATION_FAILED } from "@/http/responses/errors.ts"
+import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

@@ -1,9 +1,9 @@
 import { cleanEnv, host, port, str } from "envalid"
 
-import { makeEnvSecrets } from "@/shared/utils/env/make_env_secrets.ts"
-import { makeExtraAppConfigurations } from "@/shared/utils/env/make_extra_app_configurations.ts"
-import { mysqlDatabaseUrl } from "@/shared/utils/env/make_mysql_database_validator.ts"
-import { redisDatabaseUrl } from "@/shared/utils/env/make_redis_url_validator.ts"
+import { makeEnvSecrets } from "@/shared/utils/env/make_env_secrets.js"
+import { makeExtraAppConfigurations } from "@/shared/utils/env/make_extra_app_configurations.js"
+import { mysqlDatabaseUrl } from "@/shared/utils/env/make_mysql_database_validator.js"
+import { redisDatabaseUrl } from "@/shared/utils/env/make_redis_url_validator.js"
 
 export type ApiEnvVariables = typeof apiEnv
 
@@ -62,6 +62,7 @@ export const apiEnv = makeExtraAppConfigurations(
         choices: ["development", "test", "production"],
         default: "test",
       }),
+      MAILPIT_API_URL: host(),
 
       // Databases
       REDIS_URL: redisDatabaseUrl(),
@@ -74,6 +75,10 @@ export const apiEnv = makeExtraAppConfigurations(
       SMTP_USER: str(),
       SMTP_PASS: str(),
       SMTP_MAIL_FROM: str(),
+
+      // MTA auth
+      MTA_ACCESS_TOKEN: str(),
+      MTA_INJECTOR_URL: host(),
 
       // Minio file uploads
       FILE_UPLOADS_ACCESS_KEY: str(),

@@ -1,19 +1,19 @@
 import { faker } from "@faker-js/faker"
 import { describe, test } from "vitest"
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
-import { makeRequestAsUser } from "@/tests/utils/http.ts"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
+import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { contacts, segments, tags } from "@/database/schema/schema.ts"
+import { contacts, segments, tags } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 describe("@audience segments", () => {
   test("can create an audience segment", async ({ expect }) => {

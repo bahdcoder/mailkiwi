@@ -5,15 +5,15 @@ import {
   safeParseAsync,
 } from "valibot"
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
-import { TeamPolicy } from "@/audiences/policies/team_policy.ts"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.ts"
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
-import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
-import { TagRepository } from "@/audiences/repositories/tag_repository.ts"
+import { TeamPolicy } from "@/audiences/policies/team_policy.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 
 import {
   E_UNAUTHORIZED,
@@ -22,7 +22,7 @@ import {
 
 import type { HonoContext } from "@/shared/server/types.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 type ControllerParams =
   | "importId"

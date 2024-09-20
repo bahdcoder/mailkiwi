@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import { type ClickHouseClient, createClient } from "@clickhouse/client"
 import chalk from "chalk"
 import fs from "node:fs/promises"

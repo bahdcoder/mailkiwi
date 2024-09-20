@@ -2,24 +2,24 @@ import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
-import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.ts"
-import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_contact_job.ts"
+import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.js"
+import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_contact_job.js"
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import {
   createBroadcastForUser,
   createUser,
-} from "@/tests/mocks/auth/users.ts"
+} from "@/tests/mocks/auth/users.js"
 import {
   refreshDatabase,
   refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.ts"
+} from "@/tests/mocks/teams/teams.js"
 
 import {
   broadcasts,
   contacts,
   segments,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"

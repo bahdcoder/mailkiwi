@@ -1,4 +1,4 @@
-import { Ignitor } from "@/api/ignitor/ignitor_api.ts"
+import { Ignitor } from "@/api/ignitor/ignitor_api.js"
 import { SendTransactionalEmailJob } from "@/transactional/jobs/send_transactional_email_job.js"
 import { type Job, Worker } from "bullmq"
 
@@ -8,7 +8,7 @@ import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_cont
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import type { BaseJob } from "@/shared/queue/abstract_job.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<any, any, string>[] = []

@@ -1,11 +1,11 @@
-import { makeMinioClient } from "@/minio/minio_client.ts"
+import { makeMinioClient } from "@/minio/minio_client.js"
 import CsvParser from "csv-parser"
 import mime from "mime-types"
 import { Readable } from "stream"
 
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
-import { cuid } from "@/shared/utils/cuid/cuid.ts"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 

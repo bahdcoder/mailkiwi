@@ -13,9 +13,9 @@ import {
   SendBroadcastSchema,
 } from "@/broadcasts/dto/send_broadcast_dto.js"
 import { UpdateBroadcastDto } from "@/broadcasts/dto/update_broadcast_dto.js"
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
-import { Broadcast } from "@/database/schema/database_schema_types.ts"
+import { Broadcast } from "@/database/schema/database_schema_types.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 

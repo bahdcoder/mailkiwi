@@ -1,7 +1,7 @@
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
-import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.ts"
+import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 import { CreateUserSchema } from "@/auth/users/dto/create_user_dto.js"
 import { LoginUserSchema } from "@/auth/users/dto/login_user_dto.js"

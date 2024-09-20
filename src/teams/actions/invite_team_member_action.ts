@@ -1,12 +1,12 @@
 import { DateTime } from "luxon"
 
-import { InviteTeamMemberDto } from "@/teams/dto/invite_team_member_dto.ts"
-import { SendTeamMemberInviteJob } from "@/teams/jobs/send_team_member_invite_job.ts"
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
+import { InviteTeamMemberDto } from "@/teams/dto/invite_team_member_dto.js"
+import { SendTeamMemberInviteJob } from "@/teams/jobs/send_team_member_invite_job.js"
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import { Queue } from "@/shared/queue/queue.ts"
+import { Queue } from "@/shared/queue/queue.js"
 
 import { container } from "@/utils/typi.js"
 

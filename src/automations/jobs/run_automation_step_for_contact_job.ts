@@ -1,20 +1,20 @@
-import { AutomationStepRunner } from "../utils/automation_step_runners/automation_step_runner.ts"
+import { AutomationStepRunner } from "../utils/automation_step_runners/automation_step_runner.js"
 import { and, eq } from "drizzle-orm"
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
-import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.ts"
+import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.js"
 
 import {
   automationSteps,
   contactAutomationSteps,
   contacts,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export interface RunAutomationStepForContactJobPayload {
   automationStepId: number

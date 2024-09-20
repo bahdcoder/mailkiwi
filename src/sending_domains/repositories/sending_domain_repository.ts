@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm"
 
-import type { InsertSendingDomain } from "@/database/schema/database_schema_types.ts"
-import { sendingDomains } from "@/database/schema/schema.ts"
+import type { InsertSendingDomain } from "@/database/schema/database_schema_types.js"
+import { sendingDomains } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

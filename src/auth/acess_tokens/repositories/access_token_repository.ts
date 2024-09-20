@@ -6,7 +6,7 @@ import type { DrizzleClient } from "@/database/client.js"
 import { accessTokens } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_repository.ts"
+import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_repository.js"
 
 export class AccessTokenRepository extends ScryptTokenRepository {
   protected opaqueAccessTokenPrefix = "kbt_"

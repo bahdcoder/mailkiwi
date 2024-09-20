@@ -1,19 +1,21 @@
-import { AuthorizeInjectorApiKeyMiddleware } from "@/injector/middleware/authorize_injector_api_key_middleware.ts"
+import { AuthorizeInjectorApiKeyMiddleware } from "@/injector/middleware/authorize_injector_api_key_middleware.js"
+import { AuthorizeMtaCallsMiddleware } from "@/kumomta/middleware/authorize_mta_calls_middleware.js"
 
-import { makeMtaAuthenticatorApp } from "@/shared/container/index.ts"
+import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import { HonoContext } from "@/shared/server/types.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class SmtpAuthController extends BaseController {
-  constructor(private app = makeMtaAuthenticatorApp()) {
+  constructor(private app = makeApp()) {
     super()
 
     this.app.defineRoutes(
-      [["POST", "/smtp/auth", this.index.bind(this)]],
+      [["POST", "/mta/smtp/auth", this.index.bind(this)]],
       {
         prefix: "/",
+        middleware: [container.make(AuthorizeMtaCallsMiddleware).handle],
       },
     )
   }

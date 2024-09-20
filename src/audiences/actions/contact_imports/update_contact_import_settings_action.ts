@@ -1,12 +1,12 @@
-import { UpdateContactImportSettingsDto } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.ts"
-import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.ts"
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
+import { UpdateContactImportSettingsDto } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
+import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.js"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
-import { ContactImport } from "@/database/schema/database_schema_types.ts"
+import { ContactImport } from "@/database/schema/database_schema_types.js"
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
-import { Queue } from "@/shared/queue/queue.ts"
+import { Queue } from "@/shared/queue/queue.js"
 
 import { container } from "@/utils/typi.js"
 

@@ -3,9 +3,9 @@ import { eq } from "drizzle-orm"
 import { foreignKey, primaryKey } from "drizzle-orm/mysql-core"
 import { describe, test } from "vitest"
 
-import { TeamRepository } from "@/teams/repositories/team_repository.ts"
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
-import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
+import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequest } from "@/tests/utils/http.js"
@@ -17,13 +17,13 @@ import {
   teams,
   users,
 } from "@/database/schema/schema.js"
-import { hasMany, hasOne } from "@/database/utils/relationships.ts"
+import { hasMany, hasOne } from "@/database/utils/relationships.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
-import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.ts"
-import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
+import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.js"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 describe("@auth user registration", () => {
   test("can register a new user account", async ({ expect }) => {

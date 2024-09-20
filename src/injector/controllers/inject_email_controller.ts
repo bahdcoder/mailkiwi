@@ -1,13 +1,13 @@
-import { InjectEmailSchema } from "@/injector/dto/inject_email_dto.ts"
-import { injectorEnv } from "@/injector/env/injector_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
+import { InjectEmailSchema } from "@/injector/dto/inject_email_dto.js"
 
-import { makeMtaInjectorApp } from "@/shared/container/index.ts"
+import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
-import { makeHttpClient } from "@/shared/http/http_client.ts"
+import { makeHttpClient } from "@/shared/http/http_client.js"
 import { HonoContext } from "@/shared/server/types.js"
 
 export class InjectEmailController extends BaseController {
-  constructor(private app = makeMtaInjectorApp()) {
+  constructor(private app = makeApp()) {
     super()
 
     this.app.defineRoutes([["POST", "/", this.index.bind(this)]])
@@ -17,7 +17,7 @@ export class InjectEmailController extends BaseController {
     const payload = await this.validate(ctx, InjectEmailSchema)
 
     const { data, error } = await makeHttpClient()
-      .url(`${injectorEnv.MTA_INJECTOR_URL}/api/inject/v1`)
+      .url(`${apiEnv.MTA_INJECTOR_URL}/api/inject/v1`)
       .post()
       .payload({
         envelope_sender: payload.from.email,

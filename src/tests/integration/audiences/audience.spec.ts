@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import { faker } from "@faker-js/faker"
 import { and, eq } from "drizzle-orm"
 import { describe, test } from "vitest"

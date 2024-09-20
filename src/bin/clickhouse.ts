@@ -2,7 +2,7 @@
 import {
   MigrationFileManager,
   MigrationManager,
-} from "@/clickhouse/migrations/clickhouse_migrations_manager.ts"
+} from "@/clickhouse/migrations/clickhouse_migrations_manager.js"
 import { command, positional, run } from "@drizzle-team/brocli"
 
 const makeMigration = command({

@@ -1,15 +1,15 @@
 import { describe, test, vi } from "vitest"
 
-import { SendTeamMemberInviteJob } from "@/teams/jobs/send_team_member_invite_job.ts"
+import { SendTeamMemberInviteJob } from "@/teams/jobs/send_team_member_invite_job.js"
 
-import { setup as teamMembershipSetup } from "@/tests/integration/teams/team_membership.spec.ts"
+import { setup as teamMembershipSetup } from "@/tests/integration/teams/team_membership.spec.js"
 import {
   refreshDatabase,
   refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.ts"
+} from "@/tests/mocks/teams/teams.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { Mailer } from "@/shared/mailers/mailer.ts"
+import { Mailer } from "@/shared/mailers/mailer.js"
 
 describe("Send team member invite", () => {
   test("sends an email with a unique hashed link for joining the team", async ({

@@ -1,5 +1,8 @@
 import { ApiEnvVariables, apiEnv } from "@/api/env/api_env.js"
-import { HonoApi } from "@/api/server/hono_api.ts"
+import { HonoApi } from "@/api/server/hono_api.js"
+import { MtaLogsController } from "@/kumologs/controllers/mta_logs_controller.js"
+import { DkimController } from "@/kumomta/controllers/dkim_controller.js"
+import { SmtpAuthController } from "@/kumomta/controllers/smtp_auth_controller.js"
 import { RootController } from "@/views/controllers/root_controller.js"
 import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.js"
 import type { Redis } from "ioredis"
@@ -34,7 +37,7 @@ import {
   makeDatabaseConnection,
   makeRedis,
 } from "@/shared/container/index.js"
-import { Hono, type HonoInstance } from "@/shared/server/hono.js"
+import { type HonoInstance } from "@/shared/server/hono.js"
 
 import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
 
@@ -106,6 +109,9 @@ export class Ignitor {
     container.resolve(MailerWebhooksContorller)
     container.resolve(SendingDomainController)
     container.resolve(RootController)
+    container.resolve(MtaLogsController)
+    container.resolve(DkimController)
+    container.resolve(SmtpAuthController)
   }
 
   async shutdown() {

@@ -1,11 +1,11 @@
-import { ContactsConcern } from "../concerns/broadcast_contacts_concern.ts"
-import { PickAbTestWinnerJob } from "./pick_ab_test_winner_job.ts"
+import { ContactsConcern } from "../concerns/broadcast_contacts_concern.js"
+import { PickAbTestWinnerJob } from "./pick_ab_test_winner_job.js"
 import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js"
 import { asc, count, eq } from "drizzle-orm"
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
 import type {
@@ -22,8 +22,8 @@ import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { Queue } from "@/shared/queue/queue.js"
 
-import { hoursToSeconds } from "@/utils/dates.ts"
-import { container } from "@/utils/typi.ts"
+import { hoursToSeconds } from "@/utils/dates.js"
+import { container } from "@/utils/typi.js"
 
 export interface SendAbTestBroadcastJobPayload {
   broadcastId: number

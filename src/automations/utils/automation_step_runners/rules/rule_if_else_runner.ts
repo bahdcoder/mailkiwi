@@ -1,8 +1,8 @@
 import { and, eq, isNotNull } from "drizzle-orm"
 
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
+import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
-import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.ts"
+import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.js"
 import type {
   AutomationStepRunnerContext,
   AutomationStepRunnerContract,
@@ -16,9 +16,9 @@ import {
   type RULE_IF_ELSE_CONFIGURATION,
   automationSteps,
   contacts,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
-import { Queue } from "@/shared/queue/queue.ts"
+import { Queue } from "@/shared/queue/queue.js"
 
 export class AddTagAutomationStepRunner
   implements AutomationStepRunnerContract

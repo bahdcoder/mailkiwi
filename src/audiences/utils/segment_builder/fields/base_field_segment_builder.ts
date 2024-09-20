@@ -1,7 +1,7 @@
 import { type SQLWrapper, and, eq, gte, like, lte, not } from "drizzle-orm"
 import type { AnyMySqlColumn } from "drizzle-orm/mysql-core"
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
 export class FieldSegmentBuilder {
   protected field: AnyMySqlColumn

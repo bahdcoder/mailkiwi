@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm"
 
 import { emailContents, emails } from "@/database/schema/schema.js"
-import { belongsTo } from "@/database/utils/relationships.ts"
+import { belongsTo } from "@/database/utils/relationships.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

@@ -3,7 +3,7 @@ import {
   type LoginCredentials,
   type LoginResponse,
   login,
-} from "@client/api/auth.ts"
+} from "@client/api/auth.js"
 import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import type React from "react"

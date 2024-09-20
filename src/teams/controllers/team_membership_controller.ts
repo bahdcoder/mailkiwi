@@ -1,13 +1,13 @@
-import { AcceptTeamMemberInviteAction } from "@/teams/actions/accept_team_member_invite_action.ts"
-import { InviteTeamMemberAction } from "@/teams/actions/invite_team_member_action.ts"
-import { RejectTeamMemberInviteAction } from "@/teams/actions/reject_team_member_invite_action.ts"
-import { RevokeTeamMemberAccessAction } from "@/teams/actions/revoke_team_member_access_action.ts"
-import { InviteTeamMember } from "@/teams/dto/invite_team_member_dto.ts"
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
+import { AcceptTeamMemberInviteAction } from "@/teams/actions/accept_team_member_invite_action.js"
+import { InviteTeamMemberAction } from "@/teams/actions/invite_team_member_action.js"
+import { RejectTeamMemberInviteAction } from "@/teams/actions/reject_team_member_invite_action.js"
+import { RevokeTeamMemberAccessAction } from "@/teams/actions/revoke_team_member_access_action.js"
+import { InviteTeamMember } from "@/teams/dto/invite_team_member_dto.js"
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 
-import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
+import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import { TeamMembership } from "@/database/schema/database_schema_types.ts"
+import { TeamMembership } from "@/database/schema/database_schema_types.js"
 
 import {
   E_UNAUTHORIZED,
@@ -15,7 +15,7 @@ import {
 } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.ts"
+import { BaseController } from "@/shared/controllers/base_controller.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"

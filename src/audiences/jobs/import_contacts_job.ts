@@ -1,18 +1,18 @@
-import { makeMinioClient } from "@/minio/minio_client.ts"
+import { makeMinioClient } from "@/minio/minio_client.js"
 import CsvParser from "csv-parser"
 import { sql } from "drizzle-orm"
 import { DateTime } from "luxon"
 
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
-import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
-import { TagRepository } from "@/audiences/repositories/tag_repository.ts"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
-import { contacts, tagsOnContacts } from "@/database/schema/schema.ts"
+import { contacts, tagsOnContacts } from "@/database/schema/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export interface ImportContactsJobPayload {
   contactImportId: number

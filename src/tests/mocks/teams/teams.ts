@@ -1,4 +1,4 @@
-import { createFakeEmailContent } from "../audiences/email_content.ts"
+import { createFakeEmailContent } from "../audiences/email_content.js"
 import { faker } from "@faker-js/faker"
 
 import {
@@ -23,7 +23,7 @@ import {
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
-import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
 export const refreshRedisDatabase = async () => {
   const redis = makeRedis()

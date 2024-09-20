@@ -1,27 +1,27 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import dns from "node:dns/promises"
 import { describe, test, vi } from "vitest"
 
-import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.ts"
-import { CheckSendingDomainDnsConfigurationJob } from "@/sending_domains/jobs/check_sending_domain_dns_configuration_job.ts"
-import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.ts"
+import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
+import { CheckSendingDomainDnsConfigurationJob } from "@/sending_domains/jobs/check_sending_domain_dns_configuration_job.js"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
-import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.ts"
+import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.js"
 
-import { createUser } from "@/tests/mocks/auth/users.ts"
+import { createUser } from "@/tests/mocks/auth/users.js"
 import {
   refreshDatabase,
   refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.ts"
+} from "@/tests/mocks/teams/teams.js"
 
-import { sendingDomains } from "@/database/schema/schema.ts"
+import { sendingDomains } from "@/database/schema/schema.js"
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.ts"
-import { Queue } from "@/shared/queue/queue.ts"
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
+import { Queue } from "@/shared/queue/queue.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export const setupDomainForDnsChecks = async (domain?: string) => {
   await refreshDatabase()

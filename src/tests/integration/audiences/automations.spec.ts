@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
-import { AutomationRepository } from "@/automations/repositories/automation_repository.ts"
+import { AutomationRepository } from "@/automations/repositories/automation_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import {
@@ -20,9 +20,9 @@ import {
 } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 describe("@automations", () => {
   test("experimenting with automations", async ({ expect }) => {

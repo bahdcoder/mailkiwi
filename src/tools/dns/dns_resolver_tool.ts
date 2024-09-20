@@ -1,9 +1,9 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import dns from "node:dns/promises"
 
-import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.ts"
+import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class DnsResolverTool {
   private domain: string

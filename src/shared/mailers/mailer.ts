@@ -1,5 +1,5 @@
 import type { MailObject, MailerDriverResponse } from "./mailer_types.js"
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import {
   type SentMessageInfo,
   type Transporter,
@@ -7,7 +7,7 @@ import {
 } from "nodemailer"
 import { v4 as uuidV4 } from "uuid"
 
-import { cuid } from "@/shared/utils/cuid/cuid.ts"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 export class MailerClass {
   // a transport must be created for the team making this mail send call.

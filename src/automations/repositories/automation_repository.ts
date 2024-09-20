@@ -5,7 +5,7 @@ import type { CreateAutomationDto } from "@/automations/dto/create_automation_dt
 import type { DrizzleClient } from "@/database/client.js"
 import type { FindAutomationByIdArgs } from "@/database/schema/database_schema_types.js"
 import { automationSteps, automations } from "@/database/schema/schema.js"
-import { hasMany } from "@/database/utils/relationships.ts"
+import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

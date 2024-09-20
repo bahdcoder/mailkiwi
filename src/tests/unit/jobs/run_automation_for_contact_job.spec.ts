@@ -1,23 +1,23 @@
 import { faker } from "@faker-js/faker"
 import { describe, test } from "vitest"
 
-import { RunAutomationForContactJob } from "@/automations/jobs/run_automation_for_contact_job.ts"
-import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.ts"
+import { RunAutomationForContactJob } from "@/automations/jobs/run_automation_for_contact_job.js"
+import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.js"
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
-import { createUser } from "@/tests/mocks/auth/users.ts"
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
+import { createUser } from "@/tests/mocks/auth/users.js"
 import {
   refreshDatabase,
   refreshRedisDatabase,
   seedAutomation,
-} from "@/tests/mocks/teams/teams.ts"
+} from "@/tests/mocks/teams/teams.js"
 
-import { contacts } from "@/database/schema/schema.ts"
+import { contacts } from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.ts"
-import { cuid } from "@/shared/utils/cuid/cuid.ts"
-import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
+import { Queue } from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
 describe("Run automation for contact job", () => {
   test("successfully runs an automation job for a contact by queueing next job", async ({

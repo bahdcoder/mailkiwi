@@ -18,10 +18,8 @@ local SINK_DATA_FILE = os.getenv 'SINK_DATA'
 
 -- ########################### ENVIRONMENT VARIABLES #############################
 
-local CREDS_HTTP_ACCESS_TOKEN = os.getenv 'CREDS_HTTP_ACCESS_TOKEN' or ''
-
-local CREDS_HTTP_SERVER = os.getenv 'CREDS_HTTP_SERVER' or '127.0.0.1:4251'
-local LOGS_HTTP_SERVER = os.getenv 'LOGS_HTTP_SERVER' or '127.0.0.1:2578'
+local API_HTTP_ACCESS_TOKEN = os.getenv 'API_HTTP_ACCESS_TOKEN' or ''
+local API_HTTP_SERVER = os.getenv 'API_HTTP_SERVER' or '127.0.0.1:5566'
 
 local MTA_ENVIRONMENT = os.getenv 'MTA_ENVIRONMENT' or 'production'
 
@@ -39,12 +37,12 @@ local HTTP_INJECTOR_PORT = os.getenv 'HTTP_INJECTOR_PORT' or '8000'
 ]]--
 
 local function smtp_check_auth_credentials(username, passwd)
-  local auth_url = CREDS_HTTP_SERVER .. "/smtp/auth"
+  local auth_url = API_HTTP_SERVER .. "/mta/smtp/auth"
 
   local request = kumo.http.build_client({}):post(auth_url)
   
   request:header('Content-Type', 'application/json')
-  request:header('x-mta-access-token', CREDS_HTTP_ACCESS_TOKEN)
+  request:header('x-mta-access-token', API_HTTP_SERVER)
 
   request:body(kumo.json_encode {
     username = username,
@@ -74,7 +72,7 @@ end)
 ]]--
 log_hooks:new_json {
   name = 'webhook',
-  url = LOGS_HTTP_SERVER .. '/mta/logs',
+  url = API_HTTP_SERVER .. '/mta/logs',
   log_parameters = {
     headers = { 'Subject' },
   },
@@ -142,12 +140,12 @@ local function tableToJson(tbl)
 end
 
 local get_domain_dkim_information = function (domain)
-  local auth_url = CREDS_HTTP_SERVER .. "/dkim"
+  local auth_url = API_HTTP_SERVER .. "/mta/dkim"
 
   local request = kumo.http.build_client({}):post(auth_url)
   
   request:header('Content-Type', 'application/json')
-  request:header('x-mta-access-token', CREDS_HTTP_ACCESS_TOKEN)
+  request:header('x-mta-access-token', API_HTTP_ACCESS_TOKEN)
 
   request:body(kumo.json_encode {
     domain = domain,

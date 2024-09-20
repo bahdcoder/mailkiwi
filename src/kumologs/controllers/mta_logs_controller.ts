@@ -1,8 +1,8 @@
-import { makeMtaLogProcessorApp } from "@/shared/container/index.ts"
+import { makeApp } from "@/shared/container/index.js"
 import { HonoContext } from "@/shared/server/types.js"
 
 export class MtaLogsController {
-  constructor(private app = makeMtaLogProcessorApp()) {
+  constructor(private app = makeApp()) {
     this.app.defineRoutes([["POST", "/mta/logs", this.index.bind(this)]], {
       prefix: "/",
     })

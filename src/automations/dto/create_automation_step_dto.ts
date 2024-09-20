@@ -18,7 +18,7 @@ import {
   union,
 } from "valibot"
 
-import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.ts"
+import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.js"
 
 import {
   audiences,
@@ -34,7 +34,7 @@ import {
 
 import { makeDatabase } from "@/shared/container/index.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 const configurationSchema = record(
   string(),

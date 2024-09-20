@@ -1,7 +1,7 @@
 import type { Next } from "hono"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
-import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
+import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
 
@@ -9,7 +9,7 @@ import type { HonoContext } from "@/shared/server/types.js"
 import {
   accessKeyHeaderName,
   accessSecretHeaderName,
-} from "@/shared/utils/auth/get_auth_headers.ts"
+} from "@/shared/utils/auth/get_auth_headers.js"
 
 import { container } from "@/utils/typi.js"
 

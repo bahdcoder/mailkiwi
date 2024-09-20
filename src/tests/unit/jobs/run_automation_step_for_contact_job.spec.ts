@@ -1,29 +1,29 @@
 import { and, eq } from "drizzle-orm"
 import { describe, test, vi } from "vitest"
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
-import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.ts"
+import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.js"
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
-import { createUser } from "@/tests/mocks/auth/users.ts"
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
+import { createUser } from "@/tests/mocks/auth/users.js"
 import {
   refreshDatabase,
   seedAutomation,
-} from "@/tests/mocks/teams/teams.ts"
+} from "@/tests/mocks/teams/teams.js"
 
 import {
   contactAutomationSteps,
   contacts,
   tagsOnContacts,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { MailBuilder, Mailer } from "@/shared/mailers/mailer.js"
-import { cuid } from "@/shared/utils/cuid/cuid.ts"
-import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 describe("Run automation step for contact job", () => {
   test("automation step action: send email for a contact", async ({

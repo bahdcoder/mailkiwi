@@ -1,10 +1,9 @@
-import { AuthorizeMtaCallsMiddleware } from "@/kumomta/middleware/authorize_mta_calls_middleware.ts"
-import { type MiddlewareHandler } from "hono"
+import { AuthorizeMtaCallsMiddleware } from "@/kumomta/middleware/authorize_mta_calls_middleware.js"
 import { logger } from "hono/logger"
 
 import { Hono } from "@/shared/server/hono.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class HonoMtaAuthenticator extends Hono {
   protected defaultMiddleware() {

@@ -2,7 +2,7 @@ import { CreateTagAction } from "@/audiences/actions/tags/create_tag_action.js"
 import { DeleteTagAction } from "@/audiences/actions/tags/delete_tag_action.js"
 import { CreateTagSchema } from "@/audiences/dto/tags/create_tag_dto.js"
 
-import { Audience, Tag } from "@/database/schema/database_schema_types.ts"
+import { Audience, Tag } from "@/database/schema/database_schema_types.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"

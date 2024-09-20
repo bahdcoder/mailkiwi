@@ -1,15 +1,15 @@
-import { createFakeAbTestEmailContent } from "../audiences/email_content.ts"
+import { createFakeAbTestEmailContent } from "../audiences/email_content.js"
 import { faker } from "@faker-js/faker"
 import { Secret } from "@poppinss/utils"
 import { eq } from "drizzle-orm"
 
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
-import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
+import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 

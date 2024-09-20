@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 
 import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
 
@@ -10,7 +10,7 @@ import { SendingDomainRepository } from "@/sending_domains/repositories/sending_
 import { DkimHostNameTool } from "@/tools/dkim/dkim_hostname_tool.js"
 import { DkimKeyPairTool } from "@/tools/dkim/dkim_keypair_tool.js"
 
-import { makeDatabase } from "@/shared/container/index.ts"
+import { makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
 
 import { container } from "@/utils/typi.js"

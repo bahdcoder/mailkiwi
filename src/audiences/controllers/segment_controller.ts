@@ -1,13 +1,13 @@
 import { CreateSegmentSchema } from "@/audiences/dto/segments/create_segment_dto.js"
-import { SegmentRepository } from "@/audiences/repositories/segment_repository.ts"
+import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
 
-import { Audience } from "@/database/schema/database_schema_types.ts"
+import { Audience } from "@/database/schema/database_schema_types.js"
 
 import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.ts"
+import { BaseController } from "@/shared/controllers/base_controller.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class SegmentController extends BaseController {
   constructor(

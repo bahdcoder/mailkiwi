@@ -1,21 +1,21 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import { eq } from "drizzle-orm"
 import { createSign, createVerify } from "node:crypto"
 import { describe, test } from "vitest"
 
-import { TeamRepository } from "@/teams/repositories/team_repository.ts"
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
-import { createUser } from "@/tests/mocks/auth/users.ts"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.ts"
-import { makeRequestAsUser } from "@/tests/utils/http.ts"
+import { createUser } from "@/tests/mocks/auth/users.js"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
+import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { sendingDomains } from "@/database/schema/schema.ts"
+import { sendingDomains } from "@/database/schema/schema.js"
 
-import { makeDatabase } from "@/shared/container/index.ts"
-import { Queue } from "@/shared/queue/queue.ts"
-import { Encryption } from "@/shared/utils/encryption/encryption.ts"
+import { makeDatabase } from "@/shared/container/index.js"
+import { Queue } from "@/shared/queue/queue.js"
+import { Encryption } from "@/shared/utils/encryption/encryption.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 describe("@domains", () => {
   test("can create unique sending domains for a team", async ({

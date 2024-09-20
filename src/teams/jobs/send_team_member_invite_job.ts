@@ -1,13 +1,13 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 
-import { Mailer } from "@/shared/mailers/mailer.ts"
+import { Mailer } from "@/shared/mailers/mailer.js"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.ts"
+import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export interface SendTeamMemberInviteJobPayload {
   inviteId: number

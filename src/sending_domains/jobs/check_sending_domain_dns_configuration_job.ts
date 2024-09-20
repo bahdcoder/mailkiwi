@@ -1,15 +1,15 @@
 import { eq } from "drizzle-orm"
 import { resolveCname, resolveTxt } from "node:dns/promises"
 
-import { DnsResolverTool } from "@/tools/dns/dns_resolver_tool.ts"
+import { DnsResolverTool } from "@/tools/dns/dns_resolver_tool.js"
 
-import { sendingDomains } from "@/database/schema/schema.ts"
+import { sendingDomains } from "@/database/schema/schema.js"
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.ts"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.ts"
-import { Queue } from "@/shared/queue/queue.ts"
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { Queue } from "@/shared/queue/queue.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export interface CheckSendingDomainDnsConfigurationJobPayload {
   sendingDomainId: number

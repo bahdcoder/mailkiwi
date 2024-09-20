@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm"
 
-import type { DrizzleClient } from "@/database/client.ts"
+import type { DrizzleClient } from "@/database/client.js"
 import type {
   InsertSegment,
   Segment,

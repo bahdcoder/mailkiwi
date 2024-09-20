@@ -197,9 +197,8 @@ services:
     restart: unless-stopped
     dns: 172.20.0.2
     environment:
-      CREDS_HTTP_ACCESS_TOKEN: tSv1rimOykRimRB7XgLtYDctSv1rimOykRimRB7XgLtYDc
-      CREDS_HTTP_SERVER: "http://host.docker.internal:4251"
-      LOGS_HTTP_SERVER: "http://host.docker.internal:2578"
+      API_HTTP_ACCESS_TOKEN: tSv1rimOykRimRB7XgLtYDctSv1rimOykRimRB7XgLtYDc
+      API_HTTP_SERVER: "http://host.docker.internal:5566"
     ports:
       - 5612:25
       - 5613:8000

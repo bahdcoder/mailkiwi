@@ -1,11 +1,11 @@
-import { FieldSegmentBuilder } from "./base_field_segment_builder.ts"
+import { FieldSegmentBuilder } from "./base_field_segment_builder.js"
 import { type SQLWrapper, and, eq, like } from "drizzle-orm"
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
-import { contacts } from "@/database/schema/schema.ts"
+import { contacts } from "@/database/schema/schema.js"
 
-import { E_OPERATION_FAILED } from "@/http/responses/errors.ts"
+import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
 
 export class SubscribedAtSegmentBuilder extends FieldSegmentBuilder {
   constructor(

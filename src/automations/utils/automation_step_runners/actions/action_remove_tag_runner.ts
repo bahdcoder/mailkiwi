@@ -1,4 +1,4 @@
-import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import type { AutomationStepRunnerContract } from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
 
@@ -6,9 +6,9 @@ import type {
   AutomationStep,
   Contact,
 } from "@/database/schema/database_schema_types.js"
-import type { ACTION_REMOVE_TAG_CONFIGURATION } from "@/database/schema/schema.ts"
+import type { ACTION_REMOVE_TAG_CONFIGURATION } from "@/database/schema/schema.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class RemoveTagAutomationStepRunner
   implements AutomationStepRunnerContract

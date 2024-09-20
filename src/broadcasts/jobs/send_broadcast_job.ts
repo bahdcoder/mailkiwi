@@ -1,9 +1,9 @@
 import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js"
 import { type SQLWrapper, and, eq } from "drizzle-orm"
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
+import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
 import { broadcasts, contacts } from "@/database/schema/schema.js"
 
@@ -11,7 +11,7 @@ import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { Queue } from "@/shared/queue/queue.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export interface SendBroadcastJobPayload {
   broadcastId: number

@@ -1,19 +1,19 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import { and, eq, or, sql } from "drizzle-orm"
 import { DateTime } from "luxon"
 
 import {
   InsertTeamMembership,
   UpdateSetTeamMembershipInput,
-} from "@/database/schema/database_schema_types.ts"
+} from "@/database/schema/database_schema_types.js"
 import { teamMemberships, teams, users } from "@/database/schema/schema.js"
-import { belongsTo, hasOne } from "@/database/utils/relationships.ts"
+import { belongsTo, hasOne } from "@/database/utils/relationships.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
-import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.ts"
+import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class TeamMembershipRepository extends BaseRepository {
   constructor(

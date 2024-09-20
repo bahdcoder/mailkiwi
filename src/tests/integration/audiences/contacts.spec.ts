@@ -1,16 +1,16 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import { faker } from "@faker-js/faker"
 import { and, eq } from "drizzle-orm"
 import { readFile } from "fs/promises"
 import { resolve } from "path"
 import { describe, test } from "vitest"
 
-import { CreateTagAction } from "@/audiences/actions/tags/create_tag_action.ts"
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
+import { CreateTagAction } from "@/audiences/actions/tags/create_tag_action.js"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
-import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.ts"
+import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import {
   refreshDatabase,
@@ -18,14 +18,14 @@ import {
 } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { ContactImport } from "@/database/schema/database_schema_types.ts"
+import { ContactImport } from "@/database/schema/database_schema_types.js"
 import { contacts } from "@/database/schema/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.ts"
-import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.ts"
+import { Queue } from "@/shared/queue/queue.js"
+import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export const setupImport = async (
   fileName: string,

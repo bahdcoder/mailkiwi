@@ -1,30 +1,30 @@
-import { apiEnv } from "@/api/env/api_env.ts"
-import { makeMinioClient } from "@/minio/minio_client.ts"
+import { apiEnv } from "@/api/env/api_env.js"
+import { makeMinioClient } from "@/minio/minio_client.js"
 import { sentenceCase } from "change-case"
 import { stringify as csvStringify } from "csv-stringify"
 import { and, eq } from "drizzle-orm"
 import { DateTime } from "luxon"
 import { Readable } from "stream"
 
-import { CreateContactExportDto } from "@/audiences/dto/contact_exports/create_contact_export_dto.ts"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.ts"
-import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
+import { CreateContactExportDto } from "@/audiences/dto/contact_exports/create_contact_export_dto.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
-import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
+import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import {
   Audience,
   Contact,
-} from "@/database/schema/database_schema_types.ts"
-import { contacts } from "@/database/schema/schema.ts"
+} from "@/database/schema/database_schema_types.js"
+import { contacts } from "@/database/schema/schema.js"
 
-import { Mailer } from "@/shared/mailers/mailer.ts"
+import { Mailer } from "@/shared/mailers/mailer.js"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { cuid } from "@/shared/utils/cuid/cuid.ts"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export interface ExportContactsJobPayload {
   filterGroups: CreateContactExportDto["filterGroups"]

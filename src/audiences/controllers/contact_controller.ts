@@ -1,5 +1,5 @@
 import { CreateContactAction } from "@/audiences/actions/contacts/create_contact_action.js"
-import { GetContactsAction } from "@/audiences/actions/contacts/get_contacts_action.ts"
+import { GetContactsAction } from "@/audiences/actions/contacts/get_contacts_action.js"
 import { UpdateContactAction } from "@/audiences/actions/contacts/update_contact_action.js"
 import { AttachTagsToContactAction } from "@/audiences/actions/tags/attach_tags_to_contact_action.js"
 import { DetachTagsFromContactAction } from "@/audiences/actions/tags/detach_tags_from_contact_action.js"
@@ -11,7 +11,7 @@ import { DetachTagsFromContactDto } from "@/audiences/dto/tags/detach_tags_from_
 import {
   Audience,
   Contact,
-} from "@/database/schema/database_schema_types.ts"
+} from "@/database/schema/database_schema_types.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"

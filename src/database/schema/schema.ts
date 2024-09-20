@@ -14,7 +14,7 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core"
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
 const primaryKeyBigInt = <TName extends string>(name: TName) =>
   bigint(name, { mode: "number", unsigned: true })

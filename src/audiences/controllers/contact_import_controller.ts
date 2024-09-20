@@ -1,17 +1,17 @@
-import { CreateContactImportAction } from "@/audiences/actions/contact_imports/create_contact_import_action.ts"
-import { UpdateContactImportSettingsAction } from "@/audiences/actions/contact_imports/update_contact_import_settings_action.ts"
-import { UpdateContactImportSettings } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.ts"
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.ts"
+import { CreateContactImportAction } from "@/audiences/actions/contact_imports/create_contact_import_action.js"
+import { UpdateContactImportSettingsAction } from "@/audiences/actions/contact_imports/update_contact_import_settings_action.js"
+import { UpdateContactImportSettings } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
-import { Audience } from "@/database/schema/database_schema_types.ts"
+import { Audience } from "@/database/schema/database_schema_types.js"
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class ContactImportController extends BaseController {
   constructor(

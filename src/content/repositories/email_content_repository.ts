@@ -3,11 +3,11 @@ import { eq } from "drizzle-orm"
 import type {
   EmailContentVariant,
   UpdateBroadcastDto,
-} from "@/broadcasts/dto/update_broadcast_dto.ts"
+} from "@/broadcasts/dto/update_broadcast_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
 import type { Broadcast } from "@/database/schema/database_schema_types.js"
-import { broadcasts, emailContents } from "@/database/schema/schema.ts"
+import { broadcasts, emailContents } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

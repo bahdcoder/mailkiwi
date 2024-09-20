@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
 import {
   createBroadcastForUser,
@@ -15,7 +15,7 @@ import { broadcasts, emailContents } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 describe("@broadcasts create", () => {
   test("can create a broadcast for an audience", async ({ expect }) => {

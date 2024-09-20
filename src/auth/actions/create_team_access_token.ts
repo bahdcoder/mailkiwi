@@ -1,4 +1,4 @@
-import { TeamRepository } from "@/teams/repositories/team_repository.ts"
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 

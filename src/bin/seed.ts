@@ -1,19 +1,19 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import Fs from "node:fs/promises"
 import Path from "node:path"
 import { fileURLToPath } from "node:url"
 
-import { CreateBroadcastAction } from "@/broadcasts/actions/create_broadcast_action.ts"
-import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_action.ts"
+import { CreateBroadcastAction } from "@/broadcasts/actions/create_broadcast_action.js"
+import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_action.js"
 
 import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
 
-import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.ts"
+import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 
-import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.ts"
+import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
 
 import {
   refreshDatabase,
@@ -29,9 +29,9 @@ import { broadcasts, contacts, teams } from "@/database/schema/schema.js"
 
 import { ContainerKey } from "@/shared/container/index.js"
 
-import { createRedisDatabaseInstance } from "@/redis/redis_client.ts"
+import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
 
-import { addSecondsToDate } from "@/utils/dates.ts"
+import { addSecondsToDate } from "@/utils/dates.js"
 import { container } from "@/utils/typi.js"
 
 const connection = await createDatabaseClient(apiEnv.DATABASE_URL)

@@ -1,11 +1,11 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import { faker } from "@faker-js/faker"
 import { DateTime } from "luxon"
 import { describe, test } from "vitest"
 
-import { SendTeamMemberInviteJob } from "@/teams/jobs/send_team_member_invite_job.ts"
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
-import { TeamRepository } from "@/teams/repositories/team_repository.ts"
+import { SendTeamMemberInviteJob } from "@/teams/jobs/send_team_member_invite_job.js"
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import {
@@ -14,10 +14,10 @@ import {
 } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { Queue } from "@/shared/queue/queue.ts"
-import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.ts"
+import { Queue } from "@/shared/queue/queue.js"
+import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export const setup = async (email?: string, role?: string) => {
   const { user, team } = await createUser()

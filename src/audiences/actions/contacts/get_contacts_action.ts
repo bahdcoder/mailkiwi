@@ -1,7 +1,7 @@
 import { type SQLWrapper, eq, inArray } from "drizzle-orm"
 
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
-import { SegmentRepository } from "@/audiences/repositories/segment_repository.ts"
+import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
 import type {
@@ -13,12 +13,12 @@ import {
   contacts,
   tags,
   tagsOnContacts,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { Paginator } from "@/shared/utils/pagination/paginator.ts"
+import { Paginator } from "@/shared/utils/pagination/paginator.js"
 
 import { container } from "@/utils/typi.js"
 

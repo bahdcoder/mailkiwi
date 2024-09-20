@@ -1,7 +1,7 @@
 import {
   EmailTemplateSchema,
   FoundationEmailBuilderTool,
-} from "@/emails/tools/foundation_email_builder/foundation_email_builder_tool.ts"
+} from "@/emails/tools/foundation_email_builder/foundation_email_builder_tool.js"
 import { Edge } from "edge.js"
 import fs from "node:fs/promises"
 import path from "node:path"

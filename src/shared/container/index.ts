@@ -11,10 +11,6 @@ export enum ContainerKey {
   // Apps
   app = "app",
 
-  mtaAuthenticatorApp = "mtaAuthenticatorApp",
-  mtaLogProcessorApp = "mtaLogProcessorApp",
-  mtaInjectorApp = "mtaInjectorApp",
-
   // Configs
   env = "env",
   config = "config",
@@ -31,15 +27,6 @@ export enum ContainerKey {
 
 export const makeApp = () =>
   container.singleton<HonoInstance>(ContainerKey.app)
-
-export const makeMtaAuthenticatorApp = () =>
-  container.singleton<HonoInstance>(ContainerKey.mtaAuthenticatorApp)
-
-export const makeMtaInjectorApp = () =>
-  container.singleton<HonoInstance>(ContainerKey.mtaInjectorApp)
-
-export const makeMtaLogProcessorApp = () =>
-  container.singleton<HonoInstance>(ContainerKey.mtaLogProcessorApp)
 
 export const makeDatabase = () =>
   container.singleton<DrizzleClient>(ContainerKey.database)

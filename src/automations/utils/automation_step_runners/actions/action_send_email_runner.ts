@@ -1,4 +1,4 @@
-import { EmailRepository } from "@/emails/repositories/email_repository.ts"
+import { EmailRepository } from "@/emails/repositories/email_repository.js"
 import { eq } from "drizzle-orm"
 
 import type {
@@ -14,11 +14,11 @@ import type {
 import {
   type ACTION_SEND_EMAIL_CONFIGURATION,
   emails,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
-import { Mailer } from "@/shared/mailers/mailer.ts"
+import { Mailer } from "@/shared/mailers/mailer.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class SendEmailAutomationStepRunner
   implements AutomationStepRunnerContract

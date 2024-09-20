@@ -2,25 +2,25 @@ import { faker } from "@faker-js/faker"
 import { and, eq } from "drizzle-orm"
 import { describe, test, vi } from "vitest"
 
-import { RunAutomationStepJob } from "@/automations/jobs/run_automation_step_job.ts"
+import { RunAutomationStepJob } from "@/automations/jobs/run_automation_step_job.js"
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
-import { createUser } from "@/tests/mocks/auth/users.ts"
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
+import { createUser } from "@/tests/mocks/auth/users.js"
 import {
   refreshDatabase,
   refreshRedisDatabase,
   seedAutomation,
-} from "@/tests/mocks/teams/teams.ts"
+} from "@/tests/mocks/teams/teams.js"
 
 import {
   automationSteps,
   contactAutomationSteps,
   contacts,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.ts"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 describe("Run automation step job", () => {
   test("dispatches a run automation step for contact job for each contact at this step", async ({

@@ -1,4 +1,4 @@
-import { RunAutomationStepForContactJob } from "./run_automation_step_for_contact_job.ts"
+import { RunAutomationStepForContactJob } from "./run_automation_step_for_contact_job.js"
 import { and, eq, isNotNull, sql } from "drizzle-orm"
 
 import type { Contact } from "@/database/schema/database_schema_types.js"
@@ -6,12 +6,12 @@ import {
   automationSteps,
   contactAutomationSteps,
   contacts,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { Queue } from "@/shared/queue/queue.js"
-import { Paginator } from "@/shared/utils/pagination/paginator.ts"
+import { Paginator } from "@/shared/utils/pagination/paginator.js"
 
 export interface RunAutomationStepJobPayload {
   automationStepId: number

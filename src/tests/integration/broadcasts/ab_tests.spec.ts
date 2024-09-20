@@ -2,12 +2,12 @@ import { faker } from "@faker-js/faker"
 import { asc, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.ts"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
 import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
-} from "@/tests/mocks/audiences/email_content.ts"
+} from "@/tests/mocks/audiences/email_content.js"
 import {
   createBroadcastForUser,
   createUser,
@@ -19,7 +19,7 @@ import { abTestVariants, broadcasts } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 describe("@broadcasts update broadcasts", () => {
   test("can update a broadcast with ab test variants", async ({

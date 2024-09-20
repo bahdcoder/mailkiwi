@@ -1,10 +1,10 @@
-import { apiEnv } from "@/api/env/api_env.ts"
+import { apiEnv } from "@/api/env/api_env.js"
 import type { Next } from "hono"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import type { HonoContext } from "@/shared/server/types.js"
-import { TeamWithMembers } from "@/shared/types/team.ts"
+import { TeamWithMembers } from "@/shared/types/team.js"
 
 import { container } from "@/utils/typi.js"
 

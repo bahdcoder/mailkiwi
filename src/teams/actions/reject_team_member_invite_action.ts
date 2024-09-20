@@ -1,8 +1,8 @@
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 
-import { TeamMembership } from "@/database/schema/database_schema_types.ts"
+import { TeamMembership } from "@/database/schema/database_schema_types.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class RejectTeamMemberInviteAction {
   constructor(

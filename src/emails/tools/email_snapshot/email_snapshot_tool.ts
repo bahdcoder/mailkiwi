@@ -3,9 +3,9 @@ import { writeFile } from "node:fs/promises"
 import path from "node:path"
 import puppeteer, { KnownDevices } from "puppeteer"
 
-import { E_OPERATION_FAILED } from "@/http/responses/errors.ts"
+import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
 
-import { sleep } from "@/utils/sleep.ts"
+import { sleep } from "@/utils/sleep.js"
 
 export class EmailSnapshotTool {
   private name: string = ""

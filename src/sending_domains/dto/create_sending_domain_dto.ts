@@ -8,9 +8,9 @@ import {
   string,
 } from "valibot"
 
-import { sendingDomains } from "@/database/schema/schema.ts"
+import { sendingDomains } from "@/database/schema/schema.js"
 
-import { makeDatabase } from "@/shared/container/index.ts"
+import { makeDatabase } from "@/shared/container/index.js"
 
 export const CreateSendingDomainSchema = objectAsync({
   name: pipeAsync(

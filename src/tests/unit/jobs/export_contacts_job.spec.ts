@@ -1,31 +1,31 @@
-import { MinioClient } from "@/minio/minio_client.ts"
+import { MinioClient } from "@/minio/minio_client.js"
 import { faker } from "@faker-js/faker"
 import { like } from "drizzle-orm"
 import { Readable } from "stream"
 import { describe, test } from "vitest"
 
-import { CreateContactExportDto } from "@/audiences/dto/contact_exports/create_contact_export_dto.ts"
-import { ExportContactsJob } from "@/audiences/jobs/export_contacts_job.ts"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.ts"
-import { TagRepository } from "@/audiences/repositories/tag_repository.ts"
+import { CreateContactExportDto } from "@/audiences/dto/contact_exports/create_contact_export_dto.js"
+import { ExportContactsJob } from "@/audiences/jobs/export_contacts_job.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.ts"
-import { createUser } from "@/tests/mocks/auth/users.ts"
-import { FakeMinioClient } from "@/tests/mocks/container/minio_client_mock.ts"
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
+import { createUser } from "@/tests/mocks/auth/users.js"
+import { FakeMinioClient } from "@/tests/mocks/container/minio_client_mock.js"
 import {
   refreshDatabase,
   refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.ts"
+} from "@/tests/mocks/teams/teams.js"
 
 import {
   contacts,
   emails,
   tagsOnContacts,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.ts"
+import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 describe("@contacts exports job", () => {
   test(

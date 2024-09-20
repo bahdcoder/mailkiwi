@@ -1,6 +1,6 @@
 import { inArray } from "drizzle-orm"
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.ts"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import type {
   AutomationStepRunnerContext,
@@ -14,9 +14,9 @@ import type {
 import {
   type ACTION_UPDATE_CONTACT_ATTRIBUTES,
   tags,
-} from "@/database/schema/schema.ts"
+} from "@/database/schema/schema.js"
 
-import { container } from "@/utils/typi.ts"
+import { container } from "@/utils/typi.js"
 
 export class UpdateContactAttributesAutomationStepRunner
   implements AutomationStepRunnerContract

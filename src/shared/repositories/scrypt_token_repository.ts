@@ -2,9 +2,9 @@ import { BinaryLike, randomBytes, scrypt } from "crypto"
 import { eq } from "drizzle-orm"
 import { promisify } from "util"
 
-import { accessTokens } from "@/database/schema/schema.ts"
+import { accessTokens } from "@/database/schema/schema.js"
 
-import { BaseRepository } from "@/shared/repositories/base_repository.ts"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
 
 export class ScryptTokenRepository extends BaseRepository {
   protected scryptSaltLength = 32

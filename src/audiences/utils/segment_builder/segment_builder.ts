@@ -1,10 +1,10 @@
-import { FieldSegmentBuilder } from "./fields/base_field_segment_builder.ts"
-import { TagsSegmentBuilder } from "./fields/tags_segment_builder.ts"
+import { FieldSegmentBuilder } from "./fields/base_field_segment_builder.js"
+import { TagsSegmentBuilder } from "./fields/tags_segment_builder.js"
 import { type SQL, type SQLWrapper, and, or } from "drizzle-orm"
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.ts"
+import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
-import { contacts } from "@/database/schema/schema.ts"
+import { contacts } from "@/database/schema/schema.js"
 
 export class SegmentBuilder {
   constructor(private groups: CreateSegmentDto["filterGroups"]) {}

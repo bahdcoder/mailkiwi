@@ -1,10 +1,10 @@
 import { type SQL, type SQLWrapper, and, asc, eq, sql } from "drizzle-orm"
 
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.ts"
+import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
-import type { DrizzleClient } from "@/database/client.ts"
+import type { DrizzleClient } from "@/database/client.js"
 import type { BroadcastWithSegmentAndAbTestVariants } from "@/database/schema/database_schema_types.js"
-import { contacts } from "@/database/schema/schema.ts"
+import { contacts } from "@/database/schema/schema.js"
 
 export class ContactsConcern {
   database: DrizzleClient

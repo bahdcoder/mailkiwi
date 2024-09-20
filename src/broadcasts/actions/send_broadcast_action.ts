@@ -1,4 +1,4 @@
-import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.ts"
+import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.js"
 import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.js"
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 

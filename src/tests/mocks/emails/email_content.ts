@@ -1,4 +1,4 @@
-import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.ts"
+import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.js"
 
 export function getDefaultEmailContentSchema(): EmailContentSchemaDto {
   return {

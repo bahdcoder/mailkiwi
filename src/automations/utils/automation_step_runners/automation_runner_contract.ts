@@ -1,6 +1,6 @@
 import type { Redis } from "ioredis"
 
-import type { DrizzleClient } from "@/database/client.ts"
+import type { DrizzleClient } from "@/database/client.js"
 import type {
   AutomationStep,
   Contact,
