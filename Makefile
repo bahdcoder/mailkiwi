@@ -7,8 +7,7 @@ SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
 # Docker compose files
-COMPOSE_DEV := -f docker/compose.yaml -f docker/compose.dev.yaml
-COMPOSE_TEST := -f docker/compose.yaml -f docker/compose.test.yaml
+COMPOSE_DEV := -f docker/compose.dev.yaml
 
 # Helper target to print available commands
 help:
@@ -17,8 +16,6 @@ help:
 	@echo "  make api.dev       - Run the apis in development"
 	@echo "  make down          - Destroy the application environment"
 	@echo "  make app.build     - Build only the app Docker image"
-	@echo "  make test          - Run tests"
-	@echo "  make test.watch    - Run tests in watch mode"
 	@echo "  make up            - Start development environment"
 	@echo "  make kumo          - Run KumoMTA dev container with mounted volume"
 
@@ -66,10 +63,6 @@ dev:
 
 api.dev:
 	pnpm dev
-
-dev-test:
-	@echo "Starting all services for test environment..."
-	docker-compose $(COMPOSE_TEST) up -d
 
 # Run KumoMTA dev container with mounted volume
 kumo:
