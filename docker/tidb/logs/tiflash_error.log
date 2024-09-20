@@ -1,1 +1,0 @@
-[2024/09/20 11:42:26.794 +00:00] [WARN] [StorageConfigParser.cpp:287] ["The configuration `path` is deprecated. Check [storage] section for new style."] [thread_id=1]
