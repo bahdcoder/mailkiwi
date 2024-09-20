@@ -1,97 +1,64 @@
-import type { Secret } from "@poppinss/utils"
+import { Secret } from "@poppinss/utils"
 import { eq } from "drizzle-orm"
-
-import { AccessToken } from "@/auth/acess_tokens/utils/access_token.js"
+import { randomBytes } from "node:crypto"
 
 import type { DrizzleClient } from "@/database/client.js"
 import { accessTokens } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_repository.ts"
 
-export class AccessTokenRepository extends BaseRepository {
-  protected tokenSecretLength = 16
-  protected tokenExpiresIn = 1000 * 60
-  protected opaqueAccessTokenPrefix = "kbm_"
+export class AccessTokenRepository extends ScryptTokenRepository {
+  protected opaqueAccessTokenPrefix = "kbt_"
+  protected bytesSize = 16
 
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 
-  async createAccessToken(
-    owner: { id: number; username?: string },
-    type: "user" | "team" = "user",
-  ) {
-    const transientAccessToken = AccessToken.createTransientToken(
-      owner.id,
-      this.tokenSecretLength,
-      this.tokenExpiresIn,
+  async create(ownerId: number, type: "user" | "team") {
+    const tokenBytes = randomBytes(this.bytesSize).toString("hex")
+    const accessSecret = new Secret(
+      this.opaqueAccessTokenPrefix + tokenBytes,
     )
+
+    const accessKey = randomBytes(this.bytesSize).toString("hex")
+
+    const hashedAccessSecret = await this.hash(accessSecret.release())
+
+    const name = tokenBytes.slice(0, 8)
 
     const result = await this.database.insert(accessTokens).values({
-      ...(type === "user" ? { userId: owner.id } : { teamId: owner.id }),
-      username: owner?.username,
-      hash: transientAccessToken.hash,
-      expiresAt: transientAccessToken.expiresAt,
+      ...(type === "user" ? { userId: ownerId } : { teamId: ownerId }),
+      accessKey,
+      accessSecret: hashedAccessSecret,
+      name,
     })
 
-    const id = this.primaryKey(result)
-
-    const instance = new AccessToken({
-      identifier: id,
-      tokenableId: owner.id,
-      prefix: this.opaqueAccessTokenPrefix,
-      secret: transientAccessToken.secret,
-      createdAt: new Date(),
-      lastUsedAt: new Date(),
-      updatedAt: new Date(),
-      hash: transientAccessToken.hash,
-      name: "token",
-      expiresAt: transientAccessToken.expiresAt as Date,
-    })
-
-    return instance
+    return {
+      accessKey,
+      accessSecret,
+      hashedAccessSecret,
+      name,
+      id: this.primaryKey(result),
+    }
   }
 
-  async verifyToken(token: Secret<string>) {
-    const decodedToken = AccessToken.decode(
-      this.opaqueAccessTokenPrefix,
-      token.release(),
-    )
-
-    if (!decodedToken) {
-      return null
-    }
-
-    const [accessToken] = await this.database
+  async check(accessKey: string, accessSecret: string) {
+    const [token] = await this.database
       .select()
       .from(accessTokens)
-      .where(eq(accessTokens.id, decodedToken.identifier))
+      .where(eq(accessTokens.accessKey, accessKey))
       .limit(1)
 
-    if (!accessToken) {
+    if (!token) return null
+
+    const isValid = await this.verify(accessSecret, token.accessSecret)
+
+    if (!isValid) {
       return null
     }
 
-    const accessTokenInstance = new AccessToken({
-      identifier: accessToken.id,
-      tokenableId: accessToken.userId as number,
-      prefix: this.opaqueAccessTokenPrefix,
-      createdAt: accessToken.createdAt,
-      lastUsedAt: accessToken.lastUsedAt,
-      updatedAt: accessToken.createdAt,
-      expiresAt: accessToken.expiresAt,
-      hash: accessToken.hash,
-      name: "Authentication token.",
-    })
-
-    if (
-      !accessTokenInstance.verify(decodedToken.secret) ||
-      accessTokenInstance.isExpired()
-    ) {
-      return null
-    }
-
-    return { accessTokenInstance, accessToken }
+    return token
   }
 }

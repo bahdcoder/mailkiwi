@@ -1,4 +1,3 @@
-import { Secret } from "@poppinss/utils"
 import type { Next } from "hono"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
@@ -7,6 +6,10 @@ import { UserRepository } from "@/auth/users/repositories/user_repository.ts"
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
 
 import type { HonoContext } from "@/shared/server/types.js"
+import {
+  accessKeyHeaderName,
+  accessSecretHeaderName,
+} from "@/shared/utils/auth/get_auth_headers.ts"
 
 import { container } from "@/utils/typi.js"
 
@@ -17,16 +20,16 @@ export class AccessTokenMiddleware {
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
-    const tokenHeader = ctx.req
-      .header("authorization")
-      ?.split("Bearer ")?.[1]
+    const accessKey = ctx.req.header(accessKeyHeaderName())
+    const accessSecret = ctx.req.header(accessSecretHeaderName())
 
-    if (!tokenHeader) {
+    if (!accessKey || !accessSecret) {
       throw E_UNAUTHORIZED()
     }
 
-    const accessToken = await this.accessTokenRepository.verifyToken(
-      new Secret(tokenHeader),
+    const accessToken = await this.accessTokenRepository.check(
+      accessKey,
+      accessSecret,
     )
 
     if (!accessToken) {
@@ -34,14 +37,14 @@ export class AccessTokenMiddleware {
     }
 
     const user = await this.userRepository.findById(
-      accessToken.accessToken.userId as number,
+      accessToken.userId as number,
     )
 
     if (!user) {
       throw E_UNAUTHORIZED()
     }
 
-    ctx.set("accessToken", accessToken.accessToken)
+    ctx.set("accessToken", accessToken)
     ctx.set("user", user)
 
     await next()

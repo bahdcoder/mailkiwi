@@ -14,12 +14,12 @@ COMPOSE_TEST := -f docker/compose.yaml -f docker/compose.test.yaml
 help:
 	@echo "Available commands:"
 	@echo "  make build         - Build the application"
+	@echo "  make api.dev       - Run the apis in development"
 	@echo "  make down          - Destroy the application environment"
-	@echo "  make app-build     - Build only the app Docker image"
+	@echo "  make app.build     - Build only the app Docker image"
 	@echo "  make test          - Run tests"
-	@echo "  make test-watch    - Run tests in watch mode"
+	@echo "  make test.watch    - Run tests in watch mode"
 	@echo "  make up            - Start development environment"
-	@echo "  make run-command CMD='your command'  - Run a custom command in the kibamail container"
 	@echo "  make kumo          - Run KumoMTA dev container with mounted volume"
 
 # Build the application
@@ -33,23 +33,23 @@ down:
 	docker-compose $(COMPOSE_DEV) down
 
 # Build only the app Docker image
-app-build:
+app.build:
 	@echo "Building only the app Docker image..."
 	docker build -t kibamail-dev:latest -f docker/app.dockerfile .
 
-app-build-prod:
+app.build.prod:
 	@echo "Building only the app Docker image for production..."
 	docker build -t kibamail:latest -f docker/app.prod.dockerfile .
 
 # Run tests
 test:
 	@echo "Running tests..."
-	docker-compose $(COMPOSE_TEST) run --rm kibamail pnpm test
+	pnpm test
 
 # Run tests in watch mode
-test-watch:
+test.watch:
 	@echo "Running tests in watch mode..."
-	docker-compose $(COMPOSE_TEST) run --rm kibamail pnpm test:watch
+	pnpm test:watch
 
 # Run a custom command
 run:
@@ -64,6 +64,9 @@ dev:
 	@echo "Starting all services..."
 	docker-compose $(COMPOSE_DEV) up -d
 
+api.dev:
+	pnpm dev
+
 dev-test:
 	@echo "Starting all services for test environment..."
 	docker-compose $(COMPOSE_TEST) up -d
@@ -74,15 +77,15 @@ kumo:
 	docker run \
 		-e HOSTNAME=kumomta \
 		-e CREDS_HTTP_ACCESS_TOKEN=tSv1rimOykRimRB7XgLtYDctSv1rimOykRimRB7XgLtYDc \
-		-e CREDS_HTTP_SERVER_HOST=host.docker.internal \
-		-e LOGS_HTTP_SERVER_HOST=host.docker.internal \
-		-e LOGS_HTTP_SERVER_PORT=5798 \
+		-e CREDS_HTTP_SERVER=http://host.docker.internal:4251 \
+		-e LOGS_HTTP_SERVER=http://host.docker.internal:2578 \
+		-p 6235:8000 \
 		-p 5990:25 \
-		--dns 172.20.0.2 \
 		--network kibamail_kibamail-network \
+		--dns 172.20.0.2 \
 		-v $(shell pwd)/src/kumomta/policy:/opt/kumomta/etc/policy \
 		-v $(shell pwd)/src/kumomta/data:/var/log/kumomta\
 		-v $(shell pwd)/src/kumomta/spool:/var/spool/kumomta\
 		ghcr.io/kumocorp/kumomta-dev:latest
 
-.PHONY: help build down app-build app-build-prod test test-watch run dev dev-test kumo
+.PHONY: help build down app-build app-build-prod test test-watch run dev dev-test kumo api.dev

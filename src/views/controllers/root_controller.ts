@@ -1,19 +1,13 @@
-import {
-  ContainerKey,
-  makeApp,
-  makeEnv,
-} from "@/shared/container/index.js"
-import type { EnvVariables } from "@/shared/env/index.js"
+import { apiEnv } from "@/api/env/api_env.ts"
+
+import { ContainerKey, makeApp } from "@/shared/container/index.js"
 import type { HonoInstance } from "@/shared/server/hono.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 
 export class RootController {
-  constructor(
-    private app: HonoInstance = makeApp(),
-    private env: EnvVariables = makeEnv(),
-  ) {
+  constructor(private app: HonoInstance = makeApp()) {
     this.app.defineRoutes([["GET", "*", this.index.bind(this)]], {
       prefix: "p",
       middleware: [],
@@ -25,7 +19,7 @@ export class RootController {
       <!DOCTYPE html>
         <head>
           ${
-            this.env.isDev
+            apiEnv.isDev
               ? /* html*/
                 `<script type="module" src="/@vite/client"></script>
           <script type="module">
@@ -43,9 +37,9 @@ export class RootController {
           <div id="root"></div>
         </body>
 
-        ${this.env.isDev ? /* html*/ `<script type="module" src="/main.tsx"></script>` : ""}
+        ${apiEnv.isDev ? /* html*/ `<script type="module" src="/main.tsx"></script>` : ""}
         ${
-          this.env.isProd
+          apiEnv.isDev
             ? /* html*/ `<script type="module" src="/${
                 container.resolve<Record<string, { file: string }>>(
                   ContainerKey.viteManifestFile,

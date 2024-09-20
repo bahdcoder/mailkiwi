@@ -1,18 +1,13 @@
-import {
-  makeEnv,
-  makeMtaAuthenticatorApp,
-  makeRedis,
-} from "@/shared/container/index.ts"
+import { AuthorizeInjectorApiKeyMiddleware } from "@/injector/middleware/authorize_injector_api_key_middleware.ts"
+
+import { makeMtaAuthenticatorApp } from "@/shared/container/index.ts"
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import { HonoContext } from "@/shared/server/types.js"
-import { Encryption } from "@/shared/utils/encryption/encryption.ts"
+
+import { container } from "@/utils/typi.ts"
 
 export class SmtpAuthController extends BaseController {
-  constructor(
-    private app = makeMtaAuthenticatorApp(),
-    private redis = makeRedis(),
-    private env = makeEnv(),
-  ) {
+  constructor(private app = makeMtaAuthenticatorApp()) {
     super()
 
     this.app.defineRoutes(
@@ -29,20 +24,14 @@ export class SmtpAuthController extends BaseController {
       passwd: string
     }>()
 
-    const encryptedApiKey = await this.redis.get(`API_KEY:${username}`)
+    try {
+      await container
+        .make(AuthorizeInjectorApiKeyMiddleware)
+        .verifySmtpCredentials(username, passwd)
 
-    if (!encryptedApiKey) {
-      return ctx.json({ status: "failed" }, 401)
+      return ctx.json({ status: "success" })
+    } catch (error) {
+      return ctx.json({ status: "failed" }, 400)
     }
-
-    const apiKey = new Encryption(this.env.APP_KEY).decrypt(
-      encryptedApiKey,
-    )
-
-    if (apiKey?.release() !== passwd) {
-      return ctx.json({ status: "failed" }, 401)
-    }
-
-    return ctx.json({ status: "success" }, 200)
   }
 }

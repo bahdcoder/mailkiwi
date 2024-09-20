@@ -7,9 +7,9 @@ import { Hono } from "@/shared/server/hono.js"
 import { container } from "@/utils/typi.ts"
 
 export class HonoMtaAuthenticator extends Hono {
-  protected defaultMiddleware: MiddlewareHandler[] = [
-    container.make(AuthorizeMtaCallsMiddleware).handle,
-  ]
+  protected defaultMiddleware() {
+    return [container.make(AuthorizeMtaCallsMiddleware).handle]
+  }
 
   constructor() {
     super()

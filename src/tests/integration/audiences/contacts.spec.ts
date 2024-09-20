@@ -1,3 +1,4 @@
+import { apiEnv } from "@/api/env/api_env.ts"
 import { faker } from "@faker-js/faker"
 import { and, eq } from "drizzle-orm"
 import { readFile } from "fs/promises"
@@ -20,12 +21,9 @@ import { makeRequestAsUser } from "@/tests/utils/http.js"
 import { ContactImport } from "@/database/schema/database_schema_types.ts"
 import { contacts } from "@/database/schema/schema.js"
 
-import {
-  makeApp,
-  makeConfig,
-  makeDatabase,
-} from "@/shared/container/index.js"
+import { makeApp, makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.ts"
+import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.ts"
 
 import { container } from "@/utils/typi.ts"
 
@@ -49,22 +47,20 @@ export const setupImport = async (
 
   const { audience, user, team } = await createUser()
 
-  const accessToken = await container
+  const { accessKey, accessSecret } = await container
     .make(AccessTokenRepository)
-    .createAccessToken(user)
+    .create(user.id, "user")
 
   const app = makeApp()
-  const response = await app.request(
-    `http://localhost/audiences/${audience.id}/imports`,
-    {
-      method: "POST",
-      body: form,
-      headers: {
-        authorization: `Bearer ${accessToken.toJSON().token}`,
-        [makeConfig().software.teamHeader]: team.id.toString(),
-      },
+
+  const response = await app.request(`/audiences/${audience.id}/imports`, {
+    method: "POST",
+    body: form,
+    headers: {
+      [apiEnv.software.teamHeader]: team.id.toString(),
+      ...getAuthenticationHeaders(accessKey, accessSecret.release()),
     },
-  )
+  })
 
   const database = makeDatabase()
 

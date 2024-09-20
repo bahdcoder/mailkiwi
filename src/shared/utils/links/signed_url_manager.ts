@@ -1,13 +1,12 @@
+import { Secret } from "@poppinss/utils"
 import crypto from "node:crypto"
-
-import { makeEnv } from "@/shared/container/index.js"
 
 export interface UrlMetadata {
   [key: string]: string | undefined
 }
 
 export class SignedUrlManager {
-  constructor(private env = makeEnv()) {}
+  constructor(private appKey: Secret<string>) {}
 
   encode(original: string, metadata?: UrlMetadata): string {
     const nonce = crypto.randomBytes(4).toString("hex")
@@ -20,7 +19,7 @@ export class SignedUrlManager {
     })
 
     const hash = crypto
-      .createHmac("sha256", this.env.APP_KEY.release())
+      .createHmac("sha256", this.appKey.release())
       .update(data)
       .digest("base64url")
       .slice(0, 16)
@@ -43,7 +42,7 @@ export class SignedUrlManager {
     const decodedData = Buffer.from(data, "base64url").toString()
 
     const computedHash = crypto
-      .createHmac("sha256", this.env.APP_KEY.release())
+      .createHmac("sha256", this.appKey.release())
       .update(decodedData)
       .digest("base64url")
       .slice(0, 16)

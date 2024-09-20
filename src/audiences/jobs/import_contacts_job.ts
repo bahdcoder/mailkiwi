@@ -9,7 +9,6 @@ import { TagRepository } from "@/audiences/repositories/tag_repository.ts"
 
 import { contacts, tagsOnContacts } from "@/database/schema/schema.ts"
 
-import { makeEnv } from "@/shared/container/index.ts"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 
@@ -159,8 +158,6 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
     await container
       .make(ContactImportRepository)
       .update(payload.contactImportId, { status: "FAILED" })
-
-    const env = makeEnv()
 
     // await Mailer.from(env.SMTP_MAIL_FROM)
     //   .to(invite.email)

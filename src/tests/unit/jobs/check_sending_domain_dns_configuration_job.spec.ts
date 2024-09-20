@@ -1,3 +1,4 @@
+import { apiEnv } from "@/api/env/api_env.ts"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import dns from "node:dns/promises"
@@ -17,21 +18,17 @@ import {
 
 import { sendingDomains } from "@/database/schema/schema.ts"
 
-import {
-  makeConfig,
-  makeDatabase,
-  makeRedis,
-} from "@/shared/container/index.ts"
+import { makeDatabase, makeRedis } from "@/shared/container/index.ts"
 import { Queue } from "@/shared/queue/queue.ts"
 
 import { container } from "@/utils/typi.ts"
 
-export const setupDomainForDnsChecks = async () => {
+export const setupDomainForDnsChecks = async (domain?: string) => {
   await refreshDatabase()
 
-  const { team } = await createUser()
+  const { team, user } = await createUser()
 
-  const TEST_DOMAIN = faker.internet.domainName()
+  const TEST_DOMAIN = domain ?? faker.internet.domainName()
 
   const { id: sendingDomainId } = await container
     .make(CreateSendingDomainAction)
@@ -49,14 +46,21 @@ export const setupDomainForDnsChecks = async () => {
       sendingDomain?.dkimSubDomain as string,
     )
 
-  return { records, sendingDomain, sendingDomainId, TEST_DOMAIN, team }
+  return {
+    records,
+    sendingDomain,
+    sendingDomainId,
+    TEST_DOMAIN,
+    team,
+    user,
+  }
 }
 describe("Sending domain dns configuration check", () => {
   test("marks sending domain as verified when dns records are correctly configured", async ({
     expect,
   }) => {
     await refreshDatabase()
-    const config = makeConfig()
+
     const database = makeDatabase()
 
     const { records, sendingDomain, sendingDomainId, TEST_DOMAIN } =
@@ -64,7 +68,7 @@ describe("Sending domain dns configuration check", () => {
 
     const mockResolveCname = vi
       .spyOn(dns, "resolveCname")
-      .mockImplementation(async () => [config.software.bounceHost])
+      .mockImplementation(async () => [apiEnv.software.bounceHost])
 
     const mockResolveTxt = vi
       .spyOn(dns, "resolveTxt")
@@ -82,7 +86,7 @@ describe("Sending domain dns configuration check", () => {
       })
 
     expect(mockResolveCname).toHaveBeenCalledWith(
-      `${config.software.bounceSubdomain}.${TEST_DOMAIN}`,
+      `${apiEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
     )
 
     expect(mockResolveTxt).toHaveBeenCalledWith(
@@ -99,7 +103,6 @@ describe("Sending domain dns configuration check", () => {
     expect,
   }) => {
     await refreshDatabase()
-    const config = makeConfig()
     const database = makeDatabase()
     const { team } = await createUser()
 
@@ -123,7 +126,7 @@ describe("Sending domain dns configuration check", () => {
 
     const mockResolveCname = vi
       .spyOn(dns, "resolveCname")
-      .mockImplementation(async () => [config.software.bounceHost])
+      .mockImplementation(async () => [apiEnv.software.bounceHost])
 
     const mockResolveTxt = vi
       .spyOn(dns, "resolveTxt")
@@ -141,7 +144,7 @@ describe("Sending domain dns configuration check", () => {
       })
 
     expect(mockResolveCname).toHaveBeenCalledWith(
-      `${config.software.bounceSubdomain}.${TEST_DOMAIN}`,
+      `${apiEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
     )
 
     expect(mockResolveTxt).toHaveBeenCalledWith(
@@ -159,7 +162,7 @@ describe("Sending domain dns configuration check", () => {
   }) => {
     await refreshRedisDatabase()
     await refreshDatabase()
-    const config = makeConfig()
+
     const database = makeDatabase()
     const { team } = await createUser()
 
@@ -203,7 +206,7 @@ describe("Sending domain dns configuration check", () => {
       })
 
     expect(mockResolveCname).toHaveBeenCalledWith(
-      `${config.software.bounceSubdomain}.${TEST_DOMAIN}`,
+      `${apiEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
     )
 
     expect(mockResolveTxt).toHaveBeenCalledWith(

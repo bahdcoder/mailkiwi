@@ -10,7 +10,6 @@
     "strictPropertyInitialization": false,
     "declaration": true,
     "jsx": "react",
-    "allowImportingTsExtensions": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "baseUrl": ".",

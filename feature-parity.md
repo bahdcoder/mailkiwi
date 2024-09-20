@@ -9,6 +9,7 @@ These are organised in order of implementation priority:
 - [ ] Pages (Websites, forms, surveys, etc)
 - [ ] Optimise (Inbox placement, Email Preview, Email Validation, Spam Filter Checks)
 - [ ] Email reputation monitoring / SPF / DKIM Monitoring / DMARC (Dmarcdigests replacement)
+
 - [ ] Monetize (Create digital products, sell subscriptions, etc) Convertkit replacement
 
 # Email Marketing feature parity

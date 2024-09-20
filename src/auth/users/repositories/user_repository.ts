@@ -1,21 +1,15 @@
-import bcrypt from "bcrypt"
 import { eq } from "drizzle-orm"
 
 import type { CreateUserDto } from "@/auth/users/dto/create_user_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import type {
-  FindUserByIdArgs,
-  User,
-  UserWithTeams,
-} from "@/database/schema/database_schema_types.js"
 import { teams, users } from "@/database/schema/schema.js"
 import { hasMany } from "@/database/utils/relationships.ts"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_repository.ts"
 
-export class UserRepository extends BaseRepository {
+export class UserRepository extends ScryptTokenRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
@@ -33,7 +27,7 @@ export class UserRepository extends BaseRepository {
       .insert(users)
       .values({
         ...user,
-        password: await bcrypt.hash(user.password, 10),
+        password: await this.hash(user.password),
       })
       .execute()
 
@@ -56,16 +50,5 @@ export class UserRepository extends BaseRepository {
     )
 
     return userWithTeams[0]
-  }
-
-  async authenticateUserPassword(
-    user: User | undefined,
-    password: string,
-  ) {
-    if (!user) {
-      return null
-    }
-
-    return bcrypt.compare(password, user.password)
   }
 }

@@ -1,9 +1,10 @@
-import { makeEnv } from "@/shared/container/index.ts"
+import { Secret } from "@poppinss/utils"
+
 import { Encryption } from "@/shared/utils/encryption/encryption.ts"
 import { RsaKeyPair } from "@/shared/utils/ssl/rsa.ts"
 
 export class DkimKeyPairTool {
-  constructor(private env = makeEnv()) {}
+  constructor(private appKey: Secret<string>) {}
 
   generate() {
     const dkimKeyPair = new RsaKeyPair().generate()
@@ -11,7 +12,7 @@ export class DkimKeyPairTool {
     return {
       ...dkimKeyPair,
       encrypted: {
-        privateKey: new Encryption(this.env.APP_KEY).encrypt(
+        privateKey: new Encryption(this.appKey).encrypt(
           dkimKeyPair.privateKey,
         ),
       },

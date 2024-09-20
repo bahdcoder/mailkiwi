@@ -4,8 +4,6 @@ import { Hono as BaseHono, type MiddlewareHandler } from "hono"
 
 import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js"
 
-import { env } from "@/shared/env/index.js"
-
 export type RouteOptions = {
   middleware?: MiddlewareHandler[]
   prefix?: string
@@ -24,7 +22,9 @@ export class Hono
   extends BaseHono<{ Bindings: HttpBindings }>
   implements HonoInstance
 {
-  protected defaultMiddleware: MiddlewareHandler[] = []
+  protected defaultMiddleware(): MiddlewareHandler[] {
+    return []
+  }
 
   constructor() {
     super({ strict: false })
@@ -44,9 +44,7 @@ export class Hono
         )
       }
 
-      if (env.isDev) {
-        d({ error })
-      }
+      console.error(error)
 
       return ctx.json({ message: error?.message }, 500)
     })
@@ -94,7 +92,7 @@ export class Hono
     },
   ) {
     const middleware: MiddlewareHandler[] =
-      routeOptions?.middleware ?? this.defaultMiddleware
+      routeOptions?.middleware ?? this.defaultMiddleware()
 
     for (const route of routes) {
       const [, path] = route

@@ -1,16 +1,5 @@
-import {
-  AnyColumn,
-  InferModel,
-  InferSelectModel,
-  SQL,
-  eq,
-  getTableName,
-} from "drizzle-orm"
-import {
-  AnyMySqlTable,
-  MySqlSelect,
-  MySqlSelectBase,
-} from "drizzle-orm/mysql-core"
+import { AnyColumn, InferSelectModel, eq, getTableName } from "drizzle-orm"
+import { AnyMySqlTable, MySqlSelect } from "drizzle-orm/mysql-core"
 
 import type { DrizzleClient } from "@/database/client.js"
 
@@ -115,7 +104,7 @@ export function hasOne<
     return results.map((row) => ({
       ...row[fromTableName],
       [relationName]: row[toTableName] || null,
-    }))
+    })) as any
   }
 }
 
@@ -161,6 +150,6 @@ export function belongsTo<
     return results.map((row) => ({
       ...row[fromTableName],
       [relationName]: row[toTableName] || null,
-    }))
+    })) as any
   }
 }

@@ -23,11 +23,14 @@ export class IgnitorDev extends Ignitor {
   }
 
   async startHttpServer() {
-    serve({
-      fetch: this.app.fetch,
-      port: this.env.PORT,
-    })
-
-    console.log(`🌐 http://127.0.0.1:${this.env.PORT}`)
+    serve(
+      {
+        fetch: this.app.fetch,
+        port: this.env.PORT,
+      },
+      ({ address, port }) => {
+        console.log(`Monolith API: 🌐 http://${address}:${port}`)
+      },
+    )
   }
 }

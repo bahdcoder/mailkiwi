@@ -1,3 +1,4 @@
+import { apiEnv } from "@/api/env/api_env.ts"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import Fs from "node:fs/promises"
@@ -9,7 +10,6 @@ import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_act
 
 import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
 
-import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.ts"
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 
@@ -28,20 +28,19 @@ import type { Broadcast } from "@/database/schema/database_schema_types.js"
 import { broadcasts, contacts, teams } from "@/database/schema/schema.js"
 
 import { ContainerKey } from "@/shared/container/index.js"
-import { config, env } from "@/shared/env/index.js"
 
 import { createRedisDatabaseInstance } from "@/redis/redis_client.ts"
 
 import { addSecondsToDate } from "@/utils/dates.ts"
 import { container } from "@/utils/typi.js"
 
-const connection = await createDatabaseClient(env.DATABASE_URL)
-const redis = createRedisDatabaseInstance(env.REDIS_URL)
+const connection = await createDatabaseClient(apiEnv.DATABASE_URL)
+const redis = createRedisDatabaseInstance(apiEnv.REDIS_URL)
 
 const database = createDrizzleDatabase(connection)
 
-container.registerInstance(ContainerKey.env, env)
-container.registerInstance(ContainerKey.config, config)
+container.registerInstance(ContainerKey.env, apiEnv)
+container.registerInstance(ContainerKey.config, apiEnv)
 container.registerInstance(ContainerKey.database, database)
 container.registerInstance(ContainerKey.redis, redis)
 
@@ -173,17 +172,14 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
 
   console.log("\n Seeded data ✅ \n")
 
-  const accessToken = await container
-    .make(AccessTokenRepository)
-    .createAccessToken(user)
-
-  const { username, accessToken: teamAccessToken } = await container
-    .make(CreateTeamAccessTokenAction)
-    .handle(team.id)
+  const { accessKey: smtpUsername, accessSecret: teamAccessToken } =
+    await container.make(CreateTeamAccessTokenAction).handle(team.id)
 
   await container
     .make(CreateSendingDomainAction)
     .handle({ name: "kb.openmailer.org" }, team.id)
+
+  const smtpPassword = teamAccessToken.release()
 
   console.dir(
     [
@@ -191,9 +187,8 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
         {
           userId: user.id,
           teamId: team.id,
-          accessToken: accessToken.toJSON().token,
-          smtpUsername: username,
-          smtpPassword: teamAccessToken.toJSON().token,
+          smtpUsername,
+          smtpPassword,
         },
       ],
       [{ teamId: team.id }],

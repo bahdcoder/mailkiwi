@@ -9,7 +9,7 @@ export class MtaLogsController {
   }
 
   async index(ctx: HonoContext) {
-    console.log({ ctx: await ctx.req.json() })
+    console.dir({ ctx: await ctx.req.json() }, { depth: null })
 
     // TODO: Pipe logs to Kafka / NATS / Redis Streams for processing
 

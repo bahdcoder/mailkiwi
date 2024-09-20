@@ -1,8 +1,8 @@
+import { apiEnv } from "@/api/env/api_env.ts"
 import type { Next } from "hono"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
-import { makeConfig } from "@/shared/container/index.js"
 import type { HonoContext } from "@/shared/server/types.js"
 import { TeamWithMembers } from "@/shared/types/team.ts"
 
@@ -16,7 +16,7 @@ export class TeamMiddleware {
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
-    const teamHeader = ctx.req.header(makeConfig().software.teamHeader)
+    const teamHeader = ctx.req.header(apiEnv.software.teamHeader)
 
     let team = teamHeader
       ? await this.teamRepository.findById(parseInt(teamHeader))

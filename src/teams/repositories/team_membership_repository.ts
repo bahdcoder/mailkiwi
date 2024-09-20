@@ -1,3 +1,4 @@
+import { apiEnv } from "@/api/env/api_env.ts"
 import { and, eq, or, sql } from "drizzle-orm"
 import { DateTime } from "luxon"
 
@@ -97,7 +98,7 @@ export class TeamMembershipRepository extends BaseRepository {
   }
 
   async findBySignedUrlToken(token: string) {
-    const decodedToken = container.make(SignedUrlManager).decode(token)
+    const decodedToken = new SignedUrlManager(apiEnv.APP_KEY).decode(token)
 
     if (!decodedToken) {
       return null

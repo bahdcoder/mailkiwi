@@ -1,3 +1,4 @@
+import { apiEnv } from "@/api/env/api_env.ts"
 import { makeMinioClient } from "@/minio/minio_client.ts"
 import { sentenceCase } from "change-case"
 import { stringify as csvStringify } from "csv-stringify"
@@ -16,9 +17,8 @@ import {
   Audience,
   Contact,
 } from "@/database/schema/database_schema_types.ts"
-import { audiences, contacts } from "@/database/schema/schema.ts"
+import { contacts } from "@/database/schema/schema.ts"
 
-import { makeEnv } from "@/shared/container/index.ts"
 import { Mailer } from "@/shared/mailers/mailer.ts"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
@@ -112,8 +112,6 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     database,
     payload,
   }: JobContext<ExportContactsJobPayload>) {
-    const env = makeEnv()
-
     const filteredContacts = await container
       .make(ContactRepository)
       .findAllContactsWithTags(
@@ -168,7 +166,7 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
       )
     }
 
-    await Mailer.from(env.SMTP_MAIL_FROM)
+    await Mailer.from(apiEnv.SMTP_MAIL_FROM)
       .to(user.email)
       .subject("Your contacts export is ready.")
       .content(

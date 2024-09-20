@@ -9,6 +9,8 @@ import { hasMany } from "@/database/utils/relationships.ts"
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
 
+import { REDIS_KNOWN_KEYS } from "@/redis/redis_client.ts"
+
 import { container } from "@/utils/typi.ts"
 
 export class TeamRepository extends BaseRepository {
@@ -80,23 +82,15 @@ export interface CachedDkimHash {
 }
 
 export class CachedTeamApiKeys {
-  private KEY_PREFIX = "API_KEY"
-
   constructor(private redis = makeRedis()) {}
 
   private pair = {
-    username: "",
-    apiKey: new Secret(""),
+    accessKey: "",
+    accessSecret: "",
   }
 
   async destroy() {
     await this.redis.del(this.key())
-  }
-
-  username(username: string) {
-    this.pair.username = username
-
-    return this
   }
 
   get() {
@@ -104,22 +98,27 @@ export class CachedTeamApiKeys {
   }
 
   private key() {
-    return `${this.KEY_PREFIX}:${this.pair.username}`
+    return REDIS_KNOWN_KEYS.ACCESS_KEY(this.pair.accessKey)
   }
 
-  apiKey(apiKey: Secret<string>) {
-    this.pair.apiKey = apiKey
+  accessKey(accessKey: string) {
+    this.pair.accessKey = accessKey
+
+    return this
+  }
+
+  accessSecret(accessSecret: string) {
+    this.pair.accessSecret = accessSecret
 
     return this
   }
 
   async save() {
-    await this.redis.set(this.key(), this.pair.apiKey.release())
+    await this.redis.set(this.key(), this.pair.accessSecret)
   }
 }
 
 export class CachedDomainDkim {
-  private HASH_PREFIX = "DOMAIN"
   private domain: string
 
   constructor(private redis = makeRedis()) {}
@@ -131,7 +130,7 @@ export class CachedDomainDkim {
   }
 
   private key() {
-    return `${this.HASH_PREFIX}:${this.domain}`
+    return REDIS_KNOWN_KEYS.DOMAIN(this.domain)
   }
 
   async get() {

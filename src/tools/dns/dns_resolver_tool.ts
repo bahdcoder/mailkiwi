@@ -1,8 +1,7 @@
+import { apiEnv } from "@/api/env/api_env.ts"
 import dns from "node:dns/promises"
 
 import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.ts"
-
-import { makeConfig } from "@/shared/container/index.ts"
 
 import { container } from "@/utils/typi.ts"
 
@@ -11,7 +10,7 @@ export class DnsResolverTool {
 
   private dnsConfigurationTool: DnsConfigurationTool
 
-  constructor(private config = makeConfig()) {}
+  constructor(private env = apiEnv) {}
 
   forDomain(domain: string) {
     this.domain = domain
@@ -26,7 +25,7 @@ export class DnsResolverTool {
   private async resolveCnameRecords() {
     try {
       return await dns.resolveCname(
-        `${this.config.software.bounceSubdomain}.${this.domain}`,
+        `${this.env.software.bounceSubdomain}.${this.domain}`,
       )
     } catch (error) {
       return [] as string[]
@@ -64,7 +63,7 @@ export class DnsResolverTool {
 
   private isCnameConfigured(cnameRecords: string[]) {
     return cnameRecords.some(
-      (record) => record === this.config.software.bounceHost,
+      (record) => record === this.env.software.bounceHost,
     )
   }
 
@@ -88,7 +87,7 @@ export class DnsResolverTool {
         dkimSubDomain,
       ),
       returnPathConfigured: cnameRecords.includes(
-        this.config.software.bounceHost,
+        this.env.software.bounceHost,
       ),
     }
   }

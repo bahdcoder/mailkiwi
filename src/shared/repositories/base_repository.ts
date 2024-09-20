@@ -22,37 +22,4 @@ export class BaseRepository {
   cuid() {
     return cuid()
   }
-
-  protected hasMany<
-    T extends AnyMySqlTable,
-    R extends AnyMySqlTable,
-    TSelect extends InferSelectModel<T>,
-    RSelect extends InferSelectModel<R>,
-  >(
-    results: (TSelect & { [K in keyof RSelect]?: RSelect[K] | null })[],
-    parentTable: keyof (TSelect & RSelect),
-    childTable: keyof (TSelect & RSelect),
-    childArrayName: string,
-  ): (TSelect & { [key: string]: RSelect[] })[] {
-    const groupedResults: {
-      [key: string]: TSelect & { [key: string]: RSelect[] }
-    } = {}
-
-    for (const row of results) {
-      const parentKey = JSON.stringify(row[parentTable])
-      if (!groupedResults[parentKey]) {
-        groupedResults[parentKey] = {
-          ...(row[parentTable] as TSelect),
-          [childArrayName]: [],
-        }
-      }
-      if (row[childTable]) {
-        groupedResults[parentKey][childArrayName].push(
-          row[childTable] as RSelect,
-        )
-      }
-    }
-
-    return Object.values(groupedResults)
-  }
 }

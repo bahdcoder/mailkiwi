@@ -1,3 +1,5 @@
+import { ApiEnvVariables, apiEnv } from "@/api/env/api_env.js"
+import { HonoApi } from "@/api/server/hono_api.ts"
 import { RootController } from "@/views/controllers/root_controller.js"
 import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.js"
 import type { Redis } from "ioredis"
@@ -32,12 +34,6 @@ import {
   makeDatabaseConnection,
   makeRedis,
 } from "@/shared/container/index.js"
-import {
-  type ConfigVariables,
-  type EnvVariables,
-  config,
-  env,
-} from "@/shared/env/index.js"
 import { Hono, type HonoInstance } from "@/shared/server/hono.js"
 
 import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
@@ -45,20 +41,16 @@ import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
 import { container } from "@/utils/typi.js"
 
 export class Ignitor {
-  protected env: EnvVariables
-  protected config: ConfigVariables
+  protected env: ApiEnvVariables
   protected app: HonoInstance
   protected database: DrizzleClient
   protected redis: Redis
 
   boot() {
-    this.env = env
+    this.env = apiEnv
     container.register(ContainerKey.env, this.env)
 
-    this.config = config
-    container.register(ContainerKey.config, this.config)
-
-    this.app = new Hono()
+    this.app = new HonoApi()
     container.register(ContainerKey.app, this.app)
 
     return this

@@ -1,3 +1,4 @@
+import { apiEnv } from "@/api/env/api_env.ts"
 import { faker } from "@faker-js/faker"
 import { and, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
@@ -6,9 +7,9 @@ import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { audiences, contacts } from "@/database/schema/schema.js"
+import { audiences } from "@/database/schema/schema.js"
 
-import { makeConfig, makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from "@/shared/container/index.js"
 
 describe("@audiences", () => {
   test("can create an audience only if authenticated", async ({
@@ -107,7 +108,7 @@ describe("@audiences", () => {
         name: "Newsletter",
       },
       headers: {
-        [makeConfig().software.teamHeader]:
+        [apiEnv.software.teamHeader]:
           unauthorizedUser?.teams?.[0]?.id?.toString(),
       },
     })

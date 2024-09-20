@@ -26,7 +26,7 @@ import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_key
 import { container } from "@/utils/typi.ts"
 
 describe("Run automation step for contact job", () => {
-  test.only("automation step action: send email for a contact", async ({
+  test("automation step action: send email for a contact", async ({
     expect,
   }) => {
     await refreshDatabase()

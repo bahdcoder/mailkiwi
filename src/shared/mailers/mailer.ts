@@ -1,4 +1,5 @@
 import type { MailObject, MailerDriverResponse } from "./mailer_types.js"
+import { apiEnv } from "@/api/env/api_env.ts"
 import {
   type SentMessageInfo,
   type Transporter,
@@ -6,7 +7,6 @@ import {
 } from "nodemailer"
 import { v4 as uuidV4 } from "uuid"
 
-import { env } from "@/shared/env/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.ts"
 
 export class MailerClass {
@@ -16,16 +16,16 @@ export class MailerClass {
   // this ensures that our reputation tracking engine on the smtp server still counts
   // reputation correctly for the sender based on their teamId and api key
   transport = createTransport({
-    port: env.SMTP_PORT,
-    host: env.SMTP_HOST,
+    port: apiEnv.SMTP_PORT,
+    host: apiEnv.SMTP_HOST,
     secure: true,
     auth: {
-      user: env.SMTP_USER,
-      pass: env.SMTP_PASS,
+      user: apiEnv.SMTP_USER,
+      pass: apiEnv.SMTP_PASS,
     },
     tls: {
-      requestCert: env.isProd,
-      rejectUnauthorized: env.isProd,
+      requestCert: apiEnv.isProd,
+      rejectUnauthorized: apiEnv.isProd,
     },
   })
 

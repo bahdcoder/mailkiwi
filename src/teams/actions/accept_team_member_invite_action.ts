@@ -6,8 +6,6 @@ import { TeamMembership } from "@/database/schema/database_schema_types.ts"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.ts"
 
-import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.ts"
-
 import { container } from "@/utils/typi.js"
 
 export class AcceptTeamMemberInviteAction {

@@ -20,6 +20,7 @@ import {
 import { hasMany, hasOne } from "@/database/utils/relationships.ts"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
+import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.ts"
 import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.ts"
 
 import { container } from "@/utils/typi.ts"
@@ -168,13 +169,14 @@ describe("@auth user login", () => {
     const json = await response.json()
 
     expect(response.status).toBe(200)
-    expect(json.accessToken.token).toBeDefined()
-    expect(() => new Date(json.accessToken.expiresAt)).not.toThrowError()
+
+    expect(json.accessKey).toBeDefined()
+    expect(json.accessSecret).toBeDefined()
 
     const profileResponse = await makeRequest("/auth/profile", {
       method: "GET",
       headers: {
-        authorization: `Bearer ${json.accessToken.token}`,
+        ...getAuthenticationHeaders(json.accessKey, json.accessSecret),
       },
     })
 

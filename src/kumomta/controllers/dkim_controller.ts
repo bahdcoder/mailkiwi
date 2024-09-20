@@ -1,5 +1,6 @@
+import { mtaAuthenticatorEnv } from "@/kumomta/env/mta_authenticator_env.ts"
+
 import {
-  makeEnv,
   makeMtaAuthenticatorApp,
   makeRedis,
 } from "@/shared/container/index.ts"
@@ -11,7 +12,6 @@ export class DkimController extends BaseController {
   constructor(
     private app = makeMtaAuthenticatorApp(),
     private redis = makeRedis(),
-    private env = makeEnv(),
   ) {
     super()
 
@@ -29,10 +29,10 @@ export class DkimController extends BaseController {
     > = await this.redis.hgetall(`DOMAIN:${domain}`)
 
     if (!domainDkim.encryptedDkimPrivateKey) {
-      return ctx.json({ status: "failed" })
+      return ctx.json({ status: "failed" }, 400)
     }
 
-    const privateKey = new Encryption(this.env.APP_KEY).decrypt(
+    const privateKey = new Encryption(mtaAuthenticatorEnv.APP_KEY).decrypt(
       domainDkim.encryptedDkimPrivateKey,
     )
 

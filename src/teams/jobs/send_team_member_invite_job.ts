@@ -1,6 +1,7 @@
+import { apiEnv } from "@/api/env/api_env.ts"
+
 import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.ts"
 
-import { makeEnv } from "@/shared/container/index.ts"
 import { Mailer } from "@/shared/mailers/mailer.ts"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
@@ -22,8 +23,6 @@ export class SendTeamMemberInviteJob extends BaseJob<SendTeamMemberInviteJobPayl
   }
 
   async handle({ payload }: JobContext<SendTeamMemberInviteJobPayload>) {
-    const env = makeEnv()
-
     const invite = await container
       .make(TeamMembershipRepository)
       .findById(payload.inviteId)
@@ -32,11 +31,12 @@ export class SendTeamMemberInviteJob extends BaseJob<SendTeamMemberInviteJobPayl
       return this.done()
     }
 
-    const token = container
-      .make(SignedUrlManager)
-      .encode(payload.inviteId.toString(), {})
+    const token = new SignedUrlManager(apiEnv.APP_KEY).encode(
+      payload.inviteId.toString(),
+      {},
+    )
 
-    await Mailer.from(env.SMTP_MAIL_FROM)
+    await Mailer.from(apiEnv.SMTP_MAIL_FROM)
       .to(invite.email)
       .subject("You've been invited to join a team on Kibamail.")
       .content(

@@ -190,3 +190,9 @@
   - Infrastructure can send max 500,000 emails per hour
   - Total per month (30 days, 10 hours a day): 30 x 10 x 500,000 = 150,000,000 emails per month
   - Cost per email: 150,000,000 / 600 = $0.000004 per email
+
+# Helpful email tools
+
+https://github.com/domainaware/parsedmarc
+https://github.com/Mindbaz/awesome-opensource-email
+https://dev.me/

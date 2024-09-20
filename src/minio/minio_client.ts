@@ -1,7 +1,6 @@
+import { apiEnv } from "@/api/env/api_env.ts"
 import { Client } from "minio"
 import { Readable } from "stream"
-
-import { makeEnv } from "@/shared/container/index.ts"
 
 import { container } from "@/utils/typi.ts"
 
@@ -9,11 +8,11 @@ type BucketName = "contacts" | "attachments" | "emails"
 
 export class MinioClient {
   private client = new Client({
-    useSSL: this.env.isProd,
-    endPoint: this.env.FILE_UPLOADS_ENDPOINT,
-    port: parseInt(this.env.FILE_UPLOADS_PORT),
-    accessKey: this.env.FILE_UPLOADS_ACCESS_KEY,
-    secretKey: this.env.FILE_UPLOADS_ACCESS_SECRET,
+    useSSL: apiEnv.isProduction,
+    endPoint: apiEnv.FILE_UPLOADS_ENDPOINT,
+    port: apiEnv.FILE_UPLOADS_PORT,
+    accessKey: apiEnv.FILE_UPLOADS_ACCESS_KEY,
+    secretKey: apiEnv.FILE_UPLOADS_ACCESS_SECRET,
   })
 
   private bucketName: string
@@ -31,8 +30,6 @@ export class MinioClient {
 
     return this
   }
-
-  constructor(private env = makeEnv()) {}
 
   private async ensureBucketExists() {
     const exists = await this.client.bucketExists(this.bucketName)

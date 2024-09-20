@@ -1,4 +1,4 @@
-import { Ignitor } from "@/boot/ignitor.js"
+import { Ignitor } from "@/api/ignitor/ignitor_api.ts"
 import { SendTransactionalEmailJob } from "@/transactional/jobs/send_transactional_email_job.js"
 import { type Job, Worker } from "bullmq"
 

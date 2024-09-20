@@ -51,11 +51,11 @@ export class AuthController extends BaseController {
   }
 
   async createApiKey(ctx: HonoContext) {
-    const { accessToken, username } = await container
+    const { accessSecret, accessKey } = await container
       .make(CreateTeamAccessTokenAction)
       .handle(ctx.get("team").id)
 
-    return ctx.json({ passwd: accessToken.toJSON()?.token, username })
+    return ctx.json({ accessSecret: accessSecret.release(), accessKey })
   }
 
   async login(ctx: HonoContext) {
@@ -63,11 +63,10 @@ export class AuthController extends BaseController {
 
     const user = await this.userRepository.findByEmail(data.email)
 
-    const passwordIsValid =
-      await this.userRepository.authenticateUserPassword(
-        user,
-        data.password,
-      )
+    const passwordIsValid = await this.userRepository.verify(
+      data.password,
+      user.password,
+    )
 
     if (!user || !passwordIsValid) {
       throw E_VALIDATION_FAILED([
@@ -78,12 +77,12 @@ export class AuthController extends BaseController {
       ])
     }
 
-    const accessToken =
-      await this.accessTokenRepository.createAccessToken(user)
+    const { accessKey, accessSecret } =
+      await this.accessTokenRepository.create(user.id, "user")
 
     return ctx.json({
-      ...user,
-      accessToken: accessToken.toJSON(),
+      accessSecret: accessSecret.release(),
+      accessKey: accessKey,
     })
   }
 }

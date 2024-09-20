@@ -1,3 +1,5 @@
+import { apiEnv } from "@/api/env/api_env.ts"
+
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
 import type {
@@ -5,8 +7,9 @@ import type {
   User,
 } from "@/database/schema/database_schema_types.js"
 
-import { makeApp, makeConfig } from "@/shared/container/index.js"
+import { makeApp } from "@/shared/container/index.js"
 import type { HTTPMethods } from "@/shared/server/types.js"
+import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.ts"
 
 import { container } from "@/utils/typi.js"
 
@@ -47,7 +50,10 @@ export async function makeRequestAsUser(
     AccessTokenRepository,
   )
 
-  const accessToken = await accessTokenRepository.createAccessToken(user)
+  const { accessKey, accessSecret } = await accessTokenRepository.create(
+    user.id,
+    "user",
+  )
 
   const { method, path, ...restOfOptions } = injectOptions
 
@@ -56,8 +62,8 @@ export async function makeRequestAsUser(
     body: injectOptions.body,
     headers: {
       "Content-Type": "application/json",
-      authorization: `Bearer ${accessToken.toJSON().token}`,
-      [makeConfig().software.teamHeader]: (
+      ...getAuthenticationHeaders(accessKey, accessSecret.release()),
+      [apiEnv.software.teamHeader]: (
         teamId ?? (user as User & { teams: Team[] })?.teams?.[0]?.id
       ).toString(),
       ...restOfOptions.headers,

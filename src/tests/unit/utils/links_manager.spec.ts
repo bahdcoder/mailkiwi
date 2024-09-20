@@ -1,19 +1,17 @@
+import { ApiEnvVariables } from "@/api/env/api_env.ts"
 import { Secret } from "@poppinss/utils"
 import { beforeEach, describe, expect, test } from "vitest"
 
-import type { EnvVariables } from "@/shared/env/index.ts"
 import {
   SignedUrlManager,
   type UrlMetadata,
 } from "@/shared/utils/links/signed_url_manager.ts"
 
-describe("Link manager ", () => {
+describe("@link-manager Link manager ", () => {
   let linkManager: SignedUrlManager
 
   beforeEach(() => {
-    linkManager = new SignedUrlManager({
-      APP_KEY: new Secret("test_app_key"),
-    } as EnvVariables)
+    linkManager = new SignedUrlManager(new Secret("test_app_key"))
   })
 
   test("encode should generate a valid encoded link", () => {

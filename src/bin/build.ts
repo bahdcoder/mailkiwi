@@ -3,11 +3,11 @@ import fs from "node:fs/promises"
 import path from "node:path"
 
 const output = await build({
-  entryPoints: ["src/start/main.ts"],
+  entryPoints: ["src/api/start/api_prod.ts"],
   bundle: true,
   platform: "node",
   target: "node20",
-  outfile: "build/main.js",
+  outfile: "build/api/main.js",
   sourcemap: true,
   minify: false,
   metafile: true,

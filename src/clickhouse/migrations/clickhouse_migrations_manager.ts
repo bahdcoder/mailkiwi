@@ -1,9 +1,8 @@
+import { apiEnv } from "@/api/env/api_env.ts"
 import { type ClickHouseClient, createClient } from "@clickhouse/client"
 import chalk from "chalk"
 import fs from "node:fs/promises"
 import path from "node:path"
-
-import { env } from "@/shared/env/index.ts"
 
 export class MigrationFileManager {
   noob() {}
@@ -59,7 +58,7 @@ export class MigrationManager {
 
   constructor() {
     this.client = createClient({
-      url: env.CLICKHOUSE_DATABASE_URL,
+      url: apiEnv.CLICKHOUSE_DATABASE_URL,
     })
   }
 

@@ -1,3 +1,5 @@
+import { apiEnv } from "@/api/env/api_env.ts"
+
 import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
@@ -8,14 +10,14 @@ import { SendingDomainRepository } from "@/sending_domains/repositories/sending_
 import { DkimHostNameTool } from "@/tools/dkim/dkim_hostname_tool.js"
 import { DkimKeyPairTool } from "@/tools/dkim/dkim_keypair_tool.js"
 
-import { makeConfig, makeDatabase } from "@/shared/container/index.ts"
+import { makeDatabase } from "@/shared/container/index.ts"
 import { Queue } from "@/shared/queue/queue.js"
 
 import { container } from "@/utils/typi.js"
 
 export class CreateSendingDomainAction {
   constructor(
-    private config = makeConfig(),
+    private env = apiEnv,
     private database = makeDatabase(),
     private teamRepository = container.make(TeamRepository),
     private sendingDomainRepository = container.make(
@@ -27,7 +29,7 @@ export class CreateSendingDomainAction {
     const {
       publicKey: dkimPublicKey,
       encrypted: { privateKey: dkimPrivateKey },
-    } = container.make(DkimKeyPairTool).generate()
+    } = new DkimKeyPairTool(this.env.APP_KEY).generate()
 
     const sendingDomain = await this.database.transaction(
       async (transaction) => {
@@ -39,15 +41,15 @@ export class CreateSendingDomainAction {
             dkimPublicKey,
             dkimPrivateKey: dkimPrivateKey.release(),
             // The default domain for return path would be kb.customerdomain.com -> points to mail.kbmta.net
-            returnPathSubDomain: this.config.software.bounceSubdomain,
-            returnPathDomainCnameValue: this.config.software.bounceHost,
+            returnPathSubDomain: this.env.software.bounceSubdomain,
+            returnPathDomainCnameValue: this.env.software.bounceHost,
             dkimSubDomain, // 20241112010101._domainkey
           }),
 
           this.teamRepository.dkim().forDomain(payload.name).save({
             encryptedDkimPrivateKey: dkimPrivateKey.release(),
-            returnPathSubDomain: this.config.software.bounceSubdomain,
-            returnPathDomainCnameValue: this.config.software.bounceHost,
+            returnPathSubDomain: this.env.software.bounceSubdomain,
+            returnPathDomainCnameValue: this.env.software.bounceHost,
             dkimSubDomain,
             dkimPublicKey,
           }),
