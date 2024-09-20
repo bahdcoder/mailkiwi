@@ -29,7 +29,6 @@ describe("Run automation step for contact job", () => {
   test("automation step action: send email for a contact", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -96,7 +95,6 @@ describe("Run automation step for contact job", () => {
   test("automation step action: attach tags for a contact", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -150,7 +148,6 @@ describe("Run automation step for contact job", () => {
   test("automation step action: detach tags from a contact", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()

@@ -11,10 +11,6 @@ import { SendingDomainRepository } from "@/sending_domains/repositories/sending_
 import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.js"
 
 import { sendingDomains } from "@/database/schema/schema.js"
 
@@ -24,8 +20,6 @@ import { Queue } from "@/shared/queue/queue.js"
 import { container } from "@/utils/typi.js"
 
 export const setupDomainForDnsChecks = async (domain?: string) => {
-  await refreshDatabase()
-
   const { team, user } = await createUser()
 
   const TEST_DOMAIN = domain ?? faker.internet.domainName()
@@ -55,12 +49,10 @@ export const setupDomainForDnsChecks = async (domain?: string) => {
     user,
   }
 }
-describe("Sending domain dns configuration check", () => {
+describe("@sending-domains-dns Sending domain dns configuration check", () => {
   test("marks sending domain as verified when dns records are correctly configured", async ({
     expect,
   }) => {
-    await refreshDatabase()
-
     const database = makeDatabase()
 
     const { records, sendingDomain, sendingDomainId, TEST_DOMAIN } =
@@ -102,7 +94,6 @@ describe("Sending domain dns configuration check", () => {
   test("marks only return path as verified when only return path dns records are correctly configured", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const database = makeDatabase()
     const { team } = await createUser()
 
@@ -115,14 +106,6 @@ describe("Sending domain dns configuration check", () => {
     const sendingDomain = await database.query.sendingDomains.findFirst({
       where: eq(sendingDomains.id, sendingDomainId),
     })
-
-    const records = container
-      .make(DnsConfigurationTool)
-      .forDomain(TEST_DOMAIN)
-      .getRecords(
-        sendingDomain?.dkimPublicKey as string,
-        sendingDomain?.dkimSubDomain as string,
-      )
 
     const mockResolveCname = vi
       .spyOn(dns, "resolveCname")
@@ -160,9 +143,6 @@ describe("Sending domain dns configuration check", () => {
   test("marks only dkim as verified when only dkim dns records are correctly configured", async ({
     expect,
   }) => {
-    await refreshRedisDatabase()
-    await refreshDatabase()
-
     const database = makeDatabase()
     const { team } = await createUser()
 
@@ -198,7 +178,13 @@ describe("Sending domain dns configuration check", () => {
       payload: { sendingDomainId },
     })
 
-    const checkDnsJobs = await Queue.sending_domains().getJobs()
+    const jobs = await Queue.sending_domains().getJobs()
+
+    const checkDnsJobs = jobs.filter(
+      (job) =>
+        job?.data?.sendingDomainId === sendingDomainId &&
+        job?.name === CheckSendingDomainDnsConfigurationJob.id,
+    )
 
     const refreshedSendingDomain =
       await database.query.sendingDomains.findFirst({

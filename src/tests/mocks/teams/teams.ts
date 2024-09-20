@@ -22,7 +22,6 @@ import {
 } from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
 import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
 export const refreshRedisDatabase = async () => {

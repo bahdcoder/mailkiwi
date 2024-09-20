@@ -34,7 +34,10 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
   }: JobContext<RunAutomationForContactJobPayload>) {
     // check if contact matches the trigger for this automation.
     const trigger = await database.query.automationSteps.findFirst({
-      where: eq(automationSteps.type, "TRIGGER"),
+      where: and(
+        eq(automationSteps.type, "TRIGGER"),
+        eq(automationSteps.automationId, payload.automationId),
+      ),
     })
 
     if (!trigger) {
@@ -60,7 +63,10 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
 
     const nextAutomationStep =
       await database.query.automationSteps.findFirst({
-        where: eq(automationSteps.parentId, trigger.id),
+        where: and(
+          eq(automationSteps.parentId, trigger.id),
+          eq(automationSteps.automationId, payload.automationId),
+        ),
       })
 
     if (!nextAutomationStep) {

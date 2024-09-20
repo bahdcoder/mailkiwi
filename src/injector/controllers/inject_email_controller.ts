@@ -1,16 +1,23 @@
 import { apiEnv } from "@/api/env/api_env.js"
 import { InjectEmailSchema } from "@/injector/dto/inject_email_dto.js"
+import { AuthorizeInjectorApiKeyMiddleware } from "@/injector/middleware/authorize_injector_api_key_middleware.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import { makeHttpClient } from "@/shared/http/http_client.js"
 import { HonoContext } from "@/shared/server/types.js"
 
+import { container } from "@/utils/typi.js"
+
 export class InjectEmailController extends BaseController {
   constructor(private app = makeApp()) {
     super()
 
-    this.app.defineRoutes([["POST", "/", this.index.bind(this)]])
+    this.app.defineRoutes([["POST", "/", this.index.bind(this)]], {
+      middleware: [
+        container.make(AuthorizeInjectorApiKeyMiddleware).handle,
+      ],
+    })
   }
 
   async index(ctx: HonoContext) {

@@ -6,13 +6,13 @@ import { describe, test } from "vitest"
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { sendingDomains } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 import { Encryption } from "@/shared/utils/encryption/encryption.js"
 
 import { container } from "@/utils/typi.js"
@@ -21,15 +21,15 @@ describe("@domains", () => {
   test("can create unique sending domains for a team", async ({
     expect,
   }) => {
-    await refreshDatabase()
-
     const { team, user } = await createUser()
+
+    const name = cuid() + "newsletter.kibamail.com"
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
       path: "/sending_domains",
       body: {
-        name: "newsletter.kibamail.com",
+        name,
       },
     })
 

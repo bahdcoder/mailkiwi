@@ -15,10 +15,7 @@ import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 
 import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
 
-import {
-  refreshDatabase,
-  seedAutomation,
-} from "@/tests/mocks/teams/teams.js"
+import { seedAutomation } from "@/tests/mocks/teams/teams.js"
 
 import {
   createDatabaseClient,
@@ -46,8 +43,6 @@ container.registerInstance(ContainerKey.redis, redis)
 
 const registerUserAction = container.resolve(RegisterUserAction)
 const createAudienceAction = container.resolve(CreateAudienceAction)
-
-await refreshDatabase()
 
 for (let userIndex = 0; userIndex < 1; userIndex++) {
   console.log(`\nCreating user: ${userIndex + 1}\n`)

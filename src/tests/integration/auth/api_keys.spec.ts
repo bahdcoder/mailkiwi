@@ -5,7 +5,6 @@ import { TeamRepository } from "@/teams/repositories/team_repository.js"
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { container } from "@/utils/typi.js"
@@ -14,8 +13,6 @@ describe("@auth API Token Generation", () => {
   test("can generate an api token for api and smtp access", async ({
     expect,
   }) => {
-    await refreshRedisDatabase()
-
     const { user } = await createUser()
 
     const response = await makeRequestAsUser(user, {

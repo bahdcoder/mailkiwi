@@ -1,4 +1,4 @@
-import { type SQLWrapper, eq, inArray } from "drizzle-orm"
+import { type SQLWrapper, and, eq, inArray } from "drizzle-orm"
 
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
@@ -54,6 +54,8 @@ export class GetContactsAction {
           },
         ])
       }
+
+      queryConditions.push(eq(contacts.audienceId, audience.id))
     }
 
     if (segmentId) {
@@ -81,9 +83,11 @@ export class GetContactsAction {
           .from(tagsOnContacts)
           .innerJoin(tags, eq(tagsOnContacts.tagId, tags.id))
           .where(
-            inArray(
-              tagsOnContacts.contactId,
-              rows.map((row) => row.id),
+            and(
+              inArray(
+                tagsOnContacts.contactId,
+                rows.map((row) => row.id),
+              ),
             ),
           )
 

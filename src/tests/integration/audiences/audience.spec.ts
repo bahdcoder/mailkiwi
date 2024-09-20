@@ -4,7 +4,6 @@ import { and, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { audiences } from "@/database/schema/schema.js"
@@ -66,8 +65,6 @@ describe("@audiences", () => {
   test("can create an audience when properly authenticated and authorized", async ({
     expect,
   }) => {
-    await refreshDatabase()
-
     const { user } = await createUser()
     const database = makeDatabase()
 

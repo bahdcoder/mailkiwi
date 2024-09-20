@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker"
+import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { contacts, segments, tags } from "@/database/schema/schema.js"
@@ -17,7 +17,6 @@ import { container } from "@/utils/typi.js"
 
 describe("@audience segments", () => {
   test("can create an audience segment", async ({ expect }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
 
     const database = makeDatabase()
@@ -49,7 +48,11 @@ describe("@audience segments", () => {
 
     expect(response.status).toBe(200)
 
-    const savedSegment = await database.query.segments.findMany({})
+    const savedSegment = await database
+      .select()
+      .from(segments)
+      .where(eq(segments.audienceId, audience.id))
+      .limit(1)
 
     expect(savedSegment).toEqual([
       {
@@ -78,7 +81,6 @@ describe("@audience segments", () => {
   test("cannot create an audience with invalid conditions", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
 
     const database = makeDatabase()
@@ -120,7 +122,10 @@ describe("@audience segments", () => {
       ],
     })
 
-    const savedSegment = await database.query.segments.findMany({})
+    const savedSegment = await database
+      .select()
+      .from(segments)
+      .where(eq(segments.audienceId, audience.id))
 
     expect(savedSegment).toHaveLength(0)
   })
@@ -128,7 +133,6 @@ describe("@audience segments", () => {
   test("can select contacts for a specific segment: email starts with", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
 
     const database = makeDatabase()
@@ -202,7 +206,6 @@ describe("@audience segments", () => {
   }) => {
     const database = makeDatabase()
 
-    await refreshDatabase()
     const { user, audience } = await createUser()
 
     await database
@@ -291,7 +294,6 @@ describe("@audience segments", () => {
   }) => {
     const database = makeDatabase()
 
-    await refreshDatabase()
     const { user, audience } = await createUser()
 
     const countForNonSegment = faker.number.int({
@@ -362,10 +364,7 @@ describe("@audience segments", () => {
       await container.make(ContactRepository).attachTags(contactId, tagIds)
     }
 
-    const segmentId = faker.number.int()
-
-    await database.insert(segments).values({
-      id: segmentId,
+    const result = await database.insert(segments).values({
       audienceId: audience.id,
       name: faker.lorem.words(3),
       filterGroups: {
@@ -384,6 +383,8 @@ describe("@audience segments", () => {
         ],
       },
     })
+
+    const segmentId = fromQueryResultToPrimaryKey(result)
 
     const response = await makeRequestAsUser(user, {
       method: "GET",

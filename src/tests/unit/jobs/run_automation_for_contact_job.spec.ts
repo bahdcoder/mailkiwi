@@ -6,25 +6,18 @@ import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automatio
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-  seedAutomation,
-} from "@/tests/mocks/teams/teams.js"
+import { seedAutomation } from "@/tests/mocks/teams/teams.js"
 
 import { contacts } from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
 import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
 describe("Run automation for contact job", () => {
   test("successfully runs an automation job for a contact by queueing next job", async ({
     expect,
   }) => {
-    await refreshRedisDatabase()
-    await refreshDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -51,7 +44,11 @@ describe("Run automation for contact job", () => {
       },
     })
 
-    const automationsQueueJobs = await Queue.automations().getJobs()
+    const jobs = await Queue.automations().getJobs()
+
+    const automationsQueueJobs = jobs.filter(
+      (job) => job.data.contactId.toString() === contactId.toString(),
+    )
 
     expect(automationsQueueJobs.length).toBe(1)
 
@@ -69,8 +66,6 @@ describe("Run automation for contact job", () => {
   test("does not trigger job if contact does not match query conditions", async ({
     expect,
   }) => {
-    await refreshRedisDatabase()
-    await refreshDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -102,7 +97,11 @@ describe("Run automation for contact job", () => {
       },
     })
 
-    const automationsQueueJobs = await Queue.automations().getJobs()
+    const jobs = await Queue.automations().getJobs()
+
+    const automationsQueueJobs = jobs.filter(
+      (job) => job.data.contactId === contactId.toString(),
+    )
 
     expect(automationsQueueJobs.length).toBe(0)
     expect(result.success).toBe(true)
@@ -114,8 +113,6 @@ describe("Run automation for contact job", () => {
   test("correctly runs job if contact matches additional query conditions", async ({
     expect,
   }) => {
-    await refreshRedisDatabase()
-    await refreshDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -139,7 +136,11 @@ describe("Run automation for contact job", () => {
       },
     })
 
-    const automationsQueueJobs = await Queue.automations().getJobs()
+    const jobs = await Queue.automations().getJobs()
+
+    const automationsQueueJobs = jobs.filter(
+      (job) => job.data.contactId.toString() == contactId.toString(),
+    )
 
     expect(automationsQueueJobs.length).toBe(1)
     expect(result.success).toBe(true)

@@ -1,5 +1,6 @@
 import { ApiEnvVariables, apiEnv } from "@/api/env/api_env.js"
 import { HonoApi } from "@/api/server/hono_api.js"
+import { InjectEmailController } from "@/injector/controllers/inject_email_controller.js"
 import { MtaLogsController } from "@/kumologs/controllers/mta_logs_controller.js"
 import { DkimController } from "@/kumomta/controllers/dkim_controller.js"
 import { SmtpAuthController } from "@/kumomta/controllers/smtp_auth_controller.js"
@@ -112,6 +113,7 @@ export class Ignitor {
     container.resolve(MtaLogsController)
     container.resolve(DkimController)
     container.resolve(SmtpAuthController)
+    container.resolve(InjectEmailController)
   }
 
   async shutdown() {

@@ -10,11 +10,11 @@ export default defineConfig({
     hideSkippedTests: true,
     exclude: [...configDefaults.exclude, "**/build/**"],
     reporters: ["verbose"],
-    poolOptions: {
-      threads: {
-        singleThread: true,
-      },
-    },
+    // poolOptions: {
+    //   threads: {
+    //     singleThread: true,
+    //   },
+    // },
   },
   plugins: [tsconfigPaths()],
 })

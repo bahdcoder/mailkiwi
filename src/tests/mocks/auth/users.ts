@@ -21,6 +21,7 @@ import type {
 import { teams, users } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -92,15 +93,15 @@ export const createUser = async ({
   createBroadcast?: boolean
   createEntireTeam?: boolean
 } = {}) => {
-  const database = makeDatabase()
-
   const audienceRepository = container.resolve(AudienceRepository)
 
   const registerUserAction = container.resolve(RegisterUserAction)
 
   const { user, team } = await registerUserAction.handle({
     name: faker.person.fullName(),
-    email: faker.internet.exampleEmail(),
+    email:
+      faker.number.int({ min: 0, max: 99 }) +
+      faker.internet.exampleEmail(),
     password: "password",
   })
 

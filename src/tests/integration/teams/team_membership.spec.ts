@@ -8,10 +8,6 @@ import { TeamMembershipRepository } from "@/teams/repositories/team_membership_r
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { Queue } from "@/shared/queue/queue.js"
@@ -90,8 +86,6 @@ describe("@memberships", () => {
     })
 
     test("can invite an existing user to a team", async ({ expect }) => {
-      await refreshDatabase()
-
       const { user, team } = await createUser()
       const { user: userTwo } = await createUser()
 
@@ -122,29 +116,29 @@ describe("@memberships", () => {
     test("dispatches a job that sends an email to invite the team member", async ({
       expect,
     }) => {
-      await refreshRedisDatabase()
       const { response, getInvite } = await setup()
 
+      const { invite } = await getInvite()
       expect(response.status).toBe(200)
 
       const jobs = await Queue.accounts().getJobs()
 
-      expect(jobs).toHaveLength(1)
+      const accountJobs = jobs.filter(
+        (job) => job.data.inviteId === invite.id,
+      )
 
-      const job = jobs[0]
+      expect(accountJobs).toHaveLength(1)
+
+      const job = accountJobs?.[0]
 
       expect(job?.name).toEqual(SendTeamMemberInviteJob.id)
 
-      const { invite } = await getInvite()
       expect(job?.data).toEqual({ inviteId: invite?.id })
     })
 
     test("does not invite member if invalid payload is provided", async ({
       expect,
     }) => {
-      await refreshRedisDatabase()
-      await refreshDatabase()
-
       const { user, team } = await createUser()
 
       const body = {
@@ -168,8 +162,6 @@ describe("@memberships", () => {
 
   describe("Accept and reject invites", () => {
     test("can accept an invite to join a team", async ({ expect }) => {
-      await refreshDatabase()
-      await refreshRedisDatabase()
       const { user: invitedUser } = await createUser()
       const { team, body, getInvite, user } = await setup(
         invitedUser.email,
@@ -199,8 +191,6 @@ describe("@memberships", () => {
     test("only the invited authorized user can accept an invite to join a team", async ({
       expect,
     }) => {
-      await refreshDatabase()
-      await refreshRedisDatabase()
       const { user: invitedUser } = await createUser()
       const { user: thirdUser } = await createUser()
       const { team, body, getInvite } = await setup(invitedUser.email)
@@ -223,8 +213,6 @@ describe("@memberships", () => {
     })
 
     test("can reject an invite to join a team", async ({ expect }) => {
-      await refreshDatabase()
-      await refreshRedisDatabase()
       const { user: invitedUser } = await createUser()
       const { team, body, getInvite, user } = await setup(
         invitedUser.email,
@@ -253,8 +241,6 @@ describe("@memberships", () => {
     test("only the invited authorized user can reject an invite to join a team", async ({
       expect,
     }) => {
-      await refreshDatabase()
-      await refreshRedisDatabase()
       const { user: invitedUser } = await createUser()
       const { user: thirdUser } = await createUser()
       const { team, body, getInvite } = await setup(invitedUser.email)
@@ -328,9 +314,6 @@ describe("@memberships", () => {
     test("only an administrator can revoke team member access", async ({
       expect,
     }) => {
-      await refreshDatabase()
-      await refreshRedisDatabase()
-
       const { user: invitedUser } = await createUser()
       const { user: secondInvitedUser } = await createUser()
       const { team, body, getInvite } = await setup(

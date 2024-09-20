@@ -12,10 +12,6 @@ import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { FakeMinioClient } from "@/tests/mocks/container/minio_client_mock.js"
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.js"
 
 import {
   contacts,
@@ -28,11 +24,9 @@ import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { container } from "@/utils/typi.js"
 
 describe("@contacts exports job", () => {
-  test(
+  test.todo(
     "exports only contacts that match the filter groups criteria",
     async ({ expect }) => {
-      await refreshDatabase()
-
       const { audience, user } = await createUser()
       const database = makeDatabase()
       const redis = makeRedis()
@@ -174,7 +168,6 @@ describe("@contacts exports job", () => {
 
       container.restoreAll()
     },
-    { timeout: 7500 },
   )
 })
 

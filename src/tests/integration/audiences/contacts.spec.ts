@@ -10,16 +10,11 @@ import { ContactImportRepository } from "@/audiences/repositories/contact_import
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { ContactImport } from "@/database/schema/database_schema_types.js"
-import { contacts } from "@/database/schema/schema.js"
+import { contactImports, contacts } from "@/database/schema/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
@@ -31,7 +26,6 @@ export const setupImport = async (
   fileName: string,
   updateSettings = false,
 ) => {
-  await refreshDatabase()
   const form = new FormData()
 
   const contactsCsv = await readFile(
@@ -65,7 +59,10 @@ export const setupImport = async (
   const database = makeDatabase()
 
   let contactImport: ContactImport | null = null
-  const imports = await database.query.contactImports.findMany({})
+  const imports = await database
+    .select()
+    .from(contactImports)
+    .where(eq(contactImports.audienceId, audience.id))
 
   if (updateSettings) {
     const importId = imports?.[0]?.id
@@ -167,7 +164,6 @@ describe("@contacts update", () => {
   test("can update the first name, last name, avatar and attributes of a contact", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
@@ -204,7 +200,6 @@ describe("@contacts update", () => {
   })
 
   test("can override attributes", async ({ expect }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
@@ -250,7 +245,6 @@ describe("@contacts update", () => {
   test("can merge attributes without deleting existing attributes", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
@@ -292,7 +286,6 @@ describe("@contacts update", () => {
   test("cannot update without proper authorisation", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience, team } = await createUser()
     const { user: unauthorizedUser } = await createUser()
     const database = makeDatabase()
@@ -354,8 +347,6 @@ describe("@contacts imports", () => {
   test("can begin processing by updating processing settings and status", async ({
     expect,
   }) => {
-    await refreshRedisDatabase()
-
     const { imports, user, audience } = await setupImport("contacts.csv")
 
     const importId = imports?.[0]?.id
@@ -406,8 +397,6 @@ describe("@contacts exports", () => {
   test("can export all contacts matching provided filterGroups", async ({
     expect,
   }) => {
-    await refreshDatabase()
-    await refreshRedisDatabase()
     const { user, audience } = await createUser()
 
     const filterGroups = {

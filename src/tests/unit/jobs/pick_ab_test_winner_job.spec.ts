@@ -10,16 +10,8 @@ import {
   createBroadcastForUser,
   createUser,
 } from "@/tests/mocks/auth/users.js"
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.js"
 
-import {
-  abTestVariants,
-  broadcasts,
-  contacts,
-} from "@/database/schema/schema.js"
+import { abTestVariants, contacts } from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
@@ -31,9 +23,6 @@ describe("Pick A/B Test winner", () => {
   test("picks A/B test winner for click rate winning criteria", async ({
     expect,
   }) => {
-    await refreshDatabase()
-    await refreshRedisDatabase()
-
     const database = makeDatabase()
     const redis = makeRedis()
 
@@ -91,9 +80,16 @@ describe("Pick A/B Test winner", () => {
       .make(BroadcastRepository)
       .findById(broadcastId)
 
-    const jobsFromBroadcastsQueue = await Queue.broadcasts().getJobs()
-    const jobsFromAbTestBroadcastQueue =
-      await Queue.abTestsBroadcasts().getJobs()
+    const jobs = await Queue.broadcasts().getJobs()
+
+    const jobsFromBroadcastsQueue = jobs.filter(
+      (job) => job.data.broadcastId === broadcastId,
+    )
+    const abTestsJobs = await Queue.abTestsBroadcasts().getJobs()
+
+    const jobsFromAbTestBroadcastQueue = abTestsJobs.filter(
+      (job) => job.data.broadcastId === broadcastId,
+    )
 
     expect(jobsFromBroadcastsQueue).toHaveLength(contactsForAudience)
 

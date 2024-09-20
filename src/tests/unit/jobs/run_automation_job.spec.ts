@@ -1,16 +1,12 @@
 import { faker } from "@faker-js/faker"
 import { and, eq } from "drizzle-orm"
-import { describe, test, vi } from "vitest"
+import { describe, test } from "vitest"
 
 import { RunAutomationStepJob } from "@/automations/jobs/run_automation_step_job.js"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-  seedAutomation,
-} from "@/tests/mocks/teams/teams.js"
+import { seedAutomation } from "@/tests/mocks/teams/teams.js"
 
 import {
   automationSteps,
@@ -20,14 +16,11 @@ import {
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 describe("Run automation job", () => {
   test("dispatches a run automation step job for each step in the automation", async ({
     expect,
   }) => {
-    await refreshRedisDatabase()
-    await refreshDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -89,7 +82,11 @@ describe("Run automation job", () => {
       },
     })
 
-    const automationsQueueJobs = await queues.Queue.automations().getJobs()
+    const jobs = await queues.Queue.automations().getJobs()
+
+    const automationsQueueJobs = jobs.filter((job) =>
+      contactIds.includes(parseInt(job.data?.contactId)),
+    )
 
     expect(automationsQueueJobs.length).toBe(totalContacts)
   })

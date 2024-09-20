@@ -5,10 +5,7 @@ import { describe, test } from "vitest"
 import { AutomationRepository } from "@/automations/repositories/automation_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
-import {
-  refreshDatabase,
-  seedAutomation,
-} from "@/tests/mocks/teams/teams.js"
+import { seedAutomation } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import {
@@ -26,7 +23,6 @@ import { container } from "@/utils/typi.js"
 
 describe("@automations", () => {
   test("experimenting with automations", async ({ expect }) => {
-    await refreshDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -116,7 +112,6 @@ describe("@automations", () => {
   })
 
   test("can create an automation", async ({ expect }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
 
     const database = makeDatabase()
@@ -142,7 +137,6 @@ describe("@automations", () => {
   test("can create ACTION_SEND_EMAIL automation step type", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },
@@ -183,7 +177,6 @@ describe("@automations", () => {
   test("can create ACTION_ADD_TAG automation step type", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },
@@ -221,7 +214,6 @@ describe("@automations", () => {
   test("can create ACTION_SUBSCRIBE_TO_AUDIENCE automation step type", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },
@@ -261,8 +253,6 @@ describe("@automations steps", () => {
   test("can create a valid automation step for an automation", async ({
     expect,
   }) => {
-    await refreshDatabase()
-
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
@@ -300,7 +290,6 @@ describe("@automations steps", () => {
   test("cannot create an automation step with an invalid parent Id", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },
@@ -326,8 +315,6 @@ describe("@automations steps", () => {
   test("no two automation steps can have the same parent id", async ({
     expect,
   }) => {
-    await refreshDatabase()
-
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },
@@ -385,7 +372,6 @@ describe("@automations steps", () => {
 
 describe("@automations step validation", () => {
   test("validates TRIGGER subtype", async ({ expect }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },
@@ -503,7 +489,6 @@ describe("@automations step validation", () => {
   })
 
   test("validates ACTION_SEND_EMAIL configuration", async ({ expect }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },
@@ -533,7 +518,6 @@ describe("@automations step validation", () => {
   })
 
   test("validates ACTION_ADD_TAG configuration", async ({ expect }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },
@@ -565,7 +549,6 @@ describe("@automations step validation", () => {
   test("validates ACTION_SUBSCRIBE_TO_AUDIENCE configuration", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },
@@ -597,7 +580,6 @@ describe("@automations step validation", () => {
   test("validates ACTION_UPDATE_CONTACT_ATTRIBUTES configuration", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },
@@ -629,7 +611,6 @@ describe("@automations step validation", () => {
   })
 
   test("validates RULE_IF_ELSE configuration", async ({ expect }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
       { audienceId: audience.id },

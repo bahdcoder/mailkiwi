@@ -12,10 +12,7 @@ import {
   createBroadcastForUser,
   createUser,
 } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
-
-import { abTestVariants, broadcasts } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
@@ -25,7 +22,6 @@ describe("@broadcasts update broadcasts", () => {
   test("can update a broadcast with ab test variants", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const broadcastId = await createBroadcastForUser(user, audience.id)
 
@@ -91,7 +87,6 @@ describe("@broadcasts update broadcasts", () => {
   test("cannot update ab test variants if weights sum up to more than 100", async ({
     expect,
   }) => {
-    await refreshDatabase()
     const { user, audience } = await createUser()
     const database = makeDatabase()
     const broadcastId = await createBroadcastForUser(user, audience.id)

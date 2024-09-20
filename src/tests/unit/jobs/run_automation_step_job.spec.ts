@@ -6,11 +6,7 @@ import { RunAutomationStepJob } from "@/automations/jobs/run_automation_step_job
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-  seedAutomation,
-} from "@/tests/mocks/teams/teams.js"
+import { seedAutomation } from "@/tests/mocks/teams/teams.js"
 
 import {
   automationSteps,
@@ -20,14 +16,11 @@ import {
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 describe("Run automation step job", () => {
   test("dispatches a run automation step for contact job for each contact at this step", async ({
     expect,
   }) => {
-    await refreshDatabase()
-    await refreshRedisDatabase()
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -88,7 +81,11 @@ describe("Run automation step job", () => {
       },
     })
 
-    const automationsQueueJobs = await queues.Queue.automations().getJobs()
+    const jobs = await queues.Queue.automations().getJobs()
+
+    const automationsQueueJobs = jobs.filter((job) =>
+      contactIds.includes(job.data.contactId),
+    )
 
     expect(automationsQueueJobs).toHaveLength(totalContacts)
   })

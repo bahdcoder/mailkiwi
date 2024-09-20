@@ -1,9 +1,7 @@
 import { faker } from "@faker-js/faker"
-import { Job } from "bullmq"
 import { eq } from "drizzle-orm"
-import { describe, test, vi } from "vitest"
+import { describe, test } from "vitest"
 
-import { PickAbTestWinnerJob } from "@/broadcasts/jobs/pick_ab_test_winner_job.js"
 import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.js"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
@@ -11,10 +9,6 @@ import {
   createBroadcastForUser,
   createUser,
 } from "@/tests/mocks/auth/users.js"
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.js"
 
 import {
   abTestVariants,
@@ -32,9 +26,6 @@ describe("Send broadcast job", () => {
   test("queues send email jobs for all contacts in audience for the broadcast based on a/b test variants", async ({
     expect,
   }) => {
-    await refreshRedisDatabase()
-    await refreshDatabase()
-
     const database = makeDatabase()
     const redis = makeRedis()
 
@@ -92,9 +83,17 @@ describe("Send broadcast job", () => {
       where: eq(broadcasts.id, broadcastId),
     })
 
-    const broadcastsQueueJobs = await queues.Queue.broadcasts().getJobs()
-    const abTestsBroadcastsQueueJobs =
-      await queues.Queue.abTestsBroadcasts().getJobs()
+    const jobs = await queues.Queue.broadcasts().getJobs()
+
+    const broadcastsQueueJobs = jobs.filter(
+      (job) => job.data.broadcastId === broadcastId,
+    )
+
+    const abTestsJobs = await queues.Queue.abTestsBroadcasts().getJobs()
+
+    const abTestsBroadcastsQueueJobs = abTestsJobs.filter(
+      (job) => job.data.broadcastId === broadcastId,
+    )
 
     expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
 

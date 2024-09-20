@@ -10,10 +10,6 @@ import {
   createBroadcastForUser,
   createUser,
 } from "@/tests/mocks/auth/users.js"
-import {
-  refreshDatabase,
-  refreshRedisDatabase,
-} from "@/tests/mocks/teams/teams.js"
 
 import {
   broadcasts,
@@ -28,9 +24,6 @@ describe("@broadcasts send job", () => {
   test("queues send email jobs for all contacts in audience for the broadcast", async ({
     expect,
   }) => {
-    await refreshRedisDatabase()
-    await refreshDatabase()
-
     const database = makeDatabase()
 
     const { user, audience } = await createUser({
@@ -73,7 +66,11 @@ describe("@broadcasts send job", () => {
       redis: makeRedis(),
     })
 
-    const broadcastsQueueJobs = await queues.Queue.broadcasts().getJobs()
+    const jobs = await queues.Queue.broadcasts().getJobs()
+
+    const broadcastsQueueJobs = jobs.filter(
+      (job) => job.data.broadcastId === broadcastId,
+    )
 
     const sortedBroadcastsQueueJobs = broadcastsQueueJobs.sort(
       (jobA, jobB) => (jobA.data.contactId > jobB.data.contactId ? 1 : -1),
@@ -97,9 +94,6 @@ describe("@broadcasts send job", () => {
   test("queues send email jobs for a specific segment of contacts in audience if segment is defined", async ({
     expect,
   }) => {
-    await refreshRedisDatabase()
-    await refreshDatabase()
-
     const database = makeDatabase()
 
     const { user, audience } = await createUser({
@@ -179,7 +173,11 @@ describe("@broadcasts send job", () => {
       redis: makeRedis(),
     })
 
-    const broadcastsQueueJobs = await queues.Queue.broadcasts().getJobs()
+    const jobs = await queues.Queue.broadcasts().getJobs()
+
+    const broadcastsQueueJobs = jobs.filter(
+      (job) => job.data.broadcastId === broadcastId,
+    )
 
     expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
 
