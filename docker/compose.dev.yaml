@@ -1,3 +1,5 @@
+name: kibamail
+
 services:
   dnsmasq:
     build:
@@ -5,7 +7,7 @@ services:
       dockerfile: dnsmasq.dockerfile
     container_name: dnsmasq
     networks:
-      kibamail-network:
+      default:
         ipv4_address: 172.20.0.2
     volumes:
       - ./dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
@@ -93,7 +95,7 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: kibamail
     networks:
-      kibamail-network:
+      default:
         ipv4_address: 172.20.0.3
 
   redis:
@@ -105,7 +107,7 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      kibamail-network:
+      default:
         ipv4_address: 172.20.0.5
 
   minio:
@@ -121,7 +123,7 @@ services:
       - "5590:9000"
       - "5591:9001"
     networks:
-      kibamail-network:
+      default:
         ipv4_address: 172.20.0.9
 
   mailpit:
@@ -140,14 +142,14 @@ services:
       SMTP_PASS: password
     dns: 172.20.0.2
     networks:
-      kibamail-network:
+      default:
         ipv4_address: 172.20.0.6
 
   smtp_proxy:
     image: nginx:alpine
     container_name: smtp_proxy
     networks:
-      kibamail-network:
+      default:
         ipv4_address: 172.20.0.13
     dns: 172.20.0.2
     ports:
@@ -166,7 +168,7 @@ services:
       - 5610:25
       - 5611:8000
     networks:
-      kibamail-network:
+      default:
         ipv4_address: 172.20.0.10
 
   kumomta-dev:
@@ -186,15 +188,17 @@ services:
       - 5612:25
       - 5613:8000
     networks:
-      kibamail-network:
+      default:
         ipv4_address: 172.20.0.11
 
 volumes:
   mysql_data:
+    name: kibamail_mysql
   redis_data:
+    name: kibamail_redis
 
 networks:
-  kibamail-network:
+  default:
     driver: bridge
     ipam:
       config:

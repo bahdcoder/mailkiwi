@@ -73,7 +73,7 @@ kumo:
 		-e API_HTTP_SERVER=http://host.docker.internal:5566 \
 		-p 6235:8000 \
 		-p 5990:25 \
-		--network kibamail_kibamail-network \
+		--network kibamail_default \
 		--dns 172.20.0.2 \
 		-v $(shell pwd)/src/kumomta/policy:/opt/kumomta/etc/policy \
 		-v $(shell pwd)/src/kumomta/data:/var/log/kumomta\
