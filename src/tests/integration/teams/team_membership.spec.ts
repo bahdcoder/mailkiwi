@@ -57,8 +57,8 @@ export const setup = async (email?: string, role?: string) => {
   }
 }
 
-describe.concurrent("@memberships", () => {
-  describe.concurrent("Invites", () => {
+describe("@memberships", () => {
+  describe("Invites", () => {
     test("can invite a new member via email to a team", async ({
       expect,
     }) => {
@@ -160,7 +160,7 @@ describe.concurrent("@memberships", () => {
     })
   })
 
-  describe.concurrent("Accept and reject invites", () => {
+  describe("Accept and reject invites", () => {
     test("can accept an invite to join a team", async ({ expect }) => {
       const { user: invitedUser } = await createUser()
       const { team, body, getInvite, user } = await setup(
@@ -265,7 +265,7 @@ describe.concurrent("@memberships", () => {
     })
   })
 
-  describe.concurrent("Revoke team member access", () => {
+  describe("Revoke team member access", () => {
     test("can revoke a team member's access", async ({ expect }) => {
       const { user: invitedUser } = await createUser()
       const { team, body, getInvite, user } = await setup(

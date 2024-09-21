@@ -20,9 +20,6 @@ importers:
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1(encoding@0.1.13)
-      binary-uuid:
-        specifier: ^2.0.3
-        version: 2.0.3
       bullmq:
         specifier: ^5.12.10
         version: 5.12.10
@@ -1636,9 +1633,6 @@ packages:
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
-
-  binary-uuid@2.0.3:
-    resolution: {integrity: sha512-WaQMBLVgPUuHUHAoTRuafVwF3mskYKAwuE1+9D+tI1RK/eho+wvq8aj4UZhpboelGkifURzRdlIweRkPrgnxWA==}
 
   bindings@1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
@@ -4541,10 +4535,6 @@ packages:
     deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
     hasBin: true
 
-  uuid@7.0.3:
-    resolution: {integrity: sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==}
-    hasBin: true
-
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
@@ -6010,10 +6000,6 @@ snapshots:
       - supports-color
 
   binary-extensions@2.3.0: {}
-
-  binary-uuid@2.0.3:
-    dependencies:
-      uuid: 7.0.3
 
   bindings@1.5.0:
     dependencies:
@@ -9418,8 +9404,6 @@ snapshots:
 
   uuid@3.4.0:
     optional: true
-
-  uuid@7.0.3: {}
 
   uuid@8.3.2: {}
 

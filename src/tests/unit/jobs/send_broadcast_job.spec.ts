@@ -21,7 +21,7 @@ import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-describe.concurrent("@broadcasts send job", () => {
+describe("@broadcasts send job", () => {
   test("queues send email jobs for all contacts in audience for the broadcast", async ({
     expect,
   }) => {

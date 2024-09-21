@@ -15,7 +15,7 @@ import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
-describe.concurrent("@audience segments", () => {
+describe("@audience segments", () => {
   test("can create an audience segment", async ({ expect }) => {
     const { user, audience } = await createUser()
 

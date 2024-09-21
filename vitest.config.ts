@@ -10,7 +10,7 @@ export default defineConfig({
     hideSkippedTests: true,
     exclude: [...configDefaults.exclude, "**/build/**"],
     reporters: ["verbose"],
-    retry: 3,
+    retry: 1,
   },
   plugins: [tsconfigPaths()],
 })

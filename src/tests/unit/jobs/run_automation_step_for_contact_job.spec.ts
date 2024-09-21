@@ -25,7 +25,7 @@ import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_key
 
 import { container } from "@/utils/typi.js"
 
-describe.concurrent("Run automation step for contact job", () => {
+describe("Run automation step for contact job", () => {
   test("automation step action: send email for a contact", async ({
     expect,
   }) => {

@@ -81,7 +81,6 @@
     "@phc/format": "^1.0.0",
     "@poppinss/utils": "^6.7.3",
     "bcrypt": "^5.1.1",
-    "binary-uuid": "^2.0.3",
     "bullmq": "^5.12.10",
     "chalk": "^5.3.0",
     "change-case": "^5.4.4",

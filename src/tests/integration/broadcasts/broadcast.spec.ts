@@ -17,7 +17,7 @@ import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
-describe.concurrent("@broadcasts create", () => {
+describe("@broadcasts create", () => {
   test("can create a broadcast for an audience", async ({ expect }) => {
     const { user, audience } = await createUser()
     const database = makeDatabase()
@@ -98,7 +98,7 @@ describe.concurrent("@broadcasts create", () => {
   })
 })
 
-describe.concurrent("@broadcasts update", () => {
+describe("@broadcasts update", () => {
   test("can update a broadcast with valid data", async ({ expect }) => {
     const { user, audience } = await createUser()
     const broadcastId = await createBroadcastForUser(user, audience.id, {
@@ -300,7 +300,7 @@ describe.concurrent("@broadcasts update", () => {
   })
 })
 
-describe.concurrent("@broadcasts delete", () => {
+describe("@broadcasts delete", () => {
   test("cannot delete a broadcast from another team", async ({
     expect,
   }) => {
@@ -342,7 +342,7 @@ describe.concurrent("@broadcasts delete", () => {
   })
 })
 
-describe.concurrent("@broadcasts send", () => {
+describe("@broadcasts send", () => {
   test("can queue a broadcast for sending", async ({ expect }) => {
     const { user, audience } = await createUser()
 

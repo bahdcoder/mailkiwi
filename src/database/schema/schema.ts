@@ -1,4 +1,3 @@
-import { fromBinaryUUID } from "binary-uuid"
 import { type SQL, sql } from "drizzle-orm"
 import {
   type AnyMySqlColumn,
@@ -20,7 +19,7 @@ import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_d
 
 export const binaryUuid = customType<{
   data: string
-  driverData: string
+  driverData: Buffer
   config: { length?: number }
 }>({
   dataType(config) {
@@ -28,15 +27,16 @@ export const binaryUuid = customType<{
       ? `binary(${config.length})`
       : `binary`
   },
-  fromDriver(value: string): string {
-    // console.log({ value })
-    // const buff = value.startsWith("base64:type254:")
-    //   ? Buffer.from(value.split(":")[2], "base64")
-    //   : Buffer.from(value, "binary")
-
-    return fromBinaryUUID(value as any)
+  fromDriver(buf) {
+    return [
+      buf.toString("hex", 4, 8),
+      buf.toString("hex", 2, 4),
+      buf.toString("hex", 0, 2),
+      buf.toString("hex", 8, 10),
+      buf.toString("hex", 10, 16),
+    ].join("-")
   },
-  toDriver(value: string): SQL<unknown> {
+  toDriver(value: string) {
     return uuidToBin(value)
   },
 })
@@ -347,6 +347,18 @@ export const abTestVariants = mysqlTable("abTestVariants", {
   name: varchar("name", { length: 50 }).notNull(),
   weight: int("weight").default(1).notNull(), // in percentages.
   sendAt: timestamp("sendAt").$type<Date | undefined>(),
+})
+
+export const emailSends = mysqlTable("emailSends", {
+  id,
+  // track mta ID of email
+  // processedAt
+  // bouncedAt
+  // deliveredAt
+  // rejectedAt
+  // transientFailureAt
+  // lastOpenedAt
+  // lastClickedOnLinkAt
 })
 
 export const emailContents = mysqlTable("emailContents", {

@@ -9,7 +9,7 @@ import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { container } from "@/utils/typi.js"
 
-describe.concurrent("@auth API Token Generation", () => {
+describe("@auth API Token Generation", () => {
   test("can generate an api token for api and smtp access", async ({
     expect,
   }) => {

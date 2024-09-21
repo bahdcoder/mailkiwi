@@ -2,7 +2,7 @@ import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 
 export interface ProcessMtaLogJobPayload {
-  broadcastId: string
+  log: Record<string, string>
 }
 
 export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {

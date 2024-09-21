@@ -25,7 +25,7 @@ import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_key
 
 import { container } from "@/utils/typi.js"
 
-describe.concurrent("@auth user registration", () => {
+describe("@auth user registration", () => {
   test("can register a new user account", async ({ expect }) => {
     const database = makeDatabase()
 
@@ -152,7 +152,7 @@ describe.concurrent("@auth user registration", () => {
   })
 })
 
-describe.concurrent("@auth user login", () => {
+describe("@auth user login", () => {
   test("a user can login to their account and get a valid access token", async ({
     expect,
   }) => {

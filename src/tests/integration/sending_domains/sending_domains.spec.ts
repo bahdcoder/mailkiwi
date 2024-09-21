@@ -17,7 +17,7 @@ import { Encryption } from "@/shared/utils/encryption/encryption.js"
 
 import { container } from "@/utils/typi.js"
 
-describe.concurrent("@domains", () => {
+describe("@domains", () => {
   test("can create unique sending domains for a team", async ({
     expect,
   }) => {

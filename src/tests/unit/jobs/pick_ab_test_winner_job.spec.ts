@@ -20,7 +20,7 @@ import { cuid } from "@/shared/utils/cuid/cuid.js"
 import { hoursToSeconds } from "@/utils/dates.js"
 import { container } from "@/utils/typi.js"
 
-describe.concurrent("@abtests Pick Test winner", () => {
+describe("@abtests Pick Test winner", () => {
   test("picks A/B test winner for click rate winning criteria", async ({
     expect,
   }) => {

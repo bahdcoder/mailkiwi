@@ -7,7 +7,7 @@ import fs from "node:fs/promises"
 import path from "node:path"
 import { describe, test } from "vitest"
 
-describe.concurrent("Emails with Foundation 2", () => {
+describe("Emails with Foundation 2", () => {
   const Inky = require("inky").Inky
   const cheerio = require("cheerio")
 

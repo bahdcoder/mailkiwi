@@ -10,7 +10,7 @@ import { audiences } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
-describe.concurrent("@audiences", () => {
+describe("@audiences", () => {
   test("can create an audience only if authenticated", async ({
     expect,
   }) => {

@@ -13,7 +13,9 @@ export class MtaLogsController {
   }
 
   async index(ctx: HonoContext) {
-    await Queue.mta_logs().add(ProcessMtaLogJob.id, await ctx.req.json())
+    await Queue.mta_logs().add(ProcessMtaLogJob.id, {
+      log: await ctx.req.json(),
+    })
 
     return ctx.json({ ok: true })
   }

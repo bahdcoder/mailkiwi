@@ -11,7 +11,7 @@ import { makeApp } from "@/shared/container/index.js"
 
 import { container } from "@/utils/typi.js"
 
-describe.concurrent("@mta Http server", () => {
+describe("@mta Http server", () => {
   test("can fetch dkim records for a domain", async ({ expect }) => {
     const { TEST_DOMAIN } = await setupDomainForDnsChecks()
 

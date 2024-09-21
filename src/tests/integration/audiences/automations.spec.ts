@@ -21,7 +21,7 @@ import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
-describe.concurrent("@automations", () => {
+describe("@automations", () => {
   test("experimenting with automations", async ({ expect }) => {
     const { audience } = await createUser()
 
@@ -254,7 +254,7 @@ describe.concurrent("@automations", () => {
   })
 })
 
-describe.concurrent("@automations steps", () => {
+describe("@automations steps", () => {
   test("can create a valid automation step for an automation", async ({
     expect,
   }) => {
@@ -375,7 +375,7 @@ describe.concurrent("@automations steps", () => {
   })
 })
 
-describe.concurrent("@automations step validation", () => {
+describe("@automations step validation", () => {
   test("validates TRIGGER subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
     const automation = await seedAutomation(
@@ -653,7 +653,7 @@ describe.concurrent("@automations step validation", () => {
   })
 })
 
-describe.concurrent("@automations run", () => {
+describe("@automations run", () => {
   test("can run all automation actions for an automation", async ({
     expect,
   }) => {
