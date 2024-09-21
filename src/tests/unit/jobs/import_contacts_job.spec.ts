@@ -12,7 +12,7 @@ import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 
 import { container } from "@/utils/typi.js"
 
-describe("@contacts import job", () => {
+describe.concurrent("@contacts import job", () => {
   test(
     "reads the csv content from storage and syncs all values to contacts",
     { timeout: 8000 },

@@ -4,7 +4,7 @@ import { describe, test } from "vitest"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-describe("@teams", () => {
+describe.concurrent("@teams", () => {
   test("can fetch a single team", async ({ expect }) => {
     const { user, team } = await createUser()
 

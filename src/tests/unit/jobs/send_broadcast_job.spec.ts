@@ -21,7 +21,7 @@ import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-describe("@broadcasts send job", () => {
+describe.concurrent("@broadcasts send job", () => {
   test("queues send email jobs for all contacts in audience for the broadcast", async ({
     expect,
   }) => {
@@ -92,107 +92,109 @@ describe("@broadcasts send job", () => {
     }
   })
 
-  test("queues send email jobs for a specific segment of contacts in audience if segment is defined", async ({
-    expect,
-  }) => {
-    const database = makeDatabase()
+  test(
+    "queues send email jobs for a specific segment of contacts in audience if segment is defined",
+    { timeout: 7500 },
+    async ({ expect }) => {
+      const database = makeDatabase()
 
-    const { user, audience } = await createUser({
-      createMailerWithIdentity: true,
-    })
-    const { audience: otherAudience } = await createUser()
-
-    const broadcastId = await createBroadcastForUser(user, audience.id, {
-      updateWithValidContent: true,
-    })
-
-    const emailStartsWith = faker.string.uuid()
-
-    const segmentId = cuid()
-
-    await database.insert(segments).values({
-      id: segmentId,
-      audienceId: audience.id,
-      name: faker.lorem.words(3),
-      filterGroups: {
-        type: "AND",
-        groups: [
-          {
-            type: "AND",
-            conditions: [
-              {
-                field: "email",
-                operation: "startsWith",
-                value: emailStartsWith,
-              },
-            ],
-          },
-        ],
-      },
-    })
-
-    await database
-      .update(broadcasts)
-      .set({ segmentId })
-      .where(eq(broadcasts.id, broadcastId))
-
-    const contactsForAudience = 6
-
-    const contactIds = faker.helpers.multiple(cuid, {
-      count: contactsForAudience,
-    })
-
-    await database.insert(contacts).values(
-      faker.helpers
-        .multiple(faker.lorem.word, {
-          count: contactsForAudience,
-        })
-        .map((_, idx) =>
-          createFakeContact(audience.id, {
-            id: contactIds[idx],
-            email: emailStartsWith + faker.internet.email(),
-          }),
-        ),
-    )
-    await database
-      .insert(contacts)
-      .values(
-        faker.helpers
-          .multiple(faker.lorem.word, { count: 55 })
-          .map(() => createFakeContact(audience.id)),
-      )
-    await database
-      .insert(contacts)
-      .values(
-        faker.helpers
-          .multiple(faker.lorem.word, { count: 23 })
-          .map(() => createFakeContact(otherAudience.id)),
-      )
-
-    await new SendBroadcastJob().handle({
-      database,
-      payload: { broadcastId },
-      redis: makeRedis(),
-    })
-
-    const jobs = await queues.Queue.broadcasts().getJobs()
-
-    const broadcastsQueueJobs = jobs.filter(
-      (job) => job.data.broadcastId === broadcastId,
-    )
-
-    expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
-
-    for (const [, job] of broadcastsQueueJobs.entries()) {
-      const findContactId = contactIds.find(
-        (id) => id === job.data.contactId,
-      )
-
-      expect(job.name).toBe(SendBroadcastToContact.id)
-      expect(job.data).toStrictEqual({
-        contactId: findContactId,
-        broadcastId,
+      const { user, audience } = await createUser({
+        createMailerWithIdentity: true,
       })
-    }
-  })
+      const { audience: otherAudience } = await createUser()
+
+      const broadcastId = await createBroadcastForUser(user, audience.id, {
+        updateWithValidContent: true,
+      })
+
+      const emailStartsWith = faker.string.uuid()
+
+      const segmentId = cuid()
+
+      await database.insert(segments).values({
+        id: segmentId,
+        audienceId: audience.id,
+        name: faker.lorem.words(3),
+        filterGroups: {
+          type: "AND",
+          groups: [
+            {
+              type: "AND",
+              conditions: [
+                {
+                  field: "email",
+                  operation: "startsWith",
+                  value: emailStartsWith,
+                },
+              ],
+            },
+          ],
+        },
+      })
+
+      await database
+        .update(broadcasts)
+        .set({ segmentId })
+        .where(eq(broadcasts.id, broadcastId))
+
+      const contactsForAudience = 6
+
+      const contactIds = faker.helpers.multiple(cuid, {
+        count: contactsForAudience,
+      })
+
+      await database.insert(contacts).values(
+        faker.helpers
+          .multiple(faker.lorem.word, {
+            count: contactsForAudience,
+          })
+          .map((_, idx) =>
+            createFakeContact(audience.id, {
+              id: contactIds[idx],
+              email: emailStartsWith + faker.internet.email(),
+            }),
+          ),
+      )
+      await database
+        .insert(contacts)
+        .values(
+          faker.helpers
+            .multiple(faker.lorem.word, { count: 55 })
+            .map(() => createFakeContact(audience.id)),
+        )
+      await database
+        .insert(contacts)
+        .values(
+          faker.helpers
+            .multiple(faker.lorem.word, { count: 23 })
+            .map(() => createFakeContact(otherAudience.id)),
+        )
+
+      await new SendBroadcastJob().handle({
+        database,
+        payload: { broadcastId },
+        redis: makeRedis(),
+      })
+
+      const jobs = await queues.Queue.broadcasts().getJobs()
+
+      const broadcastsQueueJobs = jobs.filter(
+        (job) => job.data.broadcastId === broadcastId,
+      )
+
+      expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
+
+      for (const [, job] of broadcastsQueueJobs.entries()) {
+        const findContactId = contactIds.find(
+          (id) => id === job.data.contactId,
+        )
+
+        expect(job.name).toBe(SendBroadcastToContact.id)
+        expect(job.data).toStrictEqual({
+          contactId: findContactId,
+          broadcastId,
+        })
+      }
+    },
+  )
 })

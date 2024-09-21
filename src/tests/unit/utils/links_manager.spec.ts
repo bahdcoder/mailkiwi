@@ -7,7 +7,7 @@ import {
   type UrlMetadata,
 } from "@/shared/utils/links/signed_url_manager.js"
 
-describe("@link-manager Link manager ", () => {
+describe.concurrent("@link-manager Link manager ", () => {
   let linkManager: SignedUrlManager
 
   beforeEach(() => {

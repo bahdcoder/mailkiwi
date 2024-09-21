@@ -1,7 +1,6 @@
 import type { HonoRouteDefinition } from "./types.js"
 import type { HttpBindings } from "@hono/node-server"
 import { Hono as BaseHono, type MiddlewareHandler } from "hono"
-import { logger } from "hono/logger"
 
 import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js"
 

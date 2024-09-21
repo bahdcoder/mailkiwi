@@ -1,4 +1,8 @@
+import { faker } from "@faker-js/faker"
+
 import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.js"
+
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 export function getDefaultEmailContentSchema(): EmailContentSchemaDto {
   return {
@@ -33,5 +37,26 @@ export function getDefaultEmailContentSchema(): EmailContentSchemaDto {
         },
       },
     },
+  }
+}
+
+export function getInjectEmailContent(TEST_DOMAIN: string) {
+  return {
+    from: {
+      name: faker.person.fullName(),
+      email: cuid() + "@" + TEST_DOMAIN,
+    },
+    subject: faker.lorem.words(6),
+    text: faker.lorem.paragraphs(12),
+    replyTo: {
+      name: faker.person.fullName(),
+      email: cuid() + "@" + TEST_DOMAIN,
+    },
+    recipients: faker.helpers
+      .multiple(() => faker.internet.email())
+      .map(() => ({
+        email: cuid() + "@" + TEST_DOMAIN,
+        name: faker.person.fullName(),
+      })),
   }
 }

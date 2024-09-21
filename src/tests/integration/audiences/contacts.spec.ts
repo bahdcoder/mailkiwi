@@ -109,7 +109,7 @@ export const setupImport = async (
   return { response, imports, user, audience, contactImport }
 }
 
-describe("@contacts", () => {
+describe.concurrent("@contacts", () => {
   test("can create a contact for an audience", async ({ expect }) => {
     const { user, audience } = await createUser()
     const database = makeDatabase()
@@ -160,7 +160,7 @@ describe("@contacts", () => {
   })
 })
 
-describe("@contacts update", () => {
+describe.concurrent("@contacts update", () => {
   test("can update the first name, last name, avatar and attributes of a contact", async ({
     expect,
   }) => {
@@ -317,7 +317,7 @@ describe("@contacts update", () => {
   })
 })
 
-describe("@contacts imports", () => {
+describe.concurrent("@contacts imports", () => {
   test("can import contacts into an audience as a csv file", async ({
     expect,
   }) => {
@@ -394,7 +394,7 @@ describe("@contacts imports", () => {
   test("can only import valid csv files", async ({}) => {})
 })
 
-describe("@contacts exports", () => {
+describe.concurrent("@contacts exports", () => {
   test("can export all contacts matching provided filterGroups", async ({
     expect,
   }) => {

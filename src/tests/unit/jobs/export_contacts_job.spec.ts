@@ -23,7 +23,7 @@ import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 
 import { container } from "@/utils/typi.js"
 
-describe("@contacts exports job", () => {
+describe.concurrent("@contacts exports job", () => {
   test.todo(
     "exports only contacts that match the filter groups criteria",
     async ({ expect }) => {

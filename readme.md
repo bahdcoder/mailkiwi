@@ -196,3 +196,12 @@
 https://github.com/domainaware/parsedmarc
 https://github.com/Mindbaz/awesome-opensource-email
 https://dev.me/
+
+# Email timeline / activity history and storage
+
+1. Email is submitted to MTA via HTTP or SMTP
+2. MTA sends log to track "Received"
+3. Log processor adds this log to a Redis Stream and returns OK. This is to ensure temporal durability as HTTP is not a reliable way to ensure the message is delivered.
+4. Consumers consume the Redis stream and insert the data into the database. This is to ensure fast, multiple processors of logs and fault tolerance so logs are never dropped.
+5. Other consumers consume the Redis stream and send webhook notifications to our customers.
+6. Rather than adding to a redis stream, let's just queue a job using BullMQ. It supports retries, information is not lost, and it can scale horizontally across multiple workers.

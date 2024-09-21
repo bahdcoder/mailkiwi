@@ -14,7 +14,7 @@ import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-describe("Run automation for contact job", () => {
+describe.concurrent("Run automation for contact job", () => {
   test("successfully runs an automation job for a contact by queueing next job", async ({
     expect,
   }) => {

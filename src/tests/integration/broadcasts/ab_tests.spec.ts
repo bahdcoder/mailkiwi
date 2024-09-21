@@ -18,7 +18,7 @@ import { makeDatabase } from "@/shared/container/index.js"
 
 import { container } from "@/utils/typi.js"
 
-describe("@broadcasts update broadcasts", () => {
+describe.concurrent("@broadcasts update broadcasts", () => {
   test("can update a broadcast with ab test variants", async ({
     expect,
   }) => {

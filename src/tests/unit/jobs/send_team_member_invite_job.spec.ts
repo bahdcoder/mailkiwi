@@ -7,7 +7,7 @@ import { setup as teamMembershipSetup } from "@/tests/integration/teams/team_mem
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Mailer } from "@/shared/mailers/mailer.js"
 
-describe("Send team member invite", () => {
+describe.concurrent("Send team member invite", () => {
   test("sends an email with a unique hashed link for joining the team", async ({
     expect,
   }) => {

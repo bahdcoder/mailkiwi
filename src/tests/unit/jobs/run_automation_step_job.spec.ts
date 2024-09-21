@@ -18,7 +18,7 @@ import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-describe("@run-automation-step job", () => {
+describe.concurrent("@run-automation-step job", () => {
   test("dispatches a run automation step for contact job for each contact at this step", async ({
     expect,
   }) => {

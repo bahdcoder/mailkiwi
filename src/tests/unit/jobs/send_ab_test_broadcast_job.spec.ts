@@ -22,7 +22,7 @@ import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { hoursToSeconds } from "@/utils/dates.js"
 
-describe("Send broadcast job", () => {
+describe.concurrent("Send broadcast job", () => {
   test("queues send email jobs for all contacts in audience for the broadcast based on a/b test variants", async ({
     expect,
   }) => {
