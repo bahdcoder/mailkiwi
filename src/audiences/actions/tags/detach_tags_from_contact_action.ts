@@ -9,7 +9,7 @@ export class DetachTagsFromContactAction {
   ) {}
 
   handle = async (
-    contactId: number,
+    contactId: string,
     payload: DetachTagsFromContactDto,
   ) => {
     return this.contactRepository.detachTags(contactId, payload.tagIds)

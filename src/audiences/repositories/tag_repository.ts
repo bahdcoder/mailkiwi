@@ -1,9 +1,9 @@
-import { type SQL, and, eq, inArray, or, sql } from "drizzle-orm"
+import { type SQL, and, eq, or } from "drizzle-orm"
 
 import type { CreateTagDto } from "@/audiences/dto/tags/create_tag_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import { InsertTag } from "@/database/schema/database_schema_types.js"
+import { InsertTag, Tag } from "@/database/schema/database_schema_types.js"
 import { tags } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -14,11 +14,11 @@ export class TagRepository extends BaseRepository {
     super()
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     return this.findFirst({ where: eq(tags.id, id) })
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     await this.database.delete(tags).where(eq(tags.id, id))
     return { id }
   }
@@ -33,12 +33,11 @@ export class TagRepository extends BaseRepository {
     return tag
   }
 
-  async create(payload: CreateTagDto, audienceId: number) {
-    const result = await this.database
-      .insert(tags)
-      .values({ ...payload, audienceId })
+  async create(payload: CreateTagDto, audienceId: string) {
+    const id = this.cuid()
+    await this.database.insert(tags).values({ id, ...payload, audienceId })
 
-    return { id: this.primaryKey(result) }
+    return { id }
   }
 
   async bulkCreate(tagsToCreate: InsertTag[]) {
@@ -47,29 +46,6 @@ export class TagRepository extends BaseRepository {
     }
     await this.database.insert(tags).values(tagsToCreate)
 
-    const tagIds = await this.database
-      .select()
-      .from(tags)
-      .where(
-        or(
-          ...tagsToCreate.map((tagToCreate) =>
-            and(
-              eq(tags.name, tagToCreate.name),
-              eq(tags.audienceId, tagToCreate.audienceId as number),
-            ),
-          ),
-        ),
-      )
-
-    const tagIdsMap = new Map(
-      tagIds.map((tag) => [`${tag.name}-${tag.audienceId}`, tag.id]),
-    )
-
-    return tagsToCreate.map((tagToCreate) => ({
-      ...tagToCreate,
-      id: tagIdsMap.get(
-        `${tagToCreate.name}-${tagToCreate.audienceId}`,
-      ) as number,
-    }))
+    return tagsToCreate as Tag[]
   }
 }

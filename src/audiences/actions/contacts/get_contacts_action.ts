@@ -30,8 +30,8 @@ export class GetContactsAction {
   ) {}
 
   handle = async (
-    audienceId?: number,
-    segmentId?: number,
+    audienceId?: string,
+    segmentId?: string,
     page?: number,
     perPage?: number,
   ) => {

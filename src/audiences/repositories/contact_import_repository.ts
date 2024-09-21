@@ -16,21 +16,20 @@ export class ContactImportRepository extends BaseRepository {
   }
 
   async create(payload: InsertContactImport) {
-    const result = await this.database
-      .insert(contactImports)
-      .values({ ...payload })
+    const id = this.cuid()
+    await this.database.insert(contactImports).values({ id, ...payload })
 
-    return { id: this.primaryKey(result) }
+    return { id }
   }
 
-  async update(contactImportId: number, payload: UpdateContactImport) {
+  async update(contactImportId: string, payload: UpdateContactImport) {
     await this.database
       .update(contactImports)
       .set(payload)
       .where(eq(contactImports.id, contactImportId))
   }
 
-  async findById(importId: number) {
+  async findById(importId: string) {
     const [contactImport] = await this.database
       .select()
       .from(contactImports)

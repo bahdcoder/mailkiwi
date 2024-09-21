@@ -29,7 +29,7 @@ describe("@contacts import job", () => {
         database,
         redis,
         payload: {
-          contactImportId: contactImport?.id as number,
+          contactImportId: contactImport?.id as string,
         },
       })
 
@@ -38,14 +38,14 @@ describe("@contacts import job", () => {
 
         .from(contacts)
         .where(
-          eq(contacts.audienceId, contactImport?.audienceId as number),
+          eq(contacts.audienceId, contactImport?.audienceId as string),
         )
 
       const [contact] = await database
         .select()
         .from(contacts)
         .where(
-          eq(contacts.audienceId, contactImport?.audienceId as number),
+          eq(contacts.audienceId, contactImport?.audienceId as string),
         )
         .orderBy(desc(contacts.email))
         .limit(1)
@@ -91,8 +91,6 @@ describe("@contacts import job", () => {
         true,
       )
 
-      return
-
       const database = makeDatabase()
       const redis = makeRedis()
 
@@ -100,12 +98,12 @@ describe("@contacts import job", () => {
         database,
         redis,
         payload: {
-          contactImportId: contactImport?.id as number,
+          contactImportId: contactImport?.id as string,
         },
       })
       const updatedContactImport = await container
         .make(ContactImportRepository)
-        .findById(contactImport?.id as number)
+        .findById(contactImport?.id as string)
 
       expect(updatedContactImport?.status).toEqual("FAILED")
     },

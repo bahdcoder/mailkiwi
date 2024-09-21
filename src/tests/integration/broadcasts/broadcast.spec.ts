@@ -13,6 +13,7 @@ import { makeRequestAsUser } from "@/tests/utils/http.js"
 import { broadcasts, emailContents } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -137,7 +138,7 @@ describe("@broadcasts update", () => {
       .where(
         eq(
           emailContents.id,
-          updatedBroadcast?.[0].emailContentId as number,
+          updatedBroadcast?.[0].emailContentId as string,
         ),
       )
 
@@ -154,7 +155,7 @@ describe("@broadcasts update", () => {
       method: "PUT",
       path: `/broadcasts/${broadcastId}`,
       body: {
-        audienceId: faker.number.int(),
+        audienceId: cuid(),
       },
     })
 
@@ -237,7 +238,7 @@ describe("@broadcasts update", () => {
 
     const response = await makeRequestAsUser(user, {
       method: "PUT",
-      path: `/broadcasts/${faker.number.int()}`,
+      path: `/broadcasts/${cuid()}`,
       body: {
         name: faker.lorem.words(3),
       },

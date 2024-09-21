@@ -10,7 +10,7 @@ import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 import { container } from "@/utils/typi.js"
 
 export interface SendTeamMemberInviteJobPayload {
-  inviteId: number
+  inviteId: string
 }
 
 export class SendTeamMemberInviteJob extends BaseJob<SendTeamMemberInviteJobPayload> {

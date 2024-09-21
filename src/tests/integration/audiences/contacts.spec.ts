@@ -257,6 +257,7 @@ describe("@contacts update", () => {
         attributes: { hobby: "swimming", age: 25 },
       },
     })
+
     const { id: contactId } = await createContactResponse.json()
 
     const updateData = {

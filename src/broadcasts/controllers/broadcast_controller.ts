@@ -121,7 +121,7 @@ export class BroadcastController extends BaseController {
     this.ensureCanManage(ctx)
     const broadcast = await container
       .make(BroadcastRepository)
-      .findByIdWithAbTestVariants(parseInt(ctx.req.param("broadcastId")))
+      .findByIdWithAbTestVariants(ctx.req.param("broadcastId"))
 
     if (!broadcast) {
       throw E_VALIDATION_FAILED([

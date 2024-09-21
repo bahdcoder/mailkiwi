@@ -24,7 +24,7 @@ export const UpdateContactImportSettings = objectAsync({
   updateExistingContacts: optional(boolean()),
   tags: array(pipe(string(), minLength(4), maxLength(50))), // new tags to be created
   tagIds: pipeAsync(
-    array(number()),
+    array(string()),
     checkAsync(async (input) => {
       const database = makeDatabase()
 

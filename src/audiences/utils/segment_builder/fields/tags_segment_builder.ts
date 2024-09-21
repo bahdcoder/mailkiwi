@@ -23,7 +23,7 @@ export class TagsSegmentBuilder extends FieldSegmentBuilder {
       .from(tagsOnContacts)
       .where(
         and(
-          inArray(tagsOnContacts.tagId, this.value as number[]),
+          inArray(tagsOnContacts.tagId, this.value as string[]),
           eq(tagsOnContacts.contactId, contacts.id),
         ),
       )

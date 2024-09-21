@@ -10,7 +10,7 @@ export class CreateBroadcastAction {
     ),
   ) {}
 
-  async handle(data: CreateBroadcastDto, teamId: number) {
+  async handle(data: CreateBroadcastDto, teamId: string) {
     return this.broadcastRepository.create(data, teamId)
   }
 }

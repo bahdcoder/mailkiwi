@@ -14,7 +14,7 @@ import { Queue } from "@/shared/queue/queue.js"
 import { container } from "@/utils/typi.js"
 
 export interface SendBroadcastJobPayload {
-  broadcastId: number
+  broadcastId: string
 }
 
 export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {

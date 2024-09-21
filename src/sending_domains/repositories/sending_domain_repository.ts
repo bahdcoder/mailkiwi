@@ -12,16 +12,17 @@ export class SendingDomainRepository extends BaseRepository {
   }
 
   async create(payload: InsertSendingDomain) {
-    const insertResult = await this.database
-      .insert(sendingDomains)
-      .values({
-        ...payload,
-      })
+    const id = this.cuid()
 
-    return { id: this.primaryKey(insertResult) }
+    await this.database.insert(sendingDomains).values({
+      id,
+      ...payload,
+    })
+
+    return { id }
   }
 
-  async findById(sendingDomainId: number) {
+  async findById(sendingDomainId: string) {
     const [sendingDomain] = await this.database
       .select()
       .from(sendingDomains)

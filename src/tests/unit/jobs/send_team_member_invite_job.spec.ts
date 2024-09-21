@@ -37,7 +37,7 @@ describe("Send team member invite", () => {
     await new SendTeamMemberInviteJob().handle({
       database,
       redis,
-      payload: { inviteId: invite?.id as number },
+      payload: { inviteId: invite?.id as string },
     })
 
     expect(mockSendMail).toHaveBeenCalledOnce()

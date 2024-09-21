@@ -11,7 +11,7 @@ export const REDIS_KNOWN_KEYS = {
   ACCESS_KEY(username: string) {
     return `ACCESS_KEY:${username}`
   },
-  TEAM_USAGE_TRACKING(teamId: number) {
+  TEAM_USAGE_TRACKING(teamId: string) {
     return `TEAM_USAGE_TRACKING:${teamId.toString()}`
   },
 }

@@ -149,7 +149,7 @@ export class TeamMembershipController extends BaseController {
 
   async ensureValidInviteId(ctx: HonoContext) {
     const invite = await this.teamMembershipRepository.findById(
-      parseInt(ctx.req.param("membershipId")),
+      ctx.req.param("membershipId"),
     )
 
     if (!invite) {

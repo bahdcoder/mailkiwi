@@ -23,28 +23,31 @@ export class UserRepository extends ScryptTokenRepository {
   })
 
   async create(user: CreateUserDto) {
-    const result = await this.database
+    const id = this.cuid()
+
+    await this.database
       .insert(users)
       .values({
+        id,
         ...user,
         password: await this.hash(user.password),
       })
       .execute()
 
-    return { id: this.primaryKey(result) }
+    return { id }
   }
 
   async findByEmail(email: string) {
-    const results = await this.database
+    const [user] = await this.database
       .select()
       .from(users)
       .where(eq(users.email, email))
       .limit(1)
 
-    return results?.[0]
+    return user
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     const userWithTeams = await this.hasManyTeams((query) =>
       query.where(eq(users.id, id)),
     )

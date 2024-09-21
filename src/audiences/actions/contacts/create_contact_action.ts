@@ -8,7 +8,7 @@ export class CreateContactAction {
     private contactRepository = container.make(ContactRepository),
   ) {}
 
-  handle = async (payload: CreateContactDto, audienceId: number) => {
+  handle = async (payload: CreateContactDto, audienceId: string) => {
     const audience = await this.contactRepository.create(
       { ...payload },
       audienceId,

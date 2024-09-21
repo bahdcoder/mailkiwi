@@ -19,7 +19,7 @@ export class TeamMiddleware {
     const teamHeader = ctx.req.header(apiEnv.software.teamHeader)
 
     let team = teamHeader
-      ? await this.teamRepository.findById(parseInt(teamHeader))
+      ? await this.teamRepository.findById(teamHeader)
       : undefined
 
     const accessToken = ctx.get("accessToken")

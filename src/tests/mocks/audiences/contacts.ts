@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker"
 import type { Contact } from "@/database/schema/database_schema_types.js"
 
 export function createFakeContact(
-  audienceId: number,
+  audienceId: string,
   contactOverrides?: Partial<Contact>,
 ) {
   return {

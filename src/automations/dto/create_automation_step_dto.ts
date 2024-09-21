@@ -1,16 +1,14 @@
-import { and, eq, isNull } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 import {
   type InferInput,
   array,
   checkAsync,
   literal,
-  nonEmpty,
   number,
   object,
   objectAsync,
   optional,
   picklist,
-  pipe,
   pipeAsync,
   record,
   safeParse,
@@ -28,7 +26,7 @@ import {
   automationStepSubtypesRule,
   automationStepSubtypesTrigger,
   automationStepTypes,
-  automationSteps,
+  emails,
   tags,
 } from "@/database/schema/schema.js"
 
@@ -56,7 +54,7 @@ export const CreateAutomationStepDto = pipeAsync(
       ]),
     ),
     parentId: pipeAsync(
-      optional(number()),
+      optional(string()),
       checkAsync(async (input) => {
         if (!input) return true
 
@@ -79,21 +77,21 @@ export const CreateAutomationStepDto = pipeAsync(
       }, "The parentId must be a valid automation step ID and must not be linked to another automation step."),
     ),
     emailId: pipeAsync(
-      optional(number()),
+      optional(string()),
       checkAsync(async (input) => {
         if (!input) return true
 
         const database = makeDatabase()
 
         const existingEmail = await database.query.emails.findFirst({
-          where: eq(audiences.id, input),
+          where: eq(emails.id, input),
         })
 
         return existingEmail !== undefined
       }),
     ),
     audienceId: pipeAsync(
-      optional(number()),
+      optional(string()),
       checkAsync(async (input) => {
         if (!input) return true
 
@@ -107,7 +105,7 @@ export const CreateAutomationStepDto = pipeAsync(
       }),
     ),
     tagId: pipeAsync(
-      optional(number()),
+      optional(string()),
       checkAsync(async (input) => {
         if (!input) return true
 
@@ -213,7 +211,7 @@ export const CreateAutomationStepDto = pipeAsync(
   }, "The configuration object is malformed for ACTION_UPDATE_CONTACT_ATTRIBUTES."),
   checkAsync(async (input) => {
     if (input.subtype === "ACTION_SEND_EMAIL") {
-      return safeParse(number(), input.emailId).success
+      return safeParse(string(), input.emailId).success
     }
 
     return true
@@ -223,7 +221,7 @@ export const CreateAutomationStepDto = pipeAsync(
       input.subtype === "ACTION_ADD_TAG" ||
       input.subtype === "ACTION_REMOVE_TAG"
     ) {
-      return safeParse(number(), input.tagId).success
+      return safeParse(string(), input.tagId).success
     }
 
     return true
@@ -233,7 +231,7 @@ export const CreateAutomationStepDto = pipeAsync(
       input.subtype === "ACTION_SUBSCRIBE_TO_AUDIENCE" ||
       input.subtype === "ACTION_UNSUBSCRIBE_FROM_AUDIENCE"
     ) {
-      return safeParse(number(), input.audienceId).success
+      return safeParse(string(), input.audienceId).success
     }
 
     return true

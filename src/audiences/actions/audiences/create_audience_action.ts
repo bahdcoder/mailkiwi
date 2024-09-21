@@ -8,7 +8,7 @@ export class CreateAudienceAction {
     private audienceRepository = container.make(AudienceRepository),
   ) {}
 
-  handle = async (payload: CreateAudienceDto, teamId: number) => {
+  handle = async (payload: CreateAudienceDto, teamId: string) => {
     const audience = await this.audienceRepository.create(payload, teamId)
 
     return audience

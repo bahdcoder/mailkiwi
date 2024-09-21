@@ -32,17 +32,19 @@ export class TeamMembershipRepository extends BaseRepository {
   })
 
   async create(payload: InsertTeamMembership) {
-    const result = await this.database.insert(teamMemberships).values({
+    const id = this.cuid()
+    await this.database.insert(teamMemberships).values({
+      id,
       status: "PENDING",
       ...payload,
       invitedAt: DateTime.now().toJSDate(),
       expiresAt: DateTime.now().plus({ days: 7 }).toJSDate(),
     })
 
-    return { id: this.primaryKey(result) }
+    return { id }
   }
 
-  async membershipExists(email: string, teamId: number) {
+  async membershipExists(email: string, teamId: string) {
     const membership = await this.database
       .select()
       .from(teamMemberships)
@@ -64,7 +66,7 @@ export class TeamMembershipRepository extends BaseRepository {
     return membership.length > 0
   }
 
-  async findUserDefaultTeam(userId: number) {
+  async findUserDefaultTeam(userId: string) {
     return this.database.query.teams.findFirst({
       where: eq(teams.userId, userId),
       with: {
@@ -73,16 +75,16 @@ export class TeamMembershipRepository extends BaseRepository {
     })
   }
 
-  async findById(membershipId: number) {
-    const membership = await this.belongsToUser((query) =>
+  async findById(membershipId: string) {
+    const [membership] = await this.belongsToUser((query) =>
       query.where(eq(teamMemberships.id, membershipId)),
     )
 
-    return membership?.[0]
+    return membership
   }
 
   async update(
-    membershipId: number,
+    membershipId: string,
     payload: UpdateSetTeamMembershipInput,
   ) {
     return this.database
@@ -91,7 +93,7 @@ export class TeamMembershipRepository extends BaseRepository {
       .where(eq(teamMemberships.id, membershipId))
   }
 
-  async delete(membershipId: number) {
+  async delete(membershipId: string) {
     return this.database
       .delete(teamMemberships)
       .where(eq(teamMemberships.id, membershipId))
@@ -104,7 +106,7 @@ export class TeamMembershipRepository extends BaseRepository {
       return null
     }
 
-    const invite = await this.findById(parseInt(decodedToken.original))
+    const invite = await this.findById(decodedToken.original)
 
     return invite
   }

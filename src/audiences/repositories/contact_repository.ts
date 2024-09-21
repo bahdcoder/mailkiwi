@@ -1,10 +1,11 @@
-import { SQL, SQLWrapper, and, eq, inArray, or } from "drizzle-orm"
+import { SQL, and, eq, inArray } from "drizzle-orm"
 import { MySqlInsertOnDuplicateKeyUpdateConfig } from "drizzle-orm/mysql-core"
 
 import type { CreateContactDto } from "@/audiences/dto/contacts/create_contact_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
 import type {
+  Contact,
   ContactWithTags,
   InsertContact,
   UpdateSetContactInput,
@@ -14,7 +15,6 @@ import {
   tags,
   tagsOnContacts,
 } from "@/database/schema/schema.js"
-import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
@@ -24,18 +24,19 @@ export class ContactRepository extends BaseRepository {
     super()
   }
 
-  findById(contactId: number) {
+  findById(contactId: string) {
     return this.database.query.contacts.findFirst({
       where: eq(contacts.id, contactId),
     })
   }
 
-  async create(payload: CreateContactDto, audienceId: number) {
-    const result = await this.database
+  async create(payload: CreateContactDto, audienceId: string) {
+    const id = this.cuid()
+    await this.database
       .insert(contacts)
-      .values({ ...payload, audienceId })
+      .values({ ...payload, id, audienceId })
 
-    return { id: this.primaryKey(result) }
+    return { id }
   }
 
   async bulkCreate(
@@ -47,44 +48,11 @@ export class ContactRepository extends BaseRepository {
       .values(contactsToCreate)
       .onDuplicateKeyUpdate(onDuplicateKeyUpdate)
 
-    const contactIds = await this.database
-      .select({
-        email: contacts.email,
-        audienceId: contacts.audienceId,
-        id: contacts.id,
-      })
-      .from(contacts)
-      .where(
-        or(
-          ...contactsToCreate.map((contactToCreate) =>
-            and(
-              eq(contacts.email, contactToCreate.email),
-              eq(
-                contacts.audienceId,
-                contactToCreate.audienceId as number,
-              ),
-            ),
-          ),
-        ),
-      )
-
-    const contactIdsMap = new Map(
-      contactIds.map((contact) => [
-        `${contact.email}-${contact.audienceId}`,
-        contact.id,
-      ]),
-    )
-
-    return contactsToCreate.map((contactToCreate) => ({
-      ...contactToCreate,
-      id: contactIdsMap.get(
-        `${contactToCreate.email}-${contactToCreate.audienceId}`,
-      ) as number,
-    }))
+    return contactsToCreate as Contact[]
   }
 
   async update(
-    contactId: number,
+    contactId: string,
     updatedContact: Partial<UpdateSetContactInput>,
   ) {
     await this.database
@@ -97,7 +65,7 @@ export class ContactRepository extends BaseRepository {
     return { id: contactId }
   }
 
-  async attachTags(contactId: number, tagIds: number[]) {
+  async attachTags(contactId: string, tagIds: string[]) {
     const existingTags = await this.database.query.tagsOnContacts.findMany(
       {
         where: eq(tagsOnContacts.contactId, contactId),
@@ -121,7 +89,7 @@ export class ContactRepository extends BaseRepository {
     return { id: contactId }
   }
 
-  async detachTags(contactId: number, tagIds: number[]) {
+  async detachTags(contactId: string, tagIds: string[]) {
     await this.database
       .delete(tagsOnContacts)
       .where(
@@ -161,7 +129,7 @@ export class ContactRepository extends BaseRepository {
         }
         return acc
       },
-      {} as Record<number, any>,
+      {} as Record<string, any>,
     )
 
     return Object.values(groupedContacts)

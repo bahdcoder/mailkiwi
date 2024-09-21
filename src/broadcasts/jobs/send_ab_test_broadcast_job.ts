@@ -1,22 +1,16 @@
 import { ContactsConcern } from "../concerns/broadcast_contacts_concern.js"
 import { PickAbTestWinnerJob } from "./pick_ab_test_winner_job.js"
 import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js"
-import { asc, count, eq } from "drizzle-orm"
+import { asc, count } from "drizzle-orm"
 
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
-
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
 import type {
   AbTestVariant,
   BroadcastWithSegmentAndAbTestVariants,
 } from "@/database/schema/database_schema_types.js"
-import {
-  abTestVariants,
-  broadcasts,
-  contacts,
-} from "@/database/schema/schema.js"
+import { contacts } from "@/database/schema/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
@@ -26,7 +20,7 @@ import { hoursToSeconds } from "@/utils/dates.js"
 import { container } from "@/utils/typi.js"
 
 export interface SendAbTestBroadcastJobPayload {
-  broadcastId: number
+  broadcastId: string
 }
 
 export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayload> {
@@ -144,7 +138,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     return this.done()
   }
 
-  private async getBroadcast(broadcastId: number) {
+  private async getBroadcast(broadcastId: string) {
     const broadcast = await container
       .make(BroadcastRepository)
       .findByIdWithAbTestVariants(broadcastId)

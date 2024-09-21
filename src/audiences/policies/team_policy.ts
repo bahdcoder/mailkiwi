@@ -1,7 +1,7 @@
 import type { TeamWithMembers } from "@/shared/types/team.js"
 
 export class TeamPolicy {
-  canAdministrate(team: TeamWithMembers, userId: number | null) {
+  canAdministrate(team: TeamWithMembers, userId: string | null) {
     const isOwner = team?.userId === userId
 
     const isAdministrator =
@@ -15,7 +15,7 @@ export class TeamPolicy {
     return isOwner || isAdministrator
   }
 
-  canManage(team: TeamWithMembers, userId: number | null) {
+  canManage(team: TeamWithMembers, userId: string | null) {
     const canAdministrate = this.canAdministrate(team, userId)
 
     const isManager = team?.members?.find(
@@ -28,7 +28,7 @@ export class TeamPolicy {
     return isManager || canAdministrate
   }
 
-  canAuthor(team: TeamWithMembers, userId: number | null) {
+  canAuthor(team: TeamWithMembers, userId: string | null) {
     const canManage = this.canManage(team, userId)
 
     const isAuthor = team?.members?.find(
@@ -41,7 +41,7 @@ export class TeamPolicy {
     return isAuthor || canManage
   }
 
-  canView(team: TeamWithMembers, userId: number | null) {
+  canView(team: TeamWithMembers, userId: string | null) {
     return (
       team?.userId === userId ||
       team?.members.find((member) => member.userId === userId)

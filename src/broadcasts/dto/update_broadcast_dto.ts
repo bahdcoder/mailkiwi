@@ -1,5 +1,4 @@
 import { and, count, eq, inArray } from "drizzle-orm"
-import type { CSSProperties } from "react"
 import {
   type InferInput,
   array,
@@ -56,7 +55,7 @@ const EmailContentVariant = object({
   weight: number(),
 
   // only when updating a variant email content.
-  abTestVariantId: optional(number()),
+  abTestVariantId: optional(string()),
 })
 
 export const UpdateBroadcastDto = pipeAsync(
@@ -70,7 +69,7 @@ export const UpdateBroadcastDto = pipeAsync(
     ),
 
     audienceId: pipeAsync(
-      optional(number()),
+      optional(string()),
       checkAsync(async (value) => {
         if (!value) return true
         const database = makeDatabase()
@@ -84,7 +83,7 @@ export const UpdateBroadcastDto = pipeAsync(
     ),
 
     segmentId: pipeAsync(
-      optional(number()),
+      optional(string()),
       checkAsync(async (value) => {
         if (!value) return true
 
@@ -139,7 +138,7 @@ export const UpdateBroadcastDto = pipeAsync(
 
     const variantIds = input.emailContentVariants
       .map((variant) => variant.abTestVariantId)
-      .filter((id) => id) as number[]
+      .filter((id) => id) as string[]
 
     if (variantIds.length === 0) {
       return true

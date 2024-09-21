@@ -8,4 +8,4 @@ export const createDatabaseClient = (databaseConnectionUrl: string) =>
 export type DrizzleClient = ReturnType<typeof drizzle<typeof schema>>
 
 export const createDrizzleDatabase = (connection: mysql.Connection) =>
-  drizzle(connection, { schema, mode: "default" })
+  drizzle(connection, { schema, mode: "default", logger: false })

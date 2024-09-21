@@ -44,7 +44,7 @@ export async function makeRequestAsUser(
     body?: object
     headers?: Record<string, string>
   },
-  teamId?: number,
+  teamId?: string,
 ) {
   const accessTokenRepository = container.resolve<AccessTokenRepository>(
     AccessTokenRepository,

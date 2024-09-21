@@ -214,9 +214,7 @@ describe("@memberships", () => {
 
     test("can reject an invite to join a team", async ({ expect }) => {
       const { user: invitedUser } = await createUser()
-      const { team, body, getInvite, user } = await setup(
-        invitedUser.email,
-      )
+      const { team, body, getInvite } = await setup(invitedUser.email)
       const { token } = await getInvite()
 
       const response = await makeRequestAsUser(

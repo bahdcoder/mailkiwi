@@ -16,7 +16,7 @@ export class AccessTokenRepository extends ScryptTokenRepository {
     super()
   }
 
-  async create(ownerId: number, type: "user" | "team") {
+  async create(ownerId: string, type: "user" | "team") {
     const tokenBytes = randomBytes(this.bytesSize).toString("hex")
     const accessSecret = new Secret(
       this.opaqueAccessTokenPrefix + tokenBytes,
@@ -28,7 +28,8 @@ export class AccessTokenRepository extends ScryptTokenRepository {
 
     const name = tokenBytes.slice(0, 8)
 
-    const result = await this.database.insert(accessTokens).values({
+    const id = this.cuid()
+    await this.database.insert(accessTokens).values({
       ...(type === "user" ? { userId: ownerId } : { teamId: ownerId }),
       accessKey,
       accessSecret: hashedAccessSecret,
@@ -40,7 +41,7 @@ export class AccessTokenRepository extends ScryptTokenRepository {
       accessSecret,
       hashedAccessSecret,
       name,
-      id: this.primaryKey(result),
+      id,
     }
   }
 

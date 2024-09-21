@@ -26,7 +26,7 @@ export class TeamController {
   }
 
   async show(ctx: HonoContext) {
-    const teamId = parseInt(ctx.req.param("teamId"))
+    const teamId = ctx.req.param("teamId")
 
     const team = await this.teamRepository.findById(teamId)
 
@@ -40,7 +40,7 @@ export class TeamController {
 
     const policy = container.resolve<TeamPolicy>(TeamPolicy)
 
-    if (!policy.canView(ctx.get("team"), ctx.get("accessToken").userId))
+    if (!policy.canView(ctx.get("team"), ctx.get("accessToken")?.userId))
       throw E_UNAUTHORIZED()
 
     return ctx.json(team)

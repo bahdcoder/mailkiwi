@@ -16,7 +16,7 @@ type HeaderMap = {
   attributes: string[]
   headers: string[]
   tags: string[]
-  tagIds: number[]
+  tagIds: string[]
 }
 
 type FieldType = keyof Omit<
@@ -31,7 +31,7 @@ export class CreateContactImportAction {
     ),
   ) {}
 
-  handle = async (file: File, audienceId: number) => {
+  handle = async (file: File, audienceId: string) => {
     const fileIdentifier = cuid()
 
     const extension = mime.extension(file.type) ?? "csv"

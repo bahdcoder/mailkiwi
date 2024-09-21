@@ -47,7 +47,7 @@ export class SegmentController extends BaseController {
 
     this.ensureCanAuthor(ctx)
 
-    const segmentId = parseInt(ctx.req.param("segmentId"))
+    const segmentId = ctx.req.param("segmentId")
 
     await this.segmentRepository.delete(segmentId)
 

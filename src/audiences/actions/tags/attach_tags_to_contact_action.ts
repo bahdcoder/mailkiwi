@@ -8,7 +8,7 @@ export class AttachTagsToContactAction {
     private contactRepository = container.make(ContactRepository),
   ) {}
 
-  handle = async (contactId: number, payload: AttachTagsToContactDto) => {
+  handle = async (contactId: string, payload: AttachTagsToContactDto) => {
     await this.contactRepository.attachTags(contactId, payload.tags)
   }
 }

@@ -23,15 +23,14 @@ export class AbTestVariantRepository extends BaseRepository {
   }
 
   async create(payload: InsertAbTestVariant) {
-    const result = await this.database
-      .insert(abTestVariants)
-      .values({ ...payload })
+    const id = this.cuid()
+    await this.database.insert(abTestVariants).values({ id, ...payload })
 
-    return { id: this.primaryKey(result) }
+    return { id }
   }
 
-  async findById(variantId: number) {
-    return this.database
+  async findById(variantId: string) {
+    const [abTestVariant] = await this.database
       .select({
         id: abTestVariants.id,
         broadcastId: abTestVariants.broadcastId,
@@ -39,11 +38,14 @@ export class AbTestVariantRepository extends BaseRepository {
       })
       .from(abTestVariants)
       .where(eq(abTestVariants.id, variantId))
+      .limit(1)
+
+    return abTestVariant
   }
 
   async bulkUpsertVariants(
     variants: EmailContentVariant[],
-    broadcastId: number,
+    broadcastId: string,
   ) {
     const variantsToInsert = variants.filter(
       (variant) => !variant.abTestVariantId,
@@ -55,14 +57,14 @@ export class AbTestVariantRepository extends BaseRepository {
 
     const emailContentIdsToUpdate = await Promise.all(
       variantsToUpdate.map((variant) =>
-        this.findById(variant.abTestVariantId as number),
+        this.findById(variant.abTestVariantId as string),
       ),
     )
 
     const variantsToUpdateWithEmailContentIds = variantsToUpdate.map(
       (variant, idx) => ({
         ...variant,
-        emailContentId: emailContentIdsToUpdate[idx][0].emailContentId,
+        emailContentId: emailContentIdsToUpdate[idx].emailContentId,
       }),
     )
 

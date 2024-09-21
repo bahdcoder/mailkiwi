@@ -27,10 +27,6 @@ describe("@mta Http server", () => {
 
     const json = await response.json()
 
-    const sendingDomain = await container
-      .make(SendingDomainRepository)
-      .findById(json.id)
-
     expect(json.returnPathSubDomain).toBe("kb")
     expect(json.dkimSubDomain).toContain("._domainkey")
     expect(json.privateKey).toMatch("-----BEGIN PRIVATE KEY-----")

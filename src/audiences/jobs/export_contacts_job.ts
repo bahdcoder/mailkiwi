@@ -28,8 +28,8 @@ import { container } from "@/utils/typi.js"
 
 export interface ExportContactsJobPayload {
   filterGroups: CreateContactExportDto["filterGroups"]
-  audienceId: number
-  exportCreatedBy: number
+  audienceId: string
+  exportCreatedBy: string
 }
 
 export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {

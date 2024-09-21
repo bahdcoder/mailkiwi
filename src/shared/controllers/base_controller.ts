@@ -33,16 +33,7 @@ type ControllerParams =
   | "membershipId"
 export class BaseController {
   protected getParameter(ctx: HonoContext, param: ControllerParams) {
-    const id = parseInt(ctx.req.param(param))
-
-    if (isNaN(id) || !id) {
-      throw E_VALIDATION_FAILED([
-        {
-          message: `Invalid ${param} provided.`,
-          field: param,
-        },
-      ])
-    }
+    const id = ctx.req.param(param)
 
     return id
   }
@@ -63,7 +54,7 @@ export class BaseController {
 
   protected ensureBelongsToTeam(
     ctx: HonoContext,
-    entity: { teamId: number },
+    entity: { teamId: string },
   ) {
     const team = this.ensureTeam(ctx)
 
@@ -163,7 +154,7 @@ export class BaseController {
 
   protected ensureAuthorized(
     ctx: HonoContext,
-    authorizedUserIds: number[],
+    authorizedUserIds: string[],
   ) {
     const userId = ctx.get("user")?.id
 

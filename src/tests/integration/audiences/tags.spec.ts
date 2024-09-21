@@ -8,6 +8,7 @@ import { makeRequestAsUser } from "@/tests/utils/http.js"
 import { tags, tagsOnContacts } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 describe("@tags create", () => {
   test("can create a tag into the database", async ({ expect }) => {
@@ -236,7 +237,7 @@ describe("@tags attach to contacts", () => {
       validTagIds.push(id)
     }
 
-    const invalidTagId = faker.number.int()
+    const invalidTagId = cuid()
     const tagIds = [...validTagIds, invalidTagId]
 
     const response = await makeRequestAsUser(user, {
@@ -407,7 +408,6 @@ describe("@tags detach from contacts", () => {
   test("can only pass valid tags to this endpoint", async ({ expect }) => {
     const { user, audience } = await createUser()
 
-    // Create a contact
     const createContactResponse = await makeRequestAsUser(user, {
       method: "POST",
       path: `/audiences/${audience.id}/contacts`,
@@ -415,8 +415,7 @@ describe("@tags detach from contacts", () => {
     })
     const { id: contactId } = await createContactResponse.json()
 
-    // Try to detach with invalid tag IDs
-    const invalidTagIds = [faker.number.int(), faker.number.int()]
+    const invalidTagIds = [cuid(), cuid()]
 
     const detachResponse = await makeRequestAsUser(user, {
       method: "POST",

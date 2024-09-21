@@ -13,7 +13,7 @@ export class CreateTeamAccessTokenAction {
     private database = makeDatabase(),
   ) {}
 
-  handle = async (teamId: number) => {
+  handle = async (teamId: string) => {
     const { accessKey, accessSecret } = await this.database.transaction(
       async (tx) => {
         const { accessSecret, accessKey, hashedAccessSecret } =

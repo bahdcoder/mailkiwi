@@ -32,7 +32,7 @@ export class TagController extends BaseController {
     this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, CreateTagSchema)
-    const audienceId = parseInt(ctx.req.param("audienceId"))
+    const audienceId = ctx.req.param("audienceId")
 
     const action = container.resolve<CreateTagAction>(CreateTagAction)
 

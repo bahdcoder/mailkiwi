@@ -10,7 +10,7 @@ export class UpdateContactAction {
     private contactRepository = container.make(ContactRepository),
   ) {}
 
-  handle = async (contactId: number, payload: UpdateContactDto) => {
+  handle = async (contactId: string, payload: UpdateContactDto) => {
     const contact = await this.contactRepository.findById(contactId)
 
     if (!contact) {

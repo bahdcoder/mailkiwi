@@ -1,8 +1,9 @@
-import { relations } from "drizzle-orm"
+import { fromBinaryUUID } from "binary-uuid"
+import { type SQL, sql } from "drizzle-orm"
 import {
   type AnyMySqlColumn,
-  bigint,
   boolean,
+  customType,
   index,
   int,
   json,
@@ -13,13 +14,39 @@ import {
   unique,
   varchar,
 } from "drizzle-orm/mysql-core"
+import { v1 } from "uuid"
 
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
-const primaryKeyBigInt = <TName extends string>(name: TName) =>
-  bigint(name, { mode: "number", unsigned: true })
+export const binaryUuid = customType<{
+  data: string
+  driverData: string
+  config: { length?: number }
+}>({
+  dataType(config) {
+    return typeof config?.length !== "undefined"
+      ? `binary(${config.length})`
+      : `binary`
+  },
+  fromDriver(value: string): string {
+    // console.log({ value })
+    // const buff = value.startsWith("base64:type254:")
+    //   ? Buffer.from(value.split(":")[2], "base64")
+    //   : Buffer.from(value, "binary")
 
-const id = primaryKeyBigInt("id").primaryKey().autoincrement()
+    return fromBinaryUUID(value as any)
+  },
+  toDriver(value: string): SQL<unknown> {
+    return uuidToBin(value)
+  },
+})
+
+export const uuidToBin = (uuid: string) => sql`UUID_TO_BIN(${uuid}, 1)`
+
+const primaryKeyCuid = <TName extends string>(name: TName) =>
+  binaryUuid(name, { length: 16 })
+
+const id = primaryKeyCuid("id").primaryKey().$defaultFn(v1)
 
 export type ContactFilterCondition = {
   field: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number]["field"]
@@ -57,8 +84,8 @@ export const users = mysqlTable("users", {
 
 export const accessTokens = mysqlTable("accessTokens", {
   id,
-  userId: primaryKeyBigInt("userId").references(() => users.id),
-  teamId: primaryKeyBigInt("teamId").references(() => teams.id),
+  userId: primaryKeyCuid("userId").references(() => users.id),
+  teamId: primaryKeyCuid("teamId").references(() => teams.id),
   name: varchar("name", { length: 32 }),
   accessKey: varchar("accessKey", { length: 255 }),
   accessSecret: varchar("accessSecret", { length: 255 }).notNull(),
@@ -70,7 +97,7 @@ export const accessTokens = mysqlTable("accessTokens", {
 export const teams = mysqlTable("teams", {
   id,
   name: varchar("name", { length: 100 }).notNull(),
-  userId: primaryKeyBigInt("userId")
+  userId: primaryKeyCuid("userId")
     .notNull()
     .references(() => users.id),
   trackClicks: boolean("trackClicks"),
@@ -81,7 +108,7 @@ export const teams = mysqlTable("teams", {
 export const sendingDomains = mysqlTable("sendingDomains", {
   id,
   name: varchar("name", { length: 100 }).notNull(),
-  teamId: primaryKeyBigInt("teamId")
+  teamId: primaryKeyCuid("teamId")
     .notNull()
     .references(() => teams.id),
   dkimSubDomain: varchar("dkimSubDomain", {
@@ -120,16 +147,16 @@ export const webhooks = mysqlTable("webhooks", {
     "TAG_ADDED",
     "TAG_REMOVED",
   ]),
-  teamId: primaryKeyBigInt("teamId")
+  teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
 })
 
 export const teamMemberships = mysqlTable("teamMemberships", {
   id,
-  userId: primaryKeyBigInt("userId").references(() => users.id),
+  userId: primaryKeyCuid("userId").references(() => users.id),
   email: varchar("email", { length: 50 }).notNull(),
-  teamId: primaryKeyBigInt("teamId")
+  teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
   role: mysqlEnum("role", ["ADMINISTRATOR", "MANAGER", "AUTHOR", "GUEST"]),
@@ -142,7 +169,7 @@ export const teamMemberships = mysqlTable("teamMemberships", {
 export const audiences = mysqlTable("audiences", {
   id,
   name: varchar("name", { length: 50 }).notNull(),
-  teamId: primaryKeyBigInt("teamId")
+  teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
   knownAttributesKeys: json("knownAttributes").$type<string[]>(),
@@ -150,11 +177,11 @@ export const audiences = mysqlTable("audiences", {
 
 export const contactImports = mysqlTable("contactImports", {
   id,
-  fileIdentifier: varchar("fileIdentifier", { length: 32 })
+  fileIdentifier: varchar("fileIdentifier", { length: 64 })
     .unique()
     .notNull(),
   name: varchar("name", { length: 50 }),
-  audienceId: primaryKeyBigInt("audienceId")
+  audienceId: primaryKeyCuid("audienceId")
     .references(() => audiences.id)
     .notNull(),
   uploadUrl: varchar("url", { length: 100 }).notNull(),
@@ -175,7 +202,7 @@ export const contactImports = mysqlTable("contactImports", {
       headers: string[]
       attributes: string[]
       tags: string[] // for each of these, save a new tag to the tags table for this audience.
-      tagIds: number[]
+      tagIds: string[]
     }>()
     .notNull(),
 })
@@ -190,7 +217,7 @@ export const contacts = mysqlTable(
     avatarUrl: varchar("avatarUrl", { length: 256 }),
     subscribedAt: timestamp("subscribedAt"),
     unsubscribedAt: timestamp("unsubscribedAt"),
-    audienceId: primaryKeyBigInt("audienceId")
+    audienceId: primaryKeyCuid("audienceId")
       .references(() => audiences.id)
       .notNull(),
     emailVerificationToken: varchar("emailVerificationToken", {
@@ -199,7 +226,7 @@ export const contacts = mysqlTable(
     emailVerificationTokenExpiresAt: timestamp(
       "emailVerificationTokenExpiresAt",
     ),
-    contactImportId: primaryKeyBigInt("contactImportId").references(
+    contactImportId: primaryKeyCuid("contactImportId").references(
       () => contactImports.id,
     ),
     attributes: json("attributes").$type<Record<string, any>>(),
@@ -247,7 +274,7 @@ export const tags = mysqlTable(
     id,
     name: varchar("name", { length: 256 }).notNull(),
     description: varchar("description", { length: 256 }),
-    audienceId: primaryKeyBigInt("audienceId")
+    audienceId: primaryKeyCuid("audienceId")
       .references(() => audiences.id)
       .notNull(),
   },
@@ -263,10 +290,10 @@ export const tagsOnContacts = mysqlTable(
   "tagsOnContacts",
   {
     id,
-    tagId: primaryKeyBigInt("tagId")
+    tagId: primaryKeyCuid("tagId")
       .references(() => tags.id)
       .notNull(),
-    contactId: primaryKeyBigInt("contactId")
+    contactId: primaryKeyCuid("contactId")
       .references(() => contacts.id)
       .notNull(),
     assignedAt: timestamp("assignedAt"),
@@ -285,7 +312,7 @@ export const automations = mysqlTable("automations", {
   id,
   name: varchar("name", { length: 50 }).notNull(),
   description: varchar("description", { length: 512 }),
-  audienceId: primaryKeyBigInt("audienceId")
+  audienceId: primaryKeyCuid("audienceId")
     .references(() => audiences.id, { onDelete: "cascade" })
     .notNull(),
 })
@@ -294,10 +321,10 @@ export const emails = mysqlTable("emails", {
   id,
   type: mysqlEnum("type", ["AUTOMATION", "TRANSACTIONAL"]).notNull(),
   title: varchar("title", { length: 50 }).notNull(),
-  audienceId: primaryKeyBigInt("audienceId")
+  audienceId: primaryKeyCuid("audienceId")
     .references(() => audiences.id, { onDelete: "cascade" })
     .notNull(),
-  emailContentId: primaryKeyBigInt("emailContentId").references(
+  emailContentId: primaryKeyCuid("emailContentId").references(
     () => emailContents.id,
     {
       onDelete: "cascade",
@@ -307,12 +334,12 @@ export const emails = mysqlTable("emails", {
 
 export const abTestVariants = mysqlTable("abTestVariants", {
   id,
-  broadcastId: primaryKeyBigInt("broadcastId")
+  broadcastId: primaryKeyCuid("broadcastId")
     .references(() => broadcasts.id, {
       onDelete: "cascade",
     })
     .notNull(),
-  emailContentId: primaryKeyBigInt("emailContentId")
+  emailContentId: primaryKeyCuid("emailContentId")
     .references(() => emailContents.id, {
       onDelete: "cascade",
     })
@@ -339,23 +366,23 @@ export const broadcasts = mysqlTable("broadcasts", {
   id,
   name: varchar("name", { length: 255 }).notNull(),
 
-  audienceId: primaryKeyBigInt("audienceId")
+  audienceId: primaryKeyCuid("audienceId")
     .references(() => audiences.id)
     .notNull(),
-  segmentId: primaryKeyBigInt("segmentId").references(() => segments.id),
-  teamId: primaryKeyBigInt("teamId")
+  segmentId: primaryKeyCuid("segmentId").references(() => segments.id),
+  teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
   trackClicks: boolean("trackClicks"),
   trackOpens: boolean("trackOpens"),
 
-  emailContentId: primaryKeyBigInt("emailContentId").references(
+  emailContentId: primaryKeyCuid("emailContentId").references(
     () => emailContents.id,
     {
       onDelete: "cascade",
     },
   ),
-  winningAbTestVariantId: primaryKeyBigInt(
+  winningAbTestVariantId: primaryKeyCuid(
     "winningAbTestVariantId",
   ).references((): AnyMySqlColumn => abTestVariants.id, {
     onDelete: "cascade",
@@ -421,16 +448,16 @@ export const automationStepSubtypes = [
 ] as const
 
 export type ACTION_ADD_TAG_CONFIGURATION = {
-  tagIds: number[]
+  tagIds: string[]
 }
 export type ACTION_REMOVE_TAG_CONFIGURATION = {
-  tagIds: number[]
+  tagIds: string[]
 }
 export type ACTION_UPDATE_CONTACT_ATTRIBUTES = {
   attributes: Record<string, any>
 }
 export type ACTION_SEND_EMAIL_CONFIGURATION = {
-  emailId: number
+  emailId: string
 }
 
 export type RULE_WAIT_FOR_DURATION_CONFIGURATION = {
@@ -450,7 +477,7 @@ export type END_CONFIGURATION = {
 }
 
 export type ACTION_SUBSCRIBE_TO_AUDIENCE_CONFIGURATION = {
-  audienceId: number
+  audienceId: string
 }
 
 export type AutomationStepConfiguration =
@@ -466,7 +493,7 @@ export type AutomationStepConfiguration =
 
 export const automationSteps = mysqlTable("automationSteps", {
   id,
-  automationId: primaryKeyBigInt("automationId")
+  automationId: primaryKeyCuid("automationId")
     .references(() => automations.id)
     .notNull(),
   type: mysqlEnum("type", automationStepTypes).notNull(),
@@ -474,7 +501,7 @@ export const automationSteps = mysqlTable("automationSteps", {
     .notNull()
     .default("DRAFT"),
   subtype: mysqlEnum("subtype", automationStepSubtypes).notNull(),
-  parentId: primaryKeyBigInt("parentId").references(
+  parentId: primaryKeyCuid("parentId").references(
     (): AnyMySqlColumn => automationSteps.id,
     {
       onDelete: "cascade",
@@ -484,17 +511,15 @@ export const automationSteps = mysqlTable("automationSteps", {
   configuration: json("configuration")
     .$type<AutomationStepConfiguration>()
     .notNull(),
-  emailId: primaryKeyBigInt("emailId").references(() => emails.id),
-  tagId: primaryKeyBigInt("tagId").references(() => tags.id),
-  audienceId: primaryKeyBigInt("audienceId").references(
-    () => audiences.id,
-  ),
+  emailId: primaryKeyCuid("emailId").references(() => emails.id),
+  tagId: primaryKeyCuid("tagId").references(() => tags.id),
+  audienceId: primaryKeyCuid("audienceId").references(() => audiences.id),
 })
 
 export const segments = mysqlTable("segments", {
   id,
   name: varchar("name", { length: 255 }).notNull(),
-  audienceId: primaryKeyBigInt("audienceId")
+  audienceId: primaryKeyCuid("audienceId")
     .references(() => audiences.id)
     .notNull(),
   filterGroups: json("filterGroups")
@@ -506,12 +531,12 @@ export const contactAutomationSteps = mysqlTable(
   "contactAutomationSteps",
   {
     id,
-    automationStepId: primaryKeyBigInt("automationStepId")
+    automationStepId: primaryKeyCuid("automationStepId")
       .references(() => automationSteps.id, {
         onDelete: "cascade",
       })
       .notNull(),
-    contactId: primaryKeyBigInt("contactId")
+    contactId: primaryKeyCuid("contactId")
       .references(() => contacts.id, {
         onDelete: "cascade",
       })

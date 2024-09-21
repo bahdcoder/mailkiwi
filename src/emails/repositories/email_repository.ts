@@ -22,7 +22,7 @@ export class EmailRepository extends BaseRepository {
     relationName: "emailContent",
   })
 
-  async findById(emailId: number) {
+  async findById(emailId: string) {
     const [email] = await this.belongsToEmailContent((query) =>
       query.where(eq(emails.id, emailId)),
     )

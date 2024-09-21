@@ -12,7 +12,7 @@ import { container } from "@/utils/typi.js"
 export class CreateTagAction {
   constructor(private tagRepository = container.make(TagRepository)) {}
 
-  handle = async (payload: CreateTagDto, audienceId: number) => {
+  handle = async (payload: CreateTagDto, audienceId: string) => {
     const existingTag = await this.tagRepository.findFirst({
       where: and(
         eq(tags.name, payload.name),

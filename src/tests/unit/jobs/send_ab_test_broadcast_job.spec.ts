@@ -57,7 +57,7 @@ describe("Send broadcast job", () => {
       weights: testAbVariantWeights,
     })
 
-    const contactIds = faker.helpers.multiple(faker.number.int, {
+    const contactIds = faker.helpers.multiple(cuid, {
       count: contactsForAudience,
     })
 

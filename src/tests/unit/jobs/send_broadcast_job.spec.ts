@@ -19,6 +19,7 @@ import {
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 describe("@broadcasts send job", () => {
   test("queues send email jobs for all contacts in audience for the broadcast", async ({
@@ -37,7 +38,7 @@ describe("@broadcasts send job", () => {
 
     const contactsForAudience = 13
 
-    const contactIds = faker.helpers.multiple(faker.number.int, {
+    const contactIds = faker.helpers.multiple(cuid, {
       count: contactsForAudience,
     })
 
@@ -107,7 +108,10 @@ describe("@broadcasts send job", () => {
 
     const emailStartsWith = faker.string.uuid()
 
-    const segmentInsert = await database.insert(segments).values({
+    const segmentId = cuid()
+
+    await database.insert(segments).values({
+      id: segmentId,
       audienceId: audience.id,
       name: faker.lorem.words(3),
       filterGroups: {
@@ -127,8 +131,6 @@ describe("@broadcasts send job", () => {
       },
     })
 
-    const segmentId = segmentInsert?.[0]?.insertId
-
     await database
       .update(broadcasts)
       .set({ segmentId })
@@ -136,7 +138,7 @@ describe("@broadcasts send job", () => {
 
     const contactsForAudience = 6
 
-    const contactIds = faker.helpers.multiple(faker.number.int, {
+    const contactIds = faker.helpers.multiple(cuid, {
       count: contactsForAudience,
     })
 

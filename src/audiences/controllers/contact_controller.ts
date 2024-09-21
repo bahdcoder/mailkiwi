@@ -42,8 +42,8 @@ export class ContactController extends BaseController {
     const paginatedContacts = await container
       .make(GetContactsAction)
       .handle(
-        parseInt(ctx.req.param("audienceId")),
-        parseInt(ctx.req.query("segmentId") as string),
+        ctx.req.param("audienceId"),
+        ctx.req.query("segmentId") as string,
         Number.parseInt(ctx.req.query("page") ?? "1"),
         Number.parseInt(ctx.req.query("perPage") ?? "10"),
       )

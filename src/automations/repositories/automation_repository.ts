@@ -3,7 +3,6 @@ import { eq } from "drizzle-orm"
 import type { CreateAutomationDto } from "@/automations/dto/create_automation_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import type { FindAutomationByIdArgs } from "@/database/schema/database_schema_types.js"
 import { automationSteps, automations } from "@/database/schema/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
@@ -23,23 +22,24 @@ export class AutomationRepository extends BaseRepository {
     relationName: "steps",
   })
 
-  async findById(automationId: number) {
-    const result = await this.hasManySteps((query) =>
+  async findById(automationId: string) {
+    const [automation] = await this.hasManySteps((query) =>
       query.where(eq(automations.id, automationId)),
     )
 
-    return result[0]
+    return automation
   }
 
-  async create(payload: CreateAutomationDto, audienceId: number) {
-    const result = await this.database
+  async create(payload: CreateAutomationDto, audienceId: string) {
+    const id = this.cuid()
+    await this.database
       .insert(automations)
-      .values({ ...payload, audienceId })
+      .values({ id, ...payload, audienceId })
 
-    return { id: this.primaryKey(result) }
+    return { id }
   }
 
-  async update(payload: CreateAutomationDto, automationId: number) {
+  async update(payload: CreateAutomationDto, automationId: string) {
     await this.database
       .update(automations)
       .set(payload)

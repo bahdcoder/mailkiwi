@@ -6,6 +6,7 @@ import {
   automationSteps,
   contactAutomationSteps,
   contacts,
+  uuidToBin,
 } from "@/database/schema/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
@@ -14,7 +15,7 @@ import { Queue } from "@/shared/queue/queue.js"
 import { Paginator } from "@/shared/utils/pagination/paginator.js"
 
 export interface RunAutomationStepJobPayload {
-  automationStepId: number
+  automationStepId: string
 }
 
 export class RunAutomationStepJob extends BaseJob<RunAutomationStepJobPayload> {
@@ -56,7 +57,7 @@ export class RunAutomationStepJob extends BaseJob<RunAutomationStepJobPayload> {
         .modifyQuery((query) =>
           query.leftJoin(
             contactAutomationSteps,
-            sql`${contacts.id} = ${contactAutomationSteps.contactId} AND ${contactAutomationSteps.automationStepId} = ${automationStep.id}`,
+            sql`${contacts.id} = ${contactAutomationSteps.contactId} AND ${contactAutomationSteps.automationStepId} = ${uuidToBin(automationStep.id)}`,
           ),
         )
         .queryConditions([

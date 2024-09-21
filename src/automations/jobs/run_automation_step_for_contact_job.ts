@@ -5,11 +5,7 @@ import { ContactRepository } from "@/audiences/repositories/contact_repository.j
 
 import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.js"
 
-import {
-  automationSteps,
-  contactAutomationSteps,
-  contacts,
-} from "@/database/schema/schema.js"
+import { contactAutomationSteps } from "@/database/schema/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
@@ -17,8 +13,8 @@ import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { container } from "@/utils/typi.js"
 
 export interface RunAutomationStepForContactJobPayload {
-  automationStepId: number
-  contactId: number
+  automationStepId: string
+  contactId: string
 }
 
 export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepForContactJobPayload> {

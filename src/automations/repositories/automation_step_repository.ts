@@ -17,19 +17,21 @@ export class AutomationStepRepository extends BaseRepository {
   }
 
   async create(
-    automationId: number,
+    automationId: string,
     { configuration, ...payload }: CreateAutomationStepDto,
   ) {
-    const result = await this.database.insert(automationSteps).values({
+    const id = this.cuid()
+    await this.database.insert(automationSteps).values({
+      id,
       ...payload,
       automationId,
       configuration: configuration as AutomationStepConfiguration,
     })
 
-    return { id: this.primaryKey(result) }
+    return { id }
   }
 
-  async findById(automationStepId: number) {
+  async findById(automationStepId: string) {
     const [step] = await this.database
       .select()
       .from(automationSteps)
@@ -38,7 +40,7 @@ export class AutomationStepRepository extends BaseRepository {
     return step
   }
 
-  async findByParentId(automationStepId: number) {
+  async findByParentId(automationStepId: string) {
     const [step] = await this.database
       .select()
       .from(automationSteps)

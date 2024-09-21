@@ -43,7 +43,7 @@ export const SendBroadcastSchema = objectAsync({
   name: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
 
   audienceId: pipeAsync(
-    number(),
+    string(),
     checkAsync(async (value) => {
       const database = makeDatabase()
 

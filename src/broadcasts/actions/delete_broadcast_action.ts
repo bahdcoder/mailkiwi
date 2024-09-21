@@ -9,7 +9,7 @@ export class DeleteBroadcastAction {
     ),
   ) {}
 
-  async handle(broadcastId: number) {
+  async handle(broadcastId: string) {
     return this.broadcastRepository.delete(broadcastId)
   }
 }

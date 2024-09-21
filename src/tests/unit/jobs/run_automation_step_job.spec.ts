@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker"
-import { and, eq } from "drizzle-orm"
+import { and, count, eq, inArray } from "drizzle-orm"
 import { describe, test, vi } from "vitest"
 
 import { RunAutomationStepJob } from "@/automations/jobs/run_automation_step_job.js"
@@ -16,8 +16,9 @@ import {
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-describe("Run automation step job", () => {
+describe("@run-automation-step job", () => {
   test("dispatches a run automation step for contact job for each contact at this step", async ({
     expect,
   }) => {
@@ -32,7 +33,7 @@ describe("Run automation step job", () => {
     const totalContacts = 373
     const totalContactsNotAtStep = 32
 
-    const contactIds = faker.helpers.multiple(faker.number.int, {
+    const contactIds = faker.helpers.multiple(cuid, {
       count: totalContacts,
     })
 
@@ -69,7 +70,7 @@ describe("Run automation step job", () => {
       contactIds.map((contactId) => ({
         contactId,
         status: "PENDING" as const,
-        automationStepId: automationStepSendEmail?.id as number,
+        automationStepId: automationStepSendEmail?.id as string,
       })),
     )
 
@@ -77,7 +78,7 @@ describe("Run automation step job", () => {
       database,
       redis: makeRedis(),
       payload: {
-        automationStepId: automationStepSendEmail?.id as number,
+        automationStepId: automationStepSendEmail?.id as string,
       },
     })
 

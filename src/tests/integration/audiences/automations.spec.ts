@@ -17,6 +17,7 @@ import {
 } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
 import { container } from "@/utils/typi.js"
@@ -34,8 +35,8 @@ describe("@automations", () => {
     })
 
     interface AutomationStep {
-      id: number
-      parentId: number | null
+      id: string
+      parentId: string | null
       subtype: string
       branchIndex: number | null
     }
@@ -54,7 +55,7 @@ describe("@automations", () => {
         nodeMap[step.id] = { ...step }
       }
 
-      function processNode(nodeId: number): FlatTreeNode[] {
+      function processNode(nodeId: string): FlatTreeNode[] {
         const node = nodeMap[nodeId]
         const result: FlatTreeNode[] = [node]
 
@@ -144,13 +145,14 @@ describe("@automations", () => {
     )
     const database = makeDatabase()
 
-    const result = await database.insert(emails).values({
+    const emailId = cuid()
+
+    await database.insert(emails).values({
+      id: emailId,
       title: faker.lorem.words(2),
       type: "AUTOMATION",
       audienceId: audience.id,
     })
-
-    const emailId = fromQueryResultToPrimaryKey(result)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -163,10 +165,12 @@ describe("@automations", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(201)
 
     const createdStep = await database.query.automationSteps.findFirst({
-      where: eq(automationSteps.id, (await response.json()).id),
+      where: eq(automationSteps.id, json.id),
     })
 
     expect(createdStep?.type).toBe("ACTION")
@@ -184,12 +188,13 @@ describe("@automations", () => {
     )
     const database = makeDatabase()
 
-    const result = await database.insert(tags).values({
+    const tagId = cuid()
+
+    await database.insert(tags).values({
+      id: tagId,
       name: faker.lorem.word(),
       audienceId: audience.id,
     })
-
-    const tagId = fromQueryResultToPrimaryKey(result)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -221,12 +226,13 @@ describe("@automations", () => {
     )
     const database = makeDatabase()
 
-    const result = await database.insert(audiences).values({
+    const audienceId = cuid()
+
+    await database.insert(audiences).values({
+      id: audienceId,
       name: faker.lorem.word(),
       teamId: user?.teams?.[0]?.id,
     })
-
-    const audienceId = fromQueryResultToPrimaryKey(result)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -502,7 +508,7 @@ describe("@automations step validation", () => {
         type: "ACTION",
         subtype: "ACTION_SEND_EMAIL",
         configuration: {},
-        emailId: faker.number.int(),
+        emailId: cuid(),
       },
     })
 
@@ -531,7 +537,7 @@ describe("@automations step validation", () => {
         type: "ACTION",
         subtype: "ACTION_ADD_TAG",
         configuration: {},
-        tagId: faker.number.int(),
+        tagId: cuid(),
       },
     })
 
@@ -562,7 +568,7 @@ describe("@automations step validation", () => {
         type: "ACTION",
         subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
         configuration: {},
-        audienceId: faker.number.int(),
+        audienceId: cuid(),
       },
     })
 

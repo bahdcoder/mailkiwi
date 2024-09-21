@@ -29,16 +29,21 @@ export class TeamRepository extends BaseRepository {
     relationName: "members",
   })
 
-  async create(payload: CreateTeamDto, userId: number) {
-    const insertResult = await this.database.insert(teams).values({
-      ...payload,
+  async create(payload: CreateTeamDto, userId: string) {
+    const id = this.cuid()
+
+    await this.database.insert(teams).values({
+      id,
       userId,
+      ...payload,
     })
 
-    return { id: this.primaryKey(insertResult) }
+    const insertedAndFoundTeamId = await this.findById(id)
+
+    return { id }
   }
 
-  async findUserDefaultTeam(userId: number) {
+  async findUserDefaultTeam(userId: string) {
     const team = await this.hasManyMemberships((query) =>
       query
         .leftJoin(users, eq(users.id, teamMemberships.userId))
@@ -49,8 +54,8 @@ export class TeamRepository extends BaseRepository {
     return team[0]
   }
 
-  async findById(teamId: number) {
-    const team = await this.hasManyMemberships(
+  async findById(teamId: string) {
+    const [team] = await this.hasManyMemberships(
       (query) =>
         query
           .leftJoin(users, eq(users.id, teamMemberships.userId))
@@ -61,7 +66,7 @@ export class TeamRepository extends BaseRepository {
       }),
     )
 
-    return team[0]
+    return team
   }
 
   dkim() {

@@ -10,7 +10,7 @@ export class CreateAutomationStepAction {
     ),
   ) {}
 
-  handle = async (automationId: number, data: CreateAutomationStepDto) => {
+  handle = async (automationId: string, data: CreateAutomationStepDto) => {
     return this.automationStepRepository.create(automationId, data)
   }
 }

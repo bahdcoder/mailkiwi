@@ -11,11 +11,12 @@ import { contacts, tagsOnContacts } from "@/database/schema/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
 export interface ImportContactsJobPayload {
-  contactImportId: number
+  contactImportId: string
 }
 
 export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
@@ -64,8 +65,8 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
     const chunkSize = 1000
 
     await database.transaction(async (tx) => {
-      // bulk insert all new tags
       const tagsToCreate = contactImport.attributesMap.tags.map((tag) => ({
+        id: cuid(),
         name: tag,
         audienceId: contactImport.audienceId,
       }))
@@ -92,6 +93,7 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
           }
 
           return {
+            id: cuid(),
             email: row[contactImport.attributesMap.email],
             firstName: row[contactImport.attributesMap.firstName],
             lastName: row[contactImport.attributesMap.lastName],

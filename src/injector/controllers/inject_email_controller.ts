@@ -41,6 +41,8 @@ export class InjectEmailController extends BaseController {
       })
       .send()
 
+    console.log({ error, data })
+
     return ctx.json({ Ok: true })
   }
 }

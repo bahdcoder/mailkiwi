@@ -11,7 +11,7 @@ import { makeRequestAsUser } from "@/tests/utils/http.js"
 import { contacts, segments, tags } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
-import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -56,7 +56,7 @@ describe("@audience segments", () => {
 
     expect(savedSegment).toEqual([
       {
-        id: expect.any(Number),
+        id: expect.any(String),
         name: payload.name,
         audienceId: audience.id,
         filterGroups: {
@@ -168,7 +168,10 @@ describe("@audience segments", () => {
         ),
     )
 
-    const result = await database.insert(segments).values({
+    const segmentId = cuid()
+
+    await database.insert(segments).values({
+      id: segmentId,
       audienceId: audience.id,
       name: faker.lorem.words(3),
       filterGroups: {
@@ -187,8 +190,6 @@ describe("@audience segments", () => {
         ],
       },
     })
-
-    const segmentId = fromQueryResultToPrimaryKey(result)
 
     const response = await makeRequestAsUser(user, {
       method: "GET",
@@ -216,7 +217,7 @@ describe("@audience segments", () => {
           .map(() => createFakeContact(audience.id)),
       )
 
-    const tagIds = faker.helpers.multiple(faker.number.int, {
+    const tagIds = faker.helpers.multiple(cuid, {
       count: 3,
     })
 
@@ -235,7 +236,7 @@ describe("@audience segments", () => {
       max: 17,
     })
 
-    const segmentContactIds = faker.helpers.multiple(faker.number.int, {
+    const segmentContactIds = faker.helpers.multiple(cuid, {
       count: countForSegment,
     })
 
@@ -255,7 +256,7 @@ describe("@audience segments", () => {
       await container.make(ContactRepository).attachTags(contactId, tagIds)
     }
 
-    const segmentId = faker.number.int()
+    const segmentId = cuid()
 
     await database.insert(segments).values({
       id: segmentId,
@@ -313,7 +314,7 @@ describe("@audience segments", () => {
         .map(() => createFakeContact(audience.id)),
     )
 
-    const tagIds = faker.helpers.multiple(faker.number.int, {
+    const tagIds = faker.helpers.multiple(cuid, {
       count: 3,
     })
 
@@ -336,7 +337,7 @@ describe("@audience segments", () => {
       max: 17,
     })
 
-    const segmentContactIds = faker.helpers.multiple(faker.number.int, {
+    const segmentContactIds = faker.helpers.multiple(cuid, {
       count: countForSegment,
     })
 
@@ -364,7 +365,10 @@ describe("@audience segments", () => {
       await container.make(ContactRepository).attachTags(contactId, tagIds)
     }
 
-    const result = await database.insert(segments).values({
+    const segmentId = cuid()
+
+    await database.insert(segments).values({
+      id: segmentId,
       audienceId: audience.id,
       name: faker.lorem.words(3),
       filterGroups: {
@@ -383,8 +387,6 @@ describe("@audience segments", () => {
         ],
       },
     })
-
-    const segmentId = fromQueryResultToPrimaryKey(result)
 
     const response = await makeRequestAsUser(user, {
       method: "GET",

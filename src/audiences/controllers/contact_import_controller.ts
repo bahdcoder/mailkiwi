@@ -65,7 +65,7 @@ export class ContactImportController extends BaseController {
   }
 
   private async ensureContactImportExists(ctx: HonoContext) {
-    const importId = parseInt(ctx.req.param("importId"))
+    const importId = ctx.req.param("importId")
     const contactImport =
       await this.contactImportRepository.findById(importId)
 

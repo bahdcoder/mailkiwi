@@ -30,11 +30,6 @@ export class UpdateBroadcastAction {
     await this.database.transaction(async (trx) => {
       const hasAbTestVariants =
         emailContentVariants && emailContentVariants.length > 0
-
-      this.broadcastRepository.transaction(trx)
-      this.emailContentRepository.transaction(trx)
-      this.abTestVariantRepository.transaction(trx)
-
       if (Object.keys(broadcastPayload).length > 0) {
         await this.broadcastRepository
           .transaction(trx)
@@ -45,17 +40,15 @@ export class UpdateBroadcastAction {
       }
 
       if (emailContent && Object.keys(emailContent).length > 0) {
-        await this.emailContentRepository.updateForBroadcast(
-          broadcast,
-          emailContent,
-        )
+        await this.emailContentRepository
+          .transaction(trx)
+          .updateForBroadcast(broadcast, emailContent)
       }
 
       if (emailContentVariants && emailContentVariants.length > 0) {
-        await this.abTestVariantRepository.bulkUpsertVariants(
-          emailContentVariants,
-          broadcast.id,
-        )
+        await this.abTestVariantRepository
+          .transaction(trx)
+          .bulkUpsertVariants(emailContentVariants, broadcast.id)
       }
     })
 

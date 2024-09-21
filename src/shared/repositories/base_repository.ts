@@ -1,6 +1,4 @@
-import { AnyTable, InferSelectModel } from "drizzle-orm"
 import { MySqlRawQueryResult } from "drizzle-orm/mysql2"
-import { AnyMySqlTable } from "drizzle-orm/mysql-core"
 
 import type { DrizzleClient } from "@/database/client.js"
 
@@ -17,6 +15,10 @@ export class BaseRepository {
 
   primaryKey(result: MySqlRawQueryResult) {
     return result?.[0]?.insertId as number
+  }
+
+  rand() {
+    return Math.random()
   }
 
   cuid() {

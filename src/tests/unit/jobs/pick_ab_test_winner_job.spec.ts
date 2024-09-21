@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
-import { describe, test, vi } from "vitest"
+import { describe, test } from "vitest"
 
 import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.js"
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
@@ -15,11 +15,12 @@ import { abTestVariants, contacts } from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { hoursToSeconds } from "@/utils/dates.js"
 import { container } from "@/utils/typi.js"
 
-describe("Pick A/B Test winner", () => {
+describe("@abtests Pick Test winner", () => {
   test("picks A/B test winner for click rate winning criteria", async ({
     expect,
   }) => {
@@ -54,7 +55,7 @@ describe("Pick A/B Test winner", () => {
       weights: testAbVariantWeights,
     })
 
-    const contactIds = faker.helpers.multiple(faker.number.int, {
+    const contactIds = faker.helpers.multiple(cuid, {
       count: contactsForAudience,
     })
 

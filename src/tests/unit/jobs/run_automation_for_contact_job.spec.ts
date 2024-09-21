@@ -12,7 +12,7 @@ import { contacts } from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
-import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 describe("Run automation for contact job", () => {
   test("successfully runs an automation job for a contact by queueing next job", async ({
@@ -27,20 +27,18 @@ describe("Run automation for contact job", () => {
         audienceId: audience.id,
       })
 
-    const contactInsert = await database
+    const contactId = cuid()
+
+    await database
       .insert(contacts)
-      .values(createFakeContact(audience.id))
-
-    const contactId = fromQueryResultToPrimaryKey(contactInsert)
-
-    // Insert automation steps for contacts before starting to process job.
+      .values(createFakeContact(audience.id, { id: contactId }))
 
     await new RunAutomationForContactJob().handle({
       database,
       redis: makeRedis(),
       payload: {
-        automationId: automationId,
-        contactId: contactId,
+        automationId,
+        contactId,
       },
     })
 
@@ -81,12 +79,14 @@ describe("Run automation for contact job", () => {
       ],
     })
 
-    const insertContactResult = await database.insert(contacts).values(
+    const contactId = cuid()
+
+    await database.insert(contacts).values(
       createFakeContact(audience.id, {
+        id: contactId,
         email: faker.internet.exampleEmail(),
       }),
     )
-    const contactId = fromQueryResultToPrimaryKey(insertContactResult)
 
     const result = await new RunAutomationForContactJob().handle({
       database,
@@ -121,18 +121,18 @@ describe("Run automation for contact job", () => {
       audienceId: audience.id,
     })
 
-    const insertContactResult = await database
-      .insert(contacts)
-      .values(createFakeContact(audience.id))
+    const contactId = cuid()
 
-    const contactId = fromQueryResultToPrimaryKey(insertContactResult)
+    await database
+      .insert(contacts)
+      .values({ ...createFakeContact(audience.id), id: contactId })
 
     const result = await new RunAutomationForContactJob().handle({
       database,
       redis: makeRedis(),
       payload: {
-        automationId: automationId,
-        contactId: contactId,
+        automationId,
+        contactId,
       },
     })
 

@@ -25,7 +25,7 @@ export class CreateSendingDomainAction {
     ),
   ) {}
 
-  async handle(payload: CreateAudienceDto, teamId: number) {
+  async handle(payload: CreateAudienceDto, teamId: string) {
     const {
       publicKey: dkimPublicKey,
       encrypted: { privateKey: dkimPrivateKey },
@@ -40,10 +40,9 @@ export class CreateSendingDomainAction {
             teamId,
             dkimPublicKey,
             dkimPrivateKey: dkimPrivateKey.release(),
-            // The default domain for return path would be kb.customerdomain.com -> points to mail.kbmta.net
             returnPathSubDomain: this.env.software.bounceSubdomain,
             returnPathDomainCnameValue: this.env.software.bounceHost,
-            dkimSubDomain, // 20241112010101._domainkey
+            dkimSubDomain,
           }),
 
           this.teamRepository.dkim().forDomain(payload.name).save({

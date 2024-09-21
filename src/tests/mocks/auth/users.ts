@@ -1,7 +1,5 @@
 import { createFakeAbTestEmailContent } from "../audiences/email_content.js"
 import { faker } from "@faker-js/faker"
-import { Secret } from "@poppinss/utils"
-import { eq } from "drizzle-orm"
 
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 
@@ -18,16 +16,12 @@ import type {
   TeamMembership,
   User,
 } from "@/database/schema/database_schema_types.js"
-import { teams, users } from "@/database/schema/schema.js"
-
-import { makeDatabase } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
 export async function createBroadcastForUser(
   user: User,
-  audienceId: number,
+  audienceId: string,
   options?: {
     updateWithValidContent?: boolean
     updateWithABTestsContent?: boolean
@@ -46,7 +40,7 @@ export async function createBroadcastForUser(
   const { id } = await response.json()
 
   if (options?.updateWithValidContent) {
-    await makeRequestAsUser(user, {
+    const rr = await makeRequestAsUser(user, {
       method: "PUT",
       path: `/broadcasts/${id}`,
       body: {

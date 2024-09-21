@@ -16,6 +16,7 @@ import {
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 describe("Run automation job", () => {
   test("dispatches a run automation step job for each step in the automation", async ({
@@ -33,7 +34,7 @@ describe("Run automation job", () => {
     const totalContacts = 373
     const totalContactsNotAtStep = 32
 
-    const contactIds = faker.helpers.multiple(faker.number.int, {
+    const contactIds = faker.helpers.multiple(cuid, {
       count: totalContacts,
     })
 
@@ -68,9 +69,10 @@ describe("Run automation job", () => {
     // Insert automation steps for contacts before starting to process job.
     await database.insert(contactAutomationSteps).values(
       contactIds.map((contactId) => ({
+        id: cuid(),
         contactId,
         status: "PENDING" as const,
-        automationStepId: automationStepSendEmail?.id as number,
+        automationStepId: automationStepSendEmail?.id as string,
       })),
     )
 
@@ -78,14 +80,14 @@ describe("Run automation job", () => {
       database,
       redis,
       payload: {
-        automationStepId: automationStepSendEmail?.id as number,
+        automationStepId: automationStepSendEmail?.id as string,
       },
     })
 
     const jobs = await queues.Queue.automations().getJobs()
 
     const automationsQueueJobs = jobs.filter((job) =>
-      contactIds.includes(parseInt(job.data?.contactId)),
+      contactIds.includes(job.data?.contactId),
     )
 
     expect(automationsQueueJobs.length).toBe(totalContacts)
