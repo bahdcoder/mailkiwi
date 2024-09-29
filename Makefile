@@ -71,6 +71,7 @@ kumo:
 		-e HOSTNAME=kumomta \
 		-e API_HTTP_ACCESS_TOKEN=tSv1rimOykRimRB7XgLtYDctSv1rimOykRimRB7XgLtYDc \
 		-e API_HTTP_SERVER=http://host.docker.internal:5566 \
+		-e TSA_DAEMON_HTTP_SERVER=http://host.docker.internal:8012 \
 		-p 6235:8000 \
 		-p 5990:25 \
 		--network kibamail_default \

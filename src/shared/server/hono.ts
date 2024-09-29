@@ -30,7 +30,7 @@ export class Hono
   constructor() {
     super({ strict: false })
 
-    // this.use(logger())
+    this.use(logger())
     this.defineErrorHandler()
   }
 

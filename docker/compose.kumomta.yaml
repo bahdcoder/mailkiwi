@@ -1,0 +1,130 @@
+services:
+  kumomta-socks5-proxy-1:
+    container_name: kumomta-socks5-proxy-1
+    hostname: sv1.localkbmta.net
+    image: ghcr.io/kumocorp/kumomta-dev:latest
+    dns: 172.20.0.2
+    ports:
+      - 8001:8000
+    networks:
+      default:
+        ipv4_address: 172.20.0.45
+    command: ["/opt/kumomta/sbin/proxy-server", "--listen", "0.0.0.0:8000"]
+    depends_on:
+      - kumomta-tsa-daemon
+
+  kumomta-socks5-proxy-2:
+    container_name: kumomta-socks5-proxy-2
+    hostname: sv2.localkbmta.net
+    image: ghcr.io/kumocorp/kumomta-dev:latest
+    dns: 172.20.0.2
+    ports:
+      - 8002:8000
+    networks:
+      default:
+        ipv4_address: 172.20.0.55
+    command: ["/opt/kumomta/sbin/proxy-server", "--listen", "0.0.0.0:8000"]
+
+  kumomta-socks5-proxy-3:
+    container_name: kumomta-socks5-proxy-3
+    hostname: sv3.localkbmta.net
+    image: ghcr.io/kumocorp/kumomta-dev:latest
+    dns: 172.20.0.2
+    ports:
+      - 8003:8000
+    networks:
+      default:
+        ipv4_address: 172.20.0.65
+    command: ["/opt/kumomta/sbin/proxy-server", "--listen", "0.0.0.0:8000"]
+
+  kumomta-socks5-proxy-4:
+    container_name: kumomta-socks5-proxy-4
+    hostname: sv4.localkbmta.net
+    image: ghcr.io/kumocorp/kumomta-dev:latest
+    dns: 172.20.0.2
+    ports:
+      - 8004:8000
+    networks:
+      default:
+        ipv4_address: 172.20.0.75
+    command: ["/opt/kumomta/sbin/proxy-server", "--listen", "0.0.0.0:8000"]
+
+  kumomta-socks5-proxy-5:
+    container_name: kumomta-socks5-proxy-5
+    hostname: sv5.localkbmta.net
+    image: ghcr.io/kumocorp/kumomta-dev:latest
+    dns: 172.20.0.2
+    ports:
+      - 8005:8000
+    networks:
+      default:
+        ipv4_address: 172.20.0.85
+    command: ["/opt/kumomta/sbin/proxy-server", "--listen", "0.0.0.0:8000"]
+
+  kumomta-socks5-proxy-6:
+    container_name: kumomta-socks5-proxy-6
+    hostname: sv6.localkbmta.net
+    image: ghcr.io/kumocorp/kumomta-dev:latest
+    dns: 172.20.0.2
+    ports:
+      - 8006:8000
+    networks:
+      default:
+        ipv4_address: 172.20.0.95
+    command: ["/opt/kumomta/sbin/proxy-server", "--listen", "0.0.0.0:8000"]
+
+  kumomta-sink:
+    container_name: kumomta-sink
+    hostname: sinkinator
+    image: ghcr.io/kumocorp/kumomta-dev:latest
+    volumes:
+      - ./kumomta/policy:/opt/kumomta/etc/policy
+    restart: unless-stopped
+    ports:
+      - 5610:25
+      - 5611:8000
+    networks:
+      default:
+        ipv4_address: 172.20.0.10
+    depends_on:
+      - kumomta-tsa-daemon
+
+  kumomta-dev:
+    container_name: kumomta-dev
+    hostname: kumomta-dev
+    image: ghcr.io/kumocorp/kumomta-dev:latest
+    volumes:
+      - ../src/kumomta/policy:/opt/kumomta/etc/policy
+      - ./kumomta/data:/var/log/kumomta
+      - ./kumomta/spool:/var/spool/kumomta
+    restart: unless-stopped
+    dns: 172.20.0.2
+    environment:
+      API_HTTP_ACCESS_TOKEN: tSv1rimOykRimRB7XgLtYDctSv1rimOykRimRB7XgLtYDc
+      API_HTTP_SERVER: "http://host.docker.internal:5566"
+      TSA_DAEMON_HTTP_SERVER: "http://host.docker.internal:8012"
+    ports:
+      - 5612:25
+      - 5613:8000
+    networks:
+      default:
+        ipv4_address: 172.20.0.11
+    depends_on:
+      - kumomta-tsa-daemon
+
+  kumomta-tsa-daemon:
+    container_name: kumomta-tsa-daemon
+    hostname: kumomta-tsa-daemon
+    image: ghcr.io/kumocorp/kumomta-dev:latest
+    volumes:
+      - ../src/kumomta/policy:/opt/kumomta/etc/policy
+      - ./kumomta/data:/var/log/kumomta
+      - ./kumomta/spool:/var/spool/kumomta
+    restart: unless-stopped
+    dns: 172.20.0.2
+    command: runuser -u kumod -- /opt/kumomta/sbin/tsa-daemon --policy /opt/kumomta/etc/policy/tsa_init.lua
+    ports:
+      - 8012:8008
+    networks:
+      default:
+        ipv4_address: 172.20.0.12

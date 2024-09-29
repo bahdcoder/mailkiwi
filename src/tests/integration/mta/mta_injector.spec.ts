@@ -13,7 +13,6 @@ import {
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 
 import { getInjectEmailContent } from "@/tests/mocks/emails/email_content.js"
-import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 
 import { makeApp } from "@/shared/container/index.js"
@@ -120,7 +119,7 @@ describe.sequential("@mta", () => {
 
     const injectEmail = getInjectEmailContent(TEST_DOMAIN)
 
-    const response = await app.request("/", {
+    const response = await app.request("/inject", {
       method: "POST",
       headers: getAuthenticationHeaders(accessKey, accessSecret.release()),
       body: JSON.stringify(injectEmail),
@@ -160,7 +159,7 @@ describe.sequential("@mta", () => {
 
       const injectEmail = getInjectEmailContent(TEST_DOMAIN)
 
-      const response = await app.request("/", {
+      const response = await app.request("/inject", {
         method: "POST",
         headers: getAuthenticationHeaders(
           accessKey,

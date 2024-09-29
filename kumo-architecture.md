@@ -17,3 +17,9 @@
   - [ ] 10ms read from Redis (if needed)
   - [ ] 5ms decryption (if needed)
   - [ ] 10ms HTTP overhead
+
+# Helpful discord messages
+
+- About how throttles are set (related to shaping rules): https://discord.com/channels/1072980126737907824/1072980127597735999/1283507314086907965
+- Just search "per ip" on Kumo MTA Discord. There's a wealth of information there.
+- Redirecting to another queue based on SMTP error: https://discord.com/channels/1072980126737907824/1258762146607530106/1258805100189843528

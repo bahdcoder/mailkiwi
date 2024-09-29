@@ -9,6 +9,7 @@
 
 -- This config acts as a sink that will discard all received mail
 local kumo = require 'kumo'
+local shaping = require 'policy-extras.shaping'
 local log_hooks = require 'policy-extras.log_hooks'
 package.path = 'assets/?.lua;' .. package.path
 local utils = require 'policy-extras.policy_utils'
@@ -19,8 +20,8 @@ local SINK_DATA_FILE = os.getenv 'SINK_DATA'
 -- ########################### ENVIRONMENT VARIABLES #############################
 
 local API_HTTP_ACCESS_TOKEN = os.getenv 'API_HTTP_ACCESS_TOKEN' or ''
-local API_HTTP_SERVER = os.getenv 'API_HTTP_SERVER' or '127.0.0.1:5566'
-
+local API_HTTP_SERVER = os.getenv 'API_HTTP_SERVER' or 'http://127.0.0.1:5566'
+local TSA_DAEMON_HTTP_SERVER = os.getenv 'TSA_DAEMON_HTTP_SERVER' or 'http://127.0.0.1:8012'
 local MTA_ENVIRONMENT = os.getenv 'MTA_ENVIRONMENT' or 'production'
 
 local HTTP_INJECTOR_PORT = os.getenv 'HTTP_INJECTOR_PORT' or '8000'
@@ -83,6 +84,15 @@ log_hooks:new_json {
  ########################### KIBAMAIL LOGGING END #############################
 
 ]]--
+
+local shaper = shaping:setup_with_automation {
+ publish = { TSA_DAEMON_HTTP_SERVER, }, -- TSA daemon from compose is running and exposed on this port.
+ subscribe = { TSA_DAEMON_HTTP_SERVER, },
+ no_default_files = true,
+ extra_files = {
+    '/opt/kumomta/etc/policy/extras/shaping.toml',
+ },
+}
 
 --[[
 
@@ -162,6 +172,12 @@ local get_domain_dkim_information = function (domain)
   return json
 end
 
+cached_get_domain_dkim_information = kumo.memoize(get_domain_dkim_information, {
+  name = 'domain_dkim_information',
+  ttl = '24 hours',
+  capacity = 5000
+})
+
 local sign_message_with_dkim = function (message, dkim_information)
   local headers_for_signing = {
       "From", "Reply-To", "Subject", "Date", "To", "Cc",
@@ -186,11 +202,18 @@ end
 local on_smtp_server_message_received = function (message)
   local domain = message:sender().domain
 
-  local dkim_information = get_domain_dkim_information(domain)
+  local dkim_information = cached_get_domain_dkim_information(domain)
 
   if dkim_information == nil then
     kumo.reject(500, 'dkim records for domain not configured on this server')
   end
+
+  -- campaign can be send (transactional) or engage (marketing)
+  -- based on resolved campaign, this will determine the egress pool we make.
+  message:set_meta("campaign", "send")
+  message:set_meta("tenant", domain)
+
+  -- Build egress path.
 
   sign_message_with_dkim(message, dkim_information)
 end
@@ -209,7 +232,7 @@ kumo.on('init', function()
     listen = '0:' .. '25',
     -- Open SMTP submissions to any host, as it is protected by SMTP authentication
     relay_hosts = { '0.0.0.0/0' },
-    banner = 'This system will sink and discard all mail',
+    banner = 'Welcome fellow postmaster. Kibamail is ready to accept your message.',
   }
 
   kumo.start_http_listener {
@@ -218,17 +241,21 @@ kumo.on('init', function()
     trusted_hosts = { '0.0.0.0/0' },
   }
 
+    shaper.setup_publish()
+
   -- Define spool locations
 
-  local spool_dir = os.getenv 'SINK_SPOOL' or '/var/spool/kumomta'
+  kumo.define_spool {
+    name = 'data',
+    path = '/var/spool/kumomta/data',
+    kind = 'RocksDB',
+  }
 
-  for _, name in ipairs { 'data', 'meta' } do
-    kumo.define_spool {
-      name = name,
-      path = spool_dir .. '/' .. name,
-      kind = 'RocksDB',
-    }
-  end
+  kumo.define_spool {
+    name = 'meta',
+    path = '/var/spool/kumomta/meta',
+    kind = 'RocksDB',
+  }
 
   -- No logs are configured: we don't need them
   kumo.configure_local_logs {
@@ -247,3 +274,34 @@ end)
 kumo.on('http_message_generated', function(message)
   on_smtp_server_message_received(message)
 end)
+
+kumo.on('get_queue_config', function (destination_domain, tenant, campaign, routing_domain)
+  return kumo.make_queue_config {
+    egress_pool = tenant
+  }
+end)
+
+kumo.on('get_egress_pool', function (pool_name)
+  return kumo.make_egress_pool {
+    name = pool_name,
+    entries = {
+      {
+        name = pool_name,
+        weight = 100
+      }
+    }
+  }
+end)
+
+kumo.on('get_egress_source', function (source_name)
+  local dkim_information = cached_get_domain_dkim_information(source_name)
+
+  return kumo.make_egress_source {
+    name = source_name,
+    ehlo_domain = dkim_information.send.primary.ehlo_domain,
+    socks5_proxy_server = dkim_information.send.primary.socks5_proxy_server,
+    socks5_proxy_source_address = dkim_information.send.primary.source_address
+  }
+end)
+
+kumo.on('get_egress_path_config', shaper.get_egress_path_config)

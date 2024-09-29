@@ -1,0 +1,16 @@
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    restart: on-failure
+    entrypoint: sh
+    command: -c ' mkdir -p /data/attachments && mkdir -p /data/emails && mkdir -p /data/contacts && minio  server /data --console-address ":9001"'
+    environment:
+      - MINIO_ROOT_USER=c7p5jgfcze6qxpidordkdkjzw3cjnq
+      - MINIO_ROOT_PASSWORD=35jids3f4ze6qxpidordkd7owed7gzk6dgsca
+    ports:
+      - "5590:9000"
+      - "5591:9001"
+    networks:
+      default:
+        ipv4_address: 172.20.0.9

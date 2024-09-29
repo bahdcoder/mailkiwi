@@ -1,0 +1,33 @@
+services:
+  dnsmasq:
+    build:
+      context: ./dnsmasq
+      dockerfile: dnsmasq.dockerfile
+    container_name: dnsmasq
+    networks:
+      default:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - ./dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    ports:
+      - 5571:1025
+      - 5572:8025
+    environment:
+      MP_MAX_MESSAGES: 500000
+      MP_SMTP_DISABLE_RDNS: true
+      MP_SMTP_BIND_ADDR: 0.0.0.0:25
+      MP_SMTP_AUTH_ACCEPT_ANY: true
+      MP_SMTP_AUTH_ALLOW_INSECURE: true
+      SMTP_USER: kibamail
+      SMTP_PASS: password
+    dns: 172.20.0.2
+    networks:
+      default:
+        ipv4_address: 172.20.0.6

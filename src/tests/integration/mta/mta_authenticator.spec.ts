@@ -31,6 +31,11 @@ describe("@mta Http server", () => {
     expect(json.dkimSubDomain).toContain("._domainkey")
     expect(json.privateKey).toMatch("-----BEGIN PRIVATE KEY-----")
     expect(json.privateKey).toMatch("-----END PRIVATE KEY-----")
+
+    expect(json.engage.primary.source_address).toBeDefined()
+    expect(json.engage.secondary.source_address).toBeDefined()
+    expect(json.send.primary.source_address).toBeDefined()
+    expect(json.send.secondary.source_address).toBeDefined()
   })
 
   test("cannot fetch dkim records without valid access token", async ({

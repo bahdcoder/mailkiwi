@@ -1,5 +1,9 @@
+import { SendingSourceRepository } from "@/settings/repositories/sending_source_repository.js"
 import { eq } from "drizzle-orm"
 import { resolveCname, resolveTxt } from "node:dns/promises"
+
+import { AssignSendingSourceToSendingDomainAction } from "@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
 import { DnsResolverTool } from "@/tools/dns/dns_resolver_tool.js"
 
@@ -29,12 +33,15 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
     redis,
     payload,
   }: JobContext<CheckSendingDomainDnsConfigurationJobPayload>) {
-    const sendingDomain = await database.query.sendingDomains.findFirst({
-      where: eq(sendingDomains.id, payload.sendingDomainId),
-    })
+    const sendingDomainRepository = container.make(SendingDomainRepository)
+    const sendingDomain = await sendingDomainRepository.findById(
+      payload.sendingDomainId,
+    )
 
     if (!sendingDomain) {
-      return this.fail()
+      return this.done(
+        "The sending domain was not found. Might have been deleted by the user before the job was run.",
+      )
     }
 
     const { cnameConfigured, dkimConfigured } = await container
@@ -61,6 +68,17 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
     }
 
     await Promise.all(databaseCalls)
+
+    if (cnameConfigured && dkimConfigured) {
+      await container
+        .make(AssignSendingSourceToSendingDomainAction)
+        .handle(sendingDomain.id)
+
+      await sendingDomainRepository.getDomainWithDkim(
+        sendingDomain.name,
+        true,
+      )
+    }
 
     if (!cnameConfigured || !dkimConfigured) {
       await Queue.sending_domains().add(

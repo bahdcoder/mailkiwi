@@ -25,6 +25,7 @@ export class AuthorizeInjectorApiKeyMiddleware {
       throw E_UNAUTHORIZED()
     }
 
+    // TODO: Only use redis as a cache. If it's not on redis, query database directly.
     const hashedAccessSecret = await this.redis.get(
       REDIS_KNOWN_KEYS.ACCESS_KEY(smtpUsername),
     )

@@ -13,7 +13,7 @@ export class InjectEmailController extends BaseController {
   constructor(private app = makeApp()) {
     super()
 
-    this.app.defineRoutes([["POST", "/", this.index.bind(this)]], {
+    this.app.defineRoutes([["POST", "/inject", this.index.bind(this)]], {
       middleware: [
         container.make(AuthorizeInjectorApiKeyMiddleware).handle,
       ],
@@ -40,6 +40,17 @@ export class InjectEmailController extends BaseController {
         },
       })
       .send()
+
+    console.log({ data, error })
+
+    if (error)
+      return ctx.json(
+        {
+          Ok: false,
+          message: "Failed to inject HTTP email message.",
+        },
+        400,
+      )
 
     return ctx.json({ Ok: true })
   }

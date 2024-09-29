@@ -64,22 +64,24 @@ export type ContactFilterGroups = {
   groups: ContactFilterGroup[]
 }
 
-// Tables
-export const settings = mysqlTable("settings", {
-  id,
-  url: varchar("url", { length: 256 }).unique(),
-  domain: varchar("domain", { length: 50 }).unique().notNull(),
-  installedSslCertificate: boolean("installedSslCertificate")
-    .default(false)
-    .notNull(),
-})
-
 export const users = mysqlTable("users", {
   id,
   email: varchar("email", { length: 80 }).unique().notNull(),
   name: varchar("name", { length: 80 }),
   avatarUrl: varchar("avatarUrl", { length: 256 }),
   password: varchar("password", { length: 256 }).notNull(),
+})
+
+export const sendingSources = mysqlTable("sendingSources", {
+  id,
+  status: mysqlEnum("status", ["inactive", "active", "warming"]).$default(
+    () => "inactive",
+  ),
+  address: varchar("address", { length: 80 }).notNull().unique(),
+  ehloDomain: varchar("ehloDomain", { length: 80 }).notNull().unique(),
+  proxyServer: varchar("proxyServer", { length: 80 }),
+  addressIpv6: varchar("addressIpv6", { length: 120 }).unique(),
+  pool: mysqlEnum("pool", ["engage", "send"]).notNull(),
 })
 
 export const accessTokens = mysqlTable("accessTokens", {
@@ -122,11 +124,20 @@ export const sendingDomains = mysqlTable("sendingDomains", {
   returnPathDomainCnameValue: varchar("returnPathDomainCnameValue", {
     length: 120,
   }).notNull(),
+  sendingSourceId: primaryKeyCuid("sendingSourceId").references(
+    () => sendingSources.id,
+  ),
+  secondarySendingSourceId: primaryKeyCuid(
+    "secondarySendingSourceId",
+  ).references(() => sendingSources.id),
+  engageSendingSourceId: primaryKeyCuid(
+    "engageSendingSourceId",
+  ).references(() => sendingSources.id),
+  engageSecSendingSourceId: primaryKeyCuid(
+    "engageSecSendingSourceId",
+  ).references(() => sendingSources.id),
   dkimVerifiedAt: timestamp("dkimVerifiedAt"),
   returnPathDomainVerifiedAt: timestamp("returnPathDomainVerifiedAt"),
-  // Configure a SENDING_IP and a BACKUP_SENDING_IP for this domain.
-  // That way, we consistently send to a specific customer from a specific IP address as per ESP guidelines.
-  // Configure a BACKUP_SENDING_IP in the case where the SENDING_IP is throttled or any weird scenarios.
 })
 
 export const webhooks = mysqlTable("webhooks", {
@@ -351,14 +362,63 @@ export const abTestVariants = mysqlTable("abTestVariants", {
 
 export const emailSends = mysqlTable("emailSends", {
   id,
-  // track mta ID of email
-  // processedAt
-  // bouncedAt
-  // deliveredAt
-  // rejectedAt
-  // transientFailureAt
-  // lastOpenedAt
-  // lastClickedOnLinkAt
+  sendingId: varchar("sendingId", { length: 100 }).unique().notNull(), // from the mta
+  sendingDomainId: primaryKeyCuid("sendingDomainId")
+    .notNull()
+    .references(() => sendingDomains.id),
+  sender: varchar("sender", { length: 80 }).notNull(),
+  recipient: varchar("recipient", { length: 80 }).notNull(),
+  queue: varchar("queue", { length: 80 }),
+  siteName: varchar("siteName", { length: 80 }),
+  size: int("size"),
+  totalAttempts: int("size"),
+  createdAt: timestamp("createdAt"),
+  sendingSourceId: primaryKeyCuid("sendingSourceId").references(
+    () => sendingSources.id,
+  ),
+  nodeId: varchar("nodeId", { length: 48 }),
+  egressPool: varchar("egressPool", { length: 80 }),
+  egressSource: varchar("egressSource", { length: 80 }),
+  deliveryProtocol: varchar("deliveryProtocol", { length: 12 }),
+  receptionProtocl: varchar("receptionProtocol", { length: 12 }),
+})
+
+export const emailSendEvents = mysqlTable("emailSendEvents", {
+  id,
+  emailSendId: primaryKeyCuid("emailSendId")
+    .notNull()
+    .references(() => emailSends.id),
+  type: mysqlEnum("type", [
+    "Delivery",
+    "Reception",
+    "Bounce",
+    "TransientFailure",
+    "Expiration",
+    "AdminBounce",
+    "OOB",
+    "Feedback",
+    "Rejection",
+    "AdminRebind",
+    "Any",
+  ])
+    .notNull()
+    .$default(() => "Any"),
+  createdAt: timestamp("createdAt"),
+
+  // response code (flat for easier querying)
+  responseCode: int("responseCode"),
+  responseContent: text("responseContent"),
+  responseCommand: varchar("responseCommand", { length: 255 }),
+  responseEnhancedCodeClass: int("responseEnhancedCodeClass"),
+  responseEnhancedCodeSubject: int("responseEnhancedCodeSubject"),
+  responseEnhancedCodeDetail: int("responseEnhancedCodeDetail"),
+
+  // peer address
+  peerAddressName: varchar("peerAddressName", { length: 255 }),
+  peerAddressAddr: varchar("peerAddressAddr", { length: 255 }),
+
+  // bounces
+  bounceClassification: varchar("bounceClassification", { length: 120 }),
 })
 
 export const emailContents = mysqlTable("emailContents", {

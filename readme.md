@@ -29,6 +29,23 @@
 - Kubernetes / Nomad for container orchestration (Workers and Monolith)
 - Syself for Kubernetes management (If using Kubernetes)
 
+## Alternate cloud technology stack
+
+- [ ] (2 - 4) Dedicated servers on Hetzner for entire infrastructure
+- [ ] Bind all IP addresses on both dedicated servers.
+- [ ] Kumo MTA servers running on bare metal on all dedicated servers
+- [ ] Redis cluster running on bare metal on all dedicated servers
+- [ ] TiDB cluster running on bare metal on all dedicated servers
+- [ ] Nomad cluster running on bare metal
+  - [ ] Orchestrates the monolith application (API & Dashboard)
+  - [ ] Orchestrates the background bullmq job workers.
+- [ ] Deployments from Github CI
+- [ ] Automated deployment scripts like Kamal.
+  - [ ] Pulls mail server configurations from `mail-server-config.docker` image and extracts it into correct path in mail server
+  - [ ] Does for both mail servers
+- [ ] Entire cluster monitoring on Prometheus and Grafana set up on Nomad cluster
+  - [ ] All services (mail servers, databases, API, monolith, workers etc) all report to this Grafana / Prometheus installation.
+
 ## Code quality technology Stack
 
 - Scrutinizer ci for code quality

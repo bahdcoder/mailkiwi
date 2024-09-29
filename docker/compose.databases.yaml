@@ -1,0 +1,32 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    ports:
+      - "5567:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: kibamail
+    networks:
+      default:
+        ipv4_address: 172.20.0.3
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    command: redis-server --appendonly yes
+    ports:
+      - "5570:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      default:
+        ipv4_address: 172.20.0.5
+
+volumes:
+  mysql_data:
+    name: kibamail_mysql
+  redis_data:
+    name: kibamail_redis

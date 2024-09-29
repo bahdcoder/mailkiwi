@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm"
 import dns from "node:dns/promises"
 import { describe, test, vi } from "vitest"
 
+import { AssignSendingSourceToSendingDomainAction } from "@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js"
 import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
 import { CheckSendingDomainDnsConfigurationJob } from "@/sending_domains/jobs/check_sending_domain_dns_configuration_job.js"
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
@@ -39,6 +40,10 @@ export const setupDomainForDnsChecks = async (domain?: string) => {
       sendingDomain?.dkimPublicKey as string,
       sendingDomain?.dkimSubDomain as string,
     )
+
+  await container
+    .make(AssignSendingSourceToSendingDomainAction)
+    .handle(sendingDomainId)
 
   return {
     records,

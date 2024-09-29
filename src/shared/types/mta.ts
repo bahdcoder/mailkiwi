@@ -22,7 +22,7 @@ export interface Headers {
   Subject: string
 }
 
-export interface Delivery {
+export interface MtaLog {
   type:
     | "Delivery" /// Recorded by the delivery side, most likely as a result of attempting a delivery to a remote host
     | "Reception" /// Recorded by a receiving listener

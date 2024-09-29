@@ -1,6 +1,8 @@
 import { apiEnv } from "@/api/env/api_env.js"
 import { AuthorizeMtaCallsMiddleware } from "@/kumomta/middleware/authorize_mta_calls_middleware.js"
 
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+
 import { makeApp, makeRedis } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import { HonoContext } from "@/shared/server/types.js"
@@ -27,17 +29,16 @@ export class DkimController extends BaseController {
   async index(ctx: HonoContext) {
     const { domain } = await ctx.req.json<{ domain: string }>()
 
-    const domainDkim: Record<
-      "encryptedDkimPrivateKey" | "returnPathSubDomain" | "dkimSubDomain",
-      string
-    > = await this.redis.hgetall(`DOMAIN:${domain}`)
+    const sendingSource = await container
+      .make(SendingDomainRepository)
+      .getDomainWithDkim(domain)
 
-    if (!domainDkim.encryptedDkimPrivateKey) {
-      return ctx.json({ status: "failed" }, 400)
-    }
+    if (!sendingSource) return ctx.json({ status: "failed" })
+
+    const { domain: domainDkim, send, engage } = sendingSource
 
     const privateKey = new Encryption(apiEnv.APP_KEY).decrypt(
-      domainDkim.encryptedDkimPrivateKey,
+      domainDkim.dkimPrivateKey,
     )
 
     const { returnPathSubDomain, dkimSubDomain } = domainDkim
@@ -47,6 +48,8 @@ export class DkimController extends BaseController {
       returnPathSubDomain,
       dkimSubDomain,
       privateKey: privateKey?.release(),
+      send,
+      engage,
     })
   }
 }

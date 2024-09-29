@@ -1,4 +1,5 @@
 import { apiEnv } from "@/api/env/api_env.js"
+import { seedDevSendingSourcesCommand } from "@/cli/commands/seed_dev_sending_sources_command.js"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import Fs from "node:fs/promises"
@@ -13,9 +14,13 @@ import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audie
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 
+import { AssignSendingSourceToSendingDomainAction } from "@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js"
 import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
 
-import { seedAutomation } from "@/tests/mocks/teams/teams.js"
+import {
+  refreshDatabase,
+  seedAutomation,
+} from "@/tests/mocks/teams/teams.js"
 
 import {
   createDatabaseClient,
@@ -40,6 +45,8 @@ container.registerInstance(ContainerKey.env, apiEnv)
 container.registerInstance(ContainerKey.config, apiEnv)
 container.registerInstance(ContainerKey.database, database)
 container.registerInstance(ContainerKey.redis, redis)
+
+await refreshDatabase()
 
 const registerUserAction = container.resolve(RegisterUserAction)
 const createAudienceAction = container.resolve(CreateAudienceAction)
@@ -170,9 +177,15 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
   const { accessKey: smtpUsername, accessSecret: teamAccessToken } =
     await container.make(CreateTeamAccessTokenAction).handle(team.id)
 
-  await container
+  const { id: sendingDomainId } = await container
     .make(CreateSendingDomainAction)
     .handle({ name: "kb.openmailer.org" }, team.id)
+
+  await seedDevSendingSourcesCommand?.handler?.()
+
+  await container
+    .make(AssignSendingSourceToSendingDomainAction)
+    .handle(sendingDomainId)
 
   const smtpPassword = teamAccessToken.release()
 

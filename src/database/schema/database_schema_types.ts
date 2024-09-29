@@ -7,9 +7,11 @@ import type {
   contactImports,
   contacts,
   emailContents,
+  emailSendEvents,
+  emailSends,
   segments,
   sendingDomains,
-  settings,
+  sendingSources,
   tags,
   tagsOnContacts,
   teamMemberships,
@@ -21,8 +23,8 @@ import type { MySqlUpdateSetSource } from "drizzle-orm/mysql-core"
 
 import type { makeDatabase } from "@/shared/container/index.js"
 
-export type Setting = InferSelectModel<typeof settings>
 export type Audience = InferSelectModel<typeof audiences>
+export type EmailSend = InferSelectModel<typeof emailSends>
 export type Tag = InferSelectModel<typeof tags>
 export type Contact = InferSelectModel<typeof contacts>
 export type User = InferSelectModel<typeof users>
@@ -33,6 +35,7 @@ export type BroadcastWithoutContent = Omit<
 >
 export type AccessToken = InferSelectModel<typeof accessTokens>
 export type Team = InferSelectModel<typeof teams>
+export type SendingSource = InferSelectModel<typeof sendingSources>
 export type TeamMembership = InferSelectModel<typeof teamMemberships>
 export type TagOnContact = InferSelectModel<typeof tagsOnContacts>
 export type FindUserByIdArgs = Parameters<
@@ -59,7 +62,10 @@ export type Segment = typeof segments.$inferSelect
 export type InsertSegment = typeof segments.$inferInsert
 
 export type InsertTag = typeof tags.$inferInsert
+export type InsertEmailSend = typeof emailSends.$inferInsert
 export type InsertContact = typeof contacts.$inferInsert
+export type InsertSendingSource = typeof sendingSources.$inferInsert
+export type InsertEmailSendEvent = typeof emailSendEvents.$inferInsert
 export type InsertContactImport = typeof contactImports.$inferInsert
 export type InsertTeamMembership = typeof teamMemberships.$inferInsert
 export type InsertSendingDomain = typeof sendingDomains.$inferInsert
@@ -67,6 +73,11 @@ export type InsertAbTestVariant = typeof abTestVariants.$inferInsert
 
 export type UpdateAbTestVariant = MySqlUpdateSetSource<
   typeof abTestVariants
+>
+
+export type UpdateEmailSend = MySqlUpdateSetSource<typeof emailSends>
+export type UpdateSendingDomain = MySqlUpdateSetSource<
+  typeof sendingDomains
 >
 
 export type UpdateContactImport = MySqlUpdateSetSource<
