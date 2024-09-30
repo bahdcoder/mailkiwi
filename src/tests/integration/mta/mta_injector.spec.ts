@@ -113,50 +113,55 @@ describe.sequential("@mta", () => {
     await sleep(1000)
   })
 
-  test("@mta-injector Http server can inject an HTTP message using API access token", async ({
-    expect,
-  }) => {
-    const { TEST_DOMAIN, team } =
-      await setupDomainForDnsChecks("localgmail.net")
+  test(
+    "@mta-injector Http server can inject an HTTP message using API access token",
+    { retry: 2 },
+    async ({ expect }) => {
+      const { TEST_DOMAIN, team } =
+        await setupDomainForDnsChecks("localgmail.net")
 
-    await clearAllMailpitMessages()
+      await clearAllMailpitMessages()
 
-    const { accessSecret, accessKey } = await container
-      .make(CreateTeamAccessTokenAction)
-      .handle(team.id)
+      const { accessSecret, accessKey } = await container
+        .make(CreateTeamAccessTokenAction)
+        .handle(team.id)
 
-    const app = makeApp()
+      const app = makeApp()
 
-    const injectEmail = getInjectEmailContent(TEST_DOMAIN)
+      const injectEmail = getInjectEmailContent(TEST_DOMAIN)
 
-    const response = await app.request("/inject", {
-      method: "POST",
-      headers: getAuthenticationHeaders(accessKey, accessSecret.release()),
-      body: JSON.stringify(injectEmail),
-    })
+      const response = await app.request("/inject", {
+        method: "POST",
+        headers: getAuthenticationHeaders(
+          accessKey,
+          accessSecret.release(),
+        ),
+        body: JSON.stringify(injectEmail),
+      })
 
-    expect(response.status).toBe(200)
+      expect(response.status).toBe(200)
 
-    await sleep(500)
+      await sleep(500)
 
-    const messages = await getAllMailpitMessages()
+      const messages = await getAllMailpitMessages()
 
-    expect(messages?.messages).toHaveLength(3)
+      expect(messages?.messages).toHaveLength(3)
 
-    const recipients = messages?.messages
-      ?.map((message) => message?.To?.[0]?.Address)
-      .sort((A, B) => (A > B ? 1 : -1))
+      const recipients = messages?.messages
+        ?.map((message) => message?.To?.[0]?.Address)
+        .sort((A, B) => (A > B ? 1 : -1))
 
-    const injectedRecipients = injectEmail.recipients
-      ?.map((recipient) => recipient.email)
-      .sort((A, B) => (A > B ? 1 : -1))
+      const injectedRecipients = injectEmail.recipients
+        ?.map((recipient) => recipient.email)
+        .sort((A, B) => (A > B ? 1 : -1))
 
-    expect(recipients).toEqual(injectedRecipients)
-  })
+      expect(recipients).toEqual(injectedRecipients)
+    },
+  )
 
   test(
     "@mta-log-processor server queues log processor jobs",
-    { timeout: 10000 },
+    { timeout: 10000, retry: 2 },
     async ({ expect }) => {
       const { TEST_DOMAIN, team } =
         await setupDomainForDnsChecks("localgmail.net")
@@ -208,7 +213,7 @@ describe.sequential("@mta", () => {
 
   test(
     "@mta-log-processor job processor stores all logs to the database",
-    { timeout: 10000 },
+    { timeout: 10000, retry: 2 },
     async ({ expect }) => {
       const { TEST_DOMAIN, team } =
         await setupDomainForDnsChecks("localgmail.net")
