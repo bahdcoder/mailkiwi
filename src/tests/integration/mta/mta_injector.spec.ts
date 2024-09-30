@@ -1,6 +1,9 @@
 import { apiEnv } from "@/api/env/api_env.js"
+import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
+import { ProcessMtaLogJob } from "@/kumologs/jobs/process_mta_log_job.js"
 import { faker } from "@faker-js/faker"
 import { ServerType, serve } from "@hono/node-server"
+import { eq } from "drizzle-orm"
 import {
   afterAll,
   afterEach,
@@ -13,9 +16,16 @@ import {
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 
 import { getInjectEmailContent } from "@/tests/mocks/emails/email_content.js"
+import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 
-import { makeApp } from "@/shared/container/index.js"
+import { emailSends } from "@/database/schema/schema.js"
+
+import {
+  makeApp,
+  makeDatabase,
+  makeRedis,
+} from "@/shared/container/index.js"
 import { makeHttpClient } from "@/shared/http/http_client.js"
 import { Queue } from "@/shared/queue/queue.js"
 import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.js"
@@ -193,6 +203,78 @@ describe.sequential("@mta", () => {
       expect(logsJobs).toHaveLength(6)
       expect(deliveryLogs).toHaveLength(3)
       expect(receptionLogs).toHaveLength(3)
+    },
+  )
+
+  test(
+    "@mta-log-processor job processor stores all logs to the database",
+    { timeout: 10000 },
+    async ({ expect }) => {
+      const { TEST_DOMAIN, team } =
+        await setupDomainForDnsChecks("localgmail.net")
+
+      const { accessSecret, accessKey } = await container
+        .make(CreateTeamAccessTokenAction)
+        .handle(team.id)
+
+      const app = makeApp()
+
+      const injectEmail = getInjectEmailContent(TEST_DOMAIN)
+
+      const response = await app.request("/inject", {
+        method: "POST",
+        headers: getAuthenticationHeaders(
+          accessKey,
+          accessSecret.release(),
+        ),
+        body: JSON.stringify(injectEmail),
+      })
+
+      expect(response.status).toBe(200)
+
+      await sleep(1000)
+
+      const jobs = await Queue.mta_logs().getJobs()
+
+      const processLogJobs = jobs.filter(
+        (job) => job.data.log.sender === injectEmail.from.email,
+      )
+
+      const database = makeDatabase()
+      const redis = makeRedis()
+
+      for (const job of processLogJobs) {
+        await container
+          .make(ProcessMtaLogJob)
+          .handle({ payload: job.data, database, redis })
+      }
+
+      const allEmailSends = await container
+        .make(EmailSendRepository)
+        .findBySendingIdWithEvents(processLogJobs?.[0]?.data?.log?.id)
+
+      expect(allEmailSends.sendingId).toBeDefined()
+      expect(allEmailSends.events).toHaveLength(2)
+      expect(allEmailSends.events.map((event) => event.type)).toEqual([
+        "Delivery",
+        "Reception",
+      ])
+
+      const deliveryEvent = allEmailSends.events.find(
+        (event) => event.type === "Delivery",
+      )
+      const receptionEvent = allEmailSends.events.find(
+        (event) => event.type === "Reception",
+      )
+
+      expect(deliveryEvent?.responseCode).toEqual(250)
+      expect(deliveryEvent?.createdAt).toBeDefined()
+      expect(deliveryEvent?.peerAddressName).toEqual(
+        "mail.localgmail.net.",
+      )
+
+      expect(receptionEvent?.responseCode).toEqual(250)
+      expect(receptionEvent?.createdAt).toBeDefined()
     },
   )
 })

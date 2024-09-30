@@ -1,6 +1,7 @@
 import { EmailSendEventRepository } from "@/email_sends/repositories/email_send_event_repository.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
 import { SendingSourceRepository } from "@/settings/repositories/sending_source_repository.js"
+import { DateTime } from "luxon"
 
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
@@ -94,10 +95,11 @@ export class LogTypeHandler {
     private emailSendRepository = container.make(EmailSendRepository),
   ) {}
 
-  async handleGenericEvent(emailSendId: string, log: MtaLog) {
+  handleGenericEvent = async (emailSendId: string, log: MtaLog) => {
     await this.emailSendEventRepository.create({
       type: log.type,
       emailSendId,
+      createdAt: DateTime.fromSeconds(log.timestamp).toJSDate(),
       responseCode: log.response.code,
       responseCommand: log.response.command,
       responseEnhancedCodeClass: log?.response?.enhanced_code?.class,

@@ -158,6 +158,7 @@ CREATE TABLE `emailSends` (
 	`queue` varchar(80),
 	`siteName` varchar(80),
 	`size` int,
+	`totalAttempts` int,
 	`createdAt` timestamp,
 	`sendingSourceId` binary(16),
 	`nodeId` varchar(48),

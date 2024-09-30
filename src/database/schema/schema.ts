@@ -371,7 +371,7 @@ export const emailSends = mysqlTable("emailSends", {
   queue: varchar("queue", { length: 80 }),
   siteName: varchar("siteName", { length: 80 }),
   size: int("size"),
-  totalAttempts: int("size"),
+  totalAttempts: int("totalAttempts"),
   createdAt: timestamp("createdAt"),
   sendingSourceId: primaryKeyCuid("sendingSourceId").references(
     () => sendingSources.id,
