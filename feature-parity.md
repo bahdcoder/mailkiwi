@@ -30,7 +30,7 @@ These are organised in order of implementation priority:
     - [ ] Detailed contact activities
     - [ ] Notes
     - [ ] Tags
-    - [ ] Import contacts
+    - [x] Import contacts
     - [ ] Export contacts
     - [ ] Add contacts to audiences
 - [ ] Segmentation
@@ -40,9 +40,9 @@ These are organised in order of implementation priority:
   - [ ] Segment by behaviour
   - [ ] Segment by survey responses
   - [ ] Segmentation templates
-  - [ ] Segment by Tags
+  - [x] Segment by Tags
   - [ ] Segment by contact details like age ranges, etc
-  - [ ] Advanced segmentation using logical operators (AND and OR)
+  - [x] Advanced segmentation using logical operators (AND and OR)
 - [ ] Surveys
   - [ ] Create Surveys
   - [ ] Tag contacts based on survey responses

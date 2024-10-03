@@ -39,6 +39,7 @@
 - [ ] Comply with all [Gmail outbound requirements here](https://support.google.com/a/answer/81126?visit_id=638615783532703500-624414999&rd=1)
 - [ ] Email best practices [Mailop](https://www.mailop.org/best-practices/)
 - [ ] Implement all [deliverability guidelines here](https://downloads.ctfassets.net/n75v2ljpkqmb/6GJWNKAkJiGuIDyTX3lyFd/1bb72a680de561a6f60acfb3689d96ab/Ebook_-_The_guide_to_email_deliverability.pdf)
+- [ ] Implement email validation checks with [Reacher email](https://github.com/reacherhq/check-if-email-exists)
 
 ## Email server configuration
 

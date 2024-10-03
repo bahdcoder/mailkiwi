@@ -4,6 +4,7 @@ import { InjectEmailController } from "@/injector/controllers/inject_email_contr
 import { MtaLogsController } from "@/kumologs/controllers/mta_logs_controller.js"
 import { DkimController } from "@/kumomta/controllers/dkim_controller.js"
 import { SmtpAuthController } from "@/kumomta/controllers/smtp_auth_controller.js"
+import { TrackingController } from "@/kumomta/controllers/tracking_controller.js"
 import { RootController } from "@/views/controllers/root_controller.js"
 import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.js"
 import type { Redis } from "ioredis"
@@ -114,6 +115,7 @@ export class Ignitor {
     container.resolve(DkimController)
     container.resolve(SmtpAuthController)
     container.resolve(InjectEmailController)
+    container.resolve(TrackingController)
   }
 
   async shutdown() {

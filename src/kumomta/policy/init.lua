@@ -149,21 +149,25 @@ local function tableToJson(tbl)
     end
 end
 
-local get_domain_dkim_information = function (domain)
-  local auth_url = API_HTTP_SERVER .. "/mta/dkim"
-
-  local request = kumo.http.build_client({}):post(auth_url)
+local authenticated_request = function (url, json)
+  local request = kumo.http.build_client({}):post(url)
   
   request:header('Content-Type', 'application/json')
   request:header('x-mta-access-token', API_HTTP_ACCESS_TOKEN)
 
-  request:body(kumo.json_encode {
-    domain = domain,
-  })
+  request:body(kumo.json_encode(json))
 
   local response = request:send()
 
   local json = kumo.serde.json_parse(response:text())
+
+  return json
+end
+
+local get_domain_dkim_information = function (domain)
+  local json = authenticated_request(API_HTTP_SERVER .. "/mta/dkim", {
+    domain = domain,
+  })
 
   if json.status ~= 'success' then
     return nil
@@ -197,6 +201,18 @@ local sign_message_with_dkim = function (message, dkim_information)
   }
 
   message:dkim_sign(signer)
+end
+
+local process_message_with_tracking = function (message)
+  local json = authenticated_request(API_HTTP_SERVER .. "/mta/smtp/message", {
+    message = message:get_data()
+  })
+
+  if json.content == nil then
+    kumo.reject(500, 'internal message parsing errors')
+  end
+
+  message:set_data(json.content)
 end
 
 local on_smtp_server_message_received = function (message)
@@ -268,6 +284,7 @@ kumo.on('init', function()
 end)
 
 kumo.on('smtp_server_message_received', function(message)
+  process_message_with_tracking(message)
   on_smtp_server_message_received(message)
 end)
 

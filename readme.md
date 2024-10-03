@@ -46,6 +46,11 @@
 - [ ] Entire cluster monitoring on Prometheus and Grafana set up on Nomad cluster
   - [ ] All services (mail servers, databases, API, monolith, workers etc) all report to this Grafana / Prometheus installation.
 
+## Alternate cloud technology stack for mail servers
+
+- [ ] Host all mail server nodes in docker containers as part of the kubernetes / nomad cluster
+- [ ] host the socks5 proxy behind a load balancer
+
 ## Code quality technology Stack
 
 - Scrutinizer ci for code quality

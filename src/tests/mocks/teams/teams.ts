@@ -11,6 +11,8 @@ import {
   contactImports,
   contacts,
   emailContents,
+  emailSendEvents,
+  emailSends,
   emails,
   segments,
   sendingDomains,
@@ -34,6 +36,8 @@ export const refreshRedisDatabase = async () => {
 export const refreshDatabase = async () => {
   const database = makeDatabase()
 
+  await database.delete(emailSendEvents)
+  await database.delete(emailSends)
   await database.delete(sendingDomains)
   await database.delete(sendingSources)
   await database.delete(tagsOnContacts)
