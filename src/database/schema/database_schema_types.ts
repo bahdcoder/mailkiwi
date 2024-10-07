@@ -35,6 +35,7 @@ export type BroadcastWithoutContent = Omit<
 >
 export type AccessToken = InferSelectModel<typeof accessTokens>
 export type Team = InferSelectModel<typeof teams>
+export type SendingDomain = InferSelectModel<typeof sendingDomains>
 export type SendingSource = InferSelectModel<typeof sendingSources>
 export type TeamMembership = InferSelectModel<typeof teamMemberships>
 export type TagOnContact = InferSelectModel<typeof tagsOnContacts>

@@ -6,23 +6,20 @@ export interface UrlMetadata {
 }
 
 export class SignedUrlManager {
+  protected HASH_LENGTH = 16
   constructor(private appKey: Secret<string>) {}
 
   encode(original: string, metadata?: UrlMetadata): string {
-    const nonce = crypto.randomBytes(4).toString("hex")
-
     const data = JSON.stringify({
-      original,
-      metadata: metadata ?? {},
-      nonce,
-      timestamp: Date.now(),
+      o: original,
+      ...(metadata ? { m: metadata } : {}),
     })
 
     const hash = crypto
       .createHmac("sha256", this.appKey.release())
       .update(data)
       .digest("base64url")
-      .slice(0, 16)
+      .slice(0, this.HASH_LENGTH)
 
     const encoded = Buffer.from(data).toString("base64url")
 
@@ -45,7 +42,7 @@ export class SignedUrlManager {
       .createHmac("sha256", this.appKey.release())
       .update(decodedData)
       .digest("base64url")
-      .slice(0, 16)
+      .slice(0, this.HASH_LENGTH)
 
     if (computedHash !== hash) {
       return null
@@ -55,8 +52,8 @@ export class SignedUrlManager {
       const parsed = JSON.parse(decodedData)
 
       return {
-        original: parsed?.original,
-        metadata: parsed?.metadata,
+        original: parsed?.o,
+        metadata: parsed?.m,
       }
     } catch (error) {
       return null

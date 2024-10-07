@@ -53,56 +53,6 @@ describe("@auth user registration", () => {
   test("registering a new user account automatically creates a team for that user.", async ({
     expect,
   }) => {
-    const database = makeDatabase()
-
-    // const testUser = await database.insert(users).values({
-    //   name: faker.string.uuid(),
-    //   email: faker.internet.email(),
-    //   avatarUrl: faker.image.avatarGitHub(),
-    //   password: faker.string.nanoid(32),
-    // })
-
-    // const testUser2 = await database.insert(users).values({
-    //   name: faker.string.uuid(),
-    //   email: faker.internet.email(),
-    //   avatarUrl: faker.image.avatarGitHub(),
-    //   password: faker.string.nanoid(32),
-    // })
-
-    // const testUser3 = await database.insert(users).values({
-    //   name: faker.string.uuid(),
-    //   email: faker.internet.email(),
-    //   avatarUrl: faker.image.avatarGitHub(),
-    //   password: faker.string.nanoid(32),
-    // })
-
-    // const testTeam = await database.insert(teams).values({
-    //   name: faker.string.uuid(),
-    //   userId: fromQueryResultToPrimaryKey(testUser),
-    // })
-
-    // await database.insert(teamMemberships).values([
-    //   {
-    //     teamId: fromQueryResultToPrimaryKey(testTeam),
-    //     userId: fromQueryResultToPrimaryKey(testUser2),
-    //     status: "ACTIVE",
-    //     email: faker.internet.email(),
-    //     role: "ADMINISTRATOR",
-    //     invitedAt: new Date(),
-    //     expiresAt: new Date(),
-    //   },
-    //   {
-    //     teamId: fromQueryResultToPrimaryKey(testTeam),
-    //     userId: fromQueryResultToPrimaryKey(testUser3),
-    //     status: "ACTIVE",
-    //     email: faker.internet.email(),
-    //     role: "ADMINISTRATOR",
-    //     invitedAt: new Date(),
-    //     expiresAt: new Date(),
-    //   },
-    // ])
-    return
-
     const payload = {
       name: faker.person.fullName(),
       email: faker.internet.exampleEmail(),
@@ -153,7 +103,7 @@ describe("@auth user registration", () => {
 })
 
 describe("@auth user login", () => {
-  test("a user can login to their account and get a valid access token", async ({
+  test("a user can login to their account and get a valid cookie session", async ({
     expect,
   }) => {
     const { user } = await createUser()
@@ -166,17 +116,16 @@ describe("@auth user login", () => {
       },
     })
 
-    const json = await response.json()
-
     expect(response.status).toBe(200)
 
-    expect(json.accessKey).toBeDefined()
-    expect(json.accessSecret).toBeDefined()
+    const [sessionCookie] = response.headers.getSetCookie()
+
+    expect(sessionCookie).toBeDefined()
 
     const profileResponse = await makeRequest("/auth/profile", {
       method: "GET",
       headers: {
-        ...getAuthenticationHeaders(json.accessKey, json.accessSecret),
+        Cookie: sessionCookie,
       },
     })
 

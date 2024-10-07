@@ -54,14 +54,16 @@ const createAudienceAction = container.resolve(CreateAudienceAction)
 for (let userIndex = 0; userIndex < 1; userIndex++) {
   console.log(`\nCreating user: ${userIndex + 1}\n`)
 
-  const { team, user } = await registerUserAction.handle({
+  const userDetails = {
     name: faker.person.fullName(),
     email: faker.internet.email({
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
     }),
     password: "password",
-  })
+  }
+
+  const { team, user } = await registerUserAction.handle(userDetails)
 
   const audienceIds = []
 
@@ -174,8 +176,9 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
 
   console.log("\n Seeded data ✅ \n")
 
-  const { accessKey: smtpUsername, accessSecret: teamAccessToken } =
-    await container.make(CreateTeamAccessTokenAction).handle(team.id)
+  const { apiKey } = await container
+    .make(CreateTeamAccessTokenAction)
+    .handle(team.id)
 
   const { id: sendingDomainId } = await container
     .make(CreateSendingDomainAction)
@@ -187,16 +190,16 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     .make(AssignSendingSourceToSendingDomainAction)
     .handle(sendingDomainId)
 
-  const smtpPassword = teamAccessToken.release()
-
   console.dir(
     [
       [
         {
           userId: user.id,
           teamId: team.id,
-          smtpUsername,
-          smtpPassword,
+          email: userDetails.email,
+          password: userDetails.password,
+          smtpUsername: apiKey,
+          smtpPassword: apiKey,
         },
       ],
       [{ teamId: team.id }],

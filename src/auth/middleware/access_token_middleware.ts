@@ -6,10 +6,6 @@ import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
 
 import type { HonoContext } from "@/shared/server/types.js"
-import {
-  accessKeyHeaderName,
-  accessSecretHeaderName,
-} from "@/shared/utils/auth/get_auth_headers.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -20,17 +16,15 @@ export class AccessTokenMiddleware {
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
-    const accessKey = ctx.req.header(accessKeyHeaderName())
-    const accessSecret = ctx.req.header(accessSecretHeaderName())
+    const authorization = ctx.req.header("Authorization")
 
-    if (!accessKey || !accessSecret) {
+    const [apiKey] = authorization?.split("Bearer ") ?? []
+
+    if (!apiKey) {
       throw E_UNAUTHORIZED()
     }
 
-    const accessToken = await this.accessTokenRepository.check(
-      accessKey,
-      accessSecret,
-    )
+    const accessToken = await this.accessTokenRepository.check(apiKey)
 
     if (!accessToken) {
       throw E_UNAUTHORIZED()

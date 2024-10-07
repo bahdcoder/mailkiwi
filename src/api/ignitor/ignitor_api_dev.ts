@@ -1,9 +1,12 @@
 import { Ignitor } from "./ignitor_api.js"
 import { serve } from "@hono/node-server"
+import * as build from "@remix-run/dev/server-build.js"
+import next from "next"
+import { remix } from "remix-hono/handler"
 import { createServer as createViteServer } from "vite"
 
 export class IgnitorDev extends Ignitor {
-  async startSinglePageApplication() {
+  async _startSinglePageApplication() {
     const viteDevServer = await createViteServer({
       server: { middlewareMode: true },
       appType: "custom",
@@ -20,6 +23,16 @@ export class IgnitorDev extends Ignitor {
         )
       })
     })
+  }
+
+  async startSinglePageApplication() {
+    this.app.use(
+      "/remix/*",
+      remix({
+        build,
+        mode: this.env.isDev ? "development" : "production",
+      }),
+    )
   }
 
   async startHttpServer() {

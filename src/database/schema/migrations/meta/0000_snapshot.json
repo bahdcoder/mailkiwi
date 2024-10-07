@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "138c41ae-b2df-449b-b5de-9bcc60d7b6cc",
+  "id": "bdd9f1a9-12a4-408c-a50e-ec06cbf13698",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -124,6 +124,13 @@
         "accessKey": {
           "name": "accessKey",
           "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "capabilities": {
+          "name": "capabilities",
+          "type": "json",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1582,6 +1589,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "dkimVerifiedAt": {
+          "name": "dkimVerifiedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "returnPathSubDomain": {
           "name": "returnPathSubDomain",
           "type": "varchar(120)",
@@ -1594,6 +1608,13 @@
           "type": "varchar(120)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "returnPathDomainVerifiedAt": {
+          "name": "returnPathDomainVerifiedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         },
         "sendingSourceId": {
@@ -1624,16 +1645,44 @@
           "notNull": false,
           "autoincrement": false
         },
-        "dkimVerifiedAt": {
-          "name": "dkimVerifiedAt",
+        "trackingDomainCnameValue": {
+          "name": "trackingDomainCnameValue",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "trackingSubDomain": {
+          "name": "trackingSubDomain",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "trackingDomainVerifiedAt": {
+          "name": "trackingDomainVerifiedAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "returnPathDomainVerifiedAt": {
-          "name": "returnPathDomainVerifiedAt",
+        "trackingDomainSslVerifiedAt": {
+          "name": "trackingDomainSslVerifiedAt",
           "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "trackingSslCertKey": {
+          "name": "trackingSslCertKey",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "trackingSslCertSecret": {
+          "name": "trackingSslCertSecret",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

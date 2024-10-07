@@ -40,6 +40,7 @@ import {
   makeRedis,
 } from "@/shared/container/index.js"
 import { type HonoInstance } from "@/shared/server/hono.js"
+import "@/shared/utils/log/dump.js"
 
 import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
 

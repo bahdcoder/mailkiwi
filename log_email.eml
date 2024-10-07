@@ -1,17 +1,17 @@
 Received: from bettys-macbook-pro-2.local (192.168.65.1)
-  by ac66dd7dd1af (KumoMTA 172.20.0.4) 
-  with ESMTP id ab9a5990811811efb71d0242ac140004 for <250-ruby@localgmail.net>;
-  Wed, 2 Oct 2024 23:47:22 +0000
-Date: Thu, 03 Oct 2024 00:47:22 +0100
+  by 8ff44ad5842f (KumoMTA 172.20.0.4) 
+  with ESMTP id 049fb95c830711efb0b60242ac140004 for <250-ruby@localgmail.net>;
+  Sat, 5 Oct 2024 10:46:03 +0000
+Date: Sat, 05 Oct 2024 11:46:03 +0100
 To: 250-ruby@localgmail.net
 From: jane@kb.openmailer.org
-Subject: test Thu, 03 Oct 2024 00:47:22 +0100
-Message-Id: <20241003004722.007505@bettys-macbook-pro-2.local>
+Subject: test Sat, 05 Oct 2024 11:46:03 +0100
+Message-Id: <20241005114603.040589@bettys-macbook-pro-2.local>
 X-Mailer: swaks v20240103.0 jetmore.org/john/code/swaks/
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_MIME_BOUNDARY_000_7505"
+Content-Type: multipart/mixed; boundary="----=_MIME_BOUNDARY_000_40589"
 
-------=_MIME_BOUNDARY_000_7505
+------=_MIME_BOUNDARY_000_40589
 Content-Type: text/plain
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -2087,6 +2087,6 @@ Content-Type: text/plain
   </body>
 </html>
 
-------=_MIME_BOUNDARY_000_7505--
+------=_MIME_BOUNDARY_000_40589--
 
 

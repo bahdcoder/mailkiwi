@@ -20,6 +20,7 @@ import {
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
 
+import { Session } from "@/shared/cookies/cookies.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
@@ -32,6 +33,8 @@ type ControllerParams =
   | "broadcastId"
   | "membershipId"
 export class BaseController {
+  protected session: Session = container.make(Session)
+
   protected getParameter(ctx: HonoContext, param: ControllerParams) {
     const id = ctx.req.param(param)
 

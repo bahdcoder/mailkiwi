@@ -205,7 +205,8 @@ end
 
 local process_message_with_tracking = function (message)
   local json = authenticated_request(API_HTTP_SERVER .. "/mta/smtp/message", {
-    message = message:get_data()
+    message = message:get_data(),
+    domain = message:sender().domain,
   })
 
   if json.content == nil then
@@ -284,6 +285,8 @@ kumo.on('init', function()
 end)
 
 kumo.on('smtp_server_message_received', function(message)
+  -- This tracking is only for links from the send product
+  -- Engage product emails are injected via SMTP, so do not need any tracking. For those injected by HTTP, no need to process tracking here, but will rather do it in
   process_message_with_tracking(message)
   on_smtp_server_message_received(message)
 end)

@@ -1,3 +1,6 @@
+import { apiEnv } from "@/api/env/api_env.js"
+import { setSignedCookie } from "hono/cookie"
+
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
@@ -12,6 +15,7 @@ import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import type { HonoContext } from "@/shared/server/types.js"
+import { Encryption } from "@/shared/utils/encryption/encryption.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -51,11 +55,11 @@ export class AuthController extends BaseController {
   }
 
   async createApiKey(ctx: HonoContext) {
-    const { accessSecret, accessKey } = await container
+    const { apiKey } = await container
       .make(CreateTeamAccessTokenAction)
       .handle(ctx.get("team").id)
 
-    return ctx.json({ accessSecret: accessSecret.release(), accessKey })
+    return ctx.json({ apiKey })
   }
 
   async login(ctx: HonoContext) {
@@ -77,12 +81,10 @@ export class AuthController extends BaseController {
       ])
     }
 
-    const { accessKey, accessSecret } =
-      await this.accessTokenRepository.create(user.id, "user")
+    await this.session.createForUser(ctx, user.id)
 
     return ctx.json({
-      accessSecret: accessSecret.release(),
-      accessKey: accessKey,
+      Ok: true,
     })
   }
 }

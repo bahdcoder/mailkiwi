@@ -10,47 +10,64 @@ import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_reposi
 
 export class AccessTokenRepository extends ScryptTokenRepository {
   protected opaqueAccessTokenPrefix = "kbt_"
-  protected bytesSize = 16
+  protected keyPairDelimiter = ":"
+  protected bytesSize = 16 // Do not change this. As it will break all existing and generated access tokens
 
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 
-  async create(ownerId: string, type: "user" | "team") {
-    const tokenBytes = randomBytes(this.bytesSize).toString("hex")
-    const accessSecret = new Secret(
-      this.opaqueAccessTokenPrefix + tokenBytes,
-    )
+  private getRandomBytes() {
+    return randomBytes(this.bytesSize).toString("hex")
+  }
 
-    const accessKey = randomBytes(this.bytesSize).toString("hex")
+  async create(
+    ownerId: string,
+    type: "user" | "team",
+    capabilities: string[],
+  ) {
+    const accessKey = this.getRandomBytes()
+    const accessSecret = this.getRandomBytes()
 
-    const hashedAccessSecret = await this.hash(accessSecret.release())
+    // this.opaqueAccessTokenPrefix +
 
-    const name = tokenBytes.slice(0, 8)
+    const hashedAccessSecret = await this.hash(accessSecret)
+
+    const name = accessKey.slice(0, 8)
+
+    const keyPairBase64 = Buffer.from(
+      `${accessKey}${this.keyPairDelimiter}${accessSecret}`,
+    ).toString("base64")
+
+    const apiKey = `${this.opaqueAccessTokenPrefix}${keyPairBase64}`
 
     const id = this.cuid()
+
     await this.database.insert(accessTokens).values({
       ...(type === "user" ? { userId: ownerId } : { teamId: ownerId }),
-      accessKey,
-      accessSecret: hashedAccessSecret,
       name,
+      accessKey,
+      capabilities,
+      accessSecret: hashedAccessSecret,
     })
 
     return {
-      accessKey,
-      accessSecret,
-      hashedAccessSecret,
+      apiKey,
       name,
       id,
     }
   }
 
-  async check(accessKey: string, accessSecret: string) {
-    const [token] = await this.database
-      .select()
-      .from(accessTokens)
-      .where(eq(accessTokens.accessKey, accessKey))
-      .limit(1)
+  async check(apiKey: string) {
+    const [, base64Token] = apiKey.split(`${this.opaqueAccessTokenPrefix}`)
+
+    const decodedToken = Buffer.from(base64Token, "base64").toString()
+
+    const [accessKey, accessSecret] = decodedToken.split(
+      this.keyPairDelimiter,
+    )
+
+    const token = await this.getAccessTokenFromAccessKey(accessKey)
 
     if (!token) return null
 
@@ -61,5 +78,23 @@ export class AccessTokenRepository extends ScryptTokenRepository {
     }
 
     return token
+  }
+
+  async getAccessTokenFromAccessKey(accessKey: string) {
+    const self = this
+
+    await self.cache.namespace("access_tokens").clear(accessKey)
+
+    return self.cache
+      .namespace("access_tokens")
+      .get(accessKey, async function () {
+        const [token] = await self.database
+          .select()
+          .from(accessTokens)
+          .where(eq(accessTokens.accessKey, accessKey))
+          .limit(1)
+
+        return token
+      })
   }
 }

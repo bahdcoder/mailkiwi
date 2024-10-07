@@ -58,11 +58,9 @@ describe("@mta Http server", () => {
   test("can authenticate smtp credentials", async ({ expect }) => {
     const { team } = await setupDomainForDnsChecks()
 
-    const { accessKey, accessSecret } = await container
+    const { apiKey } = await container
       .make(CreateTeamAccessTokenAction)
       .handle(team.id)
-
-    const apiKey = accessSecret.release()
 
     const app = makeApp()
 
@@ -70,7 +68,7 @@ describe("@mta Http server", () => {
       method: "POST",
       body: JSON.stringify({
         passwd: apiKey,
-        username: accessKey,
+        username: apiKey,
       }),
       headers: {
         "x-mta-access-token": apiEnv.MTA_ACCESS_TOKEN.release(),
@@ -85,7 +83,7 @@ describe("@mta Http server", () => {
   }) => {
     const { team } = await setupDomainForDnsChecks()
 
-    const { accessKey } = await container
+    const { apiKey } = await container
       .make(CreateTeamAccessTokenAction)
       .handle(team.id)
 
@@ -95,7 +93,7 @@ describe("@mta Http server", () => {
       method: "POST",
       body: JSON.stringify({
         passwd: "wrong-api-key",
-        username: accessKey,
+        username: apiKey,
       }),
       headers: {
         "x-mta-access-token": apiEnv.MTA_ACCESS_TOKEN.release(),

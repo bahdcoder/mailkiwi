@@ -1,17 +1,5 @@
-export function getAuthenticationHeaders(
-  accessKey: string,
-  accessSecret: string,
-) {
+export function getAuthenticationHeaders(apiKey: string) {
   return {
-    [accessKeyHeaderName()]: accessKey,
-    [accessSecretHeaderName()]: accessSecret,
+    ["Authorization"]: `Bearer ${apiKey}`,
   }
-}
-
-export function accessKeyHeaderName() {
-  return "x-kibamail-access-key"
-}
-
-export function accessSecretHeaderName() {
-  return "x-kibamail-access-secret"
 }

@@ -3,6 +3,8 @@ import dns from "node:dns/promises"
 
 import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.js"
 
+import { SendingDomain } from "@/database/schema/database_schema_types.js"
+
 import { container } from "@/utils/typi.js"
 
 export class DnsResolverTool {
@@ -22,19 +24,17 @@ export class DnsResolverTool {
     return this
   }
 
-  private async resolveCnameRecords() {
+  private async resolveReturnPathCnameRecords(bounceSubdomain: string) {
     try {
-      return await dns.resolveCname(
-        `${this.env.software.bounceSubdomain}.${this.domain}`,
-      )
+      return await dns.resolveCname(`${bounceSubdomain}.${this.domain}`)
     } catch (error) {
       return [] as string[]
     }
   }
 
-  private async resolveTxtRecords() {
+  private async resolveTrackingCnameRecords(trackingSubdomain: string) {
     try {
-      return await dns.resolveTxt(this.domain)
+      return await dns.resolveCname(`${trackingSubdomain}.${this.domain}`)
     } catch (error) {
       return [] as string[]
     }
@@ -61,32 +61,48 @@ export class DnsResolverTool {
     )
   }
 
-  private isCnameConfigured(cnameRecords: string[]) {
+  private isReturnPathCnameConfigured(cnameRecords: string[]) {
     return cnameRecords.some(
       (record) => record === this.env.software.bounceHost,
     )
   }
 
-  async resolve(publicKey: string, dkimSubDomain: string) {
-    let [cnameRecords, dkimTxtRecords] = await Promise.all([
-      this.resolveCnameRecords(),
-      this.resolveDkimRecord(dkimSubDomain),
-    ])
+  private isTrackingCnameConfigured(cnameRecords: string[]) {
+    return cnameRecords.some(
+      (record) => record === this.env.software.trackingHostName,
+    )
+  }
+  async resolve(sendingDomain: SendingDomain) {
+    let [returnPathCnameRecords, dkimTxtRecords, trackingCnameRecords] =
+      await Promise.all([
+        this.resolveReturnPathCnameRecords(
+          sendingDomain.returnPathSubDomain,
+        ),
+        this.resolveDkimRecord(sendingDomain.dkimSubDomain),
+        this.resolveTrackingCnameRecords(sendingDomain.trackingSubDomain),
+      ])
 
     dkimTxtRecords = dkimTxtRecords.map((record) =>
       Array.isArray(record) ? record.join("") : record,
     ) as string[]
 
     return {
-      cnameRecords,
+      returnPathCnameRecords,
+      trackingCnameRecords,
       dmarcConfigured: false,
-      cnameConfigured: this.isCnameConfigured(cnameRecords),
+      trackingCnameConfigured: this.isTrackingCnameConfigured(
+        trackingCnameRecords,
+      ),
+
+      returnPathCnameConfigured: this.isReturnPathCnameConfigured(
+        returnPathCnameRecords,
+      ),
       dkimConfigured: this.isDkimConfigured(
         dkimTxtRecords,
-        publicKey,
-        dkimSubDomain,
+        sendingDomain.dkimPublicKey,
+        sendingDomain.dkimSubDomain,
       ),
-      returnPathConfigured: cnameRecords.includes(
+      returnPathConfigured: returnPathCnameRecords.includes(
         this.env.software.bounceHost,
       ),
     }

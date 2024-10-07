@@ -34,6 +34,10 @@ const SMTP_MARKETING_HOST_NAME = "smtp-mkg.kbmta.net"
 // kb.google.com. IN CNAME mail.kbmta.net
 const DEFAULT_BOUNCE_SUBDOMAIN = "kb"
 
+const DEFAULT_TRACKING_SUBDOMAIN = "clicks"
+
+const TRACKING_HOST_NAME = "clicks.kbmta.net"
+
 // We will be the first users of our email infrastructure.
 // Our SAAS customers will receive emails from support@kibamail.com. The Return-Path for this email will be kb.kibamail.com, and bounces will return to bounces@kb.kibamail.com
 // Our inbound email servers will host email for support@kibamail.com, ceo@kibamail.com, hr@kibamail.com etc
@@ -84,6 +88,9 @@ export const apiEnv = makeExtraAppConfigurations(
       FILE_UPLOADS_ACCESS_SECRET: str(),
       FILE_UPLOADS_ENDPOINT: host(),
       FILE_UPLOADS_PORT: port(),
+
+      // emails
+      EVENT_TRACKING_DOMAIN: str(),
     }),
   ),
   {
@@ -92,6 +99,8 @@ export const apiEnv = makeExtraAppConfigurations(
       teamHeader: `x-${SHORT_NAME}-team-id`,
       bounceHost: BOUNCE_HOST_NAME,
       bounceSubdomain: DEFAULT_BOUNCE_SUBDOMAIN,
+      trackingSubdomain: DEFAULT_TRACKING_SUBDOMAIN,
+      trackingHostName: TRACKING_HOST_NAME,
     },
   },
 )

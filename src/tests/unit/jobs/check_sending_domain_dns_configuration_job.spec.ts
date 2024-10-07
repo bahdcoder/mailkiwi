@@ -65,7 +65,13 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
 
     const mockResolveCname = vi
       .spyOn(dns, "resolveCname")
-      .mockImplementation(async () => [apiEnv.software.bounceHost])
+      .mockImplementation(async (cname) => {
+        if (cname.includes("clicks")) {
+          return [apiEnv.software.trackingHostName]
+        }
+
+        return [apiEnv.software.bounceHost]
+      })
 
     const mockResolveTxt = vi
       .spyOn(dns, "resolveTxt")
@@ -94,6 +100,7 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
     expect(
       refreshedSendingDomain?.returnPathDomainVerifiedAt,
     ).toBeDefined()
+    expect(refreshedSendingDomain?.trackingDomainVerifiedAt).toBeDefined()
   })
 
   test("marks only return path as verified when only return path dns records are correctly configured", async ({

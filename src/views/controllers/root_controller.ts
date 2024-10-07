@@ -39,7 +39,7 @@ export class RootController {
 
         ${apiEnv.isDev ? /* html*/ `<script type="module" src="/main.tsx"></script>` : ""}
         ${
-          apiEnv.isDev
+          apiEnv.isProd
             ? /* html*/ `<script type="module" src="/${
                 container.resolve<Record<string, { file: string }>>(
                   ContainerKey.viteManifestFile,

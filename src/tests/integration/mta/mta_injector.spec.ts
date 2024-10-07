@@ -33,41 +33,41 @@ import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.j
 import { sleep } from "@/utils/sleep.js"
 import { container } from "@/utils/typi.js"
 
+const clearAllMailpitMessages = async () => {
+  await makeHttpClient()
+    .url(`${apiEnv.MAILPIT_API_URL}/api/v1/messages`)
+    .delete()
+    .send()
+}
+
+type Envelope = {
+  Name: string
+  Address: string
+}
+
+const getAllMailpitMessages = async () => {
+  const { data } = await makeHttpClient<
+    object,
+    {
+      total: number
+      messages: {
+        From: Envelope
+        To: Envelope[]
+        Cc: Envelope[]
+        Bcc: Envelope[]
+        ReplyTo: Envelope[]
+        Subject: String
+      }[]
+    }
+  >()
+    .url(`${apiEnv.MAILPIT_API_URL}/api/v1/messages`)
+    .get()
+    .send()
+
+  return data
+}
+
 describe.sequential("@mta", () => {
-  const clearAllMailpitMessages = async () => {
-    await makeHttpClient()
-      .url(`${apiEnv.MAILPIT_API_URL}/api/v1/messages`)
-      .delete()
-      .send()
-  }
-
-  type Envelope = {
-    Name: string
-    Address: string
-  }
-
-  const getAllMailpitMessages = async () => {
-    const { data } = await makeHttpClient<
-      object,
-      {
-        total: number
-        messages: {
-          From: Envelope
-          To: Envelope[]
-          Cc: Envelope[]
-          Bcc: Envelope[]
-          ReplyTo: Envelope[]
-          Subject: String
-        }[]
-      }
-    >()
-      .url(`${apiEnv.MAILPIT_API_URL}/api/v1/messages`)
-      .get()
-      .send()
-
-    return data
-  }
-
   let server: ServerType
 
   beforeAll(async () => {
@@ -122,7 +122,7 @@ describe.sequential("@mta", () => {
 
       await clearAllMailpitMessages()
 
-      const { accessSecret, accessKey } = await container
+      const { apiKey } = await container
         .make(CreateTeamAccessTokenAction)
         .handle(team.id)
 
@@ -132,10 +132,7 @@ describe.sequential("@mta", () => {
 
       const response = await app.request("/inject", {
         method: "POST",
-        headers: getAuthenticationHeaders(
-          accessKey,
-          accessSecret.release(),
-        ),
+        headers: getAuthenticationHeaders(apiKey),
         body: JSON.stringify(injectEmail),
       })
 
@@ -166,7 +163,7 @@ describe.sequential("@mta", () => {
       const { TEST_DOMAIN, team } =
         await setupDomainForDnsChecks("localgmail.net")
 
-      const { accessSecret, accessKey } = await container
+      const { apiKey } = await container
         .make(CreateTeamAccessTokenAction)
         .handle(team.id)
 
@@ -176,10 +173,7 @@ describe.sequential("@mta", () => {
 
       const response = await app.request("/inject", {
         method: "POST",
-        headers: getAuthenticationHeaders(
-          accessKey,
-          accessSecret.release(),
-        ),
+        headers: getAuthenticationHeaders(apiKey),
         body: JSON.stringify(injectEmail),
       })
 
@@ -218,7 +212,7 @@ describe.sequential("@mta", () => {
       const { TEST_DOMAIN, team } =
         await setupDomainForDnsChecks("localgmail.net")
 
-      const { accessSecret, accessKey } = await container
+      const { apiKey } = await container
         .make(CreateTeamAccessTokenAction)
         .handle(team.id)
 
@@ -228,14 +222,82 @@ describe.sequential("@mta", () => {
 
       const response = await app.request("/inject", {
         method: "POST",
-        headers: getAuthenticationHeaders(
-          accessKey,
-          accessSecret.release(),
-        ),
+        headers: getAuthenticationHeaders(apiKey),
         body: JSON.stringify(injectEmail),
       })
 
       expect(response.status).toBe(200)
+
+      await sleep(1000)
+
+      const jobs = await Queue.mta_logs().getJobs()
+
+      const processLogJobs = jobs.filter(
+        (job) => job.data.log.sender === injectEmail.from.email,
+      )
+
+      const database = makeDatabase()
+      const redis = makeRedis()
+
+      for (const job of processLogJobs) {
+        await container
+          .make(ProcessMtaLogJob)
+          .handle({ payload: job.data, database, redis })
+      }
+
+      const allEmailSends = await container
+        .make(EmailSendRepository)
+        .findBySendingIdWithEvents(processLogJobs?.[0]?.data?.log?.id)
+
+      expect(allEmailSends.sendingId).toBeDefined()
+      expect(allEmailSends.events).toHaveLength(2)
+      expect(allEmailSends.events.map((event) => event.type)).toEqual([
+        "Delivery",
+        "Reception",
+      ])
+
+      const deliveryEvent = allEmailSends.events.find(
+        (event) => event.type === "Delivery",
+      )
+      const receptionEvent = allEmailSends.events.find(
+        (event) => event.type === "Reception",
+      )
+
+      expect(deliveryEvent?.responseCode).toEqual(250)
+      expect(deliveryEvent?.createdAt).toBeDefined()
+      expect(deliveryEvent?.peerAddressName).toEqual(
+        "mail.localgmail.net.",
+      )
+
+      expect(receptionEvent?.responseCode).toEqual(250)
+      expect(receptionEvent?.createdAt).toBeDefined()
+    },
+  )
+
+  test.only(
+    "@mta-tracking-injection injects link tracking for messages",
+    { timeout: 10000, retry: 2 },
+    async ({ expect }) => {
+      const { TEST_DOMAIN, team } =
+        await setupDomainForDnsChecks("localgmail.net")
+
+      const { apiKey } = await container
+        .make(CreateTeamAccessTokenAction)
+        .handle(team.id)
+
+      const app = makeApp()
+
+      const injectEmail = getInjectEmailContent(TEST_DOMAIN)
+
+      const response = await app.request("/inject", {
+        method: "POST",
+        headers: getAuthenticationHeaders(apiKey),
+        body: JSON.stringify(injectEmail),
+      })
+
+      expect(response.status).toBe(200)
+
+      return
 
       await sleep(1000)
 

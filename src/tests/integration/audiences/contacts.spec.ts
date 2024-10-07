@@ -41,9 +41,9 @@ export const setupImport = async (
 
   const { audience, user, team } = await createUser()
 
-  const { accessKey, accessSecret } = await container
+  const { apiKey } = await container
     .make(AccessTokenRepository)
-    .create(user.id, "user")
+    .create(user.id, "user", [])
 
   const app = makeApp()
 
@@ -52,7 +52,7 @@ export const setupImport = async (
     body: form,
     headers: {
       [apiEnv.software.teamHeader]: team.id.toString(),
-      ...getAuthenticationHeaders(accessKey, accessSecret.release()),
+      ...getAuthenticationHeaders(apiKey),
     },
   })
 

@@ -44,10 +44,14 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
       )
     }
 
-    const { cnameConfigured, dkimConfigured } = await container
+    const {
+      returnPathCnameConfigured,
+      dkimConfigured,
+      trackingCnameConfigured,
+    } = await container
       .make(DnsResolverTool)
       .forDomain(sendingDomain.name)
-      .resolve(sendingDomain.dkimPublicKey, sendingDomain.dkimSubDomain)
+      .resolve(sendingDomain)
 
     const databaseCalls = []
 
@@ -59,7 +63,7 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
       )
     }
 
-    if (cnameConfigured) {
+    if (returnPathCnameConfigured) {
       databaseCalls.push(
         database.update(sendingDomains).set({
           returnPathDomainVerifiedAt: new Date(),
@@ -67,9 +71,19 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
       )
     }
 
+    if (trackingCnameConfigured) {
+      databaseCalls.push(
+        database.update(sendingDomains).set({
+          trackingDomainVerifiedAt: new Date(),
+        }),
+      )
+    }
+
+    // todo: if tracking cname configured, trigger DeploySslCertificateForTrackingDomainJob.
+
     await Promise.all(databaseCalls)
 
-    if (cnameConfigured && dkimConfigured) {
+    if (returnPathCnameConfigured && dkimConfigured) {
       await container
         .make(AssignSendingSourceToSendingDomainAction)
         .handle(sendingDomain.id)
@@ -80,12 +94,17 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
       )
     }
 
-    if (!cnameConfigured || !dkimConfigured) {
+    if (
+      !returnPathCnameConfigured ||
+      !dkimConfigured ||
+      !trackingCnameConfigured
+    ) {
       await Queue.sending_domains().add(
         CheckSendingDomainDnsConfigurationJob.id,
         payload,
         {
           delay: 30 * 1000, // wait 30 seconds to try again.
+          attempts: 100, // keep attempting for as long as needed, for now.
         },
       )
     }

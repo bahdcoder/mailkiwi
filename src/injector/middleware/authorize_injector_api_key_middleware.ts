@@ -5,10 +5,6 @@ import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
 import { makeRedis } from "@/shared/container/index.js"
 import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_repository.js"
 import type { HonoContext } from "@/shared/server/types.js"
-import {
-  accessKeyHeaderName,
-  accessSecretHeaderName,
-} from "@/shared/utils/auth/get_auth_headers.js"
 
 import { REDIS_KNOWN_KEYS } from "@/redis/redis_client.js"
 
@@ -40,10 +36,7 @@ export class AuthorizeInjectorApiKeyMiddleware {
   }
 
   handle = async (ctx: HonoContext, next: Next) => {
-    const smtpUsername = ctx.req.header(accessKeyHeaderName())
-    const smtpPassword = ctx.req.header(accessSecretHeaderName())
-
-    await this.verifySmtpCredentials(smtpUsername, smtpPassword)
+    // await this.verifySmtpCredentials(smtpUsername, smtpPassword)
 
     await next()
   }

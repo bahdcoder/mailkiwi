@@ -1,5 +1,5 @@
 import { Link, Outlet } from "@tanstack/react-router"
-import type React from "react"
+import React from "react"
 
 export const Layout: React.FC = () => {
   return (

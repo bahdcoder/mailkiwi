@@ -9,15 +9,35 @@
     "skipLibCheck": true,
     "strictPropertyInitialization": false,
     "declaration": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@client/*": ["./src/http/views/app/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "@client/*": [
+        "./src/http/views/app/*"
+      ]
+    },
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
-  "include": ["src/**/*.ts", "src/http/views/app/main.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*.ts",
+    "src/http/views/app/main.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

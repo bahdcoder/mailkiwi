@@ -90,6 +90,7 @@ export const accessTokens = mysqlTable("accessTokens", {
   teamId: primaryKeyCuid("teamId").references(() => teams.id),
   name: varchar("name", { length: 32 }),
   accessKey: varchar("accessKey", { length: 255 }),
+  capabilities: json("capabilities").$type<string[]>(),
   accessSecret: varchar("accessSecret", { length: 255 }).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   lastUsedAt: timestamp("lastUsedAt").defaultNow().notNull(),
@@ -113,17 +114,25 @@ export const sendingDomains = mysqlTable("sendingDomains", {
   teamId: primaryKeyCuid("teamId")
     .notNull()
     .references(() => teams.id),
+
+  // Dkim
   dkimSubDomain: varchar("dkimSubDomain", {
     length: 120,
   }).notNull(),
   dkimPublicKey: text("dkimPublicKey").notNull(),
   dkimPrivateKey: text("dkimPrivateKey").notNull(),
+  dkimVerifiedAt: timestamp("dkimVerifiedAt"),
+
+  // return path
   returnPathSubDomain: varchar("returnPathSubDomain", {
     length: 120,
   }).notNull(),
   returnPathDomainCnameValue: varchar("returnPathDomainCnameValue", {
     length: 120,
   }).notNull(),
+  returnPathDomainVerifiedAt: timestamp("returnPathDomainVerifiedAt"),
+
+  // sending ip addresses
   sendingSourceId: primaryKeyCuid("sendingSourceId").references(
     () => sendingSources.id,
   ),
@@ -136,8 +145,20 @@ export const sendingDomains = mysqlTable("sendingDomains", {
   engageSecSendingSourceId: primaryKeyCuid(
     "engageSecSendingSourceId",
   ).references(() => sendingSources.id),
-  dkimVerifiedAt: timestamp("dkimVerifiedAt"),
-  returnPathDomainVerifiedAt: timestamp("returnPathDomainVerifiedAt"),
+
+  // tracking
+  trackingDomainCnameValue: varchar("trackingDomainCnameValue", {
+    length: 120,
+  }).notNull(),
+  trackingSubDomain: varchar("trackingSubDomain", {
+    length: 120,
+  }).notNull(),
+
+  trackingDomainVerifiedAt: timestamp("trackingDomainVerifiedAt"),
+  trackingDomainSslVerifiedAt: timestamp("trackingDomainSslVerifiedAt"),
+
+  trackingSslCertKey: text("trackingSslCertKey"),
+  trackingSslCertSecret: text("trackingSslCertSecret"),
 })
 
 export const webhooks = mysqlTable("webhooks", {

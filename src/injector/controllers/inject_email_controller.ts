@@ -1,6 +1,9 @@
 import { apiEnv } from "@/api/env/api_env.js"
 import { InjectEmailSchema } from "@/injector/dto/inject_email_dto.js"
 import { AuthorizeInjectorApiKeyMiddleware } from "@/injector/middleware/authorize_injector_api_key_middleware.js"
+import { InjectTrackingLinksIntoEmailAction } from "@/kumomta/actions/inject_tracking_links_into_email_action.js"
+
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
@@ -22,6 +25,16 @@ export class InjectEmailController extends BaseController {
 
   async index(ctx: HonoContext) {
     const payload = await this.validate(ctx, InjectEmailSchema)
+
+    let htmlMessage = payload.html
+
+    // const sendingDomain = await container.make(SendingDomainRepository).findByDomain()
+
+    // if (htmlMessage) {
+    //   const trackedMessage = await container
+    //     .make(InjectTrackingLinksIntoEmailAction)
+    //     .handle(payload.html as string)
+    // }
 
     const { data, error } = await makeHttpClient()
       .url(`${apiEnv.MTA_INJECTOR_URL}/api/inject/v1`)

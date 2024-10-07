@@ -2,6 +2,7 @@ import { aliasedTable, eq } from "drizzle-orm"
 
 import type {
   InsertSendingDomain,
+  SendingDomain,
   SendingSource,
   UpdateSendingDomain,
 } from "@/database/schema/database_schema_types.js"
@@ -158,12 +159,23 @@ export class SendingDomainRepository extends BaseRepository {
   }
 
   async findByDomain(domain: string) {
-    const [sendingDomain] = await this.database
-      .select()
-      .from(sendingDomains)
-      .where(eq(sendingDomains.name, domain))
-      .limit(1)
+    const self = this
+    return this.cache.namespace("domains").get(domain, async function () {
+      const [sendingDomain] = await self.database
+        .select()
+        .from(sendingDomains)
+        .where(eq(sendingDomains.name, domain))
+        .limit(1)
 
-    return sendingDomain
+      return sendingDomain
+    })
+  }
+
+  getTrackingStatus(sendingDomain: SendingDomain) {
+    return {
+      trackingEnabled:
+        sendingDomain.trackingDomainSslVerifiedAt &&
+        sendingDomain.trackingDomainVerifiedAt,
+    }
   }
 }

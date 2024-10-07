@@ -3,10 +3,10 @@ import {
   type LoginCredentials,
   type LoginResponse,
   login,
-} from "@client/api/auth.js"
+} from "@client/api/auth.ts"
 import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
-import type React from "react"
+import React from "react"
 import { useState } from "react"
 
 export const LoginPage: React.FC = () => {

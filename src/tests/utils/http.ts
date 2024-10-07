@@ -46,23 +46,24 @@ export async function makeRequestAsUser(
   },
   teamId?: string,
 ) {
-  const accessTokenRepository = container.resolve<AccessTokenRepository>(
-    AccessTokenRepository,
-  )
-
-  const { accessKey, accessSecret } = await accessTokenRepository.create(
-    user.id,
-    "user",
-  )
-
   const { method, path, ...restOfOptions } = injectOptions
+
+  const response = await makeRequest("/auth/login", {
+    method: "POST",
+    body: {
+      email: user.email,
+      password: "password",
+    },
+  })
+
+  const [sessionCookie] = response.headers.getSetCookie()
 
   return makeRequest(path, {
     method,
     body: injectOptions.body,
     headers: {
       "Content-Type": "application/json",
-      ...getAuthenticationHeaders(accessKey, accessSecret.release()),
+      Cookie: sessionCookie,
       [apiEnv.software.teamHeader]: (
         teamId ?? (user as User & { teams: Team[] })?.teams?.[0]?.id
       ).toString(),
