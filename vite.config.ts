@@ -17,6 +17,8 @@ export default defineConfig({
   build: {
     manifest: true,
     outDir: resolve(process.cwd(), "build/client"),
+    ssrEmitAssets: true,
+    emptyOutDir: true,
     rollupOptions: {
       input: resolve(root, "main.tsx"),
     },

@@ -1,3 +1,3 @@
-import { Ignitor } from "@/api/ignitor/ignitor_api.js"
+import { IgnitorProd } from "@/api/ignitor/ignitor_api_prod.js"
 
-new Ignitor().boot().start().catch(console.error)
+new IgnitorProd().boot().start().catch(console.error)

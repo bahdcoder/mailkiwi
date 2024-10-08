@@ -1,17 +1,5 @@
-import { apiEnv } from "@/api/env/api_env.js"
 import { InjectTrackingLinksIntoEmailAction } from "@/kumomta/actions/inject_tracking_links_into_email_action.js"
 import { AuthorizeMtaCallsMiddleware } from "@/kumomta/middleware/authorize_mta_calls_middleware.js"
-import * as cheerio from "cheerio"
-import * as DomSerializer from "dom-serializer"
-import { DomHandler } from "domhandler"
-import * as DomUtils from "domutils"
-import { writeFileSync } from "fs"
-import * as htmlParser2 from "htmlparser2"
-import iconv from "iconv-lite"
-import { Splitter } from "mailsplit"
-import Joiner from "mailsplit/lib/message-joiner"
-import Rewriter from "mailsplit/lib/node-rewriter"
-import { Readable } from "stream"
 
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 

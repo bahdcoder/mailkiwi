@@ -1,12 +1,15 @@
 import { Ignitor } from "./ignitor_api.js"
 import { serve } from "@hono/node-server"
-import * as build from "@remix-run/dev/server-build.js"
-import next from "next"
-import { remix } from "remix-hono/handler"
-import { createServer as createViteServer } from "vite"
+import { readFile } from "fs/promises"
+import { resolve } from "path"
+import { ViteDevServer, createServer as createViteServer } from "vite"
 
 export class IgnitorDev extends Ignitor {
-  async _startSinglePageApplication() {
+  protected viewsPath = resolve(process.cwd(), "src/views/app")
+  protected entryServerPath = resolve(this.viewsPath, "entry-server.tsx")
+  protected templateIndexHtmlPath = resolve(this.viewsPath, "index.html")
+
+  async startSinglePageApplication() {
     const viteDevServer = await createViteServer({
       server: { middlewareMode: true },
       appType: "custom",
@@ -23,16 +26,47 @@ export class IgnitorDev extends Ignitor {
         )
       })
     })
+
+    this.registerCatchAllSsrRoute(viteDevServer)
   }
 
-  async startSinglePageApplication() {
-    this.app.use(
-      "/remix/*",
-      remix({
-        build,
-        mode: this.env.isDev ? "development" : "production",
-      }),
+  protected async getCatchAllSsrTemplate(path: string) {
+    let template = await readFile(this.templateIndexHtmlPath, "utf-8")
+
+    const { render } = await import(this.entryServerPath)
+
+    const pageProps = { defaultCount: 76 }
+
+    template = template.replace(
+      "<!--ssr-outlet-->",
+      render(path, pageProps),
     )
+
+    template = template.replace(
+      "<!--page-route-data-outlet-->",
+      /* html */ `
+        <script>
+          window.__pageProps = ${JSON.stringify(pageProps)};
+        </script>
+        `,
+    )
+
+    return template
+  }
+
+  protected registerCatchAllSsrRoute(viteDevServer: ViteDevServer) {
+    const self = this
+
+    this.app.get("*", async function (ctx) {
+      let template = await self.getCatchAllSsrTemplate(ctx.req.path)
+
+      template = await viteDevServer.transformIndexHtml(
+        ctx.req.path,
+        template,
+      )
+
+      return ctx.html(template)
+    })
   }
 
   async startHttpServer() {
