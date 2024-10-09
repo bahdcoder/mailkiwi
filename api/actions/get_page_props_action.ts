@@ -6,7 +6,6 @@ type GetPagePropsCtx = {
 
 export class GetPagePropsAction {
   async handle(ctx: GetPagePropsCtx) {
-    console.log({ ctx })
     switch (ctx.path) {
       case "/about":
       case "/about/index.pageContext.json":
