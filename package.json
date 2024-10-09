@@ -4,26 +4,25 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm mysql:migrate:dev && pnpm quick:dev",
-    "quick:dev": "env-cmd -e development tsx watch --clear-screen=false --ignore src/views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs src/api/start/api_dev.ts",
+    "quick:dev": "env-cmd -e development tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs api/start/api_dev.ts",
     "test": "env-cmd -e test pnpm test:watch --run",
     "build:clean": "del-cli build",
     "test:watch": "pnpm mysql:migrate:test && env-cmd -e test vitest",
     "types:check": "tsc --noEmit",
-    "build:client": "vite build --ssrManifest",
-    "build:client:server": "vite build --ssr entry-server.tsx",
+    "build:client": "vite build",
     "test:coverage": "env-cmd -e test vitest --run --coverage",
     "build": "pnpm test && pnpm types:check && pnpm quick:build",
     "format": "pnpm prettier . --write",
-    "start": "env-cmd -e development tsx watch src/api/start/api_prod.ts",
-    "build:api": "tsx src/bin/build.ts",
-    "quick:build": "pnpm build:clean && pnpm build:api && pnpm build:client && pnpm build:client:server",
-    "mysql:seed:dev": "pnpm mysql:migrate:dev && env-cmd -e development tsx src/bin/seed.ts",
+    "start": "env-cmd -e development tsx watch api/start/api_prod.ts",
+    "build:api": "tsc",
+    "quick:build": "pnpm build:clean && pnpm build:api && pnpm build:client",
+    "mysql:seed:dev": "pnpm mysql:migrate:dev && env-cmd -e development tsx bin/seed.ts",
     "mysql:migrate:dev": "env-cmd -e development pnpm mysql:migrate",
     "mysql:migrate:test": "env-cmd -e test pnpm mysql:migrate",
-    "mysql:migrate": "pnpm drizzle-kit migrate --config=./src/database/drizzle.config.ts",
-    "mysql:migrate:make": "env-cmd -e development pnpm drizzle-kit generate --config=./src/database/drizzle.config.ts",
-    "mysql:studio": "pnpm drizzle-kit studio --config=./src/database/drizzle.config.ts",
-    "cli": "env-cmd -e development tsx src/cli/cli_root.ts"
+    "mysql:migrate": "pnpm drizzle-kit migrate --config=./database/drizzle.config.ts",
+    "mysql:migrate:make": "env-cmd -e development pnpm drizzle-kit generate --config=./database/drizzle.config.ts",
+    "mysql:studio": "pnpm drizzle-kit studio --config=./database/drizzle.config.ts",
+    "cli": "env-cmd -e development tsx cli/cli_root.ts"
   },
   "keywords": [
     "open source",
@@ -39,7 +38,8 @@
     "@faker-js/faker": "^8.4.1",
     "@fastify/vite": "^6.0.6",
     "@hono/node-server": "^1.12.0",
-    "@tanstack/react-query": "^5.51.11",
+    "@hono/vite-dev-server": "^0.16.0",
+    "@tanstack/react-query": "^5.52.1",
     "@tanstack/react-router": "^1.43.12",
     "@tanstack/router-devtools": "^1.43.12",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
@@ -85,6 +85,11 @@
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
     "@poppinss/utils": "^6.7.3",
+    "@remix-run/dev": "^2.12.1",
+    "@remix-run/node": "^2.12.1",
+    "@remix-run/react": "^2.12.1",
+    "@universal-middleware/core": "^0.2.12",
+    "@universal-middleware/hono": "^0.2.9",
     "bcrypt": "^5.1.1",
     "bullmq": "^5.12.10",
     "chalk": "^5.3.0",
@@ -106,15 +111,17 @@
     "mjml": "^4.15.3",
     "mysql2": "^3.10.3",
     "nodemailer": "^6.9.14",
+    "path-to-regexp": "^8.2.0",
     "react-router-dom": "^6.26.2",
+    "remix-hono": "^0.0.16",
     "undici": "^6.19.8",
     "uuid": "^10.0.0",
-    "valibot": "^0.36.0"
-  },
-  "prisma": {
-    "schema": "src/database/schema/core.prisma"
+    "valibot": "^0.36.0",
+    "vike": "^0.4.198",
+    "vike-react": "^0.5.7",
+    "vike-react-query": "^0.1.1"
   },
   "engines": {
-    "node": ">=20"
+    "node": "^20.0.0"
   }
 }

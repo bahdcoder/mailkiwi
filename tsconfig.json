@@ -4,7 +4,7 @@
     "target": "ES2018",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "outDir": "./build",
+    "outDir": "./build/core",
     "sourceMap": true,
     "skipLibCheck": true,
     "strictPropertyInitialization": false,
@@ -15,10 +15,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./*"
       ],
       "@client/*": [
-        "./src/http/views/app/*"
+        "./http/views/app/*"
       ]
     },
     "lib": [
@@ -27,17 +27,17 @@
       "esnext"
     ],
     "allowJs": true,
-    "noEmit": true,
     "incremental": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true
   },
   "include": [
-    "src/**/*.ts",
-    "src/http/views/app/main.tsx"
+    "./**/*.ts",
+    "./http/views/app/main.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "build"
   ]
 }

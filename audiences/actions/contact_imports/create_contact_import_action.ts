@@ -40,6 +40,7 @@ export class CreateContactImportAction {
       .bucket("contacts")
       .name(`${fileIdentifier}.${extension}`)
 
+    // @ts-ignore
     const { url } = await minio.write(Readable.from(file.stream()))
 
     const stream = await minio.read()

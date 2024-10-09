@@ -76,9 +76,9 @@ kumo:
 		-p 5990:25 \
 		--network kibamail_default \
 		--dns 172.20.0.2 \
-		-v $(shell pwd)/src/kumomta/policy:/opt/kumomta/etc/policy \
-		-v $(shell pwd)/src/kumomta/data:/var/log/kumomta\
-		-v $(shell pwd)/src/kumomta/spool:/var/spool/kumomta\
+		-v $(shell pwd)/kumomta/policy:/opt/kumomta/etc/policy \
+		-v $(shell pwd)/kumomta/data:/var/log/kumomta\
+		-v $(shell pwd)/kumomta/spool:/var/spool/kumomta\
 		ghcr.io/kumocorp/kumomta-dev:latest
 
 .PHONY: help build down app-build app-build-prod test test-watch run dev dev-test kumo api.dev

@@ -1,5 +1,5 @@
 import { Root } from "./root"
-import "./root.css"
+// import "./styles/root.css"
 import React from "react"
 import { hydrateRoot } from "react-dom/client"
 import { BrowserRouter } from "react-router-dom"

@@ -1,5 +1,5 @@
+// import "../styles/home.css"
 import React, { useState } from "react"
-import { Route, Routes } from "react-router-dom"
 
 interface HomeProps {
   defaultCount: number
@@ -20,14 +20,4 @@ export function Home({ defaultCount = 0 }: HomeProps) {
   )
 }
 
-interface RootProps {
-  pageProps: any
-}
-
-export function Root({ pageProps }: RootProps) {
-  return (
-    <Routes>
-      <Route path="/" element={<Home {...pageProps} />} />
-    </Routes>
-  )
-}
+export default Home
