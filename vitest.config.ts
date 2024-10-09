@@ -6,7 +6,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
     },
-    setupFiles: ["src/tests/setup.ts"],
+    setupFiles: ["tests/setup.ts"],
     hideSkippedTests: true,
     exclude: [...configDefaults.exclude, "**/build/**"],
     reporters: ["verbose"],

@@ -36,6 +36,20 @@ export async function makeRequest(
   })
 }
 
+export async function getCookieSessionForUser(user: User) {
+  const response = await makeRequest("/auth/login", {
+    method: "POST",
+    body: {
+      email: user.email,
+      password: "password",
+    },
+  })
+
+  const [sessionCookie] = response.headers.getSetCookie()
+
+  return sessionCookie
+}
+
 export async function makeRequestAsUser(
   user: User,
   injectOptions: {
@@ -48,22 +62,12 @@ export async function makeRequestAsUser(
 ) {
   const { method, path, ...restOfOptions } = injectOptions
 
-  const response = await makeRequest("/auth/login", {
-    method: "POST",
-    body: {
-      email: user.email,
-      password: "password",
-    },
-  })
-
-  const [sessionCookie] = response.headers.getSetCookie()
-
   return makeRequest(path, {
     method,
     body: injectOptions.body,
     headers: {
       "Content-Type": "application/json",
-      Cookie: sessionCookie,
+      Cookie: await getCookieSessionForUser(user),
       [apiEnv.software.teamHeader]: (
         teamId ?? (user as User & { teams: Team[] })?.teams?.[0]?.id
       ).toString(),

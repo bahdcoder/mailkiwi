@@ -56,9 +56,7 @@ export class BroadcastController extends BaseController {
   }
 
   index = async (ctx: HonoContext) => {
-    await this.broadcastValidationAndAuthorizationConcern.ensureHasPermissions(
-      ctx,
-    )
+    this.ensureCanView(ctx)
 
     const broadcasts = await container
       .resolve(GetBroadcastsAction)
@@ -80,10 +78,10 @@ export class BroadcastController extends BaseController {
   }
 
   get = async (ctx: HonoContext) => {
-    const broadcast =
-      await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
-        ctx,
-      )
+    const broadcast = await this.ensureExists<Broadcast>(
+      ctx,
+      "broadcastId",
+    )
     this.ensureCanView(ctx)
 
     return ctx.json(broadcast)
@@ -102,10 +100,10 @@ export class BroadcastController extends BaseController {
   }
 
   update = async (ctx: HonoContext) => {
-    const broadcast =
-      await this.broadcastValidationAndAuthorizationConcern.ensureBroadcastExists(
-        ctx,
-      )
+    const broadcast = await this.ensureExists<Broadcast>(
+      ctx,
+      "broadcastId",
+    )
     this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, UpdateBroadcastDto)

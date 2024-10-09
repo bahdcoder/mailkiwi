@@ -9,9 +9,10 @@ import { makeDatabase } from "@/shared/container/index.js"
 import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_repository.js"
 
 export class AccessTokenRepository extends ScryptTokenRepository {
+  // Do not change any of the below protected values, as it will break all existing and generated access tokens
   protected opaqueAccessTokenPrefix = "kbt_"
   protected keyPairDelimiter = ":"
-  protected bytesSize = 16 // Do not change this. As it will break all existing and generated access tokens
+  protected bytesSize = 16
 
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()

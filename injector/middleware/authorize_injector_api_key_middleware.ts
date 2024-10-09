@@ -1,5 +1,7 @@
 import type { Next } from "hono"
 
+import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
+
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
 
 import { makeRedis } from "@/shared/container/index.js"
@@ -21,16 +23,13 @@ export class AuthorizeInjectorApiKeyMiddleware {
       throw E_UNAUTHORIZED()
     }
 
-    // TODO: Only use redis as a cache. If it's not on redis, query database directly.
-    const hashedAccessSecret = await this.redis.get(
-      REDIS_KNOWN_KEYS.ACCESS_KEY(smtpUsername),
-    )
-
-    if (!hashedAccessSecret) throw E_UNAUTHORIZED()
+    if (smtpPassword !== smtpUsername) {
+      throw E_UNAUTHORIZED()
+    }
 
     const credentialsAreValid = await container
-      .make(ScryptTokenRepository)
-      .verify(smtpPassword, hashedAccessSecret)
+      .make(AccessTokenRepository)
+      .check(smtpPassword)
 
     if (!credentialsAreValid) throw E_UNAUTHORIZED()
   }

@@ -6,6 +6,8 @@ import { PassThrough } from "stream"
 import { renderPage } from "vike/server"
 import { createServer as createViteServer } from "vite"
 
+import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
+
 import { container } from "@/utils/typi.js"
 
 export class IgnitorDev extends Ignitor {
@@ -30,40 +32,46 @@ export class IgnitorDev extends Ignitor {
   }
 
   protected registerCatchAllServerRoute() {
-    this.app.all("*", async function (ctx, next) {
-      const pageContext = await renderPage({
-        urlOriginal: ctx.req.url,
-        headersOriginal: ctx.req.raw.headers,
-        pageProps: await container.make(GetPagePropsAction).handle({
-          path: ctx.req.path,
-          queries: ctx.req.queries(),
-          routePath: ctx.req.routePath,
-        }),
-      })
-
-      if (!pageContext.httpResponse) return next()
-
-      const responseHeaders = new Headers()
-
-      const { statusCode, headers, pipe } = pageContext.httpResponse
-
-      headers.forEach(([name, value]) => responseHeaders.set(name, value))
-
-      return new Promise(function (resolve, reject) {
-        const body = new PassThrough()
-
-        const stream = createReadableStreamFromReadable(body)
-
-        pipe(body)
-
-        return resolve(
-          new Response(stream, {
-            status: statusCode,
-            headers: responseHeaders,
+    this.app.all(
+      "*",
+      container.make(UserSessionMiddleware).handle,
+      async function (ctx, next) {
+        const pageContext = await renderPage({
+          urlOriginal: ctx.req.url,
+          headersOriginal: ctx.req.raw.headers,
+          pageProps: await container.make(GetPagePropsAction).handle({
+            path: ctx.req.path,
+            queries: ctx.req.queries(),
+            routePath: ctx.req.routePath,
           }),
+        })
+
+        if (!pageContext.httpResponse) return next()
+
+        const responseHeaders = new Headers()
+
+        const { statusCode, headers, pipe } = pageContext.httpResponse
+
+        headers.forEach(([name, value]) =>
+          responseHeaders.set(name, value),
         )
-      })
-    })
+
+        return new Promise(function (resolve, reject) {
+          const body = new PassThrough()
+
+          const stream = createReadableStreamFromReadable(body)
+
+          pipe(body)
+
+          return resolve(
+            new Response(stream, {
+              status: statusCode,
+              headers: responseHeaders,
+            }),
+          )
+        })
+      },
+    )
   }
 
   async startHttpServer() {

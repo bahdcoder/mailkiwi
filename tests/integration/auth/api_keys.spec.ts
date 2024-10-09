@@ -20,28 +20,16 @@ describe("@auth API Token Generation", () => {
       path: "/auth/api-keys",
     })
 
-    return
-
     const json = await response.json()
 
     expect(response.status).toBe(200)
     expect(json).toEqual({
-      accessKey: expect.any(String),
-      accessSecret: expect.any(String),
+      apiKey: expect.any(String),
     })
+    expect(json.apiKey).toContain("kbt_")
+    expect(json.apiKey).toHaveLength(92) // length of combining access key / secret and encoding in base64
 
-    const teamApiKey = await container
-      .make(TeamRepository)
-      .apiKeys()
-      .accessKey(json.accessKey)
-      .get()
-
-    expect(teamApiKey).toBeDefined()
-
-    const verifiedToken = await container
-      .resolve(AccessTokenRepository)
-      .check(json.accessKey)
-
-    expect(verifiedToken).toBeDefined()
+    // TODO: Add assertion to test api key access.
+    // This will be done after controllers have been modified to authenticate and authorize either by user or by access token (with capabilities)
   })
 })

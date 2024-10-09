@@ -8,27 +8,27 @@ import {
 } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
+import { BaseController } from "@/shared/controllers/base_controller.js"
 import type { HonoInstance } from "@/shared/server/hono.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 
-export class TeamController {
+export class TeamController extends BaseController {
   constructor(
     private teamRepository: TeamRepository = container.make(
       TeamRepository,
     ),
     private app: HonoInstance = makeApp(),
   ) {
+    super()
     this.app.defineRoutes([["GET", "/:teamId", this.show.bind(this)]], {
       prefix: "teams",
     })
   }
 
   async show(ctx: HonoContext) {
-    const teamId = ctx.req.param("teamId")
-
-    const team = await this.teamRepository.findById(teamId)
+    const team = this.ensureTeam(ctx)
 
     if (!team)
       throw E_VALIDATION_FAILED([
@@ -38,10 +38,7 @@ export class TeamController {
         },
       ])
 
-    const policy = container.resolve<TeamPolicy>(TeamPolicy)
-
-    if (!policy.canView(ctx.get("team"), ctx.get("accessToken")?.userId))
-      throw E_UNAUTHORIZED()
+    this.ensureCanView(ctx)
 
     return ctx.json(team)
   }

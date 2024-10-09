@@ -246,7 +246,9 @@ describe("@broadcasts update", () => {
 
     expect(response.status).toBe(422)
     expect(await response.json()).toMatchObject({
-      errors: [{ message: "Unknown broadcast.", field: "id" }],
+      errors: [
+        { message: "Invalid broadcastId provided.", field: "broadcastId" },
+      ],
     })
   })
 

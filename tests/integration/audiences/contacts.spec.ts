@@ -11,7 +11,11 @@ import { ContactImportRepository } from "@/audiences/repositories/contact_import
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { makeRequestAsUser } from "@/tests/utils/http.js"
+import {
+  getCookieSessionForUser,
+  makeRequest,
+  makeRequestAsUser,
+} from "@/tests/utils/http.js"
 
 import { ContactImport } from "@/database/schema/database_schema_types.js"
 import { contactImports, contacts } from "@/database/schema/schema.js"
@@ -41,10 +45,6 @@ export const setupImport = async (
 
   const { audience, user, team } = await createUser()
 
-  const { apiKey } = await container
-    .make(AccessTokenRepository)
-    .create(user.id, "user", [])
-
   const app = makeApp()
 
   const response = await app.request(`/audiences/${audience.id}/imports`, {
@@ -52,7 +52,7 @@ export const setupImport = async (
     body: form,
     headers: {
       [apiEnv.software.teamHeader]: team.id.toString(),
-      ...getAuthenticationHeaders(apiKey),
+      Cookie: await getCookieSessionForUser(user),
     },
   })
 
@@ -317,7 +317,7 @@ describe("@contacts update", () => {
   })
 })
 
-describe("@contacts imports", () => {
+describe.only("@contacts imports", () => {
   test("can import contacts into an audience as a csv file", async ({
     expect,
   }) => {

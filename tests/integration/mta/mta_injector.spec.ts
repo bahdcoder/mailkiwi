@@ -18,6 +18,7 @@ import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_t
 import { getInjectEmailContent } from "@/tests/mocks/emails/email_content.js"
 import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
+import { getCookieSessionForUser } from "@/tests/utils/http.js"
 
 import { emailSends } from "@/database/schema/schema.js"
 
@@ -117,14 +118,10 @@ describe.sequential("@mta", () => {
     "@mta-injector Http server can inject an HTTP message using API access token",
     { retry: 2 },
     async ({ expect }) => {
-      const { TEST_DOMAIN, team } =
+      const { TEST_DOMAIN, user } =
         await setupDomainForDnsChecks("localgmail.net")
 
       await clearAllMailpitMessages()
-
-      const { apiKey } = await container
-        .make(CreateTeamAccessTokenAction)
-        .handle(team.id)
 
       const app = makeApp()
 
@@ -132,7 +129,10 @@ describe.sequential("@mta", () => {
 
       const response = await app.request("/inject", {
         method: "POST",
-        headers: getAuthenticationHeaders(apiKey),
+        headers: {
+          Cookie: await getCookieSessionForUser(user),
+        },
+
         body: JSON.stringify(injectEmail),
       })
 
@@ -160,12 +160,8 @@ describe.sequential("@mta", () => {
     "@mta-log-processor server queues log processor jobs",
     { timeout: 10000, retry: 2 },
     async ({ expect }) => {
-      const { TEST_DOMAIN, team } =
+      const { TEST_DOMAIN, user } =
         await setupDomainForDnsChecks("localgmail.net")
-
-      const { apiKey } = await container
-        .make(CreateTeamAccessTokenAction)
-        .handle(team.id)
 
       const app = makeApp()
 
@@ -173,7 +169,9 @@ describe.sequential("@mta", () => {
 
       const response = await app.request("/inject", {
         method: "POST",
-        headers: getAuthenticationHeaders(apiKey),
+        headers: {
+          Cookie: await getCookieSessionForUser(user),
+        },
         body: JSON.stringify(injectEmail),
       })
 
@@ -278,12 +276,8 @@ describe.sequential("@mta", () => {
     "@mta-tracking-injection injects link tracking for messages",
     { timeout: 10000, retry: 2 },
     async ({ expect }) => {
-      const { TEST_DOMAIN, team } =
+      const { TEST_DOMAIN, user } =
         await setupDomainForDnsChecks("localgmail.net")
-
-      const { apiKey } = await container
-        .make(CreateTeamAccessTokenAction)
-        .handle(team.id)
 
       const app = makeApp()
 
@@ -291,7 +285,9 @@ describe.sequential("@mta", () => {
 
       const response = await app.request("/inject", {
         method: "POST",
-        headers: getAuthenticationHeaders(apiKey),
+        headers: {
+          Cookie: await getCookieSessionForUser(user),
+        },
         body: JSON.stringify(injectEmail),
       })
 

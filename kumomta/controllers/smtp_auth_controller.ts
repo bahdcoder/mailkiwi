@@ -26,6 +26,8 @@ export class SmtpAuthController extends BaseController {
       passwd: string
     }>()
 
+    console.log({ username, passwd })
+
     try {
       await container
         .make(AuthorizeInjectorApiKeyMiddleware)

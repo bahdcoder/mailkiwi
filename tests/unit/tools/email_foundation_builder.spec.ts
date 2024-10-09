@@ -7,7 +7,7 @@ import fs from "node:fs/promises"
 import path from "node:path"
 import { describe, test } from "vitest"
 
-describe("Emails with Foundation 2", () => {
+describe("Emails with Foundation v2 framework", () => {
   const Inky = require("inky").Inky
   const cheerio = require("cheerio")
 

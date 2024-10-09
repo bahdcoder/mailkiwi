@@ -26,13 +26,13 @@ export class UserSessionMiddleware {
     const userSession = await new Session().getUser(ctx)
 
     if (!userSession) {
-      throw E_UNAUTHORIZED()
+      return next()
     }
 
     const user = await this.userRepository.findById(userSession.userId)
 
     if (!user) {
-      throw E_UNAUTHORIZED()
+      return next()
     }
 
     ctx.set("user", user)
@@ -41,13 +41,13 @@ export class UserSessionMiddleware {
       ctx.req.header(apiEnv.software.teamHeader) ?? user?.teams?.[0]?.id
 
     if (!teamHeader) {
-      throw E_OPERATION_FAILED(`Invalid team selector provided.`)
+      return next()
     }
 
     const team = await this.teamRepository.findById(teamHeader)
 
     if (!team) {
-      throw E_OPERATION_FAILED(`Invalid team selector provided.`)
+      return next()
     }
 
     ctx.set("team", team)
