@@ -1,9 +1,3 @@
-import { apiEnv } from "@/api/env/api_env.js"
-import { setSignedCookie } from "hono/cookie"
-
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
-
-import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 import { CreateUserSchema } from "@/auth/users/dto/create_user_dto.js"
@@ -22,7 +16,6 @@ import { container } from "@/utils/typi.js"
 export class AuthController extends BaseController {
   constructor(
     private userRepository = container.make(UserRepository),
-    private accessTokenRepository = container.make(AccessTokenRepository),
     private app = makeApp(),
   ) {
     super()

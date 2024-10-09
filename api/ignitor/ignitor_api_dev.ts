@@ -2,6 +2,10 @@ import { Ignitor } from "./ignitor_api.js"
 import { GetPagePropsAction } from "@/api/actions/get_page_props_action.js"
 import { serve } from "@hono/node-server"
 import { createReadableStreamFromReadable } from "@remix-run/node"
+import { readFile } from "fs/promises"
+import { showRoutes } from "hono/dev"
+import { createServer as cerateHttpsServer } from "node:https"
+import path from "path"
 import { PassThrough } from "stream"
 import { renderPage } from "vike/server"
 import { createServer as createViteServer } from "vite"
@@ -29,6 +33,7 @@ export class IgnitorDev extends Ignitor {
     })
 
     this.registerCatchAllServerRoute()
+    showRoutes(this.app, { verbose: true })
   }
 
   protected registerCatchAllServerRoute() {
@@ -79,9 +84,18 @@ export class IgnitorDev extends Ignitor {
       {
         fetch: this.app.fetch,
         port: this.env.PORT,
+        createServer: cerateHttpsServer,
+        serverOptions: {
+          key: await readFile(
+            path.resolve(process.cwd(), "certs", "localhost-key.pem"),
+          ),
+          cert: await readFile(
+            path.resolve(process.cwd(), "certs", "localhost.pem"),
+          ),
+        },
       },
       ({ address, port }) => {
-        console.log(`Monolith API: 🌐 http://${address}:${port}`)
+        console.log(`Monolith dev: 🌐 http://${address}:${port}`)
       },
     )
   }

@@ -14,6 +14,9 @@ function Layout({ children }: PropsWithChildren) {
         <li>
           <a href="/products">Products page</a>
         </li>
+        <li>
+          <a href="/auth/login">Login to your account</a>
+        </li>
       </ul>
 
       <main className="flex items-center p-8 flex-col">{children}</main>
