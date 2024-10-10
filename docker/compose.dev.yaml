@@ -1,6 +1,7 @@
 name: kibamail
 
 include:
+  # - compose.app.yaml
   - compose.storage.yaml
   - compose.databases.yaml
   - compose.kumomta.yaml

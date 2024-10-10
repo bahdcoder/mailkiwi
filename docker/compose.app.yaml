@@ -1,0 +1,19 @@
+services:
+  monolith:
+    container_name: monolith
+    build:
+      context: ..
+      dockerfile: docker/app.dockerfile
+    ports:
+      - "8112:5566"
+      - "8113:5666"
+    depends_on:
+      - mysql
+      - redis
+      - kumomta-dev
+    volumes:
+      - ..:/app
+      - /app/node_modules
+    networks:
+      default:
+        ipv4_address: 172.20.0.55

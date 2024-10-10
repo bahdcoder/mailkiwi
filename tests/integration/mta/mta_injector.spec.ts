@@ -3,7 +3,9 @@ import { EmailSendRepository } from "@/email_sends/repositories/email_send_repos
 import { ProcessMtaLogJob } from "@/kumologs/jobs/process_mta_log_job.js"
 import { faker } from "@faker-js/faker"
 import { ServerType, serve } from "@hono/node-server"
+import * as cheerio from "cheerio"
 import { eq } from "drizzle-orm"
+import { simpleParser } from "mailparser"
 import {
   afterAll,
   afterEach,
@@ -18,7 +20,10 @@ import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_t
 import { getInjectEmailContent } from "@/tests/mocks/emails/email_content.js"
 import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
-import { getCookieSessionForUser } from "@/tests/utils/http.js"
+import {
+  getApiKeyForTeam,
+  getCookieSessionForUser,
+} from "@/tests/utils/http.js"
 
 import { emailSends } from "@/database/schema/schema.js"
 
@@ -30,6 +35,7 @@ import {
 import { makeHttpClient } from "@/shared/http/http_client.js"
 import { Queue } from "@/shared/queue/queue.js"
 import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.js"
+import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
 import { sleep } from "@/utils/sleep.js"
 import { container } from "@/utils/typi.js"
@@ -52,6 +58,8 @@ const getAllMailpitMessages = async () => {
     {
       total: number
       messages: {
+        ID: string
+        MessageID: string
         From: Envelope
         To: Envelope[]
         Cc: Envelope[]
@@ -62,6 +70,16 @@ const getAllMailpitMessages = async () => {
     }
   >()
     .url(`${apiEnv.MAILPIT_API_URL}/api/v1/messages`)
+    .get()
+    .send()
+
+  return data
+}
+
+const getMailpitMessageSource = async (messageId: string) => {
+  const { data } = await makeHttpClient<object, string>()
+    .url(`${apiEnv.MAILPIT_API_URL}/api/v1/message/${messageId}/raw`)
+    .asText()
     .get()
     .send()
 
@@ -79,7 +97,7 @@ describe.sequential("@mta", () => {
     server = serve(
       {
         fetch: app.fetch,
-        port: apiEnv.PORT,
+        port: apiEnv.PORT + 100,
       },
       ({ address, port }) => {
         console.log(
@@ -118,7 +136,7 @@ describe.sequential("@mta", () => {
     "@mta-injector Http server can inject an HTTP message using API access token",
     { retry: 2 },
     async ({ expect }) => {
-      const { TEST_DOMAIN, user } =
+      const { TEST_DOMAIN, team } =
         await setupDomainForDnsChecks("localgmail.net")
 
       await clearAllMailpitMessages()
@@ -127,10 +145,14 @@ describe.sequential("@mta", () => {
 
       const injectEmail = getInjectEmailContent(TEST_DOMAIN)
 
+      const { apiKey } = await container
+        .make(CreateTeamAccessTokenAction)
+        .handle(team.id)
+
       const response = await app.request("/inject", {
         method: "POST",
         headers: {
-          Cookie: await getCookieSessionForUser(user),
+          Authorization: `Bearer ${apiKey}`,
         },
 
         body: JSON.stringify(injectEmail),
@@ -160,7 +182,7 @@ describe.sequential("@mta", () => {
     "@mta-log-processor server queues log processor jobs",
     { timeout: 10000, retry: 2 },
     async ({ expect }) => {
-      const { TEST_DOMAIN, user } =
+      const { TEST_DOMAIN, team } =
         await setupDomainForDnsChecks("localgmail.net")
 
       const app = makeApp()
@@ -170,7 +192,7 @@ describe.sequential("@mta", () => {
       const response = await app.request("/inject", {
         method: "POST",
         headers: {
-          Cookie: await getCookieSessionForUser(user),
+          Authorization: await getApiKeyForTeam(team.id),
         },
         body: JSON.stringify(injectEmail),
       })
@@ -203,16 +225,12 @@ describe.sequential("@mta", () => {
     },
   )
 
-  test(
+  test.only(
     "@mta-log-processor job processor stores all logs to the database",
     { timeout: 10000, retry: 2 },
     async ({ expect }) => {
       const { TEST_DOMAIN, team } =
         await setupDomainForDnsChecks("localgmail.net")
-
-      const { apiKey } = await container
-        .make(CreateTeamAccessTokenAction)
-        .handle(team.id)
 
       const app = makeApp()
 
@@ -220,7 +238,9 @@ describe.sequential("@mta", () => {
 
       const response = await app.request("/inject", {
         method: "POST",
-        headers: getAuthenticationHeaders(apiKey),
+        headers: {
+          Authorization: await getApiKeyForTeam(team.id),
+        },
         body: JSON.stringify(injectEmail),
       })
 
@@ -231,8 +251,10 @@ describe.sequential("@mta", () => {
       const jobs = await Queue.mta_logs().getJobs()
 
       const processLogJobs = jobs.filter(
-        (job) => job.data.log.sender === injectEmail.from.email,
+        (job) => job.data.log.headers.Subject === injectEmail.subject,
       )
+
+      expect(processLogJobs).toHaveLength(6)
 
       const database = makeDatabase()
       const redis = makeRedis()
@@ -272,11 +294,12 @@ describe.sequential("@mta", () => {
     },
   )
 
-  test.only(
+  test(
     "@mta-tracking-injection injects link tracking for messages",
     { timeout: 10000, retry: 2 },
     async ({ expect }) => {
-      const { TEST_DOMAIN, user } =
+      await clearAllMailpitMessages()
+      const { TEST_DOMAIN, team, sendingDomain } =
         await setupDomainForDnsChecks("localgmail.net")
 
       const app = makeApp()
@@ -286,58 +309,53 @@ describe.sequential("@mta", () => {
       const response = await app.request("/inject", {
         method: "POST",
         headers: {
-          Cookie: await getCookieSessionForUser(user),
+          Authorization: await getApiKeyForTeam(team.id),
         },
         body: JSON.stringify(injectEmail),
       })
 
       expect(response.status).toBe(200)
 
-      return
-
       await sleep(1000)
 
-      const jobs = await Queue.mta_logs().getJobs()
+      const messages = await getAllMailpitMessages()
 
-      const processLogJobs = jobs.filter(
-        (job) => job.data.log.sender === injectEmail.from.email,
+      const messageIds = messages?.messages?.map(
+        (message) => message.MessageID,
       )
+      expect(messageIds).toHaveLength(3)
 
-      const database = makeDatabase()
-      const redis = makeRedis()
+      expect(
+        messageIds?.map((messageId) => messageId.split("@")[1]),
+      ).toEqual([TEST_DOMAIN, TEST_DOMAIN, TEST_DOMAIN])
 
-      for (const job of processLogJobs) {
-        await container
-          .make(ProcessMtaLogJob)
-          .handle({ payload: job.data, database, redis })
+      for (const message of messages?.messages ?? []) {
+        const source = await getMailpitMessageSource(message?.ID)
+
+        const parsedMessage = await simpleParser(source as string)
+
+        const $ = cheerio.load(parsedMessage.html as string)
+
+        const links: string[] = []
+
+        $("a").each(function (idx, element) {
+          links.push($(element).attr("href") as string)
+        })
+
+        const trackingDomain = `https://${sendingDomain.trackingSubDomain}.${sendingDomain.name}/c/`
+
+        for (const link of links) {
+          expect(link).toContain(trackingDomain)
+
+          const [, signedLink] = link.split(trackingDomain)
+
+          const url = new SignedUrlManager(apiEnv.APP_KEY).decode(
+            signedLink,
+          )
+
+          expect(url?.original).toBeDefined()
+        }
       }
-
-      const allEmailSends = await container
-        .make(EmailSendRepository)
-        .findBySendingIdWithEvents(processLogJobs?.[0]?.data?.log?.id)
-
-      expect(allEmailSends.sendingId).toBeDefined()
-      expect(allEmailSends.events).toHaveLength(2)
-      expect(allEmailSends.events.map((event) => event.type)).toEqual([
-        "Delivery",
-        "Reception",
-      ])
-
-      const deliveryEvent = allEmailSends.events.find(
-        (event) => event.type === "Delivery",
-      )
-      const receptionEvent = allEmailSends.events.find(
-        (event) => event.type === "Reception",
-      )
-
-      expect(deliveryEvent?.responseCode).toEqual(250)
-      expect(deliveryEvent?.createdAt).toBeDefined()
-      expect(deliveryEvent?.peerAddressName).toEqual(
-        "mail.localgmail.net.",
-      )
-
-      expect(receptionEvent?.responseCode).toEqual(250)
-      expect(receptionEvent?.createdAt).toBeDefined()
     },
   )
 })

@@ -3,7 +3,12 @@ import { eq } from "drizzle-orm"
 
 import type { CreateTeamDto } from "@/teams/dto/create_team_dto.js"
 
-import { teamMemberships, teams, users } from "@/database/schema/schema.js"
+import {
+  sendingDomains,
+  teamMemberships,
+  teams,
+  users,
+} from "@/database/schema/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
@@ -27,6 +32,14 @@ export class TeamRepository extends BaseRepository {
     primaryKey: teams.id,
     foreignKey: teamMemberships.teamId,
     relationName: "members",
+  })
+
+  private hasManySendingDomains = hasMany(this.database, {
+    from: teams,
+    to: sendingDomains,
+    primaryKey: teams.id,
+    foreignKey: sendingDomains.teamId,
+    relationName: "sendingDomains",
   })
 
   async create(payload: CreateTeamDto, userId: string) {
@@ -67,6 +80,20 @@ export class TeamRepository extends BaseRepository {
     )
 
     return team
+  }
+
+  async findByIdWithDomains(teamId: string) {
+    const self = this
+
+    return this.cache
+      .namespace("teams")
+      .get(`team_with_sending_domains:${teamId}`, async function () {
+        const [team] = await self.hasManySendingDomains((query) =>
+          query.where(eq(teams.id, teamId)),
+        )
+
+        return team
+      })
   }
 
   dkim() {

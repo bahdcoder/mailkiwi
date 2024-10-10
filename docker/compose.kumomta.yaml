@@ -101,8 +101,8 @@ services:
     dns: 172.20.0.2
     environment:
       API_HTTP_ACCESS_TOKEN: tSv1rimOykRimRB7XgLtYDctSv1rimOykRimRB7XgLtYDc
-      API_HTTP_SERVER: "http://host.docker.internal:5566"
-      TSA_DAEMON_HTTP_SERVER: "http://host.docker.internal:8012"
+      API_HTTP_SERVER: "http://host.docker.internal:5666"
+      TSA_DAEMON_HTTP_SERVER: "http://172.20.0.12:8008"
     ports:
       - 5612:25
       - 5613:8000
@@ -111,6 +111,8 @@ services:
         ipv4_address: 172.20.0.11
     depends_on:
       - kumomta-tsa-daemon
+    extra_hosts:
+      - host.docker.internal:host-gateway
 
   kumomta-tsa-daemon:
     container_name: kumomta-tsa-daemon

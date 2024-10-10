@@ -317,7 +317,7 @@ describe("@contacts update", () => {
   })
 })
 
-describe.only("@contacts imports", () => {
+describe("@contacts imports", () => {
   test("can import contacts into an audience as a csv file", async ({
     expect,
   }) => {

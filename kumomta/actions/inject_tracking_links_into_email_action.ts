@@ -1,16 +1,13 @@
-import { apiEnv } from "@/api/env/api_env.js";
-import { load as cheerioLoad } from "cheerio";
-import iconv from "iconv-lite";
-import { Splitter } from "mailsplit";
+import { apiEnv } from "@/api/env/api_env.js"
+import { load as cheerioLoad } from "cheerio"
+import iconv from "iconv-lite"
+import { Splitter } from "mailsplit"
 import Joiner from "mailsplit/lib/message-joiner"
 import Rewriter from "mailsplit/lib/node-rewriter"
-import { Readable } from "stream";
+import { Readable } from "stream"
 
-
-
-import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js";
-import { stringFromReadableStream } from "@/shared/utils/string.js";
-
+import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
+import { stringFromReadableStream } from "@/shared/utils/string.js"
 
 interface TrackedLink {
   url: string
@@ -23,16 +20,22 @@ export class InjectTrackingLinksIntoEmailAction {
 
     const signedUrlManager = new SignedUrlManager(apiEnv.APP_KEY)
 
+    const trackingSignatures: [string, string][] = []
+
     $("a").each(function (idx, element) {
       const href = $(element).attr("href")
       if (!href) return
 
-      const trackedHref = `http://${trackingDomain}/c/${signedUrlManager.encode(href)}`
+      const encodedHref = signedUrlManager.encode(href)
+
+      trackingSignatures.push([href, encodedHref])
+
+      const trackedHref = `https://${trackingDomain}/c/${encodedHref}`
 
       $(element).attr("href", trackedHref)
     })
 
-    return { html: $.html() }
+    return { html: $.html(), trackingSignatures }
   }
 
   async handle(message: string, trackingDomain: string) {

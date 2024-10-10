@@ -16,6 +16,7 @@ import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 
 import {
+  E_OPERATION_FAILED,
   E_UNAUTHORIZED,
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
@@ -166,6 +167,27 @@ export class BaseController {
         "You are not authorized to perform this action.",
       )
     }
+  }
+
+  protected ensureCanSendFromDomain(ctx: HonoContext, domain: string) {
+    const team = ctx.get("teamWithSendingDomains")
+
+    if (!team)
+      throw E_OPERATION_FAILED("Could not resolve team from API key.")
+
+    if (team.sendingDomains.length === 0)
+      throw E_OPERATION_FAILED("Team does not have any sending domains.")
+
+    const sendingDomain = team.sendingDomains?.find(
+      (sendingDomain) => sendingDomain.name === domain,
+    )
+
+    if (!sendingDomain)
+      throw E_OPERATION_FAILED(
+        `Not authorised to send from domain: ${domain} `,
+      )
+
+    return sendingDomain
   }
 
   protected async ensureExists<T>(

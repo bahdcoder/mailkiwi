@@ -64,9 +64,10 @@ export class Ignitor {
 
   async start() {
     await this.startDatabaseConnector()
-    await this.startSinglePageApplication()
 
     this.registerHttpControllers()
+
+    await this.startSinglePageApplication()
 
     this.startHttpServer()
 

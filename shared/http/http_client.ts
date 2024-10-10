@@ -11,6 +11,7 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
     method: HttpMethod
     headers: Record<string, string>
     payload: TPayload
+    as: "json" | "text"
   } = {
     url: "",
     method: "GET",
@@ -18,10 +19,21 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
     headers: {
       "Content-Type": "application/json",
     },
+    as: "json",
   }
 
   url(url: string) {
     this.config.url = url
+    return this
+  }
+
+  asJson() {
+    this.config.as = "json"
+    return this
+  }
+
+  asText() {
+    this.config.as = "text"
     return this
   }
 
@@ -78,7 +90,15 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
             : null,
       })
 
-      const data: TResponse = await response.json()
+      let data: any
+
+      if (this.config.as === "json") {
+        data = await response.json()
+      }
+
+      if (this.config.as === "text") {
+        data = await response.text()
+      }
 
       if (!response.ok) {
         throw new Error((data as any)?.message || "Request failed")

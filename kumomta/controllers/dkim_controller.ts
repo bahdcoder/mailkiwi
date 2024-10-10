@@ -11,10 +11,7 @@ import { Encryption } from "@/shared/utils/encryption/encryption.js"
 import { container } from "@/utils/typi.js"
 
 export class DkimController extends BaseController {
-  constructor(
-    private app = makeApp(),
-    private redis = makeRedis(),
-  ) {
+  constructor(private app = makeApp()) {
     super()
 
     this.app.defineRoutes(

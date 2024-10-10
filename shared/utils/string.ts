@@ -1,9 +1,14 @@
 import { base64 } from "@poppinss/utils"
 import { randomBytes } from "node:crypto"
 import { Readable } from "node:stream"
+import { v4 } from "uuid"
 
 export function fromEmailToDomain(email: string) {
   return email?.split("@")?.[1]
+}
+
+export function generateMessageIdForDomain(domain: string) {
+  return `<${v4() + "@" + domain}>`
 }
 
 export function ipv4AdressFromIpAndPort(ipAndPort: string) {

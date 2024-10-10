@@ -1,6 +1,7 @@
 import { apiEnv } from "@/api/env/api_env.js"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
+import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 
 import type {
   Team,
@@ -48,6 +49,14 @@ export async function getCookieSessionForUser(user: User) {
   const [sessionCookie] = response.headers.getSetCookie()
 
   return sessionCookie
+}
+
+export async function getApiKeyForTeam(teamId: string) {
+  const { apiKey } = await container
+    .make(CreateTeamAccessTokenAction)
+    .handle(teamId)
+
+  return `Bearer ${apiKey}`
 }
 
 export async function makeRequestAsUser(

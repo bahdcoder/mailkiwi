@@ -1,4 +1,6 @@
 import { faker } from "@faker-js/faker"
+import { readFileSync } from "fs"
+import path from "path"
 
 import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.js"
 
@@ -46,8 +48,12 @@ export function getInjectEmailContent(TEST_DOMAIN: string) {
       name: faker.person.fullName(),
       email: cuid() + "@" + TEST_DOMAIN,
     },
-    subject: faker.lorem.words(6),
+    subject: cuid(),
     text: faker.lorem.paragraphs(12),
+    html: readFileSync(
+      path.resolve("tests/mocks/emails", "email.html"),
+      "utf-8",
+    ),
     replyTo: {
       name: faker.person.fullName(),
       email: cuid() + "@" + TEST_DOMAIN,

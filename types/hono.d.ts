@@ -2,6 +2,7 @@ import "hono"
 
 import type {
   AccessToken,
+  TeamWithSendingDomains,
   User,
 } from "@/database/schema/database_schema_types.js"
 
@@ -11,6 +12,7 @@ declare module "hono" {
   interface ContextVariableMap {
     accessToken: AccessToken
     team: TeamWithMembers
+    teamWithSendingDomains: TeamWithSendingDomains
     user: User
   }
 

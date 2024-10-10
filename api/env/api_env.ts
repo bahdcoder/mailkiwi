@@ -102,5 +102,9 @@ export const apiEnv = makeExtraAppConfigurations(
       trackingSubdomain: DEFAULT_TRACKING_SUBDOMAIN,
       trackingHostName: TRACKING_HOST_NAME,
     },
+    emailHeaders: {
+      sendingDomainId: "X-Kibamail-Sending-Domain-ID",
+      messageId: "X-Kibamail-Message-ID",
+    },
   },
 )

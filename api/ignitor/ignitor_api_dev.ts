@@ -4,7 +4,8 @@ import { serve } from "@hono/node-server"
 import { createReadableStreamFromReadable } from "@remix-run/node"
 import { readFile } from "fs/promises"
 import { showRoutes } from "hono/dev"
-import { createServer as cerateHttpsServer } from "node:https"
+import { Server } from "https"
+import { createServer as createHttpsServer } from "node:https"
 import path from "path"
 import { PassThrough } from "stream"
 import { renderPage } from "vike/server"
@@ -15,10 +16,13 @@ import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware
 import { container } from "@/utils/typi.js"
 
 export class IgnitorDev extends Ignitor {
+  protected httpsServer: Server
   async startSinglePageApplication() {
     const viteDevServer = await createViteServer({
       server: { middlewareMode: true },
     })
+
+    this.httpsServer = createHttpsServer()
 
     this.app.use(async (ctx, next) => {
       await new Promise((resolve) => {
@@ -32,8 +36,8 @@ export class IgnitorDev extends Ignitor {
       })
     })
 
-    this.registerCatchAllServerRoute()
     showRoutes(this.app, { verbose: true })
+    this.registerCatchAllServerRoute()
   }
 
   protected registerCatchAllServerRoute() {
@@ -41,6 +45,7 @@ export class IgnitorDev extends Ignitor {
       "*",
       container.make(UserSessionMiddleware).handle,
       async function (ctx, next) {
+        d([ctx.get("user"), ctx.get("team")])
         const pageContext = await renderPage({
           urlOriginal: ctx.req.url,
           headersOriginal: ctx.req.raw.headers,
@@ -84,7 +89,7 @@ export class IgnitorDev extends Ignitor {
       {
         fetch: this.app.fetch,
         port: this.env.PORT,
-        createServer: cerateHttpsServer,
+        createServer: createHttpsServer,
         serverOptions: {
           key: await readFile(
             path.resolve(process.cwd(), "certs", "localhost-key.pem"),
@@ -95,7 +100,19 @@ export class IgnitorDev extends Ignitor {
         },
       },
       ({ address, port }) => {
-        console.log(`Monolith dev: 🌐 http://${address}:${port}`)
+        console.log(`Monolith dev (HTTPS): 🌐 https://localhost:${port}`)
+      },
+    )
+
+    serve(
+      {
+        fetch: this.app.fetch,
+        port: this.env.PORT + 100,
+      },
+      ({ address, port }) => {
+        console.log(
+          `Monolith dev (HTTP only): 🌐 http://localhost:${port}`,
+        )
       },
     )
   }

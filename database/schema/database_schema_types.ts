@@ -119,3 +119,7 @@ export type ContactWithTags = Contact & {
     tag: Tag
   })[]
 }
+
+export type TeamWithSendingDomains = Team & {
+  sendingDomains: SendingDomain[]
+}

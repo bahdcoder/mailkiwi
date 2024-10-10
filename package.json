@@ -22,7 +22,10 @@
     "mysql:migrate": "pnpm drizzle-kit migrate --config=./database/drizzle.config.ts",
     "mysql:migrate:make": "env-cmd -e development pnpm drizzle-kit generate --config=./database/drizzle.config.ts",
     "mysql:studio": "pnpm drizzle-kit studio --config=./database/drizzle.config.ts",
-    "cli": "env-cmd -e development tsx cli/cli_root.ts"
+    "cli": "env-cmd -e development tsx cli/cli_root.ts",
+    "docker:dev": "pnpm docker:mysql:migrate:dev && pnpm docker:quick:dev",
+    "docker:mysql:migrate:dev": "env-cmd -e development-docker pnpm mysql:migrate",
+    "docker:quick:dev": "env-cmd -e development-docker tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs api/start/api_dev.ts"
   },
   "keywords": [
     "open source",
@@ -105,6 +108,7 @@
     "inky": "^1.4.2",
     "ioredis": "^5.4.1",
     "luxon": "^3.5.0",
+    "mailparser": "^3.7.1",
     "mailsplit": "^5.4.0",
     "mime-types": "^2.1.35",
     "minio": "^8.0.1",

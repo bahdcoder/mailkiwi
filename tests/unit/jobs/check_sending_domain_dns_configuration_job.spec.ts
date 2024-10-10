@@ -1,6 +1,7 @@
 import { apiEnv } from "@/api/env/api_env.js"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
+import { DateTime } from "luxon"
 import dns from "node:dns/promises"
 import { describe, test, vi } from "vitest"
 
@@ -28,6 +29,12 @@ export const setupDomainForDnsChecks = async (domain?: string) => {
   const { id: sendingDomainId } = await container
     .make(CreateSendingDomainAction)
     .handle({ name: TEST_DOMAIN }, team.id)
+
+  await container.make(SendingDomainRepository).update(sendingDomainId, {
+    trackingDomainVerifiedAt: DateTime.now().toJSDate(),
+    trackingDomainSslVerifiedAt: DateTime.now().toJSDate(),
+    returnPathDomainVerifiedAt: DateTime.now().toJSDate(),
+  })
 
   const sendingDomain = await container
     .make(SendingDomainRepository)

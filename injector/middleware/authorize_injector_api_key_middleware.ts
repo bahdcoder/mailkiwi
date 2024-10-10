@@ -1,5 +1,7 @@
 import type { Next } from "hono"
 
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
+
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
 import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
@@ -13,7 +15,7 @@ import { REDIS_KNOWN_KEYS } from "@/redis/redis_client.js"
 import { container } from "@/utils/typi.js"
 
 export class AuthorizeInjectorApiKeyMiddleware {
-  constructor(private redis = makeRedis()) {}
+  constructor(private teamRepository = container.make(TeamRepository)) {}
 
   async verifySmtpCredentials(
     smtpUsername?: string,
@@ -32,10 +34,25 @@ export class AuthorizeInjectorApiKeyMiddleware {
       .check(smtpPassword)
 
     if (!credentialsAreValid) throw E_UNAUTHORIZED()
+
+    return credentialsAreValid
   }
 
   handle = async (ctx: HonoContext, next: Next) => {
-    // await this.verifySmtpCredentials(smtpUsername, smtpPassword)
+    const authorization = ctx.req.header("Authorization")
+
+    const [, apiKey] = authorization?.split("Bearer ") ?? []
+
+    const accessToken = await this.verifySmtpCredentials(apiKey, apiKey)
+
+    ctx.set("accessToken", accessToken)
+
+    const teamWithSendingDomains =
+      await this.teamRepository.findByIdWithDomains(
+        accessToken.teamId as string,
+      )
+
+    ctx.set("teamWithSendingDomains", teamWithSendingDomains)
 
     await next()
   }

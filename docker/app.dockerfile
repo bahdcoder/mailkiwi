@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -11,7 +11,6 @@ COPY package.json pnpm-lock.yaml ./
 # Install dependencies
 RUN pnpm install
 
-# Copy the rest of the application code
 COPY . .
 
-CMD ["pnpm", "dev"]
+CMD ["pnpm", "docker:dev"]

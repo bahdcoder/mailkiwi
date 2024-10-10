@@ -11,11 +11,9 @@
 local kumo = require 'kumo'
 local shaping = require 'policy-extras.shaping'
 local log_hooks = require 'policy-extras.log_hooks'
+local listener_domains = require 'policy-extras.listener_domains'
 package.path = 'assets/?.lua;' .. package.path
 local utils = require 'policy-extras.policy_utils'
-
-local SINK_DATA_FILE = os.getenv 'SINK_DATA'
-  or '/opt/kumomta/etc/policy/responses.toml'
 
 -- ########################### ENVIRONMENT VARIABLES #############################
 
@@ -50,6 +48,8 @@ local function smtp_check_auth_credentials(username, passwd)
     passwd = passwd
   })
 
+  print('----------------> SENDING REQUEST')
+
   local response = request:send()
 
   return response:status_is_success()
@@ -75,7 +75,11 @@ log_hooks:new_json {
   name = 'webhook',
   url = API_HTTP_SERVER .. '/mta/logs',
   log_parameters = {
-    headers = { 'Subject' },
+    headers = {
+      'Subject',
+      'Message-ID',
+      'X-Kibamail-*'
+    },
   },
 }
 
@@ -100,55 +104,6 @@ local shaper = shaping:setup_with_automation {
 
 ]]--
 
-local function escapeString(str)
-    str = str:gsub("\\", "\\\\")
-    str = str:gsub('"', '\\"')
-    str = str:gsub("\n", "\\n")
-    str = str:gsub("\r", "\\r")
-    str = str:gsub("\t", "\\t")
-    return str
-end
-
--- Helper function to serialize a Lua table to JSON
-local function tableToJson(tbl)
-    local result = {}
-    local isArray = (#tbl > 0)
-
-    for key, value in pairs(tbl) do
-        local serializedKey
-        if not isArray then
-            if type(key) == "string" then
-                serializedKey = '"' .. escapeString(key) .. '": '
-            else
-                error("JSON only supports string keys in objects.")
-            end
-        end
-
-        local serializedValue
-        if type(value) == "string" then
-            serializedValue = '"' .. escapeString(value) .. '"'
-        elseif type(value) == "number" or type(value) == "boolean" then
-            serializedValue = tostring(value)
-        elseif type(value) == "table" then
-            serializedValue = tableToJson(value)
-        else
-            error("Unsupported data type in table.")
-        end
-
-        if isArray then
-            table.insert(result, serializedValue)
-        else
-            table.insert(result, serializedKey .. serializedValue)
-        end
-    end
-
-    if isArray then
-        return "[" .. table.concat(result, ", ") .. "]"
-    else
-        return "{" .. table.concat(result, ", ") .. "}"
-    end
-end
-
 local authenticated_request = function (url, json)
   local request = kumo.http.build_client({}):post(url)
   
@@ -156,7 +111,7 @@ local authenticated_request = function (url, json)
   request:header('x-mta-access-token', API_HTTP_ACCESS_TOKEN)
 
   request:body(kumo.json_encode(json))
-
+  
   local response = request:send()
 
   local json = kumo.serde.json_parse(response:text())
@@ -217,7 +172,16 @@ local process_message_with_tracking = function (message)
 end
 
 local on_smtp_server_message_received = function (message)
-  local domain = message:sender().domain
+  local from_header = message:from_header()
+
+  if not from_header then
+    kumo.reject(
+      552,
+      '5.6.0 DKIM signing requires a From header, but it is missing from this message'
+    )
+  end
+
+  local domain = from_header.domain
 
   local dkim_information = cached_get_domain_dkim_information(domain)
 
@@ -243,7 +207,6 @@ end
 
 kumo.on('init', function()
   kumo.configure_accounting_db_path(os.tmpname())
-  kumo.set_config_monitor_globs { SINK_DATA_FILE }
 
   kumo.start_esmtp_listener {
     listen = '0:' .. '25',
@@ -281,8 +244,19 @@ kumo.on('init', function()
     -- We recommend setting this when you're getting started;
     -- this option is discussed in more detail below
     max_segment_duration = '10 seconds',
+
+    headers = {
+      'Subject',
+      'Message-ID',
+      'X-Kibamail-*'
+    }
   }
 end)
+
+kumo.on(
+  'get_listener_domain',
+  listener_domains:setup { '/opt/kumomta/etc/policy/extras/listener_domains.toml' }
+)
 
 kumo.on('smtp_server_message_received', function(message)
   -- This tracking is only for links from the send product

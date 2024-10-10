@@ -1,5 +1,6 @@
 import devServer from "@hono/vite-dev-server"
 import react from "@vitejs/plugin-react"
+import { readFileSync } from "node:fs"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import vike from "vike/plugin"
@@ -20,5 +21,11 @@ export default defineConfig({
   },
   server: {
     cors: false,
+    https: {
+      key: readFileSync(
+        resolve(process.cwd(), "certs", "localhost-key.pem"),
+      ),
+      cert: readFileSync(resolve(process.cwd(), "certs", "localhost.pem")),
+    },
   },
 })

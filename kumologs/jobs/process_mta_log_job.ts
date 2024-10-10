@@ -1,3 +1,4 @@
+import { apiEnv } from "@/api/env/api_env.js"
 import { EmailSendEventRepository } from "@/email_sends/repositories/email_send_event_repository.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
 import { SendingSourceRepository } from "@/settings/repositories/sending_source_repository.js"
@@ -36,7 +37,7 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
 
     const sendingDomain = await container
       .make(SendingDomainRepository)
-      .findByDomain(fromEmailToDomain(log.sender))
+      .findById(log.headers[apiEnv.emailHeaders.sendingDomainId])
 
     let sendingSourceId: string | undefined
 
