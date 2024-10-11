@@ -33,13 +33,19 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
   async handle({ payload: { log } }: JobContext<ProcessMtaLogJobPayload>) {
     const emailSendRepository = container.make(EmailSendRepository)
 
-    if (!log.id) return this.done()
-
     const sendingDomain = await container
       .make(SendingDomainRepository)
       .findById(log.headers[apiEnv.emailHeaders.sendingDomainId])
 
     let sendingSourceId: string | undefined
+
+    const emailSend = await emailSendRepository.findById(
+      log.headers[apiEnv.emailHeaders.emailSendId],
+    )
+
+    if (!emailSend) {
+      return this.fail("Invalid email send ID.")
+    }
 
     if (log.type === "Delivery") {
       const sendingSource = await container
@@ -51,7 +57,7 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
       sendingSourceId = sendingSource?.id
     }
 
-    const { id: emailSendId } = await emailSendRepository.upsert({
+    await emailSendRepository.update(emailSend.id, {
       sendingDomainId: sendingDomain.id,
       sendingId: log.id,
       recipient: log.recipient,
@@ -79,7 +85,7 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
 
     const handler = handlers[log.type] ?? logTypeHandler.handleGenericEvent
 
-    await handler?.(emailSendId, log)
+    await handler?.(emailSend.id, log)
 
     return this.done()
   }
@@ -89,11 +95,9 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
 
 export class LogTypeHandler {
   constructor(
-    private database = makeDatabase(),
     private emailSendEventRepository = container.make(
       EmailSendEventRepository,
     ),
-    private emailSendRepository = container.make(EmailSendRepository),
   ) {}
 
   handleGenericEvent = async (emailSendId: string, log: MtaLog) => {

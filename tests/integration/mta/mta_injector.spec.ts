@@ -17,6 +17,15 @@ import {
 
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 
+import {
+  clearAllMailpitMessages,
+  getAllMailpitMessages,
+  getMailpitMessageSource,
+} from "@/tests/integration/helpers/mailpit.js"
+import {
+  createTestServer,
+  shutdownTestServer,
+} from "@/tests/integration/helpers/server.js"
 import { getInjectEmailContent } from "@/tests/mocks/emails/email_content.js"
 import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
@@ -40,96 +49,18 @@ import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 import { sleep } from "@/utils/sleep.js"
 import { container } from "@/utils/typi.js"
 
-const clearAllMailpitMessages = async () => {
-  await makeHttpClient()
-    .url(`${apiEnv.MAILPIT_API_URL}/api/v1/messages`)
-    .delete()
-    .send()
-}
-
-type Envelope = {
-  Name: string
-  Address: string
-}
-
-const getAllMailpitMessages = async () => {
-  const { data } = await makeHttpClient<
-    object,
-    {
-      total: number
-      messages: {
-        ID: string
-        MessageID: string
-        From: Envelope
-        To: Envelope[]
-        Cc: Envelope[]
-        Bcc: Envelope[]
-        ReplyTo: Envelope[]
-        Subject: String
-      }[]
-    }
-  >()
-    .url(`${apiEnv.MAILPIT_API_URL}/api/v1/messages`)
-    .get()
-    .send()
-
-  return data
-}
-
-const getMailpitMessageSource = async (messageId: string) => {
-  const { data } = await makeHttpClient<object, string>()
-    .url(`${apiEnv.MAILPIT_API_URL}/api/v1/message/${messageId}/raw`)
-    .asText()
-    .get()
-    .send()
-
-  return data
-}
-
 describe.sequential("@mta", () => {
   let server: ServerType
 
   beforeAll(async () => {
-    const app = makeApp()
-
     if (server) return
 
-    server = serve(
-      {
-        fetch: app.fetch,
-        port: apiEnv.PORT + 100,
-      },
-      ({ address, port }) => {
-        console.log(
-          `@inject-tests: monolith api running on: ${address}:${port}`,
-        )
-      },
-    )
-
-    await new Promise(function (resolve, reject) {
-      server.on("listening", () => {
-        resolve("Port listening.")
-      })
-
-      server.on("timeout", reject)
-    })
-
-    await sleep(1000)
+    server = await createTestServer()
   })
 
   afterAll(async () => {
     if (!server) return
-    await new Promise(function (resolve, reject) {
-      server.close(function (error) {
-        if (error) return reject(error)
-
-        console.log(`@inject-tests: monolith api closed.`)
-
-        resolve({})
-      })
-    })
-
-    await sleep(1000)
+    await shutdownTestServer(server)
   })
 
   test(
@@ -145,14 +76,10 @@ describe.sequential("@mta", () => {
 
       const injectEmail = getInjectEmailContent(TEST_DOMAIN)
 
-      const { apiKey } = await container
-        .make(CreateTeamAccessTokenAction)
-        .handle(team.id)
-
       const response = await app.request("/inject", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: await getApiKeyForTeam(team.id),
         },
 
         body: JSON.stringify(injectEmail),
@@ -225,7 +152,7 @@ describe.sequential("@mta", () => {
     },
   )
 
-  test.only(
+  test(
     "@mta-log-processor job processor stores all logs to the database",
     { timeout: 10000, retry: 2 },
     async ({ expect }) => {
@@ -265,9 +192,14 @@ describe.sequential("@mta", () => {
           .handle({ payload: job.data, database, redis })
       }
 
+      const emailSendId =
+        processLogJobs?.[0]?.data?.log.headers?.[
+          apiEnv.emailHeaders.emailSendId
+        ]
+
       const allEmailSends = await container
         .make(EmailSendRepository)
-        .findBySendingIdWithEvents(processLogJobs?.[0]?.data?.log?.id)
+        .findByIdWithEvents(emailSendId)
 
       expect(allEmailSends.sendingId).toBeDefined()
       expect(allEmailSends.events).toHaveLength(2)
@@ -330,11 +262,7 @@ describe.sequential("@mta", () => {
       ).toEqual([TEST_DOMAIN, TEST_DOMAIN, TEST_DOMAIN])
 
       for (const message of messages?.messages ?? []) {
-        const source = await getMailpitMessageSource(message?.ID)
-
-        const parsedMessage = await simpleParser(source as string)
-
-        const $ = cheerio.load(parsedMessage.html as string)
+        const { $ } = await getMailpitMessageSource(message?.ID)
 
         const links: string[] = []
 

@@ -105,6 +105,7 @@ export const apiEnv = makeExtraAppConfigurations(
     emailHeaders: {
       sendingDomainId: "X-Kibamail-Sending-Domain-ID",
       messageId: "X-Kibamail-Message-ID",
+      emailSendId: "X-Kibamail-EmailSend-ID",
     },
   },
 )

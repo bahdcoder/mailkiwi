@@ -4,6 +4,9 @@ import path from "path"
 
 import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.js"
 
+import { getApiKeyForTeam } from "@/tests/utils/http.js"
+
+import { makeApp } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 export function getDefaultEmailContentSchema(): EmailContentSchemaDto {
@@ -65,4 +68,22 @@ export function getInjectEmailContent(TEST_DOMAIN: string) {
         name: faker.person.fullName(),
       })),
   }
+}
+
+export async function injectEmailForTeam(
+  teamId: string,
+  TEST_DOMAIN: string,
+) {
+  const injectEmail = getInjectEmailContent(TEST_DOMAIN)
+
+  const response = await makeApp().request("/inject", {
+    method: "POST",
+    headers: {
+      Authorization: await getApiKeyForTeam(teamId),
+    },
+
+    body: JSON.stringify(injectEmail),
+  })
+
+  return { response, injectEmail }
 }

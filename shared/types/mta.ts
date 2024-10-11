@@ -36,6 +36,8 @@ export interface MtaLog {
     | "Feedback" /// Contains a feedback report
     | "Rejection" /// SMTP Listener responded with a 4xx or 5xx
     | "AdminRebind" /// Administratively rebound from one queue to another
+    | "Click" /// Custom type from Kibamail
+    | "Open" /// Custom type from Kibamail
     | "Any" /// Special for matching anything in the logging config
   id: string
   sender: string

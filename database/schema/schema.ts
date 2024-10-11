@@ -383,12 +383,12 @@ export const abTestVariants = mysqlTable("abTestVariants", {
 
 export const emailSends = mysqlTable("emailSends", {
   id,
-  sendingId: varchar("sendingId", { length: 100 }).unique().notNull(), // from the mta
-  sendingDomainId: primaryKeyCuid("sendingDomainId")
-    .notNull()
-    .references(() => sendingDomains.id),
-  sender: varchar("sender", { length: 80 }).notNull(),
-  recipient: varchar("recipient", { length: 80 }).notNull(),
+  sendingId: varchar("sendingId", { length: 100 }).unique(), // from the mta
+  sendingDomainId: primaryKeyCuid("sendingDomainId").references(
+    () => sendingDomains.id,
+  ),
+  sender: varchar("sender", { length: 80 }),
+  recipient: varchar("recipient", { length: 80 }),
   queue: varchar("queue", { length: 80 }),
   siteName: varchar("siteName", { length: 80 }),
   size: int("size"),
@@ -397,6 +397,7 @@ export const emailSends = mysqlTable("emailSends", {
   sendingSourceId: primaryKeyCuid("sendingSourceId").references(
     () => sendingSources.id,
   ),
+  links: json("links").$type<string[]>(),
   nodeId: varchar("nodeId", { length: 48 }),
   egressPool: varchar("egressPool", { length: 80 }),
   egressSource: varchar("egressSource", { length: 80 }),
@@ -421,6 +422,9 @@ export const emailSendEvents = mysqlTable("emailSendEvents", {
     "Rejection",
     "AdminRebind",
     "Any",
+    // custom from kibamail engage / send products
+    "Click",
+    "Open",
   ])
     .notNull()
     .$default(() => "Any"),

@@ -3,10 +3,7 @@ import { describe, test } from "vitest"
 
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 
-import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
-
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
-import { getCookieSessionForUser } from "@/tests/utils/http.js"
 
 import { makeApp } from "@/shared/container/index.js"
 

@@ -1,7 +1,7 @@
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
 
 interface HttpResponse<TData> {
-  data: TData | null
+  data: TData
   error: string | null
 }
 
@@ -106,7 +106,10 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
 
       return { data, error: null }
     } catch (error: any) {
-      return { data: null, error: error.message }
+      return {
+        data: null,
+        error: error.message,
+      } as HttpResponse<TResponse>
     }
   }
 }
