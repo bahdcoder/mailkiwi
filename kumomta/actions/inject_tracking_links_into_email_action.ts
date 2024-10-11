@@ -15,7 +15,11 @@ interface TrackedLink {
 }
 
 export class InjectTrackingLinksIntoEmailAction {
-  rewriteHrefAttributes(html: string, trackingDomain: string) {
+  rewriteHrefAttributes(
+    html: string,
+    trackingDomain: string,
+    metadata?: Record<string, string>,
+  ) {
     const $ = cheerioLoad(html)
 
     const signedUrlManager = new SignedUrlManager(apiEnv.APP_KEY)
@@ -26,7 +30,7 @@ export class InjectTrackingLinksIntoEmailAction {
       const href = $(element).attr("href")
       if (!href) return
 
-      const encodedHref = signedUrlManager.encode(href)
+      const encodedHref = signedUrlManager.encode(href, metadata)
 
       trackingSignatures.push([href, encodedHref])
 
@@ -38,7 +42,11 @@ export class InjectTrackingLinksIntoEmailAction {
     return { html: $.html(), trackingSignatures }
   }
 
-  async handle(message: string, trackingDomain: string) {
+  async handle(
+    message: string,
+    trackingDomain: string,
+    metadata?: Record<string, string>,
+  ) {
     const rewriter = new Rewriter((node) =>
       ["text/html"].includes(node.contentType),
     )
@@ -69,6 +77,7 @@ export class InjectTrackingLinksIntoEmailAction {
         const { html: trackedHtml } = self.rewriteHrefAttributes(
           html,
           trackingDomain,
+          metadata,
         )
 
         data.encoder.end(Buffer.from(trackedHtml))

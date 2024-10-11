@@ -1,21 +1,8 @@
 import { apiEnv } from "@/api/env/api_env.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
 import { ProcessMtaLogJob } from "@/kumologs/jobs/process_mta_log_job.js"
-import { faker } from "@faker-js/faker"
 import { ServerType, serve } from "@hono/node-server"
-import * as cheerio from "cheerio"
-import { eq } from "drizzle-orm"
-import { simpleParser } from "mailparser"
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  test,
-} from "vitest"
-
-import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
+import { afterAll, beforeAll, describe, test } from "vitest"
 
 import {
   clearAllMailpitMessages,
@@ -27,23 +14,16 @@ import {
   shutdownTestServer,
 } from "@/tests/integration/helpers/server.js"
 import { getInjectEmailContent } from "@/tests/mocks/emails/email_content.js"
-import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
+import { injectEmailForTeam } from "@/tests/mocks/emails/email_content.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
-import {
-  getApiKeyForTeam,
-  getCookieSessionForUser,
-} from "@/tests/utils/http.js"
-
-import { emailSends } from "@/database/schema/schema.js"
+import { getApiKeyForTeam } from "@/tests/utils/http.js"
 
 import {
   makeApp,
   makeDatabase,
   makeRedis,
 } from "@/shared/container/index.js"
-import { makeHttpClient } from "@/shared/http/http_client.js"
 import { Queue } from "@/shared/queue/queue.js"
-import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.js"
 import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
 import { sleep } from "@/utils/sleep.js"
@@ -286,4 +266,77 @@ describe.sequential("@mta", () => {
       }
     },
   )
+})
+
+describe.sequential("@tracking", () => {
+  let server: ServerType
+
+  beforeAll(async () => {
+    if (server) return
+
+    server = await createTestServer()
+  })
+
+  afterAll(async () => {
+    if (!server) return
+    await shutdownTestServer(server)
+  })
+
+  test("tracks a click event and redirects to original url", async ({
+    expect,
+  }) => {
+    //
+    const app = makeApp()
+    const { TEST_DOMAIN, team, sendingDomain } =
+      await setupDomainForDnsChecks("localgmail.net")
+
+    const { response, injectEmail } = await injectEmailForTeam(
+      team.id,
+      TEST_DOMAIN,
+    )
+
+    await sleep(2000)
+
+    const { messages: allMessages } = await getAllMailpitMessages()
+
+    const [message] = allMessages?.filter(
+      (message) => message.Subject === injectEmail.subject,
+    )
+
+    const { $ } = await getMailpitMessageSource(message.ID)
+
+    const links: string[] = []
+
+    $("a").each(function (idx, element) {
+      links.push($(element).attr("href") as string)
+    })
+
+    for (const link of links) {
+      const [, signature] = link.split("/c/")
+
+      const response = await app.request(`/c/${signature}`)
+
+      const unsigned = new SignedUrlManager(apiEnv.APP_KEY).decode(
+        signature,
+      )
+
+      d({ unsigned })
+
+      expect(response.status).toEqual(302)
+      expect(response.headers.get("Location")).toEqual(unsigned?.original)
+    }
+  })
+
+  test("any tampered signatures redirect to kibamail home page without tracking", async ({
+    expect,
+  }) => {
+    const app = makeApp()
+
+    const response = await app.request("/c/1234")
+
+    expect(response.status).toBe(302)
+    expect(response.headers.get("Location")).toEqual(
+      "https://kibamail.com",
+    )
+  })
 })

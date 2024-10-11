@@ -32,22 +32,16 @@ export class ClickTrackingController extends BaseController {
       return ctx.redirect("https://kibamail.com")
     }
 
-    // await Queue.mta_logs().add(ProcessMtaLogJob.id, {
-    //  log: {
-    //   type: 'Click',
-    //   // id: string
-    //   // sender: string
-    //   // recipient: string
-    //   // queue: string
-    //   // site: string
-    //   // size: number
-    //  }
-    // })
+    await Queue.mta_logs().add(ProcessMtaLogJob.id, {
+      log: {
+        // add other fields here, including a user agent.
+        type: "Click",
+        headers: {
+          [apiEnv.emailHeaders.emailSendId]: unsigned?.metadata?.m,
+        },
+      },
+    })
 
-    // attempt to decode it
-    // if successfully decoded
-    // queue a job to track it
-    // redirect user to original url
     return ctx.redirect(unsigned.original)
   }
 }

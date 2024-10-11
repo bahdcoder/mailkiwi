@@ -35,25 +35,6 @@ export class InjectEmailController extends BaseController {
       getDomainFromEmail(payload.from.email),
     )
 
-    let htmlMessage = payload.html
-
-    let links: string[] = []
-
-    if (htmlMessage) {
-      const { html: trackedHtml, trackingSignatures } = container
-        .make(InjectTrackingLinksIntoEmailAction)
-        .rewriteHrefAttributes(
-          htmlMessage,
-          `${sendingDomain.trackingSubDomain}.${sendingDomain.name}`,
-        )
-
-      trackingSignatures.forEach((signature) => {
-        links.push(signature[1])
-      })
-
-      htmlMessage = trackedHtml
-    }
-
     type Injection = {
       messageId: string
       recipient: InjectEmailSchemaDto["recipients"][number]
@@ -71,6 +52,26 @@ export class InjectEmailController extends BaseController {
       const { id, messageId } = generateMessageIdForDomain(
         sendingDomain.name,
       )
+
+      let htmlMessage = payload.html
+
+      let links: string[] = []
+
+      if (htmlMessage) {
+        const { html: trackedHtml, trackingSignatures } = container
+          .make(InjectTrackingLinksIntoEmailAction)
+          .rewriteHrefAttributes(
+            htmlMessage,
+            `${sendingDomain.trackingSubDomain}.${sendingDomain.name}`,
+            { m: id },
+          )
+
+        trackingSignatures.forEach((signature) => {
+          links.push(signature[1])
+        })
+
+        htmlMessage = trackedHtml
+      }
 
       const injectEmailPayload = {
         envelope_sender: `bounces@${sendingDomain.returnPathSubDomain}.${sendingDomain.name}`,

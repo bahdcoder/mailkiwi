@@ -45,7 +45,6 @@ export class IgnitorDev extends Ignitor {
       "*",
       container.make(UserSessionMiddleware).handle,
       async function (ctx, next) {
-        d([ctx.get("user"), ctx.get("team")])
         const pageContext = await renderPage({
           urlOriginal: ctx.req.url,
           headersOriginal: ctx.req.raw.headers,
