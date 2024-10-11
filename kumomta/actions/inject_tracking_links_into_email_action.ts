@@ -15,6 +15,10 @@ interface TrackedLink {
 }
 
 export class InjectTrackingLinksIntoEmailAction {
+  constructor(
+    protected signedUrlManager = new SignedUrlManager(apiEnv.APP_KEY),
+  ) {}
+
   rewriteHrefAttributes(
     html: string,
     trackingDomain: string,
@@ -22,7 +26,7 @@ export class InjectTrackingLinksIntoEmailAction {
   ) {
     const $ = cheerioLoad(html)
 
-    const signedUrlManager = new SignedUrlManager(apiEnv.APP_KEY)
+    const self = this
 
     const trackingSignatures: [string, string][] = []
 
@@ -30,7 +34,7 @@ export class InjectTrackingLinksIntoEmailAction {
       const href = $(element).attr("href")
       if (!href) return
 
-      const encodedHref = signedUrlManager.encode(href, metadata)
+      const encodedHref = self.signedUrlManager.encode(href, metadata)
 
       trackingSignatures.push([href, encodedHref])
 
@@ -40,6 +44,29 @@ export class InjectTrackingLinksIntoEmailAction {
     })
 
     return { html: $.html(), trackingSignatures }
+  }
+
+  injectTrackingPixel(
+    html: string,
+    trackingDomain: string,
+    metadata?: Record<string, string>,
+  ) {
+    const signature = this.signedUrlManager.encode(metadata?.m as string)
+
+    const pixel = /*html*/ `<img src="https://${trackingDomain}/o/${signature}" alt="" width="1" height="1" />`
+
+    let trackedHtml: string
+
+    if (/<\/body\b/i.test(html)) {
+      trackedHtml = html.replace(
+        /<\/body\b/i,
+        (match) => "\r\n" + pixel + "\r\n" + match,
+      )
+    } else {
+      trackedHtml = html + "\r\n" + pixel
+    }
+
+    return { pixel, signature, html: trackedHtml }
   }
 
   async handle(
@@ -74,13 +101,19 @@ export class InjectTrackingLinksIntoEmailAction {
 
         data.node.setCharset("utf-8")
 
-        const { html: trackedHtml } = self.rewriteHrefAttributes(
+        let { html: trackedHtml } = self.rewriteHrefAttributes(
           html,
           trackingDomain,
           metadata,
         )
 
-        data.encoder.end(Buffer.from(trackedHtml))
+        const { html: opensTrackedHtml } = self.injectTrackingPixel(
+          trackedHtml,
+          trackingDomain,
+          metadata,
+        )
+
+        data.encoder.end(Buffer.from(opensTrackedHtml))
       })
     })
 

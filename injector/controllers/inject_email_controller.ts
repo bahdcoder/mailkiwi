@@ -58,19 +58,31 @@ export class InjectEmailController extends BaseController {
       let links: string[] = []
 
       if (htmlMessage) {
-        const { html: trackedHtml, trackingSignatures } = container
-          .make(InjectTrackingLinksIntoEmailAction)
-          .rewriteHrefAttributes(
+        const injectTrackingLinksEmailAction = container.make(
+          InjectTrackingLinksIntoEmailAction,
+        )
+        const metadata = { m: id }
+        const sendingDomainName = `${sendingDomain.trackingSubDomain}.${sendingDomain.name}`
+
+        const { html: trackedHtml, trackingSignatures } =
+          injectTrackingLinksEmailAction.rewriteHrefAttributes(
             htmlMessage,
-            `${sendingDomain.trackingSubDomain}.${sendingDomain.name}`,
-            { m: id },
+            sendingDomainName,
+            metadata,
           )
 
         trackingSignatures.forEach((signature) => {
           links.push(signature[1])
         })
 
-        htmlMessage = trackedHtml
+        const { html: trackedOpensHtml } =
+          injectTrackingLinksEmailAction.injectTrackingPixel(
+            trackedHtml,
+            sendingDomainName,
+            metadata,
+          )
+
+        htmlMessage = trackedOpensHtml
       }
 
       const injectEmailPayload = {

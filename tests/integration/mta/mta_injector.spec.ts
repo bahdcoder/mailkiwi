@@ -268,7 +268,7 @@ describe.sequential("@mta", () => {
   )
 })
 
-describe.sequential("@tracking", () => {
+describe.sequential("@click-tracking", () => {
   let server: ServerType
 
   beforeAll(async () => {
@@ -287,13 +287,10 @@ describe.sequential("@tracking", () => {
   }) => {
     //
     const app = makeApp()
-    const { TEST_DOMAIN, team, sendingDomain } =
+    const { TEST_DOMAIN, team } =
       await setupDomainForDnsChecks("localgmail.net")
 
-    const { response, injectEmail } = await injectEmailForTeam(
-      team.id,
-      TEST_DOMAIN,
-    )
+    const { injectEmail } = await injectEmailForTeam(team.id, TEST_DOMAIN)
 
     await sleep(2000)
 
@@ -320,8 +317,6 @@ describe.sequential("@tracking", () => {
         signature,
       )
 
-      d({ unsigned })
-
       expect(response.status).toEqual(302)
       expect(response.headers.get("Location")).toEqual(unsigned?.original)
     }
@@ -338,5 +333,68 @@ describe.sequential("@tracking", () => {
     expect(response.headers.get("Location")).toEqual(
       "https://kibamail.com",
     )
+  })
+})
+
+describe.sequential("@open-tracking", () => {
+  let server: ServerType
+
+  beforeAll(async () => {
+    if (server) return
+
+    server = await createTestServer()
+  })
+
+  afterAll(async () => {
+    if (!server) return
+    await shutdownTestServer(server)
+  })
+
+  test("tracks when an email is opened", async ({ expect }) => {
+    //
+    const app = makeApp()
+    const { TEST_DOMAIN, team, sendingDomain } =
+      await setupDomainForDnsChecks("localgmail.net")
+
+    const { injectEmail } = await injectEmailForTeam(team.id, TEST_DOMAIN)
+
+    await sleep(2000)
+
+    const { messages: allMessages } = await getAllMailpitMessages()
+
+    const [message] = allMessages?.filter(
+      (message) => message.Subject === injectEmail.subject,
+    )
+
+    const { $ } = await getMailpitMessageSource(message.ID)
+
+    const imageSources: string[] = []
+
+    $("img").each(function (_, element) {
+      imageSources.push($(element).attr("src") as string)
+    })
+
+    const sendingDomainLink = `https://${sendingDomain.trackingSubDomain}.${sendingDomain.name}/o/`
+
+    const trackingLink = imageSources.find((source) =>
+      source.includes(sendingDomainLink),
+    ) as string
+
+    const [, signature] = trackingLink?.split(sendingDomainLink)
+
+    const unsigned = new SignedUrlManager(apiEnv.APP_KEY).decode(signature)
+
+    expect(unsigned?.original).toBeDefined()
+
+    const emailSend = await container
+      .make(EmailSendRepository)
+      .findById(unsigned?.original as string)
+
+    expect(emailSend).toBeDefined()
+
+    const response = await app.request(`/o/${signature}`)
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get("Content-Type")).toEqual("image/png")
   })
 })
