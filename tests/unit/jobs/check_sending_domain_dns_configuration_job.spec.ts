@@ -14,6 +14,7 @@ import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 
+import { UpdateSendingDomain } from "@/database/schema/database_schema_types.js"
 import { sendingDomains } from "@/database/schema/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
@@ -21,7 +22,10 @@ import { Queue } from "@/shared/queue/queue.js"
 
 import { container } from "@/utils/typi.js"
 
-export const setupDomainForDnsChecks = async (domain?: string) => {
+export const setupDomainForDnsChecks = async (
+  domain?: string,
+  domainSettings?: UpdateSendingDomain,
+) => {
   const { team, user } = await createUser()
 
   const TEST_DOMAIN = domain ?? faker.internet.domainName()
@@ -34,6 +38,9 @@ export const setupDomainForDnsChecks = async (domain?: string) => {
     trackingDomainVerifiedAt: DateTime.now().toJSDate(),
     trackingDomainSslVerifiedAt: DateTime.now().toJSDate(),
     returnPathDomainVerifiedAt: DateTime.now().toJSDate(),
+    openTrackingEnabled: true,
+    clickTrackingEnabled: true,
+    ...domainSettings,
   })
 
   const sendingDomain = await container

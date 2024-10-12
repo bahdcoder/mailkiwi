@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "9d8e68d7-c258-4a17-b4c7-b0322070159d",
+  "id": "d84bf2a7-62d0-4f58-b2c6-88dc74f07591",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -1367,6 +1367,22 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "clickTrackingEnabled": {
+          "name": "clickTrackingEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "openTrackingEnabled": {
+          "name": "openTrackingEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
         }
       },
       "indexes": {},
@@ -1693,6 +1709,22 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "openTrackingEnabled": {
+          "name": "openTrackingEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "clickTrackingEnabled": {
+          "name": "clickTrackingEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
         }
       },
       "indexes": {},

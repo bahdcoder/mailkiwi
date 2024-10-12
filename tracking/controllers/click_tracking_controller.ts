@@ -22,11 +22,9 @@ export class ClickTrackingController extends BaseController {
 
   async index(ctx: HonoContext) {
     // extract signature from params
-    const signature = ctx.req.param("signature")
-
-    const signatureManager = new SignedUrlManager(apiEnv.APP_KEY)
-
-    const unsigned = signatureManager.decode(signature)
+    const unsigned = new SignedUrlManager(apiEnv.APP_KEY).decode(
+      ctx.req.param("signature"),
+    )
 
     if (!unsigned) {
       return ctx.redirect("https://kibamail.com")

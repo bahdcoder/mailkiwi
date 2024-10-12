@@ -168,6 +168,8 @@ CREATE TABLE `emailSends` (
 	`egressSource` varchar(80),
 	`deliveryProtocol` varchar(12),
 	`receptionProtocol` varchar(12),
+	`clickTrackingEnabled` boolean DEFAULT false,
+	`openTrackingEnabled` boolean DEFAULT false,
 	CONSTRAINT `emailSends_id` PRIMARY KEY(`id`),
 	CONSTRAINT `emailSends_sendingId_unique` UNIQUE(`sendingId`)
 );
@@ -210,6 +212,8 @@ CREATE TABLE `sendingDomains` (
 	`trackingDomainSslVerifiedAt` timestamp,
 	`trackingSslCertKey` text,
 	`trackingSslCertSecret` text,
+	`openTrackingEnabled` boolean DEFAULT false,
+	`clickTrackingEnabled` boolean DEFAULT false,
 	CONSTRAINT `sendingDomains_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

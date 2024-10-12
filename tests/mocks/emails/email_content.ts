@@ -1,3 +1,4 @@
+import { InjectEmailSchemaDto } from "@/injector/dto/inject_email_dto.js"
 import { faker } from "@faker-js/faker"
 import { readFileSync } from "fs"
 import path from "path"
@@ -45,7 +46,10 @@ export function getDefaultEmailContentSchema(): EmailContentSchemaDto {
   }
 }
 
-export function getInjectEmailContent(TEST_DOMAIN: string) {
+export function getInjectEmailContent(
+  TEST_DOMAIN: string,
+  emailContent?: Partial<InjectEmailSchemaDto>,
+) {
   return {
     from: {
       name: faker.person.fullName(),
@@ -67,14 +71,16 @@ export function getInjectEmailContent(TEST_DOMAIN: string) {
         email: cuid() + "@" + TEST_DOMAIN,
         name: faker.person.fullName(),
       })),
+    ...emailContent,
   }
 }
 
 export async function injectEmailForTeam(
   teamId: string,
   TEST_DOMAIN: string,
+  emailContent?: Partial<InjectEmailSchemaDto>,
 ) {
-  const injectEmail = getInjectEmailContent(TEST_DOMAIN)
+  const injectEmail = getInjectEmailContent(TEST_DOMAIN, emailContent)
 
   const response = await makeApp().request("/inject", {
     method: "POST",

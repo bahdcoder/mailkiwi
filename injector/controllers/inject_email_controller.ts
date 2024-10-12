@@ -8,6 +8,8 @@ import { AuthorizeInjectorApiKeyMiddleware } from "@/injector/middleware/authori
 import { getDomainFromEmail } from "@/injector/utils/get_domain_from_email.js"
 import { InjectTrackingLinksIntoEmailAction } from "@/kumomta/actions/inject_tracking_links_into_email_action.js"
 
+import { InsertEmailSend } from "@/database/schema/database_schema_types.js"
+
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import { makeHttpClient } from "@/shared/http/http_client.js"
@@ -46,7 +48,7 @@ export class InjectEmailController extends BaseController {
 
     const injections: Injection[] = []
 
-    const sends: { id: string; links: string[] }[] = []
+    const sends: { id: string; payload: InsertEmailSend }[] = []
 
     for (const recipient of payload.recipients) {
       const { id, messageId } = generateMessageIdForDomain(
@@ -57,13 +59,25 @@ export class InjectEmailController extends BaseController {
 
       let links: string[] = []
 
-      if (htmlMessage) {
-        const injectTrackingLinksEmailAction = container.make(
-          InjectTrackingLinksIntoEmailAction,
-        )
-        const metadata = { m: id }
-        const sendingDomainName = `${sendingDomain.trackingSubDomain}.${sendingDomain.name}`
+      let clickTrackingEnabled = sendingDomain.clickTrackingEnabled
+      let openTrackingEnabled = sendingDomain.openTrackingEnabled
 
+      if (payload.clickTrackingEnabled !== undefined) {
+        clickTrackingEnabled = payload.clickTrackingEnabled
+      }
+
+      if (payload.openTrackingEnabled !== undefined) {
+        openTrackingEnabled = payload.openTrackingEnabled
+      }
+
+      const injectTrackingLinksEmailAction = container.make(
+        InjectTrackingLinksIntoEmailAction,
+      )
+      const sendingDomainName = `${sendingDomain.trackingSubDomain}.${sendingDomain.name}`
+
+      const metadata = { m: id }
+
+      if (htmlMessage && clickTrackingEnabled) {
         const { html: trackedHtml, trackingSignatures } =
           injectTrackingLinksEmailAction.rewriteHrefAttributes(
             htmlMessage,
@@ -75,9 +89,13 @@ export class InjectEmailController extends BaseController {
           links.push(signature[1])
         })
 
+        htmlMessage = trackedHtml
+      }
+
+      if (htmlMessage && openTrackingEnabled) {
         const { html: trackedOpensHtml } =
           injectTrackingLinksEmailAction.injectTrackingPixel(
-            trackedHtml,
+            htmlMessage,
             sendingDomainName,
             metadata,
           )
@@ -123,15 +141,13 @@ export class InjectEmailController extends BaseController {
 
       injections.push(injection)
 
-      sends.push({ id, links })
+      sends.push({
+        id,
+        payload: { links, clickTrackingEnabled, openTrackingEnabled },
+      })
     }
 
-    await container.make(EmailSendRepository).bulkCreate(
-      sends.map((send) => ({
-        id: send.id,
-        payload: { links: send.links },
-      })),
-    )
+    await container.make(EmailSendRepository).bulkCreate(sends)
 
     const results = await Promise.allSettled(
       injections.map(async function (injection) {

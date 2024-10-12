@@ -159,6 +159,9 @@ export const sendingDomains = mysqlTable("sendingDomains", {
 
   trackingSslCertKey: text("trackingSslCertKey"),
   trackingSslCertSecret: text("trackingSslCertSecret"),
+
+  openTrackingEnabled: boolean("openTrackingEnabled").default(false),
+  clickTrackingEnabled: boolean("clickTrackingEnabled").default(false),
 })
 
 export const webhooks = mysqlTable("webhooks", {
@@ -403,6 +406,9 @@ export const emailSends = mysqlTable("emailSends", {
   egressSource: varchar("egressSource", { length: 80 }),
   deliveryProtocol: varchar("deliveryProtocol", { length: 12 }),
   receptionProtocl: varchar("receptionProtocol", { length: 12 }),
+
+  clickTrackingEnabled: boolean("clickTrackingEnabled").default(false),
+  openTrackingEnabled: boolean("openTrackingEnabled").default(false),
 })
 
 export const emailSendEvents = mysqlTable("emailSendEvents", {

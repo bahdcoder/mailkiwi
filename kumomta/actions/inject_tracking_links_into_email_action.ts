@@ -32,7 +32,14 @@ export class InjectTrackingLinksIntoEmailAction {
 
     $("a").each(function (idx, element) {
       const href = $(element).attr("href")
+
       if (!href) return
+
+      const disableTracking = $(element).attr("disable-tracking")
+
+      if (disableTracking === "true") {
+        return
+      }
 
       const encodedHref = self.signedUrlManager.encode(href, metadata)
 

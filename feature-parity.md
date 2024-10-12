@@ -67,16 +67,16 @@ Read more about mailgun tracking here https://documentation.mailgun.com/docs/mai
 
 - [ ] Tracking (Engage & Send Email Products)
 
-  - [ ] Link click tracking
-  - [ ] Custom tracking domain
-  - [ ] Email opens tracking
+  - [x] Link click tracking
+  - [x] Custom tracking domain
+  - [x] Email opens tracking
   - [ ] Unsubscribes tracking
   - [ ] Spam complaints tracking
   - [ ] Open and click bot detection
-  - [ ] Per link Opt-out tracking
+  - [x] Per link Opt-out tracking
   - [ ] Per link Opt-in tracking
   - [ ] Per email opt-out & opt-in open tracking
-  - [ ] Per domain opt-in tracking
+  - [x] Per domain opt-in tracking
 
 - [ ] Reporting
   - [ ] Key Metrics

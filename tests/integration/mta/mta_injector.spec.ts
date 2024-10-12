@@ -334,6 +334,85 @@ describe.sequential("@click-tracking", () => {
       "https://kibamail.com",
     )
   })
+
+  test("does not track links with disable-tracking attribute", async ({
+    expect,
+  }) => {
+    //
+    const app = makeApp()
+    const { TEST_DOMAIN, team } =
+      await setupDomainForDnsChecks("localgmail.net")
+
+    const linkInEmail = "https://google.com"
+
+    const { injectEmail } = await injectEmailForTeam(
+      team.id,
+      TEST_DOMAIN,
+      {
+        html: `<a href="${linkInEmail}" disable-tracking="true">View my home page.</a>`,
+      },
+    )
+
+    await sleep(2000)
+
+    const { messages: allMessages } = await getAllMailpitMessages()
+
+    const [message] = allMessages?.filter(
+      (message) => message.Subject === injectEmail.subject,
+    )
+
+    const { $ } = await getMailpitMessageSource(message.ID)
+
+    const links: string[] = []
+
+    $("a").each(function (idx, element) {
+      links.push($(element).attr("href") as string)
+    })
+
+    expect(links).toEqual([linkInEmail])
+  })
+
+  test("enabling link tracking for a specific email overrides domain configuration", async ({
+    expect,
+  }) => {
+    //
+    const app = makeApp()
+    const { TEST_DOMAIN, team, sendingDomain } =
+      await setupDomainForDnsChecks("localgmail.net", {
+        clickTrackingEnabled: false,
+      })
+
+    const linkInEmail = "https://google.com"
+
+    const { injectEmail } = await injectEmailForTeam(
+      team.id,
+      TEST_DOMAIN,
+      {
+        html: `<a href="${linkInEmail}">View my home page.</a>`,
+        clickTrackingEnabled: true,
+      },
+    )
+
+    await sleep(2000)
+
+    const { messages: allMessages } = await getAllMailpitMessages()
+
+    const [message] = allMessages?.filter(
+      (message) => message.Subject === injectEmail.subject,
+    )
+
+    const { $ } = await getMailpitMessageSource(message.ID)
+
+    const links: string[] = []
+
+    $("a").each(function (idx, element) {
+      links.push($(element).attr("href") as string)
+    })
+
+    expect(links[0]).toContain(
+      `https://${sendingDomain.trackingSubDomain}.${sendingDomain.name}/c/`,
+    )
+  })
 })
 
 describe.sequential("@open-tracking", () => {
@@ -396,5 +475,85 @@ describe.sequential("@open-tracking", () => {
 
     expect(response.status).toBe(200)
     expect(response.headers.get("Content-Type")).toEqual("image/png")
+  })
+
+  test("does not track opens when open tracking is disabled", async ({
+    expect,
+  }) => {
+    const app = makeApp()
+    const { TEST_DOMAIN, team } =
+      await setupDomainForDnsChecks("localgmail.net")
+
+    const linkInEmail = "https://google.com"
+
+    const { injectEmail } = await injectEmailForTeam(
+      team.id,
+      TEST_DOMAIN,
+      {
+        html: `<a href="${linkInEmail}" disable-tracking="true">View my home page.</a>`,
+        openTrackingEnabled: false,
+      },
+    )
+
+    await sleep(2000)
+
+    const { messages: allMessages } = await getAllMailpitMessages()
+
+    const [message] = allMessages?.filter(
+      (message) => message.Subject === injectEmail.subject,
+    )
+
+    const { $ } = await getMailpitMessageSource(message.ID)
+
+    const images: string[] = []
+
+    $("img").each(function (idx, element) {
+      images.push($(element).attr("src") as string)
+    })
+
+    expect(images).toHaveLength(0)
+  })
+
+  test("can track opens for an email even when tracking is disabled for domain", async ({
+    expect,
+  }) => {
+    const app = makeApp()
+    const { TEST_DOMAIN, team, sendingDomain } =
+      await setupDomainForDnsChecks("localgmail.net", {
+        openTrackingEnabled: false,
+        clickTrackingEnabled: false,
+      })
+
+    const linkInEmail = "https://google.com"
+
+    const { injectEmail } = await injectEmailForTeam(
+      team.id,
+      TEST_DOMAIN,
+      {
+        html: `<a href="${linkInEmail}" disable-tracking="true">View my home page.</a>`,
+        openTrackingEnabled: true,
+      },
+    )
+
+    await sleep(2000)
+
+    const { messages: allMessages } = await getAllMailpitMessages()
+
+    const [message] = allMessages?.filter(
+      (message) => message.Subject === injectEmail.subject,
+    )
+
+    const { $ } = await getMailpitMessageSource(message.ID)
+
+    const images: string[] = []
+
+    $("img").each(function (idx, element) {
+      images.push($(element).attr("src") as string)
+    })
+
+    expect(images).toHaveLength(1)
+    expect(images[0]).toMatch(
+      `https://${sendingDomain.trackingSubDomain}.${sendingDomain.name}/o/`,
+    )
   })
 })

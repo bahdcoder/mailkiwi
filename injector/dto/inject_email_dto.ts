@@ -56,6 +56,8 @@ export const InjectEmailSchema = object({
   replyTo: optional(EnvelopeSchema),
   headers: optional(record(string(), string())),
   attachments: optional(array(AttachmentSchema)),
+  openTrackingEnabled: optional(boolean()),
+  clickTrackingEnabled: optional(boolean()),
 })
 
 export type InjectEmailSchemaDto = InferInput<typeof InjectEmailSchema>
