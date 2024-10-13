@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "b379cc89-f0a2-460a-8ca4-45d2cb926f4e",
+  "id": "9c681a09-2bf0-4a11-b82c-e98f54048b94",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -1305,6 +1305,20 @@
           "notNull": false,
           "autoincrement": false
         },
+        "product": {
+          "name": "product",
+          "type": "enum('engage','send','letters')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "broadcastId": {
+          "name": "broadcastId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "sender": {
           "name": "sender",
           "type": "varchar(80)",
@@ -1433,6 +1447,19 @@
             "id"
           ],
           "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "emailSends_broadcastId_broadcasts_id_fk": {
+          "name": "emailSends_broadcastId_broadcasts_id_fk",
+          "tableFrom": "emailSends",
+          "tableTo": "broadcasts",
+          "columnsFrom": [
+            "broadcastId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "emailSends_sendingSourceId_sendingSources_id_fk": {

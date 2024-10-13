@@ -8,11 +8,13 @@ import {
   createBroadcastForUser,
   createUser,
 } from "@/tests/mocks/auth/users.js"
+import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { broadcasts, emailContents } from "@/database/schema/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
+import { Queue } from "@/shared/queue/queue.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
@@ -206,7 +208,6 @@ describe("@broadcasts update", () => {
     expect,
   }) => {
     const { user, audience } = await createUser()
-    const database = makeDatabase()
     const broadcastId = await createBroadcastForUser(user, audience.id)
 
     const updateData = {
@@ -353,13 +354,21 @@ describe("@broadcasts send", () => {
       updateWithABTestsContent: true,
     })
 
+    await refreshRedisDatabase()
     const response = await makeRequestAsUser(user, {
       method: "POST",
       path: `/broadcasts/${broadcastId}/send`,
     })
 
     expect(response.status).toBe(200)
-    // TODO: Check redis for queued job.
+
+    const jobs = await Queue.abTestsBroadcasts().getJobs()
+
+    const broadcastJob = jobs.find(
+      (job) => job.data.broadcastId === broadcastId,
+    )
+
+    expect(broadcastJob).toBeDefined()
   })
 
   test("cannot queue a broadcast if all required information is not provided", async ({

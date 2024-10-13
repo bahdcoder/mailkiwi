@@ -22,7 +22,7 @@ describe("@process-mta-log", () => {
 
     const { id } = await container
       .make(EmailSendRepository)
-      .create(v1(), { sendingDomainId: sendingDomain.id })
+      .create(v1(), { sendingDomainId: sendingDomain.id, product: "send" })
 
     for (const eventType of ["Click", "Open"]) {
       await container.make(ProcessMtaLogJob).handle({

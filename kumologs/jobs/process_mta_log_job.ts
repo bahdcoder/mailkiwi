@@ -9,6 +9,11 @@ import { UAParser } from "ua-parser-js"
 
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
+import {
+  EmailSend,
+  SendingDomain,
+} from "@/database/schema/database_schema_types.js"
+
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { MtaLog } from "@/shared/types/mta.js"
@@ -36,8 +41,6 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
       .make(SendingDomainRepository)
       .findById(log.headers[apiEnv.emailHeaders.sendingDomainId])
 
-    let sendingSourceId: string | undefined
-
     const emailSend = await emailSendRepository.findById(
       log.headers[apiEnv.emailHeaders.emailSendId],
     )
@@ -46,18 +49,59 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
       return this.fail("Invalid email send ID.")
     }
 
-    if (log.type === "Delivery") {
-      const sendingSource = await container
-        .make(SendingSourceRepository)
-        .findByIpv4Address(
-          ipv4AdressFromIpAndPort(log?.source_address?.address),
-        )
+    const logTypeHandler = new LogTypeHandler(
+      container.make(EmailSendEventRepository),
+      sendingDomain,
+      emailSend,
+      log,
+    )
 
-      sendingSourceId = sendingSource?.id
+    const handlers: Partial<
+      Record<
+        MtaLog["type"],
+        (emailSendingId: string, log: MtaLog) => Promise<void>
+      >
+    > = {
+      Click: logTypeHandler.handleClickAndOpenEvent,
+      Open: logTypeHandler.handleClickAndOpenEvent,
+      Delivery: logTypeHandler.handleDeliveryEvent,
     }
 
-    await emailSendRepository.update(emailSend.id, {
-      sendingDomainId: sendingDomain.id,
+    const handler = handlers[log.type] ?? logTypeHandler.handleGenericEvent
+
+    await handler?.(emailSend.id, log)
+
+    return this.done()
+  }
+
+  async failed() {}
+}
+
+export class LogTypeHandler {
+  constructor(
+    protected emailSendEventRepository = container.make(
+      EmailSendEventRepository,
+    ),
+    protected sendingDomain: SendingDomain,
+    protected emailSend: EmailSend,
+    protected log: MtaLog,
+  ) {}
+
+  handleDeliveryEvent = async () => {
+    const log = this.log
+
+    let sendingSourceId: string | undefined
+
+    const sendingSource = await container
+      .make(SendingSourceRepository)
+      .findByIpv4Address(
+        ipv4AdressFromIpAndPort(log?.source_address?.address),
+      )
+
+    sendingSourceId = sendingSource?.id
+
+    await container.make(EmailSendRepository).update(this.emailSend.id, {
+      sendingDomainId: this.sendingDomain.id,
       sendingId: log.id,
       recipient: log.recipient,
       receptionProtocl: log.reception_protocol,
@@ -73,36 +117,11 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
       sendingSourceId,
     })
 
-    const logTypeHandler = container.make(LogTypeHandler)
-
-    const handlers: Partial<
-      Record<
-        MtaLog["type"],
-        (emailSendingId: string, log: MtaLog) => Promise<void>
-      >
-    > = {
-      Click: logTypeHandler.handleClickAndOpenEvent,
-      Open: logTypeHandler.handleClickAndOpenEvent,
-    }
-
-    const handler = handlers[log.type] ?? logTypeHandler.handleGenericEvent
-
-    await handler?.(emailSend.id, log)
-
-    return this.done()
+    await this.handleGenericEvent()
   }
 
-  async failed() {}
-}
-
-export class LogTypeHandler {
-  constructor(
-    private emailSendEventRepository = container.make(
-      EmailSendEventRepository,
-    ),
-  ) {}
-
-  handleClickAndOpenEvent = async (emailSendId: string, log: MtaLog) => {
+  handleClickAndOpenEvent = async () => {
+    const log = this.log
     const parsedUserAgent = UAParser(log.user_agent)
 
     const maxMindDatabaseReader = await MaxMindReader.open(
@@ -112,7 +131,7 @@ export class LogTypeHandler {
     const city = maxMindDatabaseReader.city(log.ip_address)
 
     await this.emailSendEventRepository.create({
-      emailSendId,
+      emailSendId: this.emailSend.id,
       type: log.type,
 
       createdAt: DateTime.fromSeconds(log.timestamp).toJSDate(),
@@ -128,10 +147,12 @@ export class LogTypeHandler {
     })
   }
 
-  handleGenericEvent = async (emailSendId: string, log: MtaLog) => {
+  handleGenericEvent = async () => {
+    const log = this.log
+
     await this.emailSendEventRepository.create({
       type: log.type,
-      emailSendId,
+      emailSendId: this.emailSend.id,
       createdAt: DateTime.fromSeconds(log.timestamp).toJSDate(),
       responseCode: log.response.code,
       responseCommand: log.response.command,

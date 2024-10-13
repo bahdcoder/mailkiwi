@@ -143,7 +143,12 @@ export class InjectEmailController extends BaseController {
 
       sends.push({
         id,
-        payload: { links, clickTrackingEnabled, openTrackingEnabled },
+        payload: {
+          links,
+          product: "send",
+          clickTrackingEnabled,
+          openTrackingEnabled,
+        },
       })
     }
 

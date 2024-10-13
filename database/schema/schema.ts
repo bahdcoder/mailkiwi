@@ -390,6 +390,17 @@ export const emailSends = mysqlTable("emailSends", {
   sendingDomainId: primaryKeyCuid("sendingDomainId").references(
     () => sendingDomains.id,
   ),
+
+  // product
+  product: mysqlEnum("product", ["engage", "send", "letters"]).notNull(),
+  // if the email was sent from engage or letters, then the broadcastId will be set. This will be used for analytics queries like total bounced emails per broadcast.
+  broadcastId: primaryKeyCuid("broadcastId").references(
+    () => broadcasts.id,
+    {
+      onDelete: "cascade",
+    },
+  ),
+
   sender: varchar("sender", { length: 80 }),
   recipient: varchar("recipient", { length: 80 }),
   queue: varchar("queue", { length: 80 }),

@@ -117,6 +117,7 @@ export class BroadcastController extends BaseController {
 
   send = async (ctx: HonoContext) => {
     this.ensureCanManage(ctx)
+
     const broadcast = await container
       .make(BroadcastRepository)
       .findByIdWithAbTestVariants(ctx.req.param("broadcastId"))

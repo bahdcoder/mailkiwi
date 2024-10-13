@@ -159,6 +159,8 @@ CREATE TABLE `emailSends` (
 	`id` binary(16) NOT NULL,
 	`sendingId` varchar(100),
 	`sendingDomainId` binary(16),
+	`product` enum('engage','send','letters') NOT NULL,
+	`broadcastId` binary(16),
 	`sender` varchar(80),
 	`recipient` varchar(80),
 	`queue` varchar(80),
@@ -318,6 +320,7 @@ ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FORE
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_contactImportId_contactImports_id_fk` FOREIGN KEY (`contactImportId`) REFERENCES `contactImports`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_emailSendId_emailSends_id_fk` FOREIGN KEY (`emailSendId`) REFERENCES `emailSends`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_sendingDomainId_sendingDomains_id_fk` FOREIGN KEY (`sendingDomainId`) REFERENCES `sendingDomains`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_broadcastId_broadcasts_id_fk` FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_sendingSourceId_sendingSources_id_fk` FOREIGN KEY (`sendingSourceId`) REFERENCES `sendingSources`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emails` ADD CONSTRAINT `emails_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emails` ADD CONSTRAINT `emails_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
