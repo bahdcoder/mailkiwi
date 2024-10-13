@@ -91,6 +91,9 @@ export const apiEnv = makeExtraAppConfigurations(
 
       // emails
       EVENT_TRACKING_DOMAIN: str(),
+
+      // downloads
+      MMDB_DOWNLOAD_URL: str(),
     }),
   ),
   {

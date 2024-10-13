@@ -72,10 +72,10 @@ Read more about mailgun tracking here https://documentation.mailgun.com/docs/mai
   - [x] Email opens tracking
   - [ ] Unsubscribes tracking
   - [ ] Spam complaints tracking
-  - [ ] Open and click bot detection
+  - [ ] Open and click bot detection [TODO] [OUTSOURCE?]
   - [x] Per link Opt-out tracking
-  - [ ] Per link Opt-in tracking
-  - [ ] Per email opt-out & opt-in open tracking
+  - [x] Per link Opt-in tracking
+  - [x] Per email opt-out & opt-in open tracking
   - [x] Per domain opt-in tracking
 
 - [ ] Reporting

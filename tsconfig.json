@@ -8,7 +8,7 @@
     "sourceMap": true,
     "skipLibCheck": true,
     "strictPropertyInitialization": false,
-    "declaration": true,
+    "declaration": false,
     "jsx": "preserve",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -25,5 +25,5 @@
     "isolatedModules": true
   },
   "include": ["./**/*.ts", "./http/views/app/main.tsx"],
-  "exclude": ["node_modules", "build"]
+  "exclude": ["node_modules", "build", "vitest.config.ts", "vite.config.ts"]
 }

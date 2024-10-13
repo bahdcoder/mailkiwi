@@ -450,6 +450,13 @@ export const emailSendEvents = mysqlTable("emailSendEvents", {
 
   // bounces
   bounceClassification: varchar("bounceClassification", { length: 120 }),
+
+  // analytics (mostly for engage)
+  originCountry: varchar("originCountry", { length: 10 }),
+  originState: varchar("originState", { length: 56 }),
+  originCity: varchar("originCity", { length: 56 }),
+  originDevice: varchar("originDevice", { length: 56 }),
+  originBrowser: varchar("originBrowser", { length: 56 }),
 })
 
 export const emailContents = mysqlTable("emailContents", {

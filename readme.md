@@ -200,18 +200,22 @@
 
 # Pricing plans
 
-- [ ] $0.25 per 1,000 emails. That's it. It's that simple. No more noise.
-- [ ] -> 10,000 free emails per month
+- [ ] $0.1 per 1,000 emails. That's it. It's that simple. No more noise.
+- [ ] -> 6,274 free emails per month
 - [ ] Sending 25,000 emails in a month:
-  - your total is 25,000 - 10,000 = 15,000 / 1,000 = 15 x $0.25 = $3.75
+  - your total is 25,000 - 6,274 = 18,726 / 1,000 = $18.726
 - [ ] Sending 250,000 emails in a month:
 
-  - your total is 250,000 - 10,000 = 240,000 / 1,000 = 240 x $0.25 = $60
+  - your total is 250,000 - 6,274 = 240,000 / 1,000 = $243.726
 
-- Calculation of entire infrastructure: $5000 per year ($600 per month)
-  - Infrastructure can send max 500,000 emails per hour
-  - Total per month (30 days, 10 hours a day): 30 x 10 x 500,000 = 150,000,000 emails per month
+- Calculation of entire infrastructure: $7,200 per year ($600 per month)
+  - Infrastructure can send max 50,000 emails per hour
+  - Total per month (30 days, 10 hours a day): 30 x 10 x 50,000 = 15,000,000 emails per month
   - Cost per email: 150,000,000 / 600 = $0.000004 per email
+- [ ] Get bare metal servers on a huge discount.
+- [ ] Contact customer support of bare metal provider to see if you can pre screen IP addresses before purchase.
+- [ ] Use hetzner for power bare metal servers
+- [ ] Use Cloudfront for cheap CDN and Bot Protection
 
 # Helpful email tools
 

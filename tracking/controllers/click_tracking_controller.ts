@@ -1,5 +1,6 @@
 import { apiEnv } from "@/api/env/api_env.js"
 import { ProcessMtaLogJob } from "@/kumologs/jobs/process_mta_log_job.js"
+import { getConnInfo } from "@hono/node-server/conninfo"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
@@ -34,6 +35,10 @@ export class ClickTrackingController extends BaseController {
       log: {
         // add other fields here, including a user agent.
         type: "Click",
+        // user agent
+        // ip address
+        ipAddress: getConnInfo(ctx)?.remote?.address || ctx.req.header(),
+
         headers: {
           [apiEnv.emailHeaders.emailSendId]: unsigned?.metadata?.m,
         },
