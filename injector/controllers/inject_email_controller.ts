@@ -182,7 +182,11 @@ export class InjectEmailController extends BaseController {
     return ctx.json({
       messages: results
         .filter((result) => result.status === "fulfilled")
-        .map((result) => result.value),
+        .map((result) => ({
+          ok: true,
+          messageId: result.value?.messageId,
+          recipient: result.value?.recipient,
+        })),
     })
   }
 }

@@ -19,9 +19,9 @@ export interface SourceAddress {
 }
 
 export type Headers = {
-  Subject: string
-  "X-Kibamail-Sending-Domain-ID": string
-  "X-Kibamail-Message-ID": string
+  Subject?: string
+  "X-Kibamail-Sending-Domain-ID"?: string
+  "X-Kibamail-Message-ID"?: string
 } & { [key: string]: string }
 
 export interface MtaLog {
@@ -60,4 +60,8 @@ export interface MtaLog {
   delivery_protocol: string
   reception_protocol: string
   nodeid: string
+
+  // click logs
+  ip_address: string
+  user_agent: string
 }

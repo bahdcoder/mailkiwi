@@ -147,6 +147,11 @@ CREATE TABLE `emailSendEvents` (
 	`peerAddressName` varchar(255),
 	`peerAddressAddr` varchar(255),
 	`bounceClassification` varchar(120),
+	`originCountry` varchar(10),
+	`originState` varchar(56),
+	`originCity` varchar(56),
+	`originDevice` varchar(56),
+	`originBrowser` varchar(56),
 	CONSTRAINT `emailSendEvents_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

@@ -1,3 +1,4 @@
+import { apiEnv } from "@/api/env/api_env.js"
 import {
   type BaseSchema,
   type BaseSchemaAsync,
@@ -23,6 +24,7 @@ import {
 
 import { Session } from "@/shared/cookies/cookies.js"
 import type { HonoContext } from "@/shared/server/types.js"
+import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -54,6 +56,12 @@ export class BaseController {
     if (!success) throw E_VALIDATION_FAILED(issues)
 
     return output
+  }
+
+  protected getDecodedSignature(ctx: HonoContext) {
+    return new SignedUrlManager(apiEnv.APP_KEY).decode(
+      ctx.req.param("signature"),
+    )
   }
 
   protected ensureBelongsToTeam(

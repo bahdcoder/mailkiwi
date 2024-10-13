@@ -1,13 +1,10 @@
 import { apiEnv } from "@/api/env/api_env.js"
-import { ProcessMtaLogJob } from "@/kumologs/jobs/process_mta_log_job.js"
+import { ClickTrackingController } from "@/tracking/controllers/click_tracking_controller.js"
 
 import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import { Queue } from "@/shared/queue/queue.js"
 import { HonoContext } from "@/shared/server/types.js"
-import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
-export class OpenTrackingController extends BaseController {
+export class OpenTrackingController extends ClickTrackingController {
   constructor(protected app = makeApp()) {
     super()
 
@@ -41,21 +38,16 @@ export class OpenTrackingController extends BaseController {
   }
 
   async index(ctx: HonoContext) {
-    const unsigned = new SignedUrlManager(apiEnv.APP_KEY).decode(
-      ctx.req.param("signature"),
-    )
+    const unsigned = this.getDecodedSignature(ctx)
 
     if (!unsigned) {
       return this.respondWithTrackingImage()
     }
 
-    await Queue.mta_logs().add(ProcessMtaLogJob.id, {
-      log: {
-        // add other fields here, including a user agent.
-        type: "Open",
-        headers: {
-          [apiEnv.emailHeaders.emailSendId]: unsigned?.metadata?.m,
-        },
+    await this.queueLog(ctx, unsigned, {
+      type: "Open",
+      headers: {
+        [apiEnv.emailHeaders.emailSendId]: unsigned.original,
       },
     })
 

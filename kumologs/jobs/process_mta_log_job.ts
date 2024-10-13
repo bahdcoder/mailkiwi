@@ -2,18 +2,17 @@ import { apiEnv } from "@/api/env/api_env.js"
 import { EmailSendEventRepository } from "@/email_sends/repositories/email_send_event_repository.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
 import { SendingSourceRepository } from "@/settings/repositories/sending_source_repository.js"
+import { Reader as MaxMindReader } from "@maxmind/geoip2-node"
 import { DateTime } from "luxon"
+import { resolve } from "path"
+import { UAParser } from "ua-parser-js"
 
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
-import { makeDatabase } from "@/shared/container/index.js"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { MtaLog } from "@/shared/types/mta.js"
-import {
-  fromEmailToDomain,
-  ipv4AdressFromIpAndPort,
-} from "@/shared/utils/string.js"
+import { ipv4AdressFromIpAndPort } from "@/shared/utils/string.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -81,7 +80,10 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
         MtaLog["type"],
         (emailSendingId: string, log: MtaLog) => Promise<void>
       >
-    > = {}
+    > = {
+      Click: logTypeHandler.handleClickAndOpenEvent,
+      Open: logTypeHandler.handleClickAndOpenEvent,
+    }
 
     const handler = handlers[log.type] ?? logTypeHandler.handleGenericEvent
 
@@ -99,6 +101,32 @@ export class LogTypeHandler {
       EmailSendEventRepository,
     ),
   ) {}
+
+  handleClickAndOpenEvent = async (emailSendId: string, log: MtaLog) => {
+    const parsedUserAgent = UAParser(log.user_agent)
+
+    const maxMindDatabaseReader = await MaxMindReader.open(
+      resolve(process.cwd(), "geo", "cities.mmdb"),
+    )
+
+    const city = maxMindDatabaseReader.city(log.ip_address)
+
+    await this.emailSendEventRepository.create({
+      emailSendId,
+      type: log.type,
+
+      createdAt: DateTime.fromSeconds(log.timestamp).toJSDate(),
+
+      // device
+      originBrowser: parsedUserAgent.browser.name,
+      originDevice: parsedUserAgent.device.model,
+
+      // location
+      originCity: city?.city?.names?.en,
+      originCountry: city?.country?.isoCode,
+      originState: city?.subdivisions?.[0]?.names?.en,
+    })
+  }
 
   handleGenericEvent = async (emailSendId: string, log: MtaLog) => {
     await this.emailSendEventRepository.create({

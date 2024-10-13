@@ -15,6 +15,7 @@ import {
 } from "@/tests/integration/helpers/server.js"
 import { getInjectEmailContent } from "@/tests/mocks/emails/email_content.js"
 import { injectEmailForTeam } from "@/tests/mocks/emails/email_content.js"
+import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 import { getApiKeyForTeam } from "@/tests/utils/http.js"
 
@@ -28,6 +29,10 @@ import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
 import { sleep } from "@/utils/sleep.js"
 import { container } from "@/utils/typi.js"
+
+const xForwardedFor = "66.249.93.66"
+const userAgent =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
 
 describe.sequential("@mta", () => {
   let server: ServerType
@@ -290,7 +295,16 @@ describe.sequential("@click-tracking", () => {
     const { TEST_DOMAIN, team } =
       await setupDomainForDnsChecks("localgmail.net")
 
-    const { injectEmail } = await injectEmailForTeam(team.id, TEST_DOMAIN)
+    const { injectEmail, response } = await injectEmailForTeam(
+      team.id,
+      TEST_DOMAIN,
+    )
+
+    const json = await response.json()
+
+    const messageIds = json.messages.map(
+      (message: any) => message.messageId,
+    )
 
     await sleep(2000)
 
@@ -311,7 +325,12 @@ describe.sequential("@click-tracking", () => {
     for (const link of links) {
       const [, signature] = link.split("/c/")
 
-      const response = await app.request(`/c/${signature}`)
+      const response = await app.request(`/c/${signature}`, {
+        headers: {
+          "x-forwarded-for": xForwardedFor,
+          "user-agent": userAgent,
+        },
+      })
 
       const unsigned = new SignedUrlManager(apiEnv.APP_KEY).decode(
         signature,
@@ -319,6 +338,23 @@ describe.sequential("@click-tracking", () => {
 
       expect(response.status).toEqual(302)
       expect(response.headers.get("Location")).toEqual(unsigned?.original)
+    }
+
+    const jobs = await Queue.mta_logs().getJobs()
+
+    const clickJobs = jobs
+      .filter(
+        (job) =>
+          messageIds.includes(
+            job.data.log?.headers?.[apiEnv.emailHeaders.emailSendId],
+          ) && job.data.log?.type === "Click",
+      )
+      .map((job) => job.data.log)
+
+    for (const job of clickJobs) {
+      expect(job.ipv4_address).toEqual(xForwardedFor)
+      expect(job.user_agent).toEqual(userAgent)
+      expect(job.timestamp).toBeDefined()
     }
   })
 
@@ -430,14 +466,20 @@ describe.sequential("@open-tracking", () => {
   })
 
   test("tracks when an email is opened", async ({ expect }) => {
-    //
     const app = makeApp()
     const { TEST_DOMAIN, team, sendingDomain } =
       await setupDomainForDnsChecks("localgmail.net")
 
-    const { injectEmail } = await injectEmailForTeam(team.id, TEST_DOMAIN)
+    const { injectEmail, response: injectResponse } =
+      await injectEmailForTeam(team.id, TEST_DOMAIN)
 
     await sleep(2000)
+
+    const json = await injectResponse.json()
+
+    const messageIds = json.messages.map(
+      (message: any) => message.messageId,
+    )
 
     const { messages: allMessages } = await getAllMailpitMessages()
 
@@ -471,10 +513,34 @@ describe.sequential("@open-tracking", () => {
 
     expect(emailSend).toBeDefined()
 
-    const response = await app.request(`/o/${signature}`)
+    const response = await app.request(`/o/${signature}`, {
+      headers: {
+        "x-forwarded-for": xForwardedFor,
+        "user-agent": userAgent,
+      },
+    })
 
     expect(response.status).toBe(200)
     expect(response.headers.get("Content-Type")).toEqual("image/png")
+
+    const jobs = await Queue.mta_logs().getJobs()
+
+    const openJobs = jobs
+      .filter(
+        (job) =>
+          messageIds.includes(
+            job.data.log?.headers?.[apiEnv.emailHeaders.emailSendId],
+          ) && job.data.log?.type === "Open",
+      )
+      .map((job) => job.data.log)
+
+    expect(openJobs).toHaveLength(1)
+
+    for (const job of openJobs) {
+      expect(job.ipv4_address).toEqual(xForwardedFor)
+      expect(job.user_agent).toEqual(userAgent)
+      expect(job.timestamp).toBeDefined()
+    }
   })
 
   test("does not track opens when open tracking is disabled", async ({
@@ -517,7 +583,6 @@ describe.sequential("@open-tracking", () => {
   test("can track opens for an email even when tracking is disabled for domain", async ({
     expect,
   }) => {
-    const app = makeApp()
     const { TEST_DOMAIN, team, sendingDomain } =
       await setupDomainForDnsChecks("localgmail.net", {
         openTrackingEnabled: false,

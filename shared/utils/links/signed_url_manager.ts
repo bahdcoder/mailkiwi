@@ -5,6 +5,11 @@ export interface UrlMetadata {
   [key: string]: string | undefined
 }
 
+export interface DecodedSignature {
+  original: string
+  metadata?: UrlMetadata
+}
+
 export class SignedUrlManager {
   protected HASH_LENGTH = 16
   constructor(private appKey: Secret<string>) {}
