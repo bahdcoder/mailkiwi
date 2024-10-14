@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "c6167ccc-dcc3-4e73-8cb6-498df5d87915",
+  "id": "ec3127a6-f62d-4cf9-99a7-4c4ab840e2ce",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -896,6 +896,48 @@
           "notNull": false,
           "autoincrement": false,
           "default": "(now())"
+        },
+        "lastSentBroadcastEmailAt": {
+          "name": "lastSentBroadcastEmailAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lastSentAutomationEmailAt": {
+          "name": "lastSentAutomationEmailAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lastOpenedBroadcastEmailAt": {
+          "name": "lastOpenedBroadcastEmailAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lastClickedBroadcastEmailLinkAt": {
+          "name": "lastClickedBroadcastEmailLinkAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lastOpenedAutomationEmailAt": {
+          "name": "lastOpenedAutomationEmailAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lastClickedAutomationEmailLinkAt": {
+          "name": "lastClickedAutomationEmailLinkAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},

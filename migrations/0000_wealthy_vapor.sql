@@ -115,6 +115,12 @@ CREATE TABLE `contacts` (
 	`contactImportId` binary(16),
 	`attributes` json,
 	`createdAt` timestamp DEFAULT (now()),
+	`lastSentBroadcastEmailAt` timestamp,
+	`lastSentAutomationEmailAt` timestamp,
+	`lastOpenedBroadcastEmailAt` timestamp,
+	`lastClickedBroadcastEmailLinkAt` timestamp,
+	`lastOpenedAutomationEmailAt` timestamp,
+	`lastClickedAutomationEmailLinkAt` timestamp,
 	CONSTRAINT `contacts_id` PRIMARY KEY(`id`),
 	CONSTRAINT `ContactEmailAudienceIdKey` UNIQUE(`email`,`audienceId`)
 );

@@ -3,6 +3,7 @@ import { TagsSegmentBuilder } from "./fields/tags_segment_builder.js"
 import { type SQL, type SQLWrapper, and, or } from "drizzle-orm"
 
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
+import { ActivitySegmentBuilder } from "@/audiences/utils/segment_builder/fields/activity_segment_builder.js"
 
 import { contacts } from "@/database/schema.js"
 
@@ -37,6 +38,16 @@ export class SegmentBuilder {
           )
           break
         case "subscribedAt":
+          break
+        case "lastSentBroadcastEmailAt":
+        case "lastSentAutomationEmailAt":
+        case "lastOpenedBroadcastEmailAt":
+        case "lastOpenedAutomationEmailAt":
+        case "lastClickedBroadcastEmailLinkAt":
+        case "lastClickedAutomationEmailLinkAt":
+          queryConditions.push(
+            ...new ActivitySegmentBuilder(condition).build(),
+          )
           break
         default:
           break

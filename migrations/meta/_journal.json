@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1728924268101,
-      "tag": "0000_lumpy_energizer",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1728924554537,
-      "tag": "0001_add_activity_timestamps_to_contacts",
+      "when": 1728930954721,
+      "tag": "0000_wealthy_vapor",
       "breakpoints": true
     }
   ]

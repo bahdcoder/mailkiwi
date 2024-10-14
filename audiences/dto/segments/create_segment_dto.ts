@@ -20,6 +20,18 @@ export const FilterConditionSchema = object({
     "lastName",
     "subscribedAt",
     "tags",
+
+    // sent events
+    "lastSentBroadcastEmailAt",
+    "lastSentAutomationEmailAt",
+
+    // open events
+    "lastOpenedBroadcastEmailAt",
+    "lastOpenedAutomationEmailAt",
+
+    // click events
+    "lastClickedBroadcastEmailLinkAt",
+    "lastClickedAutomationEmailLinkAt",
   ]),
   operation: picklist([
     "eq",
@@ -34,6 +46,7 @@ export const FilterConditionSchema = object({
     "endsWith",
     "contains",
     "notContains",
+    "in_time_window",
   ]),
   value: union([string(), array(string()), number(), array(number())]),
 })

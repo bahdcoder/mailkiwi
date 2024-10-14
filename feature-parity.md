@@ -38,7 +38,7 @@ These are organised in order of implementation priority:
   - [ ] Personalised emails
   - [ ] Segment based on specific campaign activity (Clicks, Email Opens)
   - [ ] Segment by contact location\*
-  - [ ] Segment by behaviour
+  - [x] Segment by behaviour
   - [ ] Segment by survey responses
   - [ ] Segmentation templates
   - [x] Segment by Tags

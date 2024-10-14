@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
+import { DateTime } from "luxon"
 import { describe, test } from "vitest"
 
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
@@ -397,5 +398,93 @@ describe("@audience segments", () => {
 
     expect(json.total).toBe(countForNonSegment)
     expect(json.data).toHaveLength(countForNonSegment)
+  })
+
+  test.only("can select contacts for a specific segment: contact last clicked on a broadcast within the past 3 months", async ({
+    expect,
+  }) => {
+    const database = makeDatabase()
+
+    const { user, audience } = await createUser()
+
+    const countForNonSegment = faker.number.int({
+      min: 100,
+      max: 400,
+    })
+
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(
+          () =>
+            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          {
+            count: countForNonSegment,
+          },
+        )
+        .map(() => createFakeContact(audience.id)),
+    )
+
+    const countForSegment = faker.number.int({
+      min: 800,
+      max: 1700,
+    })
+
+    const segmentContactIds = faker.helpers.multiple(cuid, {
+      count: countForSegment,
+    })
+
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(
+          () =>
+            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          {
+            count: countForSegment,
+          },
+        )
+        .map((_, idx) =>
+          createFakeContact(audience.id, {
+            id: segmentContactIds[idx],
+            lastClickedBroadcastEmailLinkAt: DateTime.now()
+              .minus({ days: 55 })
+              .toJSDate(),
+          }),
+        ),
+    )
+
+    const segmentId = cuid()
+
+    await database.insert(segments).values({
+      id: segmentId,
+      audienceId: audience.id,
+      name: faker.lorem.words(3),
+      filterGroups: {
+        type: "AND",
+        groups: [
+          {
+            type: "AND",
+            conditions: [
+              {
+                field: "lastClickedBroadcastEmailLinkAt",
+                operation: "in_time_window",
+                value: "last_90_days",
+              },
+            ],
+          },
+        ],
+      },
+    })
+
+    const perPage = 500
+
+    const response = await makeRequestAsUser(user, {
+      method: "GET",
+      path: `/audiences/${audience.id}/contacts?segmentId=${segmentId}&page=1&perPage=${perPage}`,
+    })
+
+    const json = await response.json()
+
+    expect(json.total).toBe(countForSegment)
+    expect(json.data).toHaveLength(perPage)
   })
 })
