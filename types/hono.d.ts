@@ -4,7 +4,7 @@ import type {
   AccessToken,
   TeamWithSendingDomains,
   User,
-} from "@/database/schema/database_schema_types.js"
+} from "@/database/database_schema_types.ts"
 
 import type { TeamWithMembers } from "@/shared/types/team.js"
 

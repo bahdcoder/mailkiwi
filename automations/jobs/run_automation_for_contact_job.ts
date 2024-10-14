@@ -8,7 +8,7 @@ import {
   automationSteps,
   contactAutomationSteps,
   contacts,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"

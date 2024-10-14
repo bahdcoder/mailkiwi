@@ -11,7 +11,7 @@ import {
 import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { broadcasts, emailContents } from "@/database/schema/schema.js"
+import { broadcasts, emailContents } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"

@@ -9,7 +9,7 @@ import {
   string,
 } from "valibot"
 
-import { audiences } from "@/database/schema/schema.js"
+import { audiences } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

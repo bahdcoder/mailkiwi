@@ -7,7 +7,7 @@ import { SendingDomainRepository } from "@/sending_domains/repositories/sending_
 
 import { DnsResolverTool } from "@/tools/dns/dns_resolver_tool.js"
 
-import { sendingDomains } from "@/database/schema/schema.js"
+import { sendingDomains } from "@/database/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"

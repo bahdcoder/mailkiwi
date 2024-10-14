@@ -15,8 +15,6 @@ describe("@teams", () => {
 
     const json = await showTeamResponse.json()
 
-    d(json)
-
     expect(json.name).toBe(team.name)
     expect(showTeamResponse.status).toBe(200)
   })

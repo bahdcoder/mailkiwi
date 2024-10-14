@@ -138,6 +138,7 @@ CREATE TABLE `emailSendEvents` (
 	`emailSendId` binary(16) NOT NULL,
 	`type` enum('Delivery','Reception','Bounce','TransientFailure','Expiration','AdminBounce','OOB','Feedback','Rejection','AdminRebind','Any','Click','Open') NOT NULL,
 	`createdAt` timestamp,
+	`contactId` binary(16),
 	`responseCode` int,
 	`responseContent` text,
 	`responseCommand` varchar(255),
@@ -221,6 +222,7 @@ CREATE TABLE `sendingDomains` (
 	`trackingSslCertSecret` text,
 	`openTrackingEnabled` boolean DEFAULT false,
 	`clickTrackingEnabled` boolean DEFAULT false,
+	`product` enum('engage','send') DEFAULT 'engage',
 	CONSTRAINT `sendingDomains_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -319,6 +321,7 @@ ALTER TABLE `contactImports` ADD CONSTRAINT `contactImports_audienceId_audiences
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_contactImportId_contactImports_id_fk` FOREIGN KEY (`contactImportId`) REFERENCES `contactImports`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_emailSendId_emailSends_id_fk` FOREIGN KEY (`emailSendId`) REFERENCES `emailSends`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_sendingDomainId_sendingDomains_id_fk` FOREIGN KEY (`sendingDomainId`) REFERENCES `sendingDomains`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_broadcastId_broadcasts_id_fk` FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_sendingSourceId_sendingSources_id_fk` FOREIGN KEY (`sendingSourceId`) REFERENCES `sendingSources`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint

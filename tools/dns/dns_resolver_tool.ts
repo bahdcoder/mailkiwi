@@ -3,7 +3,7 @@ import dns from "node:dns/promises"
 
 import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.js"
 
-import { SendingDomain } from "@/database/schema/database_schema_types.js"
+import { SendingDomain } from "@/database/database_schema_types.js"
 
 import { container } from "@/utils/typi.js"
 

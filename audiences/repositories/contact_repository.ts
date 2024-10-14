@@ -9,12 +9,8 @@ import type {
   ContactWithTags,
   InsertContact,
   UpdateSetContactInput,
-} from "@/database/schema/database_schema_types.js"
-import {
-  contacts,
-  tags,
-  tagsOnContacts,
-} from "@/database/schema/schema.js"
+} from "@/database/database_schema_types.js"
+import { contacts, tags, tagsOnContacts } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

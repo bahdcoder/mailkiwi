@@ -11,12 +11,12 @@ import type {
 import type {
   AutomationStep,
   Contact,
-} from "@/database/schema/database_schema_types.js"
+} from "@/database/database_schema_types.js"
 import {
   type RULE_IF_ELSE_CONFIGURATION,
   automationSteps,
   contacts,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { Queue } from "@/shared/queue/queue.js"
 

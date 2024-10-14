@@ -1,9 +1,8 @@
 import { apiEnv } from "@/api/env/api_env.js"
 
-import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
-
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
+import { CreateSendingDomainDto } from "@/sending_domains/dto/create_sending_domain_dto.js"
 import { CheckSendingDomainDnsConfigurationJob } from "@/sending_domains/jobs/check_sending_domain_dns_configuration_job.js"
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
@@ -25,7 +24,7 @@ export class CreateSendingDomainAction {
     ),
   ) {}
 
-  async handle(payload: CreateAudienceDto, teamId: string) {
+  async handle(payload: CreateSendingDomainDto, teamId: string) {
     const {
       publicKey: dkimPublicKey,
       encrypted: { privateKey: dkimPrivateKey },
@@ -45,6 +44,7 @@ export class CreateSendingDomainAction {
             dkimSubDomain,
             trackingSubDomain: this.env.software.trackingSubdomain,
             trackingDomainCnameValue: this.env.software.trackingHostName,
+            product: payload.product,
           }),
 
           this.teamRepository.dkim().forDomain(payload.name).save({

@@ -16,7 +16,7 @@ import {
   contactAutomationSteps,
   contacts,
   tagsOnContacts,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { MailBuilder, Mailer } from "@/shared/mailers/mailer.js"

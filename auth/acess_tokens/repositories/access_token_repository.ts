@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm"
 import { randomBytes } from "node:crypto"
 
 import type { DrizzleClient } from "@/database/client.js"
-import { accessTokens } from "@/database/schema/schema.js"
+import { accessTokens } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_repository.js"

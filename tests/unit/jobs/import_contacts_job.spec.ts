@@ -6,7 +6,7 @@ import { ContactImportRepository } from "@/audiences/repositories/contact_import
 
 import { setupImport } from "@/tests/integration/audiences/contacts.spec.js"
 
-import { contacts, tagsOnContacts } from "@/database/schema/schema.js"
+import { contacts, tagsOnContacts } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 

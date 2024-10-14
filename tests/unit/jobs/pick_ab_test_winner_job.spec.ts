@@ -11,7 +11,7 @@ import {
   createUser,
 } from "@/tests/mocks/auth/users.js"
 
-import { abTestVariants, contacts } from "@/database/schema/schema.js"
+import { abTestVariants, contacts } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
@@ -27,9 +27,7 @@ describe("@abtests Pick Test winner", () => {
     const database = makeDatabase()
     const redis = makeRedis()
 
-    const { user, audience } = await createUser({
-      createMailerWithIdentity: true,
-    })
+    const { user, audience } = await createUser()
 
     const contactsForAudience = faker.number.int({
       min: 277,

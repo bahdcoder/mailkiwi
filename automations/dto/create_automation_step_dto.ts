@@ -28,7 +28,7 @@ import {
   automationStepTypes,
   emails,
   tags,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

@@ -10,11 +10,11 @@ import type {
   AutomationStep,
   Contact,
   ValidatedEmailContent,
-} from "@/database/schema/database_schema_types.js"
+} from "@/database/database_schema_types.js"
 import {
   type ACTION_SEND_EMAIL_CONFIGURATION,
   emails,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { Mailer } from "@/shared/mailers/mailer.js"
 

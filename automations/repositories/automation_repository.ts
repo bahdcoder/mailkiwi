@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm"
 import type { CreateAutomationDto } from "@/automations/dto/create_automation_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import { automationSteps, automations } from "@/database/schema/schema.js"
+import { automationSteps, automations } from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"

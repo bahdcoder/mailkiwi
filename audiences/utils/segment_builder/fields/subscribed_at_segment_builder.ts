@@ -3,7 +3,7 @@ import { type SQLWrapper, and, eq, like } from "drizzle-orm"
 
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
-import { contacts } from "@/database/schema/schema.js"
+import { contacts } from "@/database/schema.js"
 
 import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
 

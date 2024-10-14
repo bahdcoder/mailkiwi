@@ -15,7 +15,7 @@ import {
   string,
 } from "valibot"
 
-import { tags } from "@/database/schema/schema.js"
+import { tags } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

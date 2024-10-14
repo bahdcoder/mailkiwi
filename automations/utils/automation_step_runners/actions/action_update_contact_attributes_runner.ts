@@ -10,11 +10,11 @@ import type {
 import type {
   AutomationStep,
   Contact,
-} from "@/database/schema/database_schema_types.js"
+} from "@/database/database_schema_types.js"
 import {
   type ACTION_UPDATE_CONTACT_ATTRIBUTES,
   tags,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { container } from "@/utils/typi.js"
 

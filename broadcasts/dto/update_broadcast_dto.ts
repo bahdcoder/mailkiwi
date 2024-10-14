@@ -18,11 +18,7 @@ import {
   string,
 } from "valibot"
 
-import {
-  abTestVariants,
-  audiences,
-  segments,
-} from "@/database/schema/schema.js"
+import { abTestVariants, audiences, segments } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

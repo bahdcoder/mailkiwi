@@ -1,14 +1,28 @@
+import { apiEnv } from "@/api/env/api_env.js"
+import { InjectEmailAction } from "@/injector/actions/inject_email_action.js"
+import { InjectEmailSchemaDto } from "@/injector/dto/inject_email_dto.js"
 import { eq } from "drizzle-orm"
 
-import type { BroadcastWithEmailContent } from "@/database/schema/database_schema_types.js"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+
+import type {
+  BroadcastWithEmailContent,
+  SendingDomain,
+} from "@/database/database_schema_types.js"
 import {
   broadcasts,
   contacts as contactsTable,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { Mailer } from "@/shared/mailers/mailer.js"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+
+import { container } from "@/utils/typi.js"
 
 export interface SendBroadcastToContactPayload {
   broadcastId: string
@@ -24,21 +38,13 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     return AVAILABLE_QUEUES.broadcasts
   }
 
-  async handle({
-    database,
-    payload,
-    redis,
-  }: JobContext<SendBroadcastToContactPayload>) {
+  async handle({ payload }: JobContext<SendBroadcastToContactPayload>) {
+    const contactRepository = container.make(ContactRepository)
+    const broadcastRepository = container.make(BroadcastRepository)
+
     const [contact, broadcast] = await Promise.all([
-      database.query.contacts.findFirst({
-        where: eq(contactsTable.id, payload.contactId),
-      }),
-      database.query.broadcasts.findFirst({
-        where: eq(broadcasts.id, payload.broadcastId),
-        with: {
-          emailContent: true,
-        },
-      }),
+      contactRepository.findById(payload.contactId),
+      broadcastRepository.findByIdWithAbTestVariants(payload.broadcastId),
     ])
 
     if (!broadcast || !contact) {
@@ -48,29 +54,60 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     const broadcastWithContent =
       broadcast as unknown as BroadcastWithEmailContent
 
-    const [response, error] = await Mailer.from(
-      broadcastWithContent.emailContent.fromEmail,
-      `${broadcastWithContent.emailContent.fromName}`,
-    )
-      .subject(broadcastWithContent.emailContent.subject)
-      .to(contact.email, `${contact.firstName} ${contact.lastName}`)
-      .content(
-        broadcastWithContent.emailContent.contentHtml,
-        broadcastWithContent.emailContent.contentText,
-      )
-      .send()
+    const { emailContent } = broadcastWithContent
 
-    if (error) {
-      return this.fail(`Failed to send to contact: ${contact.id}`)
+    const teamSendingDomains = await container
+      .make(SendingDomainRepository)
+      .findAllForTeam(broadcast.teamId)
+
+    let sendingDomain =
+      teamSendingDomains.find(
+        (sendingDomain) => sendingDomain.product === "engage",
+      ) || teamSendingDomains?.[0]
+
+    let openTrackingEnabled = sendingDomain.openTrackingEnabled ?? false
+    let clickTrackingEnabled = sendingDomain.clickTrackingEnabled ?? false
+
+    if (broadcast.trackClicks !== null) {
+      clickTrackingEnabled = broadcast.trackClicks
     }
 
-    /* After sending, set a key in redis to store the message id. */
-    await redis.set(
-      response.messageId,
-      `BROADCAST:${broadcast.id}:${contact.id}`,
-    )
+    if (broadcast.trackOpens !== null) {
+      openTrackingEnabled = broadcast.trackOpens
+    }
 
-    return { success: true, output: "Success." }
+    const injectEmailPayload: InjectEmailSchemaDto = {
+      from: {
+        name: emailContent.fromName,
+        email: emailContent.fromEmail,
+      },
+      replyTo: {
+        name: emailContent.replyToName,
+        email: emailContent.replyToEmail,
+      },
+      recipients: [
+        {
+          name: contact.firstName + " " + contact.lastName,
+          email: contact.email,
+        },
+      ],
+      html: emailContent.contentHtml,
+      text: emailContent.contentText,
+      attachments: [],
+      headers: {
+        [apiEnv.emailHeaders.broadcastId]: broadcast.id,
+        [apiEnv.emailHeaders.contactId]: contact.id,
+      },
+      subject: emailContent.subject,
+      openTrackingEnabled,
+      clickTrackingEnabled,
+    }
+
+    const { messages } = await container
+      .make(InjectEmailAction)
+      .handle(injectEmailPayload, sendingDomain)
+
+    return this.done(messages)
   }
 
   async failed() {}

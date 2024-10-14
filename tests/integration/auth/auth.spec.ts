@@ -16,7 +16,7 @@ import {
   teamMemberships,
   teams,
   users,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 import { hasMany, hasOne } from "@/database/utils/relationships.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"

@@ -3,10 +3,7 @@ import { apiEnv } from "@/api/env/api_env.js"
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 
-import type {
-  Team,
-  User,
-} from "@/database/schema/database_schema_types.js"
+import type { Team, User } from "@/database/database_schema_types.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import type { HTTPMethods } from "@/shared/server/types.js"

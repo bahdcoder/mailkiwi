@@ -7,7 +7,7 @@ import { ContactImportRepository } from "@/audiences/repositories/contact_import
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
-import { contacts, tagsOnContacts } from "@/database/schema/schema.js"
+import { contacts, tagsOnContacts } from "@/database/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"

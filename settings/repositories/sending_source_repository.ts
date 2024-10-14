@@ -3,8 +3,8 @@ import { aliasedTableColumn, and, count, eq, sql } from "drizzle-orm"
 import {
   InsertSendingSource,
   SendingSource,
-} from "@/database/schema/database_schema_types.js"
-import { emailSends, sendingSources } from "@/database/schema/schema.js"
+} from "@/database/database_schema_types.js"
+import { emailSends, sendingSources } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

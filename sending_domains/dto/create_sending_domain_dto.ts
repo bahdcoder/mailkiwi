@@ -3,12 +3,14 @@ import {
   type InferInput,
   checkAsync,
   objectAsync,
+  optional,
+  picklist,
   pipeAsync,
   regex,
   string,
 } from "valibot"
 
-import { sendingDomains } from "@/database/schema/schema.js"
+import { sendingDomains } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
@@ -27,6 +29,7 @@ export const CreateSendingDomainSchema = objectAsync({
       return sendingDomainExists === undefined
     }, "This sending domain is already registered."),
   ),
+  product: optional(picklist(["engage", "send"])),
 })
 
 export type CreateSendingDomainDto = InferInput<

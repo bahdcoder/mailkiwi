@@ -3,7 +3,7 @@ import { UpdateContactImportSettingsAction } from "@/audiences/actions/contact_i
 import { UpdateContactImportSettings } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
-import { Audience } from "@/database/schema/database_schema_types.js"
+import { Audience } from "@/database/database_schema_types.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 

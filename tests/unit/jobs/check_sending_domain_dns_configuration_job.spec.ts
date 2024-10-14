@@ -14,8 +14,8 @@ import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 
-import { UpdateSendingDomain } from "@/database/schema/database_schema_types.js"
-import { sendingDomains } from "@/database/schema/schema.js"
+import { UpdateSendingDomain } from "@/database/database_schema_types.js"
+import { sendingDomains } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
@@ -68,6 +68,7 @@ export const setupDomainForDnsChecks = async (
     user,
   }
 }
+
 describe("@sending-domains-dns Sending domain dns configuration check", () => {
   test("marks sending domain as verified when dns records are correctly configured", async ({
     expect,

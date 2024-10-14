@@ -22,7 +22,7 @@ import {
   teamMemberships,
   teams,
   users,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"

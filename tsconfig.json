@@ -25,5 +25,10 @@
     "isolatedModules": true
   },
   "include": ["./**/*.ts", "./http/views/app/main.tsx"],
-  "exclude": ["node_modules", "build", "vitest.config.ts", "vite.config.ts"]
+  "exclude": [
+    "node_modules",
+    "build",
+    "vitest.config.ts",
+    "vite.config.ts"
+  ]
 }

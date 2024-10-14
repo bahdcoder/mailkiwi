@@ -5,11 +5,8 @@ import type {
   SendingDomain,
   SendingSource,
   UpdateSendingDomain,
-} from "@/database/schema/database_schema_types.js"
-import {
-  sendingDomains,
-  sendingSources,
-} from "@/database/schema/schema.js"
+} from "@/database/database_schema_types.js"
+import { sendingDomains, sendingSources } from "@/database/schema.js"
 import { belongsTo } from "@/database/utils/relationships.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
@@ -57,6 +54,13 @@ export class SendingDomainRepository extends BaseRepository {
       .limit(1)
 
     return sendingDomain
+  }
+
+  async findAllForTeam(teamId: string) {
+    return this.database
+      .select()
+      .from(sendingDomains)
+      .where(eq(sendingDomains.teamId, teamId))
   }
 
   async getDomainWithDkim(domain: string, refreshCache?: boolean) {

@@ -6,7 +6,7 @@ import { describe, test } from "vitest"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { audiences } from "@/database/schema/schema.js"
+import { audiences } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

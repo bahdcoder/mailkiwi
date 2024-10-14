@@ -162,6 +162,9 @@ export const sendingDomains = mysqlTable("sendingDomains", {
 
   openTrackingEnabled: boolean("openTrackingEnabled").default(false),
   clickTrackingEnabled: boolean("clickTrackingEnabled").default(false),
+
+  // product
+  product: mysqlEnum("product", ["engage", "send"]).default("engage"), // an engage domain will only be used
 })
 
 export const webhooks = mysqlTable("webhooks", {
@@ -270,30 +273,18 @@ export const contacts = mysqlTable(
     // activity window queryes: Active Campaign
 
     // In the last [days, weeks, months, years], Between [exact dates, today, yesterday, relative dates], Ever
+    lastSentBroadcastEmailAt: timestamp("lastSentBroadcastEmailAt"),
+    lastSentAutomationEmailAt: timestamp("lastSentAutomationEmailAt"),
 
-    // Has opened -> lastOpenedAutomationEmailAt, lastOpenedBroadcastEmailAt
-    // Has not opened -> lastOpenedAutomationEmailAt, lastOpenedBroadcastEmailAt
-    // Has been sent -> lastSentBroadcastEmailAt, lastSentAutomationEmailAt
-    // Has not been sent -> lastSentBroadcastEmailAt, lastSentAutomationEmailAt
-    // Has clicked on a link -> lastClickedAutomationEmailLinkAt, lastClickedBroadcastEmailLinkAt
-    // Has not clicked on a link -> lastClickedAutomationEmailLinkAt, lastClickedBroadcastEmailLinkAt
+    lastOpenedBroadcastEmailAt: timestamp("lastOpenedBroadcastEmailAt"),
+    lastClickedBroadcastEmailLinkAt: timestamp(
+      "lastClickedBroadcastEmailLinkAt",
+    ),
 
-    // Has replied -> TODO
-    // Has not replied -> TODO
-
-    // lastSentBroadcastEmailAt - Date
-    // lastSentAutomationEmailAt - Date
-    // lastOpenedBroadcastEmailAt - Date
-    // lastOpenedAutomationEmailAt - Date
-    // lastClickedAutomationEmailLinkAt - Date
-    // lastClickedBroadcastEmailLinkAt - Date
-
-    // BELOW ARE PERFORMANCE KILLER FIELDS BUT COULD BE REALLY USEFUL ?
-
-    // openedCampaignsIds - string[]
-    // clickedLinksInBroadcastsIds - string[]
-    // clickedLinksInAutomationEmailsIds - string[]
-    //
+    lastOpenedAutomationEmailAt: timestamp("lastOpenedAutomationEmailAt"),
+    lastClickedAutomationEmailLinkAt: timestamp(
+      "lastClickedAutomationEmailLinkAt",
+    ),
   },
   (table) => ({
     ContactEmailAudienceIdKey: unique("ContactEmailAudienceIdKey").on(
@@ -446,6 +437,9 @@ export const emailSendEvents = mysqlTable("emailSendEvents", {
     .notNull()
     .$default(() => "Any"),
   createdAt: timestamp("createdAt"),
+
+  // for engage product, track the contact id.
+  contactId: primaryKeyCuid("contactId").references(() => contacts.id),
 
   // response code (flat for easier querying)
   responseCode: int("responseCode"),

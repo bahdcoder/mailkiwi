@@ -12,7 +12,7 @@ import {
   automationSteps,
   contactAutomationSteps,
   contacts,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"

@@ -2,7 +2,7 @@ import { SendingSourceRepository } from "@/settings/repositories/sending_source_
 
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
-import { SendingSource } from "@/database/schema/database_schema_types.js"
+import { SendingSource } from "@/database/database_schema_types.js"
 
 import { container } from "@/utils/typi.js"
 

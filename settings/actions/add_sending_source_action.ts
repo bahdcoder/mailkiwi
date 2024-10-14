@@ -1,6 +1,6 @@
 import { SendingSourceRepository } from "@/settings/repositories/sending_source_repository.js"
 
-import { InsertSendingSource } from "@/database/schema/database_schema_types.js"
+import { InsertSendingSource } from "@/database/database_schema_types.js"
 
 import { container } from "@/utils/typi.js"
 

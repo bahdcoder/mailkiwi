@@ -5,8 +5,8 @@ import type { AutomationStepRunnerContract } from "@/automations/utils/automatio
 import type {
   AutomationStep,
   Contact,
-} from "@/database/schema/database_schema_types.js"
-import type { ACTION_REMOVE_TAG_CONFIGURATION } from "@/database/schema/schema.js"
+} from "@/database/database_schema_types.js"
+import type { ACTION_REMOVE_TAG_CONFIGURATION } from "@/database/schema.js"
 
 import { container } from "@/utils/typi.js"
 

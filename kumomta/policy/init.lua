@@ -48,8 +48,6 @@ local function smtp_check_auth_credentials(username, passwd)
     passwd = passwd
   })
 
-  print('----------------> SENDING REQUEST')
-
   local response = request:send()
 
   return response:status_is_success()

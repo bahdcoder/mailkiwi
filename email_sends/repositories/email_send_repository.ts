@@ -4,8 +4,8 @@ import {
   EmailSend,
   InsertEmailSend,
   UpdateEmailSend,
-} from "@/database/schema/database_schema_types.js"
-import { emailSendEvents, emailSends } from "@/database/schema/schema.js"
+} from "@/database/database_schema_types.js"
+import { emailSendEvents, emailSends } from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"

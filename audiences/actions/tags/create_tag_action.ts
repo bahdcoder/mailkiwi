@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm"
 import type { CreateTagDto } from "@/audiences/dto/tags/create_tag_dto.js"
 import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
-import { tags } from "@/database/schema/schema.js"
+import { tags } from "@/database/schema.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 

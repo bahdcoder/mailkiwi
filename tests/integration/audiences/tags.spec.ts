@@ -5,7 +5,7 @@ import { describe, test } from "vitest"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { tags, tagsOnContacts } from "@/database/schema/schema.js"
+import { tags, tagsOnContacts } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"

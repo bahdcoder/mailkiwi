@@ -17,8 +17,8 @@ import {
   makeRequestAsUser,
 } from "@/tests/utils/http.js"
 
-import { ContactImport } from "@/database/schema/database_schema_types.js"
-import { contactImports, contacts } from "@/database/schema/schema.js"
+import { ContactImport } from "@/database/database_schema_types.js"
+import { contactImports, contacts } from "@/database/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"

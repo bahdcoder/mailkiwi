@@ -2,7 +2,7 @@ import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast
 import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.js"
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
-import type { BroadcastWithoutContent } from "@/database/schema/database_schema_types.js"
+import type { BroadcastWithoutContent } from "@/database/database_schema_types.js"
 
 import { BroadcastsQueue, Queue } from "@/shared/queue/queue.js"
 

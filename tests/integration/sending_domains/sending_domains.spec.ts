@@ -8,7 +8,7 @@ import { TeamRepository } from "@/teams/repositories/team_repository.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { sendingDomains } from "@/database/schema/schema.js"
+import { sendingDomains } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"

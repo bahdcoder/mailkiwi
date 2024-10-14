@@ -7,13 +7,16 @@ import { DateTime } from "luxon"
 import { resolve } from "path"
 import { UAParser } from "ua-parser-js"
 
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
 import {
   EmailSend,
   SendingDomain,
-} from "@/database/schema/database_schema_types.js"
+} from "@/database/database_schema_types.js"
 
+import { makeDatabase } from "@/shared/container/index.js"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { MtaLog } from "@/shared/types/mta.js"
@@ -130,20 +133,51 @@ export class LogTypeHandler {
 
     const city = maxMindDatabaseReader.city(log.ip_address)
 
-    await this.emailSendEventRepository.create({
-      emailSendId: this.emailSend.id,
-      type: log.type,
+    const isEngageProduct = log.headers?.[apiEnv.emailHeaders.broadcastId]
 
-      createdAt: DateTime.fromSeconds(log.timestamp).toJSDate(),
+    const database = makeDatabase()
 
-      // device
-      originBrowser: parsedUserAgent.browser.name,
-      originDevice: parsedUserAgent.device.model,
+    const contactRepository = container.make(ContactRepository)
 
-      // location
-      originCity: city?.city?.names?.en,
-      originCountry: city?.country?.isoCode,
-      originState: city?.subdivisions?.[0]?.names?.en,
+    await database.transaction(async (trx) => {
+      await this.emailSendEventRepository.transaction(trx).create({
+        emailSendId: this.emailSend.id,
+        type: log.type,
+
+        createdAt: DateTime.fromSeconds(log.timestamp).toJSDate(),
+
+        // device
+        originBrowser: parsedUserAgent.browser.name,
+        originDevice: parsedUserAgent.device.model,
+
+        ...(isEngageProduct
+          ? {
+              contactId: log?.headers?.[apiEnv.emailHeaders.contactId],
+            }
+          : {}),
+
+        // location
+        originCity: city?.city?.names?.en,
+        originCountry: city?.country?.isoCode,
+        originState: city?.subdivisions?.[0]?.names?.en,
+      })
+
+      if (isEngageProduct) {
+        const contactId = log?.headers?.[apiEnv.emailHeaders.contactId]
+        // trigger update to contact
+        await contactRepository.transaction(trx).update(contactId, {
+          ...(log.type === "Click"
+            ? {
+                lastClickedBroadcastEmailLinkAt: DateTime.now().toJSDate(),
+              }
+            : {}),
+          ...(log.type === "Open"
+            ? {
+                lastOpenedBroadcastEmailAt: DateTime.now().toJSDate(),
+              }
+            : {}),
+        })
+      }
     })
   }
 

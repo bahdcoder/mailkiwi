@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm"
 
 import type { DrizzleClient } from "@/database/client.js"
-import type { InsertSegment } from "@/database/schema/database_schema_types.js"
-import { segments } from "@/database/schema/schema.js"
+import type { InsertSegment } from "@/database/database_schema_types.js"
+import { segments } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

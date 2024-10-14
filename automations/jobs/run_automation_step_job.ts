@@ -1,13 +1,13 @@
 import { RunAutomationStepForContactJob } from "./run_automation_step_for_contact_job.js"
 import { and, eq, isNotNull, sql } from "drizzle-orm"
 
-import type { Contact } from "@/database/schema/database_schema_types.js"
+import type { Contact } from "@/database/database_schema_types.js"
 import {
   automationSteps,
   contactAutomationSteps,
   contacts,
   uuidToBin,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"

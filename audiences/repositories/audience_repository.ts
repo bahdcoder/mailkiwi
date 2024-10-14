@@ -3,8 +3,8 @@ import { eq } from "drizzle-orm"
 import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import { UpdateSetAudienceInput } from "@/database/schema/database_schema_types.js"
-import { audiences } from "@/database/schema/schema.js"
+import { UpdateSetAudienceInput } from "@/database/database_schema_types.js"
+import { audiences } from "@/database/schema.js"
 
 import { ContainerKey } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

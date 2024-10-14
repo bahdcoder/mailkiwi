@@ -1,47 +1,32 @@
 import { apiEnv } from "@/api/env/api_env.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
-import {
-  InjectEmailSchema,
-  InjectEmailSchemaDto,
-} from "@/injector/dto/inject_email_dto.js"
-import { AuthorizeInjectorApiKeyMiddleware } from "@/injector/middleware/authorize_injector_api_key_middleware.js"
-import { getDomainFromEmail } from "@/injector/utils/get_domain_from_email.js"
+import { InjectEmailSchemaDto } from "@/injector/dto/inject_email_dto.js"
 import { InjectTrackingLinksIntoEmailAction } from "@/kumomta/actions/inject_tracking_links_into_email_action.js"
 
-import { InsertEmailSend } from "@/database/database_schema_types.js"
+import {
+  InsertEmailSend,
+  SendingDomain,
+} from "@/database/database_schema_types.js"
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
 import { makeHttpClient } from "@/shared/http/http_client.js"
-import { HonoContext } from "@/shared/server/types.js"
 import { generateMessageIdForDomain } from "@/shared/utils/string.js"
 
 import { container } from "@/utils/typi.js"
 
-export class InjectEmailController extends BaseController {
-  constructor(private app = makeApp()) {
-    super()
-
-    this.app.defineRoutes([["POST", "/inject", this.index.bind(this)]], {
-      middleware: [
-        container.make(AuthorizeInjectorApiKeyMiddleware).handle,
-      ],
-    })
-  }
-
-  async index(ctx: HonoContext) {
-    const payload = await this.validate(ctx, InjectEmailSchema)
-
-    const sendingDomain = this.ensureCanSendFromDomain(
-      ctx,
-      getDomainFromEmail(payload.from.email),
-    )
-
+export class InjectEmailAction {
+  async handle(
+    payload: InjectEmailSchemaDto,
+    sendingDomain: SendingDomain,
+  ) {
     type Injection = {
       messageId: string
       recipient: InjectEmailSchemaDto["recipients"][number]
       handle: () => Promise<{
-        data: unknown
+        data: {
+          success_count: number
+          fail_count: number
+          errors: string[]
+        }
         error: string | null
       }>
     }
@@ -131,7 +116,10 @@ export class InjectEmailController extends BaseController {
         messageId: id,
         recipient,
         handle() {
-          return makeHttpClient()
+          return makeHttpClient<
+            object,
+            Awaited<ReturnType<Injection["handle"]>>["data"]
+          >()
             .url(`${apiEnv.MTA_INJECTOR_URL}/api/inject/v1`)
             .post()
             .payload(injectEmailPayload)
@@ -145,7 +133,9 @@ export class InjectEmailController extends BaseController {
         id,
         payload: {
           links,
-          product: "send",
+          product: payload.headers?.[apiEnv.emailHeaders.broadcastId]
+            ? "engage"
+            : "send",
           clickTrackingEnabled,
           openTrackingEnabled,
         },
@@ -184,14 +174,19 @@ export class InjectEmailController extends BaseController {
       }),
     )
 
-    return ctx.json({
+    return {
       messages: results
         .filter((result) => result.status === "fulfilled")
-        .map((result) => ({
-          ok: true,
-          messageId: result.value?.messageId,
-          recipient: result.value?.recipient,
-        })),
-    })
+        .map((result) => {
+          const ok = result.value?.data?.success_count === 1
+
+          return {
+            ok,
+            recipient: result.value?.recipient,
+            errors: result.value?.data?.errors,
+            ...(ok ? { messageId: result.value?.messageId } : {}),
+          }
+        }),
+    }
   }
 }

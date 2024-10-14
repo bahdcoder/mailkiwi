@@ -15,7 +15,7 @@ import {
 import { UpdateBroadcastDto } from "@/broadcasts/dto/update_broadcast_dto.js"
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
-import { Broadcast } from "@/database/schema/database_schema_types.js"
+import { Broadcast } from "@/database/database_schema_types.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 

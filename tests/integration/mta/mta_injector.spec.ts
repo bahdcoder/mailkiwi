@@ -1,8 +1,13 @@
 import { apiEnv } from "@/api/env/api_env.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
 import { ProcessMtaLogJob } from "@/kumologs/jobs/process_mta_log_job.js"
-import { ServerType, serve } from "@hono/node-server"
+import { ServerType } from "@hono/node-server"
+import { v1 } from "uuid"
 import { afterAll, beforeAll, describe, test } from "vitest"
+
+import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_contact_job.js"
+
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import {
   clearAllMailpitMessages,
@@ -13,9 +18,12 @@ import {
   createTestServer,
   shutdownTestServer,
 } from "@/tests/integration/helpers/server.js"
+import {
+  createBroadcastForUser,
+  createUser,
+} from "@/tests/mocks/auth/users.js"
 import { getInjectEmailContent } from "@/tests/mocks/emails/email_content.js"
 import { injectEmailForTeam } from "@/tests/mocks/emails/email_content.js"
-import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 import { getApiKeyForTeam } from "@/tests/utils/http.js"
 
@@ -271,23 +279,8 @@ describe.sequential("@mta", () => {
       }
     },
   )
-})
 
-describe.sequential("@click-tracking", () => {
-  let server: ServerType
-
-  beforeAll(async () => {
-    if (server) return
-
-    server = await createTestServer()
-  })
-
-  afterAll(async () => {
-    if (!server) return
-    await shutdownTestServer(server)
-  })
-
-  test("tracks a click event and redirects to original url", async ({
+  test("@click-tracking tracks a click event and redirects to original url", async ({
     expect,
   }) => {
     //
@@ -358,7 +351,7 @@ describe.sequential("@click-tracking", () => {
     }
   })
 
-  test("any tampered signatures redirect to kibamail home page without tracking", async ({
+  test("@click-tracking any tampered signatures redirect to kibamail home page without tracking", async ({
     expect,
   }) => {
     const app = makeApp()
@@ -371,7 +364,7 @@ describe.sequential("@click-tracking", () => {
     )
   })
 
-  test("does not track links with disable-tracking attribute", async ({
+  test("@click-tracking does not track links with disable-tracking attribute", async ({
     expect,
   }) => {
     //
@@ -408,7 +401,7 @@ describe.sequential("@click-tracking", () => {
     expect(links).toEqual([linkInEmail])
   })
 
-  test("enabling link tracking for a specific email overrides domain configuration", async ({
+  test("@click-tracking enabling link tracking for a specific email overrides domain configuration", async ({
     expect,
   }) => {
     //
@@ -449,23 +442,10 @@ describe.sequential("@click-tracking", () => {
       `https://${sendingDomain.trackingSubDomain}.${sendingDomain.name}/c/`,
     )
   })
-})
 
-describe.sequential("@open-tracking", () => {
-  let server: ServerType
-
-  beforeAll(async () => {
-    if (server) return
-
-    server = await createTestServer()
-  })
-
-  afterAll(async () => {
-    if (!server) return
-    await shutdownTestServer(server)
-  })
-
-  test("tracks when an email is opened", async ({ expect }) => {
+  test("@open-tracking tracks when an email is opened", async ({
+    expect,
+  }) => {
     const app = makeApp()
     const { TEST_DOMAIN, team, sendingDomain } =
       await setupDomainForDnsChecks("localgmail.net")
@@ -543,7 +523,7 @@ describe.sequential("@open-tracking", () => {
     }
   })
 
-  test("does not track opens when open tracking is disabled", async ({
+  test("@open-tracking does not track opens when open tracking is disabled", async ({
     expect,
   }) => {
     const app = makeApp()
@@ -580,7 +560,7 @@ describe.sequential("@open-tracking", () => {
     expect(images).toHaveLength(0)
   })
 
-  test("can track opens for an email even when tracking is disabled for domain", async ({
+  test("@open-tracking can track opens for an email even when tracking is disabled for domain", async ({
     expect,
   }) => {
     const { TEST_DOMAIN, team, sendingDomain } =
@@ -620,5 +600,85 @@ describe.sequential("@open-tracking", () => {
     expect(images[0]).toMatch(
       `https://${sendingDomain.trackingSubDomain}.${sendingDomain.name}/o/`,
     )
+  })
+
+  test("@send-broadcasts-to-contact job injects email into mta", async ({
+    expect,
+  }) => {
+    const { user, audience, team } = await createUser()
+
+    const TEST_DOMAIN = "localgmail.net"
+
+    await setupDomainForDnsChecks(TEST_DOMAIN, {
+      product: "engage",
+      teamId: team.id,
+    })
+
+    const fromEmail = "jonathan@" + TEST_DOMAIN
+
+    const broadcastId = await createBroadcastForUser(user, audience.id, {
+      updateWithValidContent: true,
+      emailContent: {
+        fromEmail,
+      },
+    })
+
+    const { id: contactId } = await container
+      .make(ContactRepository)
+      .create(
+        {
+          email: v1() + "@" + TEST_DOMAIN,
+        },
+        audience.id,
+      )
+
+    const { output } = await container
+      .make(SendBroadcastToContact)
+      .handle({
+        payload: { broadcastId, contactId },
+        database: makeDatabase(),
+        redis: makeRedis(),
+      })
+
+    const [message] = output
+
+    await sleep(2000)
+
+    const jobs = await Queue.mta_logs().getJobs()
+
+    const logJobs = jobs.filter(
+      (job) =>
+        job.data.log?.headers?.[apiEnv.emailHeaders.emailSendId] ===
+        message.messageId,
+    )
+
+    expect(logJobs).toHaveLength(2)
+
+    expect(
+      logJobs.map((job) => ({
+        type: job.data.log.type,
+        headers: {
+          [apiEnv.emailHeaders.broadcastId]:
+            job.data.log.headers[apiEnv.emailHeaders.broadcastId],
+          [apiEnv.emailHeaders.emailSendId]:
+            job.data.log.headers[apiEnv.emailHeaders.emailSendId],
+        },
+      })),
+    ).toMatchObject([
+      {
+        type: "Delivery",
+        headers: {
+          [apiEnv.emailHeaders.broadcastId]: broadcastId,
+          [apiEnv.emailHeaders.emailSendId]: message.messageId,
+        },
+      },
+      {
+        type: "Reception",
+        headers: {
+          [apiEnv.emailHeaders.broadcastId]: broadcastId,
+          [apiEnv.emailHeaders.emailSendId]: message.messageId,
+        },
+      },
+    ])
   })
 })

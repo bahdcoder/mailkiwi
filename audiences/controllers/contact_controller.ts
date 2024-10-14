@@ -8,10 +8,7 @@ import { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js
 import { AttachTagsToContactDto } from "@/audiences/dto/tags/attach_tags_to_contact_dto.js"
 import { DetachTagsFromContactDto } from "@/audiences/dto/tags/detach_tags_from_contact_dto.js"
 
-import {
-  Audience,
-  Contact,
-} from "@/database/schema/database_schema_types.js"
+import { Audience, Contact } from "@/database/database_schema_types.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"

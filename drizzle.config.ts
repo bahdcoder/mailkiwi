@@ -3,11 +3,12 @@ import { resolve } from "node:path"
 
 export default defineConfig({
   dialect: "mysql",
-  schema: resolve(__dirname, "schema", "schema.ts"),
-  out: resolve(__dirname, "schema", "migrations"),
+  schema: "database/schema.ts",
+  out: "migrations",
   dbCredentials: {
     url: process.env.DATABASE_URL as string,
   },
   verbose: true,
   strict: false,
+  breakpoints: true,
 })

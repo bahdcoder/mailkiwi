@@ -6,7 +6,7 @@ import type { DrizzleClient } from "@/database/client.js"
 import {
   type AutomationStepConfiguration,
   automationSteps,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

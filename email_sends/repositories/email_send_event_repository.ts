@@ -1,5 +1,5 @@
-import { InsertEmailSendEvent } from "@/database/schema/database_schema_types.js"
-import { emailSendEvents } from "@/database/schema/schema.js"
+import { InsertEmailSendEvent } from "@/database/database_schema_types.js"
+import { emailSendEvents } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

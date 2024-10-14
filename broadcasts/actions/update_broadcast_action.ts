@@ -5,7 +5,7 @@ import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_reposit
 
 import { EmailContentRepository } from "@/content/repositories/email_content_repository.js"
 
-import type { Broadcast } from "@/database/schema/database_schema_types.js"
+import type { Broadcast } from "@/database/database_schema_types.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

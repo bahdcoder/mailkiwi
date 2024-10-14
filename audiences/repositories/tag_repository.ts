@@ -3,8 +3,8 @@ import { type SQL, and, eq, or } from "drizzle-orm"
 import type { CreateTagDto } from "@/audiences/dto/tags/create_tag_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import { InsertTag, Tag } from "@/database/schema/database_schema_types.js"
-import { tags } from "@/database/schema/schema.js"
+import { InsertTag, Tag } from "@/database/database_schema_types.js"
+import { tags } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

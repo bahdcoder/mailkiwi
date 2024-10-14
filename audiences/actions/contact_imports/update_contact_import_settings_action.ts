@@ -2,7 +2,7 @@ import { UpdateContactImportSettingsDto } from "@/audiences/dto/contact_imports/
 import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
-import { ContactImport } from "@/database/schema/database_schema_types.js"
+import { ContactImport } from "@/database/database_schema_types.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 

@@ -1,7 +1,7 @@
 import { CreateSegmentSchema } from "@/audiences/dto/segments/create_segment_dto.js"
 import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
 
-import { Audience } from "@/database/schema/database_schema_types.js"
+import { Audience } from "@/database/database_schema_types.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"

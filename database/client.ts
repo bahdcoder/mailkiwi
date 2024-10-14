@@ -1,4 +1,4 @@
-import * as schema from "./schema/schema.js"
+import * as schema from "./schema.js"
 import { drizzle } from "drizzle-orm/mysql2"
 import mysql from "mysql2/promise"
 

@@ -1,6 +1,6 @@
 import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 
-import { TeamMembership } from "@/database/schema/database_schema_types.js"
+import { TeamMembership } from "@/database/database_schema_types.js"
 
 import { container } from "@/utils/typi.js"
 

@@ -4,8 +4,8 @@ import type { DrizzleClient } from "@/database/client.js"
 import type {
   InsertContactImport,
   UpdateContactImport,
-} from "@/database/schema/database_schema_types.js"
-import { contactImports } from "@/database/schema/schema.js"
+} from "@/database/database_schema_types.js"
+import { contactImports } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

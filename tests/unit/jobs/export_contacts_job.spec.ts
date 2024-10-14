@@ -13,11 +13,7 @@ import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { FakeMinioClient } from "@/tests/mocks/container/minio_client_mock.js"
 
-import {
-  contacts,
-  emails,
-  tagsOnContacts,
-} from "@/database/schema/schema.js"
+import { contacts, emails, tagsOnContacts } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 

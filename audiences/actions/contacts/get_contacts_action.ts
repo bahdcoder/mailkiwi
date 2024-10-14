@@ -8,12 +8,8 @@ import type {
   Audience,
   Contact,
   Segment,
-} from "@/database/schema/database_schema_types.js"
-import {
-  contacts,
-  tags,
-  tagsOnContacts,
-} from "@/database/schema/schema.js"
+} from "@/database/database_schema_types.js"
+import { contacts, tags, tagsOnContacts } from "@/database/schema.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 

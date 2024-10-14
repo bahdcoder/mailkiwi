@@ -2,7 +2,7 @@ import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_reposit
 
 import { TeamPolicy } from "@/audiences/policies/team_policy.js"
 
-import type { BroadcastWithoutContent } from "@/database/schema/database_schema_types.js"
+import type { BroadcastWithoutContent } from "@/database/database_schema_types.js"
 
 import {
   E_UNAUTHORIZED,

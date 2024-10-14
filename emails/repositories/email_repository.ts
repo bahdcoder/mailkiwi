@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm"
 
-import { emailContents, emails } from "@/database/schema/schema.js"
+import { emailContents, emails } from "@/database/schema.js"
 import { belongsTo } from "@/database/utils/relationships.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"

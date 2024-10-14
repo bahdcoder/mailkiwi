@@ -13,7 +13,7 @@ import {
 
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import { users } from "@/database/schema/schema.js"
+import { users } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

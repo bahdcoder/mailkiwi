@@ -5,8 +5,8 @@ import { DateTime } from "luxon"
 import {
   InsertTeamMembership,
   UpdateSetTeamMembershipInput,
-} from "@/database/schema/database_schema_types.js"
-import { teamMemberships, teams, users } from "@/database/schema/schema.js"
+} from "@/database/database_schema_types.js"
+import { teamMemberships, teams, users } from "@/database/schema.js"
 import { belongsTo, hasOne } from "@/database/utils/relationships.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"

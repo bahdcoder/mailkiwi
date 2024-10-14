@@ -2,7 +2,7 @@ import { BinaryLike, randomBytes, scrypt } from "crypto"
 import { eq } from "drizzle-orm"
 import { promisify } from "util"
 
-import { accessTokens } from "@/database/schema/schema.js"
+import { accessTokens } from "@/database/schema.js"
 
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
 

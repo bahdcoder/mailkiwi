@@ -9,13 +9,20 @@ import { TeamRepository } from "@/teams/repositories/team_repository.js"
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
+import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.js"
+
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import type {
   Team,
   TeamMembership,
   User,
-} from "@/database/schema/database_schema_types.js"
+} from "@/database/database_schema_types.js"
+import { contacts } from "@/database/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -26,6 +33,10 @@ export async function createBroadcastForUser(
     updateWithValidContent?: boolean
     updateWithABTestsContent?: boolean
     weights?: number[]
+    emailContent?: {
+      fromEmail?: string
+      fromName?: string
+    }
   },
 ) {
   const response = await makeRequestAsUser(user, {
@@ -54,8 +65,45 @@ export async function createBroadcastForUser(
           replyToName: faker.lorem.words(2),
           replyToEmail: faker.internet.email(),
           subject: faker.lorem.words(4),
-          contentHtml: faker.lorem.paragraph(),
+          contentHtml: /* html */ `
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>My awesome newsletter</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swa"
+        />
+    </head>
+
+    <body>
+        <table class="body">
+            <tr>
+                <td class="float-center" align="center" valign="top">
+                    <center>
+                        <table class="row">
+                            <tbody>
+                                <tr>
+                                    <h3 class="text-center">
+                                        <span>It has Never Been Easier to Do Things.</span>
+                                    </h3>
+                                    <p class="text-center"><span>${faker.lorem.paragraph()}</span><span>${faker.lorem.paragraph()}</span></p>
+                                    <a href="https://gorilla.com"><img src="http://placehold.it/25" /></a>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </center>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
+
+          `,
           contentText: faker.lorem.paragraph(),
+          ...options?.emailContent,
         },
         ...(options?.updateWithABTestsContent
           ? {
@@ -76,14 +124,45 @@ export async function createBroadcastForUser(
     })
   }
 
-  return id
+  return id as string
+}
+
+export async function createContactsForAudience(
+  audienceId: string,
+  contactsCount: number,
+) {
+  const database = makeDatabase()
+  const contactIds = faker.helpers.multiple(cuid, {
+    count: contactsCount,
+  })
+  const { audience: otherAudience } = await createUser()
+
+  await database.insert(contacts).values(
+    faker.helpers
+      .multiple(faker.lorem.word, {
+        count: contactsCount,
+      })
+      .map((_, idx) =>
+        createFakeContact(audienceId, {
+          id: contactIds[idx],
+        }),
+      ),
+  )
+  await database
+    .insert(contacts)
+    .values(
+      faker.helpers
+        .multiple(faker.lorem.word, { count: 23 })
+        .map(() => createFakeContact(otherAudience.id)),
+    )
+
+  return { contactIds }
 }
 
 export const createUser = async ({
   createBroadcast,
   createEntireTeam,
 }: {
-  createMailerWithIdentity?: boolean
   createBroadcast?: boolean
   createEntireTeam?: boolean
 } = {}) => {

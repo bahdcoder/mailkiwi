@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm"
 import type { CreateUserDto } from "@/auth/users/dto/create_user_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import { teams, users } from "@/database/schema/schema.js"
+import { teams, users } from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"

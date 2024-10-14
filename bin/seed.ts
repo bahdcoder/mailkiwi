@@ -26,8 +26,8 @@ import {
   createDatabaseClient,
   createDrizzleDatabase,
 } from "@/database/client.js"
-import type { Broadcast } from "@/database/schema/database_schema_types.js"
-import { broadcasts, contacts, teams } from "@/database/schema/schema.js"
+import type { Broadcast } from "@/database/database_schema_types.js"
+import { broadcasts, contacts, teams } from "@/database/schema.js"
 
 import { ContainerKey } from "@/shared/container/index.js"
 

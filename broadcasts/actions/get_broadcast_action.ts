@@ -1,6 +1,6 @@
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
-import type { Broadcast } from "@/database/schema/database_schema_types.js"
+import type { Broadcast } from "@/database/database_schema_types.js"
 
 import { container } from "@/utils/typi.js"
 

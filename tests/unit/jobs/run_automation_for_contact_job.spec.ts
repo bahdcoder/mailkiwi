@@ -8,7 +8,7 @@ import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { seedAutomation } from "@/tests/mocks/teams/teams.js"
 
-import { contacts } from "@/database/schema/schema.js"
+import { contacts } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"

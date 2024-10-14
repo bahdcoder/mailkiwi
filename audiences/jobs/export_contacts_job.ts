@@ -13,11 +13,8 @@ import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builde
 
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import {
-  Audience,
-  Contact,
-} from "@/database/schema/database_schema_types.js"
-import { contacts } from "@/database/schema/schema.js"
+import { Audience, Contact } from "@/database/database_schema_types.js"
+import { contacts } from "@/database/schema.js"
 
 import { Mailer } from "@/shared/mailers/mailer.js"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"

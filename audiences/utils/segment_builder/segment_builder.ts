@@ -4,7 +4,7 @@ import { type SQL, type SQLWrapper, and, or } from "drizzle-orm"
 
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
-import { contacts } from "@/database/schema/schema.js"
+import { contacts } from "@/database/schema.js"
 
 export class SegmentBuilder {
   constructor(private groups: CreateSegmentDto["filterGroups"]) {}

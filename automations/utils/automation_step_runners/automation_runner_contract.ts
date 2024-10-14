@@ -4,7 +4,7 @@ import type { DrizzleClient } from "@/database/client.js"
 import type {
   AutomationStep,
   Contact,
-} from "@/database/schema/database_schema_types.js"
+} from "@/database/database_schema_types.js"
 
 export interface AutomationStepRunnerContext {
   database: DrizzleClient

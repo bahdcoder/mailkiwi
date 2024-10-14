@@ -22,6 +22,9 @@ export type Headers = {
   Subject?: string
   "X-Kibamail-Sending-Domain-ID"?: string
   "X-Kibamail-Message-ID"?: string
+  "X-Kibamail-Contact-ID"?: string
+  "X-Kibamail-EmailSend-ID"?: string
+  "X-Kibamail-Broadcast-ID"?: string
 } & { [key: string]: string }
 
 export interface MtaLog {

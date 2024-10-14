@@ -5,7 +5,7 @@ import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_reposit
 
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
-import { broadcasts, contacts } from "@/database/schema/schema.js"
+import { broadcasts, contacts } from "@/database/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"

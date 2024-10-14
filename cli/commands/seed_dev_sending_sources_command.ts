@@ -1,8 +1,8 @@
 import { command } from "@drizzle-team/brocli"
 import { inArray } from "drizzle-orm"
 
-import { InsertSendingSource } from "@/database/schema/database_schema_types.js"
-import { sendingSources } from "@/database/schema/schema.js"
+import { InsertSendingSource } from "@/database/database_schema_types.js"
+import { sendingSources } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

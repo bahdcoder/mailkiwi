@@ -2,7 +2,7 @@ import { DateTime } from "luxon"
 
 import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 
-import { TeamMembership } from "@/database/schema/database_schema_types.js"
+import { TeamMembership } from "@/database/database_schema_types.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 

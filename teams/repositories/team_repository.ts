@@ -8,7 +8,7 @@ import {
   teamMemberships,
   teams,
   users,
-} from "@/database/schema/schema.js"
+} from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"

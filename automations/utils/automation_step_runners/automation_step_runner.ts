@@ -9,8 +9,8 @@ import type {
 import type {
   AutomationStep,
   Contact,
-} from "@/database/schema/database_schema_types.js"
-import { contactAutomationSteps } from "@/database/schema/schema.js"
+} from "@/database/database_schema_types.js"
+import { contactAutomationSteps } from "@/database/schema.js"
 
 import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
 

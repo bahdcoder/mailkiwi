@@ -11,11 +11,7 @@ import {
   createUser,
 } from "@/tests/mocks/auth/users.js"
 
-import {
-  broadcasts,
-  contacts,
-  segments,
-} from "@/database/schema/schema.js"
+import { broadcasts, contacts, segments } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
@@ -27,9 +23,7 @@ describe("@broadcasts send job", () => {
   }) => {
     const database = makeDatabase()
 
-    const { user, audience } = await createUser({
-      createMailerWithIdentity: true,
-    })
+    const { user, audience } = await createUser()
     const { audience: otherAudience } = await createUser()
 
     const broadcastId = await createBroadcastForUser(user, audience.id, {
@@ -98,9 +92,7 @@ describe("@broadcasts send job", () => {
     async ({ expect }) => {
       const database = makeDatabase()
 
-      const { user, audience } = await createUser({
-        createMailerWithIdentity: true,
-      })
+      const { user, audience } = await createUser()
       const { audience: otherAudience } = await createUser()
 
       const broadcastId = await createBroadcastForUser(user, audience.id, {
