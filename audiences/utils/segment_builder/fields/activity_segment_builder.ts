@@ -43,7 +43,7 @@ export class ActivitySegmentBuilder {
 
   build() {
     switch (this.condition.operation) {
-      case "in_time_window":
+      case "inTimeWindow":
         return [
           and(
             gte(this.forField(), this.timeWindowToDate()),

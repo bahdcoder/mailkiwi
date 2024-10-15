@@ -1,36 +1,112 @@
 import { SQL, and, eq, inArray } from "drizzle-orm"
 import { MySqlInsertOnDuplicateKeyUpdateConfig } from "drizzle-orm/mysql-core"
+import { DateTime } from "luxon"
 
 import type { CreateContactDto } from "@/audiences/dto/contacts/create_contact_dto.js"
+import { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 
 import type { DrizzleClient } from "@/database/client.js"
 import type {
   Contact,
+  ContactProperty,
+  ContactWithProperties,
   ContactWithTags,
   InsertContact,
+  UpdateSetAudienceInput,
   UpdateSetContactInput,
 } from "@/database/database_schema_types.js"
-import { contacts, tags, tagsOnContacts } from "@/database/schema.js"
+import {
+  contactProperties,
+  contacts,
+  tags,
+  tagsOnContacts,
+} from "@/database/schema.js"
+import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { guessValueType } from "@/shared/utils/helpers/guess_value_type.js"
+
+import { container } from "@/utils/typi.js"
 
 export class ContactRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 
-  findById(contactId: string) {
-    return this.database.query.contacts.findFirst({
-      where: eq(contacts.id, contactId),
+  protected hasManyProperties = hasMany(this.database, {
+    from: contacts,
+    to: contactProperties,
+    foreignKey: contactProperties.contactId,
+    primaryKey: contacts.id,
+    relationName: "properties",
+  })
+
+  async findById(contactId: string) {
+    const [contact] = await this.hasManyProperties((query) =>
+      query.where(eq(contacts.id, contactId)),
+    )
+
+    return contact
+  }
+
+  getContactPropertiesFromPayloadProperties(
+    contactId: string,
+    audienceId: string,
+    properties: UpdateContactDto["properties"] = {},
+  ) {
+    const contactPropertiesPayload: ContactProperty[] = []
+    const audienceKnownProperties: UpdateSetAudienceInput["knownProperties"] =
+      []
+
+    Object.keys(properties).forEach(function (property) {
+      const value = properties[property]
+
+      const type = guessValueType(value)
+
+      audienceKnownProperties.push({ type, name: property })
+
+      contactPropertiesPayload.push({
+        [type]:
+          type === "date"
+            ? DateTime.fromISO(value as string).toJSDate()
+            : value,
+        name: property,
+        contactId,
+        audienceId,
+      } as ContactProperty)
     })
+
+    return { contactPropertiesPayload, audienceKnownProperties }
   }
 
   async create(payload: CreateContactDto, audienceId: string) {
     const id = this.cuid()
-    await this.database
-      .insert(contacts)
-      .values({ ...payload, id, audienceId })
+
+    const properties = payload.properties ?? {}
+
+    const { contactPropertiesPayload, audienceKnownProperties } =
+      this.getContactPropertiesFromPayloadProperties(
+        id,
+        audienceId,
+        properties,
+      )
+
+    await this.database.transaction(async (trx) => {
+      await trx.insert(contacts).values({ ...payload, id, audienceId })
+
+      if (contactPropertiesPayload.length > 0) {
+        await trx
+          .insert(contactProperties)
+          .values(contactPropertiesPayload)
+
+        await container
+          .make(AudienceRepository)
+          .transaction(trx)
+          .updateKnownProperties(audienceId, audienceKnownProperties)
+      }
+    })
 
     return { id }
   }
@@ -47,7 +123,7 @@ export class ContactRepository extends BaseRepository {
     return contactsToCreate as Contact[]
   }
 
-  async update(
+  async updateById(
     contactId: string,
     updatedContact: Partial<UpdateSetContactInput>,
   ) {
@@ -55,10 +131,74 @@ export class ContactRepository extends BaseRepository {
       .update(contacts)
       .set(updatedContact)
       .where(eq(contacts.id, contactId))
+  }
 
-    // TODO: if new attributes found, sync them to the audience
+  async update(
+    contact: ContactWithProperties,
+    updatedContact: Partial<UpdateContactDto>,
+  ) {
+    const { properties, ...restOfContactDetails } = updatedContact
 
-    return { id: contactId }
+    const { contactPropertiesPayload, audienceKnownProperties } =
+      this.getContactPropertiesFromPayloadProperties(
+        contact.id,
+        contact.audienceId,
+        properties,
+      )
+
+    const existingPropertyNames = contact.properties.map(
+      (contactProperty) => contactProperty.name,
+    )
+
+    const propertiesToCreate = contactPropertiesPayload.filter(
+      (property) => !existingPropertyNames.includes(property.name),
+    )
+
+    const propertiesToUpdate = contactPropertiesPayload
+      .filter((property) => existingPropertyNames.includes(property.name))
+      .map((property) => ({
+        ...property,
+        id: contact.properties.find(
+          (contactProperty) => contactProperty.name === property.name,
+        )?.id,
+      }))
+
+    await this.database.transaction(async (trx) => {
+      for (const property of propertiesToUpdate) {
+        const { id: propertyId, contactId, ...values } = property
+
+        await trx
+          .update(contactProperties)
+          .set(values)
+          .where(
+            and(
+              eq(contactProperties.id, propertyId as string),
+              eq(contactProperties.contactId, contactId),
+            ),
+          )
+      }
+
+      for (const property of propertiesToCreate) {
+        const { contactId, ...values } = property
+
+        await trx
+          .insert(contactProperties)
+          .values({ ...values, contactId })
+      }
+
+      if (Object.keys(restOfContactDetails).length) {
+        await trx
+          .update(contacts)
+          .set(restOfContactDetails)
+          .where(eq(contacts.id, contact.id))
+      }
+
+      await container
+        .make(AudienceRepository)
+        .updateKnownProperties(contact.audienceId, audienceKnownProperties)
+    })
+
+    return { id: contact.id }
   }
 
   async attachTags(contactId: string, tagIds: string[]) {
@@ -105,6 +245,10 @@ export class ContactRepository extends BaseRepository {
       .select()
       .from(contacts)
       .where(filters)
+      .leftJoin(
+        contactProperties,
+        eq(contactProperties.contactId, contacts.id),
+      )
       .leftJoin(tagsOnContacts, eq(tagsOnContacts.contactId, contacts.id))
       .leftJoin(tags, eq(tags.id, tagsOnContacts.tagId))
 

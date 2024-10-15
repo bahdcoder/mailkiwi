@@ -9,6 +9,7 @@ import {
   automations,
   broadcasts,
   contactImports,
+  contactProperties,
   contacts,
   emailContents,
   emailSendEvents,
@@ -43,8 +44,9 @@ export const refreshDatabase = async () => {
   await database.delete(tagsOnContacts)
   await database.delete(broadcasts)
   await database.delete(segments)
-  await database.delete(contactImports)
+  await database.delete(contactProperties)
   await database.delete(contacts)
+  await database.delete(contactImports)
   await database.delete(automationSteps)
   await database.delete(automations)
   await database.delete(tags)

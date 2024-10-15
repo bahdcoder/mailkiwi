@@ -32,8 +32,8 @@ export class UpdateContactAttributesAutomationStepRunner
 
     const contactRepository = container.resolve(ContactRepository)
 
-    await contactRepository.update(this.contact.id, {
-      attributes: configuration.attributes,
-    })
+    // await contactRepository.update(this.contact, {
+    //   properties: configuration.attributes,
+    // })
   }
 }

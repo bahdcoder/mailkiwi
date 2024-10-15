@@ -186,6 +186,3 @@ export class Paginator<RowType extends object = any> {
     }
   }
 }
-
-// new Paginator()
-// new Paginator(drizzleModel).orderBy().paginate(1, 10)

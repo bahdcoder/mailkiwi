@@ -1,0 +1,51 @@
+services:
+  mysql:
+    image: mysql:latest
+    ports:
+      - "5567:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.7.3-alpine
+    ports:
+      - "5568:8123"
+      - "5569:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    environment:
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+      CLICKHOUSE_PASSWORD: password
+      CLICKHOUSE_USER: kibamail
+
+  redis:
+    image: redis:latest
+    command: redis-server --appendonly yes
+    ports:
+      - "5570:6379"
+    volumes:
+      - redis_data:/data
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    ports:
+      - 5571:8025
+      - 5572:1025
+    environment:
+      MP_MAX_MESSAGES: 50000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+volumes:
+  mysql_data:
+  clickhouse_data:
+  redis_data:

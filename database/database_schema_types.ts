@@ -5,6 +5,7 @@ import type {
   automationSteps,
   broadcasts,
   contactImports,
+  contactProperties,
   contacts,
   emailContents,
   emailSendEvents,
@@ -28,6 +29,7 @@ export type EmailSend = InferSelectModel<typeof emailSends>
 export type Tag = InferSelectModel<typeof tags>
 export type Contact = InferSelectModel<typeof contacts>
 export type User = InferSelectModel<typeof users>
+export type ContactProperty = InferSelectModel<typeof contactProperties>
 export type Broadcast = InferSelectModel<typeof broadcasts>
 export type BroadcastWithoutContent = Omit<
   Broadcast,
@@ -122,4 +124,8 @@ export type ContactWithTags = Contact & {
 
 export type TeamWithSendingDomains = Team & {
   sendingDomains: SendingDomain[]
+}
+
+export type ContactWithProperties = Contact & {
+  properties: ContactProperty[]
 }

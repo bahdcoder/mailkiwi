@@ -4,7 +4,7 @@ import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audienc
 
 import type { DrizzleClient } from "@/database/client.js"
 import { UpdateSetAudienceInput } from "@/database/database_schema_types.js"
-import { audiences } from "@/database/schema.js"
+import { KnownAudienceProperty, audiences } from "@/database/schema.js"
 
 import { ContainerKey } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
@@ -53,5 +53,33 @@ export class AudienceRepository extends BaseRepository {
       .where(eq(audiences.id, audienceId))
 
     return { id: audienceId }
+  }
+
+  async updateKnownProperties(
+    audienceId: string,
+    knownProperties: KnownAudienceProperty[],
+  ) {
+    const audience = await this.findById(audienceId)
+
+    if (!audience) {
+      return
+    }
+
+    const existingPropertiesNames =
+      audience.knownProperties?.map((property) => property.name) ?? []
+
+    const propertiesToBeCreated = knownProperties.filter(
+      (property) => !existingPropertiesNames.includes(property.name),
+    )
+
+    await this.database
+      .update(audiences)
+      .set({
+        knownProperties: [
+          ...(audience.knownProperties ?? []),
+          ...propertiesToBeCreated,
+        ],
+      })
+      .where(eq(audiences.id, audienceId))
   }
 }

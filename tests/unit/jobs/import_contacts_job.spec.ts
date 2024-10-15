@@ -1,12 +1,19 @@
-import { count, desc, eq } from "drizzle-orm"
+import { asc, count, desc, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import { setupImport } from "@/tests/integration/audiences/contacts.spec.js"
+import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 
-import { contacts, tagsOnContacts } from "@/database/schema.js"
+import {
+  contactProperties,
+  contacts,
+  tagsOnContacts,
+} from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 
@@ -17,7 +24,7 @@ describe("@contacts import job", () => {
     "reads the csv content from storage and syncs all values to contacts",
     { timeout: 8000 },
     async ({ expect }) => {
-      const { contactImport } = await setupImport(
+      const { contactImport, audience } = await setupImport(
         ".." + "/" + ".." + "/" + "audiences/mocks/contacts.csv",
         true,
       )
@@ -47,22 +54,31 @@ describe("@contacts import job", () => {
         .where(
           eq(contacts.audienceId, contactImport?.audienceId as string),
         )
-        .orderBy(desc(contacts.email))
+        .orderBy(asc(contacts.email))
         .limit(1)
+
+      const contactWithProperties = await container
+        .make(ContactRepository)
+        .findById(contact.id)
 
       expect(contact.subscribedAt).toBe(null)
       expect(contact.email).toBeDefined()
       expect(contact.firstName).toBeDefined()
       expect(contact.lastName).toBeDefined()
 
-      expect(contact.attributes?.["City"]).toBeDefined()
-      expect(contact.attributes?.["Index"]).toBeDefined()
-      expect(contact.attributes?.["Company"]).toBeDefined()
-      expect(contact.attributes?.["Country"]).toBeDefined()
-
-      expect(contact.attributes?.["Website"]).toBeDefined()
-      expect(contact.attributes?.["Customer Id"]).toBeDefined()
-      expect(contact.attributes?.["Subscription Date"]).toBeDefined()
+      expect(
+        contactWithProperties.properties.map((property) => property.name),
+      ).toEqual([
+        "Index",
+        "Customer Id",
+        "Company",
+        "City",
+        "Country",
+        "Phone 1",
+        "Phone 2",
+        "Subscription Date",
+        "Website",
+      ])
 
       expect(totalContacts).toEqual(10000) // total contacts in test csv file
 
@@ -79,6 +95,22 @@ describe("@contacts import job", () => {
         .from(tagsOnContacts)
 
       expect(contactsTags).toBeGreaterThanOrEqual(30000) // 10,000 contacts * 3 new tags
+
+      const updatedAudience = await container
+        .make(AudienceRepository)
+        .findById(audience.id)
+
+      expect(updatedAudience.knownProperties).toEqual([
+        { name: "Index", type: "float" },
+        { name: "Customer Id", type: "text" },
+        { name: "Company", type: "text" },
+        { name: "City", type: "text" },
+        { name: "Country", type: "text" },
+        { name: "Phone 1", type: "text" },
+        { name: "Phone 2", type: "text" },
+        { name: "Subscription Date", type: "text" },
+        { name: "Website", type: "text" },
+      ])
     },
   )
 

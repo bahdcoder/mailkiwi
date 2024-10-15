@@ -9,6 +9,7 @@ import type {
 } from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
 
 import type {
+  Audience,
   AutomationStep,
   Contact,
 } from "@/database/database_schema_types.js"
@@ -26,6 +27,7 @@ export class AddTagAutomationStepRunner
   constructor(
     private automationStep: AutomationStep,
     private contact: Contact,
+    private audience: Audience,
   ) {}
 
   async run({ database }: AutomationStepRunnerContext) {
@@ -63,7 +65,10 @@ export class AddTagAutomationStepRunner
       .where(
         and(
           eq(contacts.id, this.contact.id),
-          new SegmentBuilder(configuration.filterGroups).build(),
+          new SegmentBuilder(
+            configuration.filterGroups,
+            this.audience,
+          ).build(),
         ),
       )
       .limit(1)

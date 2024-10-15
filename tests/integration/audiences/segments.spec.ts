@@ -3,13 +3,20 @@ import { eq } from "drizzle-orm"
 import { DateTime } from "luxon"
 import { describe, test } from "vitest"
 
+import { AllowedFilterFieldPickList } from "@/audiences/dto/segments/create_segment_dto.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { contacts, segments, tags } from "@/database/schema.js"
+import {
+  contactProperties,
+  contacts,
+  segments,
+  tags,
+} from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
@@ -117,7 +124,7 @@ describe("@audience segments", () => {
       errors: [
         {
           message:
-            'Invalid type: Expected "email" | "firstName" | "lastName" | "subscribedAt" | "tags" but received "fame"',
+            "Only the following fields are allowed: email, firstName, lastName, subscribedAt, tags, lastSentBroadcastEmailAt, lastSentAutomationEmailAt, lastOpenedBroadcastEmailAt, lastOpenedAutomationEmailAt, lastClickedBroadcastEmailLinkAt, lastClickedAutomationEmailLinkAt, properties.*",
           field: "filterGroups",
         },
       ],
@@ -400,7 +407,7 @@ describe("@audience segments", () => {
     expect(json.data).toHaveLength(countForNonSegment)
   })
 
-  test.only("can select contacts for a specific segment: contact last clicked on a broadcast within the past 3 months", async ({
+  test("can select contacts for a specific segment: contact last clicked on a broadcast within the past 3 months", async ({
     expect,
   }) => {
     const database = makeDatabase()
@@ -466,7 +473,7 @@ describe("@audience segments", () => {
             conditions: [
               {
                 field: "lastClickedBroadcastEmailLinkAt",
-                operation: "in_time_window",
+                operation: "inTimeWindow",
                 value: "last_90_days",
               },
             ],
@@ -486,5 +493,132 @@ describe("@audience segments", () => {
 
     expect(json.total).toBe(countForSegment)
     expect(json.data).toHaveLength(perPage)
+  })
+  test("can select contacts for a specific segment: filter by queries on property value", async ({
+    expect,
+  }) => {
+    const database = makeDatabase()
+
+    const { user, audience } = await createUser()
+
+    const countForNonSegment = faker.number.int({
+      min: 100,
+      max: 400,
+    })
+
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(
+          () =>
+            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          {
+            count: countForNonSegment,
+          },
+        )
+        .map(() => createFakeContact(audience.id)),
+    )
+
+    const countForSegment = faker.number.int({
+      min: 800,
+      max: 1700,
+    })
+
+    const segmentContactIds = faker.helpers.multiple(cuid, {
+      count: countForSegment,
+    })
+
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(
+          () =>
+            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          {
+            count: countForSegment,
+          },
+        )
+        .map((_, idx) =>
+          createFakeContact(audience.id, {
+            id: segmentContactIds[idx],
+            lastClickedBroadcastEmailLinkAt: DateTime.now()
+              .minus({ days: 55 })
+              .toJSDate(),
+          }),
+        ),
+    )
+
+    const countForSegmentProperties = 125
+
+    await container
+      .make(AudienceRepository)
+      .updateKnownProperties(audience.id, [
+        {
+          name: "age",
+          type: "float",
+        },
+        {
+          name: "favoriteColor",
+          type: "text",
+        },
+      ])
+
+    await database.insert(contactProperties).values(
+      faker.helpers
+        .multiple(() => ({}), { count: countForSegmentProperties })
+        .map((_, idx) => ({
+          id: cuid(),
+          name: "age",
+          contactId: segmentContactIds[idx],
+          float: 26,
+          audienceId: audience.id,
+        })),
+    )
+
+    await database.insert(contactProperties).values(
+      faker.helpers
+        .multiple(() => ({}), { count: countForSegmentProperties })
+        .map((_, idx) => ({
+          id: cuid(),
+          name: "favoriteColor",
+          contactId: segmentContactIds[idx],
+          text: faker.lorem.words(3),
+          audienceId: audience.id,
+        })),
+    )
+
+    const segmentId = cuid()
+
+    await database.insert(segments).values({
+      id: segmentId,
+      audienceId: audience.id,
+      name: faker.lorem.words(3),
+      filterGroups: {
+        type: "AND",
+        groups: [
+          {
+            type: "AND",
+            conditions: [
+              {
+                field: "properties.age" as any,
+                operation: "gte",
+                value: "25",
+              },
+            ],
+          },
+        ],
+      },
+    })
+
+    const perPage = 1
+
+    const response = await makeRequestAsUser(user, {
+      method: "GET",
+      path: `/audiences/${audience.id}/contacts?segmentId=${segmentId}&page=1&perPage=${perPage}`,
+    })
+
+    const json = await response.json()
+
+    expect(json.total).toBe(countForSegmentProperties)
+
+    expect(json.data?.[0]?.properties?.[0]?.float).toBe(26)
   })
 })

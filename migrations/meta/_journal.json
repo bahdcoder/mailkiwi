@@ -5,8 +5,22 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1728930954721,
-      "tag": "0000_wealthy_vapor",
+      "when": 1728956150044,
+      "tag": "0000_init_kibamail_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1728977070765,
+      "tag": "0001_add_unique_constraint_to_contact_properties",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1728998380812,
+      "tag": "0002_add_audience_id_to_contact_properties_table",
       "breakpoints": true
     }
   ]

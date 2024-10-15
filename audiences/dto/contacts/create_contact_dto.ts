@@ -1,6 +1,8 @@
 import {
   type InferInput,
   array,
+  boolean,
+  date,
   number,
   object,
   optional,
@@ -13,11 +15,8 @@ export const CreateContactSchema = object({
   email: string(),
   firstName: optional(string()),
   lastName: optional(string()),
-  attributes: optional(
-    record(
-      string(),
-      union([string(), array(string()), number(), array(number())]),
-    ),
+  properties: optional(
+    record(string(), union([string(), number(), boolean(), date()])),
   ),
 })
 

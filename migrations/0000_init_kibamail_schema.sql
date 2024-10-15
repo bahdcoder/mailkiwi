@@ -26,7 +26,7 @@ CREATE TABLE `audiences` (
 	`id` binary(16) NOT NULL,
 	`name` varchar(50) NOT NULL,
 	`teamId` binary(16) NOT NULL,
-	`knownAttributes` json,
+	`knownProperties` json,
 	CONSTRAINT `audiences_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -99,6 +99,17 @@ CREATE TABLE `contactImports` (
 	`attributesMap` json NOT NULL,
 	CONSTRAINT `contactImports_id` PRIMARY KEY(`id`),
 	CONSTRAINT `contactImports_fileIdentifier_unique` UNIQUE(`fileIdentifier`)
+);
+--> statement-breakpoint
+CREATE TABLE `contactProperties` (
+	`id` binary(16) NOT NULL,
+	`name` varchar(256) NOT NULL,
+	`boolean` boolean,
+	`date` timestamp,
+	`text` varchar(256),
+	`float` float,
+	`contactId` binary(16) NOT NULL,
+	CONSTRAINT `contactProperties_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `contacts` (
@@ -324,6 +335,7 @@ ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_winningAbTestVariantId_abTes
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_automationStepId_automationSteps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automationSteps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactImports` ADD CONSTRAINT `contactImports_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contactProperties` ADD CONSTRAINT `contactProperties_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_contactImportId_contactImports_id_fk` FOREIGN KEY (`contactImportId`) REFERENCES `contactImports`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_emailSendId_emailSends_id_fk` FOREIGN KEY (`emailSendId`) REFERENCES `emailSends`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint

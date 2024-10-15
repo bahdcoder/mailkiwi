@@ -27,12 +27,16 @@ describe("@contacts exports job", () => {
       const database = makeDatabase()
       const redis = makeRedis()
 
-      await container
-        .resolve(AudienceRepository)
-        .update(
-          { knownAttributesKeys: ["Phone", "Country Code", "Country"] },
-          audience.id,
-        )
+      await container.resolve(AudienceRepository).update(
+        {
+          knownProperties: [
+            { name: "Phone", type: "text" },
+            { name: "Country Code", type: "text" },
+            { name: "Country", type: "text" },
+          ],
+        },
+        audience.id,
+      )
 
       const tagsToCreate = [
         { name: faker.string.uuid(), audienceId: audience.id },

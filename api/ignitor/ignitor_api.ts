@@ -7,7 +7,6 @@ import { SmtpAuthController } from "@/kumomta/controllers/smtp_auth_controller.j
 import { TrackingController } from "@/kumomta/controllers/tracking_controller.js"
 import { ClickTrackingController } from "@/tracking/controllers/click_tracking_controller.js"
 import { OpenTrackingController } from "@/tracking/controllers/open_tracking_controller.js"
-import { RootController } from "@/views/controllers/root_controller.js"
 import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.js"
 import type { Redis } from "ioredis"
 
@@ -114,7 +113,6 @@ export class Ignitor {
     container.resolve(TeamMembershipController)
     container.resolve(MailerWebhooksContorller)
     container.resolve(SendingDomainController)
-    container.resolve(RootController)
     container.resolve(MtaLogsController)
     container.resolve(DkimController)
     container.resolve(SmtpAuthController)

@@ -1,5 +1,5 @@
 import { command } from "@drizzle-team/brocli"
-import { inArray } from "drizzle-orm"
+import { inArray, sql } from "drizzle-orm"
 
 import { InsertSendingSource } from "@/database/database_schema_types.js"
 import { sendingSources } from "@/database/schema.js"
@@ -74,6 +74,13 @@ export const seedDevSendingSourcesCommand = command({
       return
     }
 
-    await database.insert(sendingSources).values(sendingSourcesValues)
+    await database
+      .insert(sendingSources)
+      .values(sendingSourcesValues)
+      .onDuplicateKeyUpdate({
+        set: {
+          address: sql`values(${sendingSources.address})`,
+        },
+      })
   },
 })

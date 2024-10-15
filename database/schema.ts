@@ -3,6 +3,7 @@ import {
   type AnyMySqlColumn,
   boolean,
   customType,
+  float,
   index,
   int,
   json,
@@ -62,6 +63,11 @@ export type ContactFilterGroup = {
 export type ContactFilterGroups = {
   type: "AND" | "OR"
   groups: ContactFilterGroup[]
+}
+
+export type KnownAudienceProperty = {
+  name: string
+  type: "boolean" | "float" | "date" | "text"
 }
 
 export const users = mysqlTable("users", {
@@ -210,7 +216,8 @@ export const audiences = mysqlTable("audiences", {
   teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
-  knownAttributesKeys: json("knownAttributes").$type<string[]>(),
+  knownProperties:
+    json("knownProperties").$type<KnownAudienceProperty[]>(),
 })
 
 export const contactImports = mysqlTable("contactImports", {
@@ -290,6 +297,30 @@ export const contacts = mysqlTable(
     ContactEmailAudienceIdKey: unique("ContactEmailAudienceIdKey").on(
       table.email,
       table.audienceId,
+    ),
+  }),
+)
+
+export const contactProperties = mysqlTable(
+  "contactProperties",
+  {
+    id,
+    name: varchar("name", { length: 256 }).notNull(),
+    boolean: boolean("boolean"),
+    date: timestamp("date"),
+    text: varchar("text", { length: 256 }),
+    float: float("float"),
+    contactId: primaryKeyCuid("contactId")
+      .references(() => contacts.id)
+      .notNull(),
+    audienceId: primaryKeyCuid("audienceId")
+      .references(() => audiences.id)
+      .notNull(),
+  },
+  (table) => ({
+    propertyNameContactIdKey: unique("propertyNameContactIdKey").on(
+      table.name,
+      table.contactId,
     ),
   }),
 )

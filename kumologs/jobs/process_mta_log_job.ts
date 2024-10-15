@@ -165,7 +165,7 @@ export class LogTypeHandler {
       if (isEngageProduct) {
         const contactId = log?.headers?.[apiEnv.emailHeaders.contactId]
         // trigger update to contact
-        await contactRepository.transaction(trx).update(contactId, {
+        await contactRepository.transaction(trx).updateById(contactId, {
           ...(log.type === "Click"
             ? {
                 lastClickedBroadcastEmailLinkAt: DateTime.now().toJSDate(),

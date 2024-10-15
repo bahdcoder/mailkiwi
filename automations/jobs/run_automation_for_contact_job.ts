@@ -1,7 +1,10 @@
 import { RunAutomationStepForContactJob } from "./run_automation_step_for_contact_job.js"
 import { and, eq } from "drizzle-orm"
 
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
+
+import { AutomationRepository } from "@/automations/repositories/automation_repository.js"
 
 import {
   type TRIGGER_CONFIGURATION,
@@ -13,6 +16,8 @@ import {
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { Queue } from "@/shared/queue/queue.js"
+
+import { container } from "@/utils/typi.js"
 
 export interface RunAutomationForContactJobPayload {
   automationId: string
@@ -33,6 +38,11 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
     payload,
   }: JobContext<RunAutomationForContactJobPayload>) {
     // check if contact matches the trigger for this automation.
+
+    const automation = await container
+      .make(AutomationRepository)
+      .findById(payload.automationId)
+
     const trigger = await database.query.automationSteps.findFirst({
       where: and(
         eq(automationSteps.type, "TRIGGER"),
@@ -46,11 +56,16 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
       )
     }
 
+    const audience = await container
+      .make(AudienceRepository)
+      .findById(automation.audienceId)
+
     const contact = await database.query.contacts.findFirst({
       where: and(
         eq(contacts.id, payload.contactId),
         new SegmentBuilder(
           (trigger.configuration as TRIGGER_CONFIGURATION)?.filterGroups,
+          audience,
         ).build(),
       ),
     })

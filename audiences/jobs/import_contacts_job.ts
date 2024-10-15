@@ -1,17 +1,25 @@
 import { makeMinioClient } from "@/minio/minio_client.js"
 import CsvParser from "csv-parser"
-import { sql } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 import { DateTime } from "luxon"
 
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
-import { contacts, tagsOnContacts } from "@/database/schema.js"
+import { ContactProperty } from "@/database/database_schema_types.js"
+import {
+  KnownAudienceProperty,
+  contactProperties,
+  contacts,
+  tagsOnContacts,
+} from "@/database/schema.js"
 
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { guessValueType } from "@/shared/utils/helpers/guess_value_type.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -26,6 +34,39 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
 
   static get queue() {
     return AVAILABLE_QUEUES.contacts
+  }
+
+  guessCsvCustomProperties(properties: string[], rows: any[]) {
+    return properties.map((property) => {
+      const guessedTypesFrequency: Record<string, number> = {}
+
+      for (const row of rows) {
+        const type = guessValueType(row[property])
+
+        guessedTypesFrequency[type] =
+          (guessedTypesFrequency[type] || 0) + 1
+      }
+
+      function getKeyWithHighestValue(record: Record<string, number>) {
+        let maxKey: string | null = null
+        let maxValue = -Infinity // Initialize with the smallest possible value
+
+        // Iterate over the object's keys and values
+        for (const [key, value] of Object.entries(record)) {
+          if (value > maxValue) {
+            maxValue = value
+            maxKey = key
+          }
+        }
+
+        return maxKey as KnownAudienceProperty["type"]
+      }
+
+      return {
+        name: property,
+        type: getKeyWithHighestValue(guessedTypesFrequency),
+      }
+    })
   }
 
   async handle({
@@ -62,9 +103,21 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
         })
     })
 
+    const knownProperties = this.guessCsvCustomProperties(
+      contactImport.attributesMap.attributes,
+      rows,
+    )
+
+    const contactRepository = container.make(ContactRepository)
+
     const chunkSize = 1000
 
     await database.transaction(async (tx) => {
+      await container
+        .make(AudienceRepository)
+        .transaction(tx)
+        .updateKnownProperties(contactImport.audienceId, knownProperties)
+
       const tagsToCreate = contactImport.attributesMap.tags.map((tag) => ({
         id: cuid(),
         name: tag,
@@ -85,39 +138,72 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
       for (let i = 0; i < rows.length; i += chunkSize) {
         const batch = rows.slice(i, i + chunkSize)
 
+        const allContactProperties: ContactProperty[] = []
+
         const values = batch.map((row) => {
           const attributes: Record<string, string> = {}
+
+          const contactId = cuid()
 
           for (const attribute of contactImport.attributesMap.attributes) {
             attributes[attribute] = row[attribute]
           }
 
+          const payloadProperties =
+            contactRepository.getContactPropertiesFromPayloadProperties(
+              contactId,
+              contactImport.audienceId,
+              attributes,
+            )
+          allContactProperties.push(
+            ...payloadProperties.contactPropertiesPayload,
+          )
+
           return {
-            id: cuid(),
+            id: contactId,
             email: row[contactImport.attributesMap.email],
             firstName: row[contactImport.attributesMap.firstName],
             lastName: row[contactImport.attributesMap.lastName],
-            attributes,
             subscribedAt: contactImport.subscribeAllContacts
               ? DateTime.now().toJSDate()
               : undefined,
             audienceId: contactImport.audienceId,
+            contactImportId: payload.contactImportId,
           }
         })
 
-        const createdContacts = await container
-          .make(ContactRepository)
+        const createdContacts = await contactRepository
           .transaction(tx)
           .bulkCreate(values, {
             set: contactImport.updateExistingContacts
               ? {
                   firstName: sql`values(${contacts.firstName})`,
                   lastName: sql`values(${contacts.lastName})`,
-                  attributes: sql`values(${contacts.attributes})`,
                   email: sql`${contacts.email}`, // no change
                 }
               : {},
           })
+
+        for (let z = 0; z < allContactProperties.length; z += chunkSize) {
+          const contactPropertiesBatch = allContactProperties.slice(
+            z,
+            z + chunkSize,
+          )
+
+          if (contactPropertiesBatch.length > 0) {
+            await tx
+              .insert(contactProperties)
+              .values(contactPropertiesBatch)
+              .onDuplicateKeyUpdate({
+                set: {
+                  float: sql`values(${contactProperties.float})`,
+                  date: sql`values(${contactProperties.date})`,
+                  text: sql`values(${contactProperties.text})`,
+                  boolean: sql`values(${contactProperties.boolean})`,
+                },
+              })
+          }
+        }
 
         const contactIds = createdContacts.map((value) => value.id)
 

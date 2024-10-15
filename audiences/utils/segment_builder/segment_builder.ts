@@ -4,11 +4,16 @@ import { type SQL, type SQLWrapper, and, or } from "drizzle-orm"
 
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 import { ActivitySegmentBuilder } from "@/audiences/utils/segment_builder/fields/activity_segment_builder.js"
+import { PropertiesSegmentBuilder } from "@/audiences/utils/segment_builder/fields/properties_segment_builder.js"
 
+import { Audience } from "@/database/database_schema_types.js"
 import { contacts } from "@/database/schema.js"
 
 export class SegmentBuilder {
-  constructor(private groups: CreateSegmentDto["filterGroups"]) {}
+  constructor(
+    private groups: CreateSegmentDto["filterGroups"],
+    private audience: Audience,
+  ) {}
 
   protected buildConditions(
     conditions: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"],
@@ -16,6 +21,16 @@ export class SegmentBuilder {
     const queryConditions: SQLWrapper[] = []
 
     for (const condition of conditions) {
+      if (condition.field.startsWith("properties.")) {
+        queryConditions.push(
+          ...new PropertiesSegmentBuilder(
+            condition,
+            this.audience,
+          ).build(),
+        )
+        break
+      }
+
       switch (condition.field) {
         case "email":
         case "firstName":
@@ -71,8 +86,6 @@ export class SegmentBuilder {
         queryConditions.push(or(...sqlConditions) as SQL)
       }
     }
-
-    // d({ queryConditions })
 
     if (this.groups.type === "OR") {
       return or(...queryConditions) as SQL

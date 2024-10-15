@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "e9dc8b61-5a50-440e-9857-6c283d59b9b7",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "ff76ac68-8317-42c4-8095-e8db09e555a7",
+  "prevId": "e9dc8b61-5a50-440e-9857-6c283d59b9b7",
   "tables": {
     "abTestVariants": {
       "name": "abTestVariants",
@@ -873,7 +873,12 @@
           "columns": ["id"]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "propertyNameContactIdKey": {
+          "name": "propertyNameContactIdKey",
+          "columns": ["name", "contactId"]
+        }
+      }
     },
     "contacts": {
       "name": "contacts",

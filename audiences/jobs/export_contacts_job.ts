@@ -43,34 +43,34 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
   private databaseColumnsToCsvHeaders(audience: Audience) {
     return [
       {
-        field: "firstName",
+        field: { name: "firstName", type: "text" },
         formatter(value: string) {
           return value
         },
         isAttribute: false,
       },
       {
-        field: "lastName",
+        field: { name: "lastName", type: "text" },
         formatter(value: string) {
           return value
         },
         isAttribute: false,
       },
       {
-        field: "email",
+        field: { name: "email", type: "text" },
         formatter(value: string) {
           return value
         },
         isAttribute: false,
       },
       {
-        field: "subscribedAt",
+        field: { name: "subscribedAt", type: "date" },
         formatter(value: Date) {
           return DateTime.fromJSDate(value).toFormat("yyyy-mm-dd hh:mm:ss")
         },
         isAttribute: false,
       },
-      ...(audience.knownAttributesKeys ?? []).map((attributeKey) => ({
+      ...(audience.knownProperties ?? []).map((attributeKey) => ({
         field: attributeKey,
         formatter(value: string) {
           return value
@@ -90,9 +90,13 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
       this.databaseColumnsToCsvHeaders(audience).forEach(
         ({ field, formatter, isAttribute }) => {
           if (isAttribute) {
-            fields[field] = formatter(contact?.attributes?.[field])
+            fields[field.name] = formatter(
+              contact?.attributes?.[field.name],
+            )
           } else {
-            fields[sentenceCase(field)] = formatter(contact[field])
+            fields[sentenceCase(field.name)] = formatter(
+              contact[field.name],
+            )
           }
         },
       )
@@ -109,11 +113,15 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     database,
     payload,
   }: JobContext<ExportContactsJobPayload>) {
+    const audience = await container
+      .make(AudienceRepository)
+      .findById(payload.audienceId)
+
     const filteredContacts = await container
       .make(ContactRepository)
       .findAllContactsWithTags(
         and(
-          new SegmentBuilder(payload.filterGroups).build(),
+          new SegmentBuilder(payload.filterGroups, audience).build(),
           eq(contacts.audienceId, payload.audienceId),
         ),
       )
@@ -121,10 +129,6 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     if (filteredContacts.length === 0) {
       return this.done("No contacts to export.")
     }
-
-    const audience = await container
-      .make(AudienceRepository)
-      .findById(payload.audienceId)
 
     if (!audience) {
       return this.fail(`The audience could not be found.`)

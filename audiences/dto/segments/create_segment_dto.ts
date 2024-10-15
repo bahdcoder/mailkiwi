@@ -1,6 +1,7 @@
 import {
   type InferInput,
   array,
+  check,
   maxLength,
   minLength,
   nonEmpty,
@@ -13,26 +14,45 @@ import {
   union,
 } from "valibot"
 
+const allowedFilterFields = [
+  "email",
+  "firstName",
+  "lastName",
+  "subscribedAt",
+  "tags",
+
+  // sent events
+  "lastSentBroadcastEmailAt",
+  "lastSentAutomationEmailAt",
+
+  // open events
+  "lastOpenedBroadcastEmailAt",
+  "lastOpenedAutomationEmailAt",
+
+  // click events
+  "lastClickedBroadcastEmailLinkAt",
+  "lastClickedAutomationEmailLinkAt",
+] as const
+
+type AllowedFilterField = (typeof allowedFilterFields)[number]
+
+const AllowedFilterFieldPickList = picklist(allowedFilterFields)
+
+export type AllowedFilterFieldPickList = typeof AllowedFilterFieldPickList
+
 export const FilterConditionSchema = object({
-  field: picklist([
-    "email",
-    "firstName",
-    "lastName",
-    "subscribedAt",
-    "tags",
-
-    // sent events
-    "lastSentBroadcastEmailAt",
-    "lastSentAutomationEmailAt",
-
-    // open events
-    "lastOpenedBroadcastEmailAt",
-    "lastOpenedAutomationEmailAt",
-
-    // click events
-    "lastClickedBroadcastEmailLinkAt",
-    "lastClickedAutomationEmailLinkAt",
-  ]),
+  field: pipe(
+    string(),
+    check(
+      function (input) {
+        return (
+          allowedFilterFields.includes(input as AllowedFilterField) ||
+          input.startsWith("properties.")
+        )
+      },
+      `Only the following fields are allowed: ${allowedFilterFields.join(", ")}, properties.*`,
+    ),
+  ) as unknown as AllowedFilterFieldPickList,
   operation: picklist([
     "eq",
     "ne",
@@ -46,7 +66,7 @@ export const FilterConditionSchema = object({
     "endsWith",
     "contains",
     "notContains",
-    "in_time_window",
+    "inTimeWindow",
   ]),
   value: union([string(), array(string()), number(), array(number())]),
 })

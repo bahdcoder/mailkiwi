@@ -1,6 +1,8 @@
 import {
   type InferInput,
   array,
+  boolean,
+  date,
   number,
   objectAsync,
   optional,
@@ -15,11 +17,8 @@ export const UpdateContactDto = objectAsync({
   firstName: optional(string()),
   lastName: optional(string()),
   avatarUrl: optional(pipe(string(), url())),
-  attributes: optional(
-    record(
-      string(),
-      union([string(), array(string()), number(), array(number())]),
-    ),
+  properties: optional(
+    record(string(), union([string(), number(), date(), boolean()])),
   ),
 })
 

@@ -9,7 +9,12 @@ import type {
   Contact,
   Segment,
 } from "@/database/database_schema_types.js"
-import { contacts, tags, tagsOnContacts } from "@/database/schema.js"
+import {
+  contactProperties,
+  contacts,
+  tags,
+  tagsOnContacts,
+} from "@/database/schema.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
@@ -65,7 +70,10 @@ export class GetContactsAction {
         ])
 
       queryConditions.push(
-        new SegmentBuilder(segment.filterGroups).build(),
+        new SegmentBuilder(
+          segment.filterGroups,
+          audience as Audience,
+        ).build(),
       )
     }
 
@@ -73,25 +81,41 @@ export class GetContactsAction {
       .queryConditions([...queryConditions])
       .size(perPage ?? 10)
       .page(page ?? 1)
-      .transformRows(async (rows) => {
-        const tagsForContacts = await this.database
-          .selectDistinct()
-          .from(tagsOnContacts)
-          .innerJoin(tags, eq(tagsOnContacts.tagId, tags.id))
-          .where(
-            and(
-              inArray(
-                tagsOnContacts.contactId,
-                rows.map((row) => row.id),
+      .transformRows(async (rows: any[]) => {
+        const [tagsForContacts, allContactProperties] = await Promise.all([
+          this.database
+            .selectDistinct()
+            .from(tagsOnContacts)
+            .innerJoin(tags, eq(tagsOnContacts.tagId, tags.id))
+            .where(
+              and(
+                inArray(
+                  tagsOnContacts.contactId,
+                  rows.map((row) => row.id),
+                ),
               ),
             ),
-          )
+          this.database
+            .select()
+            .from(contactProperties)
+            .where(
+              and(
+                inArray(
+                  contactProperties.contactId,
+                  rows.map((row) => row.id),
+                ),
+              ),
+            ),
+        ])
 
         return rows.map((row) => ({
           ...row,
           tags: tagsForContacts
             .filter((tag) => tag.tagsOnContacts?.contactId === row.id)
             .map((relation) => relation.tags),
+          properties: allContactProperties.filter(
+            (property) => property.contactId === row.id,
+          ),
         }))
       })
       .paginate()

@@ -3,6 +3,7 @@ import { type SQLWrapper, and, eq } from "drizzle-orm"
 
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
 import { broadcasts, contacts } from "@/database/schema.js"
@@ -40,11 +41,18 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
       )
     }
 
+    const audience = await container
+      .make(AudienceRepository)
+      .findById(broadcast.audienceId)
+
     const segmentQueryConditions: SQLWrapper[] = []
 
     if (broadcast.segment) {
       segmentQueryConditions.push(
-        new SegmentBuilder(broadcast.segment.filterGroups).build(),
+        new SegmentBuilder(
+          broadcast.segment.filterGroups,
+          audience,
+        ).build(),
       )
     }
 

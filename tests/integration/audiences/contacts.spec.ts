@@ -6,7 +6,9 @@ import { resolve } from "path"
 import { describe, test } from "vitest"
 
 import { CreateTagAction } from "@/audiences/actions/tags/create_tag_action.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
@@ -18,7 +20,11 @@ import {
 } from "@/tests/utils/http.js"
 
 import { ContactImport } from "@/database/database_schema_types.js"
-import { contactImports, contacts } from "@/database/schema.js"
+import {
+  contactImports,
+  contactProperties,
+  contacts,
+} from "@/database/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
@@ -110,15 +116,18 @@ export const setupImport = async (
 }
 
 describe("@contacts", () => {
-  test("can create a contact for an audience", async ({ expect }) => {
+  test.only("can create a contact for an audience", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const database = makeDatabase()
 
     const contactPayload = {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       email: faker.internet.exampleEmail(),
       audienceId: audience.id,
+      properties: {
+        totalPurchasesMade: 53,
+        lastLoginAt: new Date().toISOString(),
+      },
     }
 
     const response = await makeRequestAsUser(user, {
@@ -129,15 +138,34 @@ describe("@contacts", () => {
 
     expect(response.status).toEqual(200)
 
-    const savedContact = await database.query.contacts.findFirst({
-      where: and(
-        eq(contacts.firstName, contactPayload.firstName),
-        eq(contacts.lastName, contactPayload.lastName),
-        eq(contacts.email, contactPayload.email),
-      ),
-    })
+    const { id } = await response.json()
+
+    const savedContact = await container
+      .make(ContactRepository)
+      .findById(id)
 
     expect(savedContact).toBeDefined()
+    expect(savedContact.properties).toHaveLength(2)
+
+    const updatedAudience = await container
+      .make(AudienceRepository)
+      .findById(audience.id)
+
+    expect(updatedAudience.knownProperties).toEqual([
+      { name: "totalPurchasesMade", type: "float" },
+      { name: "lastLoginAt", type: "date" },
+    ])
+
+    const lastLoginAtProperty = savedContact.properties.find(
+      (property) => property.name === "lastLoginAt",
+    )
+
+    const totalPurchasesMadeProperty = savedContact.properties.find(
+      (property) => property.name === "totalPurchasesMade",
+    )
+
+    expect(lastLoginAtProperty?.date?.toISOString()).toBeDefined()
+    expect(totalPurchasesMadeProperty?.float).toEqual(53)
   })
 
   test("cannot create a contact with invalid data", async ({ expect }) => {
@@ -161,7 +189,7 @@ describe("@contacts", () => {
 })
 
 describe("@contacts update", () => {
-  test("can update the first name, last name, avatar and attributes of a contact", async ({
+  test("can update the first name, last name, avatar and properties of a contact", async ({
     expect,
   }) => {
     const { user, audience } = await createUser()
@@ -180,7 +208,7 @@ describe("@contacts update", () => {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       avatarUrl: faker.image.url(),
-      attributes: { hobby: "reading" },
+      properties: { hobby: "reading" },
     }
 
     const updateResponse = await makeRequestAsUser(user, {
@@ -192,30 +220,34 @@ describe("@contacts update", () => {
     expect(updateResponse.status).toBe(200)
     const { id: updatedContactId } = await updateResponse.json()
 
-    const updatedContact = await database.query.contacts.findFirst({
-      where: eq(contacts.id, updatedContactId),
-    })
+    const updatedContact = await container
+      .make(ContactRepository)
+      .findById(updatedContactId)
 
-    expect(updatedContact).toMatchObject(updateData)
+    expect(updatedContact.firstName).toEqual(updateData.firstName)
+    expect(updatedContact.lastName).toEqual(updateData.lastName)
+    expect(updatedContact.avatarUrl).toEqual(updateData.avatarUrl)
+
+    expect(updatedContact?.properties?.[0]?.text).toEqual("reading")
   })
 
-  test("can override attributes", async ({ expect }) => {
+  test("can override properties", async ({ expect }) => {
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
-    // Create a contact with initial attributes
+    // Create a contact with initial properties
     const createContactResponse = await makeRequestAsUser(user, {
       method: "POST",
       path: `/audiences/${audience.id}/contacts`,
       body: {
         email: faker.internet.email(),
-        attributes: { hobby: "swimming", age: 25 },
+        properties: { hobby: "swimming", age: 25 },
       },
     })
     const { id: contactId } = await createContactResponse.json()
 
     const updateData = {
-      attributes: {
+      properties: {
         hobby: "reading",
         favoriteColor: "blue",
       },
@@ -231,18 +263,28 @@ describe("@contacts update", () => {
 
     const { id: updatedContactId } = await updateResponse.json()
 
-    const updatedContact = await database.query.contacts.findFirst({
-      where: eq(contacts.id, updatedContactId),
-    })
+    const updatedContact = await container
+      .make(ContactRepository)
+      .findById(updatedContactId)
 
-    expect(updatedContact?.attributes).toEqual({
-      hobby: "reading",
-      age: 25,
-      favoriteColor: "blue",
-    })
+    const favouriteColor = updatedContact.properties.find(
+      (property) => property.name === "favoriteColor",
+    )
+
+    const ageProperty = updatedContact.properties.find(
+      (property) => property.name === "age",
+    )
+
+    const hobbyProperty = updatedContact.properties.find(
+      (property) => property.name === "hobby",
+    )
+
+    expect(favouriteColor?.text).toEqual("blue")
+    expect(ageProperty?.float).toEqual(25)
+    expect(hobbyProperty?.text).toEqual("reading")
   })
 
-  test("can merge attributes without deleting existing attributes", async ({
+  test("can merge attributes without deleting existing properties", async ({
     expect,
   }) => {
     const { user, audience } = await createUser()
@@ -254,14 +296,14 @@ describe("@contacts update", () => {
       path: `/audiences/${audience.id}/contacts`,
       body: {
         email: faker.internet.email(),
-        attributes: { hobby: "swimming", age: 25 },
+        properties: { hobby: "swimming", age: 25 },
       },
     })
 
     const { id: contactId } = await createContactResponse.json()
 
     const updateData = {
-      attributes: { favoriteColor: "blue" },
+      properties: { favoriteColor: "blue" },
     }
 
     const updateResponse = await makeRequestAsUser(user, {
@@ -273,15 +315,23 @@ describe("@contacts update", () => {
     expect(updateResponse.status).toBe(200)
     const { id: updatedContactId } = await updateResponse.json()
 
-    const updatedContact = await database.query.contacts.findFirst({
-      where: eq(contacts.id, updatedContactId),
-    })
+    const updatedContact = await container
+      .make(ContactRepository)
+      .findById(updatedContactId)
 
-    expect(updatedContact?.attributes).toEqual({
-      hobby: "swimming",
-      age: 25,
-      favoriteColor: "blue",
-    })
+    const hobbyProperty = updatedContact.properties.find(
+      (property) => property.name === "hobby",
+    )
+    const ageProperty = updatedContact.properties.find(
+      (property) => property.name === "age",
+    )
+    const favouriteColorProperty = updatedContact.properties.find(
+      (property) => property.name === "favoriteColor",
+    )
+
+    expect(hobbyProperty?.text).toEqual("swimming")
+    expect(ageProperty?.float).toEqual(25)
+    expect(favouriteColorProperty?.text).toEqual("blue")
   })
 
   test("cannot update without proper authorisation", async ({

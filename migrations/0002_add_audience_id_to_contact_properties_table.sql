@@ -1,0 +1,2 @@
+ALTER TABLE `contactProperties` ADD `audienceId` binary(16) NOT NULL;--> statement-breakpoint
+ALTER TABLE `contactProperties` ADD CONSTRAINT `contactProperties_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;

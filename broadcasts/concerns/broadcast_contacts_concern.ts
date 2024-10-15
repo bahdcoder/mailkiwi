@@ -3,20 +3,27 @@ import { type SQL, type SQLWrapper, and, asc, eq, sql } from "drizzle-orm"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import type { BroadcastWithSegmentAndAbTestVariants } from "@/database/database_schema_types.js"
+import type {
+  Audience,
+  BroadcastWithSegmentAndAbTestVariants,
+} from "@/database/database_schema_types.js"
 import { contacts } from "@/database/schema.js"
 
 export class ContactsConcern {
   database: DrizzleClient
 
   broadcast: BroadcastWithSegmentAndAbTestVariants
+  audience: Audience
 
   filterContactsQuery(): SQL | undefined {
     const segmentQueryConditions: SQLWrapper[] = []
 
     if (this.broadcast.segment) {
       segmentQueryConditions.push(
-        new SegmentBuilder(this.broadcast.segment.filterGroups).build(),
+        new SegmentBuilder(
+          this.broadcast.segment.filterGroups,
+          this.audience,
+        ).build(),
       )
     }
 
