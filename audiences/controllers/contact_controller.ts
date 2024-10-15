@@ -7,6 +7,7 @@ import { CreateContactSchema } from "@/audiences/dto/contacts/create_contact_dto
 import { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js"
 import { AttachTagsToContactDto } from "@/audiences/dto/tags/attach_tags_to_contact_dto.js"
 import { DetachTagsFromContactDto } from "@/audiences/dto/tags/detach_tags_from_contact_dto.js"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import {
   Audience,
@@ -29,9 +30,11 @@ export class ContactController extends BaseController {
       [
         ["GET", "/", this.index.bind(this)],
         ["POST", "/", this.store.bind(this)],
+        ["GET", "/:contactId", this.get.bind(this)],
+        ["PATCH", "/:contactId", this.update.bind(this)],
+        ["GET", "/:contactId/activity", this.getActivity.bind(this)],
         ["POST", "/:contactId/tags/attach", this.attachTags.bind(this)],
         ["POST", "/:contactId/tags/detach", this.detachTags.bind(this)],
-        ["PATCH", "/:contactId", this.update.bind(this)],
       ],
       {
         prefix: "audiences/:audienceId/contacts",
@@ -50,6 +53,26 @@ export class ContactController extends BaseController {
       )
 
     return ctx.json(paginatedContacts)
+  }
+
+  async get(ctx: HonoContext) {
+    const [audience, contact] = await Promise.all([
+      this.ensureExists<Audience>(ctx, "audienceId"),
+      this.ensureExists<ContactWithProperties>(ctx, "contactId"),
+    ])
+
+    return ctx.json(contact)
+  }
+
+  async getActivity(ctx: HonoContext) {
+    const [audience, contact] = await Promise.all([
+      this.ensureExists<Audience>(ctx, "audienceId"),
+      this.ensureExists<ContactWithProperties>(ctx, "contactId"),
+    ])
+
+    return ctx.json(
+      await container.make(ContactRepository).getActivity(contact.id),
+    )
   }
 
   async store(ctx: HonoContext) {

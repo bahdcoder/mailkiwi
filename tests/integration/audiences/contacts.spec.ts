@@ -13,6 +13,7 @@ import { ContactRepository } from "@/audiences/repositories/contact_repository.j
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
+import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 import {
   getCookieSessionForUser,
   makeRequest,
@@ -24,11 +25,14 @@ import {
   contactImports,
   contactProperties,
   contacts,
+  emailSendEvents,
+  emailSends,
 } from "@/database/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
 import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -116,7 +120,7 @@ export const setupImport = async (
 }
 
 describe("@contacts", () => {
-  test.only("can create a contact for an audience", async ({ expect }) => {
+  test("can create a contact for an audience", async ({ expect }) => {
     const { user, audience } = await createUser()
 
     const contactPayload = {
@@ -185,6 +189,84 @@ describe("@contacts", () => {
 
     expect(response.status).toEqual(422)
     expect(json.errors[0].field).toEqual("email")
+  })
+})
+
+describe("@contact-details", () => {
+  test("can fetch the details of a contact (including activity)", async ({
+    expect,
+  }) => {
+    const { user, audience } = await createUser()
+    const { sendingDomain } = await setupDomainForDnsChecks()
+
+    const contactPayload = {
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      email: faker.internet.exampleEmail(),
+      audienceId: audience.id,
+      properties: {
+        totalPurchasesMade: 53,
+        lastLoginAt: new Date().toISOString(),
+      },
+    }
+
+    const createContactResponse = await makeRequestAsUser(user, {
+      method: "POST",
+      path: `/audiences/${audience.id}/contacts`,
+      body: contactPayload,
+    })
+
+    expect(createContactResponse.status).toEqual(200)
+    const { id } = await createContactResponse.json()
+
+    const database = makeDatabase()
+
+    const emailSendId = cuid()
+
+    await database.insert(emailSends).values({
+      recipient: contactPayload.email,
+      sendingDomainId: sendingDomain.id,
+      product: "engage",
+      id: emailSendId,
+    })
+
+    for (const eventType of ["Open", "Click", "Click", "Click"]) {
+      await database.insert(emailSendEvents).values({
+        emailSendId,
+        type: eventType as any,
+        contactId: id,
+      })
+    }
+
+    const getContactResponse = await makeRequestAsUser(user, {
+      method: "GET",
+      path: `/audiences/${audience.id}/contacts/${id}`,
+      body: contactPayload,
+    })
+
+    const getContactResponseJson = await getContactResponse.json()
+
+    expect(getContactResponseJson).toMatchObject({
+      id,
+      email: contactPayload.email,
+      firstName: contactPayload.firstName,
+      lastName: contactPayload.lastName,
+    })
+
+    const getContactActivityResponse = await makeRequestAsUser(user, {
+      method: "GET",
+      path: `/audiences/${audience.id}/contacts/${id}/activity`,
+      body: contactPayload,
+    })
+
+    const getContactActivityResponseJson =
+      await getContactActivityResponse.json()
+
+    expect(getContactActivityResponseJson.total).toBe(4)
+    expect(getContactActivityResponseJson.data?.[0]).toMatchObject({
+      emailSendId,
+      type: "Open",
+    })
   })
 })
 

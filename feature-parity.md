@@ -36,14 +36,14 @@ These are organised in order of implementation priority:
     - [ ] Enhanced contact properties
 - [ ] Segmentation
   - [ ] Personalised emails
-  - [ ] Segment based on specific campaign activity (Clicks, Email Opens)
+  - [x] Segment based on specific campaign activity (Clicks, Email Opens)
   - [ ] Segment by contact location\*
   - [x] Segment by behaviour
   - [ ] Segment by survey responses
   - [ ] Segmentation templates
   - [x] Segment by Tags
-  - [ ] Segment by custom contact properties
-  - [ ] Segment by contact details like age ranges, etc
+  - [x] Segment by custom contact properties
+  - [x] Segment by contact details like age ranges, etc
   - [x] Advanced segmentation using logical operators (AND and OR)
 - [ ] Surveys
   - [ ] Create Surveys

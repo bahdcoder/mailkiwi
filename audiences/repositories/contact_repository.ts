@@ -19,6 +19,7 @@ import type {
 import {
   contactProperties,
   contacts,
+  emailSendEvents,
   tags,
   tagsOnContacts,
 } from "@/database/schema.js"
@@ -27,6 +28,7 @@ import { hasMany } from "@/database/utils/relationships.js"
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
 import { guessValueType } from "@/shared/utils/helpers/guess_value_type.js"
+import { Paginator } from "@/shared/utils/pagination/paginator.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -49,6 +51,14 @@ export class ContactRepository extends BaseRepository {
     )
 
     return contact
+  }
+
+  async getActivity(contactId: string) {
+    return new Paginator(emailSendEvents)
+      .queryConditions([and(eq(emailSendEvents.contactId, contactId))])
+      .size(10)
+      .page(1)
+      .paginate()
   }
 
   getContactPropertiesFromPayloadProperties(
