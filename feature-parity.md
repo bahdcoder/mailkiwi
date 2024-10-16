@@ -2,9 +2,9 @@
 
 These are organised in order of implementation priority:
 
+- [ ] Letters (Beehiv / Substack)
 - [ ] Email marketing (Mailchimp / Active Campaign replacement)
 - [ ] Transactions (Mandrill / Postmark / Mailgun) replacement
-- [ ] Letters (Beehiv / Substack)
 - [ ] Email builder (Postcards)
 - [ ] Pages (Websites, forms, surveys, etc)
 - [ ] Optimise (Inbox placement, Email Preview, Email Validation, Spam Filter Checks) (Free, Automatic, For 100k+ email sends per month)
@@ -26,8 +26,8 @@ These are organised in order of implementation priority:
 - [x] Seats (In our case, unlimited seats)
 - [ ] Audiences
   - [ ] Contacts
-    - [ ] Contact profiles
-    - [ ] Detailed contact activities
+    - [x] Contact profiles
+    - [x] Detailed contact activities
     - [ ] Notes
     - [x] Tags
     - [x] Import contacts

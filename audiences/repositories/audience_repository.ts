@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 
 import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
 
@@ -32,6 +32,21 @@ export class AudienceRepository extends BaseRepository {
       .limit(1)
 
     return audience
+  }
+
+  async getNewsletterAudienceForTeam(teamId: string) {
+    const [newsletter] = await this.database
+      .select()
+      .from(audiences)
+      .where(
+        and(
+          eq(audiences.teamId, teamId),
+          eq(audiences.product, "letters"),
+        ),
+      )
+      .limit(1)
+
+    return newsletter
   }
 
   async create(payload: CreateAudienceDto, teamId: string) {

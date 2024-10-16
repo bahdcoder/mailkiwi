@@ -72,6 +72,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
   for (let audienceIndex = 0; audienceIndex < 5; audienceIndex++) {
     const audiencePayload = {
       name: faker.commerce.productName(),
+      slug: faker.lorem.words(3),
     }
 
     console.log(

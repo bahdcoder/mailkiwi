@@ -12,6 +12,7 @@ import {
   text,
   timestamp,
   unique,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/mysql-core"
 import { v1 } from "uuid"
@@ -213,11 +214,15 @@ export const teamMemberships = mysqlTable("teamMemberships", {
 export const audiences = mysqlTable("audiences", {
   id,
   name: varchar("name", { length: 50 }).notNull(),
+  // will be used for newsletter website slug
+  slug: varchar("slug", { length: 72 }).unique(),
+  description: text("description"),
   teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
   knownProperties:
     json("knownProperties").$type<KnownAudienceProperty[]>(),
+  product: mysqlEnum("product", ["engage", "letters"]).default("engage"),
 })
 
 export const contactImports = mysqlTable("contactImports", {

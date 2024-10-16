@@ -1,13 +1,15 @@
+import { and, eq } from "drizzle-orm"
+
 import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
 import { UpdateAudienceAction } from "@/audiences/actions/audiences/update_audience_action.js"
 import { CreateAudienceSchema } from "@/audiences/dto/audiences/create_audience_dto.js"
-import { AudiencePolicy } from "@/audiences/policies/audience_policy.js"
 
-import { E_UNAUTHORIZED } from "@/http/responses/errors.js"
+import { audiences, contacts } from "@/database/schema.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import type { HonoContext } from "@/shared/server/types.js"
+import { Paginator } from "@/shared/utils/pagination/paginator.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -27,7 +29,21 @@ export class AudienceController extends BaseController {
   }
 
   async index(ctx: HonoContext) {
-    ctx.json([])
+    const team = this.ensureTeam(ctx)
+
+    const product = (ctx.req.query("product") || "engage") as
+      | "letters"
+      | "engage"
+
+    const data = await new Paginator(audiences)
+      .queryConditions([
+        and(eq(audiences.teamId, team.id), eq(audiences.product, product)),
+      ])
+      .cursor(undefined)
+      .field(audiences.id)
+      .next()
+
+    return ctx.json(data)
   }
 
   async store(ctx: HonoContext) {

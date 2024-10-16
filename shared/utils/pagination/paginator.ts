@@ -180,8 +180,10 @@ export class Paginator<RowType extends object = any> {
       selectQuery.execute(),
     ])
 
+    const results = await this.$transformRows(selectResult)
+
     return {
-      data: await this.$transformRows(selectResult),
+      data: results,
       total: countResult[0].count,
     }
   }

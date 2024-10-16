@@ -182,7 +182,7 @@ export const createUser = async ({
   const teamObject = await teamRepository.findById(team.id)
 
   const audience = await audienceRepository.create(
-    { name: "Newsletter" },
+    { name: "Newsletter", slug: "newsletter" },
     team.id,
   )
 
