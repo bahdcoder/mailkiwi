@@ -27,13 +27,14 @@ const htmlJsonTypes = [
 ] as const
 const htmlJsonContentType = picklist(htmlJsonTypes)
 
-type HTMLJsonBlock = {
+export type HTMLJsonBlock = {
   type: (typeof htmlJsonTypes)[number]
   attrs: Record<string, any>
   content: HTMLJsonBlock[]
+  text?: string
 }
 
-const BlockContentSchema = array(
+export const BlockContentSchema = array(
   object({
     type: htmlJsonContentType,
     text: optional(string()),
@@ -45,7 +46,7 @@ const BlockContentSchema = array(
 ) as GenericSchema<HTMLJsonBlock[]>
 
 export const UpdateNewsletterWebsitePageSchema = objectAsync({
-  websiteContent: optional(
+  draftWebsiteContent: optional(
     object({
       type: picklist(["doc"]),
       content: BlockContentSchema,

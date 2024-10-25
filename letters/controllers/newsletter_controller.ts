@@ -1,6 +1,12 @@
-import { makeApp } from "@/shared/container/index.js"
+import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
+
+import { GenerateWebsiteFromJsonTool } from "@/tools/website/generate_website_from_json_tool.js"
+
+import { ContainerKey, makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import { HonoContext } from "@/shared/server/types.js"
+
+import { container } from "@/utils/typi.js"
 
 export class NewsletterController extends BaseController {
   constructor(protected app = makeApp()) {
@@ -14,9 +20,8 @@ export class NewsletterController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["GET", "/", this.index.bind(this)],
+        ["GET", "/:websitePageSlug?", this.index.bind(this)],
         ["GET", "/l/:newsletterBroadcastSlug", this.index.bind(this)],
-        ["GET", "/*", this.index.bind(this)],
       ],
       {
         prefix: "/letters/:newsletterWebsiteSlug",
@@ -25,9 +30,68 @@ export class NewsletterController extends BaseController {
     )
   }
 
-  index(ctx: HonoContext) {
+  async index(ctx: HonoContext) {
     // get the home page for this newsletter.
     // each newsletter is hosted on its own domain.
     // the host will be in the form: slug.kibaletters.com
+
+    const website = await container
+      .make(NewsletterWebsiteRepository)
+      .findBySlugWithPages(ctx.req.param("newsletterWebsiteSlug"))
+
+    if (!website) {
+      return ctx.html("<h1>We could not find this page. </h1>", 404)
+    }
+
+    const websitePageSlug = ctx.req.param("websitePageSlug") ?? "/"
+
+    const page = website.pages.find(
+      (page) => page.path === websitePageSlug,
+    )
+
+    if (!page || page.publishedAt === null) {
+      return ctx.html("<h1>We could not find this page. </h1>", 404)
+    }
+
+    const html = await new GenerateWebsiteFromJsonTool(
+      page.websiteContent,
+    ).toHtml()
+
+    const appVersion = container.make(ContainerKey.version)
+
+    return ctx.html(
+      /*html*/ `
+        <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>${page?.title}</title>
+              <link rel="stylesheet" href="/assets/letters/kb-letters.css?v=${appVersion}">
+              <meta name="description" content="${page?.description}">
+
+              <meta property="og:title" content="">
+              <meta property="og:type" content="">
+              <meta property="og:url" content="">
+              <meta property="og:image" content="">
+              <meta property="og:image:alt" content="">
+
+              <!--<link rel="icon" href="/favicon.ico" sizes="any">-->
+              <!--<link rel="icon" href="/icon.svg" type="image/svg+xml">-->
+              <!--<link rel="apple-touch-icon" href="icon.png">-->
+
+              <link rel="manifest" href="site.webmanifest">
+              <meta name="theme-color" content="#fafafa">
+            </head>
+
+            <body>
+              ${html}
+            </body>
+          </html>
+            `
+        .split("\n")
+        .map((line) => line.trim())
+        .join(""),
+    )
   }
 }

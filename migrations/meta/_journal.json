@@ -43,6 +43,20 @@
       "when": 1729843029122,
       "tag": "0005_add_website_pages",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1729874600549,
+      "tag": "0006_add_draft_website_content",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1729875597339,
+      "tag": "0007_add_published_at_to_website_pages",
+      "breakpoints": true
     }
   ]
 }

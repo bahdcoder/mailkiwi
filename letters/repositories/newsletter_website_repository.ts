@@ -35,7 +35,9 @@ export class NewsletterWebsiteRepository extends BaseRepository {
         path: "/",
         id: homePageId,
         newsletterWebsiteId: id,
+        publishedAt: new Date(),
         websiteContent: { type: "doc", content: [] },
+        draftWebsiteContent: { type: "doc", content: [] },
       })
     })
 
@@ -48,6 +50,14 @@ export class NewsletterWebsiteRepository extends BaseRepository {
       .from(newsletterWebsites)
       .where(eq(newsletterWebsites.id, newsletterWebsiteId))
       .limit(1)
+
+    return newsletterWebsite
+  }
+
+  async findBySlugWithPages(slug: string) {
+    const [newsletterWebsite] = await this.hasManyPages((query) =>
+      query.where(eq(newsletterWebsites.slug, slug)),
+    )
 
     return newsletterWebsite
   }

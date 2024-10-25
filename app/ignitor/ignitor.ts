@@ -9,7 +9,9 @@ import { NewsletterWebsiteController } from "@/letters/controllers/newsletter_we
 import { ClickTrackingController } from "@/tracking/controllers/click_tracking_controller.js"
 import { OpenTrackingController } from "@/tracking/controllers/open_tracking_controller.js"
 import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.js"
+import { readFile } from "fs/promises"
 import type { Redis } from "ioredis"
+import { resolve } from "path"
 
 import { BroadcastController } from "@/broadcasts/controllers/broadcast_controller.js"
 
@@ -65,6 +67,15 @@ export class Ignitor {
   }
 
   async start() {
+    const packageJsonFile = await readFile(
+      resolve("package.json"),
+      "utf-8",
+    )
+
+    const { version } = JSON.parse(packageJsonFile)
+
+    container.register(ContainerKey.version, version)
+
     await this.startDatabaseConnector()
 
     this.registerHttpControllers()

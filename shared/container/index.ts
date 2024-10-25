@@ -8,12 +8,14 @@ import type { HonoInstance } from "@/shared/server/hono.js"
 import { container } from "@/utils/typi.js"
 
 export enum ContainerKey {
-  // Apps
   app = "app",
 
   // Configs
   env = "env",
   config = "config",
+
+  // version
+  version = "version",
 
   // databases
 

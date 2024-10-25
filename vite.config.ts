@@ -9,11 +9,6 @@ import { defineConfig } from "vite"
 const path = fileURLToPath(import.meta.url)
 
 export default defineConfig({
-  // resolve: {
-  //   alias: {
-  //     "@client": resolve(root),
-  //   },
-  // },
   plugins: [vike(), react()],
   build: {
     manifest: true,

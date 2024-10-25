@@ -1,6 +1,10 @@
+import { CreateNewsletterWebsitePageDto } from "@/letters/dto/create_newsletter_website_page_dto.js"
 import { eq } from "drizzle-orm"
 
-import { UpdateWebsitePage } from "@/database/database_schema_types.js"
+import {
+  UpdateWebsitePage,
+  WebsitePage,
+} from "@/database/database_schema_types.js"
 import { websitePages } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -19,6 +23,45 @@ export class WebsitePageRepository extends BaseRepository {
       .limit(1)
 
     return websitePage
+  }
+
+  async publish(websitePage: WebsitePage) {
+    await this.database
+      .update(websitePages)
+      .set({
+        publishedAt: new Date(),
+        websiteContent: websitePage.draftWebsiteContent,
+      })
+      .where(eq(websitePages.id, websitePage.id))
+
+    return { id: websitePage.id }
+  }
+
+  async unpublish(websitePage: WebsitePage) {
+    await this.database
+      .update(websitePages)
+      .set({
+        publishedAt: null,
+      })
+      .where(eq(websitePages.id, websitePage.id))
+
+    return { id: websitePage.id }
+  }
+
+  async create(
+    payload: CreateNewsletterWebsitePageDto,
+    newsletterWebsiteId: string,
+  ) {
+    const id = this.cuid()
+
+    await this.database.insert(websitePages).values({
+      ...payload,
+      id,
+      newsletterWebsiteId,
+      websiteContent: payload.draftWebsiteContent,
+    })
+
+    return { id }
   }
 
   async updateById(websitePageId: string, payload: UpdateWebsitePage) {

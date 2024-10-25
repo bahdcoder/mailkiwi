@@ -1,4 +1,5 @@
 import { AddCustomNewsletterDomainSchema } from "@/letters/dto/add_custom_newsletter_domain_dto.js"
+import { CreateNewsletterWebsitePageSchema } from "@/letters/dto/create_newsletter_website_page_dto.js"
 import { UpdateNewsletterWebsiteSchema } from "@/letters/dto/update_newsletter_website_dto.js"
 import { UpdateNewsletterWebsitePageSchema } from "@/letters/dto/update_newsletter_website_page_dto.js"
 import { CheckNewsletterDomainDnsConfiguration } from "@/letters/jobs/check_newsletter_domain_dns_configuration_job.js"
@@ -49,6 +50,17 @@ export class NewsletterWebsiteController extends BaseController {
           "/website_pages/:websitePageId",
           this.updateWebsitePage.bind(this),
         ],
+        [
+          "PUT",
+          "/website_pages/:websitePageId/publish",
+          this.publishWebsitePage.bind(this),
+        ],
+        [
+          "PUT",
+          "/website_pages/:websitePageId/unpublish",
+          this.unpublishWebsitePage.bind(this),
+        ],
+        ["POST", "/website_pages/", this.createWebsitePage.bind(this)],
       ],
       {
         prefix:
@@ -139,5 +151,36 @@ export class NewsletterWebsiteController extends BaseController {
       .updateById(websitePage.id, payload)
 
     return ctx.json({ id: websitePage.id })
+  }
+
+  async publishWebsitePage(ctx: HonoContext) {
+    const { websitePage } = await this.authorize(ctx)
+
+    await container.make(WebsitePageRepository).publish(websitePage)
+
+    return ctx.json({ id: websitePage.id })
+  }
+
+  async unpublishWebsitePage(ctx: HonoContext) {
+    const { websitePage } = await this.authorize(ctx)
+
+    await container.make(WebsitePageRepository).unpublish(websitePage)
+
+    return ctx.json({ id: websitePage.id })
+  }
+
+  async createWebsitePage(ctx: HonoContext) {
+    const { newsletterWebsite } = await this.authorize(ctx)
+
+    const payload = await this.validate(
+      ctx,
+      CreateNewsletterWebsitePageSchema,
+    )
+
+    const { id } = await container
+      .make(WebsitePageRepository)
+      .create(payload, newsletterWebsite.id)
+
+    return ctx.json({ id })
   }
 }

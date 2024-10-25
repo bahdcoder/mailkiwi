@@ -1,12 +1,17 @@
+import { HTMLJsonBlock } from "@/letters/dto/update_newsletter_website_page_dto.js"
 import { CheckNewsletterDomainDnsConfiguration } from "@/letters/jobs/check_newsletter_domain_dns_configuration_job.js"
 import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
+import { WebsitePageRepository } from "@/letters/repositories/website_page_repository.js"
 import { faker } from "@faker-js/faker"
+import { load as cheerioLoad } from "cheerio"
+import { readFile } from "fs/promises"
+import { resolve } from "path"
 import { describe, test } from "vitest"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { makeApp } from "@/shared/container/index.js"
+import { ContainerKey, makeApp } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
 
 import { container } from "@/utils/typi.js"
@@ -93,7 +98,7 @@ describe("@newsletter-websites", () => {
         createAudienceForNewsletter: true,
       })
 
-    const websiteContent = {
+    const draftWebsiteContent = {
       type: "doc",
       content: [
         {
@@ -108,7 +113,7 @@ describe("@newsletter-websites", () => {
       {
         method: "PUT",
         body: {
-          websiteContent,
+          draftWebsiteContent,
         },
         path: `/audiences/${audienceForNewsletter?.id}/newsletter_websites/${newsletterWebsite.id}/website_pages/${newsletterWebsite?.pages?.[0]?.id}`,
       },
@@ -122,23 +127,260 @@ describe("@newsletter-websites", () => {
       .findByIdWithPages(newsletterWebsite.id)
 
     expect(
-      updatedNewletterWebsite.pages?.[0]?.websiteContent,
-    ).toMatchObject(websiteContent)
+      updatedNewletterWebsite.pages?.[0]?.draftWebsiteContent,
+    ).toMatchObject(draftWebsiteContent)
+  })
+
+  test("can create additional website pages", async ({ expect }) => {
+    const { newsletterWebsite, user, team, audienceForNewsletter } =
+      await createUser({
+        createAudienceForNewsletter: true,
+      })
+
+    const draftWebsiteContent = {
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [{ type: "text", text: "Hello world" }],
+        },
+      ],
+    }
+
+    const payload = {
+      draftWebsiteContent,
+      path: faker.lorem.slug(),
+      title: faker.lorem.words(5),
+      description: faker.lorem.sentences(2),
+    }
+
+    const response = await makeRequestAsUser(
+      user,
+      {
+        method: "POST",
+        body: payload,
+        path: `/audiences/${audienceForNewsletter?.id}/newsletter_websites/${newsletterWebsite.id}/website_pages/`,
+      },
+      team.id,
+    )
+
+    expect(response.status).toEqual(200)
+
+    const updatedNewletterWebsite = await container
+      .make(NewsletterWebsiteRepository)
+      .findByIdWithPages(newsletterWebsite.id)
+
+    const secondPage = updatedNewletterWebsite.pages?.[1]
+
+    expect(updatedNewletterWebsite.pages).toHaveLength(2)
+    expect({
+      path: secondPage.path,
+      title: secondPage.title,
+      description: secondPage.description,
+      draftWebsiteContent: secondPage.draftWebsiteContent,
+    }).toMatchObject({ ...payload })
+  })
+
+  test("can publish website pages", async ({ expect }) => {
+    const { newsletterWebsite, user, team, audienceForNewsletter } =
+      await createUser({
+        createAudienceForNewsletter: true,
+      })
+
+    const draftWebsiteContent = {
+      type: "doc" as "doc",
+      attrs: {},
+      content: [
+        {
+          type: "paragraph" as "paragraph",
+          content: [
+            { type: "text", text: "Hello world", attrs: {}, content: [] },
+          ],
+          attrs: {},
+        },
+      ] as HTMLJsonBlock[],
+    }
+
+    const payload = {
+      draftWebsiteContent,
+      path: faker.lorem.slug(),
+      title: faker.lorem.words(5),
+      description: faker.lorem.sentences(2),
+    }
+
+    const { id: websitePageId } = await container
+      .make(WebsitePageRepository)
+      .create(payload, newsletterWebsite.id)
+
+    const response = await makeRequestAsUser(
+      user,
+      {
+        method: "PUT",
+        body: payload,
+        path: `/audiences/${audienceForNewsletter?.id}/newsletter_websites/${newsletterWebsite.id}/website_pages/${websitePageId}/publish`,
+      },
+      team.id,
+    )
+
+    expect(response.status).toEqual(200)
+
+    const updatedNewletterWebsite = await container
+      .make(NewsletterWebsiteRepository)
+      .findByIdWithPages(newsletterWebsite.id)
+
+    const secondPage = updatedNewletterWebsite.pages?.[1]
+
+    expect(secondPage.websiteContent).toMatchObject(
+      secondPage.draftWebsiteContent as HTMLJsonBlock,
+    )
+
+    expect(
+      updatedNewletterWebsite.pages.filter(
+        (page) => page.publishedAt !== null,
+      ),
+    ).toHaveLength(2)
+  })
+
+  test("can unpublish website pages", async ({ expect }) => {
+    const { newsletterWebsite, user, team, audienceForNewsletter } =
+      await createUser({
+        createAudienceForNewsletter: true,
+      })
+
+    const draftWebsiteContent = {
+      type: "doc" as "doc",
+      attrs: {},
+      content: [
+        {
+          type: "paragraph" as "paragraph",
+          content: [
+            { type: "text", text: "Hello world", attrs: {}, content: [] },
+          ],
+          attrs: {},
+        },
+      ] as HTMLJsonBlock[],
+    }
+
+    const payload = {
+      draftWebsiteContent,
+      path: faker.lorem.slug(),
+      title: faker.lorem.words(5),
+      description: faker.lorem.sentences(2),
+    }
+
+    const websitePageRepository = container.make(WebsitePageRepository)
+
+    const { id: websitePageId } = await websitePageRepository.create(
+      payload,
+      newsletterWebsite.id,
+    )
+
+    await websitePageRepository.publish(
+      await websitePageRepository.findById(websitePageId),
+    )
+
+    const response = await makeRequestAsUser(
+      user,
+      {
+        method: "PUT",
+        body: payload,
+        path: `/audiences/${audienceForNewsletter?.id}/newsletter_websites/${newsletterWebsite.id}/website_pages/${websitePageId}/unpublish`,
+      },
+      team.id,
+    )
+
+    expect(response.status).toEqual(200)
+
+    const updatedNewletterWebsite = await container
+      .make(NewsletterWebsiteRepository)
+      .findByIdWithPages(newsletterWebsite.id)
+
+    const secondPage = updatedNewletterWebsite.pages?.[1]
+
+    expect(secondPage.publishedAt).toBeNull()
+
+    expect(
+      updatedNewletterWebsite.pages.filter(
+        (page) => page.publishedAt !== null,
+      ),
+    ).toHaveLength(1)
   })
 })
 
 describe("@newsletter-websites-pages", () => {
-  test("can visit a newsletter website using website subdomain", async () => {
-    // make get request to app using a host such as fastmedia.kibaletters.com
+  test("can visit a newsletter website home page using website slug", async ({
+    expect,
+  }) => {
+    const websiteContent = JSON.parse(
+      await readFile(
+        resolve("tests/integration/letters/newsletter_content_doc.json"),
+        "utf-8",
+      ),
+    )
+
+    const { newsletterWebsite } = await createUser({
+      createAudienceForNewsletter: true,
+    })
+
+    const aboutPagePath = "about-me-page"
+
+    const websitePageRepository = await container.make(
+      WebsitePageRepository,
+    )
+
+    const { id: websitePageId } = await websitePageRepository.create(
+      {
+        path: aboutPagePath,
+        title: faker.lorem.words(5),
+        draftWebsiteContent: websiteContent,
+      },
+      newsletterWebsite.id,
+    )
+
+    await websitePageRepository.publish(
+      await websitePageRepository.findById(websitePageId),
+    )
+
+    const homePage = newsletterWebsite?.pages?.[0]
+
+    await container
+      .make(WebsitePageRepository)
+      .updateById(homePage.id, { websiteContent, publishedAt: new Date() })
 
     const app = makeApp()
 
-    await app.request("/letters/:newsletterWebsiteSlug")
+    const response = await app.request(
+      `/letters/${newsletterWebsite.slug}/`,
+    )
 
-    // reverse proxy will programmatically route traffic from fastmedia.kibaletters.com/* -> http://hono_server/letters/fastmedia/*
+    const html = await response.text()
 
-    // expect home page returned belongs to fastmedia, with valid parsed HTML
-    // and including css files
-    // we expect these pages to be cached at cdn level, and cache invalidated programmatically
+    const $ = cheerioLoad(html)
+
+    expect($(".kb-container").html()).not.toBeNull()
+    expect($(".kb-columns").html()).not.toBeNull()
+    expect($(".kb-column").html()).not.toBeNull()
+    expect($(".kb-heading").html()).not.toBeNull()
+    expect($(".kb-heading-level-1").html()).not.toBeNull()
+    expect($("span.kb-text-slice").html()).not.toBeNull()
+
+    const link = $('link[rel="stylesheet"]').first()
+
+    link.attr("href")
+    expect(link.attr("href")).toEqual(
+      `/assets/letters/kb-letters.css?v=${container.make(ContainerKey.version)}`,
+    )
+
+    const aboutMePageResponse = await app.request(
+      `/letters/${newsletterWebsite.slug}/${aboutPagePath}`,
+    )
+
+    expect(aboutMePageResponse.status).toBe(200)
+
+    const aboutMePageHtml = await aboutMePageResponse.text()
+
+    expect(
+      cheerioLoad(aboutMePageHtml)(".kb-container").html(),
+    ).not.toBeNull()
   })
 })

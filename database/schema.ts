@@ -255,7 +255,7 @@ export const websitePages = mysqlTable(
   "websitePages",
   {
     id,
-    title: varchar("title", { length: 72 }).unique(),
+    title: varchar("title", { length: 72 }),
     path: varchar("path", { length: 72 }), // the path on the website
 
     description: text("description"),
@@ -264,8 +264,13 @@ export const websitePages = mysqlTable(
       () => newsletterWebsites.id,
     ),
     websiteContent: json("websiteContent")
-      .$type<UpdateNewsletterWebsitePageDto["websiteContent"]>()
+      .$type<UpdateNewsletterWebsitePageDto["draftWebsiteContent"]>()
       .notNull(),
+    draftWebsiteContent: json("draftWebsiteContent")
+      .$type<UpdateNewsletterWebsitePageDto["draftWebsiteContent"]>()
+      .notNull(),
+
+    publishedAt: timestamp("publishedAt"),
   },
   (table) => ({
     newsletterWebsiteIdPathKey: unique("newsletterWebsiteIdPathKey").on(
