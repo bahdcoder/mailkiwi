@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { describe, test } from "vitest"
 
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
@@ -18,7 +18,7 @@ describe("@mta Http server", () => {
     const response = await app.request("/mta/dkim", {
       method: "POST",
       headers: {
-        "x-mta-access-token": apiEnv.MTA_ACCESS_TOKEN.release(),
+        "x-mta-access-token": appEnv.MTA_ACCESS_TOKEN.release(),
       },
       body: JSON.stringify({ domain: TEST_DOMAIN }),
     })
@@ -69,7 +69,7 @@ describe("@mta Http server", () => {
         username: apiKey,
       }),
       headers: {
-        "x-mta-access-token": apiEnv.MTA_ACCESS_TOKEN.release(),
+        "x-mta-access-token": appEnv.MTA_ACCESS_TOKEN.release(),
       },
     })
 
@@ -94,7 +94,7 @@ describe("@mta Http server", () => {
         username: apiKey,
       }),
       headers: {
-        "x-mta-access-token": apiEnv.MTA_ACCESS_TOKEN.release(),
+        "x-mta-access-token": appEnv.MTA_ACCESS_TOKEN.release(),
       },
     })
 

@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { faker } from "@faker-js/faker"
 import { and, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
@@ -23,6 +23,56 @@ describe("@audiences", () => {
     })
 
     expect(response.status).toBe(401)
+  })
+
+  test("can create a maximum of one audience of type 'letters' per team ", async ({
+    expect,
+  }) => {
+    const { user, team } = await createUser()
+    const database = makeDatabase()
+
+    const payload = {
+      name: faker.commerce.productName(),
+      slug: faker.lorem.slug(),
+      product: "letters",
+    }
+
+    const response = await makeRequestAsUser(user, {
+      method: "POST",
+      path: "/audiences",
+      body: payload,
+    })
+
+    expect(response.status).toBe(200)
+
+    const id = (await response.json())?.id
+
+    const createdAudience = await container
+      .make(AudienceRepository)
+      .findById(id)
+
+    expect(createdAudience.product).toBe("letters")
+    expect(createdAudience.name).toBe(payload.name)
+    expect(createdAudience.teamId).toBe(team.id)
+
+    const secondCreateNewsletter = await makeRequestAsUser(user, {
+      method: "POST",
+      path: "/audiences",
+      body: { ...payload, slug: faker.lorem.slug() },
+    })
+
+    const json = await secondCreateNewsletter.json()
+
+    expect(json).toMatchObject({
+      message: "Validation failed.",
+      errors: [
+        {
+          message:
+            "You may only have one newsletter per team. To create another newsletter, please create another team.",
+          field: "slug",
+        },
+      ],
+    })
   })
 
   test("can fetch all created audiences and filter by product", async ({
@@ -76,9 +126,7 @@ describe("@audiences", () => {
 
     await database.insert(audiences).values({
       name: faker.lorem.words(3),
-      slug: faker.lorem.words(3),
       product: "letters",
-      description: faker.lorem.paragraph(),
       teamId: team.id,
     })
 
@@ -185,7 +233,7 @@ describe("@audiences", () => {
         name: "Newsletter",
       },
       headers: {
-        [apiEnv.software.teamHeader]:
+        [appEnv.software.teamHeader]:
           unauthorizedUser?.teams?.[0]?.id?.toString(),
       },
     })

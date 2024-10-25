@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { getSignedCookie, setSignedCookie } from "hono/cookie"
 
 import { HonoContext } from "@/shared/server/types.js"
@@ -7,7 +7,7 @@ import { Encryption } from "@/shared/utils/encryption/encryption.js"
 export class Session {
   protected SESSION_COOKIE_NAME = "session"
 
-  constructor(protected encryptionKey = apiEnv.APP_KEY.release()) {}
+  constructor(protected encryptionKey = appEnv.APP_KEY.release()) {}
 
   async getUser(ctx: HonoContext) {
     const sessionData = await getSignedCookie(
@@ -20,7 +20,7 @@ export class Session {
       return null
     }
 
-    const decryptedSessionData = new Encryption(apiEnv.APP_KEY).decrypt(
+    const decryptedSessionData = new Encryption(appEnv.APP_KEY).decrypt(
       sessionData,
     )
 
@@ -38,7 +38,7 @@ export class Session {
   }
 
   async createForUser(ctx: HonoContext, userId: string) {
-    const sessionData = new Encryption(apiEnv.APP_KEY).encrypt(
+    const sessionData = new Encryption(appEnv.APP_KEY).encrypt(
       JSON.stringify({ userId }),
     )
 
@@ -50,7 +50,7 @@ export class Session {
       {
         sameSite: "Strict",
         prefix: "secure",
-        secure: apiEnv.isProd,
+        secure: appEnv.isProd,
         httpOnly: true,
         path: "/",
       },

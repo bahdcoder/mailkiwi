@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 
 import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 
@@ -31,12 +31,12 @@ export class SendTeamMemberInviteJob extends BaseJob<SendTeamMemberInviteJobPayl
       return this.done()
     }
 
-    const token = new SignedUrlManager(apiEnv.APP_KEY).encode(
+    const token = new SignedUrlManager(appEnv.APP_KEY).encode(
       payload.inviteId.toString(),
       {},
     )
 
-    await Mailer.from(apiEnv.SMTP_MAIL_FROM)
+    await Mailer.from(appEnv.SMTP_MAIL_FROM)
       .to(invite.email)
       .subject("You've been invited to join a team on Kibamail.")
       .content(

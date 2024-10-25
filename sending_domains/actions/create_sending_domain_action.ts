@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
@@ -16,7 +16,7 @@ import { container } from "@/utils/typi.js"
 
 export class CreateSendingDomainAction {
   constructor(
-    private env = apiEnv,
+    private env = appEnv,
     private database = makeDatabase(),
     private teamRepository = container.make(TeamRepository),
     private sendingDomainRepository = container.make(

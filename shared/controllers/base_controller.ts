@@ -1,4 +1,6 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
+import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
+import { WebsitePageRepository } from "@/letters/repositories/website_page_repository.js"
 import {
   type BaseSchema,
   type BaseSchemaAsync,
@@ -35,6 +37,9 @@ type ControllerParams =
   | "tagId"
   | "broadcastId"
   | "membershipId"
+  | "newsletterWebsiteId"
+  | "websitePageId"
+
 export class BaseController {
   protected session: Session = container.make(Session)
 
@@ -59,7 +64,7 @@ export class BaseController {
   }
 
   protected getDecodedSignature(ctx: HonoContext) {
-    return new SignedUrlManager(apiEnv.APP_KEY).decode(
+    return new SignedUrlManager(appEnv.APP_KEY).decode(
       ctx.req.param("signature"),
     )
   }
@@ -203,12 +208,14 @@ export class BaseController {
     param: ControllerParams,
   ) {
     const repositories = {
+      tagId: TagRepository,
       contactId: ContactRepository,
       audienceId: AudienceRepository,
-      importId: ContactImportRepository,
-      tagId: TagRepository,
       broadcastId: BroadcastRepository,
+      importId: ContactImportRepository,
+      websitePageId: WebsitePageRepository,
       membershipId: TeamMembershipRepository,
+      newsletterWebsiteId: NewsletterWebsiteRepository,
     } as const
 
     const repository = container.make(repositories[param] as any) as any

@@ -1,4 +1,3 @@
-import { ApiEnvVariables } from "@/api/env/api_env.js"
 import { Secret } from "@poppinss/utils"
 import { beforeEach, describe, expect, test } from "vitest"
 

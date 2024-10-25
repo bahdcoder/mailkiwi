@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
 import { InjectEmailSchemaDto } from "@/injector/dto/inject_email_dto.js"
 import { InjectTrackingLinksIntoEmailAction } from "@/kumomta/actions/inject_tracking_links_into_email_action.js"
@@ -105,9 +105,9 @@ export class InjectEmailAction {
           headers: {
             ...payload.headers,
             "Message-ID": messageId,
-            [apiEnv.emailHeaders.messageId]: messageId,
-            [apiEnv.emailHeaders.emailSendId]: id,
-            [apiEnv.emailHeaders.sendingDomainId]: sendingDomain.id,
+            [appEnv.emailHeaders.messageId]: messageId,
+            [appEnv.emailHeaders.emailSendId]: id,
+            [appEnv.emailHeaders.sendingDomainId]: sendingDomain.id,
           },
         },
       }
@@ -120,7 +120,7 @@ export class InjectEmailAction {
             object,
             Awaited<ReturnType<Injection["handle"]>>["data"]
           >()
-            .url(`${apiEnv.MTA_INJECTOR_URL}/api/inject/v1`)
+            .url(`${appEnv.MTA_INJECTOR_URL}/api/inject/v1`)
             .post()
             .payload(injectEmailPayload)
             .send()
@@ -133,7 +133,7 @@ export class InjectEmailAction {
         id,
         payload: {
           links,
-          product: payload.headers?.[apiEnv.emailHeaders.broadcastId]
+          product: payload.headers?.[appEnv.emailHeaders.broadcastId]
             ? "engage"
             : "send",
           clickTrackingEnabled,

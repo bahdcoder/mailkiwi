@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { EmailSendEventRepository } from "@/email_sends/repositories/email_send_event_repository.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
 import { SendingSourceRepository } from "@/settings/repositories/sending_source_repository.js"
@@ -42,10 +42,10 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
 
     const sendingDomain = await container
       .make(SendingDomainRepository)
-      .findById(log.headers[apiEnv.emailHeaders.sendingDomainId])
+      .findById(log.headers[appEnv.emailHeaders.sendingDomainId])
 
     const emailSend = await emailSendRepository.findById(
-      log.headers[apiEnv.emailHeaders.emailSendId],
+      log.headers[appEnv.emailHeaders.emailSendId],
     )
 
     if (!emailSend) {
@@ -133,7 +133,7 @@ export class LogTypeHandler {
 
     const city = maxMindDatabaseReader.city(log.ip_address)
 
-    const isEngageProduct = log.headers?.[apiEnv.emailHeaders.broadcastId]
+    const isEngageProduct = log.headers?.[appEnv.emailHeaders.broadcastId]
 
     const database = makeDatabase()
 
@@ -152,7 +152,7 @@ export class LogTypeHandler {
 
         ...(isEngageProduct
           ? {
-              contactId: log?.headers?.[apiEnv.emailHeaders.contactId],
+              contactId: log?.headers?.[appEnv.emailHeaders.contactId],
             }
           : {}),
 
@@ -163,7 +163,7 @@ export class LogTypeHandler {
       })
 
       if (isEngageProduct) {
-        const contactId = log?.headers?.[apiEnv.emailHeaders.contactId]
+        const contactId = log?.headers?.[appEnv.emailHeaders.contactId]
         // trigger update to contact
         await contactRepository.transaction(trx).updateById(contactId, {
           ...(log.type === "Click"

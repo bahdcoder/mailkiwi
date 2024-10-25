@@ -2,7 +2,6 @@ import { eq } from "drizzle-orm"
 import {
   type InferInput,
   checkAsync,
-  object,
   objectAsync,
   optional,
   picklist,
@@ -11,7 +10,7 @@ import {
   string,
 } from "valibot"
 
-import { audiences } from "@/database/schema.js"
+import { newsletterWebsites } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
@@ -28,13 +27,13 @@ export const CreateAudienceSchema = objectAsync({
       const database = makeDatabase()
 
       const exists = await database
-        .select({ slug: audiences.slug })
-        .from(audiences)
-        .where(eq(audiences.slug, slug))
+        .select({ slug: newsletterWebsites.slug })
+        .from(newsletterWebsites)
+        .where(eq(newsletterWebsites.slug, slug))
         .limit(1)
 
       return exists.length === 0
-    }),
+    }, "A website with this slug already exists. Please choose another subdomain for your website."),
   ),
   product: optional(picklist(["engage", "letters"])),
 })

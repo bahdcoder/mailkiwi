@@ -43,6 +43,11 @@ export const MtaLogsQueue = () =>
     connection: makeRedis(),
   })
 
+export const NewsletterWebsitesQueue = () =>
+  new BullQueue(AVAILABLE_QUEUES.newsletter_websites, {
+    connection: makeRedis(),
+  })
+
 export class Queues {
   broadcasts = BroadcastsQueue
   abTestsBroadcasts = AbTestsBroadcastsQueue
@@ -52,6 +57,7 @@ export class Queues {
   sending_domains = SendingDomainsQueue
   contacts = ContactsQueue
   mta_logs = MtaLogsQueue
+  newsletter_websites = NewsletterWebsitesQueue
 }
 
 export const Queue = new Queues()

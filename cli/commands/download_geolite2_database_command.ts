@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { boolean, command } from "@drizzle-team/brocli"
 import { createReadStream, createWriteStream, existsSync } from "fs"
 import { lstat, readdir, rename, rm } from "fs/promises"
@@ -28,7 +28,7 @@ export const downloadGeolite2Database = command({
       return
     }
 
-    const response = await fetch(apiEnv.MMDB_DOWNLOAD_URL)
+    const response = await fetch(appEnv.MMDB_DOWNLOAD_URL)
 
     console.log("Downloading zipped file")
 

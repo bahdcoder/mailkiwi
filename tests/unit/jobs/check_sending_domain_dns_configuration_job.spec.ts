@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { DateTime } from "luxon"
@@ -82,10 +82,10 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
       .spyOn(dns, "resolveCname")
       .mockImplementation(async (cname) => {
         if (cname.includes("clicks")) {
-          return [apiEnv.software.trackingHostName]
+          return [appEnv.software.trackingHostName]
         }
 
-        return [apiEnv.software.bounceHost]
+        return [appEnv.software.bounceHost]
       })
 
     const mockResolveTxt = vi
@@ -104,7 +104,7 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
       })
 
     expect(mockResolveCname).toHaveBeenCalledWith(
-      `${apiEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
+      `${appEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
     )
 
     expect(mockResolveTxt).toHaveBeenCalledWith(
@@ -136,7 +136,7 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
 
     const mockResolveCname = vi
       .spyOn(dns, "resolveCname")
-      .mockImplementation(async () => [apiEnv.software.bounceHost])
+      .mockImplementation(async () => [appEnv.software.bounceHost])
 
     const mockResolveTxt = vi
       .spyOn(dns, "resolveTxt")
@@ -154,7 +154,7 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
       })
 
     expect(mockResolveCname).toHaveBeenCalledWith(
-      `${apiEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
+      `${appEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
     )
 
     expect(mockResolveTxt).toHaveBeenCalledWith(
@@ -219,7 +219,7 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
       })
 
     expect(mockResolveCname).toHaveBeenCalledWith(
-      `${apiEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
+      `${appEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
     )
 
     expect(mockResolveTxt).toHaveBeenCalledWith(

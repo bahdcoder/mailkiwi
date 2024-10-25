@@ -1,6 +1,5 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { ProcessMtaLogJob } from "@/kumologs/jobs/process_mta_log_job.js"
-import { getConnInfo } from "@hono/node-server/conninfo"
 import { DateTime } from "luxon"
 
 import { makeApp } from "@/shared/container/index.js"
@@ -39,7 +38,7 @@ export class ClickTrackingController extends BaseController {
         user_agent: ctx.req.header("user-agent"),
         timestamp: DateTime.now().toSeconds(),
         headers: {
-          [apiEnv.emailHeaders.emailSendId]: signature?.metadata?.m,
+          [appEnv.emailHeaders.emailSendId]: signature?.metadata?.m,
         },
         ...log,
       },

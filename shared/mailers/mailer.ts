@@ -1,5 +1,5 @@
 import type { MailObject, MailerDriverResponse } from "./mailer_types.js"
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import {
   type SentMessageInfo,
   type Transporter,
@@ -16,16 +16,16 @@ export class MailerClass {
   // this ensures that our reputation tracking engine on the smtp server still counts
   // reputation correctly for the sender based on their teamId and api key
   transport = createTransport({
-    port: apiEnv.SMTP_PORT,
-    host: apiEnv.SMTP_HOST,
+    port: appEnv.SMTP_PORT,
+    host: appEnv.SMTP_HOST,
     secure: true,
     auth: {
-      user: apiEnv.SMTP_USER,
-      pass: apiEnv.SMTP_PASS,
+      user: appEnv.SMTP_USER,
+      pass: appEnv.SMTP_PASS,
     },
     tls: {
-      requestCert: apiEnv.isProd,
-      rejectUnauthorized: apiEnv.isProd,
+      requestCert: appEnv.isProd,
+      rejectUnauthorized: appEnv.isProd,
     },
   })
 

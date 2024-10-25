@@ -1,3 +1,5 @@
+import { UpdateNewsletterWebsiteDto } from "@/letters/dto/update_newsletter_website_dto.js"
+import { UpdateNewsletterWebsitePageDto } from "@/letters/dto/update_newsletter_website_page_dto.js"
 import { type SQL, sql } from "drizzle-orm"
 import {
   type AnyMySqlColumn,
@@ -214,9 +216,7 @@ export const teamMemberships = mysqlTable("teamMemberships", {
 export const audiences = mysqlTable("audiences", {
   id,
   name: varchar("name", { length: 50 }).notNull(),
-  // will be used for newsletter website slug
-  slug: varchar("slug", { length: 72 }).unique(),
-  description: text("description"),
+
   teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
@@ -224,6 +224,56 @@ export const audiences = mysqlTable("audiences", {
     json("knownProperties").$type<KnownAudienceProperty[]>(),
   product: mysqlEnum("product", ["engage", "letters"]).default("engage"),
 })
+
+export const newsletterWebsites = mysqlTable("newsletterWebsites", {
+  id,
+  audienceId: primaryKeyCuid("audienceId")
+    .references(() => audiences.id)
+    .notNull(),
+  slug: varchar("slug", { length: 72 }), // the subdomain of this specific newsletter website
+  // Custom domain for website
+
+  // Example: fastmedia.kibaletters.com -> fastmedia is the current website slug.
+  // cname will be domain, example news.fastmedia.com, cname value will be fastmedia.kibaletters.com
+  websiteDomain: varchar("websiteDomain", { length: 120 }).unique(),
+  websiteDomainCnameValue: varchar("websiteDomainCnameValue", {
+    length: 120,
+  }),
+
+  // when the cname was confirmed by background jobs
+  websiteDomainVerifiedAt: timestamp("websiteDomainVerifiedAt"),
+  // when the ssl certificate was issued and confirmed
+  websiteDomainSslVerifiedAt: timestamp("websiteDomainSslVerifiedAt"),
+
+  // the cert key and cert secretAccessKey
+  // (encrypted) -> will be automatically added to the load balancer to automate ssl termination
+  websiteSslCertKey: text("websiteSslCertKey"),
+  websiteSslCertSecret: text("websiteSslCertSecret"),
+})
+
+export const websitePages = mysqlTable(
+  "websitePages",
+  {
+    id,
+    title: varchar("title", { length: 72 }).unique(),
+    path: varchar("path", { length: 72 }), // the path on the website
+
+    description: text("description"),
+
+    newsletterWebsiteId: primaryKeyCuid("newsletterWebsiteId").references(
+      () => newsletterWebsites.id,
+    ),
+    websiteContent: json("websiteContent")
+      .$type<UpdateNewsletterWebsitePageDto["websiteContent"]>()
+      .notNull(),
+  },
+  (table) => ({
+    newsletterWebsiteIdPathKey: unique("newsletterWebsiteIdPathKey").on(
+      table.newsletterWebsiteId,
+      table.path,
+    ),
+  }),
+)
 
 export const contactImports = mysqlTable("contactImports", {
   id,

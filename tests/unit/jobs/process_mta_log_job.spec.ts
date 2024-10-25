@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
 import { ProcessMtaLogJob } from "@/kumologs/jobs/process_mta_log_job.js"
 import { DateTime } from "luxon"
@@ -38,8 +38,8 @@ describe("@process-mta-log", () => {
             ip_address: xForwardedFor,
             user_agent: userAgent,
             headers: {
-              [apiEnv.emailHeaders.sendingDomainId]: sendingDomain.id,
-              [apiEnv.emailHeaders.emailSendId]: id,
+              [appEnv.emailHeaders.sendingDomainId]: sendingDomain.id,
+              [appEnv.emailHeaders.emailSendId]: id,
             },
             timestamp: DateTime.now().toSeconds(),
           } as unknown as MtaLog,
@@ -110,10 +110,10 @@ describe("@process-mta-log", () => {
         ip_address: xForwardedFor,
         user_agent: userAgent,
         headers: {
-          [apiEnv.emailHeaders.sendingDomainId]: sendingDomain.id,
-          [apiEnv.emailHeaders.emailSendId]: id,
-          [apiEnv.emailHeaders.contactId]: contactId,
-          [apiEnv.emailHeaders.broadcastId]: broadcastId,
+          [appEnv.emailHeaders.sendingDomainId]: sendingDomain.id,
+          [appEnv.emailHeaders.emailSendId]: id,
+          [appEnv.emailHeaders.contactId]: contactId,
+          [appEnv.emailHeaders.broadcastId]: broadcastId,
         },
         timestamp: DateTime.now().toSeconds(),
       } as unknown as MtaLog

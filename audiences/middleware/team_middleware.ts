@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import type { Next } from "hono"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
@@ -16,7 +16,7 @@ export class TeamMiddleware {
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
-    const teamHeader = ctx.req.header(apiEnv.software.teamHeader)
+    const teamHeader = ctx.req.header(appEnv.software.teamHeader)
 
     let team = teamHeader
       ? await this.teamRepository.findById(teamHeader)

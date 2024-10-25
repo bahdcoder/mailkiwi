@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { faker } from "@faker-js/faker"
 import { and, eq } from "drizzle-orm"
 import { readFile } from "fs/promises"
@@ -61,7 +61,7 @@ export const setupImport = async (
     method: "POST",
     body: form,
     headers: {
-      [apiEnv.software.teamHeader]: team.id.toString(),
+      [appEnv.software.teamHeader]: team.id.toString(),
       Cookie: await getCookieSessionForUser(user),
     },
   })

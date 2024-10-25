@@ -29,6 +29,20 @@
       "when": 1729010240163,
       "tag": "0003_add_slug_and_product_to_audiences_table",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1729804413331,
+      "tag": "0004_add_newsletter_websites",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1729843029122,
+      "tag": "0005_add_website_pages",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { ServerType, serve } from "@hono/node-server"
 
 import { makeApp } from "@/shared/container/index.js"
@@ -11,7 +11,7 @@ export async function createTestServer() {
   const server = serve(
     {
       fetch: app.fetch,
-      port: apiEnv.PORT + 100,
+      port: appEnv.PORT + 100,
     },
     ({ address, port }) => {
       console.log(

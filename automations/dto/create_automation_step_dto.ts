@@ -58,8 +58,6 @@ export const CreateAutomationStepDto = pipeAsync(
       checkAsync(async (input) => {
         if (!input) return true
 
-        const database = makeDatabase()
-
         const automationStepRepository = container.make(
           AutomationStepRepository,
         )

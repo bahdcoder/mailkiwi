@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { Client } from "minio"
 import { Readable } from "stream"
 
@@ -8,11 +8,11 @@ type BucketName = "contacts" | "attachments" | "emails"
 
 export class MinioClient {
   private client = new Client({
-    useSSL: apiEnv.isProduction,
-    endPoint: apiEnv.FILE_UPLOADS_ENDPOINT,
-    port: apiEnv.FILE_UPLOADS_PORT,
-    accessKey: apiEnv.FILE_UPLOADS_ACCESS_KEY,
-    secretKey: apiEnv.FILE_UPLOADS_ACCESS_SECRET,
+    useSSL: appEnv.isProduction,
+    endPoint: appEnv.FILE_UPLOADS_ENDPOINT,
+    port: appEnv.FILE_UPLOADS_PORT,
+    accessKey: appEnv.FILE_UPLOADS_ACCESS_KEY,
+    secretKey: appEnv.FILE_UPLOADS_ACCESS_SECRET,
   })
 
   private bucketName: string

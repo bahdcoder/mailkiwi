@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { ClickTrackingController } from "@/tracking/controllers/click_tracking_controller.js"
 
 import { makeApp } from "@/shared/container/index.js"
@@ -47,7 +47,7 @@ export class OpenTrackingController extends ClickTrackingController {
     await this.queueLog(ctx, unsigned, {
       type: "Open",
       headers: {
-        [apiEnv.emailHeaders.emailSendId]: unsigned.original,
+        [appEnv.emailHeaders.emailSendId]: unsigned.original,
       },
     })
 

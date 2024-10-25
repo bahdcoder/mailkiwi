@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { makeMinioClient } from "@/minio/minio_client.js"
 import { sentenceCase } from "change-case"
 import { stringify as csvStringify } from "csv-stringify"
@@ -167,7 +167,7 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
       )
     }
 
-    await Mailer.from(apiEnv.SMTP_MAIL_FROM)
+    await Mailer.from(appEnv.SMTP_MAIL_FROM)
       .to(user.email)
       .subject("Your contacts export is ready.")
       .content(

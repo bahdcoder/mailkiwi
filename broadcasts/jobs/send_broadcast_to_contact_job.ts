@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { InjectEmailAction } from "@/injector/actions/inject_email_action.js"
 import { InjectEmailSchemaDto } from "@/injector/dto/inject_email_dto.js"
 import { eq } from "drizzle-orm"
@@ -95,8 +95,8 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       text: emailContent.contentText,
       attachments: [],
       headers: {
-        [apiEnv.emailHeaders.broadcastId]: broadcast.id,
-        [apiEnv.emailHeaders.contactId]: contact.id,
+        [appEnv.emailHeaders.broadcastId]: broadcast.id,
+        [appEnv.emailHeaders.contactId]: contact.id,
       },
       subject: emailContent.subject,
       openTrackingEnabled,

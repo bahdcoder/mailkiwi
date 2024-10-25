@@ -1,4 +1,4 @@
-import { IgnitorDev } from "@/api/ignitor/ignitor_api_dev.js"
+import { IgnitorDev } from "@/app/ignitor/ignitor_dev.js"
 import { serve } from "@hono/node-server"
 import { serveStatic } from "@hono/node-server/serve-static"
 import { compress } from "hono/compress"

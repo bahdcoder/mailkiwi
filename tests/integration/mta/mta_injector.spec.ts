@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
 import { ProcessMtaLogJob } from "@/kumologs/jobs/process_mta_log_job.js"
 import { ServerType } from "@hono/node-server"
@@ -187,7 +187,7 @@ describe.sequential("@mta", () => {
 
       const emailSendId =
         processLogJobs?.[0]?.data?.log.headers?.[
-          apiEnv.emailHeaders.emailSendId
+          appEnv.emailHeaders.emailSendId
         ]
 
       const allEmailSends = await container
@@ -270,7 +270,7 @@ describe.sequential("@mta", () => {
 
           const [, signedLink] = link.split(trackingDomain)
 
-          const url = new SignedUrlManager(apiEnv.APP_KEY).decode(
+          const url = new SignedUrlManager(appEnv.APP_KEY).decode(
             signedLink,
           )
 
@@ -325,7 +325,7 @@ describe.sequential("@mta", () => {
         },
       })
 
-      const unsigned = new SignedUrlManager(apiEnv.APP_KEY).decode(
+      const unsigned = new SignedUrlManager(appEnv.APP_KEY).decode(
         signature,
       )
 
@@ -339,7 +339,7 @@ describe.sequential("@mta", () => {
       .filter(
         (job) =>
           messageIds.includes(
-            job.data.log?.headers?.[apiEnv.emailHeaders.emailSendId],
+            job.data.log?.headers?.[appEnv.emailHeaders.emailSendId],
           ) && job.data.log?.type === "Click",
       )
       .map((job) => job.data.log)
@@ -483,7 +483,7 @@ describe.sequential("@mta", () => {
 
     const [, signature] = trackingLink?.split(sendingDomainLink)
 
-    const unsigned = new SignedUrlManager(apiEnv.APP_KEY).decode(signature)
+    const unsigned = new SignedUrlManager(appEnv.APP_KEY).decode(signature)
 
     expect(unsigned?.original).toBeDefined()
 
@@ -509,7 +509,7 @@ describe.sequential("@mta", () => {
       .filter(
         (job) =>
           messageIds.includes(
-            job.data.log?.headers?.[apiEnv.emailHeaders.emailSendId],
+            job.data.log?.headers?.[appEnv.emailHeaders.emailSendId],
           ) && job.data.log?.type === "Open",
       )
       .map((job) => job.data.log)
@@ -648,7 +648,7 @@ describe.sequential("@mta", () => {
 
     const logJobs = jobs.filter(
       (job) =>
-        job.data.log?.headers?.[apiEnv.emailHeaders.emailSendId] ===
+        job.data.log?.headers?.[appEnv.emailHeaders.emailSendId] ===
         message.messageId,
     )
 
@@ -658,25 +658,25 @@ describe.sequential("@mta", () => {
       logJobs.map((job) => ({
         type: job.data.log.type,
         headers: {
-          [apiEnv.emailHeaders.broadcastId]:
-            job.data.log.headers[apiEnv.emailHeaders.broadcastId],
-          [apiEnv.emailHeaders.emailSendId]:
-            job.data.log.headers[apiEnv.emailHeaders.emailSendId],
+          [appEnv.emailHeaders.broadcastId]:
+            job.data.log.headers[appEnv.emailHeaders.broadcastId],
+          [appEnv.emailHeaders.emailSendId]:
+            job.data.log.headers[appEnv.emailHeaders.emailSendId],
         },
       })),
     ).toMatchObject([
       {
         type: "Delivery",
         headers: {
-          [apiEnv.emailHeaders.broadcastId]: broadcastId,
-          [apiEnv.emailHeaders.emailSendId]: message.messageId,
+          [appEnv.emailHeaders.broadcastId]: broadcastId,
+          [appEnv.emailHeaders.emailSendId]: message.messageId,
         },
       },
       {
         type: "Reception",
         headers: {
-          [apiEnv.emailHeaders.broadcastId]: broadcastId,
-          [apiEnv.emailHeaders.emailSendId]: message.messageId,
+          [appEnv.emailHeaders.broadcastId]: broadcastId,
+          [appEnv.emailHeaders.emailSendId]: message.messageId,
         },
       },
     ])

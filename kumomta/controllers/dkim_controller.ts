@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { AuthorizeMtaCallsMiddleware } from "@/kumomta/middleware/authorize_mta_calls_middleware.js"
 
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
@@ -34,7 +34,7 @@ export class DkimController extends BaseController {
 
     const { domain: domainDkim, send, engage } = sendingSource
 
-    const privateKey = new Encryption(apiEnv.APP_KEY).decrypt(
+    const privateKey = new Encryption(appEnv.APP_KEY).decrypt(
       domainDkim.dkimPrivateKey,
     )
 

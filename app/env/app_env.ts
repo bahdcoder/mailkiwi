@@ -5,7 +5,7 @@ import { makeExtraAppConfigurations } from "@/shared/utils/env/make_extra_app_co
 import { mysqlDatabaseUrl } from "@/shared/utils/env/make_mysql_database_validator.js"
 import { redisDatabaseUrl } from "@/shared/utils/env/make_redis_url_validator.js"
 
-export type ApiEnvVariables = typeof apiEnv
+export type AppEnvVariables = typeof appEnv
 
 const SHORT_NAME = "kibamail"
 
@@ -51,7 +51,7 @@ const EVENT_TRACKING_DOMAIN = "e.kbmta.net"
 
 const EU_EVENT_TRACKING_DOMAIN = "eu.e.kbmta.net"
 
-export const apiEnv = makeExtraAppConfigurations(
+export const appEnv = makeExtraAppConfigurations(
   makeEnvSecrets(
     cleanEnv(process.env, {
       // Http server

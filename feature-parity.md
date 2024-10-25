@@ -88,12 +88,12 @@ Read more about mailgun tracking here https://documentation.mailgun.com/docs/mai
 
 - [ ] Website Publication
 
-  - [ ] Custom domains
-  - [ ] Kibamail subdomain web hosting
-  - [ ] Unlimited website templates
+  - [~] Custom domains
+  - [~] Kibamail subdomain web hosting
+  - [~] Unlimited website templates
   - [ ] Subscribe forms
   - [ ] Surveys
-  - [ ] Custom webpages
+  - [~] Custom webpages
   - [ ] Advanced email capture
 
 - [ ] Security
@@ -114,13 +114,13 @@ Read more about mailgun tracking here https://documentation.mailgun.com/docs/mai
 
 - [ ] Newsletter
 
-  - [ ] Create segments
-  - [ ] Custom builder
-  - [ ] Optimized deliverability
+  - [x] Create segments
+  - [~] Custom builder
+  - [x] Optimized deliverability
   - [ ] Custom contact fields
-  - [ ] Custom HTML
+  - [~] Custom HTML
   - [ ] Audience polls (surveys)
-  - [ ] Write letters to segments
+  - [x] Write letters to segments
 
 - [ ] Monetisation
   - [ ] Paid subscriptions

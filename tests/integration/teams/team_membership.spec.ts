@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { faker } from "@faker-js/faker"
 import { DateTime } from "luxon"
 import { describe, test } from "vitest"
@@ -40,7 +40,7 @@ export const setup = async (email?: string, role?: string) => {
       .make(TeamRepository)
       .findById(team.id)
 
-    const token = new SignedUrlManager(apiEnv.APP_KEY).encode(
+    const token = new SignedUrlManager(appEnv.APP_KEY).encode(
       invite?.id?.toString() as string,
       {},
     )

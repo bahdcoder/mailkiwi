@@ -54,8 +54,9 @@ export class AudienceRepository extends BaseRepository {
 
     await this.database.insert(audiences).values({
       id,
-      name: payload.name,
       teamId,
+      name: payload.name,
+      product: payload.product,
     })
 
     return { id }

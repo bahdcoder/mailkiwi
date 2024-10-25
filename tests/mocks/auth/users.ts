@@ -1,6 +1,8 @@
 import { createFakeAbTestEmailContent } from "../audiences/email_content.js"
+import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
 import { faker } from "@faker-js/faker"
 
+import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 
 import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
@@ -15,6 +17,8 @@ import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import type {
+  NewsletterWebsite,
+  NewsletterWebsiteWithPages,
   Team,
   TeamMembership,
   User,
@@ -162,9 +166,11 @@ export async function createContactsForAudience(
 export const createUser = async ({
   createBroadcast,
   createEntireTeam,
+  createAudienceForNewsletter,
 }: {
   createBroadcast?: boolean
   createEntireTeam?: boolean
+  createAudienceForNewsletter?: boolean
 } = {}) => {
   const audienceRepository = container.resolve(AudienceRepository)
 
@@ -182,7 +188,11 @@ export const createUser = async ({
   const teamObject = await teamRepository.findById(team.id)
 
   const audience = await audienceRepository.create(
-    { name: "Newsletter", slug: "newsletter" },
+    {
+      name: "Newsletter",
+      slug:
+        faker.number.int({ min: 10, max: 100 }) + "-" + faker.lorem.slug(),
+    },
     team.id,
   )
 
@@ -257,6 +267,37 @@ export const createUser = async ({
     guestUser = (await userRepository.findById(guest.user.id)) as User
   }
 
+  let audienceForNewsletter: { id: string } | undefined = undefined
+  if (createAudienceForNewsletter) {
+    audienceForNewsletter = await container
+      .make(CreateAudienceAction)
+      .handle(
+        {
+          name: faker.lorem.words(3),
+          slug:
+            faker.number.int({ min: 10, max: 100 }) +
+            "-" +
+            faker.lorem.slug(),
+          product: "letters",
+        },
+        team.id,
+      )
+  }
+
+  async function findNewsLetterWebsiteWithPages() {
+    if (!createAudienceForNewsletter || !audienceForNewsletter) {
+      return undefined
+    }
+
+    const newsletterWebsite = await container
+      .make(NewsletterWebsiteRepository)
+      .findByAudienceId(audienceForNewsletter?.id)
+
+    return container
+      .make(NewsletterWebsiteRepository)
+      .findByIdWithPages(newsletterWebsite.id)
+  }
+
   return {
     user: freshUser,
     team: teamObject as Team,
@@ -266,5 +307,8 @@ export const createUser = async ({
     guestUser,
     authorUser,
     broadcastId,
+    audienceForNewsletter,
+    newsletterWebsite:
+      (await findNewsLetterWebsiteWithPages()) as NewsletterWebsiteWithPages,
   }
 }

@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { seedDevSendingSourcesCommand } from "@/cli/commands/seed_dev_sending_sources_command.js"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
@@ -36,13 +36,13 @@ import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
 import { addSecondsToDate } from "@/utils/dates.js"
 import { container } from "@/utils/typi.js"
 
-const connection = await createDatabaseClient(apiEnv.DATABASE_URL)
-const redis = createRedisDatabaseInstance(apiEnv.REDIS_URL)
+const connection = await createDatabaseClient(appEnv.DATABASE_URL)
+const redis = createRedisDatabaseInstance(appEnv.REDIS_URL)
 
 const database = createDrizzleDatabase(connection)
 
-container.registerInstance(ContainerKey.env, apiEnv)
-container.registerInstance(ContainerKey.config, apiEnv)
+container.registerInstance(ContainerKey.env, appEnv)
+container.registerInstance(ContainerKey.config, appEnv)
 container.registerInstance(ContainerKey.database, database)
 container.registerInstance(ContainerKey.redis, redis)
 

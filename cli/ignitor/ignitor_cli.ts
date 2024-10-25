@@ -1,3 +1,3 @@
-import { Ignitor } from "@/api/ignitor/ignitor_api.js"
+import { Ignitor } from "@/app/ignitor/ignitor.js"
 
 export class IgnitorCli extends Ignitor {}

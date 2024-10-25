@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { eq } from "drizzle-orm"
 import { createSign, createVerify } from "node:crypto"
 import { describe, test } from "vitest"
@@ -55,7 +55,7 @@ describe("@domains", () => {
     expect(teamDkim?.encryptedDkimPrivateKey).toEqual(
       domains[0]?.dkimPrivateKey,
     )
-    const dkimPrivateKey = new Encryption(apiEnv.APP_KEY)
+    const dkimPrivateKey = new Encryption(appEnv.APP_KEY)
       .decrypt(teamDkim?.encryptedDkimPrivateKey)
       ?.release() as string
 

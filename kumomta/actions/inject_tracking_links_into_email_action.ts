@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { load as cheerioLoad } from "cheerio"
 import iconv from "iconv-lite"
 import { Splitter } from "mailsplit"
@@ -16,7 +16,7 @@ interface TrackedLink {
 
 export class InjectTrackingLinksIntoEmailAction {
   constructor(
-    protected signedUrlManager = new SignedUrlManager(apiEnv.APP_KEY),
+    protected signedUrlManager = new SignedUrlManager(appEnv.APP_KEY),
   ) {}
 
   rewriteHrefAttributes(

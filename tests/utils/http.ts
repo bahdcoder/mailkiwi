@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
@@ -74,7 +74,7 @@ export async function makeRequestAsUser(
     headers: {
       "Content-Type": "application/json",
       Cookie: await getCookieSessionForUser(user),
-      [apiEnv.software.teamHeader]: (
+      [appEnv.software.teamHeader]: (
         teamId ?? (user as User & { teams: Team[] })?.teams?.[0]?.id
       ).toString(),
       ...restOfOptions.headers,

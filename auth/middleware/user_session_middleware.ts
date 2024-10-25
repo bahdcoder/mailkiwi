@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import type { Next } from "hono"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
@@ -38,7 +38,7 @@ export class UserSessionMiddleware {
     ctx.set("user", user)
 
     let teamHeader =
-      ctx.req.header(apiEnv.software.teamHeader) ?? user?.teams?.[0]?.id
+      ctx.req.header(appEnv.software.teamHeader) ?? user?.teams?.[0]?.id
 
     if (!teamHeader) {
       return next()

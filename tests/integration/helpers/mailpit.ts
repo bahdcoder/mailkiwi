@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import * as cheerio from "cheerio"
 import { simpleParser } from "mailparser"
 
@@ -6,7 +6,7 @@ import { makeHttpClient } from "@/shared/http/http_client.js"
 
 export const clearAllMailpitMessages = async () => {
   await makeHttpClient()
-    .url(`${apiEnv.MAILPIT_API_URL}/api/v1/messages`)
+    .url(`${appEnv.MAILPIT_API_URL}/api/v1/messages`)
     .delete()
     .send()
 }
@@ -33,7 +33,7 @@ export const getAllMailpitMessages = async () => {
       }[]
     }
   >()
-    .url(`${apiEnv.MAILPIT_API_URL}/api/v1/messages`)
+    .url(`${appEnv.MAILPIT_API_URL}/api/v1/messages`)
     .get()
     .send()
 
@@ -42,7 +42,7 @@ export const getAllMailpitMessages = async () => {
 
 export const getMailpitMessageSource = async (messageId: string) => {
   const { data } = await makeHttpClient<object, string>()
-    .url(`${apiEnv.MAILPIT_API_URL}/api/v1/message/${messageId}/raw`)
+    .url(`${appEnv.MAILPIT_API_URL}/api/v1/message/${messageId}/raw`)
     .asText()
     .get()
     .send()

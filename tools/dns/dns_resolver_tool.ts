@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import dns from "node:dns/promises"
 
 import { DnsConfigurationTool } from "@/tools/dns/dns_configuration_tool.js"
@@ -12,7 +12,7 @@ export class DnsResolverTool {
 
   private dnsConfigurationTool: DnsConfigurationTool
 
-  constructor(private env = apiEnv) {}
+  constructor(private env = appEnv) {}
 
   forDomain(domain: string) {
     this.domain = domain

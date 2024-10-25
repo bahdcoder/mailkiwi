@@ -1,5 +1,5 @@
-import { Ignitor } from "./ignitor_api.js"
-import { GetPagePropsAction } from "@/api/actions/get_page_props_action.js"
+import { Ignitor } from "./ignitor.js"
+import { GetPagePropsAction } from "@/app/actions/get_page_props_action.js"
 import { serve } from "@hono/node-server"
 import { createReadableStreamFromReadable } from "@remix-run/node"
 import { readFile } from "fs/promises"

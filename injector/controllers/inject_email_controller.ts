@@ -1,4 +1,4 @@
-import { apiEnv } from "@/api/env/api_env.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
 import {
   InjectEmailSchema,
@@ -120,9 +120,9 @@ export class InjectEmailController extends BaseController {
           headers: {
             ...payload.headers,
             "Message-ID": messageId,
-            [apiEnv.emailHeaders.messageId]: messageId,
-            [apiEnv.emailHeaders.emailSendId]: id,
-            [apiEnv.emailHeaders.sendingDomainId]: sendingDomain.id,
+            [appEnv.emailHeaders.messageId]: messageId,
+            [appEnv.emailHeaders.emailSendId]: id,
+            [appEnv.emailHeaders.sendingDomainId]: sendingDomain.id,
           },
         },
       }
@@ -132,7 +132,7 @@ export class InjectEmailController extends BaseController {
         recipient,
         handle() {
           return makeHttpClient()
-            .url(`${apiEnv.MTA_INJECTOR_URL}/api/inject/v1`)
+            .url(`${appEnv.MTA_INJECTOR_URL}/api/inject/v1`)
             .post()
             .payload(injectEmailPayload)
             .send()

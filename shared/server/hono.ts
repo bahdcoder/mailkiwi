@@ -1,9 +1,15 @@
 import type { HonoRouteDefinition } from "./types.js"
 import type { HttpBindings } from "@hono/node-server"
 import { Hono as BaseHono, type MiddlewareHandler } from "hono"
+import { HonoOptions } from "hono/hono-base"
 import { logger } from "hono/logger"
 
+import { EnsureUserAndTeamSessionsMiddleware } from "@/auth/middleware/ensure_user_and_team_sessions_middleware.js"
+import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
+
 import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js"
+
+import { container } from "@/utils/typi.js"
 
 export type RouteOptions = {
   middleware?: MiddlewareHandler[]
@@ -24,11 +30,17 @@ export class Hono
   implements HonoInstance
 {
   protected defaultMiddleware(): MiddlewareHandler[] {
-    return []
+    return [
+      container.resolve(UserSessionMiddleware).handle,
+      container.resolve(EnsureUserAndTeamSessionsMiddleware).handle,
+    ]
   }
 
-  constructor() {
-    super({ strict: false })
+  constructor(options?: HonoOptions<{ Bindings: HttpBindings }>) {
+    super({
+      strict: false,
+      ...options,
+    })
 
     // this.use(logger())
     this.defineErrorHandler()

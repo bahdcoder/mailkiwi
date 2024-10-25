@@ -1,10 +1,11 @@
-import { ApiEnvVariables, apiEnv } from "@/api/env/api_env.js"
-import { HonoApi } from "@/api/server/hono_api.js"
+import { AppEnvVariables, appEnv } from "@/app/env/app_env.js"
 import { InjectEmailController } from "@/injector/controllers/inject_email_controller.js"
 import { MtaLogsController } from "@/kumologs/controllers/mta_logs_controller.js"
 import { DkimController } from "@/kumomta/controllers/dkim_controller.js"
 import { SmtpAuthController } from "@/kumomta/controllers/smtp_auth_controller.js"
 import { TrackingController } from "@/kumomta/controllers/tracking_controller.js"
+import { NewsletterController } from "@/letters/controllers/newsletter_controller.js"
+import { NewsletterWebsiteController } from "@/letters/controllers/newsletter_website_controller.js"
 import { ClickTrackingController } from "@/tracking/controllers/click_tracking_controller.js"
 import { OpenTrackingController } from "@/tracking/controllers/open_tracking_controller.js"
 import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.js"
@@ -40,7 +41,7 @@ import {
   makeDatabaseConnection,
   makeRedis,
 } from "@/shared/container/index.js"
-import { type HonoInstance } from "@/shared/server/hono.js"
+import { Hono, type HonoInstance } from "@/shared/server/hono.js"
 import "@/shared/utils/log/dump.js"
 
 import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
@@ -48,16 +49,16 @@ import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
 import { container } from "@/utils/typi.js"
 
 export class Ignitor {
-  protected env: ApiEnvVariables
+  protected env: AppEnvVariables
   protected app: HonoInstance
   protected database: DrizzleClient
   protected redis: Redis
 
   boot() {
-    this.env = apiEnv
+    this.env = appEnv
     container.register(ContainerKey.env, this.env)
 
-    this.app = new HonoApi()
+    this.app = new Hono()
     container.register(ContainerKey.app, this.app)
 
     return this
@@ -120,6 +121,8 @@ export class Ignitor {
     container.resolve(TrackingController)
     container.resolve(ClickTrackingController)
     container.resolve(OpenTrackingController)
+    container.resolve(NewsletterController)
+    container.resolve(NewsletterWebsiteController)
   }
 
   async shutdown() {
