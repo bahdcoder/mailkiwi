@@ -35,6 +35,9 @@ export class SegmentBuilder {
         case "email":
         case "firstName":
         case "lastName":
+        case "lastTrackedActivityFrom":
+        case "lastTrackedActivityUsingBrowser":
+        case "lastTrackedActivityUsingDevice":
           queryConditions.push(
             ...new FieldSegmentBuilder(
               condition.operation,

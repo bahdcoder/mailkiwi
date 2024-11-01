@@ -66,6 +66,7 @@ export type UpdateSetTeamMembershipInput = MySqlUpdateSetSource<
 
 export type ContactImport = typeof contactImports.$inferSelect
 export type AbTestVariant = typeof abTestVariants.$inferSelect
+export type EmailSendEvent = typeof emailSendEvents.$inferSelect
 export type Segment = typeof segments.$inferSelect
 export type InsertSegment = typeof segments.$inferInsert
 

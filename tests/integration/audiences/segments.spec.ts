@@ -124,7 +124,7 @@ describe("@audience segments", () => {
       errors: [
         {
           message:
-            "Only the following fields are allowed: email, firstName, lastName, subscribedAt, tags, lastSentBroadcastEmailAt, lastSentAutomationEmailAt, lastOpenedBroadcastEmailAt, lastOpenedAutomationEmailAt, lastClickedBroadcastEmailLinkAt, lastClickedAutomationEmailLinkAt, properties.*",
+            "Only the following fields are allowed: email, firstName, lastName, subscribedAt, tags, lastSentBroadcastEmailAt, lastSentAutomationEmailAt, lastOpenedBroadcastEmailAt, lastOpenedAutomationEmailAt, lastClickedBroadcastEmailLinkAt, lastClickedAutomationEmailLinkAt, lastTrackedActivityFrom, lastTrackedActivityUsingDevice, lastTrackedActivityUsingBrowser, properties.*",
           field: "filterGroups",
         },
       ],

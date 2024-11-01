@@ -32,6 +32,11 @@ const allowedFilterFields = [
   // click events
   "lastClickedBroadcastEmailLinkAt",
   "lastClickedAutomationEmailLinkAt",
+
+  // device and location
+  "lastTrackedActivityFrom",
+  "lastTrackedActivityUsingDevice",
+  "lastTrackedActivityUsingBrowser",
 ] as const
 
 type AllowedFilterField = (typeof allowedFilterFields)[number]

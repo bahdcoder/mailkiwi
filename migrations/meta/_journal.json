@@ -78,6 +78,34 @@
       "when": 1730442888882,
       "tag": "0010_add_website_ssl_cert_challenge_key_authorization_to_newsletter_websites_table",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1730472493533,
+      "tag": "0011_add_location_and_device_to_contacts",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1730475112247,
+      "tag": "0012_add_broadcast_and_audience_to_tracked_email_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1730483679972,
+      "tag": "0013_add_contact_id_to_email_sends",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "5",
+      "when": 1730490454412,
+      "tag": "0014_add_audience_id_to_email_sends",
+      "breakpoints": true
     }
   ]
 }

@@ -1,15 +1,4 @@
-import { FieldSegmentBuilder } from "./base_field_segment_builder.js"
-import {
-  type SQLWrapper,
-  and,
-  eq,
-  gte,
-  inArray,
-  like,
-  lte,
-} from "drizzle-orm"
-import { AnyMySqlColumn } from "drizzle-orm/mysql-core"
-import { DateTime } from "luxon"
+import { and, eq, gte, inArray } from "drizzle-orm"
 
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
@@ -19,8 +8,6 @@ import {
   contactProperties,
   contacts,
 } from "@/database/schema.js"
-
-import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

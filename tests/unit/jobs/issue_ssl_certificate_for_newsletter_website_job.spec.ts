@@ -9,6 +9,8 @@ import { describe, test } from "vitest"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 
+import { settings } from "@/database/schema.js"
+
 import {
   makeApp,
   makeDatabase,
@@ -22,6 +24,8 @@ describe("@website-ssl", () => {
   test("issues website ssl certs, encrypts and stores the certs to the database", async ({
     expect,
   }) => {
+    await makeDatabase().delete(settings)
+
     await generateAcmeAccountIdentityCommand.handler?.()
 
     const { newsletterWebsite } = await createUser({

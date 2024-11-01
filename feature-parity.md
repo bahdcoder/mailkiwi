@@ -25,19 +25,18 @@ These are organised in order of implementation priority:
   - [x] Role based access control methods (administrator, manager, author, guest)
 - [x] Seats (In our case, unlimited seats)
 - [ ] Audiences
-  - [ ] Contacts
+  - [x] Contacts
     - [x] Contact profiles
     - [x] Detailed contact activities
-    - [ ] Notes
     - [x] Tags
     - [x] Import contacts
-    - [ ] Export contacts
+    - [x] Export contacts
     - [x] Add contacts to audiences
-    - [ ] Enhanced contact properties
+    - [x] Enhanced contact properties
 - [ ] Segmentation
   - [ ] Personalised emails
   - [x] Segment based on specific campaign activity (Clicks, Email Opens)
-  - [ ] Segment by contact location\*
+  - [x] Segment by contact location\*
   - [x] Segment by behaviour
   - [ ] Segment by survey responses
   - [ ] Segmentation templates

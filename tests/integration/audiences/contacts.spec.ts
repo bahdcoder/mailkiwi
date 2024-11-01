@@ -235,6 +235,7 @@ describe("@contact-details", () => {
         emailSendId,
         type: eventType as any,
         contactId: id,
+        product: "engage",
       })
     }
 

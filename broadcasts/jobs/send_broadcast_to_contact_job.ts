@@ -1,7 +1,6 @@
 import { appEnv } from "@/app/env/app_env.js"
 import { InjectEmailAction } from "@/injector/actions/inject_email_action.js"
 import { InjectEmailSchemaDto } from "@/injector/dto/inject_email_dto.js"
-import { eq } from "drizzle-orm"
 
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
@@ -9,16 +8,8 @@ import { ContactRepository } from "@/audiences/repositories/contact_repository.j
 
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
-import type {
-  BroadcastWithEmailContent,
-  SendingDomain,
-} from "@/database/database_schema_types.js"
-import {
-  broadcasts,
-  contacts as contactsTable,
-} from "@/database/schema.js"
+import type { BroadcastWithEmailContent } from "@/database/database_schema_types.js"
 
-import { Mailer } from "@/shared/mailers/mailer.js"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
 import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
 

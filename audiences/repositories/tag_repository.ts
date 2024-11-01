@@ -44,8 +44,14 @@ export class TagRepository extends BaseRepository {
     if (tagsToCreate.length === 0) {
       return []
     }
-    await this.database.insert(tags).values(tagsToCreate)
 
-    return tagsToCreate as Tag[]
+    const payload = tagsToCreate.map((tag) => ({
+      ...tag,
+      id: this.cuid(),
+    }))
+
+    await this.database.insert(tags).values(payload)
+
+    return payload as Tag[]
   }
 }

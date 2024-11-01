@@ -365,6 +365,21 @@ export const contacts = mysqlTable(
     lastClickedAutomationEmailLinkAt: timestamp(
       "lastClickedAutomationEmailLinkAt",
     ),
+
+    // Device and location information
+    lastTrackedActivityFrom: varchar("lastTrackedActivityFrom", {
+      length: 10,
+    }),
+    lastTrackedActivityUsingDevice: varchar(
+      "lastTrackedActivityUsingDevice",
+      { length: 56 },
+    ),
+    lastTrackedActivityUsingBrowser: varchar(
+      "lastTrackedActivityUsingBrowser",
+      {
+        length: 56,
+      },
+    ),
   },
   (table) => ({
     ContactEmailAudienceIdKey: unique("ContactEmailAudienceIdKey").on(
@@ -498,6 +513,10 @@ export const emailSends = mysqlTable("emailSends", {
 
   sender: varchar("sender", { length: 80 }),
   recipient: varchar("recipient", { length: 80 }),
+
+  contactId: primaryKeyCuid("contactId").references(() => contacts.id),
+  audienceId: primaryKeyCuid("audienceId").references(() => audiences.id),
+
   queue: varchar("queue", { length: 80 }),
   siteName: varchar("siteName", { length: 80 }),
   size: int("size"),
@@ -542,8 +561,21 @@ export const emailSendEvents = mysqlTable("emailSendEvents", {
     .$default(() => "Any"),
   createdAt: timestamp("createdAt"),
 
+  product: mysqlEnum("product", ["engage", "send", "letters"]).notNull(),
+
   // for engage product, track the contact id.
   contactId: primaryKeyCuid("contactId").references(() => contacts.id),
+
+  // for engage to track events per broadcast and per audience
+  broadcastId: primaryKeyCuid("broadcastId").references(
+    () => broadcasts.id,
+    {
+      onDelete: "cascade",
+    },
+  ),
+  audienceId: primaryKeyCuid("audienceId").references(() => audiences.id, {
+    onDelete: "cascade",
+  }),
 
   // response code (flat for easier querying)
   responseCode: int("responseCode"),

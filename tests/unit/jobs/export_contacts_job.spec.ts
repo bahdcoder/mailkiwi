@@ -20,155 +20,154 @@ import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { container } from "@/utils/typi.js"
 
 describe("@contacts exports job", () => {
-  test.todo(
-    "exports only contacts that match the filter groups criteria",
-    async ({ expect }) => {
-      const { audience, user } = await createUser()
-      const database = makeDatabase()
-      const redis = makeRedis()
+  test.only("exports only contacts that match the filter groups criteria", async ({
+    expect,
+  }) => {
+    const { audience, user } = await createUser()
+    const database = makeDatabase()
+    const redis = makeRedis()
 
-      await container.resolve(AudienceRepository).update(
+    await container.resolve(AudienceRepository).update(
+      {
+        knownProperties: [
+          { name: "Phone", type: "text" },
+          { name: "Country Code", type: "text" },
+          { name: "Country", type: "text" },
+        ],
+      },
+      audience.id,
+    )
+
+    const tagsToCreate = [
+      { name: faker.string.uuid(), audienceId: audience.id },
+      { name: faker.string.uuid(), audienceId: audience.id },
+    ]
+
+    const createdTags = await container
+      .make(TagRepository)
+      .bulkCreate(tagsToCreate)
+
+    // bulk insert a bunch of random contacts for an audience
+    await database
+      .insert(contacts)
+      .values(
+        faker.helpers
+          .multiple(() => faker.string.uuid, { count: 100 })
+          .map(() => createFakeContact(audience.id)),
+      )
+
+    const emailStartsWith = faker.string.uuid()
+    const firstNameContains = faker.string.uuid()
+
+    const totalMatchingGroupA = 16
+    const totalMatchingGroupB = 23
+
+    const totalToBeExported = totalMatchingGroupA + totalMatchingGroupB
+
+    // insert n contacts that match first part of OR conditions
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(faker.lorem.word, {
+          count: totalMatchingGroupA,
+        })
+        .map(() =>
+          createFakeContact(audience.id, {
+            email: emailStartsWith + faker.internet.email(),
+          }),
+        ),
+    )
+
+    const contactsWithEmailStartingWith = await database
+      .select()
+      .from(contacts)
+      .where(like(contacts.email, `${emailStartsWith}%`))
+
+    // associate all contacts with 2 tags, preparing for export.
+    await database.insert(tagsOnContacts).values(
+      contactsWithEmailStartingWith
+        .map((contact) => {
+          return createdTags.map((tag) => ({
+            tagId: tag.id,
+            contactId: contact.id,
+          }))
+        })
+        .flat(),
+    )
+
+    // insert n contacts that match second part of OR conditions
+    await database.insert(contacts).values(
+      faker.helpers
+        .multiple(faker.lorem.word, {
+          count: totalMatchingGroupB,
+        })
+        .map(() =>
+          createFakeContact(audience.id, {
+            firstName: firstNameContains + " " + faker.person.firstName(),
+            attributes: {
+              Country: faker.location.country(),
+              "Country Code": faker.location.countryCode(),
+              Phone: faker.phone.number(),
+            },
+          }),
+        ),
+    )
+
+    const filterGroups: CreateContactExportDto["filterGroups"] = {
+      type: "OR",
+      groups: [
         {
-          knownProperties: [
-            { name: "Phone", type: "text" },
-            { name: "Country Code", type: "text" },
-            { name: "Country", type: "text" },
+          type: "AND",
+          conditions: [
+            {
+              field: "email",
+              operation: "startsWith",
+              value: emailStartsWith,
+            },
           ],
         },
-        audience.id,
-      )
-
-      const tagsToCreate = [
-        { name: faker.string.uuid(), audienceId: audience.id },
-        { name: faker.string.uuid(), audienceId: audience.id },
-      ]
-
-      const createdTags = await container
-        .make(TagRepository)
-        .bulkCreate(tagsToCreate)
-
-      // bulk insert a bunch of random contacts for an audience
-      await database
-        .insert(contacts)
-        .values(
-          faker.helpers
-            .multiple(() => faker.string.uuid, { count: 100 })
-            .map(() => createFakeContact(audience.id)),
-        )
-
-      const emailStartsWith = faker.string.uuid()
-      const firstNameContains = faker.string.uuid()
-
-      const totalMatchingGroupA = 16
-      const totalMatchingGroupB = 23
-
-      const totalToBeExported = totalMatchingGroupA + totalMatchingGroupB
-
-      // insert n contacts that match first part of OR conditions
-      await database.insert(contacts).values(
-        faker.helpers
-          .multiple(faker.lorem.word, {
-            count: totalMatchingGroupA,
-          })
-          .map(() =>
-            createFakeContact(audience.id, {
-              email: emailStartsWith + faker.internet.email(),
-            }),
-          ),
-      )
-
-      const contactsWithEmailStartingWith = await database
-        .select()
-        .from(contacts)
-        .where(like(contacts.email, `${emailStartsWith}%`))
-
-      // associate all contacts with 2 tags, preparing for export.
-      await database.insert(tagsOnContacts).values(
-        contactsWithEmailStartingWith
-          .map((contact) => {
-            return createdTags.map((tag) => ({
-              tagId: tag.id,
-              contactId: contact.id,
-            }))
-          })
-          .flat(),
-      )
-      // insert n contacts that match second part of OR conditions
-      await database.insert(contacts).values(
-        faker.helpers
-          .multiple(faker.lorem.word, {
-            count: totalMatchingGroupB,
-          })
-          .map(() =>
-            createFakeContact(audience.id, {
-              firstName:
-                firstNameContains + " " + faker.person.firstName(),
-              attributes: {
-                Country: faker.location.country(),
-                "Country Code": faker.location.countryCode(),
-                Phone: faker.phone.number(),
-              },
-            }),
-          ),
-      )
-
-      const filterGroups: CreateContactExportDto["filterGroups"] = {
-        type: "OR",
-        groups: [
-          {
-            type: "AND",
-            conditions: [
-              {
-                field: "email",
-                operation: "startsWith",
-                value: emailStartsWith,
-              },
-            ],
-          },
-          {
-            type: "AND",
-            conditions: [
-              {
-                field: "firstName",
-                operation: "contains",
-                value: firstNameContains,
-              },
-            ],
-          },
-        ],
-      }
-
-      const minio = new FakeMinioClient()
-
-      container.fake(MinioClient, minio as any)
-
-      await container.make(ExportContactsJob).handle({
-        payload: {
-          filterGroups,
-          exportCreatedBy: user.id,
-          audienceId: audience.id,
+        {
+          type: "AND",
+          conditions: [
+            {
+              field: "firstName",
+              operation: "contains",
+              value: firstNameContains,
+            },
+          ],
         },
-        redis,
-        database,
-      })
+      ],
+    }
 
-      expect(minio.bucketName).toEqual("contacts")
-      expect(minio.objectName).toMatch("exports/")
-      expect(minio.objectName).toMatch(".csv")
+    const minio = new FakeMinioClient()
 
-      const buffer = await streamToBuffer(minio.stream)
+    container.fake(MinioClient, minio as any)
 
-      const exportedContacts = buffer.toString().split("\n")
+    await container.make(ExportContactsJob).handle({
+      payload: {
+        filterGroups,
+        exportCreatedBy: user.id,
+        audienceId: audience.id,
+      },
+      redis,
+      database,
+    })
 
-      expect(exportedContacts).toHaveLength(totalToBeExported + 2) // one line for headers and last line as empty space end of line.
+    expect(minio.bucketName).toEqual("contacts")
+    expect(minio.objectName).toMatch("exports/")
+    expect(minio.objectName).toMatch(".csv")
 
-      expect(exportedContacts[0]).toEqual(
-        "First name,Last name,Email,Subscribed at,Phone,Country Code,Country,Tags",
-      )
+    const buffer = await streamToBuffer(minio.stream)
 
-      container.restoreAll()
-    },
-  )
+    const exportedContacts = buffer.toString().split("\n")
+
+    expect(exportedContacts).toHaveLength(totalToBeExported + 2) // one line for headers and last line as empty space end of line.
+
+    expect(exportedContacts[0]).toEqual(
+      "First name,Last name,Email,Subscribed at,Phone,Country Code,Country,Tags",
+    )
+
+    container.restoreAll()
+  })
 })
 
 export async function streamToBuffer(stream: Readable): Promise<Buffer> {

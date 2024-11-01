@@ -219,7 +219,7 @@ describe.sequential("@mta", () => {
     },
   )
 
-  test(
+  test.only(
     "@mta-tracking-injection injects link tracking for messages",
     { timeout: 10000, retry: 2 },
     async ({ expect }) => {

@@ -153,8 +153,9 @@ export class LogTypeHandler {
         ...(isEngageProduct
           ? {
               contactId: log?.headers?.[appEnv.emailHeaders.contactId],
+              product: "engage",
             }
-          : {}),
+          : { product: "send" }),
 
         // location
         originCity: city?.city?.names?.en,
@@ -169,11 +170,21 @@ export class LogTypeHandler {
           ...(log.type === "Click"
             ? {
                 lastClickedBroadcastEmailLinkAt: DateTime.now().toJSDate(),
+                lastTrackedActivityFrom: city?.country?.isoCode,
+                lastTrackedActivityUsingDevice:
+                  parsedUserAgent.device.model,
+                lastTrackedActivityUsingBrowser:
+                  parsedUserAgent.browser.name,
               }
             : {}),
           ...(log.type === "Open"
             ? {
                 lastOpenedBroadcastEmailAt: DateTime.now().toJSDate(),
+                lastTrackedActivityFrom: city?.country?.isoCode,
+                lastTrackedActivityUsingDevice:
+                  parsedUserAgent.device.model,
+                lastTrackedActivityUsingBrowser:
+                  parsedUserAgent.browser.name,
               }
             : {}),
         })
@@ -196,6 +207,7 @@ export class LogTypeHandler {
       responseContent: log.response.content,
       peerAddressAddr: log.peer_address?.addr,
       peerAddressName: log.peer_address?.name,
+      product: "engage",
     })
   }
 }

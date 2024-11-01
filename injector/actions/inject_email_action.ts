@@ -105,8 +105,8 @@ export class InjectEmailAction {
           headers: {
             ...payload.headers,
             "Message-ID": messageId,
-            [appEnv.emailHeaders.messageId]: messageId,
             [appEnv.emailHeaders.emailSendId]: id,
+            [appEnv.emailHeaders.messageId]: messageId,
             [appEnv.emailHeaders.sendingDomainId]: sendingDomain.id,
           },
         },
@@ -138,6 +138,8 @@ export class InjectEmailAction {
             : "send",
           clickTrackingEnabled,
           openTrackingEnabled,
+          contactId: payload.headers?.[appEnv.emailHeaders.contactId],
+          broadcastId: payload.headers?.[appEnv.emailHeaders.broadcastId],
         },
       })
     }
