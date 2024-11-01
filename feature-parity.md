@@ -2,7 +2,7 @@
 
 These are organised in order of implementation priority:
 
-- [ ] Letters (Beehiv / Substack)
+- [~] Letters (Beehiv / Substack)
 - [ ] Email marketing (Mailchimp / Active Campaign replacement)
 - [ ] Transactions (Mandrill / Postmark / Mailgun) replacement
 - [ ] Email builder (Postcards)
@@ -84,16 +84,16 @@ Read more about mailgun tracking here https://documentation.mailgun.com/docs/mai
   - [ ] Rates
     - [ ] Accepted rate, bounce rate, complained rate, failed rate, etc.
 
-### Beehiiv (Letters newsletter product)
+### Beehiv (Letters newsletter product)
 
 - [ ] Website Publication
 
-  - [~] Custom domains
-  - [~] Kibamail subdomain web hosting
+  - [x] Custom domains (with SSL)
+  - [x] Kibamail subdomain web hosting (With Wildcard SSL)
   - [~] Unlimited website templates
   - [ ] Subscribe forms
   - [ ] Surveys
-  - [~] Custom webpages
+  - [x] Custom webpages
   - [ ] Advanced email capture
 
 - [ ] Security

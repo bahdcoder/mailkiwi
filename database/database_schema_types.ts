@@ -14,6 +14,7 @@ import type {
   segments,
   sendingDomains,
   sendingSources,
+  settings,
   tags,
   tagsOnContacts,
   teamMemberships,
@@ -71,6 +72,7 @@ export type InsertSegment = typeof segments.$inferInsert
 export type InsertTag = typeof tags.$inferInsert
 export type InsertEmailSend = typeof emailSends.$inferInsert
 export type InsertContact = typeof contacts.$inferInsert
+export type InsertSetting = typeof settings.$inferInsert
 export type InsertSendingSource = typeof sendingSources.$inferInsert
 export type InsertEmailSendEvent = typeof emailSendEvents.$inferInsert
 export type InsertContactImport = typeof contactImports.$inferInsert

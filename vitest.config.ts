@@ -5,6 +5,15 @@ export default defineConfig({
   test: {
     coverage: {
       provider: "v8",
+      ignoreEmptyLines: true,
+      exclude: [
+        "build/**",
+        "tests/**",
+        ".prettierrc.js",
+        "drizzle.config.ts",
+        "postcss.config.js",
+        "tailwind.config.js",
+      ],
     },
     setupFiles: ["tests/setup.ts"],
     hideSkippedTests: true,

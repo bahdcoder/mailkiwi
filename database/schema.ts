@@ -73,6 +73,12 @@ export type KnownAudienceProperty = {
   type: "boolean" | "float" | "date" | "text"
 }
 
+export const settings = mysqlTable("settings", {
+  id,
+  // encrypted id used by acme client for generating acme certificates.
+  acmeAccountIdentity: text("acmeAccountIdentity").notNull(),
+})
+
 export const users = mysqlTable("users", {
   id,
   email: varchar("email", { length: 80 }).unique().notNull(),
@@ -249,6 +255,13 @@ export const newsletterWebsites = mysqlTable("newsletterWebsites", {
   // (encrypted) -> will be automatically added to the load balancer to automate ssl termination
   websiteSslCertKey: text("websiteSslCertKey"),
   websiteSslCertSecret: text("websiteSslCertSecret"),
+
+  websiteSslCertChallengeToken: varchar("websiteSslCertChallengeToken", {
+    length: 256,
+  }),
+  websiteSslCertChallengeKeyAuthorization: text(
+    "websiteSslCertChallengeKeyAuthorization",
+  ),
 })
 
 export const websitePages = mysqlTable(

@@ -15,14 +15,17 @@ import {
   emailSendEvents,
   emailSends,
   emails,
+  newsletterWebsites,
   segments,
   sendingDomains,
   sendingSources,
+  settings,
   tags,
   tagsOnContacts,
   teamMemberships,
   teams,
   users,
+  websitePages,
 } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
@@ -37,6 +40,7 @@ export const refreshRedisDatabase = async () => {
 export const refreshDatabase = async () => {
   const database = makeDatabase()
 
+  await database.delete(settings)
   await database.delete(emailSendEvents)
   await database.delete(emailSends)
   await database.delete(sendingDomains)
@@ -44,6 +48,8 @@ export const refreshDatabase = async () => {
   await database.delete(tagsOnContacts)
   await database.delete(broadcasts)
   await database.delete(segments)
+  await database.delete(websitePages)
+  await database.delete(newsletterWebsites)
   await database.delete(contactProperties)
   await database.delete(contacts)
   await database.delete(contactImports)

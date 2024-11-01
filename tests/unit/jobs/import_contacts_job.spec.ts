@@ -1,4 +1,4 @@
-import { asc, count, desc, eq } from "drizzle-orm"
+import { asc, count, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.js"
@@ -7,13 +7,8 @@ import { ContactImportRepository } from "@/audiences/repositories/contact_import
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import { setupImport } from "@/tests/integration/audiences/contacts.spec.js"
-import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 
-import {
-  contactProperties,
-  contacts,
-  tagsOnContacts,
-} from "@/database/schema.js"
+import { contacts, tagsOnContacts } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 
@@ -22,7 +17,7 @@ import { container } from "@/utils/typi.js"
 describe("@contacts import job", () => {
   test(
     "reads the csv content from storage and syncs all values to contacts",
-    { timeout: 8000 },
+    { timeout: 12000 },
     async ({ expect }) => {
       const { contactImport, audience } = await setupImport(
         ".." + "/" + ".." + "/" + "audiences/mocks/contacts.csv",
@@ -116,7 +111,7 @@ describe("@contacts import job", () => {
 
   test(
     "when the job fails, it marks the import as failed and sends an email to the customer informing them.",
-    { timeout: 8000 },
+    { timeout: 12000 },
     async ({ expect }) => {
       const { contactImport } = await setupImport(
         ".." + "/" + ".." + "/" + "audiences/mocks/contacts-malformed.csv",

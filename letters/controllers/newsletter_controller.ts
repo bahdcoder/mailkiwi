@@ -17,9 +17,15 @@ export class NewsletterController extends BaseController {
     // /letters/:newsletterWebsiteSlug -> this returns home page of newsletter
     // /letters/:newsletterWebsiteSlug/l/how-to-land-a-remote-job-in-tech -> this returns a single letter page
     // /letters/:newsletterWebsiteSlug/* -> this returns any matching page from all the pages saved in the database.
+    // /letters/:newsletterWebsiteSlug/.wellknown/acme-challenge
 
     this.app.defineRoutes(
       [
+        [
+          "GET",
+          "/.well-known/acme-challenge/:token",
+          this.acmeChallenge.bind(this),
+        ],
         ["GET", "/:websitePageSlug?", this.index.bind(this)],
         ["GET", "/l/:newsletterBroadcastSlug", this.index.bind(this)],
       ],
@@ -27,6 +33,23 @@ export class NewsletterController extends BaseController {
         prefix: "/letters/:newsletterWebsiteSlug",
         middleware: [],
       },
+    )
+  }
+
+  async acmeChallenge(ctx: HonoContext) {
+    const website = await container
+      .make(NewsletterWebsiteRepository)
+      .findBySlugAndToken(
+        ctx.req.param("newsletterWebsiteSlug"),
+        ctx.req.param("token"),
+      )
+
+    if (!website) {
+      return ctx.notFound()
+    }
+
+    return ctx.text(
+      website.websiteSslCertChallengeKeyAuthorization as string,
     )
   }
 

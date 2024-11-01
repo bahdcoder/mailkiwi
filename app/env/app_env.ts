@@ -7,27 +7,32 @@ import { redisDatabaseUrl } from "@/shared/utils/env/make_redis_url_validator.js
 
 export type AppEnvVariables = typeof appEnv
 
-const SHORT_NAME = "kibamail"
+export const SHORT_NAME = "kibamail"
 
 // This is where we host the bounce processing server.
 // All incoming bounces and complaints from our customers will go through here.
 // They eventually get fed into a kafka topic that multiple services will consume.
 
 // The SPF configuration for this domain must point to (include) spf.kbmta.net, which further includes all our sending subnets and ip addresses.
-const BOUNCE_HOST_NAME = "mail.kbmta.net"
+export const BOUNCE_HOST_NAME = "mail.kbmta.net"
 
 // This is where we host the SPF DNS entry.
 // All our subnets and IP addresses for email sending must be configured as a TXT record on this domain.
 // All our domains like mail.kbmta.net, kb-mkg.kbmta.net, kibamail.com etc. must include this domain in its SPF record.
-const SPF_HOST_NAME = "spf.kbmta.net"
+export const SPF_HOST_NAME = "spf.kbmta.net"
 
 // This is where we host the transactional email server.
 // All inbound transactional emails will go through here, including those sent via HTTP api.
-const SMTP_HOST_NAME = "smtp.kbmta.net"
+export const SMTP_HOST_NAME = "smtp.kbmta.net"
 
 // This is where we host the marketing email server.
 // All inbound marketing emails will go through here, including those sent via HTTP api.
-const SMTP_MARKETING_HOST_NAME = "smtp-mkg.kbmta.net"
+export const SMTP_MARKETING_HOST_NAME = "smtp-mkg.kbmta.net"
+
+// This is the main domain of all newsletters on the platform.
+// Customers will get a subdomain on this domain.
+// For example, fastmedia.kibaletters.com.
+export const NEWSLETTER_WEBSITE_DOMAIN = "kibaletters.com"
 
 // This is the default subdomain customers will use when configuring the `Return-Path` DNS entry.
 // Example: Google uses our infrastructure to send emails, so they'll configure the following dns entry:
@@ -94,6 +99,9 @@ export const appEnv = makeExtraAppConfigurations(
 
       // downloads
       MMDB_DOWNLOAD_URL: str(),
+
+      // ssl certificates
+      ACME_DIRECTORY_URL: str(),
     }),
   ),
   {
