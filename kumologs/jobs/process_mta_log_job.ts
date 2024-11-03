@@ -149,14 +149,10 @@ export class LogTypeHandler {
         // device
         originBrowser: parsedUserAgent.browser.name,
         originDevice: parsedUserAgent.device.model,
-
-        ...(isEngageProduct
-          ? {
-              contactId: log?.headers?.[appEnv.emailHeaders.contactId],
-              product: "engage",
-            }
-          : { product: "send" }),
-
+        contactId: log?.headers?.[appEnv.emailHeaders.contactId],
+        audienceId: log?.headers?.[appEnv.emailHeaders.audienceId],
+        broadcastId: log?.headers?.[appEnv.emailHeaders.broadcastId],
+        product: isEngageProduct ? "engage" : "send",
         // location
         originCity: city?.city?.names?.en,
         originCountry: city?.country?.isoCode,
@@ -207,6 +203,9 @@ export class LogTypeHandler {
       responseContent: log.response.content,
       peerAddressAddr: log.peer_address?.addr,
       peerAddressName: log.peer_address?.name,
+      contactId: log?.headers?.[appEnv.emailHeaders.contactId],
+      audienceId: log?.headers?.[appEnv.emailHeaders.audienceId],
+      broadcastId: log?.headers?.[appEnv.emailHeaders.broadcastId],
       product: "engage",
     })
   }

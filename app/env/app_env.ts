@@ -118,6 +118,7 @@ export const appEnv = makeExtraAppConfigurations(
       contactId: "X-Kibamail-Contact-ID",
       emailSendId: "X-Kibamail-EmailSend-ID",
       broadcastId: "X-Kibamail-Broadcast-ID",
+      audienceId: "X-Kibamail-Audience-ID",
       sendingDomainId: "X-Kibamail-Sending-Domain-ID",
     },
   },

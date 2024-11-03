@@ -20,7 +20,7 @@ import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { container } from "@/utils/typi.js"
 
 describe("@contacts exports job", () => {
-  test.only("exports only contacts that match the filter groups criteria", async ({
+  test("exports only contacts that match the filter groups criteria", async ({
     expect,
   }) => {
     const { audience, user } = await createUser()

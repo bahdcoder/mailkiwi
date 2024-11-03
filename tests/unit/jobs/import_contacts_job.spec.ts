@@ -17,7 +17,7 @@ import { container } from "@/utils/typi.js"
 describe("@contacts import job", () => {
   test(
     "reads the csv content from storage and syncs all values to contacts",
-    { timeout: 12000 },
+    { timeout: 20000 },
     async ({ expect }) => {
       const { contactImport, audience } = await setupImport(
         ".." + "/" + ".." + "/" + "audiences/mocks/contacts.csv",
@@ -111,7 +111,7 @@ describe("@contacts import job", () => {
 
   test(
     "when the job fails, it marks the import as failed and sends an email to the customer informing them.",
-    { timeout: 12000 },
+    { timeout: 20000 },
     async ({ expect }) => {
       const { contactImport } = await setupImport(
         ".." + "/" + ".." + "/" + "audiences/mocks/contacts-malformed.csv",

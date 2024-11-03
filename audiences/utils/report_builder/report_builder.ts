@@ -4,7 +4,14 @@
 // 3. date ranges (start and end), without date range, would give results for all time events.
 // 4. specify if comparisms are needed, for example, compare date range with previous part of date range. if last 7 days is passed, compare with the 7 days before that period.
 // 5. aggregates (avg open rate, avg click rate, avg unsubscribe rate)
-import { SQLWrapper, and, count, countDistinct, eq } from "drizzle-orm"
+import {
+  SQLWrapper,
+  and,
+  count,
+  countDistinct,
+  eq,
+  sql,
+} from "drizzle-orm"
 import { DateTime } from "luxon"
 
 import { EmailSendEvent } from "@/database/database_schema_types.js"
@@ -75,6 +82,13 @@ export class ReportBuilder {
     return and(...conditions)
   }
 
+  protected isAudienceReport() {
+    return (
+      this.configuration.audienceId !== undefined &&
+      !this.configuration.broadcastId
+    )
+  }
+
   conditions() {
     const conditions: SQLWrapper[] = []
 
@@ -105,7 +119,11 @@ export class ReportBuilder {
   totalUniqueEventCount(event: EmailSendEvent["type"]) {
     return this.database
       .select({
-        count: countDistinct(emailSendEvents.contactId),
+        count: this.isAudienceReport()
+          ? count(
+              sql`DISTINCT CONCAT(${emailSendEvents.contactId}, '-', ${emailSendEvents.broadcastId})`,
+            )
+          : countDistinct(emailSendEvents.contactId),
       })
       .from(emailSendEvents)
       .where(and(this.conditions(), eq(emailSendEvents.type, event)))
@@ -120,22 +138,17 @@ export class ReportBuilder {
       .where(and(this.sendConditions()))
   }
 
-  async build() {
-    // -> AVERAGES
-    /*/
-    /*/
-    /*/
-    /*/
-    // average send rate
-    // average click rate
-    // average open rate
-    // average unsubscribe rate
-    // average bounce rate
-    /*/
-    /*/
-    /*/
-    /*/
+  average(value: number, total: number) {
+    // average delivery rate = total deliveries / total sends * 100
+    // average open rate = total opens / total deliveries * 100
+    //  average click rate = total clicks / total deliveries * 100
+    // average unsubscribe rate = total bounces / total deliveries * 100
+    // average unique open rate = total unique opens / total deliveries * 100
+    // average unique click rate = total unique clicks / total deliveries * 100
+    return ((value / total) * 100).toFixed(2)
+  }
 
+  async build() {
     const [
       [{ count: sends }],
       [{ count: deliveries }],
@@ -162,6 +175,14 @@ export class ReportBuilder {
       bounces,
       uniqueOpens,
       uniqueClicks,
+      rates: {
+        deliveries: this.average(deliveries, sends),
+        opens: this.average(opens, deliveries),
+        clicks: this.average(clicks, deliveries),
+        bounces: this.average(bounces, deliveries),
+        uniqueOpens: this.average(uniqueOpens, deliveries),
+        uniqueClicks: this.average(uniqueClicks, deliveries),
+      },
     }
   }
 }

@@ -28,7 +28,7 @@ export class InjectEmailController extends BaseController {
       getDomainFromEmail(payload.from.email),
     )
 
-    const messages = await container
+    const { messages } = await container
       .make(InjectEmailAction)
       .handle(payload, sendingDomain)
 
