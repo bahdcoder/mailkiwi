@@ -4,28 +4,28 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm mysql:migrate:dev && pnpm quick:dev",
-    "quick:dev": "env-cmd -e development tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs app/start/dev.ts",
-    "test": "env-cmd -e test pnpm test:watch --run",
+    "quick:dev": "env-cmd tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs app/start/dev.ts",
+    "test": "env-cmd -f .env.test pnpm test:watch --run",
     "build:clean": "del-cli build",
-    "test:watch": "pnpm mysql:migrate:test && env-cmd -e test vitest",
+    "test:watch": "pnpm mysql:migrate:test && env-cmd -f .env.test vitest",
     "types:check": "tsc --noEmit",
     "build:client": "vite build",
-    "test:coverage": "pnpm mysql:migrate:test && env-cmd -e test vitest --run --coverage",
+    "test:coverage": "pnpm mysql:migrate:test && env-cmd -f .env.test vitest --run --coverage",
     "build": "pnpm test && pnpm types:check && pnpm quick:build",
     "format": "pnpm prettier . --write",
-    "start": "env-cmd -e development tsx watch app/start/prod.ts",
+    "start": "env-cmd tsx watch app/start/prod.ts",
     "build:app": "tsc",
     "quick:build": "pnpm build:clean && pnpm build:app && pnpm build:client",
-    "mysql:seed:dev": "pnpm mysql:migrate:dev && env-cmd -e development tsx bin/seed.ts",
-    "mysql:migrate:dev": "env-cmd -e development pnpm mysql:migrate",
-    "mysql:migrate:test": "env-cmd -e test pnpm mysql:migrate",
+    "mysql:seed:dev": "pnpm mysql:migrate:dev && env-cmd tsx bin/seed.ts",
+    "mysql:migrate:dev": "env-cmd pnpm mysql:migrate",
+    "mysql:migrate:test": "env-cmd -f .env.test pnpm mysql:migrate",
     "mysql:migrate": "pnpm drizzle-kit migrate",
-    "mysql:migrate:make": "env-cmd -e development pnpm drizzle-kit generate",
+    "mysql:migrate:make": "env-cmd pnpm drizzle-kit generate",
     "mysql:studio": "pnpm drizzle-kit studio",
-    "cli": "env-cmd -e development tsx cli/cli_root.ts",
+    "cli": "env-cmd tsx cli/cli_root.ts",
     "docker:dev": "pnpm docker:mysql:migrate:dev && pnpm docker:quick:dev",
-    "docker:mysql:migrate:dev": "env-cmd -e development-docker pnpm mysql:migrate",
-    "docker:quick:dev": "env-cmd -e development-docker tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs app/start/dev.ts"
+    "docker:mysql:migrate:dev": "env-cmd-docker pnpm mysql:migrate",
+    "docker:quick:dev": "env-cmd-docker tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs app/start/dev.ts"
   },
   "keywords": [
     "open source",
@@ -131,6 +131,6 @@
     "vike-react-query": "^0.1.1"
   },
   "engines": {
-    "node": "^20.0.0"
+    "node": "v22.4.0"
   }
 }

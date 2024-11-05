@@ -11,6 +11,7 @@ import type {
   emailSendEvents,
   emailSends,
   newsletterWebsites,
+  products,
   segments,
   sendingDomains,
   sendingSources,
@@ -68,8 +69,9 @@ export type ContactImport = typeof contactImports.$inferSelect
 export type AbTestVariant = typeof abTestVariants.$inferSelect
 export type EmailSendEvent = typeof emailSendEvents.$inferSelect
 export type Segment = typeof segments.$inferSelect
-export type InsertSegment = typeof segments.$inferInsert
+export type Product = typeof products.$inferSelect
 
+export type InsertSegment = typeof segments.$inferInsert
 export type InsertTag = typeof tags.$inferInsert
 export type InsertEmailSend = typeof emailSends.$inferInsert
 export type InsertContact = typeof contacts.$inferInsert
@@ -80,6 +82,7 @@ export type InsertContactImport = typeof contactImports.$inferInsert
 export type InsertTeamMembership = typeof teamMemberships.$inferInsert
 export type InsertSendingDomain = typeof sendingDomains.$inferInsert
 export type InsertAbTestVariant = typeof abTestVariants.$inferInsert
+export type InsertProduct = typeof products.$inferInsert
 export type InsertNewsletterWebsite =
   typeof newsletterWebsites.$inferInsert
 

@@ -1,8 +1,15 @@
+import { SQLWrapper, and, eq } from "drizzle-orm"
 import { MySqlRawQueryResult } from "drizzle-orm/mysql2"
+import {
+  AnyMySqlColumn,
+  AnyMySqlTable,
+  MySqlUpdateSetSource,
+} from "drizzle-orm/mysql-core"
 
 import type { DrizzleClient } from "@/database/client.js"
 
 import { Cache } from "@/shared/cache/cache.js"
+import { makeDatabase } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
@@ -41,5 +48,47 @@ export class BaseRepository {
         return value !== null && value !== undefined
       }),
     ) as T
+  }
+
+  crud<Table extends AnyMySqlTable & { id: AnyMySqlColumn }>(
+    table: Table,
+  ) {
+    const database = makeDatabase()
+
+    const self = this
+
+    return {
+      async create(payload: Table["$inferInsert"]) {
+        const id = self.cuid()
+
+        await database.insert(table).values(payload)
+
+        return { id }
+      },
+      async update(
+        id: string,
+        payload: MySqlUpdateSetSource<Table>,
+        conditions: SQLWrapper[] = [],
+      ) {
+        await database
+          .update(table)
+          .set(payload)
+          .where(and(eq(table.id, id), ...conditions))
+      },
+      async delete(id: string, conditions: SQLWrapper[] = []) {
+        await database
+          .delete(table)
+          .where(and(eq(table.id, id), ...conditions))
+      },
+      async findById(id: string) {
+        const [row] = await database
+          .select()
+          .from(table)
+          .where(eq(table.id, id))
+          .limit(1)
+
+        return row
+      },
+    }
   }
 }

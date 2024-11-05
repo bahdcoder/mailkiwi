@@ -15,7 +15,7 @@ import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
-type QueryModifierFn = (
+export type QueryModifierFn = (
   query: MySqlSelect<any, any, any>,
 ) => MySqlSelect<any, any, any>
 

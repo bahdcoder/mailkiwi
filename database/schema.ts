@@ -1,6 +1,5 @@
-import { UpdateNewsletterWebsiteDto } from "@/letters/dto/update_newsletter_website_dto.js"
 import { UpdateNewsletterWebsitePageDto } from "@/letters/dto/update_newsletter_website_page_dto.js"
-import { type SQL, sql } from "drizzle-orm"
+import { sql } from "drizzle-orm"
 import {
   type AnyMySqlColumn,
   boolean,
@@ -121,6 +120,15 @@ export const teams = mysqlTable("teams", {
   trackClicks: boolean("trackClicks"),
   trackOpens: boolean("trackOpens"),
   broadcastEditor: mysqlEnum("broadcastEditor", ["DEFAULT", "MARKDOWN"]),
+  commerceProvider: mysqlEnum("commerceProvider", [
+    "stripe",
+    "paystack",
+    "flutterwave",
+  ]),
+  commerceProviderAccountId: varchar("commerceProviderAccountId", {
+    length: 255,
+  }),
+  commerceProviderConfirmedAt: timestamp("commerceProviderConfirmedAt"),
 })
 
 export const sendingDomains = mysqlTable("sendingDomains", {
@@ -222,7 +230,6 @@ export const teamMemberships = mysqlTable("teamMemberships", {
 export const audiences = mysqlTable("audiences", {
   id,
   name: varchar("name", { length: 50 }).notNull(),
-
   teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
@@ -807,3 +814,50 @@ export const contactAutomationSteps = mysqlTable(
     output: json("output").$type<string[]>(),
   },
 )
+
+export const contactSubscriptions = mysqlTable("contactSubscriptions", {
+  id,
+  // find all contacts on a specific product (or subscription plan in case of a recurring product)
+  productId: primaryKeyCuid("productId")
+    .references(() => products.id)
+    .notNull(),
+  contactId: primaryKeyCuid("contactId")
+    .references(() => contacts.id)
+    .notNull(),
+  subscribedAt: timestamp("subscribedAt"),
+  cancelledAt: timestamp("cancelledAt"), // when contact has cancelled subscription
+  providerSubscriptionId: varchar("providerSubscriptionId", {
+    length: 100,
+  }),
+})
+
+// 1. user on letters creates a paid tier (a product)
+// 2. they provide a tier name and select a type (recurring, or one time payment)
+// 3. for a recurring tier, they configure the price for either monthly, yearly or both.
+// 4. for now, we only allow adding one tier per newsletter.
+
+// Kiba commerce
+export const products = mysqlTable("products", {
+  id,
+  // a product can belong to an audience, in the case of newsletters.
+  // audience -> products lists all the products for an audience
+  // contact -> subscription: productId, subscribedAt
+  // audience-> contacts with subscriptions
+
+  audienceId: primaryKeyCuid("audienceId").references(() => audiences.id),
+  billingCycle: mysqlEnum("cycle", [
+    "monthly",
+    "yearly",
+    "once",
+  ]).notNull(),
+  name: varchar("name", { length: 50 }).notNull(),
+  price: int("price"), // for one time payments
+  priceYearly: int("priceYearly"), // for subscription payments
+  priceMonthly: int("priceMonthly"), // for subscription payments in cents (or kobo, depends on billing provider.)
+})
+
+export const productContents = mysqlTable("productContents", {
+  id,
+  productId: primaryKeyCuid("productId").references(() => products.id),
+  type: mysqlEnum("type", ["downloadable", "course"]).notNull(),
+})

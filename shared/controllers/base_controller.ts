@@ -41,7 +41,7 @@ type ControllerParams =
   | "websitePageId"
 
 export class BaseController {
-  protected session: Session = container.make(Session)
+  protected session = container.make(Session)
 
   protected getParameter(ctx: HonoContext, param: ControllerParams) {
     const id = ctx.req.param(param)

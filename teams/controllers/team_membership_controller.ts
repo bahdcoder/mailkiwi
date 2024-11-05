@@ -5,8 +5,6 @@ import { RevokeTeamMemberAccessAction } from "@/teams/actions/revoke_team_member
 import { InviteTeamMember } from "@/teams/dto/invite_team_member_dto.js"
 import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
 
-import { UserRepository } from "@/auth/users/repositories/user_repository.js"
-
 import { TeamMembership } from "@/database/database_schema_types.js"
 
 import {
