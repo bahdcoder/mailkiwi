@@ -51,8 +51,6 @@ export class TeamRepository extends BaseRepository {
       ...payload,
     })
 
-    const insertedAndFoundTeamId = await this.findById(id)
-
     return { id }
   }
 
@@ -80,6 +78,10 @@ export class TeamRepository extends BaseRepository {
     )
 
     return team
+  }
+
+  teams() {
+    return this.crud(teams)
   }
 
   async findByIdWithDomains(teamId: string) {

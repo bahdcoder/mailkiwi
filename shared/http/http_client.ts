@@ -8,18 +8,26 @@ interface HttpResponse<TData> {
 class HttpClient<TPayload extends object = object, TResponse = unknown> {
   private config: {
     url: string
+    baseURL: string
     method: HttpMethod
     headers: Record<string, string>
     payload: TPayload
     as: "json" | "text"
   } = {
     url: "",
+    baseURL: "",
     method: "GET",
     payload: {} as TPayload,
     headers: {
       "Content-Type": "application/json",
     },
     as: "json",
+  }
+
+  baseURL(url: string) {
+    this.config.baseURL = url
+
+    return this
   }
 
   url(url: string) {
@@ -77,9 +85,13 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
     return this
   }
 
-  async send(): Promise<HttpResponse<TResponse>> {
+  private getRequestUrl() {
+    return this.config.baseURL + this.config.url
+  }
+
+  async send<T extends TResponse>(): Promise<HttpResponse<T>> {
     try {
-      const response = await fetch(this.config.url, {
+      const response = await fetch(this.getRequestUrl(), {
         method: this.config.method,
         headers: {
           ...this.config.headers,
@@ -109,7 +121,7 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
       return {
         data: null,
         error: error.message,
-      } as HttpResponse<TResponse>
+      } as HttpResponse<T>
     }
   }
 }

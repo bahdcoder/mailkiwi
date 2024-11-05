@@ -1,4 +1,6 @@
 import { AppEnvVariables, appEnv } from "@/app/env/app_env.js"
+import { CommerceProviderController } from "@/commerce/controllers/commerce_provider_controller.js"
+import { ProductController } from "@/commerce/controllers/product_controller.js"
 import { InjectEmailController } from "@/injector/controllers/inject_email_controller.js"
 import { MtaLogsController } from "@/kumologs/controllers/mta_logs_controller.js"
 import { DkimController } from "@/kumomta/controllers/dkim_controller.js"
@@ -134,6 +136,9 @@ export class Ignitor {
     container.resolve(OpenTrackingController)
     container.resolve(NewsletterController)
     container.resolve(NewsletterWebsiteController)
+
+    container.resolve(ProductController)
+    container.resolve(CommerceProviderController)
   }
 
   async shutdown() {

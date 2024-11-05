@@ -121,6 +121,7 @@
     "path-to-regexp": "^8.2.0",
     "react-router-dom": "^6.26.2",
     "remix-hono": "^0.0.16",
+    "stripe": "^17.3.1",
     "tar": "^7.4.3",
     "ua-parser-js": "^1.0.39",
     "undici": "^6.19.8",

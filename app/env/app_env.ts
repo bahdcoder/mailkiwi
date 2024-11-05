@@ -1,4 +1,4 @@
-import { cleanEnv, host, port, str } from "envalid"
+import { cleanEnv, host, port, str, url } from "envalid"
 
 import { makeEnvSecrets } from "@/shared/utils/env/make_env_secrets.js"
 import { makeExtraAppConfigurations } from "@/shared/utils/env/make_extra_app_configurations.js"
@@ -71,6 +71,7 @@ export const appEnv = makeExtraAppConfigurations(
         choices: ["development", "test", "production"],
         default: "test",
       }),
+      APP_URL: url(),
       MAILPIT_API_URL: host(),
 
       // Databases
@@ -102,6 +103,13 @@ export const appEnv = makeExtraAppConfigurations(
 
       // ssl certificates
       ACME_DIRECTORY_URL: str(),
+
+      // commerce
+      COMMERCE_PROVIDER_STRIPE_SECRET_KEY: str(),
+      COMMERCE_PROVIDER_STRIPE_PUBLIC_KEY: str(),
+
+      COMMERCE_PROVIDER_PAYSTACK_SECRET_KEY: str(),
+      COMMERCE_PROVIDER_PAYSTACK_PUBLIC_KEY: str(),
     }),
   ),
   {
