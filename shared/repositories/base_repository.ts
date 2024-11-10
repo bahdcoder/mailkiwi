@@ -7,6 +7,7 @@ import {
 } from "drizzle-orm/mysql-core"
 
 import type { DrizzleClient } from "@/database/client.js"
+import { products } from "@/database/schema.js"
 
 import { Cache } from "@/shared/cache/cache.js"
 import { makeDatabase } from "@/shared/container/index.js"
@@ -61,7 +62,7 @@ export class BaseRepository {
       async create(payload: Table["$inferInsert"]) {
         const id = self.cuid()
 
-        await database.insert(table).values(payload)
+        await database.insert(table).values({ id, ...payload })
 
         return { id }
       },

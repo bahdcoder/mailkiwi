@@ -1,6 +1,7 @@
 import { createFakeAbTestEmailContent } from "../audiences/email_content.js"
 import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
 import { faker } from "@faker-js/faker"
+import { DateTime } from "luxon"
 
 import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
@@ -167,9 +168,11 @@ export const createUser = async ({
   createBroadcast,
   createEntireTeam,
   createAudienceForNewsletter,
+  enableCommerceOnTeam = true,
 }: {
   createBroadcast?: boolean
   createEntireTeam?: boolean
+  enableCommerceOnTeam?: boolean
   createAudienceForNewsletter?: boolean
 } = {}) => {
   const audienceRepository = container.resolve(AudienceRepository)
@@ -186,6 +189,14 @@ export const createUser = async ({
 
   const teamRepository = container.resolve(TeamRepository)
   const teamObject = await teamRepository.findById(team.id)
+
+  if (enableCommerceOnTeam) {
+    await teamRepository.teams().update(team.id, {
+      commerceProvider: "paystack",
+      commerceProviderAccountId: `acct_${faker.string.uuid()}`,
+      commerceProviderConfirmedAt: DateTime.now().toJSDate(),
+    })
+  }
 
   const audience = await audienceRepository.create(
     {

@@ -1,11 +1,12 @@
-CREATE TABLE `contactSubscriptions` (
+CREATE TABLE `contactPurchases` (
 	`id` binary(16) NOT NULL,
 	`productId` binary(16) NOT NULL,
 	`contactId` binary(16) NOT NULL,
-	`subscribedAt` timestamp,
+	`purchasedAt` timestamp,
+	`expiresAt` timestamp,
 	`cancelledAt` timestamp,
 	`providerSubscriptionId` varchar(100),
-	CONSTRAINT `contactSubscriptions_id` PRIMARY KEY(`id`)
+	CONSTRAINT `contactPurchases_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `productContents` (
@@ -29,7 +30,7 @@ CREATE TABLE `products` (
 ALTER TABLE `teams` ADD `commerceProvider` enum('stripe','paystack','flutterwave');--> statement-breakpoint
 ALTER TABLE `teams` ADD `commerceProviderAccountId` varchar(255);--> statement-breakpoint
 ALTER TABLE `teams` ADD `commerceProviderConfirmedAt` timestamp;--> statement-breakpoint
-ALTER TABLE `contactSubscriptions` ADD CONSTRAINT `contactSubscriptions_productId_products_id_fk` FOREIGN KEY (`productId`) REFERENCES `products`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `contactSubscriptions` ADD CONSTRAINT `contactSubscriptions_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contactPurchases` ADD CONSTRAINT `contactPurchases_productId_products_id_fk` FOREIGN KEY (`productId`) REFERENCES `products`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contactPurchases` ADD CONSTRAINT `contactPurchases_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `productContents` ADD CONSTRAINT `productContents_productId_products_id_fk` FOREIGN KEY (`productId`) REFERENCES `products`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `products` ADD CONSTRAINT `products_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;

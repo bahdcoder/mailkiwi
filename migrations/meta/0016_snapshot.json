@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "feed07d4-b308-4e1f-b03b-06bd24864f51",
-  "prevId": "6e1868ad-70d6-4db8-a4a6-4203de301f31",
+  "id": "da6998c2-295e-4060-9e98-fdc0e8d1cea0",
+  "prevId": "feed07d4-b308-4e1f-b03b-06bd24864f51",
   "tables": {
     "abTestVariants": {
       "name": "abTestVariants",
@@ -2123,6 +2123,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "teamId": {
+          "name": "teamId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "audienceId": {
           "name": "audienceId",
           "type": "binary(16)",
@@ -2168,6 +2175,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "products_teamId_teams_id_fk": {
+          "name": "products_teamId_teams_id_fk",
+          "tableFrom": "products",
+          "tableTo": "teams",
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "products_audienceId_audiences_id_fk": {
           "name": "products_audienceId_audiences_id_fk",
           "tableFrom": "products",

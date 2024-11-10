@@ -1,7 +1,7 @@
-import { type InferInput, object, string } from "valibot"
+import { type InferInput, email, object, pipe, string } from "valibot"
 
 export const LoginUserSchema = object({
-  email: string(),
+  email: pipe(string(), email()),
   password: string(),
 })
 

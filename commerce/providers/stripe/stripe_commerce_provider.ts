@@ -59,4 +59,12 @@ export class StripeCommerceProvider implements CommerceProviderContract {
 
     return { onboardingLink: accountLink.url }
   }
+
+  async initialiseOneTimePayment() {
+    return { paymentUrl: "" }
+  }
+
+  async confirmOneTimePayment() {
+    return { success: true }
+  }
 }

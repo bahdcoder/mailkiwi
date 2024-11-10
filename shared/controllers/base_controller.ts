@@ -1,4 +1,5 @@
 import { appEnv } from "@/app/env/app_env.js"
+import { ProductRepository } from "@/commerce/repositories/product_repository.js"
 import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
 import { WebsitePageRepository } from "@/letters/repositories/website_page_repository.js"
 import {
@@ -39,6 +40,7 @@ type ControllerParams =
   | "membershipId"
   | "newsletterWebsiteId"
   | "websitePageId"
+  | "productId"
 
 export class BaseController {
   protected session = container.make(Session)
@@ -216,6 +218,7 @@ export class BaseController {
       websitePageId: WebsitePageRepository,
       membershipId: TeamMembershipRepository,
       newsletterWebsiteId: NewsletterWebsiteRepository,
+      productId: ProductRepository,
     } as const
 
     const repository = container.make(repositories[param] as any) as any

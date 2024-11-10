@@ -6,4 +6,8 @@ export class ProductRepository extends BaseRepository {
   products() {
     return this.crud(products)
   }
+
+  async findById(id: string) {
+    return this.products().findById(id)
+  }
 }

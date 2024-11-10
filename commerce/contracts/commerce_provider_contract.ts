@@ -1,3 +1,5 @@
+import { Product } from "@/database/database_schema_types.js"
+
 export interface PayoutInformation {
   bankCode: string
   accountNumber: string
@@ -11,6 +13,17 @@ export interface AccountInformation {
   payoutInformation?: PayoutInformation
 }
 
+export interface InitializeOneTimePaymentPayload {
+  accountId: string
+  email: string
+  product: Product
+}
+
+export interface ConfirmOneTimePaymentPayload {
+  product: Product
+  reference: string
+}
+
 export interface CommerceProviderContract {
   createAccount: (
     account: AccountInformation,
@@ -19,6 +32,14 @@ export interface CommerceProviderContract {
   createOnboardingLink: (
     accountId: string,
   ) => Promise<{ onboardingLink: string }>
+
+  initialiseOneTimePayment: (
+    payload: InitializeOneTimePaymentPayload,
+  ) => Promise<{ paymentUrl: string }>
+
+  confirmOneTimePayment: (
+    payload: ConfirmOneTimePaymentPayload,
+  ) => Promise<{ success: boolean }>
 
   requiresExternalOnboarding: boolean
 }

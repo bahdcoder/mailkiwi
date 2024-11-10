@@ -672,6 +672,7 @@ export const automationStepSubtypesTrigger = [
   "TRIGGER_CONTACT_TAG_ADDED",
   "TRIGGER_CONTACT_TAG_REMOVED",
   "TRIGGER_API_MANUAL",
+  // TRIGGER_COMMERCE_PRODUCT_PURCHASED
 ] as const
 
 export const automationStepSubtypesAction = [
@@ -815,7 +816,7 @@ export const contactAutomationSteps = mysqlTable(
   },
 )
 
-export const contactSubscriptions = mysqlTable("contactSubscriptions", {
+export const contactPurchases = mysqlTable("contactPurchases", {
   id,
   // find all contacts on a specific product (or subscription plan in case of a recurring product)
   productId: primaryKeyCuid("productId")
@@ -824,26 +825,20 @@ export const contactSubscriptions = mysqlTable("contactSubscriptions", {
   contactId: primaryKeyCuid("contactId")
     .references(() => contacts.id)
     .notNull(),
-  subscribedAt: timestamp("subscribedAt"),
+  purchasedAt: timestamp("purchasedAt"),
+  expiresAt: timestamp("expiresAt"), // for subscription type products
   cancelledAt: timestamp("cancelledAt"), // when contact has cancelled subscription
   providerSubscriptionId: varchar("providerSubscriptionId", {
     length: 100,
   }),
 })
 
-// 1. user on letters creates a paid tier (a product)
-// 2. they provide a tier name and select a type (recurring, or one time payment)
-// 3. for a recurring tier, they configure the price for either monthly, yearly or both.
-// 4. for now, we only allow adding one tier per newsletter.
-
 // Kiba commerce
 export const products = mysqlTable("products", {
   id,
-  // a product can belong to an audience, in the case of newsletters.
-  // audience -> products lists all the products for an audience
-  // contact -> subscription: productId, subscribedAt
-  // audience-> contacts with subscriptions
-
+  teamId: primaryKeyCuid("teamId")
+    .references(() => teams.id)
+    .notNull(),
   audienceId: primaryKeyCuid("audienceId").references(() => audiences.id),
   billingCycle: mysqlEnum("cycle", [
     "monthly",

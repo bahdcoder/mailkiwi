@@ -34,6 +34,8 @@ export const SMTP_MARKETING_HOST_NAME = "smtp-mkg.kbmta.net"
 // For example, fastmedia.kibaletters.com.
 export const NEWSLETTER_WEBSITE_DOMAIN = "kibaletters.com"
 
+export const COMMERCE_WEBSITE_DOMAIN = "commerce.kibamail.com"
+
 // This is the default subdomain customers will use when configuring the `Return-Path` DNS entry.
 // Example: Google uses our infrastructure to send emails, so they'll configure the following dns entry:
 // kb.google.com. IN CNAME mail.kbmta.net

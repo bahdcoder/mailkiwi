@@ -2,12 +2,15 @@ import { appEnv } from "@/app/env/app_env.js"
 import {
   AccountInformation,
   CommerceProviderContract,
+  ConfirmOneTimePaymentPayload,
+  InitializeOneTimePaymentPayload,
 } from "@/commerce/contracts/commerce_provider_contract.js"
 import { DateTime } from "luxon"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { makeHttpClient } from "@/shared/http/http_client.js"
+import { commercePath, rootPath } from "@/shared/utils/routes/root_path.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -31,9 +34,6 @@ export class PaystackCommerceProvider implements CommerceProviderContract {
         account_number: account?.payoutInformation?.accountNumber,
         percentage_charge: 0,
       })
-      .headers({
-        Authorization: `Bearer ${appEnv.COMMERCE_PROVIDER_PAYSTACK_SECRET_KEY}`,
-      })
       .asJson()
       .post()
       .send<{ data: { subaccount_code: string; active: boolean } }>()
@@ -51,5 +51,60 @@ export class PaystackCommerceProvider implements CommerceProviderContract {
 
   async createOnboardingLink(accountId: string) {
     return { onboardingLink: "" }
+  }
+
+  async initialiseOneTimePayment({
+    accountId,
+    product,
+    email,
+  }: InitializeOneTimePaymentPayload) {
+    const { data } = await this.httpClient
+      .url("/transaction/initialize")
+      .payload({
+        email,
+        amount: product.price,
+        subaccount: accountId,
+        bearer: "subaccount",
+        metadata: JSON.stringify({
+          productId: product.id,
+        }),
+        transaction_charge: 0,
+        callback_url: commercePath(
+          `products/${product.id}/payments/callback`,
+        ),
+      })
+      .asJson()
+      .post()
+      .send<{
+        data: {
+          authorization_url: string
+          reference: string
+          access_code: string
+        }
+        status: boolean
+        message: string
+      }>()
+
+    return { paymentUrl: data.data?.authorization_url }
+  }
+
+  async confirmOneTimePayment({
+    reference,
+  }: ConfirmOneTimePaymentPayload) {
+    const { data, error } = await this.httpClient
+      .url(`/transaction/verify/${reference}`)
+      .payload({})
+      .asJson()
+      .get()
+      .send<{
+        data: {
+          status: string
+          amount: number
+        }
+        status: boolean
+        message: string
+      }>()
+
+    return { success: data?.data?.status === "success" }
   }
 }
