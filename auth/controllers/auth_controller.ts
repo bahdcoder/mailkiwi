@@ -58,19 +58,24 @@ export class AuthController extends BaseController {
     const data = await this.validate(ctx, LoginUserSchema)
 
     const user = await this.userRepository.findByEmail(data.email)
+    const invalidCredentials = [
+      {
+        message: "These credentials do not match our records.",
+        field: "email",
+      },
+    ]
+
+    if (!user) {
+      throw E_VALIDATION_FAILED(invalidCredentials)
+    }
 
     const passwordIsValid = await this.userRepository.verify(
       data.password,
       user.password,
     )
 
-    if (!user || !passwordIsValid) {
-      throw E_VALIDATION_FAILED([
-        {
-          message: "These credentials do not match our records.",
-          field: "email",
-        },
-      ])
+    if (!passwordIsValid) {
+      throw E_VALIDATION_FAILED(invalidCredentials)
     }
 
     await this.session.createForUser(ctx, user.id)
