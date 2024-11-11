@@ -1,3 +1,5 @@
+import { Button } from "@components/button/index.js"
+import { DialogOverlay } from "@components/dialog/index.js"
 import React, { useState } from "react"
 
 function Page() {
@@ -5,6 +7,9 @@ function Page() {
     <>
       <h1>Products list</h1>
       <p>This app showcases a list of all products.</p>
+
+      <Button>Welcome to my world.</Button>
+      <DialogOverlay />
 
       <ul>
         <li>

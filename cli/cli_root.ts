@@ -1,3 +1,4 @@
+import { buildServerCoreCommand } from "./commands/build_server_core.js"
 import { addSendingSourceCommand } from "@/cli/commands/add_sending_source_command.js"
 import { downloadGeolite2Database } from "@/cli/commands/download_geolite2_database_command.js"
 import { generateAcmeAccountIdentityCommand } from "@/cli/commands/generate_acme_account_identity.js"
@@ -12,6 +13,7 @@ await run([
   seedDevSendingSourcesCommand,
   downloadGeolite2Database,
   generateAcmeAccountIdentityCommand,
+  buildServerCoreCommand,
 ])
 
 await ignitor.shutdown()

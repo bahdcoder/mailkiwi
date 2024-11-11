@@ -3,12 +3,16 @@ import { readFileSync } from "node:fs"
 import { resolve } from "node:path"
 import vike from "vike/plugin"
 import { defineConfig } from "vite"
+import tsconfigPaths from "vite-tsconfig-paths"
 
 export default defineConfig({
-  plugins: [vike(), react()],
+  plugins: [tsconfigPaths(), vike(), react()],
   build: {
     manifest: true,
     outDir: resolve(process.cwd(), "build"),
+  },
+  resolve: {
+    extensions: [".js", ".ts", ".jsx", ".tsx", ".json"],
   },
   server: {
     cors: false,

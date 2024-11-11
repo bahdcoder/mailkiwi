@@ -1,9 +1,7 @@
 import { appEnv } from "@/app/env/app_env.js"
 import { load as cheerioLoad } from "cheerio"
 import iconv from "iconv-lite"
-import { Splitter } from "mailsplit"
-import Joiner from "mailsplit/lib/message-joiner"
-import Rewriter from "mailsplit/lib/node-rewriter"
+import { Joiner, Rewriter, Splitter } from "mailsplit"
 import { Readable } from "stream"
 
 import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
