@@ -16,6 +16,7 @@ import {
   emailSends,
   emails,
   newsletterWebsites,
+  products,
   segments,
   sendingDomains,
   sendingSources,
@@ -56,6 +57,7 @@ export const refreshDatabase = async () => {
   await database.delete(automationSteps)
   await database.delete(automations)
   await database.delete(tags)
+  await database.delete(products)
   await database.delete(audiences)
   await database.delete(accessTokens)
   await database.delete(teamMemberships)

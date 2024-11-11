@@ -1,6 +1,8 @@
 import React, { FormEvent, useState } from "react"
+import { usePageContext } from "vike-react/usePageContext"
 
 function Page() {
+  const pageCtx: any = usePageContext()
   const [form, setForm] = useState<Record<string, string>>({})
 
   async function onSubmit(event: FormEvent) {
@@ -10,8 +12,14 @@ function Page() {
       method: "POST",
       body: JSON.stringify(form),
     })
+  }
 
-    console.log({ response })
+  if (pageCtx.pageProps?.user) {
+    return (
+      <h1 className="text-4xl font-semibold">
+        You are already logged in !{" "}
+      </h1>
+    )
   }
 
   return (

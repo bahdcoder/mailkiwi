@@ -112,6 +112,9 @@ export const appEnv = makeExtraAppConfigurations(
 
       COMMERCE_PROVIDER_PAYSTACK_SECRET_KEY: str(),
       COMMERCE_PROVIDER_PAYSTACK_PUBLIC_KEY: str(),
+
+      // logging
+      LOG_LEVEL: str(),
     }),
   ),
   {

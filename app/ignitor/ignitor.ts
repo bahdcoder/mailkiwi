@@ -14,6 +14,7 @@ import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks
 import { readFile } from "fs/promises"
 import type { Redis } from "ioredis"
 import { resolve } from "path"
+import { type Logger, pino } from "pino"
 
 import { BroadcastController } from "@/broadcasts/controllers/broadcast_controller.js"
 
@@ -57,10 +58,25 @@ export class Ignitor {
   protected app: HonoInstance
   protected database: DrizzleClient
   protected redis: Redis
+  protected logger: Logger
 
   boot() {
     this.env = appEnv
     container.register(ContainerKey.env, this.env)
+
+    this.logger = pino({
+      level: appEnv.LOG_LEVEL,
+      transport: appEnv.isProd
+        ? undefined
+        : {
+            target: "pino-pretty",
+            options: {
+              colorize: true,
+            },
+          },
+    })
+
+    container.register(ContainerKey.logger, this.logger)
 
     this.app = new Hono()
     container.register(ContainerKey.app, this.app)

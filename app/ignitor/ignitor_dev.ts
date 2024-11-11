@@ -3,7 +3,6 @@ import { GetPagePropsAction } from "@/app/actions/get_page_props_action.js"
 import { serve } from "@hono/node-server"
 import { createReadableStreamFromReadable } from "@remix-run/node"
 import { readFile } from "fs/promises"
-import { showRoutes } from "hono/dev"
 import { Server } from "https"
 import { createServer as createHttpsServer } from "node:https"
 import path from "path"
@@ -12,6 +11,8 @@ import { renderPage } from "vike/server"
 import { createServer as createViteServer } from "vite"
 
 import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
+
+import { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -36,7 +37,6 @@ export class IgnitorDev extends Ignitor {
       })
     })
 
-    showRoutes(this.app, { verbose: true })
     this.registerCatchAllServerRoute()
   }
 
@@ -48,11 +48,9 @@ export class IgnitorDev extends Ignitor {
         const pageContext = await renderPage({
           urlOriginal: ctx.req.url,
           headersOriginal: ctx.req.raw.headers,
-          pageProps: await container.make(GetPagePropsAction).handle({
-            path: ctx.req.path,
-            queries: ctx.req.queries(),
-            routePath: ctx.req.routePath,
-          }),
+          pageProps: await container
+            .make(GetPagePropsAction)
+            .handle(ctx as unknown as HonoContext),
         })
 
         if (!pageContext.httpResponse) return next()

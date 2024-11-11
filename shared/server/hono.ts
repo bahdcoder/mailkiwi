@@ -1,13 +1,17 @@
 import type { HonoRouteDefinition } from "./types.js"
 import type { HttpBindings } from "@hono/node-server"
 import { Hono as BaseHono, type MiddlewareHandler } from "hono"
+import { pinoLogger } from "hono-pino"
 import { HonoOptions } from "hono/hono-base"
 import { logger } from "hono/logger"
+import { requestId } from "hono/request-id"
 
 import { EnsureUserAndTeamSessionsMiddleware } from "@/auth/middleware/ensure_user_and_team_sessions_middleware.js"
 import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
 
 import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js"
+
+import { makeLogger } from "@/shared/container/index.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -42,12 +46,21 @@ export class Hono
       ...options,
     })
 
-    // this.use(logger())
+    this.use(
+      pinoLogger({
+        pino: makeLogger(),
+      }),
+    )
+
+    this.use("*", requestId())
     this.defineErrorHandler()
   }
 
   defineErrorHandler() {
+    const logger = makeLogger()
+
     this.onError((error, ctx) => {
+      logger.error(error)
       if (error instanceof E_REQUEST_EXCEPTION) {
         return ctx.json(
           {
@@ -57,8 +70,6 @@ export class Hono
           error?.statusCode ?? 500,
         )
       }
-
-      console.error(error)
 
       return ctx.json({ message: error?.message }, 500)
     })
