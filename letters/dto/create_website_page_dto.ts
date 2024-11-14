@@ -1,4 +1,4 @@
-import { BlockContentSchema } from "@/letters/dto/update_newsletter_website_page_dto.js"
+import { BlockContentSchema } from "@/letters/dto/update_website_page_dto.js"
 import {
   type InferInput,
   maxLength,
@@ -11,7 +11,7 @@ import {
   string,
 } from "valibot"
 
-export const CreateNewsletterWebsitePageSchema = objectAsync({
+export const CreateWebsitePageSchema = objectAsync({
   draftWebsiteContent: object({
     type: picklist(["doc"]),
     content: BlockContentSchema,
@@ -21,6 +21,6 @@ export const CreateNewsletterWebsitePageSchema = objectAsync({
   description: optional(string()),
 })
 
-export type CreateNewsletterWebsitePageDto = InferInput<
-  typeof CreateNewsletterWebsitePageSchema
+export type CreateWebsitePageDto = InferInput<
+  typeof CreateWebsitePageSchema
 >

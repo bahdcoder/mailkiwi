@@ -1,4 +1,4 @@
-import { UpdateNewsletterWebsitePageDto } from "@/letters/dto/update_newsletter_website_page_dto.js"
+import { UpdateWebsitePageDto } from "@/letters/dto/update_website_page_dto.js"
 import { sql } from "drizzle-orm"
 import {
   type AnyMySqlColumn,
@@ -238,10 +238,10 @@ export const audiences = mysqlTable("audiences", {
   product: mysqlEnum("product", ["engage", "letters"]).default("engage"),
 })
 
-export const newsletterWebsites = mysqlTable("newsletterWebsites", {
+export const websites = mysqlTable("websites", {
   id,
-  audienceId: primaryKeyCuid("audienceId")
-    .references(() => audiences.id)
+  teamId: primaryKeyCuid("teamId")
+    .references(() => teams.id)
     .notNull(),
   slug: varchar("slug", { length: 72 }), // the subdomain of this specific newsletter website
   // Custom domain for website
@@ -280,21 +280,19 @@ export const websitePages = mysqlTable(
 
     description: text("description"),
 
-    newsletterWebsiteId: primaryKeyCuid("newsletterWebsiteId").references(
-      () => newsletterWebsites.id,
-    ),
+    websiteId: primaryKeyCuid("websiteId").references(() => websites.id),
     websiteContent: json("websiteContent")
-      .$type<UpdateNewsletterWebsitePageDto["draftWebsiteContent"]>()
+      .$type<UpdateWebsitePageDto["draftWebsiteContent"]>()
       .notNull(),
     draftWebsiteContent: json("draftWebsiteContent")
-      .$type<UpdateNewsletterWebsitePageDto["draftWebsiteContent"]>()
+      .$type<UpdateWebsitePageDto["draftWebsiteContent"]>()
       .notNull(),
 
     publishedAt: timestamp("publishedAt"),
   },
   (table) => ({
-    newsletterWebsiteIdPathKey: unique("newsletterWebsiteIdPathKey").on(
-      table.newsletterWebsiteId,
+    websiteIdPathKey: unique("websiteIdPathKey").on(
+      table.websiteId,
       table.path,
     ),
   }),

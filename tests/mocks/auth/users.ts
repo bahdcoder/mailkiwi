@@ -1,5 +1,5 @@
 import { createFakeAbTestEmailContent } from "../audiences/email_content.js"
-import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
+import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
 import { faker } from "@faker-js/faker"
 import { DateTime } from "luxon"
 
@@ -18,11 +18,11 @@ import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import type {
-  NewsletterWebsite,
-  NewsletterWebsiteWithPages,
   Team,
   TeamMembership,
   User,
+  Website,
+  WebsiteWithPages,
 } from "@/database/database_schema_types.js"
 import { contacts } from "@/database/schema.js"
 
@@ -293,20 +293,26 @@ export const createUser = async ({
         },
         team.id,
       )
+
+    await container.make(WebsiteRepository).create({
+      slug: faker.lorem.slug(),
+      teamId: team.id,
+      websiteDomain: "news-" + faker.lorem.slug() + ".fastmedia.com",
+      websiteDomainVerifiedAt: DateTime.now().toJSDate(),
+      websiteDomainCnameValue: `${faker.lorem.slug()}.fastmedia.com`,
+    })
   }
 
-  async function findNewsLetterWebsiteWithPages() {
+  async function findWebsiteWithPages() {
     if (!createAudienceForNewsletter || !audienceForNewsletter) {
       return undefined
     }
 
-    const newsletterWebsite = await container
-      .make(NewsletterWebsiteRepository)
-      .findByAudienceId(audienceForNewsletter?.id)
+    const website = await container
+      .make(WebsiteRepository)
+      .findByTeamId(team?.id)
 
-    return container
-      .make(NewsletterWebsiteRepository)
-      .findByIdWithPages(newsletterWebsite.id)
+    return container.make(WebsiteRepository).findByIdWithPages(website.id)
   }
 
   return {
@@ -319,7 +325,6 @@ export const createUser = async ({
     authorUser,
     broadcastId,
     audienceForNewsletter,
-    newsletterWebsite:
-      (await findNewsLetterWebsiteWithPages()) as NewsletterWebsiteWithPages,
+    website: (await findWebsiteWithPages()) as WebsiteWithPages,
   }
 }

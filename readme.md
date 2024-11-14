@@ -187,7 +187,7 @@
    6. Background workers cluster
    7. Monitoring
    8. Load balancers
-   9. Minio File Storage 
+   9. Minio File Storage
 
 # RBAC planning
 
@@ -237,6 +237,7 @@ https://dev.me/
 6. Rather than adding to a redis stream, let's just queue a job using BullMQ. It supports retries, information is not lost, and it can scale horizontally across multiple workers.
 
 # One website per team (?).
+
 - We have one website per team, and on this website, we can have newsletter blog posts, newsletter pages will show up here, and commerce products too.
 
 - We allow customising the website, and we have blocks for all sorts of things, for example a block for showing the latest blog posts, a block for showing the latest newsletter posts, a block for adding a particular .

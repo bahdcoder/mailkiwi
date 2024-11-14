@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "e9dc8b61-5a50-440e-9857-6c283d59b9b7",
+  "id": "803920b9-b5ee-49f3-b51c-aaafae4de49f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -216,6 +216,14 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "product": {
+          "name": "product",
+          "type": "enum('engage','letters')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'engage'"
         }
       },
       "indexes": {},
@@ -853,6 +861,13 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "audienceId": {
+          "name": "audienceId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -865,11 +880,107 @@
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "contactProperties_audienceId_audiences_id_fk": {
+          "name": "contactProperties_audienceId_audiences_id_fk",
+          "tableFrom": "contactProperties",
+          "tableTo": "audiences",
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "contactProperties_id": {
           "name": "contactProperties_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {
+        "propertyNameContactIdKey": {
+          "name": "propertyNameContactIdKey",
+          "columns": ["name", "contactId"]
+        }
+      }
+    },
+    "contactPurchases": {
+      "name": "contactPurchases",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "productId": {
+          "name": "productId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "contactId": {
+          "name": "contactId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "purchasedAt": {
+          "name": "purchasedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "expiresAt": {
+          "name": "expiresAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cancelledAt": {
+          "name": "cancelledAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "providerSubscriptionId": {
+          "name": "providerSubscriptionId",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "contactPurchases_productId_products_id_fk": {
+          "name": "contactPurchases_productId_products_id_fk",
+          "tableFrom": "contactPurchases",
+          "tableTo": "products",
+          "columnsFrom": ["productId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "contactPurchases_contactId_contacts_id_fk": {
+          "name": "contactPurchases_contactId_contacts_id_fk",
+          "tableFrom": "contactPurchases",
+          "tableTo": "contacts",
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "contactPurchases_id": {
+          "name": "contactPurchases_id",
           "columns": ["id"]
         }
       },
@@ -1008,6 +1119,27 @@
         "lastClickedAutomationEmailLinkAt": {
           "name": "lastClickedAutomationEmailLinkAt",
           "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lastTrackedActivityFrom": {
+          "name": "lastTrackedActivityFrom",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lastTrackedActivityUsingDevice": {
+          "name": "lastTrackedActivityUsingDevice",
+          "type": "varchar(56)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lastTrackedActivityUsingBrowser": {
+          "name": "lastTrackedActivityUsingBrowser",
+          "type": "varchar(56)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1162,8 +1294,29 @@
           "notNull": false,
           "autoincrement": false
         },
+        "product": {
+          "name": "product",
+          "type": "enum('engage','send','letters')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "contactId": {
           "name": "contactId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "broadcastId": {
+          "name": "broadcastId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "audienceId": {
+          "name": "audienceId",
           "type": "binary(16)",
           "primaryKey": false,
           "notNull": false,
@@ -1287,6 +1440,24 @@
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "emailSendEvents_broadcastId_broadcasts_id_fk": {
+          "name": "emailSendEvents_broadcastId_broadcasts_id_fk",
+          "tableFrom": "emailSendEvents",
+          "tableTo": "broadcasts",
+          "columnsFrom": ["broadcastId"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "emailSendEvents_audienceId_audiences_id_fk": {
+          "name": "emailSendEvents_audienceId_audiences_id_fk",
+          "tableFrom": "emailSendEvents",
+          "tableTo": "audiences",
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -1345,6 +1516,20 @@
         "recipient": {
           "name": "recipient",
           "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contactId": {
+          "name": "contactId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "audienceId": {
+          "name": "audienceId",
+          "type": "binary(16)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1470,6 +1655,24 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
+        "emailSends_contactId_contacts_id_fk": {
+          "name": "emailSends_contactId_contacts_id_fk",
+          "tableFrom": "emailSends",
+          "tableTo": "contacts",
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "emailSends_audienceId_audiences_id_fk": {
+          "name": "emailSends_audienceId_audiences_id_fk",
+          "tableFrom": "emailSends",
+          "tableTo": "audiences",
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "emailSends_sendingSourceId_sendingSources_id_fk": {
           "name": "emailSends_sendingSourceId_sendingSources_id_fk",
           "tableFrom": "emailSends",
@@ -1556,6 +1759,140 @@
       "compositePrimaryKeys": {
         "emails_id": {
           "name": "emails_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "productContents": {
+      "name": "productContents",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "productId": {
+          "name": "productId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "enum('downloadable','course')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "productContents_productId_products_id_fk": {
+          "name": "productContents_productId_products_id_fk",
+          "tableFrom": "productContents",
+          "tableTo": "products",
+          "columnsFrom": ["productId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "productContents_id": {
+          "name": "productContents_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "products": {
+      "name": "products",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "teamId": {
+          "name": "teamId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "audienceId": {
+          "name": "audienceId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cycle": {
+          "name": "cycle",
+          "type": "enum('monthly','yearly','once')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "price": {
+          "name": "price",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "priceYearly": {
+          "name": "priceYearly",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "priceMonthly": {
+          "name": "priceMonthly",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "products_teamId_teams_id_fk": {
+          "name": "products_teamId_teams_id_fk",
+          "tableFrom": "products",
+          "tableTo": "teams",
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "products_audienceId_audiences_id_fk": {
+          "name": "products_audienceId_audiences_id_fk",
+          "tableFrom": "products",
+          "tableTo": "audiences",
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "products_id": {
+          "name": "products_id",
           "columns": ["id"]
         }
       },
@@ -1913,6 +2250,34 @@
         }
       }
     },
+    "settings": {
+      "name": "settings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "acmeAccountIdentity": {
+          "name": "acmeAccountIdentity",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "settings_id": {
+          "name": "settings_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "tags": {
       "name": "tags",
       "columns": {
@@ -2176,6 +2541,27 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "commerceProvider": {
+          "name": "commerceProvider",
+          "type": "enum('stripe','paystack','flutterwave')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "commerceProviderAccountId": {
+          "name": "commerceProviderAccountId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "commerceProviderConfirmedAt": {
+          "name": "commerceProviderConfirmedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -2310,6 +2696,197 @@
         }
       },
       "uniqueConstraints": {}
+    },
+    "websitePages": {
+      "name": "websitePages",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(72)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "path": {
+          "name": "path",
+          "type": "varchar(72)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "websiteId": {
+          "name": "websiteId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "websiteContent": {
+          "name": "websiteContent",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "draftWebsiteContent": {
+          "name": "draftWebsiteContent",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "publishedAt": {
+          "name": "publishedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "websitePages_websiteId_websites_id_fk": {
+          "name": "websitePages_websiteId_websites_id_fk",
+          "tableFrom": "websitePages",
+          "tableTo": "websites",
+          "columnsFrom": ["websiteId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "websitePages_id": {
+          "name": "websitePages_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {
+        "websiteIdPathKey": {
+          "name": "websiteIdPathKey",
+          "columns": ["websiteId", "path"]
+        }
+      }
+    },
+    "websites": {
+      "name": "websites",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "teamId": {
+          "name": "teamId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(72)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "websiteDomain": {
+          "name": "websiteDomain",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "websiteDomainCnameValue": {
+          "name": "websiteDomainCnameValue",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "websiteDomainVerifiedAt": {
+          "name": "websiteDomainVerifiedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "websiteDomainSslVerifiedAt": {
+          "name": "websiteDomainSslVerifiedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "websiteSslCertKey": {
+          "name": "websiteSslCertKey",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "websiteSslCertSecret": {
+          "name": "websiteSslCertSecret",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "websiteSslCertChallengeToken": {
+          "name": "websiteSslCertChallengeToken",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "websiteSslCertChallengeKeyAuthorization": {
+          "name": "websiteSslCertChallengeKeyAuthorization",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "websites_teamId_teams_id_fk": {
+          "name": "websites_teamId_teams_id_fk",
+          "tableFrom": "websites",
+          "tableTo": "teams",
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "websites_id": {
+          "name": "websites_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {
+        "websites_websiteDomain_unique": {
+          "name": "websites_websiteDomain_unique",
+          "columns": ["websiteDomain"]
+        }
+      }
     }
   },
   "_meta": {

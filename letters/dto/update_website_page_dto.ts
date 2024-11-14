@@ -45,7 +45,7 @@ export const BlockContentSchema = array(
   }),
 ) as GenericSchema<HTMLJsonBlock[]>
 
-export const UpdateNewsletterWebsitePageSchema = objectAsync({
+export const UpdateWebsitePageSchema = objectAsync({
   draftWebsiteContent: optional(
     object({
       type: picklist(["doc"]),
@@ -57,6 +57,6 @@ export const UpdateNewsletterWebsitePageSchema = objectAsync({
   description: optional(string()),
 })
 
-export type UpdateNewsletterWebsitePageDto = InferInput<
-  typeof UpdateNewsletterWebsitePageSchema
+export type UpdateWebsitePageDto = InferInput<
+  typeof UpdateWebsitePageSchema
 >

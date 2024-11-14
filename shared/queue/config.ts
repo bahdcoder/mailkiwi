@@ -6,7 +6,7 @@ export const AVAILABLE_QUEUES = {
   accounts: "accounts",
   sending_domains: "sending_domains",
   letters: "letters",
-  newsletter_websites: "newsletter_websites",
+  websites: "websites",
   contacts: "contacts",
   mta_logs: "mta_logs",
 } as const

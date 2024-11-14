@@ -7,7 +7,7 @@ import { DkimController } from "@/kumomta/controllers/dkim_controller.js"
 import { SmtpAuthController } from "@/kumomta/controllers/smtp_auth_controller.js"
 import { TrackingController } from "@/kumomta/controllers/tracking_controller.js"
 import { NewsletterController } from "@/letters/controllers/newsletter_controller.js"
-import { NewsletterWebsiteController } from "@/letters/controllers/newsletter_website_controller.js"
+import { WebsiteController } from "@/letters/controllers/website_controller.js"
 import { ClickTrackingController } from "@/tracking/controllers/click_tracking_controller.js"
 import { OpenTrackingController } from "@/tracking/controllers/open_tracking_controller.js"
 import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.js"
@@ -151,7 +151,7 @@ export class Ignitor {
     container.resolve(ClickTrackingController)
     container.resolve(OpenTrackingController)
     container.resolve(NewsletterController)
-    container.resolve(NewsletterWebsiteController)
+    container.resolve(WebsiteController)
 
     container.resolve(ProductController)
     container.resolve(CommerceProviderController)

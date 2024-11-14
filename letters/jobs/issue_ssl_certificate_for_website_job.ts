@@ -1,5 +1,4 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
+import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
 import { SettingRepository } from "@/settings/repositories/setting_repository.js"
 import { DateTime } from "luxon"
 
@@ -11,39 +10,32 @@ import { Encryption } from "@/shared/utils/encryption/encryption.js"
 
 import { container } from "@/utils/typi.js"
 
-export interface IssueSSLCertificateForNewsletterWebsiteJobPayload {
-  newsletterWebsiteId: string
+export interface IssueSSLCertificateForWebsiteJobPayload {
+  websiteId: string
 }
 
-export class IssueSSLCertificateForNewsletterWebsiteJob extends BaseJob<IssueSSLCertificateForNewsletterWebsiteJobPayload> {
+export class IssueSSLCertificateForWebsiteJob extends BaseJob<IssueSSLCertificateForWebsiteJobPayload> {
   static get id() {
-    return "NEWSLETTER_WEBSITES::ISSUE_SSL_CERTIFICATES_FOR_NEWSLETTER_WEBSITE"
+    return "WEBSITES::ISSUE_SSL_CERTIFICATES_FOR_WEBSITE"
   }
 
   static get queue() {
-    return AVAILABLE_QUEUES.newsletter_websites
+    return AVAILABLE_QUEUES.websites
   }
 
   async handle({
     payload,
-  }: JobContext<IssueSSLCertificateForNewsletterWebsiteJobPayload>) {
-    const newsletterWebsiteRepository = container.make(
-      NewsletterWebsiteRepository,
-    )
-    const newsletterWebsite = await newsletterWebsiteRepository.findById(
-      payload.newsletterWebsiteId,
-    )
+  }: JobContext<IssueSSLCertificateForWebsiteJobPayload>) {
+    const websiteRepository = container.make(WebsiteRepository)
+    const website = await websiteRepository.findById(payload.websiteId)
 
-    if (!newsletterWebsite) {
+    if (!website) {
       return this.done(
         "The newsletter website was not found. Might have been deleted by the user before the job was run.",
       )
     }
 
-    if (
-      !newsletterWebsite.websiteDomain ||
-      !newsletterWebsite.websiteDomainCnameValue
-    ) {
+    if (!website.websiteDomain || !website.websiteDomainCnameValue) {
       return this.done(
         "Custom website domain not configured. Might have been deleted by the user before the job was run.",
       )
@@ -55,11 +47,11 @@ export class IssueSSLCertificateForNewsletterWebsiteJob extends BaseJob<IssueSSL
 
     acmeCertificatesTool
       .setAccountKey(settings.acmeAccountIdentity)
-      .forDomain(newsletterWebsite.websiteDomain)
+      .forDomain(website.websiteDomain)
 
     const [certificatePrivateKey, csr] = await acmeCertificatesTool
       .setAccountKey(settings.acmeAccountIdentity)
-      .forDomain(newsletterWebsite.websiteDomain)
+      .forDomain(website.websiteDomain)
       .csr()
 
     const acmeClient = acmeCertificatesTool.client()
@@ -75,18 +67,15 @@ export class IssueSSLCertificateForNewsletterWebsiteJob extends BaseJob<IssueSSL
       skipChallengeVerification: true,
       email: acmeCertificatesTool.CERTIFICATES_CONTACT_EMAIL,
       async challengeCreateFn(authz, challenge, keyAuthorization) {
-        await newsletterWebsiteRepository.updateById(
-          newsletterWebsite.id,
-          {
-            websiteSslCertChallengeToken: challenge.token,
-            websiteSslCertChallengeKeyAuthorization: keyAuthorization,
-          },
-        )
+        await websiteRepository.updateById(website.id, {
+          websiteSslCertChallengeToken: challenge.token,
+          websiteSslCertChallengeKeyAuthorization: keyAuthorization,
+        })
       },
       async challengeRemoveFn(authz, challenge, keyAuthorization) {},
     })
 
-    await newsletterWebsiteRepository.updateById(newsletterWebsite.id, {
+    await websiteRepository.updateById(website.id, {
       websiteSslCertKey: certificatePublicKey,
       websiteSslCertSecret: certificatePrivateKey.toString("utf-8"),
       websiteDomainSslVerifiedAt: DateTime.now().toJSDate(),

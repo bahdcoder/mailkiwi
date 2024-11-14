@@ -1,7 +1,7 @@
 import { appEnv } from "@/app/env/app_env.js"
 import { ProductRepository } from "@/commerce/repositories/product_repository.js"
-import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
 import { WebsitePageRepository } from "@/letters/repositories/website_page_repository.js"
+import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
 import {
   type BaseSchema,
   type BaseSchemaAsync,
@@ -38,7 +38,7 @@ type ControllerParams =
   | "tagId"
   | "broadcastId"
   | "membershipId"
-  | "newsletterWebsiteId"
+  | "websiteId"
   | "websitePageId"
   | "productId"
 
@@ -217,7 +217,7 @@ export class BaseController {
       importId: ContactImportRepository,
       websitePageId: WebsitePageRepository,
       membershipId: TeamMembershipRepository,
-      newsletterWebsiteId: NewsletterWebsiteRepository,
+      websiteId: WebsiteRepository,
       productId: ProductRepository,
     } as const
 

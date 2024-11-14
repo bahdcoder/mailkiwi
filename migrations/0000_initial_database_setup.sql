@@ -27,6 +27,7 @@ CREATE TABLE `audiences` (
 	`name` varchar(50) NOT NULL,
 	`teamId` binary(16) NOT NULL,
 	`knownProperties` json,
+	`product` enum('engage','letters') DEFAULT 'engage',
 	CONSTRAINT `audiences_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -109,7 +110,20 @@ CREATE TABLE `contactProperties` (
 	`text` varchar(256),
 	`float` float,
 	`contactId` binary(16) NOT NULL,
-	CONSTRAINT `contactProperties_id` PRIMARY KEY(`id`)
+	`audienceId` binary(16) NOT NULL,
+	CONSTRAINT `contactProperties_id` PRIMARY KEY(`id`),
+	CONSTRAINT `propertyNameContactIdKey` UNIQUE(`name`,`contactId`)
+);
+--> statement-breakpoint
+CREATE TABLE `contactPurchases` (
+	`id` binary(16) NOT NULL,
+	`productId` binary(16) NOT NULL,
+	`contactId` binary(16) NOT NULL,
+	`purchasedAt` timestamp,
+	`expiresAt` timestamp,
+	`cancelledAt` timestamp,
+	`providerSubscriptionId` varchar(100),
+	CONSTRAINT `contactPurchases_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `contacts` (
@@ -132,6 +146,9 @@ CREATE TABLE `contacts` (
 	`lastClickedBroadcastEmailLinkAt` timestamp,
 	`lastOpenedAutomationEmailAt` timestamp,
 	`lastClickedAutomationEmailLinkAt` timestamp,
+	`lastTrackedActivityFrom` varchar(10),
+	`lastTrackedActivityUsingDevice` varchar(56),
+	`lastTrackedActivityUsingBrowser` varchar(56),
 	CONSTRAINT `contacts_id` PRIMARY KEY(`id`),
 	CONSTRAINT `ContactEmailAudienceIdKey` UNIQUE(`email`,`audienceId`)
 );
@@ -155,7 +172,10 @@ CREATE TABLE `emailSendEvents` (
 	`emailSendId` binary(16) NOT NULL,
 	`type` enum('Delivery','Reception','Bounce','TransientFailure','Expiration','AdminBounce','OOB','Feedback','Rejection','AdminRebind','Any','Click','Open') NOT NULL,
 	`createdAt` timestamp,
+	`product` enum('engage','send','letters') NOT NULL,
 	`contactId` binary(16),
+	`broadcastId` binary(16),
+	`audienceId` binary(16),
 	`responseCode` int,
 	`responseContent` text,
 	`responseCommand` varchar(255),
@@ -181,6 +201,8 @@ CREATE TABLE `emailSends` (
 	`broadcastId` binary(16),
 	`sender` varchar(80),
 	`recipient` varchar(80),
+	`contactId` binary(16),
+	`audienceId` binary(16),
 	`queue` varchar(80),
 	`siteName` varchar(80),
 	`size` int,
@@ -206,6 +228,25 @@ CREATE TABLE `emails` (
 	`audienceId` binary(16) NOT NULL,
 	`emailContentId` binary(16),
 	CONSTRAINT `emails_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `productContents` (
+	`id` binary(16) NOT NULL,
+	`productId` binary(16),
+	`type` enum('downloadable','course') NOT NULL,
+	CONSTRAINT `productContents_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `products` (
+	`id` binary(16) NOT NULL,
+	`teamId` binary(16) NOT NULL,
+	`audienceId` binary(16),
+	`cycle` enum('monthly','yearly','once') NOT NULL,
+	`name` varchar(50) NOT NULL,
+	`price` int,
+	`priceYearly` int,
+	`priceMonthly` int,
+	CONSTRAINT `products_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `segments` (
@@ -257,6 +298,12 @@ CREATE TABLE `sendingSources` (
 	CONSTRAINT `sendingSources_addressIpv6_unique` UNIQUE(`addressIpv6`)
 );
 --> statement-breakpoint
+CREATE TABLE `settings` (
+	`id` binary(16) NOT NULL,
+	`acmeAccountIdentity` text NOT NULL,
+	CONSTRAINT `settings_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `tags` (
 	`id` binary(16) NOT NULL,
 	`name` varchar(256) NOT NULL,
@@ -294,6 +341,9 @@ CREATE TABLE `teams` (
 	`trackClicks` boolean,
 	`trackOpens` boolean,
 	`broadcastEditor` enum('DEFAULT','MARKDOWN'),
+	`commerceProvider` enum('stripe','paystack','flutterwave'),
+	`commerceProviderAccountId` varchar(255),
+	`commerceProviderConfirmedAt` timestamp,
 	CONSTRAINT `teams_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -316,6 +366,35 @@ CREATE TABLE `webhooks` (
 	CONSTRAINT `webhooks_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `websitePages` (
+	`id` binary(16) NOT NULL,
+	`title` varchar(72),
+	`path` varchar(72),
+	`description` text,
+	`websiteId` binary(16),
+	`websiteContent` json NOT NULL,
+	`draftWebsiteContent` json NOT NULL,
+	`publishedAt` timestamp,
+	CONSTRAINT `websitePages_id` PRIMARY KEY(`id`),
+	CONSTRAINT `websiteIdPathKey` UNIQUE(`websiteId`,`path`)
+);
+--> statement-breakpoint
+CREATE TABLE `websites` (
+	`id` binary(16) NOT NULL,
+	`teamId` binary(16) NOT NULL,
+	`slug` varchar(72),
+	`websiteDomain` varchar(120),
+	`websiteDomainCnameValue` varchar(120),
+	`websiteDomainVerifiedAt` timestamp,
+	`websiteDomainSslVerifiedAt` timestamp,
+	`websiteSslCertKey` text,
+	`websiteSslCertSecret` text,
+	`websiteSslCertChallengeToken` varchar(256),
+	`websiteSslCertChallengeKeyAuthorization` text,
+	CONSTRAINT `websites_id` PRIMARY KEY(`id`),
+	CONSTRAINT `websites_websiteDomain_unique` UNIQUE(`websiteDomain`)
+);
+--> statement-breakpoint
 ALTER TABLE `abTestVariants` ADD CONSTRAINT `abTestVariants_broadcastId_broadcasts_id_fk` FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `abTestVariants` ADD CONSTRAINT `abTestVariants_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `accessTokens` ADD CONSTRAINT `accessTokens_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -336,15 +415,25 @@ ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_auto
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactImports` ADD CONSTRAINT `contactImports_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactProperties` ADD CONSTRAINT `contactProperties_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contactProperties` ADD CONSTRAINT `contactProperties_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contactPurchases` ADD CONSTRAINT `contactPurchases_productId_products_id_fk` FOREIGN KEY (`productId`) REFERENCES `products`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `contactPurchases` ADD CONSTRAINT `contactPurchases_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_contactImportId_contactImports_id_fk` FOREIGN KEY (`contactImportId`) REFERENCES `contactImports`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_emailSendId_emailSends_id_fk` FOREIGN KEY (`emailSendId`) REFERENCES `emailSends`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_broadcastId_broadcasts_id_fk` FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_sendingDomainId_sendingDomains_id_fk` FOREIGN KEY (`sendingDomainId`) REFERENCES `sendingDomains`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_broadcastId_broadcasts_id_fk` FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_sendingSourceId_sendingSources_id_fk` FOREIGN KEY (`sendingSourceId`) REFERENCES `sendingSources`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emails` ADD CONSTRAINT `emails_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emails` ADD CONSTRAINT `emails_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `productContents` ADD CONSTRAINT `productContents_productId_products_id_fk` FOREIGN KEY (`productId`) REFERENCES `products`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `products` ADD CONSTRAINT `products_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `products` ADD CONSTRAINT `products_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `segments` ADD CONSTRAINT `segments_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `sendingDomains` ADD CONSTRAINT `sendingDomains_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `sendingDomains` ADD CONSTRAINT `sendingDomains_sendingSourceId_sendingSources_id_fk` FOREIGN KEY (`sendingSourceId`) REFERENCES `sendingSources`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -358,4 +447,6 @@ ALTER TABLE `teamMemberships` ADD CONSTRAINT `teamMemberships_userId_users_id_fk
 ALTER TABLE `teamMemberships` ADD CONSTRAINT `teamMemberships_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `teams` ADD CONSTRAINT `teams_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `webhooks` ADD CONSTRAINT `webhooks_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `websitePages` ADD CONSTRAINT `websitePages_websiteId_websites_id_fk` FOREIGN KEY (`websiteId`) REFERENCES `websites`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `websites` ADD CONSTRAINT `websites_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX `tagsOnContactsTagIdContactIdIdx` ON `tagsOnContacts` (`tagId`,`contactId`);

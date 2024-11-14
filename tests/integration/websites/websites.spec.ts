@@ -1,7 +1,7 @@
-import { HTMLJsonBlock } from "@/letters/dto/update_newsletter_website_page_dto.js"
-import { CheckNewsletterDomainDnsConfiguration } from "@/letters/jobs/check_newsletter_domain_dns_configuration_job.js"
-import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
+import { HTMLJsonBlock } from "@/letters/dto/update_website_page_dto.js"
+import { CheckWebsiteDomainDnsConfiguration } from "@/letters/jobs/check_website_domain_dns_configuration_job.js"
 import { WebsitePageRepository } from "@/letters/repositories/website_page_repository.js"
+import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
 import { faker } from "@faker-js/faker"
 import { load as cheerioLoad } from "cheerio"
 import { readFile } from "fs/promises"
@@ -16,14 +16,13 @@ import { Queue } from "@/shared/queue/queue.js"
 
 import { container } from "@/utils/typi.js"
 
-describe("@newsletter-websites", () => {
+describe("@websites", () => {
   test("can add a custom domain to a newsletter website", async ({
     expect,
   }) => {
-    const { newsletterWebsite, user, audienceForNewsletter, team } =
-      await createUser({
-        createAudienceForNewsletter: true,
-      })
+    const { website, user, team } = await createUser({
+      createAudienceForNewsletter: true,
+    })
 
     const response = await makeRequestAsUser(
       user,
@@ -32,38 +31,37 @@ describe("@newsletter-websites", () => {
         body: {
           domain: `${faker.lorem.slug() + "-" + faker.number.int({ min: 10, max: 100 })}.fastmedia.com`,
         },
-        path: `/audiences/${audienceForNewsletter?.id}/newsletter_websites/${newsletterWebsite.id}/custom-domain`,
+        path: `/websites/${website.id}/custom_domains`,
       },
       team.id,
     )
 
     expect(response.status).toEqual(200)
 
-    const queueJobs = await Queue.newsletter_websites().getJobs()
+    const queueJobs = await Queue.websites().getJobs()
 
-    const jobForNewsletterWebsite = queueJobs.find(
-      (job) => job.data.newsletterWebsiteId === newsletterWebsite.id,
+    const jobForWebsite = queueJobs.find(
+      (job) => job.data.websiteId === website.id,
     )
 
-    expect(jobForNewsletterWebsite).toBeDefined()
-    expect(jobForNewsletterWebsite?.name).toEqual(
-      CheckNewsletterDomainDnsConfiguration.id,
+    expect(jobForWebsite).toBeDefined()
+    expect(jobForWebsite?.name).toEqual(
+      CheckWebsiteDomainDnsConfiguration.id,
     )
   })
 
   test("cannot add an existing domain as custom domain to a newsletter website", async ({
     expect,
   }) => {
-    const { newsletterWebsite, user, team, audienceForNewsletter } =
-      await createUser({
-        createAudienceForNewsletter: true,
-      })
+    const { website, user, team } = await createUser({
+      createAudienceForNewsletter: true,
+    })
 
     const customDomain = `${faker.lorem.slug() + "-" + faker.number.int({ min: 10, max: 100 })}.fastmedia.com`
 
     await container
-      .make(NewsletterWebsiteRepository)
-      .updateById(newsletterWebsite.id, { websiteDomain: customDomain })
+      .make(WebsiteRepository)
+      .updateById(website.id, { websiteDomain: customDomain })
 
     const response = await makeRequestAsUser(
       user,
@@ -72,7 +70,7 @@ describe("@newsletter-websites", () => {
         body: {
           domain: customDomain,
         },
-        path: `/audiences/${audienceForNewsletter?.id}/newsletter_websites/${newsletterWebsite.id}/custom-domain`,
+        path: `/websites/${website.id}/custom_domains`,
       },
       team.id,
     )
@@ -93,7 +91,7 @@ describe("@newsletter-websites", () => {
   })
 
   test("can update website page content", async ({ expect }) => {
-    const { newsletterWebsite, user, team, audienceForNewsletter } =
+    const { website, user, team, audienceForNewsletter } =
       await createUser({
         createAudienceForNewsletter: true,
       })
@@ -115,7 +113,7 @@ describe("@newsletter-websites", () => {
         body: {
           draftWebsiteContent,
         },
-        path: `/audiences/${audienceForNewsletter?.id}/newsletter_websites/${newsletterWebsite.id}/website_pages/${newsletterWebsite?.pages?.[0]?.id}`,
+        path: `/websites/${website.id}/website_pages/${website?.pages?.[0]?.id}`,
       },
       team.id,
     )
@@ -123,8 +121,8 @@ describe("@newsletter-websites", () => {
     expect(response.status).toEqual(200)
 
     const updatedNewletterWebsite = await container
-      .make(NewsletterWebsiteRepository)
-      .findByIdWithPages(newsletterWebsite.id)
+      .make(WebsiteRepository)
+      .findByIdWithPages(website.id)
 
     expect(
       updatedNewletterWebsite.pages?.[0]?.draftWebsiteContent,
@@ -132,7 +130,7 @@ describe("@newsletter-websites", () => {
   })
 
   test("can create additional website pages", async ({ expect }) => {
-    const { newsletterWebsite, user, team, audienceForNewsletter } =
+    const { website, user, team, audienceForNewsletter } =
       await createUser({
         createAudienceForNewsletter: true,
       })
@@ -159,7 +157,7 @@ describe("@newsletter-websites", () => {
       {
         method: "POST",
         body: payload,
-        path: `/audiences/${audienceForNewsletter?.id}/newsletter_websites/${newsletterWebsite.id}/website_pages/`,
+        path: `/websites/${website.id}/website_pages/`,
       },
       team.id,
     )
@@ -167,8 +165,8 @@ describe("@newsletter-websites", () => {
     expect(response.status).toEqual(200)
 
     const updatedNewletterWebsite = await container
-      .make(NewsletterWebsiteRepository)
-      .findByIdWithPages(newsletterWebsite.id)
+      .make(WebsiteRepository)
+      .findByIdWithPages(website.id)
 
     const secondPage = updatedNewletterWebsite.pages?.[1]
 
@@ -182,7 +180,7 @@ describe("@newsletter-websites", () => {
   })
 
   test("can publish website pages", async ({ expect }) => {
-    const { newsletterWebsite, user, team, audienceForNewsletter } =
+    const { website, user, team, audienceForNewsletter } =
       await createUser({
         createAudienceForNewsletter: true,
       })
@@ -210,14 +208,14 @@ describe("@newsletter-websites", () => {
 
     const { id: websitePageId } = await container
       .make(WebsitePageRepository)
-      .create(payload, newsletterWebsite.id)
+      .create(payload, website.id)
 
     const response = await makeRequestAsUser(
       user,
       {
         method: "PUT",
         body: payload,
-        path: `/audiences/${audienceForNewsletter?.id}/newsletter_websites/${newsletterWebsite.id}/website_pages/${websitePageId}/publish`,
+        path: `/websites/${website.id}/website_pages/${websitePageId}/publish`,
       },
       team.id,
     )
@@ -225,8 +223,8 @@ describe("@newsletter-websites", () => {
     expect(response.status).toEqual(200)
 
     const updatedNewletterWebsite = await container
-      .make(NewsletterWebsiteRepository)
-      .findByIdWithPages(newsletterWebsite.id)
+      .make(WebsiteRepository)
+      .findByIdWithPages(website.id)
 
     const secondPage = updatedNewletterWebsite.pages?.[1]
 
@@ -242,7 +240,7 @@ describe("@newsletter-websites", () => {
   })
 
   test("can unpublish website pages", async ({ expect }) => {
-    const { newsletterWebsite, user, team, audienceForNewsletter } =
+    const { website, user, team, audienceForNewsletter } =
       await createUser({
         createAudienceForNewsletter: true,
       })
@@ -272,7 +270,7 @@ describe("@newsletter-websites", () => {
 
     const { id: websitePageId } = await websitePageRepository.create(
       payload,
-      newsletterWebsite.id,
+      website.id,
     )
 
     await websitePageRepository.publish(
@@ -284,7 +282,7 @@ describe("@newsletter-websites", () => {
       {
         method: "PUT",
         body: payload,
-        path: `/audiences/${audienceForNewsletter?.id}/newsletter_websites/${newsletterWebsite.id}/website_pages/${websitePageId}/unpublish`,
+        path: `/websites/${website.id}/website_pages/${websitePageId}/unpublish`,
       },
       team.id,
     )
@@ -292,8 +290,8 @@ describe("@newsletter-websites", () => {
     expect(response.status).toEqual(200)
 
     const updatedNewletterWebsite = await container
-      .make(NewsletterWebsiteRepository)
-      .findByIdWithPages(newsletterWebsite.id)
+      .make(WebsiteRepository)
+      .findByIdWithPages(website.id)
 
     const secondPage = updatedNewletterWebsite.pages?.[1]
 
@@ -307,18 +305,18 @@ describe("@newsletter-websites", () => {
   })
 })
 
-describe("@newsletter-websites-pages", () => {
+describe("@websites-pages", () => {
   test("can visit a newsletter website home page using website slug", async ({
     expect,
   }) => {
     const websiteContent = JSON.parse(
       await readFile(
-        resolve("tests/integration/letters/newsletter_content_doc.json"),
+        resolve("tests/integration/websites/website_content_doc.json"),
         "utf-8",
       ),
     )
 
-    const { newsletterWebsite } = await createUser({
+    const { website } = await createUser({
       createAudienceForNewsletter: true,
     })
 
@@ -334,14 +332,14 @@ describe("@newsletter-websites-pages", () => {
         title: faker.lorem.words(5),
         draftWebsiteContent: websiteContent,
       },
-      newsletterWebsite.id,
+      website.id,
     )
 
     await websitePageRepository.publish(
       await websitePageRepository.findById(websitePageId),
     )
 
-    const homePage = newsletterWebsite?.pages?.[0]
+    const homePage = website?.pages?.[0]
 
     await container
       .make(WebsitePageRepository)
@@ -349,9 +347,7 @@ describe("@newsletter-websites-pages", () => {
 
     const app = makeApp()
 
-    const response = await app.request(
-      `/letters/${newsletterWebsite.slug}/`,
-    )
+    const response = await app.request(`/letters/${website.slug}/`)
 
     const html = await response.text()
 
@@ -372,7 +368,7 @@ describe("@newsletter-websites-pages", () => {
     )
 
     const aboutMePageResponse = await app.request(
-      `/letters/${newsletterWebsite.slug}/${aboutPagePath}`,
+      `/letters/${website.slug}/${aboutPagePath}`,
     )
 
     expect(aboutMePageResponse.status).toBe(200)

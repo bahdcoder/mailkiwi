@@ -15,7 +15,6 @@ import {
   emailSendEvents,
   emailSends,
   emails,
-  newsletterWebsites,
   products,
   segments,
   sendingDomains,
@@ -27,6 +26,7 @@ import {
   teams,
   users,
   websitePages,
+  websites,
 } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
@@ -50,7 +50,7 @@ export const refreshDatabase = async () => {
   await database.delete(broadcasts)
   await database.delete(segments)
   await database.delete(websitePages)
-  await database.delete(newsletterWebsites)
+  await database.delete(websites)
   await database.delete(contactProperties)
   await database.delete(contacts)
   await database.delete(contactImports)

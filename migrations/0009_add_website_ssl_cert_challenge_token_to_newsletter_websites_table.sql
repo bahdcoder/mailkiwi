@@ -1,1 +1,0 @@
-ALTER TABLE `newsletterWebsites` ADD `websiteSslCertChallengeToken` varchar(256);

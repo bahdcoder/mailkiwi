@@ -1,4 +1,4 @@
-import { NewsletterWebsiteRepository } from "@/letters/repositories/newsletter_website_repository.js"
+import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
 
 import { GenerateWebsiteFromJsonTool } from "@/tools/website/generate_website_from_json_tool.js"
 
@@ -14,10 +14,10 @@ export class NewsletterController extends BaseController {
 
     // reverse proxy will programmatically route traffic from fastmedia.kibaletters.com/* -> http://hono_server/letters/fastmedia/*
 
-    // /letters/:newsletterWebsiteSlug -> this returns home page of newsletter
-    // /letters/:newsletterWebsiteSlug/l/how-to-land-a-remote-job-in-tech -> this returns a single letter page
-    // /letters/:newsletterWebsiteSlug/* -> this returns any matching page from all the pages saved in the database.
-    // /letters/:newsletterWebsiteSlug/.wellknown/acme-challenge
+    // /letters/:websiteSlug -> this returns home page of newsletter
+    // /letters/:websiteSlug/l/how-to-land-a-remote-job-in-tech -> this returns a single letter page
+    // /letters/:websiteSlug/* -> this returns any matching page from all the pages saved in the database.
+    // /letters/:websiteSlug/.wellknown/acme-challenge
 
     this.app.defineRoutes(
       [
@@ -30,7 +30,7 @@ export class NewsletterController extends BaseController {
         ["GET", "/l/:newsletterBroadcastSlug", this.index.bind(this)],
       ],
       {
-        prefix: "/letters/:newsletterWebsiteSlug",
+        prefix: "/letters/:websiteSlug",
         middleware: [],
       },
     )
@@ -38,9 +38,9 @@ export class NewsletterController extends BaseController {
 
   async acmeChallenge(ctx: HonoContext) {
     const website = await container
-      .make(NewsletterWebsiteRepository)
+      .make(WebsiteRepository)
       .findBySlugAndToken(
-        ctx.req.param("newsletterWebsiteSlug"),
+        ctx.req.param("websiteSlug"),
         ctx.req.param("token"),
       )
 
@@ -59,8 +59,8 @@ export class NewsletterController extends BaseController {
     // the host will be in the form: slug.kibaletters.com
 
     const website = await container
-      .make(NewsletterWebsiteRepository)
-      .findBySlugWithPages(ctx.req.param("newsletterWebsiteSlug"))
+      .make(WebsiteRepository)
+      .findBySlugWithPages(ctx.req.param("websiteSlug"))
 
     if (!website) {
       return ctx.html("<h1>We could not find this page. </h1>", 404)

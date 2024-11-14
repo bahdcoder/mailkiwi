@@ -3,9 +3,9 @@ import { build } from "esbuild"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-export const buildServerCoreCommand = command({
-  name: "build_server_core",
-  desc: "Build the server core using esbuild.",
+export const fixTypescriptImportsCommand = command({
+  name: "fix_typescript_imports",
+  desc: "Rewrite import aliases in bundled files.",
   async transform(opts) {
     return opts
   },

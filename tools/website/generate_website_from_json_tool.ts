@@ -1,14 +1,14 @@
 import {
   HTMLJsonBlock,
-  UpdateNewsletterWebsitePageDto,
-} from "@/letters/dto/update_newsletter_website_page_dto.js"
+  UpdateWebsitePageDto,
+} from "@/letters/dto/update_website_page_dto.js"
 import { Cheerio, CheerioAPI, load as cheerioLoad } from "cheerio"
 
 export class GenerateWebsiteFromJsonTool {
   protected $: CheerioAPI
   constructor(
     protected content: Required<
-      UpdateNewsletterWebsitePageDto["draftWebsiteContent"]
+      UpdateWebsitePageDto["draftWebsiteContent"]
     >,
   ) {
     this.$ = cheerioLoad("<body></body>")

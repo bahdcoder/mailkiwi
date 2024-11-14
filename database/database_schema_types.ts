@@ -10,7 +10,6 @@ import type {
   emailContents,
   emailSendEvents,
   emailSends,
-  newsletterWebsites,
   products,
   segments,
   sendingDomains,
@@ -22,6 +21,7 @@ import type {
   teams,
   users,
   websitePages,
+  websites,
 } from "./schema.js"
 import type { InferSelectModel } from "drizzle-orm"
 import type { MySqlUpdateSetSource } from "drizzle-orm/mysql-core"
@@ -29,7 +29,7 @@ import type { MySqlUpdateSetSource } from "drizzle-orm/mysql-core"
 import type { makeDatabase } from "@/shared/container/index.js"
 
 export type Audience = InferSelectModel<typeof audiences>
-export type NewsletterWebsite = InferSelectModel<typeof newsletterWebsites>
+export type Website = InferSelectModel<typeof websites>
 export type WebsitePage = InferSelectModel<typeof websitePages>
 export type EmailSend = InferSelectModel<typeof emailSends>
 export type Tag = InferSelectModel<typeof tags>
@@ -83,16 +83,13 @@ export type InsertTeamMembership = typeof teamMemberships.$inferInsert
 export type InsertSendingDomain = typeof sendingDomains.$inferInsert
 export type InsertAbTestVariant = typeof abTestVariants.$inferInsert
 export type InsertProduct = typeof products.$inferInsert
-export type InsertNewsletterWebsite =
-  typeof newsletterWebsites.$inferInsert
+export type InsertWebsite = typeof websites.$inferInsert
 
 export type UpdateAbTestVariant = MySqlUpdateSetSource<
   typeof abTestVariants
 >
 
-export type UpdateNewsletterWebsite = MySqlUpdateSetSource<
-  typeof newsletterWebsites
->
+export type UpdateWebsite = MySqlUpdateSetSource<typeof websites>
 
 export type UpdateWebsitePage = MySqlUpdateSetSource<typeof websitePages>
 
@@ -148,6 +145,6 @@ export type ContactWithProperties = Contact & {
   properties: ContactProperty[]
 }
 
-export type NewsletterWebsiteWithPages = NewsletterWebsite & {
+export type WebsiteWithPages = Website & {
   pages: WebsitePage[]
 }

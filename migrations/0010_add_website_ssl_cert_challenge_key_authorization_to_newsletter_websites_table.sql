@@ -1,1 +1,0 @@
-ALTER TABLE `newsletterWebsites` ADD `websiteSslCertChallengeKeyAuthorization` text;

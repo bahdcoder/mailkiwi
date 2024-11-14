@@ -10,11 +10,11 @@ import {
   string,
 } from "valibot"
 
-import { newsletterWebsites } from "@/database/schema.js"
+import { websites } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
-export const AddCustomNewsletterDomainSchema = objectAsync({
+export const AddCustomWebsiteDomainSchema = objectAsync({
   domain: pipeAsync(
     string(),
     regex(/^(?!:\/\/)([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/),
@@ -22,9 +22,9 @@ export const AddCustomNewsletterDomainSchema = objectAsync({
       const database = makeDatabase()
 
       const exists = await database
-        .select({ websiteDomain: newsletterWebsites.websiteDomain })
-        .from(newsletterWebsites)
-        .where(eq(newsletterWebsites.websiteDomain, domain))
+        .select({ websiteDomain: websites.websiteDomain })
+        .from(websites)
+        .where(eq(websites.websiteDomain, domain))
         .limit(1)
 
       return exists.length === 0
@@ -32,6 +32,6 @@ export const AddCustomNewsletterDomainSchema = objectAsync({
   ),
 })
 
-export type AddCustomNewsletterDomainDto = InferInput<
-  typeof AddCustomNewsletterDomainSchema
+export type AddCustomWebsiteDomainDto = InferInput<
+  typeof AddCustomWebsiteDomainSchema
 >

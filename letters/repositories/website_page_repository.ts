@@ -1,4 +1,4 @@
-import { CreateNewsletterWebsitePageDto } from "@/letters/dto/create_newsletter_website_page_dto.js"
+import { CreateWebsitePageDto } from "@/letters/dto/create_website_page_dto.js"
 import { eq } from "drizzle-orm"
 
 import {
@@ -48,16 +48,13 @@ export class WebsitePageRepository extends BaseRepository {
     return { id: websitePage.id }
   }
 
-  async create(
-    payload: CreateNewsletterWebsitePageDto,
-    newsletterWebsiteId: string,
-  ) {
+  async create(payload: CreateWebsitePageDto, websiteId: string) {
     const id = this.cuid()
 
     await this.database.insert(websitePages).values({
       ...payload,
       id,
-      newsletterWebsiteId,
+      websiteId,
       websiteContent: payload.draftWebsiteContent,
     })
 

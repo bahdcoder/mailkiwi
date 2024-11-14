@@ -1,2 +1,0 @@
-ALTER TABLE `emailSends` ADD `audienceId` binary(16);--> statement-breakpoint
-ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;

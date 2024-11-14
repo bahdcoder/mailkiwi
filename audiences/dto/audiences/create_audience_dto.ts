@@ -10,7 +10,7 @@ import {
   string,
 } from "valibot"
 
-import { newsletterWebsites } from "@/database/schema.js"
+import { websites } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
@@ -27,9 +27,9 @@ export const CreateAudienceSchema = objectAsync({
       const database = makeDatabase()
 
       const exists = await database
-        .select({ slug: newsletterWebsites.slug })
-        .from(newsletterWebsites)
-        .where(eq(newsletterWebsites.slug, slug))
+        .select({ slug: websites.slug })
+        .from(websites)
+        .where(eq(websites.slug, slug))
         .limit(1)
 
       return exists.length === 0
