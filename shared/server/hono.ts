@@ -3,7 +3,6 @@ import type { HttpBindings } from "@hono/node-server"
 import { Hono as BaseHono, type MiddlewareHandler } from "hono"
 import { pinoLogger } from "hono-pino"
 import { HonoOptions } from "hono/hono-base"
-import { logger } from "hono/logger"
 import { requestId } from "hono/request-id"
 
 import { EnsureUserAndTeamSessionsMiddleware } from "@/auth/middleware/ensure_user_and_team_sessions_middleware.js"

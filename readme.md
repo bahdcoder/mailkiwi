@@ -154,10 +154,6 @@
 2. Perhaps fork Haraka and customise it to support a custom queue drivers?
 3. Zonemta is great, but it does not have great inbound email support, and the addition of Mongodb to the tech stack could cause additional maintenance overhead.
 
-# Kibahelp
-
-1. One inbox to support them all: An open source Helpscout alternative
-
 # DMARC
 
 1. This [open source github repository](https://github.com/andreialecu/dmarc-report-parser/) contains an open source parser and sample fixtures for testing and building a dmarc digest
@@ -179,11 +175,19 @@
 
 # Server infrastructure setup / planning
 
-1. Purchase only 1 dedicated server for email sending and receiving. This will be `smtp.kbmta.net` and `mail.kbmta.net` with a static ip address (one ip from the purchased subnet)
-   1. On this dedicated server, run haproxy as a load balancer listening on port 25 (for inbound emails) and port 587/457 (for inbound submissions)
-   2. Start 4 haraka processes using PM2 on port 25565, 25566, 25567, 25568. HaProxy balances traffic to these 4 servers equally.
-   3. Each instance
-2. Everything else is deployed to the cloud on hetzner: A nomad or Kubernetes cluster running Clickhouse, MySQL, Kafka, Redis, and NodeJS services (docker images). With a Hetzner load balancer sending traffic to the nomad cluster (NodeJS services).
+1. Purchase 4 - 6 dedicated servers
+   1. Budget: $350 per month
+2. Install kubernetes and use Kubernetes to manage resources for each service.
+3. Deploy everything on Kubernetes:
+   1. TiDB cluster
+   2. DragonflyDB cluster
+   3. NodeJS Monolith cluster
+   4. Kumo MTA Socks5 proxy cluster
+   5. Kumo MTA Mail servers Cluster
+   6. Background workers cluster
+   7. Monitoring
+   8. Load balancers
+   9. Minio File Storage 
 
 # RBAC planning
 
@@ -231,3 +235,13 @@ https://dev.me/
 4. Consumers consume the Redis stream and insert the data into the database. This is to ensure fast, multiple processors of logs and fault tolerance so logs are never dropped.
 5. Other consumers consume the Redis stream and send webhook notifications to our customers.
 6. Rather than adding to a redis stream, let's just queue a job using BullMQ. It supports retries, information is not lost, and it can scale horizontally across multiple workers.
+
+# One website per team (?).
+- We have one website per team, and on this website, we can have newsletter blog posts, newsletter pages will show up here, and commerce products too.
+
+- We allow customising the website, and we have blocks for all sorts of things, for example a block for showing the latest blog posts, a block for showing the latest newsletter posts, a block for adding a particular .
+
+- Allow creating unlimited pages
+- Newsletter pages are automatically added to the team website.
+
+- Explore multiple websites per team ? If people ask.

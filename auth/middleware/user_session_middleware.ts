@@ -3,13 +3,7 @@ import type { Next } from "hono"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
-import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
-
-import {
-  E_OPERATION_FAILED,
-  E_UNAUTHORIZED,
-} from "@/http/responses/errors.js"
 
 import { Session } from "@/shared/cookies/cookies.js"
 import type { HonoContext } from "@/shared/server/types.js"
