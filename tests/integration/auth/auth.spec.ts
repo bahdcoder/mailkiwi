@@ -1,27 +1,15 @@
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
-import { foreignKey, primaryKey } from "drizzle-orm/mysql-core"
 import { describe, test } from "vitest"
-
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequest } from "@/tests/utils/http.js"
 
-import {
-  broadcasts,
-  segments,
-  teamMemberships,
-  teams,
-  users,
-} from "@/database/schema.js"
-import { hasMany, hasOne } from "@/database/utils/relationships.js"
+import { users } from "@/database/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
-import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.js"
-import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
 import { container } from "@/utils/typi.js"
 

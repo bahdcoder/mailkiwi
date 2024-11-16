@@ -23,18 +23,18 @@ export const SPF_HOST_NAME = "spf.kbmta.net"
 
 // This is where we host the transactional email server.
 // All inbound transactional emails will go through here, including those sent via HTTP api.
-export const SMTP_HOST_NAME = "smtp.kbmta.net"
+export const SMTP_HOST_NAME = "send.kbmta.net"
 
 // This is where we host the marketing email server.
 // All inbound marketing emails will go through here, including those sent via HTTP api.
-export const SMTP_MARKETING_HOST_NAME = "smtp-mkg.kbmta.net"
+export const SMTP_MARKETING_HOST_NAME = "engage.kbmta.net"
 
 // This is the main domain of all newsletters on the platform.
 // Customers will get a subdomain on this domain.
-// For example, fastmedia.kibaletters.com.
-export const NEWSLETTER_WEBSITE_DOMAIN = "kibaletters.com"
+// For example, fastmedia.kibasites.com.
+export const WEBSITES_DOMAIN = "kibasites.com"
 
-export const COMMERCE_WEBSITE_DOMAIN = "commerce.kibamail.com"
+export const COMMERCE_WEBSITE_DOMAIN = WEBSITES_DOMAIN
 
 // This is the default subdomain customers will use when configuring the `Return-Path` DNS entry.
 // Example: Google uses our infrastructure to send emails, so they'll configure the following dns entry:

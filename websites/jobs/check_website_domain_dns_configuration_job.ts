@@ -1,5 +1,5 @@
-import { IssueSSLCertificateForWebsiteJob } from "@/letters/jobs/issue_ssl_certificate_for_website_job.js"
-import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
+import { IssueSSLCertificateForWebsiteJob } from "@/websites/jobs/issue_ssl_certificate_for_website_job.js"
+import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 
 import { DnsWebsiteResolverTool } from "@/tools/dns/dns_website_resolver_tool.js"
 
@@ -15,7 +15,7 @@ export interface CheckWebsiteDomainDnsConfigurationPayload {
 
 export class CheckWebsiteDomainDnsConfiguration extends BaseJob<CheckWebsiteDomainDnsConfigurationPayload> {
   static get id() {
-    return "WEBSITES::CHECK_NEWSLETTER_DOMAIN_DNS_CONFIGURATION"
+    return "WEBSITES::CHECK_WEBSITE_DOMAIN_DNS_CONFIGURATION"
   }
 
   static get queue() {
@@ -30,7 +30,7 @@ export class CheckWebsiteDomainDnsConfiguration extends BaseJob<CheckWebsiteDoma
 
     if (!website) {
       return this.done(
-        "The newsletter website was not found. Might have been deleted by the user before the job was run.",
+        "The website was not found. Might have been deleted by the user before the job was run.",
       )
     }
 

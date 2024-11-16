@@ -24,7 +24,7 @@ These are organised in order of implementation priority:
   - [x] View all members
   - [x] Role based access control methods (administrator, manager, author, guest)
 - [x] Seats (In our case, unlimited seats)
-- [ ] Audiences
+- [x] Audiences
   - [x] Contacts
     - [x] Contact profiles
     - [x] Detailed contact activities

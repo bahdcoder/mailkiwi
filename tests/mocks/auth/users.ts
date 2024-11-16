@@ -1,5 +1,5 @@
 import { createFakeAbTestEmailContent } from "../audiences/email_content.js"
-import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
+import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 import { faker } from "@faker-js/faker"
 import { DateTime } from "luxon"
 
@@ -169,11 +169,13 @@ export const createUser = async ({
   createEntireTeam,
   createAudienceForNewsletter,
   enableCommerceOnTeam = true,
+  createWebsite = false,
 }: {
   createBroadcast?: boolean
   createEntireTeam?: boolean
   enableCommerceOnTeam?: boolean
   createAudienceForNewsletter?: boolean
+  createWebsite?: boolean
 } = {}) => {
   const audienceRepository = container.resolve(AudienceRepository)
 
@@ -293,7 +295,9 @@ export const createUser = async ({
         },
         team.id,
       )
+  }
 
+  if (createAudienceForNewsletter || createWebsite) {
     await container.make(WebsiteRepository).create({
       slug: faker.lorem.slug(),
       teamId: team.id,
@@ -304,13 +308,13 @@ export const createUser = async ({
   }
 
   async function findWebsiteWithPages() {
-    if (!createAudienceForNewsletter || !audienceForNewsletter) {
-      return undefined
-    }
-
     const website = await container
       .make(WebsiteRepository)
       .findByTeamId(team?.id)
+
+    if (!website) {
+      return undefined
+    }
 
     return container.make(WebsiteRepository).findByIdWithPages(website.id)
   }

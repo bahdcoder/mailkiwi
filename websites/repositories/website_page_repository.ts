@@ -1,4 +1,4 @@
-import { CreateWebsitePageDto } from "@/letters/dto/create_website_page_dto.js"
+import { CreateWebsitePageDto } from "@/websites/dto/create_website_page_dto.js"
 import { eq } from "drizzle-orm"
 
 import {

@@ -17,6 +17,7 @@ import type {
   UpdateSetContactInput,
 } from "@/database/database_schema_types.js"
 import {
+  audiences,
   contactProperties,
   contacts,
   emailSendEvents,
@@ -44,6 +45,21 @@ export class ContactRepository extends BaseRepository {
     primaryKey: contacts.id,
     relationName: "properties",
   })
+
+  async findByEmailForTeam(email: string, teamId: string) {
+    const [website] = await this.database
+      .select({
+        id: contacts.id,
+        email: contacts.email,
+        lastName: contacts.lastName,
+        firstName: contacts.firstName,
+      })
+      .from(contacts)
+      .leftJoin(audiences, eq(contacts.audienceId, audiences.id))
+      .where(and(eq(contacts.email, email), eq(audiences.teamId, teamId)))
+
+    return website
+  }
 
   async findById(contactId: string) {
     const [contact] = await this.hasManyProperties((query) =>

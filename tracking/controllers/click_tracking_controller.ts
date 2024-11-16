@@ -54,6 +54,8 @@ export class ClickTrackingController extends BaseController {
 
     await this.queueLog(ctx, unsigned)
 
+    // TODO: Get the contactId from the signature and automatically create a login session.
+
     return ctx.redirect(unsigned.original)
   }
 }

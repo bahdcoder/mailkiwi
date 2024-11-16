@@ -1,7 +1,7 @@
 import { appEnv } from "@/app/env/app_env.js"
 import { ProductRepository } from "@/commerce/repositories/product_repository.js"
-import { WebsitePageRepository } from "@/letters/repositories/website_page_repository.js"
-import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
+import { WebsitePageRepository } from "@/websites/repositories/website_page_repository.js"
+import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 import {
   type BaseSchema,
   type BaseSchemaAsync,

@@ -1,4 +1,6 @@
-import { UpdateWebsitePageDto } from "@/letters/dto/update_website_page_dto.js"
+import { CreateFormDto } from "@/forms/dto/create_form_dto.js"
+import { SubmitFormDto } from "@/forms/dto/submit_form_dto.js"
+import { UpdateWebsitePageDto } from "@/websites/dto/update_website_page_dto.js"
 import { sql } from "drizzle-orm"
 import {
   type AnyMySqlColumn,
@@ -853,4 +855,30 @@ export const productContents = mysqlTable("productContents", {
   id,
   productId: primaryKeyCuid("productId").references(() => products.id),
   type: mysqlEnum("type", ["downloadable", "course"]).notNull(),
+})
+
+// Kiba leads
+export const forms = mysqlTable("forms", {
+  id,
+  type: mysqlEnum("type", ["survey", "signup"]),
+  appearance: mysqlEnum("appearance", [
+    "popover",
+    "inline",
+    "floating",
+    "fullscreen",
+  ]).notNull(),
+  teamId: primaryKeyCuid("teamId")
+    .references(() => teams.id)
+    .notNull(),
+  name: varchar("name", { length: 80 }).notNull(),
+  fields: json("fields").$type<CreateFormDto["fields"]>(),
+})
+
+export const formResponses = mysqlTable("formResponses", {
+  id,
+  formId: primaryKeyCuid("formId")
+    .references(() => forms.id)
+    .notNull(),
+  contactId: primaryKeyCuid("contactId").references(() => contacts.id),
+  response: json("response").$type<SubmitFormDto["responses"]>(),
 })

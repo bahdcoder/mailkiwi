@@ -1,16 +1,16 @@
 import { AppEnvVariables, appEnv } from "@/app/env/app_env.js"
 import { CommerceProviderController } from "@/commerce/controllers/commerce_provider_controller.js"
 import { ProductController } from "@/commerce/controllers/product_controller.js"
+import { FormController } from "@/forms/controllers/form_controller.js"
 import { InjectEmailController } from "@/injector/controllers/inject_email_controller.js"
 import { MtaLogsController } from "@/kumologs/controllers/mta_logs_controller.js"
 import { DkimController } from "@/kumomta/controllers/dkim_controller.js"
 import { SmtpAuthController } from "@/kumomta/controllers/smtp_auth_controller.js"
 import { TrackingController } from "@/kumomta/controllers/tracking_controller.js"
-import { NewsletterController } from "@/letters/controllers/newsletter_controller.js"
-import { WebsiteController } from "@/letters/controllers/website_controller.js"
 import { ClickTrackingController } from "@/tracking/controllers/click_tracking_controller.js"
 import { OpenTrackingController } from "@/tracking/controllers/open_tracking_controller.js"
 import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.js"
+import { WebsiteController } from "@/websites/controllers/website_controller.js"
 import { readFile } from "fs/promises"
 import type { Redis } from "ioredis"
 import { resolve } from "path"
@@ -150,11 +150,12 @@ export class Ignitor {
     container.resolve(TrackingController)
     container.resolve(ClickTrackingController)
     container.resolve(OpenTrackingController)
-    container.resolve(NewsletterController)
     container.resolve(WebsiteController)
 
     container.resolve(ProductController)
     container.resolve(CommerceProviderController)
+
+    container.resolve(FormController)
   }
 
   async shutdown() {

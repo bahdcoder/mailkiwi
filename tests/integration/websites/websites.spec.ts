@@ -1,7 +1,7 @@
-import { HTMLJsonBlock } from "@/letters/dto/update_website_page_dto.js"
-import { CheckWebsiteDomainDnsConfiguration } from "@/letters/jobs/check_website_domain_dns_configuration_job.js"
-import { WebsitePageRepository } from "@/letters/repositories/website_page_repository.js"
-import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
+import { HTMLJsonBlock } from "@/websites/dto/update_website_page_dto.js"
+import { CheckWebsiteDomainDnsConfiguration } from "@/websites/jobs/check_website_domain_dns_configuration_job.js"
+import { WebsitePageRepository } from "@/websites/repositories/website_page_repository.js"
+import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 import { faker } from "@faker-js/faker"
 import { load as cheerioLoad } from "cheerio"
 import { readFile } from "fs/promises"
@@ -130,10 +130,9 @@ describe("@websites", () => {
   })
 
   test("can create additional website pages", async ({ expect }) => {
-    const { website, user, team, audienceForNewsletter } =
-      await createUser({
-        createAudienceForNewsletter: true,
-      })
+    const { website, user, team } = await createUser({
+      createAudienceForNewsletter: true,
+    })
 
     const draftWebsiteContent = {
       type: "doc",
@@ -347,7 +346,7 @@ describe("@websites-pages", () => {
 
     const app = makeApp()
 
-    const response = await app.request(`/letters/${website.slug}/`)
+    const response = await app.request(`/__websites/${website.slug}/`)
 
     const html = await response.text()
 
@@ -368,7 +367,7 @@ describe("@websites-pages", () => {
     )
 
     const aboutMePageResponse = await app.request(
-      `/letters/${website.slug}/${aboutPagePath}`,
+      `/__websites/${website.slug}/${aboutPagePath}`,
     )
 
     expect(aboutMePageResponse.status).toBe(200)

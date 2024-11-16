@@ -1,4 +1,4 @@
-import { aliasedTable, eq } from "drizzle-orm"
+import { aliasedTable, and, eq } from "drizzle-orm"
 
 import type {
   InsertSendingDomain,
@@ -173,6 +173,24 @@ export class SendingDomainRepository extends BaseRepository {
 
       return sendingDomain
     })
+  }
+
+  async getSendingDomainForTeam(
+    teamId: string,
+    product: "engage" | "send" = "engage",
+  ) {
+    const [sendingDomain] = await this.database
+      .select()
+      .from(sendingDomains)
+      .where(
+        and(
+          eq(sendingDomains.teamId, teamId),
+          eq(sendingDomains.product, product),
+        ),
+      )
+      .limit(1)
+
+    return sendingDomain
   }
 
   getTrackingStatus(sendingDomain: SendingDomain) {

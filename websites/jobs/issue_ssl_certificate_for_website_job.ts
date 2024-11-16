@@ -1,5 +1,5 @@
-import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
 import { SettingRepository } from "@/settings/repositories/setting_repository.js"
+import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 import { DateTime } from "luxon"
 
 import { AcmeCertificatesTool } from "@/tools/ssl/acme_certificates_tool.js"

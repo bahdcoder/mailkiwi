@@ -6,14 +6,22 @@ import { Encryption } from "@/shared/utils/encryption/encryption.js"
 
 export class Session {
   protected SESSION_COOKIE_NAME = "session"
+  protected CONTACT_SESSION_COOKIE_NAME = "contact_session"
 
   constructor(protected encryptionKey = appEnv.APP_KEY.release()) {}
 
-  async getUser(ctx: HonoContext) {
+  async getContact(ctx: HonoContext) {
+    return this.getUser(ctx, "contact")
+  }
+
+  async getUser(ctx: HonoContext, type: "contact" | "user" = "user") {
     const sessionData = await getSignedCookie(
       ctx,
       this.encryptionKey,
-      "__Secure-" + this.SESSION_COOKIE_NAME,
+      "__Secure-" +
+        (type === "contact"
+          ? this.CONTACT_SESSION_COOKIE_NAME
+          : this.SESSION_COOKIE_NAME),
     )
 
     if (!sessionData) {
@@ -37,14 +45,24 @@ export class Session {
     }
   }
 
-  async createForUser(ctx: HonoContext, userId: string) {
+  async createForContact(ctx: HonoContext, contactId: string) {
+    return this.createForUser(ctx, contactId, "contact")
+  }
+
+  async createForUser(
+    ctx: HonoContext,
+    userId: string,
+    type: "user" | "contact" = "user",
+  ) {
     const sessionData = new Encryption(appEnv.APP_KEY).encrypt(
       JSON.stringify({ userId }),
     )
 
     await setSignedCookie(
       ctx,
-      this.SESSION_COOKIE_NAME,
+      type === "contact"
+        ? this.CONTACT_SESSION_COOKIE_NAME
+        : this.SESSION_COOKIE_NAME,
       sessionData.release(),
       this.encryptionKey,
       {

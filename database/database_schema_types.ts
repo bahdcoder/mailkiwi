@@ -10,6 +10,7 @@ import type {
   emailContents,
   emailSendEvents,
   emailSends,
+  forms,
   products,
   segments,
   sendingDomains,
@@ -70,6 +71,7 @@ export type AbTestVariant = typeof abTestVariants.$inferSelect
 export type EmailSendEvent = typeof emailSendEvents.$inferSelect
 export type Segment = typeof segments.$inferSelect
 export type Product = typeof products.$inferSelect
+export type Form = typeof forms.$inferSelect
 
 export type InsertSegment = typeof segments.$inferInsert
 export type InsertTag = typeof tags.$inferInsert
@@ -84,6 +86,7 @@ export type InsertSendingDomain = typeof sendingDomains.$inferInsert
 export type InsertAbTestVariant = typeof abTestVariants.$inferInsert
 export type InsertProduct = typeof products.$inferInsert
 export type InsertWebsite = typeof websites.$inferInsert
+export type InsertForm = typeof forms.$inferInsert
 
 export type UpdateAbTestVariant = MySqlUpdateSetSource<
   typeof abTestVariants
@@ -92,6 +95,8 @@ export type UpdateAbTestVariant = MySqlUpdateSetSource<
 export type UpdateWebsite = MySqlUpdateSetSource<typeof websites>
 
 export type UpdateWebsitePage = MySqlUpdateSetSource<typeof websitePages>
+
+export type UpdateForm = MySqlUpdateSetSource<typeof forms>
 
 export type UpdateEmailSend = MySqlUpdateSetSource<typeof emailSends>
 export type UpdateSendingDomain = MySqlUpdateSetSource<
@@ -130,7 +135,7 @@ export type BroadcastWithSegmentAndAbTestVariants =
     team: Team
   }
 
-export type UserWithTeams = User & { teams: Team }
+export type UserWithTeams = User & { teams: Team[] }
 export type ContactWithTags = Contact & {
   tags: (TagOnContact & {
     tag: Tag

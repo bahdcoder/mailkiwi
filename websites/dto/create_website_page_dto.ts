@@ -1,4 +1,4 @@
-import { BlockContentSchema } from "@/letters/dto/update_website_page_dto.js"
+import { BlockContentSchema } from "@/websites/dto/update_website_page_dto.js"
 import {
   type InferInput,
   maxLength,

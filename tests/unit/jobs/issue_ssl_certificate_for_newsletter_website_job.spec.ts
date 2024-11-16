@@ -1,7 +1,7 @@
-import { NEWSLETTER_WEBSITE_DOMAIN, appEnv } from "@/app/env/app_env.js"
+import { WEBSITES_DOMAIN, appEnv } from "@/app/env/app_env.js"
 import { generateAcmeAccountIdentityCommand } from "@/cli/commands/generate_acme_account_identity.js"
-import { IssueSSLCertificateForWebsiteJob } from "@/letters/jobs/issue_ssl_certificate_for_website_job.js"
-import { WebsiteRepository } from "@/letters/repositories/website_repository.js"
+import { IssueSSLCertificateForWebsiteJob } from "@/websites/jobs/issue_ssl_certificate_for_website_job.js"
+import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 import { faker } from "@faker-js/faker"
 import { DateTime } from "luxon"
 import { describe, test } from "vitest"
@@ -39,7 +39,7 @@ describe("@website-ssl", () => {
       slug: customerSlug,
       websiteDomain: customerDomain,
       websiteDomainVerifiedAt: DateTime.now().toJSDate(),
-      websiteDomainCnameValue: `${customerSlug}.${NEWSLETTER_WEBSITE_DOMAIN}`,
+      websiteDomainCnameValue: `${customerSlug}.${WEBSITES_DOMAIN}`,
     })
 
     const jobResponse = await container
@@ -88,7 +88,7 @@ describe("@website-ssl", () => {
     const app = makeApp()
 
     const response = await app.request(
-      `/letters/${updatedWebsite.slug}/.well-known/acme-challenge/${updatedWebsite.websiteSslCertChallengeToken}`,
+      `/__websites/${updatedWebsite.slug}/.well-known/acme-challenge/${updatedWebsite.websiteSslCertChallengeToken}`,
     )
 
     expect(response.status).toBe(200)

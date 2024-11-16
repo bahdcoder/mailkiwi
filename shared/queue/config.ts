@@ -9,6 +9,7 @@ export const AVAILABLE_QUEUES = {
   websites: "websites",
   contacts: "contacts",
   mta_logs: "mta_logs",
+  auth: "auth",
 } as const
 
 export type AVAILABLE_QUEUE_TYPE = keyof typeof AVAILABLE_QUEUES

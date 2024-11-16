@@ -109,6 +109,7 @@ export class WebsiteRepository extends BaseRepository {
 
   async updateById(websiteId: string, payload: UpdateWebsite) {
     const encryption = new Encryption(appEnv.APP_KEY)
+
     if (payload.websiteSslCertChallengeKeyAuthorization) {
       payload.websiteSslCertChallengeKeyAuthorization = encryption
         .encrypt(payload.websiteSslCertChallengeKeyAuthorization as string)
