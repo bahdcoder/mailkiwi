@@ -34,6 +34,8 @@ export const SMTP_MARKETING_HOST_NAME = "engage.kbmta.net"
 // For example, fastmedia.kibasites.com.
 export const WEBSITES_DOMAIN = "kibasites.com"
 
+export const WEBSITES_PATH = "__websites"
+
 export const COMMERCE_WEBSITE_DOMAIN = WEBSITES_DOMAIN
 
 // This is the default subdomain customers will use when configuring the `Return-Path` DNS entry.

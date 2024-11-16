@@ -334,8 +334,4 @@ export class WebsiteController extends BaseController {
 
     return ctx.redirect(this.getWebsiteHomePage(website))
   }
-
-  private getWebsiteHomePage(website: Website) {
-    return `${website.slug}.${website?.websiteDomainSslVerifiedAt ? website.websiteDomain : WEBSITES_DOMAIN}/`
-  }
 }

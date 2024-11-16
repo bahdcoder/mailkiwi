@@ -8,7 +8,6 @@ import { ContactRepository } from "@/audiences/repositories/contact_repository.j
 import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
-import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 import { makeRequest } from "@/tests/utils/http.js"
 
 import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"

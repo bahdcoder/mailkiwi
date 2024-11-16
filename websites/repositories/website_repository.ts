@@ -89,6 +89,15 @@ export class WebsiteRepository extends BaseRepository {
     return website
   }
 
+  async findBySlug(slug: string) {
+    const [website] = await this.database
+      .select()
+      .from(websites)
+      .where(eq(websites.slug, slug))
+
+    return website
+  }
+
   async findByIdWithPages(websiteId: string) {
     const [website] = await this.hasManyPages((query) =>
       query.where(eq(websites.id, websiteId)),

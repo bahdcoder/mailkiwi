@@ -15,6 +15,13 @@
       "when": 1731661725686,
       "tag": "0001_forms_and_form_responses",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1731786972955,
+      "tag": "0002_add_archived_at_field_to_forms",
+      "breakpoints": true
     }
   ]
 }

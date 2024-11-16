@@ -2,6 +2,7 @@ import { AppEnvVariables, appEnv } from "@/app/env/app_env.js"
 import { CommerceProviderController } from "@/commerce/controllers/commerce_provider_controller.js"
 import { ProductController } from "@/commerce/controllers/product_controller.js"
 import { FormController } from "@/forms/controllers/form_controller.js"
+import { FormResponsesController } from "@/forms/controllers/form_responses_controller.js"
 import { InjectEmailController } from "@/injector/controllers/inject_email_controller.js"
 import { MtaLogsController } from "@/kumologs/controllers/mta_logs_controller.js"
 import { DkimController } from "@/kumomta/controllers/dkim_controller.js"
@@ -156,6 +157,7 @@ export class Ignitor {
     container.resolve(CommerceProviderController)
 
     container.resolve(FormController)
+    container.resolve(FormResponsesController)
   }
 
   async shutdown() {

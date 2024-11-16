@@ -871,7 +871,11 @@ export const forms = mysqlTable("forms", {
     .references(() => teams.id)
     .notNull(),
   name: varchar("name", { length: 80 }).notNull(),
-  fields: json("fields").$type<CreateFormDto["fields"]>(),
+  fields:
+    json("fields").$type<
+      (CreateFormDto["fields"][number] & { deleted?: boolean })[]
+    >(),
+  archivedAt: timestamp("archivedAt"),
 })
 
 export const formResponses = mysqlTable("formResponses", {

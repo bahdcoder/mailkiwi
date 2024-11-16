@@ -1,4 +1,4 @@
-import { appEnv } from "@/app/env/app_env.js"
+import { WEBSITES_DOMAIN, appEnv } from "@/app/env/app_env.js"
 import { ProductRepository } from "@/commerce/repositories/product_repository.js"
 import { WebsitePageRepository } from "@/websites/repositories/website_page_repository.js"
 import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
@@ -18,6 +18,8 @@ import { ContactRepository } from "@/audiences/repositories/contact_repository.j
 import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
 import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
+
+import { Website } from "@/database/database_schema_types.js"
 
 import {
   E_OPERATION_FAILED,
@@ -245,5 +247,9 @@ export class BaseController {
     }
 
     return entity as T
+  }
+
+  protected getWebsiteHomePage(website: Website) {
+    return `${website.slug}.${website?.websiteDomainSslVerifiedAt ? website.websiteDomain : WEBSITES_DOMAIN}/`
   }
 }
