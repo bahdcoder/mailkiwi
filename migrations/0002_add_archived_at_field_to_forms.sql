@@ -1,1 +1,0 @@
-ALTER TABLE `forms` ADD `archivedAt` timestamp;

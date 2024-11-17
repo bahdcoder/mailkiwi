@@ -867,8 +867,8 @@ export const forms = mysqlTable("forms", {
     "floating",
     "fullscreen",
   ]).notNull(),
-  teamId: primaryKeyCuid("teamId")
-    .references(() => teams.id)
+  audienceId: primaryKeyCuid("audienceId")
+    .references(() => audiences.id)
     .notNull(),
   name: varchar("name", { length: 80 }).notNull(),
   fields:
@@ -876,6 +876,10 @@ export const forms = mysqlTable("forms", {
       (CreateFormDto["fields"][number] & { deleted?: boolean })[]
     >(),
   archivedAt: timestamp("archivedAt"),
+  // on form submitted:
+  // -> redirect to a page
+  // -> present with a survey (another form)
+  // -> show a thank you message
 })
 
 export const formResponses = mysqlTable("formResponses", {

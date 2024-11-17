@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "803920b9-b5ee-49f3-b51c-aaafae4de49f",
+  "id": "fa9aadbf-a313-4de3-b82d-70bb5282d27b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -1759,6 +1759,140 @@
       "compositePrimaryKeys": {
         "emails_id": {
           "name": "emails_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "formResponses": {
+      "name": "formResponses",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "formId": {
+          "name": "formId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "contactId": {
+          "name": "contactId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "response": {
+          "name": "response",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "formResponses_formId_forms_id_fk": {
+          "name": "formResponses_formId_forms_id_fk",
+          "tableFrom": "formResponses",
+          "tableTo": "forms",
+          "columnsFrom": ["formId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "formResponses_contactId_contacts_id_fk": {
+          "name": "formResponses_contactId_contacts_id_fk",
+          "tableFrom": "formResponses",
+          "tableTo": "contacts",
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "formResponses_id": {
+          "name": "formResponses_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "forms": {
+      "name": "forms",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "enum('survey','signup')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "appearance": {
+          "name": "appearance",
+          "type": "enum('popover','inline','floating','fullscreen')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "audienceId": {
+          "name": "audienceId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fields": {
+          "name": "fields",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "archivedAt": {
+          "name": "archivedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "forms_audienceId_audiences_id_fk": {
+          "name": "forms_audienceId_audiences_id_fk",
+          "tableFrom": "forms",
+          "tableTo": "audiences",
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "forms_id": {
+          "name": "forms_id",
           "columns": ["id"]
         }
       },

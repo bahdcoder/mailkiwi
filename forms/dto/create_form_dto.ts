@@ -9,6 +9,7 @@ import {
   optional,
   picklist,
   pipe,
+  pipeAsync,
   string,
   uuid,
 } from "valibot"
@@ -34,6 +35,11 @@ export const Appearance = picklist([
   "fullscreen",
 ])
 
+export const AutoTaggingAutomationSchema = object({
+  option: string(),
+  tagId: array(pipe(string(), uuid())),
+})
+
 export const FieldSchema = object({
   id: optional(pipe(string(), uuid())),
   label: pipe(string(), nonEmpty()),
@@ -42,6 +48,9 @@ export const FieldSchema = object({
   options: optional(pipe(array(string()), minLength(2), maxLength(8))),
   conditions: optional(
     pipe(array(QuestionEnabledConditionSchema), maxLength(2)),
+  ),
+  autoTagging: optional(
+    pipe(array(AutoTaggingAutomationSchema), maxLength(2)),
   ),
 })
 
@@ -78,6 +87,10 @@ export function checkIfFirstQuestionsHasAnyConditions(
 export function checkIfFormSignupHasEmailField(
   form: InferInput<typeof CreateFormObjectSchema>,
 ) {
+  if (!form.type) {
+    return true
+  }
+
   if (form.type === "survey") {
     return true
   }
@@ -87,20 +100,28 @@ export function checkIfFormSignupHasEmailField(
   return emailField !== undefined
 }
 
-export const CreateFormSchema = pipe(
+export const surveyHasOneSelectTypesCheck = check(
+  checkIfSurveyHasOnlySelectTypes,
+  'If the form type is "survey", only "select" questions are allowed.',
+)
+
+export const firstQuestionHasNoConditionsCheck = check(
+  checkIfFirstQuestionsHasAnyConditions,
+  "The first question cannot have any conditions.",
+)
+
+export const signupFormMustHaveAnEmailFieldCheck = check(
+  checkIfFormSignupHasEmailField,
+  'The form must have an "email" field if the type is "signup".',
+)
+
+// export const autoTaggingTagsAreAllValidCheck = check()
+
+export const CreateFormSchema = pipeAsync(
   CreateFormObjectSchema,
-  check(
-    checkIfSurveyHasOnlySelectTypes,
-    'If the form type is "survey", only "select" questions are allowed.',
-  ),
-  check(
-    checkIfFirstQuestionsHasAnyConditions,
-    "The first question cannot have any conditions.",
-  ),
-  check(
-    checkIfFormSignupHasEmailField,
-    'The form must have an "email" field if the type is "signup".',
-  ),
+  surveyHasOneSelectTypesCheck,
+  firstQuestionHasNoConditionsCheck,
+  signupFormMustHaveAnEmailFieldCheck,
 )
 
 export type FormFieldDto = InferInput<typeof FieldSchema>

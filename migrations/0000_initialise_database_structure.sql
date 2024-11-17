@@ -230,6 +230,25 @@ CREATE TABLE `emails` (
 	CONSTRAINT `emails_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `formResponses` (
+	`id` binary(16) NOT NULL,
+	`formId` binary(16) NOT NULL,
+	`contactId` binary(16),
+	`response` json,
+	CONSTRAINT `formResponses_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `forms` (
+	`id` binary(16) NOT NULL,
+	`type` enum('survey','signup'),
+	`appearance` enum('popover','inline','floating','fullscreen') NOT NULL,
+	`audienceId` binary(16) NOT NULL,
+	`name` varchar(80) NOT NULL,
+	`fields` json,
+	`archivedAt` timestamp,
+	CONSTRAINT `forms_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `productContents` (
 	`id` binary(16) NOT NULL,
 	`productId` binary(16),
@@ -431,6 +450,9 @@ ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_audienceId_audiences_id_fk` 
 ALTER TABLE `emailSends` ADD CONSTRAINT `emailSends_sendingSourceId_sendingSources_id_fk` FOREIGN KEY (`sendingSourceId`) REFERENCES `sendingSources`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emails` ADD CONSTRAINT `emails_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emails` ADD CONSTRAINT `emails_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `formResponses` ADD CONSTRAINT `formResponses_formId_forms_id_fk` FOREIGN KEY (`formId`) REFERENCES `forms`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `formResponses` ADD CONSTRAINT `formResponses_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `forms` ADD CONSTRAINT `forms_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `productContents` ADD CONSTRAINT `productContents_productId_products_id_fk` FOREIGN KEY (`productId`) REFERENCES `products`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `products` ADD CONSTRAINT `products_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `products` ADD CONSTRAINT `products_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint

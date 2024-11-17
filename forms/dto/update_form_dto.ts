@@ -1,4 +1,10 @@
-import { Appearance, FieldSchema } from "./create_form_dto.js"
+import {
+  Appearance,
+  FieldSchema,
+  firstQuestionHasNoConditionsCheck,
+  signupFormMustHaveAnEmailFieldCheck,
+  surveyHasOneSelectTypesCheck,
+} from "./create_form_dto.js"
 import {
   type InferInput,
   array,
@@ -10,10 +16,17 @@ import {
   string,
 } from "valibot"
 
-export const UpdateFormSchema = object({
-  name: optional(string()),
-  fields: optional(pipe(array(FieldSchema), minLength(1), maxLength(10))),
-  appearance: optional(Appearance),
-})
+export const UpdateFormSchema = pipe(
+  object({
+    name: optional(string()),
+    fields: optional(
+      pipe(array(FieldSchema), minLength(1), maxLength(10)),
+    ),
+    appearance: optional(Appearance),
+  }),
+  firstQuestionHasNoConditionsCheck,
+  signupFormMustHaveAnEmailFieldCheck,
+  surveyHasOneSelectTypesCheck,
+)
 
 export type UpdateFormDto = InferInput<typeof UpdateFormSchema>

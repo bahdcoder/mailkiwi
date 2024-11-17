@@ -24,6 +24,7 @@ describe("@forms", () => {
         type: "select",
         label: "What's your role at your current employer?",
         options: ["Engineer", "Designer", "Product Manager", "Other"],
+        autoTagging: [{ option: "Engineer", tagId: [cuid()] }],
       },
       {
         id: cuid(),
@@ -35,7 +36,7 @@ describe("@forms", () => {
     appearance: "inline",
   } as InsertForm
   test("can create a sign up form", async ({ expect }) => {
-    const { user, team } = await createUser()
+    const { user, team, audience } = await createUser()
 
     const payload = {
       type: "signup",
@@ -52,7 +53,7 @@ describe("@forms", () => {
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
-      path: "/forms",
+      path: `/audiences/${audience.id}/forms`,
       body: payload,
     })
 
@@ -61,7 +62,7 @@ describe("@forms", () => {
     const [savedForm] = await makeDatabase()
       .select()
       .from(forms)
-      .where(eq(forms.teamId, team.id))
+      .where(eq(forms.audienceId, audience.id))
 
     expect(
       savedForm.fields?.find((field) => field.type === "email"),
@@ -69,11 +70,11 @@ describe("@forms", () => {
   })
 
   test("can create a survey form", async ({ expect }) => {
-    const { user, team } = await createUser()
+    const { user, audience } = await createUser()
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
-      path: "/forms",
+      path: `/audiences/${audience.id}/forms`,
       body: survey,
     })
 
@@ -82,7 +83,7 @@ describe("@forms", () => {
     const [savedForm] = await makeDatabase()
       .select()
       .from(forms)
-      .where(eq(forms.teamId, team.id))
+      .where(eq(forms.audienceId, audience.id))
 
     expect(savedForm.type).toEqual("survey")
     expect(savedForm.fields).toHaveLength(2)
@@ -91,7 +92,7 @@ describe("@forms", () => {
   test("can update a survey form fields by adding new fields", async ({
     expect,
   }) => {
-    const { user, team, website } = await createUser({
+    const { user, audience } = await createUser({
       createWebsite: true,
     })
 
@@ -99,11 +100,11 @@ describe("@forms", () => {
 
     const { id: formId } = await formRepository
       .forms()
-      .create({ ...survey, teamId: team.id })
+      .create({ ...survey, audienceId: audience.id })
 
     const response = await makeRequestAsUser(user, {
       method: "PUT",
-      path: `/forms/${formId}`,
+      path: `/audiences/${audience.id}/forms/${formId}`,
       body: {
         name: `${survey.name} updated!`,
         fields: [
@@ -116,6 +117,8 @@ describe("@forms", () => {
         ],
       },
     })
+
+    d(await response.json())
 
     expect(response.status).toBe(200)
 
@@ -133,7 +136,7 @@ describe("@forms", () => {
   test("can delete (archive) form fields by performing an update and excluding the fields", async ({
     expect,
   }) => {
-    const { user, team, website } = await createUser({
+    const { user, audience } = await createUser({
       createWebsite: true,
     })
 
@@ -141,11 +144,11 @@ describe("@forms", () => {
 
     const { id: formId } = await formRepository
       .forms()
-      .create({ ...survey, teamId: team.id })
+      .create({ ...survey, audienceId: audience.id })
 
     const response = await makeRequestAsUser(user, {
       method: "PUT",
-      path: `/forms/${formId}`,
+      path: `/audiences/${audience.id}/forms/${formId}`,
       body: {
         name: `${survey.name} updated!`,
         fields: [
@@ -171,7 +174,7 @@ describe("@forms", () => {
   })
 
   test("can delete a form", async ({ expect }) => {
-    const { user, team, website } = await createUser({
+    const { user, audience } = await createUser({
       createWebsite: true,
     })
 
@@ -179,11 +182,11 @@ describe("@forms", () => {
 
     const { id: formId } = await formRepository
       .forms()
-      .create({ ...survey, teamId: team.id })
+      .create({ ...survey, audienceId: audience.id })
 
     const response = await makeRequestAsUser(user, {
       method: "DELETE",
-      path: `/forms/${formId}`,
+      path: `/audiences/${audience.id}/forms/${formId}`,
     })
 
     expect(response.status).toBe(200)
@@ -196,14 +199,14 @@ describe("@forms", () => {
   test("can submit a form response as an authenticated contact", async ({
     expect,
   }) => {
-    const { user, team, website } = await createUser({
+    const { audience, website } = await createUser({
       createWebsite: true,
     })
 
     const { id: formId } = await container
       .make(FormRepository)
       .forms()
-      .create({ ...survey, teamId: team.id })
+      .create({ ...survey, audienceId: audience.id })
 
     const form = await container
       .make(FormRepository)

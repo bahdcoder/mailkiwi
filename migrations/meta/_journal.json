@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1731615128510,
-      "tag": "0000_initial_database_setup",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1731661725686,
-      "tag": "0001_forms_and_form_responses",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1731786972955,
-      "tag": "0002_add_archived_at_field_to_forms",
+      "when": 1731831302035,
+      "tag": "0000_initialise_database_structure",
       "breakpoints": true
     }
   ]

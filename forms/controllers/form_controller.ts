@@ -4,6 +4,8 @@ import { FormRepository } from "@/forms/repositories/form_repository.js"
 
 import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
 
+import { Audience } from "@/database/database_schema_types.js"
+
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
@@ -28,18 +30,18 @@ export class FormController extends BaseController {
         ["DELETE", "/:formId", this.delete.bind(this)],
       ],
       {
-        prefix: "forms",
+        prefix: "audiences/:audienceId/forms",
       },
     )
   }
 
   async create(ctx: HonoContext) {
+    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
     const payload = await this.validate(ctx, CreateFormSchema)
-    const team = this.ensureCanManage(ctx)
 
     const form = await this.formRepository.forms().create({
-      teamId: team.id,
       ...payload,
+      audienceId: audience.id,
       fields: payload.fields?.map((field) => ({ ...field, id: cuid() })),
     })
 
@@ -60,16 +62,25 @@ export class FormController extends BaseController {
       ])
     }
 
+    if (form.audienceId !== ctx.req.param("audienceId")) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: "Form not found in audience.",
+          field: "formId",
+        },
+      ])
+    }
+
     return form
   }
 
   async update(ctx: HonoContext) {
     this.ensureCanManage(ctx)
+    await this.ensureExists<Audience>(ctx, "audienceId")
+
     const payload = await this.validate(ctx, UpdateFormSchema)
 
     const form = await this.ensureFormExists(ctx)
-
-    this.ensureBelongsToTeam(ctx, form)
 
     await this.formRepository.update(form, payload)
 
@@ -78,9 +89,8 @@ export class FormController extends BaseController {
 
   async delete(ctx: HonoContext) {
     this.ensureCanManage(ctx)
+    await this.ensureExists<Audience>(ctx, "audienceId")
     const form = await this.ensureFormExists(ctx)
-
-    this.ensureBelongsToTeam(ctx, form)
 
     await this.formRepository.delete(form)
 

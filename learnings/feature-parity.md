@@ -45,7 +45,7 @@ These are organised in order of implementation priority:
   - [x] Segment by contact details like age ranges, etc
   - [x] Advanced segmentation using logical operators (AND and OR)
 - [ ] Surveys
-  - [ ] Create Surveys
+  - [x] Create Surveys
   - [ ] Tag contacts based on survey responses
   - [ ] Email list building using Surveys
 - [ ] Reports, Metrics & Analytics
