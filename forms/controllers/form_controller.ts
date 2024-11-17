@@ -33,6 +33,10 @@ export class FormController extends BaseController {
         prefix: "audiences/:audienceId/forms",
       },
     )
+
+    // TODO: On the website block, a user can drag and drop a block that includes a form, or a block form independently.
+    // once they do, on the right hand settings sidebar, they can select which form to attach to this form block.
+    // we auto generate the form based on the selected form.
   }
 
   async create(ctx: HonoContext) {
