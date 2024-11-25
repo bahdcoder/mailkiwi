@@ -4,7 +4,8 @@ import { DateTime } from "luxon"
 
 import type { CreateContactDto } from "@/audiences/dto/contacts/create_contact_dto.js"
 import { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+
+import { TriggerAutomationsForContactJob } from "@/automations/jobs/trigger_automation_for_contact_job.js"
 
 import type { DrizzleClient } from "@/database/client.js"
 import type {
@@ -18,6 +19,7 @@ import type {
 } from "@/database/database_schema_types.js"
 import {
   audiences,
+  automationStepSubtypesTriggerMap,
   contactProperties,
   contacts,
   emailSendEvents,
@@ -27,6 +29,7 @@ import {
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
+import { Queue } from "@/shared/queue/queue.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
 import { guessValueType } from "@/shared/utils/helpers/guess_value_type.js"
 import { Paginator } from "@/shared/utils/pagination/paginator.js"
@@ -83,15 +86,11 @@ export class ContactRepository extends BaseRepository {
     properties: UpdateContactDto["properties"] = {},
   ) {
     const contactPropertiesPayload: ContactProperty[] = []
-    const audienceKnownProperties: UpdateSetAudienceInput["knownProperties"] =
-      []
 
     Object.keys(properties).forEach(function (property) {
       const value = properties[property]
 
       const type = guessValueType(value)
-
-      audienceKnownProperties.push({ type, name: property })
 
       contactPropertiesPayload.push({
         [type]:
@@ -104,7 +103,7 @@ export class ContactRepository extends BaseRepository {
       } as ContactProperty)
     })
 
-    return { contactPropertiesPayload, audienceKnownProperties }
+    return { contactPropertiesPayload }
   }
 
   async create(payload: CreateContactDto, audienceId: string) {
@@ -112,7 +111,7 @@ export class ContactRepository extends BaseRepository {
 
     const properties = payload.properties ?? {}
 
-    const { contactPropertiesPayload, audienceKnownProperties } =
+    const { contactPropertiesPayload } =
       this.getContactPropertiesFromPayloadProperties(
         id,
         audienceId,
@@ -120,17 +119,16 @@ export class ContactRepository extends BaseRepository {
       )
 
     await this.database.transaction(async (trx) => {
-      await trx.insert(contacts).values({ ...payload, id, audienceId })
+      await trx.insert(contacts).values({
+        ...payload,
+        id,
+        audienceId,
+      })
 
       if (contactPropertiesPayload.length > 0) {
         await trx
           .insert(contactProperties)
           .values(contactPropertiesPayload)
-
-        await container
-          .make(AudienceRepository)
-          .transaction(trx)
-          .updateKnownProperties(audienceId, audienceKnownProperties)
       }
     })
 
@@ -165,7 +163,7 @@ export class ContactRepository extends BaseRepository {
   ) {
     const { properties, ...restOfContactDetails } = updatedContact
 
-    const { contactPropertiesPayload, audienceKnownProperties } =
+    const { contactPropertiesPayload } =
       this.getContactPropertiesFromPayloadProperties(
         contact.id,
         contact.audienceId,
@@ -218,16 +216,23 @@ export class ContactRepository extends BaseRepository {
           .set(restOfContactDetails)
           .where(eq(contacts.id, contact.id))
       }
-
-      await container
-        .make(AudienceRepository)
-        .updateKnownProperties(contact.audienceId, audienceKnownProperties)
     })
 
     return { id: contact.id }
   }
 
   async attachTags(contactId: string, tagIds: string[]) {
+    const validTags = await this.database
+      .select({ id: tags.id })
+      .from(tags)
+      .where(inArray(tags.id, tagIds))
+
+    const tagsToAttach = validTags.map((tag) => tag.id)
+
+    if (tagsToAttach.length === 0) {
+      return { id: contactId }
+    }
+
     const existingTags = await this.database.query.tagsOnContacts.findMany(
       {
         where: eq(tagsOnContacts.contactId, contactId),
@@ -246,6 +251,12 @@ export class ContactRepository extends BaseRepository {
           assignedAt: new Date(),
         })),
       )
+
+      await Queue.automations().add(TriggerAutomationsForContactJob.id, {
+        trigger:
+          automationStepSubtypesTriggerMap.TRIGGER_CONTACT_TAG_ADDED,
+        contactId,
+      })
     }
 
     return { id: contactId }

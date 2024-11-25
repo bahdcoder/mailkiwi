@@ -1,0 +1,2 @@
+ALTER TABLE `products` ADD `teamId` binary(16) NOT NULL;--> statement-breakpoint
+ALTER TABLE `products` ADD CONSTRAINT `products_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;

@@ -1,5 +1,7 @@
 import { WEBSITES_PATH } from "@/app/env/app_env.js"
+import { TagContactBasedOnResponseJob } from "@/forms/jobs/tag_contact_based_on_response_job.js"
 import { FormRepository } from "@/forms/repositories/form_repository.js"
+import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
@@ -7,45 +9,53 @@ import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { InsertForm } from "@/database/database_schema_types.js"
-import { formResponses, forms } from "@/database/schema.js"
+import { contacts, formResponses, forms } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
+import { Queue } from "@/shared/queue/queue.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
+export const survey = {
+  type: "survey",
+  name: "Newsletter subscribers",
+  fields: [
+    {
+      id: cuid(),
+      type: "select",
+      label: "What's your role at your current employer?",
+      options: ["Engineer", "Designer", "Product Manager", "Other"],
+      autoTagging: [{ option: "Engineer", tagId: [cuid()] }],
+    },
+    {
+      id: cuid(),
+      type: "select",
+      label: "How long have you been in this role ?",
+      options: ["1 - 5 years", "10 - 15 years", "20+ years"],
+      autoTagging: [{ option: "10 - 15 years", tagId: [cuid()] }],
+    },
+  ],
+  appearance: "inline",
+} as InsertForm
+
 describe("@forms", () => {
-  const survey = {
-    type: "survey",
-    name: "Newsletter subscribers",
-    fields: [
-      {
-        id: cuid(),
-        type: "select",
-        label: "What's your role at your current employer?",
-        options: ["Engineer", "Designer", "Product Manager", "Other"],
-        autoTagging: [{ option: "Engineer", tagId: [cuid()] }],
-      },
-      {
-        id: cuid(),
-        type: "select",
-        label: "How long have you been in this role ?",
-        options: ["1 - 5 years", "10 - 15 years", "20+ years"],
-      },
-    ],
-    appearance: "inline",
-  } as InsertForm
   test("can create a sign up form", async ({ expect }) => {
-    const { user, team, audience } = await createUser()
+    const { user, audience } = await createUser()
 
     const payload = {
       type: "signup",
       name: "Newsletter subscribers",
       fields: [
         {
-          id: cuid(),
+          id: "email",
           type: "email",
           label: "What is your email ?",
+        },
+        {
+          id: "lastname",
+          type: "text",
+          label: "What is your last name?",
         },
       ],
       appearance: "inline",
@@ -239,9 +249,80 @@ describe("@forms", () => {
       .where(eq(formResponses.formId, formId))
       .limit(1)
 
+    const jobs = await Queue.contacts().getJobs()
+
+    const tagContactBasedOnResponseJob = jobs.find(
+      (job) => job.name === TagContactBasedOnResponseJob.id,
+    )
+
+    expect(tagContactBasedOnResponseJob).toBeDefined()
+    expect(tagContactBasedOnResponseJob?.data.formResponseId).toEqual(
+      formResponse.id,
+    )
+
     expect(response.status).toBe(200)
 
     expect(formResponse).toBeDefined()
     expect(formResponse.formId).toEqual(formId)
+  })
+
+  test("can submit a sign up form response as a new contact", async ({
+    expect,
+  }) => {
+    const { audience, website } = await createUser({
+      createWebsite: true,
+    })
+
+    const { id: formId } = await container
+      .make(FormRepository)
+      .forms()
+      .create({
+        type: "signup",
+        name: "Newsletter sign up",
+        fields: [
+          {
+            type: "email",
+            label: "Email address",
+          },
+          {
+            type: "text",
+            id: "firstname",
+            label: "Enter your first name",
+          },
+          {
+            type: "number",
+            id: "age",
+            label: "How old are you?",
+          },
+        ],
+        appearance: "fullscreen",
+        audienceId: audience.id,
+      })
+
+    const submitContent: Record<string, string> = {
+      email: faker.number.bigInt() + faker.internet.exampleEmail(),
+      firstname: faker.person.firstName(),
+      lastname: faker.person.lastName(),
+      age: "34",
+    }
+
+    const response = await makeRequest(
+      `${WEBSITES_PATH}/${website.slug}/forms/${formId}/responses`,
+      {
+        method: "POST",
+        body: submitContent,
+      },
+    )
+
+    expect(response.status).toBe(200)
+
+    const [contact] = await makeDatabase()
+      .select()
+      .from(contacts)
+      .where(eq(contacts.email, submitContent.email))
+
+    expect(contact).toBeDefined()
+    expect(contact.lastName).toEqual(submitContent.lastname)
+    expect(contact.firstName).toEqual(submitContent.firstname)
   })
 })

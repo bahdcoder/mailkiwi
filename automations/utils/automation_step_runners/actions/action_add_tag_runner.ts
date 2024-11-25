@@ -30,18 +30,8 @@ export class AddTagAutomationStepRunner
     const configuration = this.automationStep
       .configuration as ACTION_ADD_TAG_CONFIGURATION
 
-    const contactRepository = container.resolve(ContactRepository)
-
-    // Automation will skip any tags that might have been deleted by the user.
-
-    const validTags = await database
-      .select({ id: tags.id })
-      .from(tags)
-      .where(inArray(tags.id, configuration.tagIds))
-
-    await contactRepository.attachTags(
-      this.contact.id,
-      validTags.map((tag) => tag.id),
-    )
+    await container
+      .resolve(ContactRepository)
+      .attachTags(this.contact.id, configuration.tagIds)
   }
 }

@@ -2,6 +2,8 @@ import { createFakeEmailContent } from "../audiences/email_content.js"
 import { faker } from "@faker-js/faker"
 
 import {
+  AUTOMATION_STEP_SUB_TYPES_TRIGGER,
+  AutomationStepConfiguration,
   type ContactFilterCondition,
   accessTokens,
   audiences,
@@ -71,6 +73,8 @@ export const seedAutomation = async (
     name?: string
     description?: string
     triggerConditions?: ContactFilterCondition[]
+    trigger?: AUTOMATION_STEP_SUB_TYPES_TRIGGER
+    triggerConfiguration?: AutomationStepConfiguration
   },
   createSteps = true,
 ) => {
@@ -115,8 +119,9 @@ export const seedAutomation = async (
       id: startingTriggerAutomationStepId,
       automationId,
       type: "TRIGGER",
-      subtype: "TRIGGER_CONTACT_SUBSCRIBED",
-      configuration: {
+      status: "ACTIVE",
+      subtype: automation?.trigger ?? "TRIGGER_CONTACT_SUBSCRIBED",
+      configuration: automation?.triggerConfiguration ?? {
         filterGroups: {
           type: "AND",
           groups: [
@@ -558,6 +563,7 @@ export const seedAutomation = async (
 
   return {
     id: automationId,
+    automationId,
     receiveWelcomeEmailautomationStepId,
     hasTagAddToAudienceautomationId,
     attachesTagsAutomationStepId,

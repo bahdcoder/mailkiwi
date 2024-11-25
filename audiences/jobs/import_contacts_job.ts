@@ -1,9 +1,8 @@
 import { makeMinioClient } from "@/minio/minio_client.js"
 import CsvParser from "csv-parser"
-import { and, eq, sql } from "drizzle-orm"
+import { sql } from "drizzle-orm"
 import { DateTime } from "luxon"
 
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 import { TagRepository } from "@/audiences/repositories/tag_repository.js"
@@ -113,11 +112,6 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
     const chunkSize = 1000
 
     await database.transaction(async (tx) => {
-      await container
-        .make(AudienceRepository)
-        .transaction(tx)
-        .updateKnownProperties(contactImport.audienceId, knownProperties)
-
       const tagsToCreate = contactImport.attributesMap.tags.map((tag) => ({
         id: cuid(),
         name: tag,

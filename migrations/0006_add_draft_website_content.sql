@@ -1,0 +1,1 @@
+ALTER TABLE `websitePages` ADD `draftWebsiteContent` json NOT NULL;

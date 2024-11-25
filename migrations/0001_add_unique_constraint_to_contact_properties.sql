@@ -1,0 +1,1 @@
+ALTER TABLE `contactProperties` ADD CONSTRAINT `propertyNameContactIdKey` UNIQUE(`name`,`contactId`);

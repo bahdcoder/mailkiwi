@@ -55,11 +55,16 @@ export class BaseController {
 
   protected async validate<
     T extends BaseSchema<any, any, any> | BaseSchemaAsync<any, any, any>,
-  >(ctx: HonoContext, schema: T): Promise<InferInput<T>> {
+  >(
+    ctx: HonoContext,
+    schema: T,
+    extraContext?: Record<string, string>,
+  ): Promise<InferInput<T>> {
     const payload = await ctx.req.json()
 
     const { success, issues, output } = await safeParseAsync(schema, {
       ...payload,
+      ...extraContext,
     })
 
     if (!success) throw E_VALIDATION_FAILED(issues)

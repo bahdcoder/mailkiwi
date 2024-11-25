@@ -2,7 +2,6 @@ import { asc, count, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
 import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.js"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
@@ -90,22 +89,6 @@ describe("@contacts import job", () => {
         .from(tagsOnContacts)
 
       expect(contactsTags).toBeGreaterThanOrEqual(30000) // 10,000 contacts * 3 new tags
-
-      const updatedAudience = await container
-        .make(AudienceRepository)
-        .findById(audience.id)
-
-      expect(updatedAudience.knownProperties).toEqual([
-        { name: "Index", type: "float" },
-        { name: "Customer Id", type: "text" },
-        { name: "Company", type: "text" },
-        { name: "City", type: "text" },
-        { name: "Country", type: "text" },
-        { name: "Phone 1", type: "text" },
-        { name: "Phone 2", type: "text" },
-        { name: "Subscription Date", type: "text" },
-        { name: "Website", type: "text" },
-      ])
     },
   )
 

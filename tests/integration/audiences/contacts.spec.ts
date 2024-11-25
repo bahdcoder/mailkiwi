@@ -1,6 +1,6 @@
 import { appEnv } from "@/app/env/app_env.js"
 import { faker } from "@faker-js/faker"
-import { and, eq } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 import { readFile } from "fs/promises"
 import { resolve } from "path"
 import { describe, test } from "vitest"
@@ -9,8 +9,6 @@ import { CreateTagAction } from "@/audiences/actions/tags/create_tag_action.js"
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
-
-import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
@@ -22,16 +20,14 @@ import {
 
 import { ContactImport } from "@/database/database_schema_types.js"
 import {
+  audiences,
   contactImports,
-  contactProperties,
-  contacts,
   emailSendEvents,
   emailSends,
 } from "@/database/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
-import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
@@ -121,7 +117,27 @@ export const setupImport = async (
 
 describe("@contacts", () => {
   test("can create a contact for an audience", async ({ expect }) => {
-    const { user, audience } = await createUser()
+    const { user, audience } = await createUser({
+      createKnownProperties: false,
+    })
+
+    await makeDatabase()
+      .update(audiences)
+      .set({
+        knownProperties: [
+          {
+            id: "totalPurchasesMade",
+            label: "Total purchases made",
+            type: "float",
+          },
+          {
+            id: "lastLoginAt",
+            label: "Last logged in at",
+            type: "date",
+          },
+        ],
+      })
+      .where(eq(audiences.id, audience.id))
 
     const contactPayload = {
       firstName: faker.person.firstName(),
@@ -154,11 +170,6 @@ describe("@contacts", () => {
     const updatedAudience = await container
       .make(AudienceRepository)
       .findById(audience.id)
-
-    expect(updatedAudience.knownProperties).toEqual([
-      { name: "totalPurchasesMade", type: "float" },
-      { name: "lastLoginAt", type: "date" },
-    ])
 
     const lastLoginAtProperty = savedContact.properties.find(
       (property) => property.name === "lastLoginAt",

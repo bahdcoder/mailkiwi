@@ -70,8 +70,10 @@ export type ContactFilterGroups = {
 }
 
 export type KnownAudienceProperty = {
-  name: string
-  type: "boolean" | "float" | "date" | "text"
+  id: string
+  label: string
+  options?: string[]
+  type: "boolean" | "float" | "date" | "text" | "enum" | "list"
 }
 
 export const settings = mysqlTable("settings", {
@@ -396,6 +398,9 @@ export const contacts = mysqlTable(
   }),
 )
 
+// Example usage: Find all contacts where attributes->age > 25.
+// select count(*) from contactProperties where name = 'age' and audienceId = 'audienceXXX' and float > 25
+
 export const contactProperties = mysqlTable(
   "contactProperties",
   {
@@ -666,14 +671,25 @@ export const broadcasts = mysqlTable("broadcasts", {
   sendAt: timestamp("sendAt").$type<Date | undefined>(),
 })
 
+export const automationStepSubtypesTriggerMap = {
+  TRIGGER_CONTACT_SUBSCRIBED: "TRIGGER_CONTACT_SUBSCRIBED",
+  TRIGGER_CONTACT_UNSUBSCRIBED: "TRIGGER_CONTACT_UNSUBSCRIBED",
+  TRIGGER_CONTACT_TAG_ADDED: "TRIGGER_CONTACT_TAG_ADDED",
+  TRIGGER_CONTACT_TAG_REMOVED: "TRIGGER_CONTACT_TAG_REMOVED",
+  TRIGGER_API_MANUAL: "TRIGGER_API_MANUAL",
+} as const
+
 export const automationStepSubtypesTrigger = [
-  "TRIGGER_CONTACT_SUBSCRIBED",
-  "TRIGGER_CONTACT_UNSUBSCRIBED",
-  "TRIGGER_CONTACT_TAG_ADDED",
-  "TRIGGER_CONTACT_TAG_REMOVED",
-  "TRIGGER_API_MANUAL",
-  // TRIGGER_COMMERCE_PRODUCT_PURCHASED
+  automationStepSubtypesTriggerMap.TRIGGER_CONTACT_SUBSCRIBED,
+  automationStepSubtypesTriggerMap.TRIGGER_CONTACT_UNSUBSCRIBED,
+  automationStepSubtypesTriggerMap.TRIGGER_CONTACT_TAG_ADDED,
+  automationStepSubtypesTriggerMap.TRIGGER_CONTACT_TAG_REMOVED,
+  automationStepSubtypesTriggerMap.TRIGGER_API_MANUAL,
+  // "TRIGGER_COMMERCE_PRODUCT_PURCHASED",
 ] as const
+
+export type AUTOMATION_STEP_SUB_TYPES_TRIGGER =
+  (typeof automationStepSubtypesTrigger)[number]
 
 export const automationStepSubtypesAction = [
   "ACTION_SEND_EMAIL",
@@ -729,6 +745,7 @@ export type RULE_IF_ELSE_CONFIGURATION = {
 
 export type TRIGGER_CONFIGURATION = {
   filterGroups: ContactFilterGroups
+  tagIds: string[]
 }
 
 export type END_CONFIGURATION = {

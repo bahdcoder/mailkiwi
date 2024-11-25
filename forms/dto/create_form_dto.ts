@@ -1,7 +1,9 @@
+import { eq } from "drizzle-orm"
 import {
   type InferInput,
   array,
   check,
+  checkAsync,
   maxLength,
   minLength,
   nonEmpty,
@@ -13,6 +15,10 @@ import {
   string,
   uuid,
 } from "valibot"
+
+import { audiences } from "@/database/schema.js"
+
+import { makeDatabase } from "@/shared/container/index.js"
 
 export const QuestionEnabledConditionSchema = object({
   questionId: pipe(string(), uuid()),
@@ -41,7 +47,7 @@ export const AutoTaggingAutomationSchema = object({
 })
 
 export const FieldSchema = object({
-  id: optional(pipe(string(), uuid())),
+  id: optional(string()),
   label: pipe(string(), nonEmpty()),
   description: optional(string()),
   type: FieldType,
@@ -59,6 +65,7 @@ export const CreateFormObjectSchema = object({
   type: picklist(["signup", "survey"]),
   fields: pipe(array(FieldSchema), minLength(1), maxLength(10)),
   appearance: Appearance,
+  audienceId: pipe(string(), uuid()),
 })
 
 export function checkIfSurveyHasOnlySelectTypes(
@@ -115,6 +122,41 @@ export const signupFormMustHaveAnEmailFieldCheck = check(
   'The form must have an "email" field if the type is "signup".',
 )
 
+export const signUpFormMustHaveKnownFieldsCheck = checkAsync(
+  async function (form: InferInput<typeof CreateFormObjectSchema>) {
+    if (form.type !== "signup") {
+      return true
+    }
+
+    const database = makeDatabase()
+
+    const [audience] = await database
+      .select({ knownProperties: audiences.knownProperties })
+      .from(audiences)
+      .where(eq(audiences.id, form.audienceId))
+
+    if (!audience) {
+      return false
+    }
+
+    const formFields = form.fields
+
+    const allowedFields = [
+      "email",
+      "firstname",
+      "lastname",
+      ...(audience.knownProperties?.map((property) => property.id) ?? []),
+    ]
+
+    const hasUnknownFields = formFields.some(
+      (field) => !allowedFields.includes(field.id as string),
+    )
+
+    return !hasUnknownFields
+  },
+  'The sign up form can only have "email", "firstname", "lastname", and any of your known custom fields',
+)
+
 // export const autoTaggingTagsAreAllValidCheck = check()
 
 export const CreateFormSchema = pipeAsync(
@@ -122,6 +164,7 @@ export const CreateFormSchema = pipeAsync(
   surveyHasOneSelectTypesCheck,
   firstQuestionHasNoConditionsCheck,
   signupFormMustHaveAnEmailFieldCheck,
+  signUpFormMustHaveKnownFieldsCheck,
 )
 
 export type FormFieldDto = InferInput<typeof FieldSchema>

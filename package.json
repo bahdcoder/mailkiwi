@@ -94,6 +94,7 @@
     "vitest": "^1.6.0"
   },
   "dependencies": {
+    "@epic-web/totp": "^2.0.0",
     "@maxmind/geoip2-node": "^5.0.0",
     "@paralleldrive/cuid2": "^2.2.2",
     "@poppinss/utils": "^6.7.3",

@@ -2,7 +2,6 @@ import { safeParseAsync } from "valibot"
 
 import { CreateBroadcastAction } from "@/broadcasts/actions/create_broadcast_action.js"
 import { DeleteBroadcastAction } from "@/broadcasts/actions/delete_broadcast_action.js"
-import { GetBroadcastAction } from "@/broadcasts/actions/get_broadcast_action.js"
 import { GetBroadcastsAction } from "@/broadcasts/actions/get_broadcasts_action.js"
 import { SendBroadcastAction } from "@/broadcasts/actions/send_broadcast_action.js"
 import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_action.js"

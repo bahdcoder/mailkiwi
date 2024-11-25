@@ -1,6 +1,7 @@
 import { createFakeAbTestEmailContent } from "../audiences/email_content.js"
 import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 import { faker } from "@faker-js/faker"
+import { eq } from "drizzle-orm"
 import { DateTime } from "luxon"
 
 import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
@@ -24,7 +25,7 @@ import type {
   Website,
   WebsiteWithPages,
 } from "@/database/database_schema_types.js"
-import { contacts } from "@/database/schema.js"
+import { audiences, contacts } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
@@ -170,12 +171,14 @@ export const createUser = async ({
   createAudienceForNewsletter,
   enableCommerceOnTeam = true,
   createWebsite = false,
+  createKnownProperties = true,
 }: {
   createBroadcast?: boolean
   createEntireTeam?: boolean
   enableCommerceOnTeam?: boolean
   createAudienceForNewsletter?: boolean
   createWebsite?: boolean
+  createKnownProperties?: boolean
 } = {}) => {
   const audienceRepository = container.resolve(AudienceRepository)
 
@@ -208,6 +211,27 @@ export const createUser = async ({
     },
     team.id,
   )
+
+  if (createKnownProperties) {
+    await makeDatabase()
+      .update(audiences)
+      .set({
+        knownProperties: [
+          { id: "age", label: "Age", type: "float" },
+          {
+            id: "profession",
+            label: "Your profession",
+            type: "enum",
+            options: [
+              "frontend engineer",
+              "backend engineer",
+              "fullstack engineer",
+            ],
+          },
+        ],
+      })
+      .where(eq(audiences.id, audience.id))
+  }
 
   const freshUser = await container.make(UserRepository).findById(user.id)
 

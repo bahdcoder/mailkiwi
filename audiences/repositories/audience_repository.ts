@@ -82,10 +82,10 @@ export class AudienceRepository extends BaseRepository {
     }
 
     const existingPropertiesNames =
-      audience.knownProperties?.map((property) => property.name) ?? []
+      audience.knownProperties?.map((property) => property.id) ?? []
 
     const propertiesToBeCreated = knownProperties.filter(
-      (property) => !existingPropertiesNames.includes(property.name),
+      (property) => !existingPropertiesNames.includes(property.id),
     )
 
     await this.database

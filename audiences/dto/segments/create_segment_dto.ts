@@ -2,14 +2,11 @@ import {
   type InferInput,
   array,
   check,
-  maxLength,
-  minLength,
   nonEmpty,
   number,
   object,
   picklist,
   pipe,
-  record,
   string,
   union,
 } from "valibot"
@@ -37,6 +34,8 @@ const allowedFilterFields = [
   "lastTrackedActivityFrom",
   "lastTrackedActivityUsingDevice",
   "lastTrackedActivityUsingBrowser",
+
+  //
 ] as const
 
 type AllowedFilterField = (typeof allowedFilterFields)[number]

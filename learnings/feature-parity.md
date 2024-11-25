@@ -38,7 +38,7 @@ These are organised in order of implementation priority:
   - [x] Segment based on specific campaign activity (Clicks, Email Opens)
   - [x] Segment by contact location\*
   - [x] Segment by behaviour
-  - [ ] Segment by survey responses
+  - [x] Segment by survey responses (Segment by a tag auto added by a survey response)
   - [ ] Segmentation templates
   - [x] Segment by Tags
   - [x] Segment by custom contact properties
@@ -46,7 +46,7 @@ These are organised in order of implementation priority:
   - [x] Advanced segmentation using logical operators (AND and OR)
 - [ ] Surveys
   - [x] Create Surveys
-  - [ ] Tag contacts based on survey responses
+  - [x] Tag contacts based on survey responses
   - [ ] Email list building using Surveys
 - [ ] Reports, Metrics & Analytics
   - [ ] Email client specific tracking
@@ -91,9 +91,9 @@ Read more about mailgun tracking here https://documentation.mailgun.com/docs/mai
   - [x] Kibamail subdomain web hosting (With Wildcard SSL)
   - [~] Unlimited website templates
   - [ ] Subscribe forms
-  - [ ] Surveys
+  - [x] Surveys
   - [x] Custom webpages
-  - [ ] Advanced email capture
+  - [x] Advanced email capture
 
 - [ ] Security
 
@@ -108,7 +108,7 @@ Read more about mailgun tracking here https://documentation.mailgun.com/docs/mai
 
 - [ ] Analytics
 
-  - [ ] Letter analytics
+  - [x] Letter analytics
   - [ ] Subscribe analytics
 
 - [ ] Newsletter
@@ -116,9 +116,9 @@ Read more about mailgun tracking here https://documentation.mailgun.com/docs/mai
   - [x] Create segments
   - [~] Custom builder
   - [x] Optimized deliverability
-  - [ ] Custom contact fields
+  - [x] Custom contact fields
   - [~] Custom HTML
-  - [ ] Audience polls (surveys)
+  - [x] Audience polls (surveys)
   - [x] Write letters to segments
 
 - [ ] Monetisation

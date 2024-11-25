@@ -41,12 +41,17 @@ export class FormController extends BaseController {
 
   async create(ctx: HonoContext) {
     const audience = await this.ensureExists<Audience>(ctx, "audienceId")
-    const payload = await this.validate(ctx, CreateFormSchema)
+    const payload = await this.validate(ctx, CreateFormSchema, {
+      audienceId: audience.id,
+    })
 
     const form = await this.formRepository.forms().create({
       ...payload,
       audienceId: audience.id,
-      fields: payload.fields?.map((field) => ({ ...field, id: cuid() })),
+      fields: payload.fields?.map((field) => ({
+        ...field,
+        id: field?.id || cuid(),
+      })),
     })
 
     return ctx.json(form)

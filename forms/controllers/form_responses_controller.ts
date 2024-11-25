@@ -1,21 +1,30 @@
 import { WEBSITES_PATH } from "@/app/env/app_env.js"
+import { TagContactBasedOnResponseJob } from "@/forms/jobs/tag_contact_based_on_response_job.js"
 import { FormRepository } from "@/forms/repositories/form_repository.js"
 import { FormResponseRepository } from "@/forms/repositories/form_response_repository.js"
 import { FormResponseValidatorTool } from "@/forms/tools/form_response_validator_tool.js"
 import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+
 import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
+
+import { Form } from "@/database/database_schema_types.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
+import { Queue } from "@/shared/queue/queue.js"
 import { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 
 export class FormResponsesController extends BaseController {
-  constructor(protected app = makeApp()) {
+  constructor(
+    protected app = makeApp(),
+    protected contactRepository = container.make(ContactRepository),
+  ) {
     super()
 
     this.app.defineRoutes(
@@ -57,15 +66,59 @@ export class FormResponsesController extends BaseController {
       return ctx.json({ errors }, 422)
     }
 
-    await container
+    switch (form.type) {
+      case "signup":
+        await this.submitSignup(form, payload)
+        break
+      case "survey":
+        await this.submitSurvey(form, payload, ctx.get("contact")?.id)
+        break
+      default:
+        break
+    }
+
+    return ctx.json({ id: form.id })
+  }
+
+  private async submitSignup(form: Form, payload: Record<string, string>) {
+    const {
+      email,
+      firstname: firstName,
+      lastname: lastName,
+      ...properties
+    } = payload
+
+    const contact = {
+      email,
+      firstName,
+      lastName,
+      properties,
+    }
+
+    const { id: contactId } = await this.contactRepository.create(
+      contact,
+      form.audienceId,
+    )
+
+    return { contactId }
+  }
+
+  private async submitSurvey(
+    form: Form,
+    payload: Record<string, string[]>,
+    contactId?: string,
+  ) {
+    const formResponse = await container
       .make(FormResponseRepository)
       .responses()
       .create({
         formId: form.id,
         response: payload,
-        contactId: ctx.get("contact")?.id,
+        contactId,
       })
 
-    return ctx.json({ id: form.id })
+    await Queue.contacts().add(TagContactBasedOnResponseJob.id, {
+      formResponseId: formResponse.id,
+    })
   }
 }

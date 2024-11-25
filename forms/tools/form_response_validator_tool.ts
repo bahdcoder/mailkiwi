@@ -1,4 +1,5 @@
 import { FormFieldDto } from "@/forms/dto/create_form_dto.js"
+import { email, pipe, safeParse, string } from "valibot"
 
 import { Form, FormResponse } from "@/database/database_schema_types.js"
 
@@ -8,9 +9,17 @@ export class FormResponseValidatorTool {
     protected payload: NonNullable<FormResponse["response"]>,
   ) {}
 
+  async handleSignupForm() {
+    return { valid: true, errors: {} }
+  }
+
   async handle() {
     if (!this.form.fields) {
       return { valid: true, errors: {} }
+    }
+
+    if (this.form.type === "signup") {
+      return this.handleSignupForm()
     }
 
     const errors: Record<string, string | undefined> = {}
@@ -20,6 +29,8 @@ export class FormResponseValidatorTool {
         case "select":
           errors[field.id!] = this.validateSelectField(field)
           break
+        case "email":
+          errors[field.id!] = this.validateEmailField(field)
         default:
           break
       }
@@ -28,6 +39,16 @@ export class FormResponseValidatorTool {
     return {
       errors,
       valid: Object.values(errors).length > 0,
+    }
+  }
+
+  protected validateEmailField(field: FormFieldDto) {
+    const value = this.payload[field.id!]
+
+    const { success } = safeParse(pipe(string(), email()), value)
+
+    if (!success) {
+      return "Please enter a valid email address"
     }
   }
 
