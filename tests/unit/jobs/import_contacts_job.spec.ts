@@ -1,3 +1,4 @@
+import { appEnv } from "@/app/env/app_env.js"
 import { asc, count, eq } from "drizzle-orm"
 import { describe, test } from "vitest"
 
@@ -7,90 +8,104 @@ import { ContactRepository } from "@/audiences/repositories/contact_repository.j
 
 import { setupImport } from "@/tests/integration/audiences/contacts.spec.js"
 
-import { contacts, tagsOnContacts } from "@/database/schema.js"
+import { audiences, contacts, tagsOnContacts } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 
 import { container } from "@/utils/typi.js"
 
 describe("@contacts import job", () => {
-  test(
-    "reads the csv content from storage and syncs all values to contacts",
-    { timeout: 20000 },
-    async ({ expect }) => {
-      const { contactImport, audience } = await setupImport(
-        ".." + "/" + ".." + "/" + "audiences/mocks/contacts.csv",
-        true,
-      )
+  test("reads the csv content from storage and syncs all values to contacts", async ({
+    expect,
+  }) => {
+    const { contactImport } = await setupImport(
+      ".." + "/" + ".." + "/" + "audiences/mocks/contacts.csv",
+      true,
+    )
 
-      const database = makeDatabase()
-      const redis = makeRedis()
+    const database = makeDatabase()
+    const redis = makeRedis()
 
-      await container.make(ImportContactsJob).handle({
-        database,
-        redis,
-        payload: {
-          contactImportId: contactImport?.id as string,
-        },
-      })
+    await container.make(ImportContactsJob).handle({
+      database,
+      redis,
+      payload: {
+        contactImportId: contactImport?.id as string,
+      },
+    })
 
-      const [{ count: totalContacts }] = await database
-        .select({ count: count() })
+    const [{ count: totalContacts }] = await database
+      .select({ count: count() })
+      .from(contacts)
+      .where(eq(contacts.audienceId, contactImport?.audienceId as string))
 
-        .from(contacts)
-        .where(
-          eq(contacts.audienceId, contactImport?.audienceId as string),
-        )
+    const [audience] = await database
+      .select()
+      .from(audiences)
+      .where(eq(audiences.id, contactImport?.audienceId as string))
 
-      const [contact] = await database
-        .select()
-        .from(contacts)
-        .where(
-          eq(contacts.audienceId, contactImport?.audienceId as string),
-        )
-        .orderBy(asc(contacts.email))
-        .limit(1)
+    const [contact] = await database
+      .select()
+      .from(contacts)
+      .where(eq(contacts.audienceId, contactImport?.audienceId as string))
+      .orderBy(asc(contacts.email))
+      .limit(1)
 
-      const contactWithProperties = await container
-        .make(ContactRepository)
-        .findById(contact.id)
+    const contactWithProperties = await container
+      .make(ContactRepository)
+      .findById(contact.id)
 
-      expect(contact.subscribedAt).toBe(null)
-      expect(contact.email).toBeDefined()
-      expect(contact.firstName).toBeDefined()
-      expect(contact.lastName).toBeDefined()
+    expect(contact.subscribedAt).toBe(null)
+    expect(contact.email).toBeDefined()
+    expect(contact.firstName).toBeDefined()
+    expect(contact.lastName).toBeDefined()
 
-      expect(
-        contactWithProperties.properties.map((property) => property.name),
-      ).toEqual([
-        "Index",
-        "Customer Id",
-        "Company",
-        "City",
-        "Country",
-        "Phone 1",
-        "Phone 2",
-        "Subscription Date",
-        "Website",
-      ])
+    const knownPropertiesKeys = audience.knownProperties?.map(
+      (property) => property.id,
+    )
 
-      expect(totalContacts).toEqual(10000) // total contacts in test csv file
+    expect(knownPropertiesKeys).toEqual([
+      "age",
+      "profession",
+      "company",
+      "customerId",
+      "index",
+      "city",
+      "phone1",
+      "phone2",
+      "subscriptionDate",
+      "website",
+    ])
 
-      // expect that the 2 tags were created alongside the upload
-      const tags = await database.query.tags.findMany()
+    expect(
+      contactWithProperties.properties.map((property) => property.name),
+    ).toEqual([
+      "city",
+      "index",
+      "company",
+      "phone1",
+      "phone2",
+      "website",
+      "customerId",
+      "subscriptionDate",
+    ])
 
-      const tagNames = tags.map((tag) => tag.name)
+    expect(totalContacts).toEqual(360) // total contacts in test csv file
 
-      expect(tagNames.includes("interested-in-book")).toBe(true)
-      expect(tagNames.includes("ecommerce-prospects")).toBe(true)
+    // expect that the 2 tags were created alongside the upload
+    const tags = await database.query.tags.findMany()
 
-      const [{ count: contactsTags }] = await database
-        .select({ count: count() })
-        .from(tagsOnContacts)
+    const tagNames = tags.map((tag) => tag.name)
 
-      expect(contactsTags).toBeGreaterThanOrEqual(30000) // 10,000 contacts * 3 new tags
-    },
-  )
+    expect(tagNames.includes("interested-in-book")).toBe(true)
+    expect(tagNames.includes("ecommerce-prospects")).toBe(true)
+
+    const [{ count: contactsTags }] = await database
+      .select({ count: count() })
+      .from(tagsOnContacts)
+
+    expect(contactsTags).toBeGreaterThanOrEqual(1080) // 360 contacts * 3 new tags
+  })
 
   test(
     "when the job fails, it marks the import as failed and sends an email to the customer informing them.",

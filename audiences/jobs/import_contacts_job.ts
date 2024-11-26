@@ -7,7 +7,10 @@ import { ContactImportRepository } from "@/audiences/repositories/contact_import
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
-import { ContactProperty } from "@/database/database_schema_types.js"
+import {
+  ContactImport,
+  ContactProperty,
+} from "@/database/database_schema_types.js"
 import {
   KnownAudienceProperty,
   contactProperties,
@@ -102,11 +105,6 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
         })
     })
 
-    const knownProperties = this.guessCsvCustomProperties(
-      contactImport.attributesMap.attributes,
-      rows,
-    )
-
     const contactRepository = container.make(ContactRepository)
 
     const chunkSize = 1000
@@ -135,23 +133,37 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
         const allContactProperties: ContactProperty[] = []
 
         const values = batch.map((row) => {
-          const attributes: Record<string, string> = {}
-
           const contactId = cuid()
+          const attributes: Record<
+            string,
+            ContactImport["attributesMap"]["properties"]
+          > = {}
 
-          for (const attribute of contactImport.attributesMap.attributes) {
-            attributes[attribute] = row[attribute]
-          }
+          Object.keys(
+            contactImport.attributesMap.properties ?? {},
+          ).forEach(function (csvColumnHeaderName) {
+            const property =
+              contactImport.attributesMap.properties?.[csvColumnHeaderName]
 
-          const payloadProperties =
-            contactRepository.getContactPropertiesFromPayloadProperties(
-              contactId,
-              contactImport.audienceId,
-              attributes,
-            )
-          allContactProperties.push(
-            ...payloadProperties.contactPropertiesPayload,
-          )
+            const value = row[csvColumnHeaderName]
+
+            if (property && value) {
+              allContactProperties.push({
+                id: cuid(),
+                contactId,
+                name: property.id,
+                audienceId: contactImport.audienceId,
+                boolean: null,
+                float:
+                  property.type === "float" ? parseFloat(value) : null,
+                date:
+                  property.type === "date"
+                    ? DateTime.fromISO(value).toJSDate()
+                    : null,
+                text: property.type === "text" ? value : null,
+              })
+            }
+          })
 
           return {
             id: contactId,

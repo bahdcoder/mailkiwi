@@ -27,6 +27,8 @@ import { injectEmailForTeam } from "@/tests/mocks/emails/email_content.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 import { getApiKeyForTeam } from "@/tests/utils/http.js"
 
+import { Audience } from "@/database/database_schema_types.js"
+
 import {
   makeApp,
   makeDatabase,
@@ -629,7 +631,7 @@ describe.sequential("@mta", () => {
         {
           email: v1() + "@" + TEST_DOMAIN,
         },
-        audience.id,
+        audience as Audience,
       )
 
     const { output } = await container

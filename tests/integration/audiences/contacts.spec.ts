@@ -77,7 +77,7 @@ export const setupImport = async (
       .make(CreateTagAction)
       .handle({ name: faker.lorem.word() }, audience.id)
 
-    await makeRequestAsUser(user, {
+    const updateSettingsResponse = await makeRequestAsUser(user, {
       method: "PUT",
       path: `/audiences/${audience.id}/imports/${importId}`,
       body: {
@@ -88,20 +88,56 @@ export const setupImport = async (
           firstName: "First Name",
           lastName: "Last Name",
           email: "Email",
-          attributes: [
-            "Index",
-            "Customer Id",
-            "Company",
-            "City",
-            "Country",
-            "Phone 1",
-            "Phone 2",
-            "Subscription Date",
-            "Website",
-          ],
+          properties: {
+            Company: {
+              id: "company",
+              label: "Company",
+              type: "text",
+            },
+            "Customer Id": {
+              id: "customerId",
+              label: "Customer Id",
+              type: "text",
+            },
+            Index: {
+              id: "index",
+              label: "Index",
+              type: "float",
+            },
+            City: {
+              id: "city",
+              label: "City",
+              type: "text",
+            },
+            "Phone 1": {
+              id: "phone1",
+              label: "Phone 1",
+              type: "text",
+            },
+            "Phone 2": {
+              id: "phone2",
+              label: "Phone 2",
+              type: "text",
+            },
+            "Subscription Date": {
+              id: "subscriptionDate",
+              label: "Subscription Date",
+              type: "date",
+            },
+            Website: {
+              id: "website",
+              label: "Website",
+              type: "text",
+            },
+          },
         },
       },
     })
+
+    if (updateSettingsResponse.status !== 200) {
+      d(await updateSettingsResponse.json())
+      throw new Error("Failed to update import settings")
+    }
 
     const updatedContactImport = await container
       .make(ContactImportRepository)
@@ -302,7 +338,7 @@ describe("@contacts update", () => {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       avatarUrl: faker.image.url(),
-      properties: { hobby: "reading" },
+      properties: { profession: "frontend engineer" },
     }
 
     const updateResponse = await makeRequestAsUser(user, {
@@ -322,12 +358,35 @@ describe("@contacts update", () => {
     expect(updatedContact.lastName).toEqual(updateData.lastName)
     expect(updatedContact.avatarUrl).toEqual(updateData.avatarUrl)
 
-    expect(updatedContact?.properties?.[0]?.text).toEqual("reading")
+    expect(updatedContact?.properties?.[0]?.text).toEqual(
+      "frontend engineer",
+    )
   })
 
   test("can override properties", async ({ expect }) => {
-    const { user, audience } = await createUser()
+    const { user, audience } = await createUser({
+      createKnownProperties: false,
+    })
     const database = makeDatabase()
+
+    await database
+      .update(audiences)
+      .set({
+        knownProperties: [
+          { id: "age", label: "Age", type: "float" },
+          {
+            id: "hobby",
+            label: "Your hobbies",
+            type: "text",
+          },
+          {
+            id: "favoriteColor",
+            label: "Favourite color",
+            type: "text",
+          },
+        ],
+      })
+      .where(eq(audiences.id, audience.id))
 
     // Create a contact with initial properties
     const createContactResponse = await makeRequestAsUser(user, {
@@ -383,6 +442,25 @@ describe("@contacts update", () => {
   }) => {
     const { user, audience } = await createUser()
     const database = makeDatabase()
+
+    await database
+      .update(audiences)
+      .set({
+        knownProperties: [
+          { id: "age", label: "Age", type: "float" },
+          {
+            id: "hobby",
+            label: "Your hobbies",
+            type: "text",
+          },
+          {
+            id: "favoriteColor",
+            label: "Favourite color",
+            type: "text",
+          },
+        ],
+      })
+      .where(eq(audiences.id, audience.id))
 
     // Create a contact with initial attributes
     const createContactResponse = await makeRequestAsUser(user, {

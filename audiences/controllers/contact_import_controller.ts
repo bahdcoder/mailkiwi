@@ -1,6 +1,6 @@
 import { CreateContactImportAction } from "@/audiences/actions/contact_imports/create_contact_import_action.js"
 import { UpdateContactImportSettingsAction } from "@/audiences/actions/contact_imports/update_contact_import_settings_action.js"
-import { UpdateContactImportSettings } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
+import { UpdateContactImportSettingsSchema } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
 import { Audience } from "@/database/database_schema_types.js"
@@ -53,9 +53,12 @@ export class ContactImportController extends BaseController {
     const audience = await this.ensureExists<Audience>(ctx, "audienceId")
 
     this.ensureBelongsToTeam(ctx, audience)
-
-    const data = await this.validate(ctx, UpdateContactImportSettings)
     const contactImport = await this.ensureContactImportExists(ctx)
+
+    const data = await this.validate(
+      ctx,
+      UpdateContactImportSettingsSchema,
+    )
 
     await container
       .make(UpdateContactImportSettingsAction)

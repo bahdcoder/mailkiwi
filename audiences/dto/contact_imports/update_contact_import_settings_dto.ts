@@ -7,11 +7,13 @@ import {
   maxLength,
   minLength,
   nonEmpty,
-  number,
+  object,
   objectAsync,
   optional,
+  picklist,
   pipe,
   pipeAsync,
+  record,
   string,
 } from "valibot"
 
@@ -19,7 +21,17 @@ import { tags } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
-export const UpdateContactImportSettings = objectAsync({
+const PropertiesObjectSchema = record(
+  string(),
+  object({
+    id: string(),
+    label: string(),
+    type: picklist(["boolean", "float", "text", "date"]),
+  }),
+  "Please provide a valid properties object.",
+)
+
+export const UpdateContactImportSettingsSchema = objectAsync({
   subscribeAllContacts: optional(boolean()),
   updateExistingContacts: optional(boolean()),
   tags: array(pipe(string(), minLength(4), maxLength(50))), // new tags to be created
@@ -49,10 +61,10 @@ export const UpdateContactImportSettings = objectAsync({
       nonEmpty(),
     ),
     email: pipe(string("Please define the email attribute."), nonEmpty()),
-    attributes: array(string(), "Please define a list of attributes."),
+    properties: optional(PropertiesObjectSchema),
   }),
 })
 
 export type UpdateContactImportSettingsDto = InferInput<
-  typeof UpdateContactImportSettings
+  typeof UpdateContactImportSettingsSchema
 >

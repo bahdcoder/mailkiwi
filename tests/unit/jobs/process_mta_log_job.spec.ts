@@ -13,6 +13,8 @@ import {
 } from "@/tests/mocks/auth/users.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 
+import { Audience } from "@/database/database_schema_types.js"
+
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { MtaLog } from "@/shared/types/mta.js"
 
@@ -101,7 +103,7 @@ describe("@process-mta-log", () => {
         {
           email: v1() + "@" + TEST_DOMAIN,
         },
-        audience.id,
+        audience as Audience,
       )
 
     function getLog(type?: string) {

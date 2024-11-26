@@ -15,6 +15,7 @@ import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import {
+  Audience,
   InsertProduct,
   Team,
   User,
@@ -185,7 +186,7 @@ describe("@commerce", () => {
       {
         email,
       },
-      audience.id,
+      audience as Audience,
     )
 
     const app = makeApp()

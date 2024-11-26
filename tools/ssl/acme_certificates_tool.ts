@@ -46,7 +46,7 @@ export class AcmeCertificatesTool {
 
     this.accountKey = accountPrivateKey
 
-    if (appEnv.isDev) {
+    if (appEnv.isDev || appEnv.isTest) {
       acme.axios.defaults.httpsAgent = new https.Agent({
         ca: await readFile(resolve("certs", "pebble.minica.pem")),
       })

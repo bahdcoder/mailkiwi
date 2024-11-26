@@ -71,7 +71,7 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
         isAttribute: false,
       },
       ...(audience.knownProperties ?? []).map((attributeKey) => ({
-        field: attributeKey,
+        field: { name: attributeKey.label, type: attributeKey.type },
         formatter(value: string) {
           return value
         },

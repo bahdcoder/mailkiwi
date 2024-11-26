@@ -37,7 +37,7 @@ export class PropertiesSegmentBuilder {
     const [, name] = this.condition.field?.split("properties.")
 
     const property = this.audience.knownProperties?.find(
-      (property) => property.name === name,
+      (property) => property.id === name,
     )
 
     return makeDatabase()

@@ -1,20 +1,24 @@
 import { UpdateContactImportSettingsDto } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
 import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
 import { ContactImport } from "@/database/database_schema_types.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
+import { makeDatabase } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
 
 import { container } from "@/utils/typi.js"
 
 export class UpdateContactImportSettingsAction {
   constructor(
-    private contactImportRepository = container.make(
+    protected contactImportRepository = container.make(
       ContactImportRepository,
     ),
+    protected audienceRepository = container.make(AudienceRepository),
+    protected database = makeDatabase(),
   ) {}
 
   handle = async (
@@ -25,22 +29,33 @@ export class UpdateContactImportSettingsAction {
 
     this.validateAttributes(payload, contactImport.attributesMap.headers)
 
-    await this.contactImportRepository.update(contactImport.id, {
-      status: "PROCESSING",
-      subscribeAllContacts:
-        payload.subscribeAllContacts === undefined
-          ? true
-          : payload.subscribeAllContacts,
-      updateExistingContacts:
-        payload.updateExistingContacts === undefined
-          ? true
-          : payload.updateExistingContacts,
-      attributesMap: {
-        ...payload.attributesMap,
-        headers,
-        tagIds: payload.tagIds ?? [],
-        tags: payload.tags ?? [],
-      },
+    await this.database.transaction(async (trx) => {
+      await this.contactImportRepository
+        .transaction(trx)
+        .update(contactImport.id, {
+          status: "PROCESSING",
+          subscribeAllContacts:
+            payload.subscribeAllContacts === undefined
+              ? true
+              : payload.subscribeAllContacts,
+          updateExistingContacts:
+            payload.updateExistingContacts === undefined
+              ? true
+              : payload.updateExistingContacts,
+          attributesMap: {
+            ...payload.attributesMap,
+            headers,
+            tagIds: payload.tagIds ?? [],
+            tags: payload.tags ?? [],
+          },
+        })
+
+      await this.audienceRepository
+        .transaction(trx)
+        .updateKnownProperties(
+          contactImport.audienceId,
+          Object.values(payload.attributesMap.properties ?? {}),
+        )
     })
 
     await Queue.contacts().add(ImportContactsJob.id, {
@@ -58,7 +73,7 @@ export class UpdateContactImportSettingsAction {
       payload.attributesMap.email,
       payload.attributesMap.firstName,
       payload.attributesMap.lastName,
-      ...payload.attributesMap.attributes,
+      ...Object.keys(payload.attributesMap.properties ?? {}),
     ]
 
     const headersSet = new Set(headers)

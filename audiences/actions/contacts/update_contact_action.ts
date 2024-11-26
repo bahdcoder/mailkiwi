@@ -2,7 +2,7 @@ import type { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_d
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import {
-  Contact,
+  Audience,
   ContactWithProperties,
 } from "@/database/database_schema_types.js"
 
@@ -15,8 +15,9 @@ export class UpdateContactAction {
 
   handle = async (
     contact: ContactWithProperties,
+    audience: Audience,
     payload: UpdateContactDto,
   ) => {
-    return this.contactRepository.update(contact, payload)
+    return this.contactRepository.update(contact, audience, payload)
   }
 }

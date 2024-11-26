@@ -1,4 +1,4 @@
-import { appEnv } from "@/app/env/app_env.js"
+import { WEBSITES_PATH, appEnv } from "@/app/env/app_env.js"
 import { faker } from "@faker-js/faker"
 import { DateTime } from "luxon"
 import { describe, test } from "vitest"
@@ -9,6 +9,8 @@ import { CreateSendingDomainAction } from "@/sending_domains/actions/create_send
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequest } from "@/tests/utils/http.js"
+
+import { Audience } from "@/database/database_schema_types.js"
 
 import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
@@ -28,10 +30,10 @@ describe("@contact-session", () => {
 
     await container
       .make(ContactRepository)
-      .create({ email: contactEmail }, audience.id)
+      .create({ email: contactEmail }, audience as Audience)
 
     const response = await makeRequest(
-      `/__websites/${website.slug}/sessions`,
+      `/${WEBSITES_PATH}/${website.slug}/sessions`,
       {
         method: "POST",
         body: { email: contactEmail },
@@ -54,7 +56,7 @@ describe("@contact-session", () => {
 
     const { id: contactId } = await container
       .make(ContactRepository)
-      .create({ email: contactEmail }, audience.id)
+      .create({ email: contactEmail }, audience as Audience)
 
     const signedContactSessionCreateUrl = new SignedUrlManager(
       appEnv.APP_KEY,
@@ -63,7 +65,7 @@ describe("@contact-session", () => {
     })
 
     const response = await makeRequest(
-      `/__websites/${website.slug}/sessions/${signedContactSessionCreateUrl}`,
+      `/${WEBSITES_PATH}/${website.slug}/sessions/${signedContactSessionCreateUrl}`,
       {
         method: "GET",
       },

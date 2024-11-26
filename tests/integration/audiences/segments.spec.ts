@@ -552,12 +552,14 @@ describe("@audience segments", () => {
       .make(AudienceRepository)
       .updateKnownProperties(audience.id, [
         {
-          name: "age",
+          id: "age",
           type: "float",
+          label: "Age",
         },
         {
-          name: "favoriteColor",
+          id: "favoriteColor",
           type: "text",
+          label: "Favorite color",
         },
       ])
 

@@ -84,13 +84,13 @@ export class ContactController extends BaseController {
 
     const contact = await container
       .resolve(CreateContactAction)
-      .handle(data, audience.id)
+      .handle(data, audience)
 
     return ctx.json(contact)
   }
 
   async update(ctx: HonoContext) {
-    const [, contact] = await Promise.all([
+    const [audience, contact] = await Promise.all([
       this.ensureExists<Audience>(ctx, "audienceId"),
       this.ensureExists<ContactWithProperties>(ctx, "contactId"),
     ])
@@ -101,7 +101,7 @@ export class ContactController extends BaseController {
 
     const { id } = await container
       .resolve(UpdateContactAction)
-      .handle(contact, data)
+      .handle(contact, audience, data)
 
     return ctx.json({ id }, 200)
   }

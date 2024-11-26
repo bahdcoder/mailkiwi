@@ -30,9 +30,9 @@ describe("@contacts exports job", () => {
     await container.resolve(AudienceRepository).update(
       {
         knownProperties: [
-          { name: "Phone", type: "text" },
-          { name: "Country Code", type: "text" },
-          { name: "Country", type: "text" },
+          { label: "Phone", id: "phone", type: "text" },
+          { label: "Country Code", id: "countryCode", type: "text" },
+          { label: "Country", id: "country", type: "text" },
         ],
       },
       audience.id,

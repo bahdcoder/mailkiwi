@@ -1,6 +1,8 @@
 import type { CreateContactDto } from "@/audiences/dto/contacts/create_contact_dto.js"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
+import { Audience } from "@/database/database_schema_types.js"
+
 import { container } from "@/utils/typi.js"
 
 export class CreateContactAction {
@@ -8,12 +10,12 @@ export class CreateContactAction {
     private contactRepository = container.make(ContactRepository),
   ) {}
 
-  handle = async (payload: CreateContactDto, audienceId: string) => {
-    const audience = await this.contactRepository.create(
+  handle = async (payload: CreateContactDto, audience: Audience) => {
+    const contact = await this.contactRepository.create(
       { ...payload },
-      audienceId,
+      audience,
     )
 
-    return audience
+    return contact
   }
 }

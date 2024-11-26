@@ -327,7 +327,9 @@ export const contactImports = mysqlTable("contactImports", {
       firstName: string
       lastName: string
       headers: string[]
-      attributes: string[]
+      properties?:
+        | Record<string, Omit<KnownAudienceProperty, "options">>
+        | undefined
       tags: string[] // for each of these, save a new tag to the tags table for this audience.
       tagIds: string[]
     }>()

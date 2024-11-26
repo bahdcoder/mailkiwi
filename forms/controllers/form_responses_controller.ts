@@ -5,11 +5,12 @@ import { FormResponseRepository } from "@/forms/repositories/form_response_repos
 import { FormResponseValidatorTool } from "@/forms/tools/form_response_validator_tool.js"
 import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
 
-import { Form } from "@/database/database_schema_types.js"
+import { Audience, Form } from "@/database/database_schema_types.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
@@ -57,6 +58,10 @@ export class FormResponsesController extends BaseController {
       return ctx.notFound()
     }
 
+    const audience = await container
+      .make(AudienceRepository)
+      .findById(form.audienceId)
+
     const { valid, errors } = await new FormResponseValidatorTool(
       form,
       payload,
@@ -68,7 +73,7 @@ export class FormResponsesController extends BaseController {
 
     switch (form.type) {
       case "signup":
-        await this.submitSignup(form, payload)
+        await this.submitSignup(audience, payload)
         break
       case "survey":
         await this.submitSurvey(form, payload, ctx.get("contact")?.id)
@@ -80,7 +85,10 @@ export class FormResponsesController extends BaseController {
     return ctx.json({ id: form.id })
   }
 
-  private async submitSignup(form: Form, payload: Record<string, string>) {
+  private async submitSignup(
+    audience: Audience,
+    payload: Record<string, string>,
+  ) {
     const {
       email,
       firstname: firstName,
@@ -97,7 +105,7 @@ export class FormResponsesController extends BaseController {
 
     const { id: contactId } = await this.contactRepository.create(
       contact,
-      form.audienceId,
+      audience,
     )
 
     return { contactId }

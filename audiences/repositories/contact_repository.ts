@@ -9,7 +9,9 @@ import { TriggerAutomationsForContactJob } from "@/automations/jobs/trigger_auto
 
 import type { DrizzleClient } from "@/database/client.js"
 import type {
+  Audience,
   Contact,
+  ContactImport,
   ContactProperty,
   ContactWithProperties,
   ContactWithTags,
@@ -81,40 +83,51 @@ export class ContactRepository extends BaseRepository {
   }
 
   getContactPropertiesFromPayloadProperties(
+    audience: Audience,
     contactId: string,
-    audienceId: string,
-    properties: UpdateContactDto["properties"] = {},
+    properties: Record<string, string | number | boolean | Date>,
   ) {
     const contactPropertiesPayload: ContactProperty[] = []
 
-    Object.keys(properties).forEach(function (property) {
-      const value = properties[property]
+    audience.knownProperties?.forEach((knownProperty) => {
+      const value = properties?.[knownProperty.id]
 
-      const type = guessValueType(value)
-
-      contactPropertiesPayload.push({
-        [type]:
-          type === "date"
-            ? DateTime.fromISO(value as string).toJSDate()
-            : value,
-        name: property,
-        contactId,
-        audienceId,
-      } as ContactProperty)
+      if (value) {
+        contactPropertiesPayload.push({
+          id: this.cuid(),
+          audienceId: audience.id,
+          contactId,
+          name: knownProperty.id,
+          float:
+            knownProperty.type === "float"
+              ? parseFloat(value as string)
+              : null,
+          boolean:
+            knownProperty.type === "boolean" ? Boolean(value) : null,
+          date:
+            knownProperty.type === "date"
+              ? DateTime.fromISO(value as string).toJSDate()
+              : null,
+          text:
+            knownProperty.type === "text" || knownProperty.type === "enum"
+              ? (value as string)
+              : null,
+        })
+      }
     })
 
     return { contactPropertiesPayload }
   }
 
-  async create(payload: CreateContactDto, audienceId: string) {
+  async create(payload: CreateContactDto, audience: Audience) {
     const id = this.cuid()
 
     const properties = payload.properties ?? {}
 
     const { contactPropertiesPayload } =
       this.getContactPropertiesFromPayloadProperties(
+        audience,
         id,
-        audienceId,
         properties,
       )
 
@@ -122,7 +135,7 @@ export class ContactRepository extends BaseRepository {
       await trx.insert(contacts).values({
         ...payload,
         id,
-        audienceId,
+        audienceId: audience.id,
       })
 
       if (contactPropertiesPayload.length > 0) {
@@ -159,15 +172,16 @@ export class ContactRepository extends BaseRepository {
 
   async update(
     contact: ContactWithProperties,
+    audience: Audience,
     updatedContact: Partial<UpdateContactDto>,
   ) {
     const { properties, ...restOfContactDetails } = updatedContact
 
     const { contactPropertiesPayload } =
       this.getContactPropertiesFromPayloadProperties(
+        audience,
         contact.id,
-        contact.audienceId,
-        properties,
+        properties ?? {},
       )
 
     const existingPropertyNames = contact.properties.map(
