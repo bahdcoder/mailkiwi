@@ -59,12 +59,25 @@ export class BaseRepository {
     const self = this
 
     return {
-      async create(payload: Table["$inferInsert"]) {
-        const id = self.cuid()
+      async create(payload: Table["$inferInsert"] & { id?: string }) {
+        const id = payload.id || self.cuid()
 
         await database.insert(table).values({ id, ...payload })
 
         return { id }
+      },
+      async findAll(conditions?: SQLWrapper) {
+        return database.select().from(table).where(and(conditions))
+      },
+      async bulkCreate(payload: Table["$inferInsert"][]) {
+        const values = payload.map((value) => ({
+          id: self.cuid(),
+          ...value,
+        }))
+
+        await database.insert(table).values(values)
+
+        return { id: values.map((value) => value.id) }
       },
       async update(
         id: string,

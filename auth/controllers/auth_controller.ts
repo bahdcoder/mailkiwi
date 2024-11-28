@@ -7,12 +7,12 @@ import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
+import { VikeController } from "@/shared/controllers/vike_controller.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 
-export class AuthController extends BaseController {
+export class AuthController extends VikeController {
   constructor(
     private userRepository = container.make(UserRepository),
     private app = makeApp(),
@@ -21,7 +21,8 @@ export class AuthController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["POST", "/login", this.login.bind(this)],
+        ...this.vikePath("/login", this.page),
+        ["POST", "/login", this.login],
         ["POST", "/register", this.register.bind(this)],
       ],
       {
@@ -54,7 +55,7 @@ export class AuthController extends BaseController {
     return ctx.json({ apiKey })
   }
 
-  async login(ctx: HonoContext) {
+  login = async (ctx: HonoContext) => {
     const data = await this.validate(ctx, LoginUserSchema)
 
     const user = await this.userRepository.findByEmail(data.email)

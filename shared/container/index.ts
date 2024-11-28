@@ -28,6 +28,9 @@ export enum ContainerKey {
 
   // Frontend assets
   viteManifestFile = "viteManifestFile",
+
+  // functions
+  vikeRenderPage = "vikeRenderPage",
 }
 
 export const makeApp = () =>

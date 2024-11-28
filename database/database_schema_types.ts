@@ -4,6 +4,8 @@ import type {
   audiences,
   automationSteps,
   broadcasts,
+  channelMemberships,
+  channels,
   contactImports,
   contactProperties,
   contacts,
@@ -12,6 +14,8 @@ import type {
   emailSends,
   formResponses,
   forms,
+  messageReactions,
+  messages,
   products,
   segments,
   sendingDomains,
@@ -39,6 +43,13 @@ export type Contact = InferSelectModel<typeof contacts>
 export type User = InferSelectModel<typeof users>
 export type ContactProperty = InferSelectModel<typeof contactProperties>
 export type Broadcast = InferSelectModel<typeof broadcasts>
+
+// Chat
+export type Message = InferSelectModel<typeof messages>
+export type Channel = InferSelectModel<typeof channels>
+export type ChannelMembership = InferSelectModel<typeof channelMemberships>
+export type MessageReaction = InferSelectModel<typeof messageReactions>
+
 export type BroadcastWithoutContent = Omit<
   Broadcast,
   "contentHtml" | "contentText" | "contentJson"
@@ -90,6 +101,13 @@ export type InsertProduct = typeof products.$inferInsert
 export type InsertWebsite = typeof websites.$inferInsert
 export type InsertForm = typeof forms.$inferInsert
 
+// Chat
+export type InsertMessage = typeof messages.$inferInsert
+export type InsertMessageReaction = typeof messageReactions.$inferInsert
+export type InsertChannel = typeof channels.$inferInsert
+export type InsertChannelMembership =
+  typeof channelMemberships.$inferInsert
+
 export type UpdateAbTestVariant = MySqlUpdateSetSource<
   typeof abTestVariants
 >
@@ -107,6 +125,15 @@ export type UpdateSendingDomain = MySqlUpdateSetSource<
 
 export type UpdateContactImport = MySqlUpdateSetSource<
   typeof contactImports
+>
+
+export type UpdateMessage = MySqlUpdateSetSource<typeof messages>
+export type UpdateChannel = MySqlUpdateSetSource<typeof channels>
+export type UpdateChannelMembership = MySqlUpdateSetSource<
+  typeof channelMemberships
+>
+export type UpdateMessageReaction = MySqlUpdateSetSource<
+  typeof messageReactions
 >
 
 export type AutomationStep = typeof automationSteps.$inferSelect

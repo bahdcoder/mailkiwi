@@ -1,4 +1,8 @@
-import type { Context as BaseHonoContext, Handler } from "hono"
+import type {
+  Context as BaseHonoContext,
+  Handler,
+  MiddlewareHandler,
+} from "hono"
 
 /**
  * Standard HTTP method strings
@@ -25,7 +29,12 @@ export type _HTTPMethods =
 
 export type HTTPMethods = Uppercase<_HTTPMethods> | Lowercase<_HTTPMethods>
 
-export type HonoRouteDefinition = [HTTPMethods, string, Handler]
+export type HonoRouteDefinition = [
+  HTTPMethods,
+  string,
+  Handler,
+  middleware?: MiddlewareHandler[],
+]
 
 export type HonoContext = BaseHonoContext<{
   Bindings: { _: boolean }

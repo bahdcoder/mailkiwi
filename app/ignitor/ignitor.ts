@@ -1,4 +1,6 @@
 import { AppEnvVariables, appEnv } from "@/app/env/app_env.js"
+import { ChannelController } from "@/chat/controllers/channel_controller.js"
+import { ChatController } from "@/chat/controllers/chat_controller.js"
 import { CommerceProviderController } from "@/commerce/controllers/commerce_provider_controller.js"
 import { ProductController } from "@/commerce/controllers/product_controller.js"
 import { FormController } from "@/forms/controllers/form_controller.js"
@@ -16,6 +18,7 @@ import { readFile } from "fs/promises"
 import type { Redis } from "ioredis"
 import { resolve } from "path"
 import { type Logger, pino } from "pino"
+import { renderPage } from "vike/server"
 
 import { BroadcastController } from "@/broadcasts/controllers/broadcast_controller.js"
 
@@ -47,6 +50,7 @@ import {
   makeDatabaseConnection,
   makeRedis,
 } from "@/shared/container/index.js"
+import { VikeController } from "@/shared/controllers/vike_controller.js"
 import { Hono, type HonoInstance } from "@/shared/server/hono.js"
 import "@/shared/utils/log/dump.js"
 
@@ -80,7 +84,13 @@ export class Ignitor {
     container.register(ContainerKey.logger, this.logger)
 
     this.app = new Hono()
+
     container.register(ContainerKey.app, this.app)
+
+    container.register(
+      ContainerKey.vikeRenderPage,
+      new VikeController().renderVikePage,
+    )
 
     return this
   }
@@ -158,6 +168,9 @@ export class Ignitor {
 
     container.resolve(FormController)
     container.resolve(FormResponsesController)
+
+    container.resolve(ChatController)
+    container.resolve(ChannelController)
   }
 
   async shutdown() {

@@ -1,9 +1,10 @@
+import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
+import { defaultChannels } from "@/cli/commands/chat/add_default_channels_comand.js"
+
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import type { CreateUserDto } from "@/auth/users/dto/create_user_dto.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
-
-import type { DrizzleClient } from "@/database/client.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
@@ -13,10 +14,13 @@ export class RegisterUserAction {
   constructor(
     private userRepository = container.make(UserRepository),
     private teamRepository = container.make(TeamRepository),
-    private database: DrizzleClient = makeDatabase(),
+    private channelRepository = container.make(ChannelRepository),
+    private database = makeDatabase(),
   ) {}
 
   handle = async (payload: CreateUserDto) => {
+    const channels = await this.channelRepository.channels().findAll()
+
     const { user, team } = await this.database.transaction(async (tx) => {
       const user = await this.userRepository
         .transaction(tx)
@@ -25,6 +29,16 @@ export class RegisterUserAction {
       const team = await this.teamRepository
         .transaction(tx)
         .create({ name: payload.name }, user.id)
+
+      await this.channelRepository
+        .transaction(tx)
+        .memberships()
+        .bulkCreate(
+          channels.map((channel) => ({
+            channelId: channel.id,
+            userId: user.id,
+          })),
+        )
 
       return { user, team }
     })

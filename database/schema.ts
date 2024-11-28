@@ -88,6 +88,9 @@ export const users = mysqlTable("users", {
   name: varchar("name", { length: 80 }),
   avatarUrl: varchar("avatarUrl", { length: 256 }),
   password: varchar("password", { length: 256 }).notNull(),
+  role: mysqlEnum("role", ["customer", "support", "team"]).$default(
+    () => "customer",
+  ),
 })
 
 export const sendingSources = mysqlTable("sendingSources", {
@@ -908,4 +911,70 @@ export const formResponses = mysqlTable("formResponses", {
     .notNull(),
   contactId: primaryKeyCuid("contactId").references(() => contacts.id),
   response: json("response").$type<SubmitFormDto["responses"]>(),
+})
+
+/* CHAT */
+
+export const channels = mysqlTable("channels", {
+  id,
+  name: varchar("name", { length: 80 }).notNull().unique(),
+  description: varchar("description", { length: 255 }),
+  createdAt: timestamp("createdAt"),
+  private: boolean("private").notNull(),
+})
+
+// A private chat is basically a channel with only 2 members
+// and we can modify the display of the ui based on this.
+
+export const channelMemberships = mysqlTable("channelMemberships", {
+  id,
+  channelId: primaryKeyCuid("channelId")
+    .references(() => channels.id)
+    .notNull(),
+  userId: primaryKeyCuid("userId")
+    .references(() => users.id)
+    .notNull(),
+})
+
+export const messages = mysqlTable(
+  "messages",
+  {
+    id,
+    // We'll use AI to auto parse a message body and generate a title and slug.
+    // we will then index the entire thread, so it appears to google like this is a stackoverflow
+    // // like discussion forum.
+    title: varchar("title", { length: 120 }),
+    slug: varchar("slug", { length: 120 }).unique(),
+    channelId: primaryKeyCuid("channelId")
+      .references(() => channels.id)
+      .notNull(),
+    userId: primaryKeyCuid("userId")
+      .references(() => users.id)
+      .notNull(),
+    content: json("content").$type<Record<string, string[]>>().notNull(),
+    parentMessageId: primaryKeyCuid("parentMessageId").references(
+      (): AnyMySqlColumn => messages.id,
+    ),
+    createdAt: timestamp("createdAt").notNull(),
+    updatedAt: timestamp("updatedAt"),
+  },
+  (table) => ({
+    messageChannelIdIndex: index("messageChannelIdIndex").on(
+      table.channelId,
+    ),
+    messageCreatedAtIndex: index("messageCreatedAtIndex").on(
+      table.createdAt,
+    ),
+  }),
+)
+
+export const messageReactions = mysqlTable("messageReactions", {
+  id,
+  messageId: primaryKeyCuid("messageId")
+    .references(() => messages.id)
+    .notNull(),
+  userId: primaryKeyCuid("userId")
+    .references(() => users.id)
+    .notNull(),
+  emoji: varchar("emoji", { length: 50 }).notNull(),
 })

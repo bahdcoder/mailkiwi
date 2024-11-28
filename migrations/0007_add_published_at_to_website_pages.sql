@@ -1,1 +1,0 @@
-ALTER TABLE `websitePages` ADD `publishedAt` timestamp;

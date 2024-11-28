@@ -10,6 +10,8 @@ import {
   automationSteps,
   automations,
   broadcasts,
+  channelMemberships,
+  channels,
   contactImports,
   contactProperties,
   contacts,
@@ -17,6 +19,8 @@ import {
   emailSendEvents,
   emailSends,
   emails,
+  messageReactions,
+  messages,
   products,
   segments,
   sendingDomains,
@@ -63,6 +67,10 @@ export const refreshDatabase = async () => {
   await database.delete(audiences)
   await database.delete(accessTokens)
   await database.delete(teamMemberships)
+  await database.delete(messageReactions)
+  await database.delete(messages)
+  await database.delete(channelMemberships)
+  await database.delete(channels)
   await database.delete(teams)
   await database.delete(users)
 }

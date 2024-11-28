@@ -9,7 +9,7 @@ function Layout({ children }: PropsWithChildren) {
           <a href="/">Home page</a>
         </li>
         <li>
-          <a href="/about">About page</a>
+          <a href="/community">Community</a>
         </li>
         <li>
           <a href="/products">Products page</a>

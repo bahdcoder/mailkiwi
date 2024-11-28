@@ -1,17 +1,15 @@
 import { Ignitor } from "./ignitor.js"
-import { GetPagePropsAction } from "@/app/actions/get_page_props_action.js"
 import { serve } from "@hono/node-server"
-import { createReadableStreamFromReadable } from "@remix-run/node"
 import { readFile } from "fs/promises"
+import { HandlerResponse } from "hono/types"
 import { Server } from "https"
 import { createServer as createHttpsServer } from "node:https"
 import path from "path"
-import { PassThrough } from "stream"
-import { renderPage } from "vike/server"
 import { createServer as createViteServer } from "vite"
 
 import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
 
+import { VikeController } from "@/shared/controllers/vike_controller.js"
 import { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
@@ -41,44 +39,14 @@ export class IgnitorDev extends Ignitor {
   }
 
   protected registerCatchAllServerRoute() {
-    this.app.all(
-      "*",
-      container.make(UserSessionMiddleware).handle,
-      async function (ctx, next) {
-        const pageContext = await renderPage({
-          urlOriginal: ctx.req.url,
-          headersOriginal: ctx.req.raw.headers,
-          pageProps: await container
-            .make(GetPagePropsAction)
-            .handle(ctx as unknown as HonoContext),
-        })
-
-        if (!pageContext.httpResponse) return next()
-
-        const responseHeaders = new Headers()
-
-        const { statusCode, headers, pipe } = pageContext.httpResponse
-
-        headers.forEach(([name, value]) =>
-          responseHeaders.set(name, value),
-        )
-
-        return new Promise(function (resolve, reject) {
-          const body = new PassThrough()
-
-          const stream = createReadableStreamFromReadable(body)
-
-          pipe(body)
-
-          return resolve(
-            new Response(stream, {
-              status: statusCode,
-              headers: responseHeaders,
-            }),
-          )
-        })
-      },
-    )
+    this.app.all("*", (ctx, next) => {
+      return container
+        .make(VikeController)
+        .page(
+          ctx as unknown as HonoContext,
+          next,
+        ) as HandlerResponse<string>
+    })
   }
 
   async startHttpServer() {

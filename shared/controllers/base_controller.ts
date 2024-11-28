@@ -1,4 +1,5 @@
 import { WEBSITES_DOMAIN, appEnv } from "@/app/env/app_env.js"
+import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
 import { ProductRepository } from "@/commerce/repositories/product_repository.js"
 import { WebsitePageRepository } from "@/websites/repositories/website_page_repository.js"
 import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
@@ -43,6 +44,7 @@ type ControllerParams =
   | "websiteId"
   | "websitePageId"
   | "productId"
+  | "channelId"
 
 export class BaseController {
   protected session = container.make(Session)
@@ -226,6 +228,7 @@ export class BaseController {
       membershipId: TeamMembershipRepository,
       websiteId: WebsiteRepository,
       productId: ProductRepository,
+      channelId: ChannelRepository,
     } as const
 
     const repository = container.make(repositories[param] as any) as any

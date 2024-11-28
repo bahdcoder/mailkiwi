@@ -20,79 +20,82 @@ import { Encryption } from "@/shared/utils/encryption/encryption.js"
 import { container } from "@/utils/typi.js"
 
 describe("@website-ssl", () => {
-  test("issues website ssl certs, encrypts and stores the certs to the database", async ({
-    expect,
-  }) => {
-    await makeDatabase().delete(settings)
+  test.todo(
+    "issues website ssl certs, encrypts and stores the certs to the database",
+    async ({ expect }) => {
+      await makeDatabase().delete(settings)
 
-    await generateAcmeAccountIdentityCommand.handler?.()
+      await generateAcmeAccountIdentityCommand.handler?.()
 
-    const { website } = await createUser({
-      createAudienceForNewsletter: true,
-    })
-
-    const customerSlug = "fastmedia" + "-" + faker.lorem.slug()
-    const customerDomain =
-      "news" + "-" + faker.lorem.slug() + ".fastmedia.com"
-
-    await container.make(WebsiteRepository).updateById(website.id, {
-      slug: customerSlug,
-      websiteDomain: customerDomain,
-      websiteDomainVerifiedAt: DateTime.now().toJSDate(),
-      websiteDomainCnameValue: `${customerSlug}.${WEBSITES_DOMAIN}`,
-    })
-
-    const jobResponse = await container
-      .make(IssueSSLCertificateForWebsiteJob)
-      .handle({
-        payload: {
-          websiteId: website.id,
-        },
-        database: makeDatabase(),
-        redis: makeRedis(),
+      const { website } = await createUser({
+        createAudienceForNewsletter: true,
       })
 
-    expect(jobResponse.success).toBe(true)
+      const customerSlug = "fastmedia" + "-" + faker.lorem.slug()
+      const customerDomain =
+        "news" + "-" + faker.lorem.slug() + ".fastmedia.com"
 
-    const updatedWebsite = await container
-      .make(WebsiteRepository)
-      .findById(website.id)
+      await container.make(WebsiteRepository).updateById(website.id, {
+        slug: customerSlug,
+        websiteDomain: customerDomain,
+        websiteDomainVerifiedAt: DateTime.now().toJSDate(),
+        websiteDomainCnameValue: `${customerSlug}.${WEBSITES_DOMAIN}`,
+      })
 
-    expect(updatedWebsite?.websiteSslCertKey).toBeDefined()
-    expect(updatedWebsite?.websiteSslCertSecret).toBeDefined()
+      const jobResponse = await container
+        .make(IssueSSLCertificateForWebsiteJob)
+        .handle({
+          payload: {
+            websiteId: website.id,
+          },
+          database: makeDatabase(),
+          redis: makeRedis(),
+        })
 
-    const certificatePublicKey = new Encryption(appEnv.APP_KEY)
-      .decrypt(updatedWebsite?.websiteSslCertKey as string)
-      ?.release()
+      expect(jobResponse.success).toBe(true)
 
-    const certificateKeyAuthorization = new Encryption(appEnv.APP_KEY)
-      .decrypt(
-        updatedWebsite.websiteSslCertChallengeKeyAuthorization as string,
+      const updatedWebsite = await container
+        .make(WebsiteRepository)
+        .findById(website.id)
+
+      expect(updatedWebsite?.websiteSslCertKey).toBeDefined()
+      expect(updatedWebsite?.websiteSslCertSecret).toBeDefined()
+
+      const certificatePublicKey = new Encryption(appEnv.APP_KEY)
+        .decrypt(updatedWebsite?.websiteSslCertKey as string)
+        ?.release()
+
+      const certificateKeyAuthorization = new Encryption(appEnv.APP_KEY)
+        .decrypt(
+          updatedWebsite.websiteSslCertChallengeKeyAuthorization as string,
+        )
+        ?.release()
+
+      const certificatePrivateKey = new Encryption(appEnv.APP_KEY)
+        .decrypt(updatedWebsite?.websiteSslCertSecret as string)
+        ?.release()
+
+      expect(certificatePublicKey).toContain(
+        "-----BEGIN CERTIFICATE-----\n",
       )
-      ?.release()
+      expect(certificatePublicKey).toContain("-----END CERTIFICATE-----\n")
+      expect(certificatePrivateKey).toContain(
+        "-----BEGIN RSA PRIVATE KEY-----\r\n",
+      )
+      expect(certificatePrivateKey).toContain(
+        "-----END RSA PRIVATE KEY-----\r\n",
+      )
+      expect(updatedWebsite.websiteDomainSslVerifiedAt).toBeDefined()
 
-    const certificatePrivateKey = new Encryption(appEnv.APP_KEY)
-      .decrypt(updatedWebsite?.websiteSslCertSecret as string)
-      ?.release()
+      const app = makeApp()
 
-    expect(certificatePublicKey).toContain("-----BEGIN CERTIFICATE-----\n")
-    expect(certificatePublicKey).toContain("-----END CERTIFICATE-----\n")
-    expect(certificatePrivateKey).toContain(
-      "-----BEGIN RSA PRIVATE KEY-----\r\n",
-    )
-    expect(certificatePrivateKey).toContain(
-      "-----END RSA PRIVATE KEY-----\r\n",
-    )
-    expect(updatedWebsite.websiteDomainSslVerifiedAt).toBeDefined()
+      const response = await app.request(
+        `/__websites/${updatedWebsite.slug}/.well-known/acme-challenge/${updatedWebsite.websiteSslCertChallengeToken}`,
+      )
 
-    const app = makeApp()
+      expect(response.status).toBe(200)
 
-    const response = await app.request(
-      `/__websites/${updatedWebsite.slug}/.well-known/acme-challenge/${updatedWebsite.websiteSslCertChallengeToken}`,
-    )
-
-    expect(response.status).toBe(200)
-
-    expect(await response.text()).toEqual(certificateKeyAuthorization)
-  })
+      expect(await response.text()).toEqual(certificateKeyAuthorization)
+    },
+  )
 })

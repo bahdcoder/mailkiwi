@@ -1,6 +1,6 @@
 import type { HonoRouteDefinition } from "./types.js"
 import type { HttpBindings } from "@hono/node-server"
-import { Hono as BaseHono, type MiddlewareHandler } from "hono"
+import { Hono as BaseHono, Handler, type MiddlewareHandler } from "hono"
 import { pinoLogger } from "hono-pino"
 import { HonoOptions } from "hono/hono-base"
 import { requestId } from "hono/request-id"
@@ -85,23 +85,30 @@ export class Hono
     resolvedPath: string,
     middleware: MiddlewareHandler[],
   ) {
-    const [method, , handler] = route
+    const [method, , handler, additionalMiddleware = []] = route
+
+    const handlerArguments: [string, ...MiddlewareHandler[], Handler] = [
+      resolvedPath,
+      ...middleware,
+      ...additionalMiddleware,
+      handler,
+    ]
 
     switch (method) {
       case "GET":
-        this.get(resolvedPath, ...middleware, handler)
+        this.get(...handlerArguments)
         break
       case "DELETE":
-        this.delete(resolvedPath, ...middleware, handler)
+        this.delete(...handlerArguments)
         break
       case "PATCH":
-        this.patch(resolvedPath, ...middleware, handler)
+        this.patch(...handlerArguments)
         break
       case "PUT":
-        this.put(resolvedPath, ...middleware, handler)
+        this.put(...handlerArguments)
         break
       case "POST":
-        this.post(resolvedPath, ...middleware, handler)
+        this.post(...handlerArguments)
         break
       default:
         break

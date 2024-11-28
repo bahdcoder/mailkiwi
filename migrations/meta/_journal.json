@@ -5,8 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1731831302035,
-      "tag": "0000_initialise_database_structure",
+      "when": 1732740022946,
+      "tag": "0000_initialise_all_database_tables",
       "breakpoints": true
     }
   ]

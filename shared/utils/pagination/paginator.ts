@@ -1,4 +1,5 @@
 import {
+  SQL,
   type SQLWrapper,
   type SelectedFields,
   and,
@@ -18,6 +19,15 @@ import { makeDatabase } from "@/shared/container/index.js"
 export type QueryModifierFn = (
   query: MySqlSelect<any, any, any>,
 ) => MySqlSelect<any, any, any>
+
+type CursorControls = {
+  previous: string | undefined
+  next: string | undefined
+}
+export type CursorResultsModifierFn = (
+  rows: any[],
+  originalCursorResults: CursorControls,
+) => CursorControls
 
 type SelectFields = SelectedFields<AnyMySqlColumn, AnyMySqlTable>
 
@@ -41,6 +51,9 @@ export class Paginator<RowType extends object = any> {
   private $modifyQuery: QueryModifierFn = (query) => query
   private $modifyWhereQuery: QueryModifierFn = (query) => query
   private $transformRows: RowTransformer = (rows) => rows
+  private $queryOrder: SQL
+  private $cursorCondition: SQLWrapper | undefined
+  private $modifyCursorResults: CursorResultsModifierFn
 
   constructor(
     private table: AnyMySqlTable,
@@ -67,9 +80,26 @@ export class Paginator<RowType extends object = any> {
     return this
   }
 
+  modifyQueryOrder(order: SQL) {
+    this.$queryOrder = order
+
+    return this
+  }
+
+  modifyCursorCondition(condition: SQLWrapper | undefined) {
+    this.$cursorCondition = condition
+
+    return this
+  }
+
   modifyWhereQuery(fn: QueryModifierFn) {
     this.$modifyWhereQuery = fn
 
+    return this
+  }
+
+  modifyCursorResults(fn: CursorResultsModifierFn) {
+    this.$modifyCursorResults = fn
     return this
   }
 
@@ -104,10 +134,13 @@ export class Paginator<RowType extends object = any> {
     return this
   }
 
+  cursorPaginate = this.next
+
   async next(): Promise<{
     data: RowType[]
-    next: string | undefined
     finished: boolean
+    next: string | undefined
+    previous: string | undefined
   }> {
     const selectSelect = this.$modifyQuery(
       this.database
@@ -119,28 +152,42 @@ export class Paginator<RowType extends object = any> {
     if (!this.cursorPagination.field)
       throw E_OPERATION_FAILED("Field is required for cursor pagination")
 
+    const cursorCondition = this.$cursorCondition
+      ? this.$cursorCondition
+      : gt(this.cursorPagination.field, this.cursorPagination.cursor)
+
     const selectQuery = this.$modifyWhereQuery(
       selectSelect.where(
         and(
           ...this.conditions,
-          this.cursorPagination.cursor
-            ? gt(this.cursorPagination.field, this.cursorPagination.cursor)
-            : undefined,
+          this.cursorPagination.cursor ? cursorCondition : undefined,
         ),
       ),
     )
       .limit(this.cursorPagination.size + 1)
-      .orderBy(this.cursorPagination.field)
+      .orderBy(
+        this.$queryOrder ? this.$queryOrder : this.cursorPagination.field,
+      )
       .$dynamic()
 
     const result = await selectQuery.execute()
 
     const finished = result.length <= this.cursorPagination.size
 
-    return {
+    const self = this
+
+    const cursorResults = {
       next: result[this.cursorPagination.size - 1]?.[
         this.cursorPagination.field.name
       ],
+      previous: result[0]?.[this.cursorPagination.field.name],
+    }
+
+    return {
+      ...(this.$modifyCursorResults
+        ? this.$modifyCursorResults(result, cursorResults)
+        : cursorResults),
+      // cursor: this.cursorPagination.cursor as string,
       finished,
       data: await this.$transformRows(
         finished ? result : result.slice(0, -1),

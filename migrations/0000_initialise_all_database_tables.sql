@@ -73,6 +73,23 @@ CREATE TABLE `broadcasts` (
 	CONSTRAINT `broadcasts_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `channelMemberships` (
+	`id` binary(16) NOT NULL,
+	`channelId` binary(16) NOT NULL,
+	`userId` binary(16) NOT NULL,
+	CONSTRAINT `channelMemberships_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `channels` (
+	`id` binary(16) NOT NULL,
+	`name` varchar(80) NOT NULL,
+	`description` varchar(255),
+	`createdAt` timestamp,
+	`private` boolean NOT NULL,
+	CONSTRAINT `channels_id` PRIMARY KEY(`id`),
+	CONSTRAINT `channels_name_unique` UNIQUE(`name`)
+);
+--> statement-breakpoint
 CREATE TABLE `contactAutomationSteps` (
 	`id` binary(16) NOT NULL,
 	`automationStepId` binary(16) NOT NULL,
@@ -249,6 +266,28 @@ CREATE TABLE `forms` (
 	CONSTRAINT `forms_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `messageReactions` (
+	`id` binary(16) NOT NULL,
+	`messageId` binary(16) NOT NULL,
+	`userId` binary(16) NOT NULL,
+	`emoji` varchar(50) NOT NULL,
+	CONSTRAINT `messageReactions_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `messages` (
+	`id` binary(16) NOT NULL,
+	`title` varchar(120),
+	`slug` varchar(120),
+	`channelId` binary(16) NOT NULL,
+	`userId` binary(16) NOT NULL,
+	`content` json NOT NULL,
+	`parentMessageId` binary(16),
+	`createdAt` timestamp NOT NULL,
+	`updatedAt` timestamp,
+	CONSTRAINT `messages_id` PRIMARY KEY(`id`),
+	CONSTRAINT `messages_slug_unique` UNIQUE(`slug`)
+);
+--> statement-breakpoint
 CREATE TABLE `productContents` (
 	`id` binary(16) NOT NULL,
 	`productId` binary(16),
@@ -372,6 +411,7 @@ CREATE TABLE `users` (
 	`name` varchar(80),
 	`avatarUrl` varchar(256),
 	`password` varchar(256) NOT NULL,
+	`role` enum('customer','support','team'),
 	CONSTRAINT `users_id` PRIMARY KEY(`id`),
 	CONSTRAINT `users_email_unique` UNIQUE(`email`)
 );
@@ -430,6 +470,8 @@ ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_segmentId_segments_id_fk` FO
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_winningAbTestVariantId_abTestVariants_id_fk` FOREIGN KEY (`winningAbTestVariantId`) REFERENCES `abTestVariants`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `channelMemberships` ADD CONSTRAINT `channelMemberships_channelId_channels_id_fk` FOREIGN KEY (`channelId`) REFERENCES `channels`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `channelMemberships` ADD CONSTRAINT `channelMemberships_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_automationStepId_automationSteps_id_fk` FOREIGN KEY (`automationStepId`) REFERENCES `automationSteps`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactAutomationSteps` ADD CONSTRAINT `contactAutomationSteps_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contactImports` ADD CONSTRAINT `contactImports_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -453,6 +495,11 @@ ALTER TABLE `emails` ADD CONSTRAINT `emails_emailContentId_emailContents_id_fk` 
 ALTER TABLE `formResponses` ADD CONSTRAINT `formResponses_formId_forms_id_fk` FOREIGN KEY (`formId`) REFERENCES `forms`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `formResponses` ADD CONSTRAINT `formResponses_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `forms` ADD CONSTRAINT `forms_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `messageReactions` ADD CONSTRAINT `messageReactions_messageId_messages_id_fk` FOREIGN KEY (`messageId`) REFERENCES `messages`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `messageReactions` ADD CONSTRAINT `messageReactions_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `messages` ADD CONSTRAINT `messages_channelId_channels_id_fk` FOREIGN KEY (`channelId`) REFERENCES `channels`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `messages` ADD CONSTRAINT `messages_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `messages` ADD CONSTRAINT `messages_parentMessageId_messages_id_fk` FOREIGN KEY (`parentMessageId`) REFERENCES `messages`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `productContents` ADD CONSTRAINT `productContents_productId_products_id_fk` FOREIGN KEY (`productId`) REFERENCES `products`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `products` ADD CONSTRAINT `products_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `products` ADD CONSTRAINT `products_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -471,4 +518,6 @@ ALTER TABLE `teams` ADD CONSTRAINT `teams_userId_users_id_fk` FOREIGN KEY (`user
 ALTER TABLE `webhooks` ADD CONSTRAINT `webhooks_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `websitePages` ADD CONSTRAINT `websitePages_websiteId_websites_id_fk` FOREIGN KEY (`websiteId`) REFERENCES `websites`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `websites` ADD CONSTRAINT `websites_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX `messageChannelIdIndex` ON `messages` (`channelId`);--> statement-breakpoint
+CREATE INDEX `messageCreatedAtIndex` ON `messages` (`createdAt`);--> statement-breakpoint
 CREATE INDEX `tagsOnContactsTagIdContactIdIdx` ON `tagsOnContacts` (`tagId`,`contactId`);
