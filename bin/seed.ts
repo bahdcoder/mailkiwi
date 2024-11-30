@@ -1,4 +1,5 @@
 import { appEnv } from "@/app/env/app_env.js"
+import { addDefaultChannelsCommand } from "@/cli/commands/chat/add_default_channels_comand.js"
 import { seedDevSendingSourcesCommand } from "@/cli/commands/seed_dev_sending_sources_command.js"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
@@ -47,6 +48,11 @@ container.registerInstance(ContainerKey.database, database)
 container.registerInstance(ContainerKey.redis, redis)
 
 await refreshDatabase()
+
+await Promise.all([
+  addDefaultChannelsCommand.handler?.(),
+  seedDevSendingSourcesCommand.handler?.(),
+])
 
 const registerUserAction = container.resolve(RegisterUserAction)
 const createAudienceAction = container.resolve(CreateAudienceAction)

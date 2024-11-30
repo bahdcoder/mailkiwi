@@ -70,6 +70,7 @@
     "@types/react-dom": "^18.3.0",
     "@types/ua-parser-js": "^0.7.39",
     "@types/uuid": "^10.0.0",
+    "@types/ws": "^8.5.13",
     "@vitejs/plugin-react": "^4.3.1",
     "@vitest/coverage-v8": "^1.6.0",
     "autoprefixer": "^10.4.19",
@@ -105,6 +106,7 @@
     "@universal-middleware/hono": "^0.2.9",
     "acme-client": "^5.4.0",
     "bcrypt": "^5.1.1",
+    "bufferutil": "^4.0.8",
     "bullmq": "^5.12.10",
     "chalk": "^5.3.0",
     "change-case": "^5.4.4",
@@ -140,7 +142,8 @@
     "valibot": "^0.36.0",
     "vike": "^0.4.198",
     "vike-react": "^0.5.7",
-    "vike-react-query": "^0.1.1"
+    "vike-react-query": "^0.1.1",
+    "ws": "^8.18.0"
   },
   "engines": {
     "node": "v22.4.0"

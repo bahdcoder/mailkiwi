@@ -3,7 +3,12 @@ import { eq } from "drizzle-orm"
 import type { CreateUserDto } from "@/auth/users/dto/create_user_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import { teams, users } from "@/database/schema.js"
+import {
+  channelMemberships,
+  channels,
+  teams,
+  users,
+} from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -20,6 +25,14 @@ export class UserRepository extends ScryptTokenRepository {
     primaryKey: users.id,
     foreignKey: teams.userId,
     relationName: "teams",
+  })
+
+  private hasManyChannelMemberships = hasMany(this.database, {
+    from: users,
+    to: channelMemberships,
+    primaryKey: users.id,
+    foreignKey: channelMemberships.userId,
+    relationName: "channels",
   })
 
   async create(user: CreateUserDto) {
@@ -43,6 +56,14 @@ export class UserRepository extends ScryptTokenRepository {
       .from(users)
       .where(eq(users.email, email))
       .limit(1)
+
+    return user
+  }
+
+  async findByIdWithChannelMemberships(id: string) {
+    const [user] = await this.hasManyChannelMemberships((query) =>
+      query.where(eq(users.id, id)),
+    )
 
     return user
   }

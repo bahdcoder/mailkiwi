@@ -165,6 +165,9 @@ export type BroadcastWithSegmentAndAbTestVariants =
   }
 
 export type UserWithTeams = User & { teams: Team[] }
+export type UserWithChannelMemberships = User & {
+  channels: ChannelMembership[]
+}
 export type ContactWithTags = Contact & {
   tags: (TagOnContact & {
     tag: Tag

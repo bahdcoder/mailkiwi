@@ -41,6 +41,9 @@ importers:
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1(encoding@0.1.13)
+      bufferutil:
+        specifier: ^4.0.8
+        version: 4.0.8
       bullmq:
         specifier: ^5.12.10
         version: 5.12.10
@@ -149,6 +152,9 @@ importers:
       vike-react-query:
         specifier: ^0.1.1
         version: 0.1.1(@tanstack/react-query@5.52.1(react@18.3.1))(react-streaming@0.3.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(vike-react@0.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@0.4.198(react-streaming@0.3.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vite@5.4.2(@types/node@20.16.1))))
+      ws:
+        specifier: ^8.18.0
+        version: 8.18.0(bufferutil@4.0.8)
     devDependencies:
       '@drizzle-team/brocli':
         specifier: ^0.9.2
@@ -240,12 +246,15 @@ importers:
       '@types/uuid':
         specifier: ^10.0.0
         version: 10.0.0
+      '@types/ws':
+        specifier: ^8.5.13
+        version: 8.5.13
       '@vitejs/plugin-react':
         specifier: ^4.3.1
         version: 4.3.1(vite@5.4.2(@types/node@20.16.1))
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@20.16.1)(jsdom@25.0.1))
+        version: 1.6.0(vitest@1.6.0(@types/node@20.16.1)(jsdom@25.0.1(bufferutil@4.0.8)))
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.20(postcss@8.4.41)
@@ -278,7 +287,7 @@ importers:
         version: 3.3.3
       puppeteer:
         specifier: ^23.2.1
-        version: 23.2.1(typescript@5.5.4)
+        version: 23.2.1(bufferutil@4.0.8)(typescript@5.5.4)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -305,7 +314,7 @@ importers:
         version: 4.3.2(typescript@5.5.4)(vite@5.4.2(@types/node@20.16.1))
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@20.16.1)(jsdom@25.0.1)
+        version: 1.6.0(@types/node@20.16.1)(jsdom@25.0.1(bufferutil@4.0.8))
 
 packages:
 
@@ -1737,6 +1746,9 @@ packages:
   '@types/uuid@10.0.0':
     resolution: {integrity: sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==}
 
+  '@types/ws@8.5.13':
+    resolution: {integrity: sha512-osM/gWBTPKgHV8XkTunnegTRIsvF6owmf5w+JtAfOw472dptdm0dlGv4xCt6GwQRcC2XVOvvRE/0bAoQcL2QkA==}
+
   '@types/yauzl@2.10.3':
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
 
@@ -2054,6 +2066,10 @@ packages:
 
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
+
+  bufferutil@4.0.8:
+    resolution: {integrity: sha512-4T53u4PdgsXqKaIctwF8ifXlRTTmEPJ8iEPWFdGZvcf7sbwYo6FKFEX9eNNAnzFZ7EzJAQ3CJeOtCRA4rDp7Pw==}
+    engines: {node: '>=6.14.2'}
 
   bullmq@5.12.10:
     resolution: {integrity: sha512-lXH8Caj+FvYHiBS0QBEpQOq57RcVuEPziBC5cBlWguCVNfn1UMSri22bRrynDKuof8o9XB43ctmYASUpoa0DeQ==}
@@ -3956,6 +3972,10 @@ packages:
 
   node-gyp-build-optional-packages@5.2.2:
     resolution: {integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw==}
+    hasBin: true
+
+  node-gyp-build@4.8.4:
+    resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
     hasBin: true
 
   node-gyp@8.4.1:
@@ -6793,6 +6813,10 @@ snapshots:
 
   '@types/uuid@10.0.0': {}
 
+  '@types/ws@8.5.13':
+    dependencies:
+      '@types/node': 20.16.1
+
   '@types/yauzl@2.10.3':
     dependencies:
       '@types/node': 20.16.1
@@ -6818,7 +6842,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@types/node@20.16.1)(jsdom@25.0.1))':
+  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@types/node@20.16.1)(jsdom@25.0.1(bufferutil@4.0.8)))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -6833,7 +6857,7 @@ snapshots:
       std-env: 3.7.0
       strip-literal: 2.1.0
       test-exclude: 6.0.0
-      vitest: 1.6.0(@types/node@20.16.1)(jsdom@25.0.1)
+      vitest: 1.6.0(@types/node@20.16.1)(jsdom@25.0.1(bufferutil@4.0.8))
     transitivePeerDependencies:
       - supports-color
 
@@ -7159,6 +7183,10 @@ snapshots:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
+
+  bufferutil@4.0.8:
+    dependencies:
+      node-gyp-build: 4.8.4
 
   bullmq@5.12.10:
     dependencies:
@@ -8648,7 +8676,7 @@ snapshots:
 
   jsbn@1.1.0: {}
 
-  jsdom@25.0.1:
+  jsdom@25.0.1(bufferutil@4.0.8):
     dependencies:
       cssstyle: 4.1.0
       data-urls: 5.0.0
@@ -8669,7 +8697,7 @@ snapshots:
       whatwg-encoding: 3.1.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.0.0
-      ws: 8.18.0
+      ws: 8.18.0(bufferutil@4.0.8)
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -9445,6 +9473,8 @@ snapshots:
       detect-libc: 2.0.3
     optional: true
 
+  node-gyp-build@4.8.4: {}
+
   node-gyp@8.4.1:
     dependencies:
       env-paths: 2.2.1
@@ -9899,26 +9929,26 @@ snapshots:
   punycode@2.3.1:
     optional: true
 
-  puppeteer-core@23.2.1:
+  puppeteer-core@23.2.1(bufferutil@4.0.8):
     dependencies:
       '@puppeteer/browsers': 2.3.1
       chromium-bidi: 0.6.4(devtools-protocol@0.0.1330662)
       debug: 4.3.6
       devtools-protocol: 0.0.1330662
       typed-query-selector: 2.12.0
-      ws: 8.18.0
+      ws: 8.18.0(bufferutil@4.0.8)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
 
-  puppeteer@23.2.1(typescript@5.5.4):
+  puppeteer@23.2.1(bufferutil@4.0.8)(typescript@5.5.4):
     dependencies:
       '@puppeteer/browsers': 2.3.1
       chromium-bidi: 0.6.4(devtools-protocol@0.0.1330662)
       cosmiconfig: 9.0.0(typescript@5.5.4)
       devtools-protocol: 0.0.1330662
-      puppeteer-core: 23.2.1
+      puppeteer-core: 23.2.1(bufferutil@4.0.8)
       typed-query-selector: 2.12.0
     transitivePeerDependencies:
       - bufferutil
@@ -10964,7 +10994,7 @@ snapshots:
       '@types/node': 20.16.1
       fsevents: 2.3.3
 
-  vitest@1.6.0(@types/node@20.16.1)(jsdom@25.0.1):
+  vitest@1.6.0(@types/node@20.16.1)(jsdom@25.0.1(bufferutil@4.0.8)):
     dependencies:
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
@@ -10988,7 +11018,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 20.16.1
-      jsdom: 25.0.1
+      jsdom: 25.0.1(bufferutil@4.0.8)
     transitivePeerDependencies:
       - less
       - lightningcss
@@ -11091,7 +11121,9 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  ws@8.18.0: {}
+  ws@8.18.0(bufferutil@4.0.8):
+    optionalDependencies:
+      bufferutil: 4.0.8
 
   xml-name-validator@2.0.1:
     optional: true

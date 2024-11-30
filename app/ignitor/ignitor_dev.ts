@@ -1,5 +1,6 @@
 import { Ignitor } from "./ignitor.js"
-import { serve } from "@hono/node-server"
+import { WebsocketServer } from "@/chat/websocket/websocket_server.js"
+import { createAdaptorServer, serve } from "@hono/node-server"
 import { readFile } from "fs/promises"
 import { HandlerResponse } from "hono/types"
 import { Server } from "https"
@@ -50,24 +51,27 @@ export class IgnitorDev extends Ignitor {
   }
 
   async startHttpServer() {
-    serve(
-      {
-        fetch: this.app.fetch,
-        port: this.env.PORT,
-        createServer: createHttpsServer,
-        serverOptions: {
-          key: await readFile(
-            path.resolve(process.cwd(), "certs", "localhost-key.pem"),
-          ),
-          cert: await readFile(
-            path.resolve(process.cwd(), "certs", "localhost.pem"),
-          ),
-        },
+    const server = createAdaptorServer({
+      fetch: this.app.fetch,
+      port: this.env.PORT,
+      createServer: createHttpsServer,
+      serverOptions: {
+        key: await readFile(
+          path.resolve(process.cwd(), "certs", "localhost-key.pem"),
+        ),
+        cert: await readFile(
+          path.resolve(process.cwd(), "certs", "localhost.pem"),
+        ),
       },
-      ({ address, port }) => {
-        console.log(`Monolith dev (HTTPS): 🌐 https://localhost:${port}`)
-      },
-    )
+    }) as Server
+
+    new WebsocketServer(server)
+
+    server.listen(this.env.PORT, () => {
+      console.log(
+        `Monolith dev (HTTPS): 🌐 https://localhost:${this.env.PORT}`,
+      )
+    })
 
     serve(
       {

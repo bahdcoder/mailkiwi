@@ -1,5 +1,6 @@
 import { createFakeEmailContent } from "../audiences/email_content.js"
 import { faker } from "@faker-js/faker"
+import { sql } from "drizzle-orm"
 
 import {
   AUTOMATION_STEP_SUB_TYPES_TRIGGER,
@@ -47,6 +48,8 @@ export const refreshRedisDatabase = async () => {
 export const refreshDatabase = async () => {
   const database = makeDatabase()
 
+  await database.execute(sql`SET FOREIGN_KEY_CHECKS=0;`)
+
   await database.delete(settings)
   await database.delete(emailSendEvents)
   await database.delete(emailSends)
@@ -73,6 +76,8 @@ export const refreshDatabase = async () => {
   await database.delete(channels)
   await database.delete(teams)
   await database.delete(users)
+
+  await database.execute(sql`SET FOREIGN_KEY_CHECKS=1;`)
 }
 
 export const seedAutomation = async (
