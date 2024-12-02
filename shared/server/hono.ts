@@ -87,6 +87,8 @@ export class Hono
   ) {
     const [method, , handler, additionalMiddleware = []] = route
 
+    d([method, resolvedPath])
+
     const handlerArguments: [string, ...MiddlewareHandler[], Handler] = [
       resolvedPath,
       ...middleware,

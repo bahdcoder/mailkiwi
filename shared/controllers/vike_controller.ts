@@ -18,7 +18,12 @@ export class VikeController extends BaseController {
   ): HonoRouteDefinition[] => {
     return [
       ["GET", path, handler, middleware],
-      ["GET", `${path}/index.pageContext.json`, handler, middleware],
+      [
+        "GET",
+        `${path}${path.endsWith("/") ? "" : "/"}index.pageContext.json`,
+        handler,
+        middleware,
+      ],
     ]
   }
 

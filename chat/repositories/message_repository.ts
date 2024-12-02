@@ -60,8 +60,8 @@ export class MessageRepository extends BaseRepository {
     const endPagePosition = Math.max(total - (pageIndex + 1) * pageSize, 0)
     const startPagePosition = total - pageIndex * pageSize
 
-    const startPageOffset = total - startPagePosition - 1
-    const endPageOffset = total - endPagePosition - 1
+    const startPageOffset = Math.max(total - startPagePosition - 1, 1)
+    const endPageOffset = Math.max(total - endPagePosition - 1, 1)
 
     const [[{ next }], [{ previous }]] = await Promise.all([
       this.database

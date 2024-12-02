@@ -3,24 +3,12 @@ import React, { PropsWithChildren } from "react"
 
 function Layout({ children }: PropsWithChildren) {
   return (
-    <>
-      <ul className="w-full p-6 text-white bg-black flex items-center gap-x-6">
-        <li>
-          <a href="/">Home page</a>
-        </li>
-        <li>
-          <a href="/community">Community</a>
-        </li>
-        <li>
-          <a href="/products">Products page</a>
-        </li>
-        <li>
-          <a href="/auth/login">Login to your account</a>
-        </li>
-      </ul>
-
-      <main className="flex items-center p-8 flex-col">{children}</main>
-    </>
+    <div className="w-full flex items-center h-screen bg-[#FAF9F7]">
+      <div className="w-full lg:max-w-[240px] border-r-2 border-[#ECE9E7] h-full p-4">
+        <a href="/community">Chat</a>
+      </div>
+      <div className="flex flex-grow w-full p-4">{children}</div>
+    </div>
   )
 }
 

@@ -31,10 +31,10 @@ export class ChatController extends VikeController {
 
     this.app.defineRoutes(
       [
+        ...this.vikePath("/m/:messageId/replies/:replyId", this.reply),
+        ...this.vikePath("/m/:messageId/replies", this.replies),
+        ...this.vikePath("/m/:messageId", this.message),
         ...this.vikePath("/", this.channel),
-        ...this.vikePath("/:messageId", this.message),
-        ...this.vikePath("/:messageId/replies", this.replies),
-        ...this.vikePath("/:messageId/replies/:replyId", this.reply),
       ],
       {
         prefix: "/community/:slug",
@@ -92,18 +92,25 @@ export class ChatController extends VikeController {
     }
   }
 
-  index = async (ctx: HonoContext, next: Next) => {
+  getChannels = async () => {
     const publicChannels = await this.channelRepository
       .channels()
 
       // TODO: If logged in, add user's private channels to the response.
       .findAll(eq(channels.private, false))
 
+    return publicChannels
+  }
+
+  index = async (ctx: HonoContext, next: Next) => {
+    const publicChannels = await this.getChannels()
+
     return this.page(ctx, next, { channels: publicChannels })
   }
 
   channel = async (ctx: HonoContext, next: Next) => {
     const channel = await this.getChannel(ctx)
+    const publicChannels = await this.getChannels()
 
     const cursor = ctx.req.query("cursor") as string
     const direction =
@@ -115,7 +122,11 @@ export class ChatController extends VikeController {
       direction,
     )
 
-    return this.page(ctx, next, { channel, messages })
+    return this.page(ctx, next, {
+      channel,
+      messages,
+      channels: publicChannels,
+    })
   }
 
   message = async (ctx: HonoContext, next: Next) => {
@@ -149,6 +160,7 @@ export class ChatController extends VikeController {
 
   getRepliesQueryParameters = (ctx: HonoContext) => {
     const cursor = ctx.req.query("replies_cursor") as string
+
     const direction =
       (ctx.req.query("replies_direction") as "older" | "newer") || "older"
 
