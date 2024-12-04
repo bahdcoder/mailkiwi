@@ -4,10 +4,7 @@ import { describe, test } from "vitest"
 import { RunAutomationForContactJob } from "@/automations/jobs/run_automation_for_contact_job.js"
 import { TriggerAutomationsForContactJob } from "@/automations/jobs/trigger_automation_for_contact_job.js"
 
-import {
-  createContactsForAudience,
-  createUser,
-} from "@/tests/mocks/auth/users.js"
+import { createContactsForAudience, createUser } from "@/tests/mocks/auth/users.js"
 import { seedAutomation } from "@/tests/mocks/teams/teams.js"
 
 import { tags, tagsOnContacts } from "@/database/schema.js"

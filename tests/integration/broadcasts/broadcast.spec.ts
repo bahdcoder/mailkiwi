@@ -4,10 +4,7 @@ import { describe, test } from "vitest"
 
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
-import {
-  createBroadcastForUser,
-  createUser,
-} from "@/tests/mocks/auth/users.js"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
 import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
@@ -47,9 +44,7 @@ describe("@broadcasts create", () => {
     expect(createdBroadcast?.audienceId).toBe(audience.id)
   })
 
-  test("cannot create a broadcast without a valid name", async ({
-    expect,
-  }) => {
+  test("cannot create a broadcast without a valid name", async ({ expect }) => {
     const { user, audience } = await createUser()
 
     const response = await makeRequestAsUser(user, {
@@ -137,19 +132,12 @@ describe("@broadcasts update", () => {
     const emailContent = await database
       .select()
       .from(emailContents)
-      .where(
-        eq(
-          emailContents.id,
-          updatedBroadcast?.[0].emailContentId as string,
-        ),
-      )
+      .where(eq(emailContents.id, updatedBroadcast?.[0].emailContentId as string))
 
     expect(emailContent[0]).toMatchObject(updateData.emailContent)
   })
 
-  test("cannot update a broadcast with an invalid audience ID", async ({
-    expect,
-  }) => {
+  test("cannot update a broadcast with an invalid audience ID", async ({ expect }) => {
     const { user, audience } = await createUser()
     const broadcastId = await createBroadcastForUser(user, audience.id)
 
@@ -172,9 +160,7 @@ describe("@broadcasts update", () => {
     })
   })
 
-  test("cannot update a broadcast with invalid email addresses", async ({
-    expect,
-  }) => {
+  test("cannot update a broadcast with invalid email addresses", async ({ expect }) => {
     const { user, audience } = await createUser()
     const broadcastId = await createBroadcastForUser(user, audience.id)
 
@@ -204,9 +190,7 @@ describe("@broadcasts update", () => {
     })
   })
 
-  test("can update individual fields of a broadcast", async ({
-    expect,
-  }) => {
+  test("can update individual fields of a broadcast", async ({ expect }) => {
     const { user, audience } = await createUser()
     const broadcastId = await createBroadcastForUser(user, audience.id)
 
@@ -228,9 +212,7 @@ describe("@broadcasts update", () => {
       .make(BroadcastRepository)
       .findByIdWithAbTestVariants(broadcastId)
 
-    expect(updatedBroadcast?.emailContent?.subject).toBe(
-      updateData.emailContent.subject,
-    )
+    expect(updatedBroadcast?.emailContent?.subject).toBe(updateData.emailContent.subject)
     expect(updatedBroadcast?.name).toBeDefined() // Other fields should remain unchanged
   })
 
@@ -247,9 +229,7 @@ describe("@broadcasts update", () => {
 
     expect(response.status).toBe(422)
     expect(await response.json()).toMatchObject({
-      errors: [
-        { message: "Invalid broadcastId provided.", field: "broadcastId" },
-      ],
+      errors: [{ message: "Invalid broadcastId provided.", field: "broadcastId" }],
     })
   })
 
@@ -304,9 +284,7 @@ describe("@broadcasts update", () => {
 })
 
 describe("@broadcasts delete", () => {
-  test("cannot delete a broadcast from another team", async ({
-    expect,
-  }) => {
+  test("cannot delete a broadcast from another team", async ({ expect }) => {
     const { user: user1, audience: audience1 } = await createUser()
     const { user: user2 } = await createUser()
 
@@ -319,9 +297,7 @@ describe("@broadcasts delete", () => {
 
     expect(response.status).toBe(401)
 
-    const broadcast = await container
-      .make(BroadcastRepository)
-      .findById(broadcastId)
+    const broadcast = await container.make(BroadcastRepository).findById(broadcastId)
     expect(broadcast).toBeDefined()
   })
 
@@ -364,9 +340,7 @@ describe("@broadcasts send", () => {
 
     const jobs = await Queue.abTestsBroadcasts().getJobs()
 
-    const broadcastJob = jobs.find(
-      (job) => job.data.broadcastId === broadcastId,
-    )
+    const broadcastJob = jobs.find((job) => job.data.broadcastId === broadcastId)
 
     expect(broadcastJob).toBeDefined()
   })

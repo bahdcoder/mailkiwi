@@ -73,10 +73,10 @@ export type UpdateSetAudienceInput = MySqlUpdateSetSource<typeof audiences>
 export type UpdateSetBroadcastInput = Omit<
   MySqlUpdateSetSource<typeof broadcasts>,
   "sendAt"
-> & { sendAt: string | undefined }
-export type UpdateSetTeamMembershipInput = MySqlUpdateSetSource<
-  typeof teamMemberships
->
+> & {
+  sendAt: string | undefined
+}
+export type UpdateSetTeamMembershipInput = MySqlUpdateSetSource<typeof teamMemberships>
 
 export type ContactImport = typeof contactImports.$inferSelect
 export type AbTestVariant = typeof abTestVariants.$inferSelect
@@ -102,15 +102,13 @@ export type InsertWebsite = typeof websites.$inferInsert
 export type InsertForm = typeof forms.$inferInsert
 
 // Chat
+export type InsertUser = typeof users.$inferInsert
 export type InsertMessage = typeof messages.$inferInsert
 export type InsertMessageReaction = typeof messageReactions.$inferInsert
 export type InsertChannel = typeof channels.$inferInsert
-export type InsertChannelMembership =
-  typeof channelMemberships.$inferInsert
+export type InsertChannelMembership = typeof channelMemberships.$inferInsert
 
-export type UpdateAbTestVariant = MySqlUpdateSetSource<
-  typeof abTestVariants
->
+export type UpdateAbTestVariant = MySqlUpdateSetSource<typeof abTestVariants>
 
 export type UpdateWebsite = MySqlUpdateSetSource<typeof websites>
 
@@ -119,22 +117,15 @@ export type UpdateWebsitePage = MySqlUpdateSetSource<typeof websitePages>
 export type UpdateForm = MySqlUpdateSetSource<typeof forms>
 
 export type UpdateEmailSend = MySqlUpdateSetSource<typeof emailSends>
-export type UpdateSendingDomain = MySqlUpdateSetSource<
-  typeof sendingDomains
->
+export type UpdateSendingDomain = MySqlUpdateSetSource<typeof sendingDomains>
 
-export type UpdateContactImport = MySqlUpdateSetSource<
-  typeof contactImports
->
+export type UpdateUser = MySqlUpdateSetSource<typeof users>
+export type UpdateContactImport = MySqlUpdateSetSource<typeof contactImports>
 
 export type UpdateMessage = MySqlUpdateSetSource<typeof messages>
 export type UpdateChannel = MySqlUpdateSetSource<typeof channels>
-export type UpdateChannelMembership = MySqlUpdateSetSource<
-  typeof channelMemberships
->
-export type UpdateMessageReaction = MySqlUpdateSetSource<
-  typeof messageReactions
->
+export type UpdateChannelMembership = MySqlUpdateSetSource<typeof channelMemberships>
+export type UpdateMessageReaction = MySqlUpdateSetSource<typeof messageReactions>
 
 export type AutomationStep = typeof automationSteps.$inferSelect
 
@@ -157,12 +148,11 @@ export type BroadcastWithSegment = Broadcast & {
   segment: Segment
 }
 
-export type BroadcastWithSegmentAndAbTestVariants =
-  BroadcastWithSegment & {
-    abTestVariants: AbTestVariant[]
-    audience: Audience
-    team: Team
-  }
+export type BroadcastWithSegmentAndAbTestVariants = BroadcastWithSegment & {
+  abTestVariants: AbTestVariant[]
+  audience: Audience
+  team: Team
+}
 
 export type UserWithTeams = User & { teams: Team[] }
 export type UserWithChannelMemberships = User & {

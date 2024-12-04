@@ -17,9 +17,7 @@ export default defineConfig({
   server: {
     cors: false,
     https: {
-      key: readFileSync(
-        resolve(process.cwd(), "certs", "localhost-key.pem"),
-      ),
+      key: readFileSync(resolve(process.cwd(), "certs", "localhost-key.pem")),
       cert: readFileSync(resolve(process.cwd(), "certs", "localhost.pem")),
     },
   },

@@ -4,10 +4,7 @@ import { TeamPolicy } from "@/audiences/policies/team_policy.js"
 
 import type { BroadcastWithoutContent } from "@/database/database_schema_types.js"
 
-import {
-  E_UNAUTHORIZED,
-  E_VALIDATION_FAILED,
-} from "@/http/responses/errors.js"
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import type { HonoContext } from "@/shared/server/types.js"
 
@@ -30,9 +27,7 @@ export class BroadcastValidationAndAuthorizationConcern {
     )
 
     if (!broadcast) {
-      throw E_VALIDATION_FAILED([
-        { message: "Unknown broadcast.", field: "id" },
-      ])
+      throw E_VALIDATION_FAILED([{ message: "Unknown broadcast.", field: "id" }])
     }
 
     return broadcast

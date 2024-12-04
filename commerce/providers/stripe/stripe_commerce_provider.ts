@@ -13,9 +13,7 @@ import { container } from "@/utils/typi.js"
 
 export class StripeCommerceProvider implements CommerceProviderContract {
   constructor(
-    protected stripe = new Stripe(
-      appEnv.COMMERCE_PROVIDER_STRIPE_SECRET_KEY,
-    ),
+    protected stripe = new Stripe(appEnv.COMMERCE_PROVIDER_STRIPE_SECRET_KEY),
   ) {}
 
   requiresExternalOnboarding = true
@@ -38,13 +36,10 @@ export class StripeCommerceProvider implements CommerceProviderContract {
 
     const accountLink = await this.createOnboardingLink(account.id)
 
-    await container
-      .make(TeamRepository)
-      .teams()
-      .update(accountInformation.teamId, {
-        commerceProvider: "stripe",
-        commerceProviderAccountId: account.id,
-      })
+    await container.make(TeamRepository).teams().update(accountInformation.teamId, {
+      commerceProvider: "stripe",
+      commerceProviderAccountId: account.id,
+    })
 
     return { id: account.id, ...accountLink }
   }

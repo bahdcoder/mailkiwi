@@ -45,10 +45,7 @@ export class EmailSnapshotTool {
   }
 
   async snapshot() {
-    await writeFile(
-      path.resolve(this.toDirectory, `${this.name}.html`),
-      this.content,
-    )
+    await writeFile(path.resolve(this.toDirectory, `${this.name}.html`), this.content)
 
     const browser = await puppeteer.launch()
 
@@ -68,10 +65,7 @@ export class EmailSnapshotTool {
       await sleep(2000)
 
       await page.screenshot({
-        path: path.resolve(
-          this.toDirectory,
-          `${this.getSnapshotName(device.name)}.png`,
-        ),
+        path: path.resolve(this.toDirectory, `${this.getSnapshotName(device.name)}.png`),
         fullPage: true,
       })
     }

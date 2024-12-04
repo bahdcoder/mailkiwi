@@ -15,9 +15,7 @@ export const CreateContactSchema = object({
   email: string(),
   firstName: optional(string()),
   lastName: optional(string()),
-  properties: optional(
-    record(string(), union([string(), number(), boolean(), date()])),
-  ),
+  properties: optional(record(string(), union([string(), number(), boolean(), date()]))),
 })
 
 export type CreateContactDto = InferInput<typeof CreateContactSchema>

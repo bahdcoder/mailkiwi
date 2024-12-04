@@ -17,9 +17,7 @@ import { Queue } from "@/shared/queue/queue.js"
 import { container } from "@/utils/typi.js"
 
 describe("@websites", () => {
-  test("can add a custom domain to a newsletter website", async ({
-    expect,
-  }) => {
+  test("can add a custom domain to a newsletter website", async ({ expect }) => {
     const { website, user, team } = await createUser({
       createAudienceForNewsletter: true,
     })
@@ -40,14 +38,10 @@ describe("@websites", () => {
 
     const queueJobs = await Queue.websites().getJobs()
 
-    const jobForWebsite = queueJobs.find(
-      (job) => job.data.websiteId === website.id,
-    )
+    const jobForWebsite = queueJobs.find((job) => job.data.websiteId === website.id)
 
     expect(jobForWebsite).toBeDefined()
-    expect(jobForWebsite?.name).toEqual(
-      CheckWebsiteDomainDnsConfiguration.id,
-    )
+    expect(jobForWebsite?.name).toEqual(CheckWebsiteDomainDnsConfiguration.id)
   })
 
   test("cannot add an existing domain as custom domain to a newsletter website", async ({
@@ -91,10 +85,9 @@ describe("@websites", () => {
   })
 
   test("can update website page content", async ({ expect }) => {
-    const { website, user, team, audienceForNewsletter } =
-      await createUser({
-        createAudienceForNewsletter: true,
-      })
+    const { website, user, team, audienceForNewsletter } = await createUser({
+      createAudienceForNewsletter: true,
+    })
 
     const draftWebsiteContent = {
       type: "doc",
@@ -124,9 +117,9 @@ describe("@websites", () => {
       .make(WebsiteRepository)
       .findByIdWithPages(website.id)
 
-    expect(
-      updatedNewletterWebsite.pages?.[0]?.draftWebsiteContent,
-    ).toMatchObject(draftWebsiteContent)
+    expect(updatedNewletterWebsite.pages?.[0]?.draftWebsiteContent).toMatchObject(
+      draftWebsiteContent,
+    )
   })
 
   test("can create additional website pages", async ({ expect }) => {
@@ -179,10 +172,9 @@ describe("@websites", () => {
   })
 
   test("can publish website pages", async ({ expect }) => {
-    const { website, user, team, audienceForNewsletter } =
-      await createUser({
-        createAudienceForNewsletter: true,
-      })
+    const { website, user, team, audienceForNewsletter } = await createUser({
+      createAudienceForNewsletter: true,
+    })
 
     const draftWebsiteContent = {
       type: "doc" as "doc",
@@ -190,9 +182,7 @@ describe("@websites", () => {
       content: [
         {
           type: "paragraph" as "paragraph",
-          content: [
-            { type: "text", text: "Hello world", attrs: {}, content: [] },
-          ],
+          content: [{ type: "text", text: "Hello world", attrs: {}, content: [] }],
           attrs: {},
         },
       ] as HTMLJsonBlock[],
@@ -232,17 +222,14 @@ describe("@websites", () => {
     )
 
     expect(
-      updatedNewletterWebsite.pages.filter(
-        (page) => page.publishedAt !== null,
-      ),
+      updatedNewletterWebsite.pages.filter((page) => page.publishedAt !== null),
     ).toHaveLength(2)
   })
 
   test("can unpublish website pages", async ({ expect }) => {
-    const { website, user, team, audienceForNewsletter } =
-      await createUser({
-        createAudienceForNewsletter: true,
-      })
+    const { website, user, team, audienceForNewsletter } = await createUser({
+      createAudienceForNewsletter: true,
+    })
 
     const draftWebsiteContent = {
       type: "doc" as "doc",
@@ -250,9 +237,7 @@ describe("@websites", () => {
       content: [
         {
           type: "paragraph" as "paragraph",
-          content: [
-            { type: "text", text: "Hello world", attrs: {}, content: [] },
-          ],
+          content: [{ type: "text", text: "Hello world", attrs: {}, content: [] }],
           attrs: {},
         },
       ] as HTMLJsonBlock[],
@@ -267,10 +252,7 @@ describe("@websites", () => {
 
     const websitePageRepository = container.make(WebsitePageRepository)
 
-    const { id: websitePageId } = await websitePageRepository.create(
-      payload,
-      website.id,
-    )
+    const { id: websitePageId } = await websitePageRepository.create(payload, website.id)
 
     await websitePageRepository.publish(
       await websitePageRepository.findById(websitePageId),
@@ -297,9 +279,7 @@ describe("@websites", () => {
     expect(secondPage.publishedAt).toBeNull()
 
     expect(
-      updatedNewletterWebsite.pages.filter(
-        (page) => page.publishedAt !== null,
-      ),
+      updatedNewletterWebsite.pages.filter((page) => page.publishedAt !== null),
     ).toHaveLength(1)
   })
 })
@@ -321,9 +301,7 @@ describe("@websites-pages", () => {
 
     const aboutPagePath = "about-me-page"
 
-    const websitePageRepository = await container.make(
-      WebsitePageRepository,
-    )
+    const websitePageRepository = await container.make(WebsitePageRepository)
 
     const { id: websitePageId } = await websitePageRepository.create(
       {
@@ -374,8 +352,6 @@ describe("@websites-pages", () => {
 
     const aboutMePageHtml = await aboutMePageResponse.text()
 
-    expect(
-      cheerioLoad(aboutMePageHtml)(".kb-container").html(),
-    ).not.toBeNull()
+    expect(cheerioLoad(aboutMePageHtml)(".kb-container").html()).not.toBeNull()
   })
 })

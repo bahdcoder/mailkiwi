@@ -1,9 +1,6 @@
 import { aliasedTableColumn, and, count, eq, sql } from "drizzle-orm"
 
-import {
-  InsertSendingSource,
-  SendingSource,
-} from "@/database/database_schema_types.js"
+import { InsertSendingSource, SendingSource } from "@/database/database_schema_types.js"
 import { emailSends, sendingSources } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -41,10 +38,7 @@ export class SendingSourceRepository extends BaseRepository {
         pool: sendingSources.pool,
       })
       .from(sendingSources)
-      .leftJoin(
-        emailSends,
-        eq(emailSends.sendingSourceId, sendingSources.id),
-      )
+      .leftJoin(emailSends, eq(emailSends.sendingSourceId, sendingSources.id))
       .where(eq(sendingSources.status, "active"))
       .groupBy(sendingSources.id)
 

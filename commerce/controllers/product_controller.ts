@@ -28,16 +28,8 @@ export class ProductController extends BaseController {
 
     this.app.defineRoutes(
       [
-        [
-          "POST",
-          "/payments/initialize",
-          this.initializePayment.bind(this),
-        ],
-        [
-          "GET",
-          `/payments/callback`,
-          this.initializePaymentCallback.bind(this),
-        ],
+        ["POST", "/payments/initialize", this.initializePayment.bind(this)],
+        ["GET", `/payments/callback`, this.initializePaymentCallback.bind(this)],
       ],
       {
         prefix: "/products/:productId/",
@@ -83,10 +75,7 @@ export class ProductController extends BaseController {
       ])
     }
 
-    const team = await container
-      .make(TeamRepository)
-      .teams()
-      .findById(product.teamId)
+    const team = await container.make(TeamRepository).teams().findById(product.teamId)
 
     if (
       !team.commerceProvider ||
@@ -95,8 +84,7 @@ export class ProductController extends BaseController {
     ) {
       throw E_VALIDATION_FAILED([
         {
-          message:
-            "You must connect a commerce provider before you can make a payment",
+          message: "You must connect a commerce provider before you can make a payment",
         },
       ])
     }
@@ -107,10 +95,7 @@ export class ProductController extends BaseController {
   async initializePayment(ctx: HonoContext) {
     const { team, product } = await this.ensureProductExists(ctx)
 
-    const payload = await this.validate(
-      ctx,
-      InitialiseProductPaymentSchema,
-    )
+    const payload = await this.validate(ctx, InitialiseProductPaymentSchema)
 
     const commerceProvider = container
       .make(CommerceProviderTool)

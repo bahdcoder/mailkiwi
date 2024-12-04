@@ -13,13 +13,10 @@ export class TrackingController extends BaseController {
   constructor(protected app = makeApp()) {
     super()
 
-    this.app.defineRoutes(
-      [["POST", "/mta/smtp/message", this.store.bind(this)]],
-      {
-        prefix: "/",
-        middleware: [container.make(AuthorizeMtaCallsMiddleware).handle],
-      },
-    )
+    this.app.defineRoutes([["POST", "/mta/smtp/message", this.store.bind(this)]], {
+      prefix: "/",
+      middleware: [container.make(AuthorizeMtaCallsMiddleware).handle],
+    })
   }
 
   async store(ctx: HonoContext) {
@@ -27,22 +24,15 @@ export class TrackingController extends BaseController {
 
     const sendingDomainRepository = container.make(SendingDomainRepository)
 
-    const sendingDomain =
-      await sendingDomainRepository.findByDomain(domain)
+    const sendingDomain = await sendingDomainRepository.findByDomain(domain)
 
-    if (
-      !sendingDomainRepository.getTrackingStatus(sendingDomain)
-        .trackingEnabled
-    ) {
+    if (!sendingDomainRepository.getTrackingStatus(sendingDomain).trackingEnabled) {
       return ctx.json({ contnet: message })
     }
 
     const content = await container
       .make(InjectTrackingLinksIntoEmailAction)
-      .handle(
-        message,
-        `${sendingDomain.trackingSubDomain}.${sendingDomain.name}`,
-      )
+      .handle(message, `${sendingDomain.trackingSubDomain}.${sendingDomain.name}`)
 
     return ctx.json({
       content: content,

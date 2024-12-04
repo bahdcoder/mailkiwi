@@ -26,9 +26,7 @@ import { container } from "@/utils/typi.js"
 const database = makeDatabase()
 
 describe("@chat channels", () => {
-  test("renders the community page with a list of channels", async ({
-    expect,
-  }) => {
+  test("renders the community page with a list of channels", async ({ expect }) => {
     const response = await makeRequest("/community", {
       method: "GET",
     })
@@ -39,14 +37,12 @@ describe("@chat channels", () => {
 
     const channels: Channel[] = data.pageProps.channels
 
-    const openSourceChannel = channels.find(
-      (channel) => channel.name === "open-source",
-    )
+    const openSourceChannel = channels.find((channel) => channel.name === "open-source")
 
     expect(openSourceChannel).toBeDefined()
   })
 
-  test("renders a specific channel, with its latest messages", async () => { })
+  test("renders a specific channel, with its latest messages", async () => {})
 })
 
 describe("@chat messages", () => {
@@ -327,19 +323,10 @@ describe("@chat messages", () => {
 
     const secondNextData = await secondNextResponse.json()
 
-    const secondNextMessagePositions =
-      getMessagePositionsFromResponse(secondNextData)
+    const secondNextMessagePositions = getMessagePositionsFromResponse(secondNextData)
 
-    expect(secondNextMessagePositions.slice(0, 3)).toEqual([
-      "149",
-      "148",
-      "147",
-    ])
-    expect(secondNextMessagePositions.slice(47, 50)).toEqual([
-      "102",
-      "101",
-      "100",
-    ])
+    expect(secondNextMessagePositions.slice(0, 3)).toEqual(["149", "148", "147"])
+    expect(secondNextMessagePositions.slice(47, 50)).toEqual(["102", "101", "100"])
 
     const previousResponse = await makeRequest(
       `/community/${channelName}?cursor=${secondNextData.pageProps.messages.previous}&direction=newer`,
@@ -352,16 +339,8 @@ describe("@chat messages", () => {
     const previousMessagePositions =
       getMessagePositionsFromResponse(previousData).reverse()
 
-    expect(previousMessagePositions.slice(0, 3)).toEqual([
-      "199",
-      "198",
-      "197",
-    ])
-    expect(previousMessagePositions.slice(47, 50)).toEqual([
-      "152",
-      "151",
-      "150",
-    ])
+    expect(previousMessagePositions.slice(0, 3)).toEqual(["199", "198", "197"])
+    expect(previousMessagePositions.slice(47, 50)).toEqual(["152", "151", "150"])
 
     const secondPreviousResponse = await makeRequest(
       `/community/${channelName}?cursor=${previousData.pageProps.messages.previous}&direction=newer`,
@@ -375,16 +354,8 @@ describe("@chat messages", () => {
     const secondPreviousMessagePositions =
       getMessagePositionsFromResponse(secondPreviousData).reverse()
 
-    expect(secondPreviousMessagePositions.slice(0, 3)).toEqual([
-      "249",
-      "248",
-      "247",
-    ])
-    expect(secondPreviousMessagePositions.slice(47, 50)).toEqual([
-      "202",
-      "201",
-      "200",
-    ])
+    expect(secondPreviousMessagePositions.slice(0, 3)).toEqual(["249", "248", "247"])
+    expect(secondPreviousMessagePositions.slice(47, 50)).toEqual(["202", "201", "200"])
 
     const backToNextResponse = await makeRequest(
       `/community/${channelName}?cursor=${secondPreviousData.pageProps.messages.next}&direction=older`,
@@ -395,19 +366,10 @@ describe("@chat messages", () => {
 
     const backToNextData = await backToNextResponse.json()
 
-    const backToNextMessagePositions =
-      getMessagePositionsFromResponse(backToNextData)
+    const backToNextMessagePositions = getMessagePositionsFromResponse(backToNextData)
 
-    expect(backToNextMessagePositions.slice(0, 3)).toEqual([
-      "199",
-      "198",
-      "197",
-    ])
-    expect(backToNextMessagePositions.slice(47, 50)).toEqual([
-      "152",
-      "151",
-      "150",
-    ])
+    expect(backToNextMessagePositions.slice(0, 3)).toEqual(["199", "198", "197"])
+    expect(backToNextMessagePositions.slice(47, 50)).toEqual(["152", "151", "150"])
 
     const backToNextSecondResponse = await makeRequest(
       `/community/${channelName}?cursor=${backToNextData.pageProps.messages.next}&direction=older`,
@@ -421,21 +383,11 @@ describe("@chat messages", () => {
     const backToNextSecondMessagePositions =
       getMessagePositionsFromResponse(backToNextSecondData)
 
-    expect(backToNextSecondMessagePositions.slice(0, 3)).toEqual([
-      "149",
-      "148",
-      "147",
-    ])
-    expect(backToNextSecondMessagePositions.slice(47, 50)).toEqual([
-      "102",
-      "101",
-      "100",
-    ])
+    expect(backToNextSecondMessagePositions.slice(0, 3)).toEqual(["149", "148", "147"])
+    expect(backToNextSecondMessagePositions.slice(47, 50)).toEqual(["102", "101", "100"])
   })
 
-  test("can fetch a specific message in the community", async ({
-    expect,
-  }) => {
+  test("can fetch a specific message in the community", async ({ expect }) => {
     const { channelName, allMessagesIds } = await setupTestMessages()
 
     const messageId = allMessagesIds.slice(75, 120)[0]
@@ -452,11 +404,7 @@ describe("@chat messages", () => {
 
     const channelRepository = container.make(ChannelRepository)
 
-    const latest = await channelRepository.channelMessages(
-      channel,
-      undefined,
-      "older",
-    )
+    const latest = await channelRepository.channelMessages(channel, undefined, "older")
 
     const secondLatest = await channelRepository.channelMessages(
       channel,
@@ -476,16 +424,11 @@ describe("@chat messages", () => {
       "older",
     )
 
-    const fourthLatestPositions = getMessagePositionsFromResponse(
-      fourthLatest.data,
-    )
+    const fourthLatestPositions = getMessagePositionsFromResponse(fourthLatest.data)
 
-    const response = await makeRequest(
-      `/community/${channelName}/m/${messageId}`,
-      {
-        method: "GET",
-      },
-    )
+    const response = await makeRequest(`/community/${channelName}/m/${messageId}`, {
+      method: "GET",
+    })
 
     const data = await response.json()
 
@@ -545,9 +488,7 @@ describe("@chat messages", () => {
     expect(data.pageProps.replies.data).toHaveLength(50)
     expect(data.pageProps.messages.data).toHaveLength(50)
 
-    const positions = getMessagePositionsFromResponse(
-      data.pageProps.replies.data,
-    )
+    const positions = getMessagePositionsFromResponse(data.pageProps.replies.data)
 
     expect(positions.slice(0, 3)).toEqual(["100", "99", "98"])
     expect(positions.slice(47, 50)).toEqual(["53", "52", "51"])
@@ -569,9 +510,7 @@ describe("@chat messages", () => {
     expect(nextRepliesPositions.slice(47, 50)).toEqual(["3", "2", "1"])
   })
 
-  test("can fetch a specific message in a message thread", async ({
-    expect,
-  }) => {
+  test("can fetch a specific message in a message thread", async ({ expect }) => {
     const { channelName, allMessagesIds, user } = await setupTestMessages()
 
     const messageId = allMessagesIds.slice(75, 120)[0]
@@ -599,9 +538,7 @@ describe("@chat messages", () => {
 
     const data = await response.json()
 
-    const positions = getMessagePositionsFromResponse(
-      data.pageProps.replies.data,
-    )
+    const positions = getMessagePositionsFromResponse(data.pageProps.replies.data)
 
     expect(positions.slice(0, 3)).toEqual(["75", "74", "73"])
     expect(positions.slice(47, 50)).toEqual(["28", "27", "26"])
@@ -615,9 +552,7 @@ describe("@chat messages", () => {
 
     const nextData = await nextResponse.json()
 
-    const nextPositions = getMessagePositionsFromResponse(
-      nextData.pageProps.replies.data,
-    )
+    const nextPositions = getMessagePositionsFromResponse(nextData.pageProps.replies.data)
 
     expect(nextPositions.slice(0, 3)).toEqual(["25", "24", "23"])
     expect(nextPositions.slice(22, 25)).toEqual(["3", "2", "1"])

@@ -33,17 +33,14 @@ export enum ContainerKey {
   vikeRenderPage = "vikeRenderPage",
 }
 
-export const makeApp = () =>
-  container.singleton<HonoInstance>(ContainerKey.app)
+export const makeApp = () => container.singleton<HonoInstance>(ContainerKey.app)
 
 export const makeDatabase = () =>
   container.singleton<DrizzleClient>(ContainerKey.database)
 
-export const makeRedis = () =>
-  container.singleton<Redis>(ContainerKey.redis)
+export const makeRedis = () => container.singleton<Redis>(ContainerKey.redis)
 
 export const makeDatabaseConnection = () =>
   container.singleton<Connection>(ContainerKey.databaseConnection)
 
-export const makeLogger = () =>
-  container.singleton<Logger>(ContainerKey.logger)
+export const makeLogger = () => container.singleton<Logger>(ContainerKey.logger)

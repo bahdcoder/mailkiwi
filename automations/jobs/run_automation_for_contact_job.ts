@@ -33,10 +33,7 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
     return AVAILABLE_QUEUES.automations
   }
 
-  async handle({
-    database,
-    payload,
-  }: JobContext<RunAutomationForContactJobPayload>) {
+  async handle({ database, payload }: JobContext<RunAutomationForContactJobPayload>) {
     // check if contact matches the trigger for this automation.
 
     const automation = await container
@@ -51,9 +48,7 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
     })
 
     if (!trigger) {
-      return this.fail(
-        `No trigger found for automation with id ${payload.automationId}`,
-      )
+      return this.fail(`No trigger found for automation with id ${payload.automationId}`)
     }
 
     const audience = await container
@@ -76,13 +71,12 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
       )
     }
 
-    const nextAutomationStep =
-      await database.query.automationSteps.findFirst({
-        where: and(
-          eq(automationSteps.parentId, trigger.id),
-          eq(automationSteps.automationId, payload.automationId),
-        ),
-      })
+    const nextAutomationStep = await database.query.automationSteps.findFirst({
+      where: and(
+        eq(automationSteps.parentId, trigger.id),
+        eq(automationSteps.automationId, payload.automationId),
+      ),
+    })
 
     if (!nextAutomationStep) {
       return this.fail(

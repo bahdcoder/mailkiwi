@@ -6,9 +6,7 @@ import { container } from "@/utils/typi.js"
 
 export class RejectTeamMemberInviteAction {
   constructor(
-    protected teamMembershipRepository = container.make(
-      TeamMembershipRepository,
-    ),
+    protected teamMembershipRepository = container.make(TeamMembershipRepository),
   ) {}
 
   handle = async (invite: TeamMembership) => {

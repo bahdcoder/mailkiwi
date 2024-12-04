@@ -24,8 +24,7 @@ export const generateAcmeAccountIdentityCommand = command({
       return
     }
 
-    const { accountPrivateKey } =
-      await acmeCertificatesTool.createAccount()
+    const { accountPrivateKey } = await acmeCertificatesTool.createAccount()
 
     await settingRepository.create({
       acmeAccountIdentity: accountPrivateKey.toString("utf-8"),

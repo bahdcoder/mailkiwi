@@ -6,9 +6,7 @@ import { container } from "@/utils/typi.js"
 
 export class AddSendingSourceAction {
   async handle(payload: InsertSendingSource) {
-    const { id } = await container
-      .make(SendingSourceRepository)
-      .create(payload)
+    const { id } = await container.make(SendingSourceRepository).create(payload)
 
     return id
   }

@@ -11,18 +11,13 @@ import type {
   Contact,
   ValidatedEmailContent,
 } from "@/database/database_schema_types.js"
-import {
-  type ACTION_SEND_EMAIL_CONFIGURATION,
-  emails,
-} from "@/database/schema.js"
+import { type ACTION_SEND_EMAIL_CONFIGURATION, emails } from "@/database/schema.js"
 
 import { Mailer } from "@/shared/mailers/mailer.js"
 
 import { container } from "@/utils/typi.js"
 
-export class SendEmailAutomationStepRunner
-  implements AutomationStepRunnerContract
-{
+export class SendEmailAutomationStepRunner implements AutomationStepRunnerContract {
   constructor(
     private automationStep: AutomationStep,
     private contact: Contact,
@@ -32,9 +27,7 @@ export class SendEmailAutomationStepRunner
     const configuration = this.automationStep
       .configuration as ACTION_SEND_EMAIL_CONFIGURATION
 
-    const email = await container
-      .make(EmailRepository)
-      .findById(configuration.emailId)
+    const email = await container.make(EmailRepository).findById(configuration.emailId)
 
     // Email might have been deleted. Do nothing.
     if (!email || !email?.emailContent) {
@@ -45,10 +38,7 @@ export class SendEmailAutomationStepRunner
       email.emailContent as ValidatedEmailContent
 
     const [response, error] = await Mailer.from(fromEmail, fromName)
-      .to(
-        this.contact.email,
-        `${this.contact.firstName} ${this.contact.lastName}`,
-      )
+      .to(this.contact.email, `${this.contact.firstName} ${this.contact.lastName}`)
       .subject(subject)
       .content(contentHtml, contentText)
       .send()

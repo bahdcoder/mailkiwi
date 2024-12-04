@@ -18,10 +18,7 @@ export const downloadGeolite2Database = command({
   },
   async handler({ force }) {
     const decompressedFilePath = resolve(process.cwd(), "geo")
-    const newDatabaseFilePath = resolve(
-      decompressedFilePath,
-      "cities.mmdb",
-    )
+    const newDatabaseFilePath = resolve(decompressedFilePath, "cities.mmdb")
 
     if (existsSync(newDatabaseFilePath) && !force) {
       console.log("Cities database already downloaded.")
@@ -36,23 +33,16 @@ export const downloadGeolite2Database = command({
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    const compressedFilePath = resolve(
-      process.cwd(),
-      "geo",
-      "mmdb_cities.tar.gz",
-    )
+    const compressedFilePath = resolve(process.cwd(), "geo", "mmdb_cities.tar.gz")
 
-    const compressedFileOutputStream =
-      createWriteStream(compressedFilePath)
+    const compressedFileOutputStream = createWriteStream(compressedFilePath)
 
     console.log("Streaming to compressed zip file.")
     await pipeline(response.body as any, compressedFileOutputStream)
 
     const compressedFileReadStream = createReadStream(compressedFilePath)
 
-    console.log(
-      "Stream compressed file, decompress and write to final db file.",
-    )
+    console.log("Stream compressed file, decompress and write to final db file.")
 
     await pipeline(
       compressedFileReadStream,
@@ -71,11 +61,7 @@ export const downloadGeolite2Database = command({
         continue
       }
 
-      const databaseFilePath = resolve(
-        decompressedFilePath,
-        file,
-        "GeoLite2-City.mmdb",
-      )
+      const databaseFilePath = resolve(decompressedFilePath, file, "GeoLite2-City.mmdb")
 
       await rename(databaseFilePath, newDatabaseFilePath)
 

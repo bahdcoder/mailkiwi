@@ -17,10 +17,7 @@ export class Cache {
     return `${this.cacheNamespace}:${key}`
   }
 
-  async get<T extends object>(
-    key: string,
-    $defaultFn: () => T,
-  ): Promise<T> {
+  async get<T extends object>(key: string, $defaultFn: () => T): Promise<T> {
     const cacheKey = this.cacheKey(key)
 
     let cachedValue = await this.redis.get(cacheKey)

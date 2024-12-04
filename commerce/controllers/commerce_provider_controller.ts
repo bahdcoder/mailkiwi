@@ -20,9 +20,7 @@ export class CommerceProviderController extends BaseController {
   ) {
     super()
 
-    this.app.defineRoutes([
-      ["POST", "/commerce/connect", this.connect.bind(this)],
-    ])
+    this.app.defineRoutes([["POST", "/commerce/connect", this.connect.bind(this)]])
 
     container.resolve(StripeWebhookController)
   }
@@ -42,22 +40,20 @@ export class CommerceProviderController extends BaseController {
         return ctx.json({ id: team.commerceProviderAccountId })
       }
 
-      const { onboardingLink } =
-        await commerceProvider.createOnboardingLink(
-          team.commerceProviderAccountId,
-        )
+      const { onboardingLink } = await commerceProvider.createOnboardingLink(
+        team.commerceProviderAccountId,
+      )
 
       return ctx.redirect(onboardingLink)
     }
 
-    const { id: accountId, onboardingLink } =
-      await commerceProvider.createAccount({
-        email: user.email,
-        country: payload.country,
-        teamId: team.id,
-        name: `${team.name}: ${team.id}`,
-        payoutInformation: payload.payoutInformation,
-      })
+    const { id: accountId, onboardingLink } = await commerceProvider.createAccount({
+      email: user.email,
+      country: payload.country,
+      teamId: team.id,
+      name: `${team.name}: ${team.id}`,
+      payoutInformation: payload.payoutInformation,
+    })
 
     if (onboardingLink) {
       return ctx.redirect(onboardingLink)

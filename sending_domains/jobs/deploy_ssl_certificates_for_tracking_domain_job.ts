@@ -24,9 +24,7 @@ export class DeploySslCertificateForTrackingDomainJob extends BaseJob<DeploySslC
     payload,
   }: JobContext<DeploySslCertificateForTrackingDomainJobPayload>) {
     const sendingDomainRepository = container.make(SendingDomainRepository)
-    const sendingDomain = await sendingDomainRepository.findById(
-      payload.sendingDomainId,
-    )
+    const sendingDomain = await sendingDomainRepository.findById(payload.sendingDomainId)
 
     if (!sendingDomain) {
       return this.done(

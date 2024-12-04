@@ -23,10 +23,7 @@ export class SegmentBuilder {
     for (const condition of conditions) {
       if (condition.field.startsWith("properties.")) {
         queryConditions.push(
-          ...new PropertiesSegmentBuilder(
-            condition,
-            this.audience,
-          ).build(),
+          ...new PropertiesSegmentBuilder(condition, this.audience).build(),
         )
         break
       }
@@ -39,20 +36,14 @@ export class SegmentBuilder {
         case "lastTrackedActivityUsingBrowser":
         case "lastTrackedActivityUsingDevice":
           queryConditions.push(
-            ...new FieldSegmentBuilder(
-              condition.operation,
-              condition.value,
-            )
+            ...new FieldSegmentBuilder(condition.operation, condition.value)
               .forField(contacts[condition.field])
               .buildCommonOperations(),
           )
           break
         case "tags":
           queryConditions.push(
-            ...new TagsSegmentBuilder(
-              condition.operation,
-              condition.value,
-            ).build(),
+            ...new TagsSegmentBuilder(condition.operation, condition.value).build(),
           )
           break
         case "subscribedAt":
@@ -63,9 +54,7 @@ export class SegmentBuilder {
         case "lastOpenedAutomationEmailAt":
         case "lastClickedBroadcastEmailLinkAt":
         case "lastClickedAutomationEmailLinkAt":
-          queryConditions.push(
-            ...new ActivitySegmentBuilder(condition).build(),
-          )
+          queryConditions.push(...new ActivitySegmentBuilder(condition).build())
           break
         default:
           break

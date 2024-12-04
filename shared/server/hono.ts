@@ -1,4 +1,5 @@
 import type { HonoRouteDefinition } from "./types.js"
+import { appEnv } from "@/app/env/app_env.js"
 import type { HttpBindings } from "@hono/node-server"
 import { Hono as BaseHono, Handler, type MiddlewareHandler } from "hono"
 import { pinoLogger } from "hono-pino"
@@ -22,15 +23,10 @@ export type RouteOptions = {
 export type HonoInstance = BaseHono<{
   Bindings: HttpBindings
 }> & {
-  defineRoutes: (
-    routes: HonoRouteDefinition[],
-    routeOptions?: RouteOptions,
-  ) => void
+  defineRoutes: (routes: HonoRouteDefinition[], routeOptions?: RouteOptions) => void
 }
 
-export class Hono
-  extends BaseHono<{ Bindings: HttpBindings }>
-  implements HonoInstance {
+export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoInstance {
   protected defaultMiddleware(): MiddlewareHandler[] {
     return [
       container.resolve(UserSessionMiddleware).handle,
@@ -58,7 +54,10 @@ export class Hono
     const logger = makeLogger()
 
     this.onError((error, ctx) => {
+      // d({ error })
+
       logger.error(error)
+
       if (error instanceof E_REQUEST_EXCEPTION) {
         return ctx.json(
           {

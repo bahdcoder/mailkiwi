@@ -10,9 +10,7 @@ import { makeRequestAsUser } from "@/tests/utils/http.js"
 import { container } from "@/utils/typi.js"
 
 describe("@auth API Token Generation", () => {
-  test("can generate an api token for api and smtp access", async ({
-    expect,
-  }) => {
+  test("can generate an api token for api and smtp access", async ({ expect }) => {
     const { user } = await createUser()
 
     const response = await makeRequestAsUser(user, {

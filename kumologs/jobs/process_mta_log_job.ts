@@ -11,10 +11,7 @@ import { ContactRepository } from "@/audiences/repositories/contact_repository.j
 
 import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
-import {
-  EmailSend,
-  SendingDomain,
-} from "@/database/database_schema_types.js"
+import { EmailSend, SendingDomain } from "@/database/database_schema_types.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
@@ -60,10 +57,7 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
     )
 
     const handlers: Partial<
-      Record<
-        MtaLog["type"],
-        (emailSendingId: string, log: MtaLog) => Promise<void>
-      >
+      Record<MtaLog["type"], (emailSendingId: string, log: MtaLog) => Promise<void>>
     > = {
       Click: logTypeHandler.handleClickAndOpenEvent,
       Open: logTypeHandler.handleClickAndOpenEvent,
@@ -82,9 +76,7 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
 
 export class LogTypeHandler {
   constructor(
-    protected emailSendEventRepository = container.make(
-      EmailSendEventRepository,
-    ),
+    protected emailSendEventRepository = container.make(EmailSendEventRepository),
     protected sendingDomain: SendingDomain,
     protected emailSend: EmailSend,
     protected log: MtaLog,
@@ -97,9 +89,7 @@ export class LogTypeHandler {
 
     const sendingSource = await container
       .make(SendingSourceRepository)
-      .findByIpv4Address(
-        ipv4AdressFromIpAndPort(log?.source_address?.address),
-      )
+      .findByIpv4Address(ipv4AdressFromIpAndPort(log?.source_address?.address))
 
     sendingSourceId = sendingSource?.id
 
@@ -167,20 +157,16 @@ export class LogTypeHandler {
             ? {
                 lastClickedBroadcastEmailLinkAt: DateTime.now().toJSDate(),
                 lastTrackedActivityFrom: city?.country?.isoCode,
-                lastTrackedActivityUsingDevice:
-                  parsedUserAgent.device.model,
-                lastTrackedActivityUsingBrowser:
-                  parsedUserAgent.browser.name,
+                lastTrackedActivityUsingDevice: parsedUserAgent.device.model,
+                lastTrackedActivityUsingBrowser: parsedUserAgent.browser.name,
               }
             : {}),
           ...(log.type === "Open"
             ? {
                 lastOpenedBroadcastEmailAt: DateTime.now().toJSDate(),
                 lastTrackedActivityFrom: city?.country?.isoCode,
-                lastTrackedActivityUsingDevice:
-                  parsedUserAgent.device.model,
-                lastTrackedActivityUsingBrowser:
-                  parsedUserAgent.browser.name,
+                lastTrackedActivityUsingDevice: parsedUserAgent.device.model,
+                lastTrackedActivityUsingBrowser: parsedUserAgent.browser.name,
               }
             : {}),
         })

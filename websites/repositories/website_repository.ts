@@ -1,10 +1,7 @@
 import { appEnv } from "@/app/env/app_env.js"
 import { and, eq } from "drizzle-orm"
 
-import {
-  InsertWebsite,
-  UpdateWebsite,
-} from "@/database/database_schema_types.js"
+import { InsertWebsite, UpdateWebsite } from "@/database/database_schema_types.js"
 import { websitePages, websites } from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
@@ -71,9 +68,7 @@ export class WebsiteRepository extends BaseRepository {
       .limit(1)
 
     if (website && website.websiteSslCertChallengeKeyAuthorization) {
-      website.websiteSslCertChallengeKeyAuthorization = new Encryption(
-        appEnv.APP_KEY,
-      )
+      website.websiteSslCertChallengeKeyAuthorization = new Encryption(appEnv.APP_KEY)
         .decrypt(website.websiteSslCertChallengeKeyAuthorization as string)
         ?.release() as string
     }
@@ -137,10 +132,7 @@ export class WebsiteRepository extends BaseRepository {
         .release()
     }
 
-    await this.database
-      .update(websites)
-      .set(payload)
-      .where(eq(websites.id, websiteId))
+    await this.database.update(websites).set(payload).where(eq(websites.id, websiteId))
 
     return { id: websiteId }
   }

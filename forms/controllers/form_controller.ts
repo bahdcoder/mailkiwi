@@ -58,9 +58,7 @@ export class FormController extends BaseController {
   }
 
   async ensureFormExists(ctx: HonoContext) {
-    const form = await this.formRepository
-      .forms()
-      .findById(ctx.req.param("formId"))
+    const form = await this.formRepository.forms().findById(ctx.req.param("formId"))
 
     if (!form) {
       throw E_VALIDATION_FAILED([

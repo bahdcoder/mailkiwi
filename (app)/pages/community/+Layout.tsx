@@ -23,9 +23,7 @@ function Layout({ children }: PropsWithChildren) {
           })}
         </div>
       </div>
-      <div className="flex flex-grow w-full p-6 h-screen overflow-y-auto">
-        {children}
-      </div>
+      <div className="flex flex-grow w-full p-6 h-screen overflow-y-auto">{children}</div>
     </div>
   )
 }

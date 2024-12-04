@@ -21,9 +21,7 @@ import {
 
 import { Queue } from "@/shared/queue/queue.js"
 
-export class AddTagAutomationStepRunner
-  implements AutomationStepRunnerContract
-{
+export class AddTagAutomationStepRunner implements AutomationStepRunnerContract {
   constructor(
     private automationStep: AutomationStep,
     private contact: Contact,
@@ -31,25 +29,19 @@ export class AddTagAutomationStepRunner
   ) {}
 
   async run({ database }: AutomationStepRunnerContext) {
-    const configuration = this.automationStep
-      .configuration as RULE_IF_ELSE_CONFIGURATION
+    const configuration = this.automationStep.configuration as RULE_IF_ELSE_CONFIGURATION
 
     // if / else has 2 branches.
-    const automationStepBranches =
-      await database.query.automationSteps.findMany({
-        where: and(
-          eq(automationSteps.parentId, this.automationStep.id),
-          isNotNull(automationSteps.branchIndex),
-        ),
-      })
+    const automationStepBranches = await database.query.automationSteps.findMany({
+      where: and(
+        eq(automationSteps.parentId, this.automationStep.id),
+        isNotNull(automationSteps.branchIndex),
+      ),
+    })
 
-    const yesBranch = automationStepBranches.find(
-      (branch) => branch.branchIndex === 0,
-    )
+    const yesBranch = automationStepBranches.find((branch) => branch.branchIndex === 0)
 
-    const noBranch = automationStepBranches.find(
-      (branch) => branch.branchIndex === 0,
-    )
+    const noBranch = automationStepBranches.find((branch) => branch.branchIndex === 0)
 
     if (!yesBranch) {
       // user did not define anything on the yes branch, we halt automation
@@ -65,10 +57,7 @@ export class AddTagAutomationStepRunner
       .where(
         and(
           eq(contacts.id, this.contact.id),
-          new SegmentBuilder(
-            configuration.filterGroups,
-            this.audience,
-          ).build(),
+          new SegmentBuilder(configuration.filterGroups, this.audience).build(),
         ),
       )
       .limit(1)

@@ -10,17 +10,14 @@ import { container } from "@/utils/typi.js"
 
 export class AcceptTeamMemberInviteAction {
   constructor(
-    protected teamMembershipRepository = container.make(
-      TeamMembershipRepository,
-    ),
+    protected teamMembershipRepository = container.make(TeamMembershipRepository),
   ) {}
 
   private validateInviteExpiry(invite: TeamMembership) {
     if (DateTime.fromJSDate(invite.expiresAt) < DateTime.now()) {
       throw E_VALIDATION_FAILED([
         {
-          message:
-            "Invitation has expired. Please ask for the invitation to be resent.",
+          message: "Invitation has expired. Please ask for the invitation to be resent.",
           field: "token",
         },
       ])

@@ -40,9 +40,7 @@ export class BaseRepository {
     return cuid()
   }
 
-  removeNullUndefined<T extends Record<string, unknown>>(
-    obj: ObjectWithNullable<T>,
-  ) {
+  removeNullUndefined<T extends Record<string, unknown>>(obj: ObjectWithNullable<T>) {
     return Object.fromEntries(
       Object.entries(obj).filter((entry) => {
         const [_, value] = entry
@@ -51,9 +49,7 @@ export class BaseRepository {
     ) as T
   }
 
-  crud<Table extends AnyMySqlTable & { id: AnyMySqlColumn }>(
-    table: Table,
-  ) {
+  crud<Table extends AnyMySqlTable & { id: AnyMySqlColumn }>(table: Table) {
     const database = makeDatabase()
 
     const self = this
@@ -90,16 +86,10 @@ export class BaseRepository {
           .where(and(eq(table.id, id), ...conditions))
       },
       async delete(id: string, conditions: SQLWrapper[] = []) {
-        await database
-          .delete(table)
-          .where(and(eq(table.id, id), ...conditions))
+        await database.delete(table).where(and(eq(table.id, id), ...conditions))
       },
       async findById(id: string) {
-        const [row] = await database
-          .select()
-          .from(table)
-          .where(eq(table.id, id))
-          .limit(1)
+        const [row] = await database.select().from(table).where(eq(table.id, id)).limit(1)
 
         return row
       },

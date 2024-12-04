@@ -1,4 +1,6 @@
 import { appEnv } from "@/app/env/app_env.js"
+import { randomBytes } from "crypto"
+import { setSignedCookie } from "hono/cookie"
 
 import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
@@ -6,7 +8,8 @@ import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_t
 import type { Team, User } from "@/database/database_schema_types.js"
 
 import { makeApp } from "@/shared/container/index.js"
-import type { HTTPMethods } from "@/shared/server/types.js"
+import type { HTTPMethods, HonoContext } from "@/shared/server/types.js"
+import { RedisSessionStore } from "@/shared/sessions/stores/redis_session_store.js"
 import { getAuthenticationHeaders } from "@/shared/utils/auth/get_auth_headers.js"
 
 import { container } from "@/utils/typi.js"
@@ -23,10 +26,7 @@ export async function makeRequest(
 
   return app.request(path, {
     method: options.method,
-    body:
-      options.method !== "GET"
-        ? JSON.stringify(options.body ?? {})
-        : undefined,
+    body: options.method !== "GET" ? JSON.stringify(options.body ?? {}) : undefined,
     headers: new Headers({
       "Content-Type": "application/json",
       ...options?.headers,
@@ -35,23 +35,40 @@ export async function makeRequest(
 }
 
 export async function getCookieSessionForUser(user: User) {
-  const response = await makeRequest("/auth/login", {
-    method: "POST",
-    body: {
-      email: user.email,
-      password: "password",
-    },
+  const sessionId = randomBytes(32).toString("hex")
+
+  await container.make(RedisSessionStore).create(user.id, sessionId, {
+    ip: "192.101.23.34",
+    userAgent: "Mozilla/5.0",
   })
 
-  const [sessionCookie] = response.headers.getSetCookie()
+  let encryptedSessionId = ""
 
-  return sessionCookie
+  const header = function (name: string, cookie: string) {
+    encryptedSessionId = cookie
+  }
+
+  await setSignedCookie(
+    {
+      header,
+    } as unknown as HonoContext,
+    "session",
+    sessionId,
+    appEnv.APP_KEY.release(),
+    {
+      sameSite: "Strict",
+      prefix: "secure",
+      secure: appEnv.isProd,
+      httpOnly: true,
+      path: "/",
+    },
+  )
+
+  return encryptedSessionId
 }
 
 export async function getApiKeyForTeam(teamId: string) {
-  const { apiKey } = await container
-    .make(CreateTeamAccessTokenAction)
-    .handle(teamId)
+  const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(teamId)
 
   return `Bearer ${apiKey}`
 }

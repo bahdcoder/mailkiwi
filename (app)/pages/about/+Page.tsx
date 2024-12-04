@@ -4,9 +4,7 @@ import { usePageContext } from "vike-react/usePageContext"
 function Page() {
   const pageContext: any = usePageContext()
 
-  const [counter, setCounter] = useState<number>(
-    pageContext.pageProps?.defaultCount,
-  )
+  const [counter, setCounter] = useState<number>(pageContext.pageProps?.defaultCount)
 
   return (
     <>

@@ -3,10 +3,7 @@ import { eq } from "drizzle-orm"
 import type { CreateAutomationStepDto } from "@/automations/dto/create_automation_step_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import {
-  type AutomationStepConfiguration,
-  automationSteps,
-} from "@/database/schema.js"
+import { type AutomationStepConfiguration, automationSteps } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"

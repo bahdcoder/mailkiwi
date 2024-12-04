@@ -14,29 +14,21 @@ import { container } from "@/utils/typi.js"
 export class UpdateBroadcastAction {
   constructor(
     private broadcastRepository = container.make(BroadcastRepository),
-    private emailContentRepository = container.make(
-      EmailContentRepository,
-    ),
-    private abTestVariantRepository = container.make(
-      AbTestVariantRepository,
-    ),
+    private emailContentRepository = container.make(EmailContentRepository),
+    private abTestVariantRepository = container.make(AbTestVariantRepository),
     private database = makeDatabase(),
   ) {}
 
   async handle(broadcast: Broadcast, payload: UpdateBroadcastDto) {
-    const { emailContent, emailContentVariants, ...broadcastPayload } =
-      payload
+    const { emailContent, emailContentVariants, ...broadcastPayload } = payload
 
     await this.database.transaction(async (trx) => {
-      const hasAbTestVariants =
-        emailContentVariants && emailContentVariants.length > 0
+      const hasAbTestVariants = emailContentVariants && emailContentVariants.length > 0
       if (Object.keys(broadcastPayload).length > 0) {
-        await this.broadcastRepository
-          .transaction(trx)
-          .update(broadcast.id, {
-            ...broadcastPayload,
-            isAbTest: hasAbTestVariants || broadcast.isAbTest,
-          })
+        await this.broadcastRepository.transaction(trx).update(broadcast.id, {
+          ...broadcastPayload,
+          isAbTest: hasAbTestVariants || broadcast.isAbTest,
+        })
       }
 
       if (emailContent && Object.keys(emailContent).length > 0) {

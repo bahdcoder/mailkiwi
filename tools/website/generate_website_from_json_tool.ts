@@ -6,18 +6,11 @@ import { Cheerio, CheerioAPI, load as cheerioLoad } from "cheerio"
 
 export class GenerateWebsiteFromJsonTool {
   protected $: CheerioAPI
-  constructor(
-    protected content: Required<
-      UpdateWebsitePageDto["draftWebsiteContent"]
-    >,
-  ) {
+  constructor(protected content: Required<UpdateWebsitePageDto["draftWebsiteContent"]>) {
     this.$ = cheerioLoad("<body></body>")
   }
 
-  async createDomNodesAndAppendToNode(
-    blocks: HTMLJsonBlock[],
-    node: Cheerio<any>,
-  ) {
+  async createDomNodesAndAppendToNode(blocks: HTMLJsonBlock[], node: Cheerio<any>) {
     if (!blocks || !blocks.length) {
       return
     }

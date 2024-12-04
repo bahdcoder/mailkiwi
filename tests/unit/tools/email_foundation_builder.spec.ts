@@ -340,8 +340,7 @@ describe("Emails with Foundation v2 framework", () => {
                   elements: [
                     {
                       type: "text",
-                      value:
-                        "What are you waiting for? Get started today!",
+                      value: "What are you waiting for? Get started today!",
                     },
                   ],
                 },

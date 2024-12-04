@@ -13,9 +13,7 @@ import { container } from "@/utils/typi.js"
 export class InviteTeamMemberAction {
   constructor(
     private userRepository = container.make(UserRepository),
-    private teamMembershipRepository = container.make(
-      TeamMembershipRepository,
-    ),
+    private teamMembershipRepository = container.make(TeamMembershipRepository),
   ) {}
 
   handle = async (payload: InviteTeamMemberDto, teamId: string) => {

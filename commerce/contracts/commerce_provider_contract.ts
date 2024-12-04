@@ -29,9 +29,7 @@ export interface CommerceProviderContract {
     account: AccountInformation,
   ) => Promise<{ id: string; onboardingLink?: string }>
 
-  createOnboardingLink: (
-    accountId: string,
-  ) => Promise<{ onboardingLink: string }>
+  createOnboardingLink: (accountId: string) => Promise<{ onboardingLink: string }>
 
   initialiseOneTimePayment: (
     payload: InitializeOneTimePaymentPayload,

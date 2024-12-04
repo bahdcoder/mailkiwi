@@ -25,10 +25,7 @@ export class WorkerIgnitor extends Ignitor {
   registerJobs() {
     this.registerJob(SendBroadcastJob.id, SendBroadcastJob)
     this.registerJob(SendBroadcastToContact.id, SendBroadcastToContact)
-    this.registerJob(
-      SendTransactionalEmailJob.id,
-      SendTransactionalEmailJob,
-    )
+    this.registerJob(SendTransactionalEmailJob.id, SendTransactionalEmailJob)
   }
 
   private registerJob(id: string, job: new () => BaseJob<object>) {
@@ -71,13 +68,9 @@ export class WorkerIgnitor extends Ignitor {
 
   listen(queueNames: string[]) {
     for (const [idx, queue] of queueNames.entries()) {
-      this.workers[idx] = new Worker(
-        queue,
-        async (job) => this.processJob(job),
-        {
-          connection: makeRedis(),
-        },
-      )
+      this.workers[idx] = new Worker(queue, async (job) => this.processJob(job), {
+        connection: makeRedis(),
+      })
 
       this.workers[idx].on("completed", function jobCompleted(job) {
         d(["Completed:", job.id, job.data])

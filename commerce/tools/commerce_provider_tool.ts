@@ -5,9 +5,7 @@ import { StripeCommerceProvider } from "@/commerce/providers/stripe/stripe_comme
 import { container } from "@/utils/typi.js"
 
 export class CommerceProviderTool {
-  createProvider(
-    name: "stripe" | "paystack" | "flutterwave",
-  ): CommerceProviderContract {
+  createProvider(name: "stripe" | "paystack" | "flutterwave"): CommerceProviderContract {
     switch (name) {
       case "stripe":
         return container.make(StripeCommerceProvider)

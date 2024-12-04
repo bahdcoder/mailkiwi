@@ -7,20 +7,12 @@ import type {
   AutomationStepRunnerContract,
 } from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
 
-import type {
-  AutomationStep,
-  Contact,
-} from "@/database/database_schema_types.js"
-import {
-  type ACTION_ADD_TAG_CONFIGURATION,
-  tags,
-} from "@/database/schema.js"
+import type { AutomationStep, Contact } from "@/database/database_schema_types.js"
+import { type ACTION_ADD_TAG_CONFIGURATION, tags } from "@/database/schema.js"
 
 import { container } from "@/utils/typi.js"
 
-export class AddTagAutomationStepRunner
-  implements AutomationStepRunnerContract
-{
+export class AddTagAutomationStepRunner implements AutomationStepRunnerContract {
   constructor(
     private automationStep: AutomationStep,
     private contact: Contact,

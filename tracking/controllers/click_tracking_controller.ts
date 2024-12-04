@@ -16,25 +16,17 @@ export class ClickTrackingController extends BaseController {
   constructor(protected app = makeApp()) {
     super()
 
-    this.app.defineRoutes(
-      [["GET", "/c/:signature", this.index.bind(this)]],
-      {
-        prefix: "",
-        middleware: [],
-      },
-    )
+    this.app.defineRoutes([["GET", "/c/:signature", this.index.bind(this)]], {
+      prefix: "",
+      middleware: [],
+    })
   }
 
-  async queueLog(
-    ctx: HonoContext,
-    signature: DecodedSignature,
-    log?: Partial<MtaLog>,
-  ) {
+  async queueLog(ctx: HonoContext, signature: DecodedSignature, log?: Partial<MtaLog>) {
     await Queue.mta_logs().add(ProcessMtaLogJob.id, {
       log: {
         type: "Click",
-        ipv4_address:
-          ctx.req.header("x-forwarded-for") || ctx.req.header("x-real-ip"),
+        ipv4_address: ctx.req.header("x-forwarded-for") || ctx.req.header("x-real-ip"),
         user_agent: ctx.req.header("user-agent"),
         timestamp: DateTime.now().toSeconds(),
         headers: {

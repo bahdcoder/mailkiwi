@@ -7,7 +7,7 @@ import type { HonoContext } from "@/shared/server/types.js"
 import { container } from "@/utils/typi.js"
 
 export class AuthorizeSendingDomainMiddleware {
-  constructor(private teamRepository = container.make(TeamRepository)) { }
+  constructor(private teamRepository = container.make(TeamRepository)) {}
   handle = async (ctx: HonoContext, next: Next) => {
     const accessToken = ctx.get("accessToken")
 

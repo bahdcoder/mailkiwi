@@ -11,13 +11,10 @@ export class SmtpAuthController extends BaseController {
   constructor(private app = makeApp()) {
     super()
 
-    this.app.defineRoutes(
-      [["POST", "/mta/smtp/auth", this.index.bind(this)]],
-      {
-        prefix: "/",
-        middleware: [container.make(AuthorizeMtaCallsMiddleware).handle],
-      },
-    )
+    this.app.defineRoutes([["POST", "/mta/smtp/auth", this.index.bind(this)]], {
+      prefix: "/",
+      middleware: [container.make(AuthorizeMtaCallsMiddleware).handle],
+    })
   }
 
   async index(ctx: HonoContext) {

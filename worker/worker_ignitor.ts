@@ -23,10 +23,7 @@ export class WorkerIgnitor extends Ignitor {
   registerJobs() {
     this.registerJob(SendBroadcastJob.id, SendBroadcastJob)
     this.registerJob(SendBroadcastToContact.id, SendBroadcastToContact)
-    this.registerJob(
-      SendTransactionalEmailJob.id,
-      SendTransactionalEmailJob,
-    )
+    this.registerJob(SendTransactionalEmailJob.id, SendTransactionalEmailJob)
   }
 
   private registerJob(id: string, job: new () => BaseJob<object>) {
@@ -53,13 +50,9 @@ export class WorkerIgnitor extends Ignitor {
 
   listen(queueNames: string[]) {
     for (const [idx, queue] of queueNames.entries()) {
-      this.workers[idx] = new Worker(
-        queue,
-        async (job) => this.processJob(job),
-        {
-          connection: { host: "localhost", port: 6379 },
-        },
-      )
+      this.workers[idx] = new Worker(queue, async (job) => this.processJob(job), {
+        connection: { host: "localhost", port: 6379 },
+      })
     }
 
     d(`Queue listening for jobs on queues: ${queueNames.join(", ")}`)

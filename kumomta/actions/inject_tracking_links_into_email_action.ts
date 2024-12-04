@@ -13,9 +13,7 @@ interface TrackedLink {
 }
 
 export class InjectTrackingLinksIntoEmailAction {
-  constructor(
-    protected signedUrlManager = new SignedUrlManager(appEnv.APP_KEY),
-  ) {}
+  constructor(protected signedUrlManager = new SignedUrlManager(appEnv.APP_KEY)) {}
 
   rewriteHrefAttributes(
     html: string,
@@ -63,10 +61,7 @@ export class InjectTrackingLinksIntoEmailAction {
     let trackedHtml: string
 
     if (/<\/body\b/i.test(html)) {
-      trackedHtml = html.replace(
-        /<\/body\b/i,
-        (match) => "\r\n" + pixel + "\r\n" + match,
-      )
+      trackedHtml = html.replace(/<\/body\b/i, (match) => "\r\n" + pixel + "\r\n" + match)
     } else {
       trackedHtml = html + "\r\n" + pixel
     }
@@ -79,9 +74,7 @@ export class InjectTrackingLinksIntoEmailAction {
     trackingDomain: string,
     metadata?: Record<string, string>,
   ) {
-    const rewriter = new Rewriter((node) =>
-      ["text/html"].includes(node.contentType),
-    )
+    const rewriter = new Rewriter((node) => ["text/html"].includes(node.contentType))
 
     const self = this
 

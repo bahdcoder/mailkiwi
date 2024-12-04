@@ -32,10 +32,7 @@ export class BroadcastRepository extends BaseRepository {
     return { id }
   }
 
-  async update(
-    id: string,
-    { sendAt, ...payload }: Partial<UpdateSetBroadcastInput>,
-  ) {
+  async update(id: string, { sendAt, ...payload }: Partial<UpdateSetBroadcastInput>) {
     await this.database
       .update(broadcasts)
       .set({
@@ -53,10 +50,7 @@ export class BroadcastRepository extends BaseRepository {
   }
 
   async findByIdWithAbTestVariants(id: string) {
-    const broadcastEmailContents = alias(
-      emailContents,
-      "broadcastEmailContents",
-    )
+    const broadcastEmailContents = alias(emailContents, "broadcastEmailContents")
     const results = await this.database
       .select({
         broadcast: broadcasts,
@@ -73,14 +67,8 @@ export class BroadcastRepository extends BaseRepository {
         broadcastEmailContents,
         eq(broadcastEmailContents.id, broadcasts.emailContentId),
       )
-      .leftJoin(
-        abTestVariants,
-        eq(abTestVariants.broadcastId, broadcasts.id),
-      )
-      .leftJoin(
-        emailContents,
-        eq(emailContents.id, abTestVariants.emailContentId),
-      )
+      .leftJoin(abTestVariants, eq(abTestVariants.broadcastId, broadcasts.id))
+      .leftJoin(emailContents, eq(emailContents.id, abTestVariants.emailContentId))
       .where(eq(broadcasts.id, id))
 
     if (results.length === 0) {

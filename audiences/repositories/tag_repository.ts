@@ -24,11 +24,7 @@ export class TagRepository extends BaseRepository {
   }
 
   async findFirst(args: { where: SQL | undefined }) {
-    const [tag] = await this.database
-      .select()
-      .from(tags)
-      .where(args.where)
-      .limit(1)
+    const [tag] = await this.database.select().from(tags).where(args.where).limit(1)
 
     return tag
   }

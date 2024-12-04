@@ -18,10 +18,7 @@ import {
   createTestServer,
   shutdownTestServer,
 } from "@/tests/integration/helpers/server.js"
-import {
-  createBroadcastForUser,
-  createUser,
-} from "@/tests/mocks/auth/users.js"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
 import { getInjectEmailContent } from "@/tests/mocks/emails/email_content.js"
 import { injectEmailForTeam } from "@/tests/mocks/emails/email_content.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
@@ -29,11 +26,7 @@ import { getApiKeyForTeam } from "@/tests/utils/http.js"
 
 import { Audience } from "@/database/database_schema_types.js"
 
-import {
-  makeApp,
-  makeDatabase,
-  makeRedis,
-} from "@/shared/container/index.js"
+import { makeApp, makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { Queue } from "@/shared/queue/queue.js"
 import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
@@ -62,8 +55,7 @@ describe.sequential("@mta", () => {
     "@mta-injector Http server can inject an HTTP message using API access token",
     { retry: 2 },
     async ({ expect }) => {
-      const { TEST_DOMAIN, team } =
-        await setupDomainForDnsChecks("localgmail.net")
+      const { TEST_DOMAIN, team } = await setupDomainForDnsChecks("localgmail.net")
 
       await clearAllMailpitMessages()
 
@@ -104,8 +96,7 @@ describe.sequential("@mta", () => {
     "@mta-log-processor server queues log processor jobs",
     { timeout: 10000, retry: 2 },
     async ({ expect }) => {
-      const { TEST_DOMAIN, team } =
-        await setupDomainForDnsChecks("localgmail.net")
+      const { TEST_DOMAIN, team } = await setupDomainForDnsChecks("localgmail.net")
 
       const app = makeApp()
 
@@ -133,13 +124,9 @@ describe.sequential("@mta", () => {
         injectedRecipients.includes(job.data?.log?.recipient),
       )
 
-      const deliveryLogs = logsJobs.filter(
-        (job) => job.data.log.type === "Delivery",
-      )
+      const deliveryLogs = logsJobs.filter((job) => job.data.log.type === "Delivery")
 
-      const receptionLogs = logsJobs.filter(
-        (job) => job.data.log.type === "Reception",
-      )
+      const receptionLogs = logsJobs.filter((job) => job.data.log.type === "Reception")
 
       expect(logsJobs).toHaveLength(6)
       expect(deliveryLogs).toHaveLength(3)
@@ -151,8 +138,7 @@ describe.sequential("@mta", () => {
     "@mta-log-processor job processor stores all logs to the database",
     { timeout: 10000, retry: 2 },
     async ({ expect }) => {
-      const { TEST_DOMAIN, team } =
-        await setupDomainForDnsChecks("localgmail.net")
+      const { TEST_DOMAIN, team } = await setupDomainForDnsChecks("localgmail.net")
 
       const app = makeApp()
 
@@ -188,9 +174,7 @@ describe.sequential("@mta", () => {
       }
 
       const emailSendId =
-        processLogJobs?.[0]?.data?.log.headers?.[
-          appEnv.emailHeaders.emailSendId
-        ]
+        processLogJobs?.[0]?.data?.log.headers?.[appEnv.emailHeaders.emailSendId]
 
       const allEmailSends = await container
         .make(EmailSendRepository)
@@ -212,9 +196,7 @@ describe.sequential("@mta", () => {
 
       expect(deliveryEvent?.responseCode).toEqual(250)
       expect(deliveryEvent?.createdAt).toBeDefined()
-      expect(deliveryEvent?.peerAddressName).toEqual(
-        "mail.localgmail.net.",
-      )
+      expect(deliveryEvent?.peerAddressName).toEqual("mail.localgmail.net.")
 
       expect(receptionEvent?.responseCode).toEqual(250)
       expect(receptionEvent?.createdAt).toBeDefined()
@@ -247,14 +229,14 @@ describe.sequential("@mta", () => {
 
       const messages = await getAllMailpitMessages()
 
-      const messageIds = messages?.messages?.map(
-        (message) => message.MessageID,
-      )
+      const messageIds = messages?.messages?.map((message) => message.MessageID)
       expect(messageIds).toHaveLength(3)
 
-      expect(
-        messageIds?.map((messageId) => messageId.split("@")[1]),
-      ).toEqual([TEST_DOMAIN, TEST_DOMAIN, TEST_DOMAIN])
+      expect(messageIds?.map((messageId) => messageId.split("@")[1])).toEqual([
+        TEST_DOMAIN,
+        TEST_DOMAIN,
+        TEST_DOMAIN,
+      ])
 
       for (const message of messages?.messages ?? []) {
         const { $ } = await getMailpitMessageSource(message?.ID)
@@ -272,9 +254,7 @@ describe.sequential("@mta", () => {
 
           const [, signedLink] = link.split(trackingDomain)
 
-          const url = new SignedUrlManager(appEnv.APP_KEY).decode(
-            signedLink,
-          )
+          const url = new SignedUrlManager(appEnv.APP_KEY).decode(signedLink)
 
           expect(url?.original).toBeDefined()
         }
@@ -287,19 +267,13 @@ describe.sequential("@mta", () => {
   }) => {
     //
     const app = makeApp()
-    const { TEST_DOMAIN, team } =
-      await setupDomainForDnsChecks("localgmail.net")
+    const { TEST_DOMAIN, team } = await setupDomainForDnsChecks("localgmail.net")
 
-    const { injectEmail, response } = await injectEmailForTeam(
-      team.id,
-      TEST_DOMAIN,
-    )
+    const { injectEmail, response } = await injectEmailForTeam(team.id, TEST_DOMAIN)
 
     const json = await response.json()
 
-    const messageIds = json.messages.map(
-      (message: any) => message.messageId,
-    )
+    const messageIds = json.messages.map((message: any) => message.messageId)
 
     await sleep(2000)
 
@@ -327,9 +301,7 @@ describe.sequential("@mta", () => {
         },
       })
 
-      const unsigned = new SignedUrlManager(appEnv.APP_KEY).decode(
-        signature,
-      )
+      const unsigned = new SignedUrlManager(appEnv.APP_KEY).decode(signature)
 
       expect(response.status).toEqual(302)
       expect(response.headers.get("Location")).toEqual(unsigned?.original)
@@ -340,9 +312,8 @@ describe.sequential("@mta", () => {
     const clickJobs = jobs
       .filter(
         (job) =>
-          messageIds.includes(
-            job.data.log?.headers?.[appEnv.emailHeaders.emailSendId],
-          ) && job.data.log?.type === "Click",
+          messageIds.includes(job.data.log?.headers?.[appEnv.emailHeaders.emailSendId]) &&
+          job.data.log?.type === "Click",
       )
       .map((job) => job.data.log)
 
@@ -361,9 +332,7 @@ describe.sequential("@mta", () => {
     const response = await app.request("/c/1234")
 
     expect(response.status).toBe(302)
-    expect(response.headers.get("Location")).toEqual(
-      "https://kibamail.com",
-    )
+    expect(response.headers.get("Location")).toEqual("https://kibamail.com")
   })
 
   test("@click-tracking does not track links with disable-tracking attribute", async ({
@@ -371,18 +340,13 @@ describe.sequential("@mta", () => {
   }) => {
     //
     const app = makeApp()
-    const { TEST_DOMAIN, team } =
-      await setupDomainForDnsChecks("localgmail.net")
+    const { TEST_DOMAIN, team } = await setupDomainForDnsChecks("localgmail.net")
 
     const linkInEmail = "https://google.com"
 
-    const { injectEmail } = await injectEmailForTeam(
-      team.id,
-      TEST_DOMAIN,
-      {
-        html: `<a href="${linkInEmail}" disable-tracking="true">View my home page.</a>`,
-      },
-    )
+    const { injectEmail } = await injectEmailForTeam(team.id, TEST_DOMAIN, {
+      html: `<a href="${linkInEmail}" disable-tracking="true">View my home page.</a>`,
+    })
 
     await sleep(2000)
 
@@ -408,21 +372,19 @@ describe.sequential("@mta", () => {
   }) => {
     //
     const app = makeApp()
-    const { TEST_DOMAIN, team, sendingDomain } =
-      await setupDomainForDnsChecks("localgmail.net", {
+    const { TEST_DOMAIN, team, sendingDomain } = await setupDomainForDnsChecks(
+      "localgmail.net",
+      {
         clickTrackingEnabled: false,
-      })
+      },
+    )
 
     const linkInEmail = "https://google.com"
 
-    const { injectEmail } = await injectEmailForTeam(
-      team.id,
-      TEST_DOMAIN,
-      {
-        html: `<a href="${linkInEmail}">View my home page.</a>`,
-        clickTrackingEnabled: true,
-      },
-    )
+    const { injectEmail } = await injectEmailForTeam(team.id, TEST_DOMAIN, {
+      html: `<a href="${linkInEmail}">View my home page.</a>`,
+      clickTrackingEnabled: true,
+    })
 
     await sleep(2000)
 
@@ -445,23 +407,21 @@ describe.sequential("@mta", () => {
     )
   })
 
-  test("@open-tracking tracks when an email is opened", async ({
-    expect,
-  }) => {
+  test("@open-tracking tracks when an email is opened", async ({ expect }) => {
     const app = makeApp()
     const { TEST_DOMAIN, team, sendingDomain } =
       await setupDomainForDnsChecks("localgmail.net")
 
-    const { injectEmail, response: injectResponse } =
-      await injectEmailForTeam(team.id, TEST_DOMAIN)
+    const { injectEmail, response: injectResponse } = await injectEmailForTeam(
+      team.id,
+      TEST_DOMAIN,
+    )
 
     await sleep(2000)
 
     const json = await injectResponse.json()
 
-    const messageIds = json.messages.map(
-      (message: any) => message.messageId,
-    )
+    const messageIds = json.messages.map((message: any) => message.messageId)
 
     const { messages: allMessages } = await getAllMailpitMessages()
 
@@ -510,9 +470,8 @@ describe.sequential("@mta", () => {
     const openJobs = jobs
       .filter(
         (job) =>
-          messageIds.includes(
-            job.data.log?.headers?.[appEnv.emailHeaders.emailSendId],
-          ) && job.data.log?.type === "Open",
+          messageIds.includes(job.data.log?.headers?.[appEnv.emailHeaders.emailSendId]) &&
+          job.data.log?.type === "Open",
       )
       .map((job) => job.data.log)
 
@@ -529,19 +488,14 @@ describe.sequential("@mta", () => {
     expect,
   }) => {
     const app = makeApp()
-    const { TEST_DOMAIN, team } =
-      await setupDomainForDnsChecks("localgmail.net")
+    const { TEST_DOMAIN, team } = await setupDomainForDnsChecks("localgmail.net")
 
     const linkInEmail = "https://google.com"
 
-    const { injectEmail } = await injectEmailForTeam(
-      team.id,
-      TEST_DOMAIN,
-      {
-        html: `<a href="${linkInEmail}" disable-tracking="true">View my home page.</a>`,
-        openTrackingEnabled: false,
-      },
-    )
+    const { injectEmail } = await injectEmailForTeam(team.id, TEST_DOMAIN, {
+      html: `<a href="${linkInEmail}" disable-tracking="true">View my home page.</a>`,
+      openTrackingEnabled: false,
+    })
 
     await sleep(2000)
 
@@ -565,22 +519,20 @@ describe.sequential("@mta", () => {
   test("@open-tracking can track opens for an email even when tracking is disabled for domain", async ({
     expect,
   }) => {
-    const { TEST_DOMAIN, team, sendingDomain } =
-      await setupDomainForDnsChecks("localgmail.net", {
+    const { TEST_DOMAIN, team, sendingDomain } = await setupDomainForDnsChecks(
+      "localgmail.net",
+      {
         openTrackingEnabled: false,
         clickTrackingEnabled: false,
-      })
+      },
+    )
 
     const linkInEmail = "https://google.com"
 
-    const { injectEmail } = await injectEmailForTeam(
-      team.id,
-      TEST_DOMAIN,
-      {
-        html: `<a href="${linkInEmail}" disable-tracking="true">View my home page.</a>`,
-        openTrackingEnabled: true,
-      },
-    )
+    const { injectEmail } = await injectEmailForTeam(team.id, TEST_DOMAIN, {
+      html: `<a href="${linkInEmail}" disable-tracking="true">View my home page.</a>`,
+      openTrackingEnabled: true,
+    })
 
     await sleep(2000)
 
@@ -604,9 +556,7 @@ describe.sequential("@mta", () => {
     )
   })
 
-  test("@send-broadcasts-to-contact job injects email into mta", async ({
-    expect,
-  }) => {
+  test("@send-broadcasts-to-contact job injects email into mta", async ({ expect }) => {
     const { user, audience, team } = await createUser()
 
     const TEST_DOMAIN = "localgmail.net"
@@ -625,22 +575,18 @@ describe.sequential("@mta", () => {
       },
     })
 
-    const { id: contactId } = await container
-      .make(ContactRepository)
-      .create(
-        {
-          email: v1() + "@" + TEST_DOMAIN,
-        },
-        audience as Audience,
-      )
+    const { id: contactId } = await container.make(ContactRepository).create(
+      {
+        email: v1() + "@" + TEST_DOMAIN,
+      },
+      audience as Audience,
+    )
 
-    const { output } = await container
-      .make(SendBroadcastToContact)
-      .handle({
-        payload: { broadcastId, contactId },
-        database: makeDatabase(),
-        redis: makeRedis(),
-      })
+    const { output } = await container.make(SendBroadcastToContact).handle({
+      payload: { broadcastId, contactId },
+      database: makeDatabase(),
+      redis: makeRedis(),
+    })
 
     const [message] = output
 
@@ -650,8 +596,7 @@ describe.sequential("@mta", () => {
 
     const logJobs = jobs.filter(
       (job) =>
-        job.data.log?.headers?.[appEnv.emailHeaders.emailSendId] ===
-        message.messageId,
+        job.data.log?.headers?.[appEnv.emailHeaders.emailSendId] === message.messageId,
     )
 
     expect(logJobs).toHaveLength(2)

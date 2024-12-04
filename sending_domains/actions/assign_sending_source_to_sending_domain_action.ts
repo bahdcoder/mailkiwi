@@ -8,12 +8,8 @@ import { container } from "@/utils/typi.js"
 
 export class AssignSendingSourceToSendingDomainAction {
   constructor(
-    private sendingSourceRepository = container.make(
-      SendingSourceRepository,
-    ),
-    private sendingDomainRepository = container.make(
-      SendingDomainRepository,
-    ),
+    private sendingSourceRepository = container.make(SendingSourceRepository),
+    private sendingDomainRepository = container.make(SendingDomainRepository),
   ) {}
   async handle(sendingDomainId: string) {
     const sources =

@@ -23,9 +23,7 @@ export class IssueSSLCertificateForWebsiteJob extends BaseJob<IssueSSLCertificat
     return AVAILABLE_QUEUES.websites
   }
 
-  async handle({
-    payload,
-  }: JobContext<IssueSSLCertificateForWebsiteJobPayload>) {
+  async handle({ payload }: JobContext<IssueSSLCertificateForWebsiteJobPayload>) {
     const websiteRepository = container.make(WebsiteRepository)
     const website = await websiteRepository.findById(payload.websiteId)
 

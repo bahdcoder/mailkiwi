@@ -8,8 +8,6 @@ import { createServer as createHttpsServer } from "node:https"
 import path from "path"
 import { createServer as createViteServer } from "vite"
 
-import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
-
 import { VikeController } from "@/shared/controllers/vike_controller.js"
 import { HonoContext } from "@/shared/server/types.js"
 
@@ -26,13 +24,9 @@ export class IgnitorDev extends Ignitor {
 
     this.app.use(async (ctx, next) => {
       await new Promise((resolve) => {
-        viteDevServer.middlewares.handle(
-          ctx.env.incoming,
-          ctx.env.outgoing,
-          async () => {
-            return resolve(next())
-          },
-        )
+        viteDevServer.middlewares.handle(ctx.env.incoming, ctx.env.outgoing, async () => {
+          return resolve(next())
+        })
       })
     })
 
@@ -43,10 +37,7 @@ export class IgnitorDev extends Ignitor {
     this.app.all("*", (ctx, next) => {
       return container
         .make(VikeController)
-        .page(
-          ctx as unknown as HonoContext,
-          next,
-        ) as HandlerResponse<string>
+        .page(ctx as unknown as HonoContext, next) as HandlerResponse<string>
     })
   }
 
@@ -56,21 +47,15 @@ export class IgnitorDev extends Ignitor {
       port: this.env.PORT,
       createServer: createHttpsServer,
       serverOptions: {
-        key: await readFile(
-          path.resolve(process.cwd(), "certs", "localhost-key.pem"),
-        ),
-        cert: await readFile(
-          path.resolve(process.cwd(), "certs", "localhost.pem"),
-        ),
+        key: await readFile(path.resolve(process.cwd(), "certs", "localhost-key.pem")),
+        cert: await readFile(path.resolve(process.cwd(), "certs", "localhost.pem")),
       },
     }) as Server
 
     new WebsocketServer(server)
 
     server.listen(this.env.PORT, () => {
-      console.log(
-        `Monolith dev (HTTPS): 🌐 https://localhost:${this.env.PORT}`,
-      )
+      console.log(`Monolith dev (HTTPS): 🌐 https://localhost:${this.env.PORT}`)
     })
 
     serve(
@@ -79,9 +64,7 @@ export class IgnitorDev extends Ignitor {
         port: this.env.PORT + 100,
       },
       ({ address, port }) => {
-        console.log(
-          `Monolith dev (HTTP only): 🌐 http://localhost:${port}`,
-        )
+        console.log(`Monolith dev (HTTP only): 🌐 http://localhost:${port}`)
       },
     )
   }

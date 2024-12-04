@@ -1,8 +1,4 @@
-import type {
-  Context as BaseHonoContext,
-  Handler,
-  MiddlewareHandler,
-} from "hono"
+import type { Context as BaseHonoContext, Handler, MiddlewareHandler } from "hono"
 
 /**
  * Standard HTTP method strings

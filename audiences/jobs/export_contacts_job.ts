@@ -80,23 +80,16 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     ]
   }
 
-  private prepareContactsToCsv(
-    contactsToExport: Contact[],
-    audience: Audience,
-  ) {
+  private prepareContactsToCsv(contactsToExport: Contact[], audience: Audience) {
     return contactsToExport.map((contact: Record<string, any>) => {
       const fields: Record<string, any> = {}
 
       this.databaseColumnsToCsvHeaders(audience).forEach(
         ({ field, formatter, isAttribute }) => {
           if (isAttribute) {
-            fields[field.name] = formatter(
-              contact?.attributes?.[field.name],
-            )
+            fields[field.name] = formatter(contact?.attributes?.[field.name])
           } else {
-            fields[sentenceCase(field.name)] = formatter(
-              contact[field.name],
-            )
+            fields[sentenceCase(field.name)] = formatter(contact[field.name])
           }
         },
       )
@@ -109,13 +102,8 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     })
   }
 
-  async handle({
-    database,
-    payload,
-  }: JobContext<ExportContactsJobPayload>) {
-    const audience = await container
-      .make(AudienceRepository)
-      .findById(payload.audienceId)
+  async handle({ database, payload }: JobContext<ExportContactsJobPayload>) {
+    const audience = await container.make(AudienceRepository).findById(payload.audienceId)
 
     const filteredContacts = await container
       .make(ContactRepository)
@@ -153,18 +141,12 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
 
     await minio.write(readableCsvStream.pipe(fileStream))
 
-    const downloadUrl = await minio.presignedUrl(
-      this.HOURS_TO_EXPIRATION * 60 * 60,
-    )
+    const downloadUrl = await minio.presignedUrl(this.HOURS_TO_EXPIRATION * 60 * 60)
 
-    const user = await container
-      .make(UserRepository)
-      .findById(payload.exportCreatedBy)
+    const user = await container.make(UserRepository).findById(payload.exportCreatedBy)
 
     if (!user) {
-      return this.fail(
-        `Generated report, but could not find user to deliver to.`,
-      )
+      return this.fail(`Generated report, but could not find user to deliver to.`)
     }
 
     await Mailer.from(appEnv.SMTP_MAIL_FROM)

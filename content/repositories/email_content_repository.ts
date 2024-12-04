@@ -24,9 +24,7 @@ export class EmailContentRepository extends BaseRepository {
     }))
 
     await Promise.all(
-      variants.map((content) =>
-        this.database.insert(emailContents).values(content),
-      ),
+      variants.map((content) => this.database.insert(emailContents).values(content)),
     )
 
     return variants.map((variant) => variant.id)
@@ -56,9 +54,7 @@ export class EmailContentRepository extends BaseRepository {
     if (!emailContentId) {
       emailContentId = this.cuid()
 
-      await this.database
-        .insert(emailContents)
-        .values({ ...payload, id: emailContentId })
+      await this.database.insert(emailContents).values({ ...payload, id: emailContentId })
 
       await this.database
         .update(broadcasts)

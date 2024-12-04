@@ -32,16 +32,10 @@ import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
-export const setupImport = async (
-  fileName: string,
-  updateSettings = false,
-) => {
+export const setupImport = async (fileName: string, updateSettings = false) => {
   const form = new FormData()
 
-  const contactsCsv = await readFile(
-    resolve(__dirname, "mocks", fileName),
-    "utf-8",
-  )
+  const contactsCsv = await readFile(resolve(__dirname, "mocks", fileName), "utf-8")
 
   const contactsCsvBlob = new Blob([contactsCsv], {
     type: "text/csv",
@@ -196,16 +190,12 @@ describe("@contacts", () => {
 
     const { id } = await response.json()
 
-    const savedContact = await container
-      .make(ContactRepository)
-      .findById(id)
+    const savedContact = await container.make(ContactRepository).findById(id)
 
     expect(savedContact).toBeDefined()
     expect(savedContact.properties).toHaveLength(2)
 
-    const updatedAudience = await container
-      .make(AudienceRepository)
-      .findById(audience.id)
+    const updatedAudience = await container.make(AudienceRepository).findById(audience.id)
 
     const lastLoginAtProperty = savedContact.properties.find(
       (property) => property.name === "lastLoginAt",
@@ -240,9 +230,7 @@ describe("@contacts", () => {
 })
 
 describe("@contact-details", () => {
-  test("can fetch the details of a contact (including activity)", async ({
-    expect,
-  }) => {
+  test("can fetch the details of a contact (including activity)", async ({ expect }) => {
     const { user, audience } = await createUser()
     const { sendingDomain } = await setupDomainForDnsChecks()
 
@@ -307,8 +295,7 @@ describe("@contact-details", () => {
       body: contactPayload,
     })
 
-    const getContactActivityResponseJson =
-      await getContactActivityResponse.json()
+    const getContactActivityResponseJson = await getContactActivityResponse.json()
 
     expect(getContactActivityResponseJson.total).toBe(4)
     expect(getContactActivityResponseJson.data?.[0]).toMatchObject({
@@ -358,9 +345,7 @@ describe("@contacts update", () => {
     expect(updatedContact.lastName).toEqual(updateData.lastName)
     expect(updatedContact.avatarUrl).toEqual(updateData.avatarUrl)
 
-    expect(updatedContact?.properties?.[0]?.text).toEqual(
-      "frontend engineer",
-    )
+    expect(updatedContact?.properties?.[0]?.text).toEqual("frontend engineer")
   })
 
   test("can override properties", async ({ expect }) => {
@@ -506,9 +491,7 @@ describe("@contacts update", () => {
     expect(favouriteColorProperty?.text).toEqual("blue")
   })
 
-  test("cannot update without proper authorisation", async ({
-    expect,
-  }) => {
+  test("cannot update without proper authorisation", async ({ expect }) => {
     const { user, audience, team } = await createUser()
     const { user: unauthorizedUser } = await createUser()
     const database = makeDatabase()
@@ -540,9 +523,7 @@ describe("@contacts update", () => {
 })
 
 describe("@contacts imports", () => {
-  test("can import contacts into an audience as a csv file", async ({
-    expect,
-  }) => {
+  test("can import contacts into an audience as a csv file", async ({ expect }) => {
     const { response, imports } = await setupImport("contacts.csv")
 
     expect(response.status).toBe(200)
@@ -602,9 +583,7 @@ describe("@contacts imports", () => {
 
     expect(response.status).toBe(200)
 
-    const contactImport = await container
-      .make(ContactImportRepository)
-      .findById(importId)
+    const contactImport = await container.make(ContactImportRepository).findById(importId)
 
     expect(contactImport?.status).toBe("PROCESSING")
 
@@ -617,9 +596,7 @@ describe("@contacts imports", () => {
 })
 
 describe("@contacts exports", () => {
-  test("can export all contacts matching provided filterGroups", async ({
-    expect,
-  }) => {
+  test("can export all contacts matching provided filterGroups", async ({ expect }) => {
     const { user, audience } = await createUser()
 
     const filterGroups = {

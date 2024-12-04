@@ -67,11 +67,10 @@ export class ChatController extends VikeController {
 
     const messageId = ctx.req.param("messageId")
 
-    const { next: cursor } =
-      await this.messageRepository.findMessagePositionInChannel(
-        messageId,
-        channel.id,
-      )
+    const { next: cursor } = await this.messageRepository.findMessagePositionInChannel(
+      messageId,
+      channel.id,
+    )
 
     const messages = await this.channelRepository.channelMessages(
       channel,
@@ -79,9 +78,7 @@ export class ChatController extends VikeController {
       "older",
     )
 
-    const message = messages.data.find(
-      (message) => message.id === messageId,
-    )
+    const message = messages.data.find((message) => message.id === messageId)
 
     return {
       messages,
@@ -113,8 +110,7 @@ export class ChatController extends VikeController {
     const publicChannels = await this.getChannels()
 
     const cursor = ctx.req.query("cursor") as string
-    const direction =
-      (ctx.req.query("direction") as "older" | "newer") || "older"
+    const direction = (ctx.req.query("direction") as "older" | "newer") || "older"
 
     const messages = await this.channelRepository.channelMessages(
       channel,
@@ -161,8 +157,7 @@ export class ChatController extends VikeController {
   getRepliesQueryParameters = (ctx: HonoContext) => {
     const cursor = ctx.req.query("replies_cursor") as string
 
-    const direction =
-      (ctx.req.query("replies_direction") as "older" | "newer") || "older"
+    const direction = (ctx.req.query("replies_direction") as "older" | "newer") || "older"
 
     return { cursor, direction }
   }
@@ -182,12 +177,11 @@ export class ChatController extends VikeController {
     const replyId = ctx.req.param("replyId")
 
     if (!cursor) {
-      const replyPosition =
-        await this.messageRepository.findMessagePositionInChannel(
-          replyId,
-          channel.id,
-          message.id, // parentMessageId
-        )
+      const replyPosition = await this.messageRepository.findMessagePositionInChannel(
+        replyId,
+        channel.id,
+        message.id, // parentMessageId
+      )
 
       cursor = replyPosition.next
     }

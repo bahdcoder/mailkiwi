@@ -15,11 +15,7 @@ function Page() {
   }
 
   if (pageCtx.pageProps?.user) {
-    return (
-      <h1 className="text-4xl font-semibold">
-        You are already logged in !{" "}
-      </h1>
-    )
+    return <h1 className="text-4xl font-semibold">You are already logged in ! </h1>
   }
 
   return (

@@ -20,10 +20,7 @@ export class ContactsConcern {
 
     if (this.broadcast.segment) {
       segmentQueryConditions.push(
-        new SegmentBuilder(
-          this.broadcast.segment.filterGroups,
-          this.audience,
-        ).build(),
+        new SegmentBuilder(this.broadcast.segment.filterGroups, this.audience).build(),
       )
     }
 

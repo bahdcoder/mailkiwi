@@ -43,9 +43,7 @@ describe("@contacts exports job", () => {
       { name: faker.string.uuid(), audienceId: audience.id },
     ]
 
-    const createdTags = await container
-      .make(TagRepository)
-      .bulkCreate(tagsToCreate)
+    const createdTags = await container.make(TagRepository).bulkCreate(tagsToCreate)
 
     // bulk insert a bunch of random contacts for an audience
     await database

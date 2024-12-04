@@ -53,8 +53,6 @@ export function E_OPERATION_FAILED(message?: string, payload?: any) {
   throw E_REQUEST_EXCEPTION.E_OPERATION_FAILED(message, payload)
 }
 
-export function E_VALIDATION_FAILED(
-  error: ValibotValidationError[],
-): never {
+export function E_VALIDATION_FAILED(error: ValibotValidationError[]): never {
   throw E_REQUEST_EXCEPTION.E_VALIDATION_FAILED(error)
 }

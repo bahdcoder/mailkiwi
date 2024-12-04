@@ -31,30 +31,22 @@ export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepFor
     payload,
     redis,
   }: JobContext<RunAutomationStepForContactJobPayload>) {
-    const [automationStep, contact, [contactAutomationStep]] =
-      await Promise.all([
-        container
-          .make(AutomationStepRepository)
-          .findById(payload.automationStepId),
-        container.make(ContactRepository).findById(payload.contactId),
-        await database
-          .select()
-          .from(contactAutomationSteps)
-          .where(
-            and(
-              eq(contactAutomationSteps.contactId, payload.contactId),
-              eq(
-                contactAutomationSteps.automationStepId,
-                payload.automationStepId,
-              ),
-            ),
+    const [automationStep, contact, [contactAutomationStep]] = await Promise.all([
+      container.make(AutomationStepRepository).findById(payload.automationStepId),
+      container.make(ContactRepository).findById(payload.contactId),
+      await database
+        .select()
+        .from(contactAutomationSteps)
+        .where(
+          and(
+            eq(contactAutomationSteps.contactId, payload.contactId),
+            eq(contactAutomationSteps.automationStepId, payload.automationStepId),
           ),
-      ])
+        ),
+    ])
 
     if (contactAutomationStep) {
-      return this.done(
-        `Automation step already ran for contact ${payload.contactId}`,
-      )
+      return this.done(`Automation step already ran for contact ${payload.contactId}`)
     }
 
     if (!automationStep) {

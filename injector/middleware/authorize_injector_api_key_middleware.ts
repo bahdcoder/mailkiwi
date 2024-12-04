@@ -11,12 +11,9 @@ import type { HonoContext } from "@/shared/server/types.js"
 import { container } from "@/utils/typi.js"
 
 export class AuthorizeInjectorApiKeyMiddleware {
-  constructor(private teamRepository = container.make(TeamRepository)) { }
+  constructor(private teamRepository = container.make(TeamRepository)) {}
 
-  async verifySmtpCredentials(
-    smtpUsername?: string,
-    smtpPassword?: string,
-  ) {
+  async verifySmtpCredentials(smtpUsername?: string, smtpPassword?: string) {
     if (!smtpPassword || !smtpUsername) {
       throw E_UNAUTHORIZED()
     }
@@ -43,10 +40,9 @@ export class AuthorizeInjectorApiKeyMiddleware {
 
     ctx.set("accessToken", accessToken)
 
-    const teamWithSendingDomains =
-      await this.teamRepository.findByIdWithDomains(
-        accessToken.teamId as string,
-      )
+    const teamWithSendingDomains = await this.teamRepository.findByIdWithDomains(
+      accessToken.teamId as string,
+    )
 
     ctx.set("teamWithSendingDomains", teamWithSendingDomains)
 

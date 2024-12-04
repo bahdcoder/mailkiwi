@@ -1,15 +1,5 @@
 import { MessageRepository } from "./message_repository.js"
-import {
-  and,
-  asc,
-  desc,
-  eq,
-  gt,
-  isNotNull,
-  isNull,
-  lt,
-  sql,
-} from "drizzle-orm"
+import { and, asc, desc, eq, gt, isNotNull, isNull, lt, sql } from "drizzle-orm"
 
 import { Channel, Message } from "@/database/database_schema_types.js"
 import {
@@ -95,20 +85,16 @@ export class ChannelRepository extends BaseRepository {
         content: messages.content,
         user: sql`json_object(
                 'id', BIN_TO_UUID(${users.id}, 1),
-                'name', ${users.name},
+                'firstName', ${users.firstName},
+                'lastName', ${users.lastName},
                 'role', ${users.role}
             )`.as("user"),
       })
       .cursor(cursor)
-      .modifyQueryOrder(
-        direction === "older" ? desc(messages.id) : asc(messages.id),
-      )
+      .modifyQueryOrder(direction === "older" ? desc(messages.id) : asc(messages.id))
       .modifyQuery((query) =>
         query
-          .leftJoin(
-            reactionsSubQuery,
-            sql`${messages.id} = reactions.messageId`,
-          )
+          .leftJoin(reactionsSubQuery, sql`${messages.id} = reactions.messageId`)
           .leftJoin(users, eq(messages.userId, users.id))
           .groupBy(messages.id),
       )
@@ -123,11 +109,7 @@ export class ChannelRepository extends BaseRepository {
       .modifyCursorCondition(
         and(
           ...(cursor
-            ? [
-                direction === "older"
-                  ? lt(messages.id, cursor)
-                  : gt(messages.id, cursor),
-              ]
+            ? [direction === "older" ? lt(messages.id, cursor) : gt(messages.id, cursor)]
             : []),
         ),
       )
@@ -137,9 +119,7 @@ export class ChannelRepository extends BaseRepository {
           : {
               next: results[0][messages.id.name],
               previous:
-                results[MessageRepository.MESSAGE_PAGE_SIZE - 1][
-                  messages.id.name
-                ],
+                results[MessageRepository.MESSAGE_PAGE_SIZE - 1][messages.id.name],
             },
       )
       .cursorPaginate()

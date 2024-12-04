@@ -9,25 +9,17 @@ import { TeamWithMembers } from "@/shared/types/team.js"
 import { container } from "@/utils/typi.js"
 
 export class TeamMiddleware {
-  constructor(
-    private teamRepository: TeamRepository = container.make(
-      TeamRepository,
-    ),
-  ) {}
+  constructor(private teamRepository: TeamRepository = container.make(TeamRepository)) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
     const teamHeader = ctx.req.header(appEnv.software.teamHeader)
 
-    let team = teamHeader
-      ? await this.teamRepository.findById(teamHeader)
-      : undefined
+    let team = teamHeader ? await this.teamRepository.findById(teamHeader) : undefined
 
     const accessToken = ctx.get("accessToken")
 
     if (!team && accessToken.userId) {
-      team = await this.teamRepository.findUserDefaultTeam(
-        accessToken.userId,
-      )
+      team = await this.teamRepository.findUserDefaultTeam(accessToken.userId)
     }
 
     ctx.set("team", team as TeamWithMembers)

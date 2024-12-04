@@ -32,22 +32,17 @@ describe("@contact-session", () => {
       .make(ContactRepository)
       .create({ email: contactEmail }, audience as Audience)
 
-    const response = await makeRequest(
-      `/${WEBSITES_PATH}/${website.slug}/sessions`,
-      {
-        method: "POST",
-        body: { email: contactEmail },
-      },
-    )
+    const response = await makeRequest(`/${WEBSITES_PATH}/${website.slug}/sessions`, {
+      method: "POST",
+      body: { email: contactEmail },
+    })
 
     expect(response.status).toBe(200)
 
     // TODO: Assert email was sent with signed url for contact
   })
 
-  test("can confirm contact session creation using signed url", async ({
-    expect,
-  }) => {
+  test("can confirm contact session creation using signed url", async ({ expect }) => {
     const { website, audience } = await createUser({
       createWebsite: true,
     })
@@ -58,11 +53,12 @@ describe("@contact-session", () => {
       .make(ContactRepository)
       .create({ email: contactEmail }, audience as Audience)
 
-    const signedContactSessionCreateUrl = new SignedUrlManager(
-      appEnv.APP_KEY,
-    ).encode(contactId, {
-      e: DateTime.now().toUTC().plus({ minutes: 60 }).toISO(),
-    })
+    const signedContactSessionCreateUrl = new SignedUrlManager(appEnv.APP_KEY).encode(
+      contactId,
+      {
+        e: DateTime.now().toUTC().plus({ minutes: 60 }).toISO(),
+      },
+    )
 
     const response = await makeRequest(
       `/${WEBSITES_PATH}/${website.slug}/sessions/${signedContactSessionCreateUrl}`,

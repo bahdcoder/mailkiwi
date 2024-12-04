@@ -16,9 +16,7 @@ import { container } from "@/utils/typi.js"
 export class ContactImportController extends BaseController {
   constructor(
     private app = makeApp(),
-    private contactImportRepository = container.make(
-      ContactImportRepository,
-    ),
+    private contactImportRepository = container.make(ContactImportRepository),
   ) {
     super()
 
@@ -55,22 +53,16 @@ export class ContactImportController extends BaseController {
     this.ensureBelongsToTeam(ctx, audience)
     const contactImport = await this.ensureContactImportExists(ctx)
 
-    const data = await this.validate(
-      ctx,
-      UpdateContactImportSettingsSchema,
-    )
+    const data = await this.validate(ctx, UpdateContactImportSettingsSchema)
 
-    await container
-      .make(UpdateContactImportSettingsAction)
-      .handle(contactImport, data)
+    await container.make(UpdateContactImportSettingsAction).handle(contactImport, data)
 
     return ctx.json({ id: 1 })
   }
 
   private async ensureContactImportExists(ctx: HonoContext) {
     const importId = ctx.req.param("importId")
-    const contactImport =
-      await this.contactImportRepository.findById(importId)
+    const contactImport = await this.contactImportRepository.findById(importId)
 
     if (!contactImport)
       throw E_VALIDATION_FAILED([

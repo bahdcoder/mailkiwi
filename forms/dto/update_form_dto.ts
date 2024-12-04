@@ -19,9 +19,7 @@ import {
 export const UpdateFormSchema = pipe(
   object({
     name: optional(string()),
-    fields: optional(
-      pipe(array(FieldSchema), minLength(1), maxLength(10)),
-    ),
+    fields: optional(pipe(array(FieldSchema), minLength(1), maxLength(10))),
     appearance: optional(Appearance),
   }),
   firstQuestionHasNoConditionsCheck,

@@ -30,9 +30,7 @@ export class AccessTokenMiddleware {
       throw E_UNAUTHORIZED()
     }
 
-    const user = await this.userRepository.findById(
-      accessToken.userId as string,
-    )
+    const user = await this.userRepository.findById(accessToken.userId as string)
 
     if (!user) {
       throw E_UNAUTHORIZED()

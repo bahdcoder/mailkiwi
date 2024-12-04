@@ -16,16 +16,9 @@ import { ContactRepository } from "@/audiences/repositories/contact_repository.j
 
 import { GenerateWebsiteFromJsonTool } from "@/tools/website/generate_website_from_json_tool.js"
 
-import {
-  Audience,
-  Website,
-  WebsitePage,
-} from "@/database/database_schema_types.js"
+import { Audience, Website, WebsitePage } from "@/database/database_schema_types.js"
 
-import {
-  E_UNAUTHORIZED,
-  E_VALIDATION_FAILED,
-} from "@/http/responses/errors.js"
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { ContainerKey, makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
@@ -56,11 +49,7 @@ export class WebsiteController extends BaseController {
 
     this.app.defineRoutes(
       [
-        [
-          "PUT",
-          "/website_pages/:websitePageId",
-          this.updateWebsitePage.bind(this),
-        ],
+        ["PUT", "/website_pages/:websitePageId", this.updateWebsitePage.bind(this)],
         [
           "PUT",
           "/website_pages/:websitePageId/publish",
@@ -80,19 +69,11 @@ export class WebsiteController extends BaseController {
 
     this.app.defineRoutes(
       [
-        [
-          "GET",
-          "/.well-known/acme-challenge/:token",
-          this.acmeChallenge.bind(this),
-        ],
+        ["GET", "/.well-known/acme-challenge/:token", this.acmeChallenge.bind(this)],
         ["GET", "/:websitePageSlug?", this.index.bind(this)],
 
         // Contact sessions
-        [
-          "GET",
-          "/sessions/:signature",
-          this.confirmContactSession.bind(this),
-        ],
+        ["GET", "/sessions/:signature", this.confirmContactSession.bind(this)],
         ["POST", "/sessions/", this.createContactSession.bind(this)],
       ],
       {
@@ -160,9 +141,7 @@ export class WebsiteController extends BaseController {
 
     const payload = await this.validate(ctx, UpdateWebsitePageSchema)
 
-    await container
-      .make(WebsitePageRepository)
-      .updateById(websitePage.id, payload)
+    await container.make(WebsitePageRepository).updateById(websitePage.id, payload)
 
     return ctx.json({ id: websitePage.id })
   }
@@ -188,9 +167,7 @@ export class WebsiteController extends BaseController {
 
     const payload = await this.validate(ctx, CreateWebsitePageSchema)
 
-    const { id } = await container
-      .make(WebsitePageRepository)
-      .create(payload, website.id)
+    const { id } = await container.make(WebsitePageRepository).create(payload, website.id)
 
     return ctx.json({ id })
   }
@@ -205,9 +182,7 @@ export class WebsiteController extends BaseController {
       return ctx.notFound()
     }
 
-    return ctx.text(
-      website.websiteSslCertChallengeKeyAuthorization as string,
-    )
+    return ctx.text(website.websiteSslCertChallengeKeyAuthorization as string)
   }
 
   async index(ctx: HonoContext) {
@@ -221,17 +196,13 @@ export class WebsiteController extends BaseController {
 
     const websitePageSlug = ctx.req.param("websitePageSlug") ?? "/"
 
-    const page = website.pages.find(
-      (page) => page.path === websitePageSlug,
-    )
+    const page = website.pages.find((page) => page.path === websitePageSlug)
 
     if (!page || page.publishedAt === null) {
       return ctx.html("<h1>We could not find this page. </h1>", 404)
     }
 
-    const html = await new GenerateWebsiteFromJsonTool(
-      page.websiteContent,
-    ).toHtml()
+    const html = await new GenerateWebsiteFromJsonTool(page.websiteContent).toHtml()
 
     const appVersion = container.make(ContainerKey.version)
 
@@ -289,16 +260,13 @@ export class WebsiteController extends BaseController {
     if (!contact) {
       throw E_VALIDATION_FAILED([
         {
-          message:
-            "You do not seem to be subscribed. Please subscribe before you login.",
+          message: "You do not seem to be subscribed. Please subscribe before you login.",
           field: "email",
         },
       ])
     }
 
-    await container
-      .make(CreateContactSessionAction)
-      .handle(contact, website)
+    await container.make(CreateContactSessionAction).handle(contact, website)
 
     return ctx.json({ id: contact.id })
   }

@@ -7,10 +7,7 @@ import { describe, it } from "vitest"
 
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
-import {
-  createBroadcastForUser,
-  createUser,
-} from "@/tests/mocks/auth/users.js"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 
 import { Audience } from "@/database/database_schema_types.js"
@@ -51,14 +48,10 @@ describe("@process-mta-log", () => {
       })
     }
 
-    const emailSend = await container
-      .make(EmailSendRepository)
-      .findByIdWithEvents(id)
+    const emailSend = await container.make(EmailSendRepository).findByIdWithEvents(id)
 
     for (const eventType of ["Click", "Open"]) {
-      const event = emailSend.events?.find(
-        (event) => event.type === eventType,
-      )
+      const event = emailSend.events?.find((event) => event.type === eventType)
 
       expect(event?.originState).toBeDefined()
       expect(event?.originCity).toBeDefined()
@@ -97,14 +90,12 @@ describe("@process-mta-log", () => {
       product: "engage",
     })
 
-    const { id: contactId } = await container
-      .make(ContactRepository)
-      .create(
-        {
-          email: v1() + "@" + TEST_DOMAIN,
-        },
-        audience as Audience,
-      )
+    const { id: contactId } = await container.make(ContactRepository).create(
+      {
+        email: v1() + "@" + TEST_DOMAIN,
+      },
+      audience as Audience,
+    )
 
     function getLog(type?: string) {
       return {
@@ -137,9 +128,7 @@ describe("@process-mta-log", () => {
       redis: makeRedis(),
     })
 
-    const contact = await container
-      .resolve(ContactRepository)
-      .findById(contactId)
+    const contact = await container.resolve(ContactRepository).findById(contactId)
 
     expect(contact?.lastClickedBroadcastEmailLinkAt).toBeDefined()
     expect(contact?.lastOpenedBroadcastEmailAt).toBeDefined()

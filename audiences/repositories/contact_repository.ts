@@ -98,12 +98,8 @@ export class ContactRepository extends BaseRepository {
           audienceId: audience.id,
           contactId,
           name: knownProperty.id,
-          float:
-            knownProperty.type === "float"
-              ? parseFloat(value as string)
-              : null,
-          boolean:
-            knownProperty.type === "boolean" ? Boolean(value) : null,
+          float: knownProperty.type === "float" ? parseFloat(value as string) : null,
+          boolean: knownProperty.type === "boolean" ? Boolean(value) : null,
           date:
             knownProperty.type === "date"
               ? DateTime.fromISO(value as string).toJSDate()
@@ -124,12 +120,11 @@ export class ContactRepository extends BaseRepository {
 
     const properties = payload.properties ?? {}
 
-    const { contactPropertiesPayload } =
-      this.getContactPropertiesFromPayloadProperties(
-        audience,
-        id,
-        properties,
-      )
+    const { contactPropertiesPayload } = this.getContactPropertiesFromPayloadProperties(
+      audience,
+      id,
+      properties,
+    )
 
     await this.database.transaction(async (trx) => {
       await trx.insert(contacts).values({
@@ -139,9 +134,7 @@ export class ContactRepository extends BaseRepository {
       })
 
       if (contactPropertiesPayload.length > 0) {
-        await trx
-          .insert(contactProperties)
-          .values(contactPropertiesPayload)
+        await trx.insert(contactProperties).values(contactPropertiesPayload)
       }
     })
 
@@ -160,10 +153,7 @@ export class ContactRepository extends BaseRepository {
     return contactsToCreate as Contact[]
   }
 
-  async updateById(
-    contactId: string,
-    updatedContact: Partial<UpdateSetContactInput>,
-  ) {
+  async updateById(contactId: string, updatedContact: Partial<UpdateSetContactInput>) {
     await this.database
       .update(contacts)
       .set(updatedContact)
@@ -177,12 +167,11 @@ export class ContactRepository extends BaseRepository {
   ) {
     const { properties, ...restOfContactDetails } = updatedContact
 
-    const { contactPropertiesPayload } =
-      this.getContactPropertiesFromPayloadProperties(
-        audience,
-        contact.id,
-        properties ?? {},
-      )
+    const { contactPropertiesPayload } = this.getContactPropertiesFromPayloadProperties(
+      audience,
+      contact.id,
+      properties ?? {},
+    )
 
     const existingPropertyNames = contact.properties.map(
       (contactProperty) => contactProperty.name,
@@ -219,9 +208,7 @@ export class ContactRepository extends BaseRepository {
       for (const property of propertiesToCreate) {
         const { contactId, ...values } = property
 
-        await trx
-          .insert(contactProperties)
-          .values({ ...values, contactId })
+        await trx.insert(contactProperties).values({ ...values, contactId })
       }
 
       if (Object.keys(restOfContactDetails).length) {
@@ -247,11 +234,9 @@ export class ContactRepository extends BaseRepository {
       return { id: contactId }
     }
 
-    const existingTags = await this.database.query.tagsOnContacts.findMany(
-      {
-        where: eq(tagsOnContacts.contactId, contactId),
-      },
-    )
+    const existingTags = await this.database.query.tagsOnContacts.findMany({
+      where: eq(tagsOnContacts.contactId, contactId),
+    })
 
     const existingTagIds = existingTags.map((t) => t.tagId)
 
@@ -267,8 +252,7 @@ export class ContactRepository extends BaseRepository {
       )
 
       await Queue.automations().add(TriggerAutomationsForContactJob.id, {
-        trigger:
-          automationStepSubtypesTriggerMap.TRIGGER_CONTACT_TAG_ADDED,
+        trigger: automationStepSubtypesTriggerMap.TRIGGER_CONTACT_TAG_ADDED,
         contactId,
       })
     }
@@ -289,17 +273,12 @@ export class ContactRepository extends BaseRepository {
     return { id: contactId }
   }
 
-  async findAllContactsWithTags(
-    filters: SQL | undefined,
-  ): Promise<ContactWithTags[]> {
+  async findAllContactsWithTags(filters: SQL | undefined): Promise<ContactWithTags[]> {
     const contactsWithTags = await this.database
       .select()
       .from(contacts)
       .where(filters)
-      .leftJoin(
-        contactProperties,
-        eq(contactProperties.contactId, contacts.id),
-      )
+      .leftJoin(contactProperties, eq(contactProperties.contactId, contacts.id))
       .leftJoin(tagsOnContacts, eq(tagsOnContacts.contactId, contacts.id))
       .leftJoin(tags, eq(tags.id, tagsOnContacts.tagId))
 

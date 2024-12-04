@@ -26,20 +26,10 @@ export const CreateUserSchema = objectAsync({
     checkAsync(async (input) => {
       await container.make(UserRepository).findByEmail(input)
 
-      const userExists = await container
-        .make(UserRepository)
-        .findByEmail(input)
+      const userExists = await container.make(UserRepository).findByEmail(input)
 
       return userExists === undefined
-    }, "A user with this email already exists."),
-  ),
-  name: pipe(string(), maxLength(50)),
-  password: pipe(
-    string(),
-    regex(/[A-Z]/, "Must contain capital letter."),
-    regex(/[a-z]/, "Must contain lowercase letter."),
-    regex(/[0-9]/, "Must contain a number."),
-    regex(/[!@#$%^&*]/, "Must contain a special character."),
+    }, "A user with this email already exists. Are you trying to login instead?"),
   ),
 })
 

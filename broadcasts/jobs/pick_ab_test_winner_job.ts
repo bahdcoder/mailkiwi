@@ -14,10 +14,7 @@ export class PickAbTestWinnerJob extends BaseJob<PickAbTestWinnerJobPayload> {
     return AVAILABLE_QUEUES.abtests_broadcasts
   }
 
-  async handle({
-    database,
-    payload,
-  }: JobContext<PickAbTestWinnerJobPayload>) {
+  async handle({ database, payload }: JobContext<PickAbTestWinnerJobPayload>) {
     return this.done()
   }
 

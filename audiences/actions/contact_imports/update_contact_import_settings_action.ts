@@ -14,9 +14,7 @@ import { container } from "@/utils/typi.js"
 
 export class UpdateContactImportSettingsAction {
   constructor(
-    protected contactImportRepository = container.make(
-      ContactImportRepository,
-    ),
+    protected contactImportRepository = container.make(ContactImportRepository),
     protected audienceRepository = container.make(AudienceRepository),
     protected database = makeDatabase(),
   ) {}
@@ -30,25 +28,23 @@ export class UpdateContactImportSettingsAction {
     this.validateAttributes(payload, contactImport.attributesMap.headers)
 
     await this.database.transaction(async (trx) => {
-      await this.contactImportRepository
-        .transaction(trx)
-        .update(contactImport.id, {
-          status: "PROCESSING",
-          subscribeAllContacts:
-            payload.subscribeAllContacts === undefined
-              ? true
-              : payload.subscribeAllContacts,
-          updateExistingContacts:
-            payload.updateExistingContacts === undefined
-              ? true
-              : payload.updateExistingContacts,
-          attributesMap: {
-            ...payload.attributesMap,
-            headers,
-            tagIds: payload.tagIds ?? [],
-            tags: payload.tags ?? [],
-          },
-        })
+      await this.contactImportRepository.transaction(trx).update(contactImport.id, {
+        status: "PROCESSING",
+        subscribeAllContacts:
+          payload.subscribeAllContacts === undefined
+            ? true
+            : payload.subscribeAllContacts,
+        updateExistingContacts:
+          payload.updateExistingContacts === undefined
+            ? true
+            : payload.updateExistingContacts,
+        attributesMap: {
+          ...payload.attributesMap,
+          headers,
+          tagIds: payload.tagIds ?? [],
+          tags: payload.tags ?? [],
+        },
+      })
 
       await this.audienceRepository
         .transaction(trx)
@@ -65,10 +61,7 @@ export class UpdateContactImportSettingsAction {
     return { id: contactImport.id }
   }
 
-  private validateAttributes(
-    payload: UpdateContactImportSettingsDto,
-    headers: string[],
-  ) {
+  private validateAttributes(payload: UpdateContactImportSettingsDto, headers: string[]) {
     const headersFromPayload: string[] = [
       payload.attributesMap.email,
       payload.attributesMap.firstName,
@@ -77,9 +70,7 @@ export class UpdateContactImportSettingsAction {
     ]
 
     const headersSet = new Set(headers)
-    const headersAreValid = headersFromPayload.every((element) =>
-      headersSet.has(element),
-    )
+    const headersAreValid = headersFromPayload.every((element) => headersSet.has(element))
 
     if (!headersAreValid) {
       throw E_VALIDATION_FAILED([

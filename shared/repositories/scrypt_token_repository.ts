@@ -11,14 +11,10 @@ export class ScryptTokenRepository extends BaseRepository {
   protected scryptHashingKeyLength = 64
   protected hashAndSaltSeparator = ":"
 
-  async hash(secretKey: string) {
+  async hash(plainValue: string) {
     const salt = randomBytes(this.scryptSaltLength).toString("hex")
 
-    const hash = await this.scryptAsync(
-      secretKey,
-      salt,
-      this.scryptHashingKeyLength,
-    )
+    const hash = await this.scryptAsync(plainValue, salt, this.scryptHashingKeyLength)
 
     return salt + this.hashAndSaltSeparator + hash.toString("hex")
   }

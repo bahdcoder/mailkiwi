@@ -84,8 +84,7 @@ describe("@link-manager Link manager ", () => {
   })
 
   test("decode should handle encoded links with special characters", () => {
-    const original =
-      "https://example.com/path?query=special chars!@#$%^&*()"
+    const original = "https://example.com/path?query=special chars!@#$%^&*()"
     const metadata: UrlMetadata = { special: "!@#$%^&*()" }
     const encodedLink = linkManager.encode(original, metadata)
     const decodedData = linkManager.decode(encodedLink)

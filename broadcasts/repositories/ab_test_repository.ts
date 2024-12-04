@@ -15,9 +15,7 @@ import { container } from "@/utils/typi.js"
 export class AbTestVariantRepository extends BaseRepository {
   constructor(
     protected database: DrizzleClient = makeDatabase(),
-    private emailContentRepository = container.make(
-      EmailContentRepository,
-    ),
+    private emailContentRepository = container.make(EmailContentRepository),
   ) {
     super()
   }
@@ -43,46 +41,30 @@ export class AbTestVariantRepository extends BaseRepository {
     return abTestVariant
   }
 
-  async bulkUpsertVariants(
-    variants: EmailContentVariant[],
-    broadcastId: string,
-  ) {
-    const variantsToInsert = variants.filter(
-      (variant) => !variant.abTestVariantId,
-    )
+  async bulkUpsertVariants(variants: EmailContentVariant[], broadcastId: string) {
+    const variantsToInsert = variants.filter((variant) => !variant.abTestVariantId)
 
-    const variantsToUpdate = variants.filter(
-      (variant) => variant.abTestVariantId,
-    )
+    const variantsToUpdate = variants.filter((variant) => variant.abTestVariantId)
 
     const emailContentIdsToUpdate = await Promise.all(
-      variantsToUpdate.map((variant) =>
-        this.findById(variant.abTestVariantId as string),
-      ),
+      variantsToUpdate.map((variant) => this.findById(variant.abTestVariantId as string)),
     )
 
-    const variantsToUpdateWithEmailContentIds = variantsToUpdate.map(
-      (variant, idx) => ({
-        ...variant,
-        emailContentId: emailContentIdsToUpdate[idx].emailContentId,
-      }),
-    )
+    const variantsToUpdateWithEmailContentIds = variantsToUpdate.map((variant, idx) => ({
+      ...variant,
+      emailContentId: emailContentIdsToUpdate[idx].emailContentId,
+    }))
 
     this.emailContentRepository.transaction(this.database)
 
-    const emailContentIds =
-      await this.emailContentRepository.bulkCreate(variantsToInsert)
+    const emailContentIds = await this.emailContentRepository.bulkCreate(variantsToInsert)
 
-    await this.emailContentRepository.bulkUpdate(
-      variantsToUpdateWithEmailContentIds,
-    )
+    await this.emailContentRepository.bulkUpdate(variantsToUpdateWithEmailContentIds)
 
-    const variantsWithEmailContentIds = variantsToInsert.map(
-      (variant, idx) => ({
-        ...variant,
-        emailContentId: emailContentIds[idx],
-      }),
-    )
+    const variantsWithEmailContentIds = variantsToInsert.map((variant, idx) => ({
+      ...variant,
+      emailContentId: emailContentIds[idx],
+    }))
 
     await this.database.insert(abTestVariants).values(
       variantsWithEmailContentIds.map((variant) => ({

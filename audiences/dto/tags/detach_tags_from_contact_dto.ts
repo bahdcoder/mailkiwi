@@ -26,6 +26,4 @@ export const DetachTagsFromContactDto = objectAsync({
   ),
 })
 
-export type DetachTagsFromContactDto = InferInput<
-  typeof DetachTagsFromContactDto
->
+export type DetachTagsFromContactDto = InferInput<typeof DetachTagsFromContactDto>

@@ -1,16 +1,5 @@
-import {
-  SQL,
-  type SQLWrapper,
-  type SelectedFields,
-  and,
-  count,
-  gt,
-} from "drizzle-orm"
-import type {
-  AnyMySqlColumn,
-  AnyMySqlTable,
-  MySqlSelect,
-} from "drizzle-orm/mysql-core"
+import { SQL, type SQLWrapper, type SelectedFields, and, count, gt } from "drizzle-orm"
+import type { AnyMySqlColumn, AnyMySqlTable, MySqlSelect } from "drizzle-orm/mysql-core"
 
 import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
 
@@ -61,9 +50,7 @@ export class Paginator<RowType extends object = any> {
   ) {}
 
   queryConditions(conditions: (SQLWrapper | undefined)[]) {
-    this.conditions = conditions.filter(
-      (condition) => condition !== undefined,
-    )
+    this.conditions = conditions.filter((condition) => condition !== undefined)
 
     return this
   }
@@ -143,10 +130,7 @@ export class Paginator<RowType extends object = any> {
     previous: string | undefined
   }> {
     const selectSelect = this.$modifyQuery(
-      this.database
-        .selectDistinct(this.$selectColumns)
-        .from(this.table)
-        .$dynamic(),
+      this.database.selectDistinct(this.$selectColumns).from(this.table).$dynamic(),
     )
 
     if (!this.cursorPagination.field)
@@ -165,9 +149,7 @@ export class Paginator<RowType extends object = any> {
       ),
     )
       .limit(this.cursorPagination.size + 1)
-      .orderBy(
-        this.$queryOrder ? this.$queryOrder : this.cursorPagination.field,
-      )
+      .orderBy(this.$queryOrder ? this.$queryOrder : this.cursorPagination.field)
       .$dynamic()
 
     const result = await selectQuery.execute()
@@ -177,9 +159,7 @@ export class Paginator<RowType extends object = any> {
     const self = this
 
     const cursorResults = {
-      next: result[this.cursorPagination.size - 1]?.[
-        this.cursorPagination.field.name
-      ],
+      next: result[this.cursorPagination.size - 1]?.[this.cursorPagination.field.name],
       previous: result[0]?.[this.cursorPagination.field.name],
     }
 
@@ -189,9 +169,7 @@ export class Paginator<RowType extends object = any> {
         : cursorResults),
       // cursor: this.cursorPagination.cursor as string,
       finished,
-      data: await this.$transformRows(
-        finished ? result : result.slice(0, -1),
-      ),
+      data: await this.$transformRows(finished ? result : result.slice(0, -1)),
     }
   }
 
@@ -203,24 +181,17 @@ export class Paginator<RowType extends object = any> {
       this.database.select({ count: count() }).from(this.table).$dynamic(),
     )
 
-    const countQuery = this.$modifyWhereQuery(
-      countSelect.where(and(...this.conditions)),
-    )
+    const countQuery = this.$modifyWhereQuery(countSelect.where(and(...this.conditions)))
 
     const selectSelect = this.$modifyQuery(
-      this.database
-        .selectDistinct(this.$selectColumns)
-        .from(this.table)
-        .$dynamic(),
+      this.database.selectDistinct(this.$selectColumns).from(this.table).$dynamic(),
     )
 
     const selectQuery = this.$modifyWhereQuery(
       selectSelect.where(and(...this.conditions)),
     )
       .limit(this.offsetPagination.size)
-      .offset(
-        (this.offsetPagination.page - 1) * this.offsetPagination.size,
-      )
+      .offset((this.offsetPagination.page - 1) * this.offsetPagination.size)
 
     const [countResult, selectResult] = await Promise.all([
       countQuery.execute(),

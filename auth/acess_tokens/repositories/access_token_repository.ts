@@ -22,11 +22,7 @@ export class AccessTokenRepository extends ScryptTokenRepository {
     return randomBytes(this.bytesSize).toString("hex")
   }
 
-  async create(
-    ownerId: string,
-    type: "user" | "team",
-    capabilities: string[],
-  ) {
+  async create(ownerId: string, type: "user" | "team", capabilities: string[]) {
     const accessKey = this.getRandomBytes()
     const accessSecret = this.getRandomBytes()
 
@@ -64,9 +60,7 @@ export class AccessTokenRepository extends ScryptTokenRepository {
 
     const decodedToken = Buffer.from(base64Token, "base64").toString()
 
-    const [accessKey, accessSecret] = decodedToken.split(
-      this.keyPairDelimiter,
-    )
+    const [accessKey, accessSecret] = decodedToken.split(this.keyPairDelimiter)
 
     const token = await this.getAccessTokenFromAccessKey(accessKey)
 
@@ -86,16 +80,14 @@ export class AccessTokenRepository extends ScryptTokenRepository {
 
     await self.cache.namespace("access_tokens").clear(accessKey)
 
-    return self.cache
-      .namespace("access_tokens")
-      .get(accessKey, async function () {
-        const [token] = await self.database
-          .select()
-          .from(accessTokens)
-          .where(eq(accessTokens.accessKey, accessKey))
-          .limit(1)
+    return self.cache.namespace("access_tokens").get(accessKey, async function () {
+      const [token] = await self.database
+        .select()
+        .from(accessTokens)
+        .where(eq(accessTokens.accessKey, accessKey))
+        .limit(1)
 
-        return token
-      })
+      return token
+    })
   }
 }

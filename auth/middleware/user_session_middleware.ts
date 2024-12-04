@@ -7,10 +7,10 @@ import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import { User, UserWithTeams } from "@/database/database_schema_types.js"
+import { UserWithTeams } from "@/database/database_schema_types.js"
 
-import { Session } from "@/shared/cookies/cookies.js"
 import type { HonoContext } from "@/shared/server/types.js"
+import { Session } from "@/shared/sessions/sessions.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -39,9 +39,7 @@ export class UserSessionMiddleware {
     }
 
     if (contactSession) {
-      const contact = await this.contactRepository.findById(
-        contactSession.userId,
-      )
+      const contact = await this.contactRepository.findById(contactSession.userId)
 
       if (contact) {
         ctx.set("contact", contact)
@@ -53,8 +51,7 @@ export class UserSessionMiddleware {
     }
 
     let teamHeader =
-      ctx.req.header(appEnv.software.teamHeader) ??
-      authenticatedUser?.teams?.[0]?.id
+      ctx.req.header(appEnv.software.teamHeader) ?? authenticatedUser?.teams?.[0]?.id
 
     if (teamHeader) {
       const team = await this.teamRepository.findById(teamHeader)

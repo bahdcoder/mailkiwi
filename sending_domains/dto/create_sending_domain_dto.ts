@@ -21,10 +21,9 @@ export const CreateSendingDomainSchema = objectAsync({
     checkAsync(async (name) => {
       const database = makeDatabase()
 
-      const sendingDomainExists =
-        await database.query.sendingDomains.findFirst({
-          where: eq(sendingDomains.name, name),
-        })
+      const sendingDomainExists = await database.query.sendingDomains.findFirst({
+        where: eq(sendingDomains.name, name),
+      })
 
       return sendingDomainExists === undefined
     }, "This sending domain is already registered."),
@@ -32,6 +31,4 @@ export const CreateSendingDomainSchema = objectAsync({
   product: optional(picklist(["engage", "send"])),
 })
 
-export type CreateSendingDomainDto = InferInput<
-  typeof CreateSendingDomainSchema
->
+export type CreateSendingDomainDto = InferInput<typeof CreateSendingDomainSchema>

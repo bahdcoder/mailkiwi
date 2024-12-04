@@ -20,9 +20,7 @@ export class TeamPolicy {
 
     const isManager = team?.members?.find(
       (member) =>
-        member.userId &&
-        member.role === "MANAGER" &&
-        member.status === "ACTIVE",
+        member.userId && member.role === "MANAGER" && member.status === "ACTIVE",
     )
 
     return isManager || canAdministrate
@@ -32,10 +30,7 @@ export class TeamPolicy {
     const canManage = this.canManage(team, userId)
 
     const isAuthor = team?.members?.find(
-      (member) =>
-        member.userId &&
-        member.role === "AUTHOR" &&
-        member.status === "ACTIVE",
+      (member) => member.userId && member.role === "AUTHOR" && member.status === "ACTIVE",
     )
 
     return isAuthor || canManage
@@ -43,8 +38,7 @@ export class TeamPolicy {
 
   canView(team: TeamWithMembers, userId: string | null) {
     return (
-      team?.userId === userId ||
-      team?.members.find((member) => member.userId === userId)
+      team?.userId === userId || team?.members.find((member) => member.userId === userId)
     )
   }
 }

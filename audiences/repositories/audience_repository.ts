@@ -12,11 +12,7 @@ import { BaseRepository } from "@/shared/repositories/base_repository.js"
 import { container } from "@/utils/typi.js"
 
 export class AudienceRepository extends BaseRepository {
-  constructor(
-    protected database: DrizzleClient = container.make(
-      ContainerKey.database,
-    ),
-  ) {
+  constructor(protected database: DrizzleClient = container.make(ContainerKey.database)) {
     super()
   }
 
@@ -38,12 +34,7 @@ export class AudienceRepository extends BaseRepository {
     const [newsletter] = await this.database
       .select()
       .from(audiences)
-      .where(
-        and(
-          eq(audiences.teamId, teamId),
-          eq(audiences.product, "letters"),
-        ),
-      )
+      .where(and(eq(audiences.teamId, teamId), eq(audiences.product, "letters")))
       .limit(1)
 
     return newsletter
@@ -63,10 +54,7 @@ export class AudienceRepository extends BaseRepository {
   }
 
   async update(payload: UpdateSetAudienceInput, audienceId: string) {
-    await this.database
-      .update(audiences)
-      .set(payload)
-      .where(eq(audiences.id, audienceId))
+    await this.database.update(audiences).set(payload).where(eq(audiences.id, audienceId))
 
     return { id: audienceId }
   }
@@ -91,10 +79,7 @@ export class AudienceRepository extends BaseRepository {
     await this.database
       .update(audiences)
       .set({
-        knownProperties: [
-          ...(audience.knownProperties ?? []),
-          ...propertiesToBeCreated,
-        ],
+        knownProperties: [...(audience.knownProperties ?? []), ...propertiesToBeCreated],
       })
       .where(eq(audiences.id, audienceId))
   }

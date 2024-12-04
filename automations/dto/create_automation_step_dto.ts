@@ -58,20 +58,14 @@ export const CreateAutomationStepDto = pipeAsync(
       checkAsync(async (input) => {
         if (!input) return true
 
-        const automationStepRepository = container.make(
-          AutomationStepRepository,
-        )
+        const automationStepRepository = container.make(AutomationStepRepository)
 
-        const [automationStep, automationStepWithParent] =
-          await Promise.all([
-            automationStepRepository.findById(input),
-            automationStepRepository.findByParentId(input),
-          ])
+        const [automationStep, automationStepWithParent] = await Promise.all([
+          automationStepRepository.findById(input),
+          automationStepRepository.findByParentId(input),
+        ])
 
-        return (
-          automationStep !== undefined &&
-          automationStepWithParent === undefined
-        )
+        return automationStep !== undefined && automationStepWithParent === undefined
       }, "The parentId must be a valid automation step ID and must not be linked to another automation step."),
     ),
     emailId: pipeAsync(
@@ -120,36 +114,28 @@ export const CreateAutomationStepDto = pipeAsync(
   }),
   checkAsync((input) => {
     if (input.type === "TRIGGER") {
-      return safeParse(
-        picklist(automationStepSubtypesTrigger),
-        input.subtype,
-      ).success
+      return safeParse(picklist(automationStepSubtypesTrigger), input.subtype).success
     }
 
     return true
   }, "The subtype must be valid for the type trigger."),
   checkAsync((input) => {
     if (input.type === "RULE") {
-      return safeParse(picklist(automationStepSubtypesRule), input.subtype)
-        .success
+      return safeParse(picklist(automationStepSubtypesRule), input.subtype).success
     }
 
     return true
   }, "The subtype must be valid for the type rule."),
   checkAsync((input) => {
     if (input.type === "ACTION") {
-      return safeParse(
-        picklist(automationStepSubtypesAction),
-        input.subtype,
-      ).success
+      return safeParse(picklist(automationStepSubtypesAction), input.subtype).success
     }
 
     return true
   }, "The subtype must be valid for the type action."),
   checkAsync((input) => {
     if (input.type === "END") {
-      return safeParse(picklist(automationStepSubtypesEnd), input.subtype)
-        .success
+      return safeParse(picklist(automationStepSubtypesEnd), input.subtype).success
     }
 
     return true
@@ -179,12 +165,7 @@ export const CreateAutomationStepDto = pipeAsync(
                 literal("BLANK"),
                 literal("NOT_BLANK"),
               ]),
-              value: union([
-                string(),
-                number(),
-                array(string()),
-                array(number()),
-              ]),
+              value: union([string(), number(), array(string()), array(number())]),
             }),
           ),
         }),
@@ -215,10 +196,7 @@ export const CreateAutomationStepDto = pipeAsync(
     return true
   }, "The emailId must be present and valid for subtype ACTION_SEND_EMAIL."),
   checkAsync(async (input) => {
-    if (
-      input.subtype === "ACTION_ADD_TAG" ||
-      input.subtype === "ACTION_REMOVE_TAG"
-    ) {
+    if (input.subtype === "ACTION_ADD_TAG" || input.subtype === "ACTION_REMOVE_TAG") {
       return safeParse(string(), input.tagId).success
     }
 
@@ -236,6 +214,4 @@ export const CreateAutomationStepDto = pipeAsync(
   }, "The audienceId must be present for subtype ACTION_SUBSCRIBE_TO_AUDIENCE and ACTION_UNSUBSCRIBE_FROM_AUDIENCE."),
 )
 
-export type CreateAutomationStepDto = InferInput<
-  typeof CreateAutomationStepDto
->
+export type CreateAutomationStepDto = InferInput<typeof CreateAutomationStepDto>

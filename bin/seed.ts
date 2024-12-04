@@ -18,15 +18,9 @@ import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 import { AssignSendingSourceToSendingDomainAction } from "@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js"
 import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
 
-import {
-  refreshDatabase,
-  seedAutomation,
-} from "@/tests/mocks/teams/teams.js"
+import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
 
-import {
-  createDatabaseClient,
-  createDrizzleDatabase,
-} from "@/database/client.js"
+import { createDatabaseClient, createDrizzleDatabase } from "@/database/client.js"
 import type { Broadcast } from "@/database/database_schema_types.js"
 import { broadcasts, contacts, teams } from "@/database/schema.js"
 
@@ -81,15 +75,9 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
       slug: faker.lorem.words(3),
     }
 
-    console.log(
-      "Creating audience: ",
-      `${audienceIndex}: ${audiencePayload.name}`,
-    )
+    console.log("Creating audience: ", `${audienceIndex}: ${audiencePayload.name}`)
 
-    const audience = await createAudienceAction.handle(
-      audiencePayload,
-      team.id,
-    )
+    const audience = await createAudienceAction.handle(audiencePayload, team.id)
 
     await seedAutomation({
       audienceId: audience.id,
@@ -133,47 +121,43 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     await database.insert(contacts).values(mockContacts)
 
     // create a broadcast with complete information
-    const { id: broadcastId } = await container
-      .make(CreateBroadcastAction)
-      .handle(
-        {
-          name: faker.commerce.productName(),
-          audienceId: audience.id,
-        },
-        team.id,
-      )
+    const { id: broadcastId } = await container.make(CreateBroadcastAction).handle(
+      {
+        name: faker.commerce.productName(),
+        audienceId: audience.id,
+      },
+      team.id,
+    )
 
     const broadcast = await database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, broadcastId),
     })
 
-    await container
-      .make(UpdateBroadcastAction)
-      .handle(broadcast as Broadcast, {
-        emailContent: {
-          fromEmail: faker.internet.email(),
-          fromName: faker.person.fullName(),
-          replyToEmail: faker.internet.email(),
-          replyToName: faker.person.fullName(),
-          subject: faker.lorem.words(5),
-          previewText: faker.lorem.words(5),
-          contentHtml: await Fs.readFile(
-            Path.resolve(
-              Path.dirname(fileURLToPath(import.meta.url)),
-              "..",
-              "tests",
-              "snapshots",
-              "emails",
-              "foundation-emails-2.html",
-            ),
-            "utf-8",
+    await container.make(UpdateBroadcastAction).handle(broadcast as Broadcast, {
+      emailContent: {
+        fromEmail: faker.internet.email(),
+        fromName: faker.person.fullName(),
+        replyToEmail: faker.internet.email(),
+        replyToName: faker.person.fullName(),
+        subject: faker.lorem.words(5),
+        previewText: faker.lorem.words(5),
+        contentHtml: await Fs.readFile(
+          Path.resolve(
+            Path.dirname(fileURLToPath(import.meta.url)),
+            "..",
+            "tests",
+            "snapshots",
+            "emails",
+            "foundation-emails-2.html",
           ),
-          contentText: faker.lorem.paragraphs(12),
-        },
-        segmentId: undefined,
-        audienceId: undefined,
-        sendAt: addSecondsToDate(new Date(), 300).toDateString(),
-      })
+          "utf-8",
+        ),
+        contentText: faker.lorem.paragraphs(12),
+      },
+      segmentId: undefined,
+      audienceId: undefined,
+      sendAt: addSecondsToDate(new Date(), 300).toDateString(),
+    })
 
     broadcastIds.push({
       broadcastId,
@@ -183,9 +167,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
 
   console.log("\n Seeded data ✅ \n")
 
-  const { apiKey } = await container
-    .make(CreateTeamAccessTokenAction)
-    .handle(team.id)
+  const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(team.id)
 
   const { id: sendingDomainId } = await container
     .make(CreateSendingDomainAction)
@@ -193,9 +175,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
 
   await seedDevSendingSourcesCommand?.handler?.()
 
-  await container
-    .make(AssignSendingSourceToSendingDomainAction)
-    .handle(sendingDomainId)
+  await container.make(AssignSendingSourceToSendingDomainAction).handle(sendingDomainId)
 
   console.dir(
     [

@@ -3,11 +3,7 @@ import { and, eq, gte, inArray } from "drizzle-orm"
 import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
 
 import { Audience } from "@/database/database_schema_types.js"
-import {
-  KnownAudienceProperty,
-  contactProperties,
-  contacts,
-} from "@/database/schema.js"
+import { KnownAudienceProperty, contactProperties, contacts } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 

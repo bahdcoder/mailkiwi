@@ -57,10 +57,7 @@ export function getInjectEmailContent(
     },
     subject: cuid(),
     text: faker.lorem.paragraphs(12),
-    html: readFileSync(
-      path.resolve("tests/mocks/emails", "email.html"),
-      "utf-8",
-    ),
+    html: readFileSync(path.resolve("tests/mocks/emails", "email.html"), "utf-8"),
     replyTo: {
       name: faker.person.fullName(),
       email: cuid() + "@" + TEST_DOMAIN,

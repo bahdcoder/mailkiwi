@@ -2,17 +2,12 @@ import { ContactRepository } from "@/audiences/repositories/contact_repository.j
 
 import type { AutomationStepRunnerContract } from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
 
-import type {
-  AutomationStep,
-  Contact,
-} from "@/database/database_schema_types.js"
+import type { AutomationStep, Contact } from "@/database/database_schema_types.js"
 import type { ACTION_REMOVE_TAG_CONFIGURATION } from "@/database/schema.js"
 
 import { container } from "@/utils/typi.js"
 
-export class RemoveTagAutomationStepRunner
-  implements AutomationStepRunnerContract
-{
+export class RemoveTagAutomationStepRunner implements AutomationStepRunnerContract {
   constructor(
     private automationStep: AutomationStep,
     private contact: Contact,
@@ -24,9 +19,6 @@ export class RemoveTagAutomationStepRunner
 
     const contactRepository = container.resolve(ContactRepository)
 
-    await contactRepository.detachTags(
-      this.contact.id,
-      configuration.tagIds,
-    )
+    await contactRepository.detachTags(this.contact.id, configuration.tagIds)
   }
 }

@@ -21,6 +21,4 @@ export const CreateWebsitePageSchema = objectAsync({
   description: optional(string()),
 })
 
-export type CreateWebsitePageDto = InferInput<
-  typeof CreateWebsitePageSchema
->
+export type CreateWebsitePageDto = InferInput<typeof CreateWebsitePageSchema>

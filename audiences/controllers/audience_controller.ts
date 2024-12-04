@@ -31,9 +31,7 @@ export class AudienceController extends BaseController {
   async index(ctx: HonoContext) {
     const team = this.ensureTeam(ctx)
 
-    const product = (ctx.req.query("product") || "engage") as
-      | "letters"
-      | "engage"
+    const product = (ctx.req.query("product") || "engage") as "letters" | "engage"
 
     const data = await new Paginator(audiences)
       .queryConditions([
@@ -51,9 +49,7 @@ export class AudienceController extends BaseController {
 
     const team = this.ensureCanManage(ctx)
 
-    const audience = await container
-      .make(CreateAudienceAction)
-      .handle(data, team.id)
+    const audience = await container.make(CreateAudienceAction).handle(data, team.id)
 
     return ctx.json(audience)
   }
@@ -63,9 +59,7 @@ export class AudienceController extends BaseController {
 
     const team = this.ensureCanManage(ctx)
 
-    const audience = container
-      .resolve(UpdateAudienceAction)
-      .handle(data, team.id)
+    const audience = container.resolve(UpdateAudienceAction).handle(data, team.id)
 
     return ctx.json(audience)
   }

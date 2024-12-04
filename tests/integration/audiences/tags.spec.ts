@@ -42,14 +42,10 @@ describe("@tags create", () => {
     const json = await response.json()
 
     expect(response.status).toBe(422)
-    expect(json.errors).toContainEqual(
-      expect.objectContaining({ field: "name" }),
-    )
+    expect(json.errors).toContainEqual(expect.objectContaining({ field: "name" }))
   })
 
-  test("cannot create a tag without the right team permissions", async ({
-    expect,
-  }) => {
+  test("cannot create a tag without the right team permissions", async ({ expect }) => {
     const { audience } = await createUser()
     const { user: otherUser, team } = await createUser()
     const payload = { name: faker.string.uuid() + faker.lorem.word() }
@@ -83,14 +79,10 @@ describe("@tags create", () => {
 
     expect(response.status).toBe(422)
     const json = await response.json()
-    expect(json.errors).toContainEqual(
-      expect.objectContaining({ field: "audienceId" }),
-    )
+    expect(json.errors).toContainEqual(expect.objectContaining({ field: "audienceId" }))
   })
 
-  test("cannot create a tag in which the name already exists", async ({
-    expect,
-  }) => {
+  test("cannot create a tag in which the name already exists", async ({ expect }) => {
     const { user, audience } = await createUser()
     const tagName = faker.string.uuid() + faker.lorem.word()
     const database = makeDatabase()
@@ -108,9 +100,7 @@ describe("@tags create", () => {
 
     expect(response.status).toBe(422)
     const json = await response.json()
-    expect(json.errors).toContainEqual(
-      expect.objectContaining({ field: "name" }),
-    )
+    expect(json.errors).toContainEqual(expect.objectContaining({ field: "name" }))
   })
 })
 
@@ -141,9 +131,7 @@ describe("@tags delete", () => {
     expect(deletedTag).toBeUndefined()
   })
 
-  test("cannot delete a tag without the proper authorization", async ({
-    expect,
-  }) => {
+  test("cannot delete a tag without the proper authorization", async ({ expect }) => {
     const { user, audience } = await createUser()
     const { user: otherUser } = await createUser()
 
@@ -175,9 +163,7 @@ describe("@tags delete", () => {
 })
 
 describe("@tags attach to contacts", () => {
-  test("can attach 5 tags to a contact in an audience", async ({
-    expect,
-  }) => {
+  test("can attach 5 tags to a contact in an audience", async ({ expect }) => {
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
@@ -210,9 +196,7 @@ describe("@tags attach to contacts", () => {
       where: eq(tagsOnContacts.contactId, contactId),
     })
     expect(attachedTags).toHaveLength(5)
-    expect(attachedTags.map((t) => t.tagId)).toEqual(
-      expect.arrayContaining(tagIds),
-    )
+    expect(attachedTags.map((t) => t.tagId)).toEqual(expect.arrayContaining(tagIds))
   })
 
   test("can only attach valid tags", async ({ expect }) => {
@@ -263,9 +247,7 @@ describe("@tags attach to contacts", () => {
     expect(attachedTags).toHaveLength(0)
   })
 
-  test("only authorized users can attach tags to a contact", async ({
-    expect,
-  }) => {
+  test("only authorized users can attach tags to a contact", async ({ expect }) => {
     const { user, audience } = await createUser()
     const { user: unauthorizedUser } = await createUser()
 
@@ -435,9 +417,7 @@ describe("@tags detach from contacts", () => {
     )
   })
 
-  test("only authorized users can detach tags from a contact", async ({
-    expect,
-  }) => {
+  test("only authorized users can detach tags from a contact", async ({ expect }) => {
     const { user, audience } = await createUser()
     const { user: unauthorizedUser } = await createUser()
 

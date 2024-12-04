@@ -35,11 +35,7 @@ export function hasMany<
     const fromTableName = getTableName(from)
     const toTableName = getTableName(to)
 
-    let query = db
-      .select()
-      .from(from)
-      .leftJoin(to, eq(foreignKey, primaryKey))
-      .$dynamic()
+    let query = db.select().from(from).leftJoin(to, eq(foreignKey, primaryKey)).$dynamic()
 
     if ($modifyQuery) {
       query = $modifyQuery(query) as typeof query
@@ -85,15 +81,9 @@ export function hasOne<
     $modifyQuery?: (
       query: MySqlSelect<T["_"]["name"], Record<string, any>>,
     ) => MySqlSelect<T["_"]["name"], Record<string, any>>,
-  ): Promise<
-    (T["$inferSelect"] & { [K in RName]: R["$inferSelect"] | null })[]
-  > => {
+  ): Promise<(T["$inferSelect"] & { [K in RName]: R["$inferSelect"] | null })[]> => {
     const { from, to, foreignKey, primaryKey, relationName } = config
-    let query = db
-      .select()
-      .from(from)
-      .leftJoin(to, eq(foreignKey, primaryKey))
-      .$dynamic()
+    let query = db.select().from(from).leftJoin(to, eq(foreignKey, primaryKey)).$dynamic()
 
     if ($modifyQuery) {
       query = $modifyQuery(query) as typeof query
@@ -131,15 +121,9 @@ export function belongsTo<
     $modifyQuery?: (
       query: MySqlSelect<T["_"]["name"], Record<string, any>>,
     ) => MySqlSelect<T["_"]["name"], Record<string, any>>,
-  ): Promise<
-    (InferSelectModel<T> & { [K in RName]: InferSelectModel<R> | null })[]
-  > => {
+  ): Promise<(InferSelectModel<T> & { [K in RName]: InferSelectModel<R> | null })[]> => {
     const { from, to, foreignKey, primaryKey, relationName } = config
-    let query = db
-      .select()
-      .from(from)
-      .leftJoin(to, eq(foreignKey, primaryKey))
-      .$dynamic()
+    let query = db.select().from(from).leftJoin(to, eq(foreignKey, primaryKey)).$dynamic()
 
     if ($modifyQuery) {
       query = $modifyQuery(query) as typeof query

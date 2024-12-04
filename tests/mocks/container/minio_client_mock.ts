@@ -15,9 +15,7 @@ export class FakeMinioClient {
   public makeBucket = vi.fn().mockResolvedValue(undefined)
   public putObject = vi.fn().mockResolvedValue({ etag: "fake-etag" })
   public getObject = vi.fn().mockResolvedValue(Readable.from("fake data"))
-  public presignedGetObject = vi
-    .fn()
-    .mockResolvedValue("http://fake-presigned-url.com")
+  public presignedGetObject = vi.fn().mockResolvedValue("http://fake-presigned-url.com")
 
   bucket(name: string) {
     this.bucketName = name
@@ -54,11 +52,7 @@ export class FakeMinioClient {
   }
 
   async presignedUrl(expiresIn?: number) {
-    return this.presignedGetObject(
-      this.bucketName,
-      this.objectName,
-      expiresIn,
-    )
+    return this.presignedGetObject(this.bucketName, this.objectName, expiresIn)
   }
 
   private async ensureBucketExists() {

@@ -19,16 +19,11 @@ type HeaderMap = {
   tagIds: string[]
 }
 
-type FieldType = keyof Omit<
-  HeaderMap,
-  "attributes" | "headers" | "tags" | "tagIds"
->
+type FieldType = keyof Omit<HeaderMap, "attributes" | "headers" | "tags" | "tagIds">
 
 export class CreateContactImportAction {
   constructor(
-    private contactImportRepository = container.make(
-      ContactImportRepository,
-    ),
+    private contactImportRepository = container.make(ContactImportRepository),
   ) {}
 
   handle = async (file: File, audienceId: string) => {
@@ -58,10 +53,7 @@ export class CreateContactImportAction {
     return { id, extension }
   }
 
-  private async readHeadersAndFirstNRows(
-    stream: Readable,
-    n = 3,
-  ): Promise<string[]> {
+  private async readHeadersAndFirstNRows(stream: Readable, n = 3): Promise<string[]> {
     const parser = stream.pipe(CsvParser())
 
     return new Promise(function (resolve, reject) {
@@ -83,10 +75,8 @@ export class CreateContactImportAction {
 
     const fieldPatterns: Record<FieldType, RegExp> = {
       email: /^(?:e[-_]?mail|email[-_]?address)$/i,
-      firstName:
-        /^(?:f(?:irst)?[-_\s]?name|given[-_\s]?name|forename|fname)$/i,
-      lastName:
-        /^(?:l(?:ast)?[-_\s]?name|surname|family[-_\s]?name|lname)$/i,
+      firstName: /^(?:f(?:irst)?[-_\s]?name|given[-_\s]?name|forename|fname)$/i,
+      lastName: /^(?:l(?:ast)?[-_\s]?name|surname|family[-_\s]?name|lname)$/i,
     }
     headers.forEach((header) => {
       const normalizedHeader = header.trim()

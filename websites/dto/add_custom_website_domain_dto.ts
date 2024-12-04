@@ -32,6 +32,4 @@ export const AddCustomWebsiteDomainSchema = objectAsync({
   ),
 })
 
-export type AddCustomWebsiteDomainDto = InferInput<
-  typeof AddCustomWebsiteDomainSchema
->
+export type AddCustomWebsiteDomainDto = InferInput<typeof AddCustomWebsiteDomainSchema>

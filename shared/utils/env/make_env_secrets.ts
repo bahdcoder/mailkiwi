@@ -20,8 +20,6 @@ export function makeEnvSecrets<
     isProduction: value.isProduction,
     APP_KEY: APP_KEY ? new Secret(APP_KEY) : undefined,
     REDIS_URL: REDIS_URL ? new Secret(REDIS_URL) : undefined,
-    MTA_ACCESS_TOKEN: MTA_ACCESS_TOKEN
-      ? new Secret(MTA_ACCESS_TOKEN)
-      : undefined,
+    MTA_ACCESS_TOKEN: MTA_ACCESS_TOKEN ? new Secret(MTA_ACCESS_TOKEN) : undefined,
   }
 }

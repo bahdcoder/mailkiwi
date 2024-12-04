@@ -14,9 +14,7 @@ export class InjectEmailController extends BaseController {
     super()
 
     this.app.defineRoutes([["POST", "/inject", this.index.bind(this)]], {
-      middleware: [
-        container.make(AuthorizeInjectorApiKeyMiddleware).handle,
-      ],
+      middleware: [container.make(AuthorizeInjectorApiKeyMiddleware).handle],
     })
   }
 

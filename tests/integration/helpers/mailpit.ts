@@ -5,10 +5,7 @@ import { simpleParser } from "mailparser"
 import { makeHttpClient } from "@/shared/http/http_client.js"
 
 export const clearAllMailpitMessages = async () => {
-  await makeHttpClient()
-    .url(`${appEnv.MAILPIT_API_URL}/api/v1/messages`)
-    .delete()
-    .send()
+  await makeHttpClient().url(`${appEnv.MAILPIT_API_URL}/api/v1/messages`).delete().send()
 }
 
 type Envelope = {

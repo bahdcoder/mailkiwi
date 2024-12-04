@@ -90,15 +90,10 @@ export class FoundationEmailBuilderTool {
     const { webFonts } = this.schema.global
     if (!webFonts || webFonts.length === 0) return ""
 
-    return webFonts
-      .map((font) => `<link rel="stylesheet" href="${font}">`)
-      .join("\n")
+    return webFonts.map((font) => `<link rel="stylesheet" href="${font}">`).join("\n")
   }
 
-  private styleObjectToCss(
-    style: GlobalStyle,
-    indent: string = "",
-  ): string {
+  private styleObjectToCss(style: GlobalStyle, indent: string = ""): string {
     let css = ""
 
     for (let [key, value] of Object.entries(style)) {
@@ -146,10 +141,7 @@ export class FoundationEmailBuilderTool {
     }
   }
 
-  private applyInlineStyles(
-    element: string,
-    elementData: Element,
-  ): string {
+  private applyInlineStyles(element: string, elementData: Element): string {
     const { style } = elementData
     if (!style) return element
 
@@ -173,13 +165,9 @@ export class FoundationEmailBuilderTool {
   }
 
   private convertRow(element: Element): string {
-    const className = element.properties?.collapsed
-      ? ' class="collapsed"'
-      : ""
+    const className = element.properties?.collapsed ? ' class="collapsed"' : ""
     const children =
-      element.elements
-        ?.map((child) => this.convertElement(child))
-        .join("\n") || ""
+      element.elements?.map((child) => this.convertElement(child)).join("\n") || ""
     return `<row${className}>\n${children}\n</row>`
   }
 
@@ -187,25 +175,17 @@ export class FoundationEmailBuilderTool {
     const large = element.largeProperties?.width
       ? ` large="${element.largeProperties.width}"`
       : ""
-    const small = element.properties?.width
-      ? ` small="${element.properties.width}"`
-      : ""
+    const small = element.properties?.width ? ` small="${element.properties.width}"` : ""
     const children =
-      element.elements
-        ?.map((child) => this.convertElement(child))
-        .join("\n") || ""
+      element.elements?.map((child) => this.convertElement(child)).join("\n") || ""
     return `<columns${small}${large}>\n${children}\n</columns>`
   }
 
   private convertImage(element: Element): string {
     const src = element.properties?.src || ""
-    const alt = element.properties?.alt
-      ? ` alt="${element.properties.alt}"`
-      : ""
-    const align =
-      element.properties?.align === "center" ? "<center>\n  " : ""
-    const alignEnd =
-      element.properties?.align === "center" ? "\n</center>" : ""
+    const alt = element.properties?.alt ? ` alt="${element.properties.alt}"` : ""
+    const align = element.properties?.align === "center" ? "<center>\n  " : ""
+    const alignEnd = element.properties?.align === "center" ? "\n</center>" : ""
     return `${align}<img src="${src}"${alt}>${alignEnd}`
   }
 
@@ -215,24 +195,16 @@ export class FoundationEmailBuilderTool {
       ? ` class="text-${element.properties.align}"`
       : ""
     const content =
-      element.elements
-        ?.map((child) => this.convertElement(child))
-        .join("") || ""
+      element.elements?.map((child) => this.convertElement(child)).join("") || ""
     return `<h${size}${align}>${content}</h${size}>`
   }
 
   private convertButton(element: Element): string {
-    const href = element.properties?.href
-      ? ` href="${element.properties.href}"`
-      : ""
+    const href = element.properties?.href ? ` href="${element.properties.href}"` : ""
     const className =
-      element.properties?.width === 12
-        ? ' class="large expand"'
-        : ' class="large"'
+      element.properties?.width === 12 ? ' class="large expand"' : ' class="large"'
     const content =
-      element.elements
-        ?.map((child) => this.convertElement(child))
-        .join("") || "Click me"
+      element.elements?.map((child) => this.convertElement(child)).join("") || "Click me"
     return `<button${className}${href}>${content}</button>`
   }
 
@@ -246,9 +218,7 @@ export class FoundationEmailBuilderTool {
       ? ` class="text-${element.properties.align}"`
       : ""
     const content =
-      element.elements
-        ?.map((child) => this.convertElement(child))
-        .join("") || ""
+      element.elements?.map((child) => this.convertElement(child)).join("") || ""
     return `<p${align}>${content}</p>`
   }
 
@@ -258,22 +228,16 @@ export class FoundationEmailBuilderTool {
   }
 
   private convertMenu(element: Element): string {
-    const align =
-      element.properties?.align === "center" ? "<center>\n  " : ""
-    const alignEnd =
-      element.properties?.align === "center" ? "\n</center>" : ""
+    const align = element.properties?.align === "center" ? "<center>\n  " : ""
+    const alignEnd = element.properties?.align === "center" ? "\n</center>" : ""
     const items =
-      element.elements
-        ?.map((child) => this.convertElement(child))
-        .join("\n") || ""
+      element.elements?.map((child) => this.convertElement(child)).join("\n") || ""
     return `${align}<menu>\n${items}\n</menu>${alignEnd}`
   }
 
   private convertMenuItem(element: Element): string {
     const content =
-      element.elements
-        ?.map((child) => this.convertElement(child))
-        .join("") || ""
+      element.elements?.map((child) => this.convertElement(child)).join("") || ""
     return `  <item>${content}</item>`
   }
 }

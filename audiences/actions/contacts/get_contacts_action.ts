@@ -4,17 +4,8 @@ import { AudienceRepository } from "@/audiences/repositories/audience_repository
 import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
-import type {
-  Audience,
-  Contact,
-  Segment,
-} from "@/database/database_schema_types.js"
-import {
-  contactProperties,
-  contacts,
-  tags,
-  tagsOnContacts,
-} from "@/database/schema.js"
+import type { Audience, Contact, Segment } from "@/database/database_schema_types.js"
+import { contactProperties, contacts, tags, tagsOnContacts } from "@/database/schema.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
@@ -70,10 +61,7 @@ export class GetContactsAction {
         ])
 
       queryConditions.push(
-        new SegmentBuilder(
-          segment.filterGroups,
-          audience as Audience,
-        ).build(),
+        new SegmentBuilder(segment.filterGroups, audience as Audience).build(),
       )
     }
 

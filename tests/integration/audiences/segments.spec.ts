@@ -11,12 +11,7 @@ import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import {
-  contactProperties,
-  contacts,
-  segments,
-  tags,
-} from "@/database/schema.js"
+import { contactProperties, contacts, segments, tags } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
@@ -86,9 +81,7 @@ describe("@audience segments", () => {
     ])
   })
 
-  test("cannot create an audience with invalid conditions", async ({
-    expect,
-  }) => {
+  test("cannot create an audience with invalid conditions", async ({ expect }) => {
     const { user, audience } = await createUser()
 
     const database = makeDatabase()
@@ -152,8 +145,7 @@ describe("@audience segments", () => {
       .values(
         faker.helpers
           .multiple(
-            () =>
-              `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+            () => `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
             { count: 100 },
           )
           .map(() => createFakeContact(audience.id)),
@@ -230,13 +222,11 @@ describe("@audience segments", () => {
     })
 
     await database.insert(tags).values(
-      faker.helpers
-        .multiple(faker.string.uuid, { count: 10 })
-        .map((name, idx) => ({
-          id: tagIds[idx],
-          name,
-          audienceId: audience.id,
-        })),
+      faker.helpers.multiple(faker.string.uuid, { count: 10 }).map((name, idx) => ({
+        id: tagIds[idx],
+        name,
+        audienceId: audience.id,
+      })),
     )
 
     const countForSegment = faker.number.int({
@@ -313,8 +303,7 @@ describe("@audience segments", () => {
     await database.insert(contacts).values(
       faker.helpers
         .multiple(
-          () =>
-            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          () => `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
           {
             count: countForNonSegment,
           },
@@ -329,8 +318,7 @@ describe("@audience segments", () => {
     await database.insert(tags).values(
       faker.helpers
         .multiple(
-          () =>
-            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          () => `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
           { count: 10 },
         )
         .map((name, idx) => ({
@@ -352,8 +340,7 @@ describe("@audience segments", () => {
     await database.insert(contacts).values(
       faker.helpers
         .multiple(
-          () =>
-            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          () => `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
           {
             count: countForSegment,
           },
@@ -422,8 +409,7 @@ describe("@audience segments", () => {
     await database.insert(contacts).values(
       faker.helpers
         .multiple(
-          () =>
-            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          () => `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
           {
             count: countForNonSegment,
           },
@@ -443,8 +429,7 @@ describe("@audience segments", () => {
     await database.insert(contacts).values(
       faker.helpers
         .multiple(
-          () =>
-            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          () => `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
           {
             count: countForSegment,
           },
@@ -509,8 +494,7 @@ describe("@audience segments", () => {
     await database.insert(contacts).values(
       faker.helpers
         .multiple(
-          () =>
-            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          () => `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
           {
             count: countForNonSegment,
           },
@@ -530,8 +514,7 @@ describe("@audience segments", () => {
     await database.insert(contacts).values(
       faker.helpers
         .multiple(
-          () =>
-            `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
+          () => `${faker.lorem.word()}-${faker.lorem.word()}-${faker.lorem.word()}`,
           {
             count: countForSegment,
           },
@@ -548,20 +531,18 @@ describe("@audience segments", () => {
 
     const countForSegmentProperties = 125
 
-    await container
-      .make(AudienceRepository)
-      .updateKnownProperties(audience.id, [
-        {
-          id: "age",
-          type: "float",
-          label: "Age",
-        },
-        {
-          id: "favoriteColor",
-          type: "text",
-          label: "Favorite color",
-        },
-      ])
+    await container.make(AudienceRepository).updateKnownProperties(audience.id, [
+      {
+        id: "age",
+        type: "float",
+        label: "Age",
+      },
+      {
+        id: "favoriteColor",
+        type: "text",
+        label: "Favorite color",
+      },
+    ])
 
     await database.insert(contactProperties).values(
       faker.helpers

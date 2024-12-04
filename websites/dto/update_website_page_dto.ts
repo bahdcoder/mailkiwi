@@ -38,9 +38,7 @@ export const BlockContentSchema = array(
   object({
     type: htmlJsonContentType,
     text: optional(string()),
-    attrs: optional(
-      record(string(), union([string(), number(), array(string())])),
-    ),
+    attrs: optional(record(string(), union([string(), number(), array(string())]))),
     content: optional(lazy(() => BlockContentSchema)),
   }),
 ) as GenericSchema<HTMLJsonBlock[]>
@@ -57,6 +55,4 @@ export const UpdateWebsitePageSchema = objectAsync({
   description: optional(string()),
 })
 
-export type UpdateWebsitePageDto = InferInput<
-  typeof UpdateWebsitePageSchema
->
+export type UpdateWebsitePageDto = InferInput<typeof UpdateWebsitePageSchema>

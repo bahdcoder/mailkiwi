@@ -12,10 +12,7 @@ export function entityIdValidator(
   return pipeAsync(
     string(),
     checkAsync(async (value) => {
-      const exists = await container
-        .make(BaseRepository)
-        .crud(table)
-        .findById(value)
+      const exists = await container.make(BaseRepository).crud(table).findById(value)
 
       return exists !== undefined
     }, message),

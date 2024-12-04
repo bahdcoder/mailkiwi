@@ -27,18 +27,13 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
     return AVAILABLE_QUEUES.broadcasts
   }
 
-  async handle({
-    database,
-    payload,
-  }: JobContext<SendBroadcastJobPayload>) {
+  async handle({ database, payload }: JobContext<SendBroadcastJobPayload>) {
     const broadcast = await container
       .make(BroadcastRepository)
       .findByIdWithAbTestVariants(payload.broadcastId)
 
     if (!broadcast || !broadcast.audienceId) {
-      return this.fail(
-        "Broadcast or audience or team not properly provided.",
-      )
+      return this.fail("Broadcast or audience or team not properly provided.")
     }
 
     const audience = await container
@@ -49,10 +44,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
 
     if (broadcast.segment) {
       segmentQueryConditions.push(
-        new SegmentBuilder(
-          broadcast.segment.filterGroups,
-          audience,
-        ).build(),
+        new SegmentBuilder(broadcast.segment.filterGroups, audience).build(),
       )
     }
 
@@ -66,10 +58,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
         .select({ id: contacts.id })
         .from(contacts)
         .where(
-          and(
-            eq(contacts.audienceId, broadcast.audienceId),
-            ...segmentQueryConditions,
-          ),
+          and(eq(contacts.audienceId, broadcast.audienceId), ...segmentQueryConditions),
         )
         .limit(batchSize)
         .offset(batch * batchSize)

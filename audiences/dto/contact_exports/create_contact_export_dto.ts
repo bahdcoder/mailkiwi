@@ -6,6 +6,4 @@ export const CreateContactExportSchema = object({
   filterGroups: FilterGroupsSchema,
 })
 
-export type CreateContactExportDto = InferInput<
-  typeof CreateContactExportSchema
->
+export type CreateContactExportDto = InferInput<typeof CreateContactExportSchema>

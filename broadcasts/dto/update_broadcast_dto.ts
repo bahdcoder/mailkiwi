@@ -150,10 +150,7 @@ export const UpdateBroadcastDto = pipeAsync(
     return existingAbTestVariants === variantIds.length
   }, "One or more email content variants provided have an invalid ID."),
   check((input) => {
-    if (
-      !input.emailContentVariants ||
-      input.emailContentVariants.length === 0
-    ) {
+    if (!input.emailContentVariants || input.emailContentVariants.length === 0) {
       return true
     }
 

@@ -44,9 +44,7 @@ describe("@automations", () => {
       branches?: { [key: number]: FlatTreeNode[] }
     }
 
-    function createFlatAutomationTree(
-      steps: AutomationStep[],
-    ): FlatTreeNode[] {
+    function createFlatAutomationTree(steps: AutomationStep[]): FlatTreeNode[] {
       const nodeMap: { [key: string]: FlatTreeNode } = {}
 
       // Create nodes for all steps
@@ -63,20 +61,17 @@ describe("@automations", () => {
 
           for (const step of steps) {
             if (step.parentId === node.id) {
-              const branchIndex =
-                step.branchIndex !== null ? step.branchIndex : 0
+              const branchIndex = step.branchIndex !== null ? step.branchIndex : 0
               if (!node.branches?.[branchIndex]) {
                 node.branches[branchIndex] = []
               }
-              node.branches[branchIndex] = node.branches?.[
-                branchIndex
-              ].concat(processNode(step.id))
+              node.branches[branchIndex] = node.branches?.[branchIndex].concat(
+                processNode(step.id),
+              )
             }
           }
         } else {
-          const children = steps.filter(
-            (step) => step.parentId === node.id,
-          )
+          const children = steps.filter((step) => step.parentId === node.id)
 
           for (const child of children) {
             result.push(...processNode(child.id))
@@ -100,14 +95,10 @@ describe("@automations", () => {
       .make(AutomationRepository)
       .findById(automation.id)
 
-    const tree = createFlatAutomationTree(
-      automationFetch?.steps ?? [],
-    ) as FlatTreeNode[]
+    const tree = createFlatAutomationTree(automationFetch?.steps ?? []) as FlatTreeNode[]
 
     expect(
-      tree[7]?.branches?.["1"]?.[2]?.branches?.["1"]?.[2]?.branches?.[
-        "1"
-      ]?.[0]?.subtype,
+      tree[7]?.branches?.["1"]?.[2]?.branches?.["1"]?.[2]?.branches?.["1"]?.[0]?.subtype,
     ).toEqual("ACTION_UNSUBSCRIBE_FROM_AUDIENCE")
   })
 
@@ -134,14 +125,9 @@ describe("@automations", () => {
     expect(savedAutomation?.id).toEqual((await response.json()).id)
   })
 
-  test("can create ACTION_SEND_EMAIL automation step type", async ({
-    expect,
-  }) => {
+  test("can create ACTION_SEND_EMAIL automation step type", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
     const database = makeDatabase()
 
     const emailId = cuid()
@@ -177,14 +163,9 @@ describe("@automations", () => {
     expect(createdStep?.emailId).toBe(emailId)
   })
 
-  test("can create ACTION_ADD_TAG automation step type", async ({
-    expect,
-  }) => {
+  test("can create ACTION_ADD_TAG automation step type", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
     const database = makeDatabase()
 
     const tagId = cuid()
@@ -219,10 +200,7 @@ describe("@automations", () => {
     expect,
   }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      true,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, true)
     const database = makeDatabase()
 
     const audienceId = cuid()
@@ -255,9 +233,7 @@ describe("@automations", () => {
 })
 
 describe("@automations steps", () => {
-  test("can create a valid automation step for an automation", async ({
-    expect,
-  }) => {
+  test("can create a valid automation step for an automation", async ({ expect }) => {
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
@@ -296,10 +272,7 @@ describe("@automations steps", () => {
     expect,
   }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const stepData = {
       type: "TRIGGER",
@@ -317,14 +290,9 @@ describe("@automations steps", () => {
     expect(response.status).toBe(422)
   })
 
-  test("no two automation steps can have the same parent id", async ({
-    expect,
-  }) => {
+  test("no two automation steps can have the same parent id", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
     const database = makeDatabase()
 
     const response = await makeRequestAsUser(user, {
@@ -378,10 +346,7 @@ describe("@automations steps", () => {
 describe("@automations step validation", () => {
   test("validates TRIGGER subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -408,10 +373,7 @@ describe("@automations step validation", () => {
 
   test("validates ACTION subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -437,10 +399,7 @@ describe("@automations step validation", () => {
 
   test("validates RULE subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -466,10 +425,7 @@ describe("@automations step validation", () => {
 
   test("validates END subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -485,9 +441,7 @@ describe("@automations step validation", () => {
     expect(await response.json()).toMatchObject({
       errors: [
         {
-          message: expect.stringContaining(
-            "The subtype must be valid for the type END.",
-          ),
+          message: expect.stringContaining("The subtype must be valid for the type END."),
         },
       ],
     })
@@ -495,10 +449,7 @@ describe("@automations step validation", () => {
 
   test("validates ACTION_SEND_EMAIL configuration", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -524,10 +475,7 @@ describe("@automations step validation", () => {
 
   test("validates ACTION_ADD_TAG configuration", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -551,14 +499,9 @@ describe("@automations step validation", () => {
     })
   })
 
-  test("validates ACTION_SUBSCRIBE_TO_AUDIENCE configuration", async ({
-    expect,
-  }) => {
+  test("validates ACTION_SUBSCRIBE_TO_AUDIENCE configuration", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -582,14 +525,9 @@ describe("@automations step validation", () => {
     })
   })
 
-  test("validates ACTION_UPDATE_CONTACT_ATTRIBUTES configuration", async ({
-    expect,
-  }) => {
+  test("validates ACTION_UPDATE_CONTACT_ATTRIBUTES configuration", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -617,10 +555,7 @@ describe("@automations step validation", () => {
 
   test("validates RULE_IF_ELSE configuration", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation(
-      { audienceId: audience.id },
-      false,
-    )
+    const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -645,8 +580,7 @@ describe("@automations step validation", () => {
       message: "Validation failed.",
       errors: [
         {
-          message:
-            "The configuration object for RULE_IF_ELSE is malformed.",
+          message: "The configuration object for RULE_IF_ELSE is malformed.",
         },
       ],
     })
@@ -654,9 +588,7 @@ describe("@automations step validation", () => {
 })
 
 describe("@automations run", () => {
-  test("can run all automation actions for an automation", async ({
-    expect,
-  }) => {
+  test("can run all automation actions for an automation", async ({ expect }) => {
     //
   })
 })

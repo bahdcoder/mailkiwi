@@ -27,6 +27,4 @@ export const AttachTagsToContactDto = objectAsync({
   ),
 })
 
-export type AttachTagsToContactDto = InferInput<
-  typeof AttachTagsToContactDto
->
+export type AttachTagsToContactDto = InferInput<typeof AttachTagsToContactDto>

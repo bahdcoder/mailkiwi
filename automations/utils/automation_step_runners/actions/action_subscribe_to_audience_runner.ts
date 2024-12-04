@@ -5,10 +5,7 @@ import type {
   AutomationStepRunnerContract,
 } from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
 
-import type {
-  AutomationStep,
-  Contact,
-} from "@/database/database_schema_types.js"
+import type { AutomationStep, Contact } from "@/database/database_schema_types.js"
 import {
   type ACTION_SUBSCRIBE_TO_AUDIENCE_CONFIGURATION,
   contacts,
@@ -30,9 +27,7 @@ export class SubscribeToAudienceAutomationStepRunner
 
     const audienceRepository = container.resolve(AudienceRepository)
 
-    const audience = await audienceRepository.findById(
-      configuration.audienceId,
-    )
+    const audience = await audienceRepository.findById(configuration.audienceId)
 
     if (!audience) {
       return

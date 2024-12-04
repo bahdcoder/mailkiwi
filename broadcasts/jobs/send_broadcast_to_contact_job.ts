@@ -42,8 +42,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       return this.fail("Broadcast or contact not found.")
     }
 
-    const broadcastWithContent =
-      broadcast as unknown as BroadcastWithEmailContent
+    const broadcastWithContent = broadcast as unknown as BroadcastWithEmailContent
 
     const { emailContent } = broadcastWithContent
 
@@ -52,9 +51,8 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       .findAllForTeam(broadcast.teamId)
 
     let sendingDomain =
-      teamSendingDomains.find(
-        (sendingDomain) => sendingDomain.product === "engage",
-      ) || teamSendingDomains?.[0]
+      teamSendingDomains.find((sendingDomain) => sendingDomain.product === "engage") ||
+      teamSendingDomains?.[0]
 
     let openTrackingEnabled = sendingDomain.openTrackingEnabled ?? false
     let clickTrackingEnabled = sendingDomain.clickTrackingEnabled ?? false

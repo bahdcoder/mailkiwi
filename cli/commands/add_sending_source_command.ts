@@ -13,9 +13,7 @@ export const addSendingSourceCommand = command({
     ehloDomain: string()
       .required()
       .desc("The domain pointing to the sending source address."),
-    addressIpv6: string().desc(
-      "Associate this ipv4 address with an ipv6 address",
-    ),
+    addressIpv6: string().desc("Associate this ipv4 address with an ipv6 address"),
     pool: string()
       .enum("engage", "send")
       .required()

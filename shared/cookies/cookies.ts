@@ -2,13 +2,19 @@ import { appEnv } from "@/app/env/app_env.js"
 import { getSignedCookie, setSignedCookie } from "hono/cookie"
 
 import { HonoContext } from "@/shared/server/types.js"
+import { RedisSessionStore } from "@/shared/sessions/stores/redis_session_store.js"
 import { Encryption } from "@/shared/utils/encryption/encryption.js"
+
+import { container } from "@/utils/typi.js"
 
 export class Session {
   protected SESSION_COOKIE_NAME = "session"
   protected CONTACT_SESSION_COOKIE_NAME = "contact_session"
 
-  constructor(protected encryptionKey = appEnv.APP_KEY.release()) { }
+  constructor(
+    protected encryptionKey = appEnv.APP_KEY.release(),
+    protected sessionStore = container.make(RedisSessionStore),
+  ) {}
 
   async getContact(ctx: HonoContext) {
     return this.getUser(ctx, "contact")
@@ -19,18 +25,16 @@ export class Session {
       ctx,
       this.encryptionKey,
       "__Secure-" +
-      (type === "contact"
-        ? this.CONTACT_SESSION_COOKIE_NAME
-        : this.SESSION_COOKIE_NAME),
+        (type === "contact"
+          ? this.CONTACT_SESSION_COOKIE_NAME
+          : this.SESSION_COOKIE_NAME),
     )
 
     if (!sessionData) {
       return null
     }
 
-    const decryptedSessionData = new Encryption(appEnv.APP_KEY).decrypt(
-      sessionData,
-    )
+    const decryptedSessionData = new Encryption(appEnv.APP_KEY).decrypt(sessionData)
 
     // TODO: Verify session in session store (redis)
     // TODO: Verify session using cryptographically generated session key
@@ -57,18 +61,14 @@ export class Session {
     userId: string,
     type: "user" | "contact" = "user",
   ) {
-    const sessionData = new Encryption(appEnv.APP_KEY).encrypt(
-      JSON.stringify({ userId }),
-    )
+    const sessionData = new Encryption(appEnv.APP_KEY).encrypt(JSON.stringify({ userId }))
 
     // TODO: Store session in session store (redis)
     // TODO: Store session with userId and cryptographically generated session key
 
     await setSignedCookie(
       ctx,
-      type === "contact"
-        ? this.CONTACT_SESSION_COOKIE_NAME
-        : this.SESSION_COOKIE_NAME,
+      type === "contact" ? this.CONTACT_SESSION_COOKIE_NAME : this.SESSION_COOKIE_NAME,
       sessionData.release(),
       this.encryptionKey,
       {

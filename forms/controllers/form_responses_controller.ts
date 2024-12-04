@@ -28,24 +28,16 @@ export class FormResponsesController extends BaseController {
   ) {
     super()
 
-    this.app.defineRoutes(
-      [["POST", "/responses", this.submit.bind(this)]],
-      {
-        prefix: `${WEBSITES_PATH}/:websiteSlug/forms/:formId`,
-        middleware: [container.make(UserSessionMiddleware).handle],
-      },
-    )
+    this.app.defineRoutes([["POST", "/responses", this.submit.bind(this)]], {
+      prefix: `${WEBSITES_PATH}/:websiteSlug/forms/:formId`,
+      middleware: [container.make(UserSessionMiddleware).handle],
+    })
   }
 
   async submit(ctx: HonoContext) {
     const [website, form] = await Promise.all([
-      container
-        .make(WebsiteRepository)
-        .findBySlug(ctx.req.param("websiteSlug")),
-      container
-        .make(FormRepository)
-        .forms()
-        .findById(ctx.req.param("formId")),
+      container.make(WebsiteRepository).findBySlug(ctx.req.param("websiteSlug")),
+      container.make(FormRepository).forms().findById(ctx.req.param("formId")),
     ])
 
     const payload = await ctx.req.json()
@@ -58,14 +50,9 @@ export class FormResponsesController extends BaseController {
       return ctx.notFound()
     }
 
-    const audience = await container
-      .make(AudienceRepository)
-      .findById(form.audienceId)
+    const audience = await container.make(AudienceRepository).findById(form.audienceId)
 
-    const { valid, errors } = await new FormResponseValidatorTool(
-      form,
-      payload,
-    ).handle()
+    const { valid, errors } = await new FormResponseValidatorTool(form, payload).handle()
 
     if (!valid) {
       return ctx.json({ errors }, 422)
@@ -85,16 +72,8 @@ export class FormResponsesController extends BaseController {
     return ctx.json({ id: form.id })
   }
 
-  private async submitSignup(
-    audience: Audience,
-    payload: Record<string, string>,
-  ) {
-    const {
-      email,
-      firstname: firstName,
-      lastname: lastName,
-      ...properties
-    } = payload
+  private async submitSignup(audience: Audience, payload: Record<string, string>) {
+    const { email, firstname: firstName, lastname: lastName, ...properties } = payload
 
     const contact = {
       email,
@@ -103,10 +82,7 @@ export class FormResponsesController extends BaseController {
       properties,
     }
 
-    const { id: contactId } = await this.contactRepository.create(
-      contact,
-      audience,
-    )
+    const { id: contactId } = await this.contactRepository.create(contact, audience)
 
     return { contactId }
   }
@@ -116,14 +92,11 @@ export class FormResponsesController extends BaseController {
     payload: Record<string, string[]>,
     contactId?: string,
   ) {
-    const formResponse = await container
-      .make(FormResponseRepository)
-      .responses()
-      .create({
-        formId: form.id,
-        response: payload,
-        contactId,
-      })
+    const formResponse = await container.make(FormResponseRepository).responses().create({
+      formId: form.id,
+      response: payload,
+      contactId,
+    })
 
     await Queue.contacts().add(TagContactBasedOnResponseJob.id, {
       formResponseId: formResponse.id,

@@ -3,12 +3,7 @@ import { eq } from "drizzle-orm"
 
 import type { CreateTeamDto } from "@/teams/dto/create_team_dto.js"
 
-import {
-  sendingDomains,
-  teamMemberships,
-  teams,
-  users,
-} from "@/database/schema.js"
+import { sendingDomains, teamMemberships, teams, users } from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"

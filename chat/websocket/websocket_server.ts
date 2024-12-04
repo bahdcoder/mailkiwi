@@ -12,8 +12,8 @@ import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 import { UserWithChannelMemberships } from "@/database/database_schema_types.js"
 
 import { makeLogger } from "@/shared/container/index.js"
-import { Session } from "@/shared/cookies/cookies.js"
 import { HonoContext } from "@/shared/server/types.js"
+import { Session } from "@/shared/sessions/sessions.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -42,9 +42,7 @@ export class WebsocketServer {
     this.$wss.on("close", this.onClose)
   }
 
-  protected getAuthenticatedUserFromRequest = async (
-    request: IncomingMessage,
-  ) => {
+  protected getAuthenticatedUserFromRequest = async (request: IncomingMessage) => {
     const headers = new Headers()
     headers.set("cookie", request.headers["cookie"] ?? "")
 
@@ -71,10 +69,7 @@ export class WebsocketServer {
     this.connections.clear()
   }
 
-  onConnection = async (
-    websocket: WebSocket,
-    request: IncomingMessage,
-  ) => {
+  onConnection = async (websocket: WebSocket, request: IncomingMessage) => {
     const self = this
 
     const user = await self.getAuthenticatedUserFromRequest(request)
@@ -85,9 +80,7 @@ export class WebsocketServer {
       return
     }
 
-    self.logger.info(
-      `New websocket connection initiated for user: ${user.id}`,
-    )
+    self.logger.info(`New websocket connection initiated for user: ${user.id}`)
 
     self.subscribeUserToChannels(user, websocket)
 
@@ -100,10 +93,7 @@ export class WebsocketServer {
     })
   }
 
-  subscribeUserToChannels = (
-    user: UserWithChannelMemberships,
-    websocket: WebSocket,
-  ) => {
+  subscribeUserToChannels = (user: UserWithChannelMemberships, websocket: WebSocket) => {
     const self = this
 
     self.connections.set(user.id, {
@@ -131,9 +121,7 @@ export class WebsocketServer {
 
     self.connections.delete(user.id)
 
-    self.logger.info(
-      `Websocket connection terminated for user: ${user.id}`,
-    )
+    self.logger.info(`Websocket connection terminated for user: ${user.id}`)
   }
 
   onCloseConnection = () => {}

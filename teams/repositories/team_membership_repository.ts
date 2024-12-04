@@ -83,10 +83,7 @@ export class TeamMembershipRepository extends BaseRepository {
     return membership
   }
 
-  async update(
-    membershipId: string,
-    payload: UpdateSetTeamMembershipInput,
-  ) {
+  async update(membershipId: string, payload: UpdateSetTeamMembershipInput) {
     return this.database
       .update(teamMemberships)
       .set(payload)

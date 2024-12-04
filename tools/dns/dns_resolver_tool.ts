@@ -17,9 +17,7 @@ export class DnsResolverTool {
   forDomain(domain: string) {
     this.domain = domain
 
-    this.dnsConfigurationTool = container
-      .make(DnsConfigurationTool)
-      .forDomain(domain)
+    this.dnsConfigurationTool = container.make(DnsConfigurationTool).forDomain(domain)
 
     return this
   }
@@ -56,28 +54,21 @@ export class DnsResolverTool {
     return txtRecords.find(
       (record) =>
         record ===
-        this.dnsConfigurationTool.getRecords(publicKey, dkimSubDomain).dkim
-          .value,
+        this.dnsConfigurationTool.getRecords(publicKey, dkimSubDomain).dkim.value,
     )
   }
 
   private isReturnPathCnameConfigured(cnameRecords: string[]) {
-    return cnameRecords.some(
-      (record) => record === this.env.software.bounceHost,
-    )
+    return cnameRecords.some((record) => record === this.env.software.bounceHost)
   }
 
   private isTrackingCnameConfigured(cnameRecords: string[]) {
-    return cnameRecords.some(
-      (record) => record === this.env.software.trackingHostName,
-    )
+    return cnameRecords.some((record) => record === this.env.software.trackingHostName)
   }
   async resolve(sendingDomain: SendingDomain) {
     let [returnPathCnameRecords, dkimTxtRecords, trackingCnameRecords] =
       await Promise.all([
-        this.resolveReturnPathCnameRecords(
-          sendingDomain.returnPathSubDomain,
-        ),
+        this.resolveReturnPathCnameRecords(sendingDomain.returnPathSubDomain),
         this.resolveDkimRecord(sendingDomain.dkimSubDomain),
         this.resolveTrackingCnameRecords(sendingDomain.trackingSubDomain),
       ])
@@ -90,21 +81,15 @@ export class DnsResolverTool {
       returnPathCnameRecords,
       trackingCnameRecords,
       dmarcConfigured: false,
-      trackingCnameConfigured: this.isTrackingCnameConfigured(
-        trackingCnameRecords,
-      ),
+      trackingCnameConfigured: this.isTrackingCnameConfigured(trackingCnameRecords),
 
-      returnPathCnameConfigured: this.isReturnPathCnameConfigured(
-        returnPathCnameRecords,
-      ),
+      returnPathCnameConfigured: this.isReturnPathCnameConfigured(returnPathCnameRecords),
       dkimConfigured: this.isDkimConfigured(
         dkimTxtRecords,
         sendingDomain.dkimPublicKey,
         sendingDomain.dkimSubDomain,
       ),
-      returnPathConfigured: returnPathCnameRecords.includes(
-        this.env.software.bounceHost,
-      ),
+      returnPathConfigured: returnPathCnameRecords.includes(this.env.software.bounceHost),
     }
   }
 }

@@ -60,9 +60,7 @@ describe("@contacts import job", () => {
     expect(contact.firstName).toBeDefined()
     expect(contact.lastName).toBeDefined()
 
-    const knownPropertiesKeys = audience.knownProperties?.map(
-      (property) => property.id,
-    )
+    const knownPropertiesKeys = audience.knownProperties?.map((property) => property.id)
 
     expect(knownPropertiesKeys).toEqual([
       "age",
@@ -77,9 +75,7 @@ describe("@contacts import job", () => {
       "website",
     ])
 
-    expect(
-      contactWithProperties.properties.map((property) => property.name),
-    ).toEqual([
+    expect(contactWithProperties.properties.map((property) => property.name)).toEqual([
       "city",
       "index",
       "company",

@@ -13,10 +13,7 @@ import {
 } from "valibot"
 
 export const ConnectCommerceProviderSchema = object({
-  provider: pipe(
-    picklist(["stripe", "paystack", "flutterwave"]),
-    nonEmpty(),
-  ),
+  provider: pipe(picklist(["stripe", "paystack", "flutterwave"]), nonEmpty()),
   country: optional(string()),
   payoutInformation: optional(
     object({
@@ -32,6 +29,4 @@ export const ConnectCommerceProviderSchema = object({
   ),
 })
 
-export type ConnectCommerceProviderDto = InferInput<
-  typeof ConnectCommerceProviderSchema
->
+export type ConnectCommerceProviderDto = InferInput<typeof ConnectCommerceProviderSchema>

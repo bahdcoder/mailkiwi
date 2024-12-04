@@ -8,11 +8,7 @@ import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { seedAutomation } from "@/tests/mocks/teams/teams.js"
 
-import {
-  automationSteps,
-  contactAutomationSteps,
-  contacts,
-} from "@/database/schema.js"
+import { automationSteps, contactAutomationSteps, contacts } from "@/database/schema.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import * as queues from "@/shared/queue/queue.js"
@@ -57,13 +53,12 @@ describe("@run-automation-step job", () => {
         .map(() => createFakeContact(audience.id)),
     )
 
-    const automationStepSendEmail =
-      await database.query.automationSteps.findFirst({
-        where: and(
-          eq(automationSteps.automationId, automationId),
-          eq(automationSteps.subtype, "ACTION_SEND_EMAIL"),
-        ),
-      })
+    const automationStepSendEmail = await database.query.automationSteps.findFirst({
+      where: and(
+        eq(automationSteps.automationId, automationId),
+        eq(automationSteps.subtype, "ACTION_SEND_EMAIL"),
+      ),
+    })
 
     // Insert automation steps for contacts before starting to process job.
     await database.insert(contactAutomationSteps).values(

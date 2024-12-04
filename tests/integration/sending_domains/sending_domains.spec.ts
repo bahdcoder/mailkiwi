@@ -5,6 +5,8 @@ import { describe, test } from "vitest"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
@@ -16,12 +18,9 @@ import { cuid } from "@/shared/utils/cuid/cuid.js"
 import { Encryption } from "@/shared/utils/encryption/encryption.js"
 
 import { container } from "@/utils/typi.js"
-import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
 describe("@domains", () => {
-  test("can create unique sending domains for a team", async ({
-    expect,
-  }) => {
+  test("can create unique sending domains for a team", async ({ expect }) => {
     const { team, user } = await createUser()
 
     const name = cuid() + "newsletter.kibamail.com"
@@ -49,9 +48,8 @@ describe("@domains", () => {
 
     const [sendingDomain] = await container
       .make(SendingDomainRepository)
-      .domains().findAll(
-        eq(sendingDomains.teamId, team.id),
-      )
+      .domains()
+      .findAll(eq(sendingDomains.teamId, team.id))
 
     const dkimPrivateKey = new Encryption(appEnv.APP_KEY)
       .decrypt(sendingDomain?.dkimPrivateKey)

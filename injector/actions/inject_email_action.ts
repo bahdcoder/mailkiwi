@@ -3,10 +3,7 @@ import { EmailSendRepository } from "@/email_sends/repositories/email_send_repos
 import { InjectEmailSchemaDto } from "@/injector/dto/inject_email_dto.js"
 import { InjectTrackingLinksIntoEmailAction } from "@/kumomta/actions/inject_tracking_links_into_email_action.js"
 
-import {
-  InsertEmailSend,
-  SendingDomain,
-} from "@/database/database_schema_types.js"
+import { InsertEmailSend, SendingDomain } from "@/database/database_schema_types.js"
 
 import { makeHttpClient } from "@/shared/http/http_client.js"
 import { generateMessageIdForDomain } from "@/shared/utils/string.js"
@@ -14,10 +11,7 @@ import { generateMessageIdForDomain } from "@/shared/utils/string.js"
 import { container } from "@/utils/typi.js"
 
 export class InjectEmailAction {
-  async handle(
-    payload: InjectEmailSchemaDto,
-    sendingDomain: SendingDomain,
-  ) {
+  async handle(payload: InjectEmailSchemaDto, sendingDomain: SendingDomain) {
     type Injection = {
       messageId: string
       recipient: InjectEmailSchemaDto["recipients"][number]
@@ -36,9 +30,7 @@ export class InjectEmailAction {
     const sends: { id: string; payload: InsertEmailSend }[] = []
 
     for (const recipient of payload.recipients) {
-      const { id, messageId } = generateMessageIdForDomain(
-        sendingDomain.name,
-      )
+      const { id, messageId } = generateMessageIdForDomain(sendingDomain.name)
 
       let htmlMessage = payload.html
 
@@ -133,9 +125,7 @@ export class InjectEmailAction {
         id,
         payload: {
           links,
-          product: payload.headers?.[appEnv.emailHeaders.broadcastId]
-            ? "engage"
-            : "send",
+          product: payload.headers?.[appEnv.emailHeaders.broadcastId] ? "engage" : "send",
           clickTrackingEnabled,
           openTrackingEnabled,
           contactId: payload.headers?.[appEnv.emailHeaders.contactId],

@@ -5,9 +5,7 @@ import type { Broadcast } from "@/database/database_schema_types.js"
 import { container } from "@/utils/typi.js"
 
 export class GetBroadcastAction {
-  constructor(
-    private broadcastRepository = container.make(BroadcastRepository),
-  ) {}
+  constructor(private broadcastRepository = container.make(BroadcastRepository)) {}
 
   async handle(broadcast: Broadcast) {
     return {

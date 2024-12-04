@@ -15,11 +15,7 @@ import {
 
 const EnvelopeSchema = object(
   {
-    email: pipe(
-      string(),
-      nonEmpty(),
-      email("Please provide a valid email."),
-    ),
+    email: pipe(string(), nonEmpty(), email("Please provide a valid email.")),
     name: optional(string()),
   },
   "A valid email and/or name is required.",
@@ -42,17 +38,9 @@ export const InjectEmailSchema = object({
     maxLength(50, "At most 50 recipients are allowed."),
   ),
   html: optional(
-    pipe(
-      string("A valid html body is required."),
-      nonEmpty(),
-      maxLength(256_000),
-    ),
+    pipe(string("A valid html body is required."), nonEmpty(), maxLength(256_000)),
   ),
-  text: pipe(
-    string("A valid text body is required.."),
-    nonEmpty(),
-    maxLength(256_000),
-  ),
+  text: pipe(string("A valid text body is required.."), nonEmpty(), maxLength(256_000)),
   replyTo: optional(EnvelopeSchema),
   headers: optional(record(string(), string())),
   attachments: optional(array(AttachmentSchema)),

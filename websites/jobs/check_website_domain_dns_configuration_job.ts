@@ -22,9 +22,7 @@ export class CheckWebsiteDomainDnsConfiguration extends BaseJob<CheckWebsiteDoma
     return AVAILABLE_QUEUES.websites
   }
 
-  async handle({
-    payload,
-  }: JobContext<CheckWebsiteDomainDnsConfigurationPayload>) {
+  async handle({ payload }: JobContext<CheckWebsiteDomainDnsConfigurationPayload>) {
     const websiteRepository = container.make(WebsiteRepository)
     const website = await websiteRepository.findById(payload.websiteId)
 
@@ -46,31 +44,20 @@ export class CheckWebsiteDomainDnsConfiguration extends BaseJob<CheckWebsiteDoma
       .resolveCname(website.websiteDomainCnameValue)
 
     if (!isCnameConfiguredForDomain) {
-      await Queue.websites().add(
-        CheckWebsiteDomainDnsConfiguration.id,
-        payload,
-        {
-          delay: 30 * 1000, // wait 30 seconds to try again.
-        },
-      )
+      await Queue.websites().add(CheckWebsiteDomainDnsConfiguration.id, payload, {
+        delay: 30 * 1000, // wait 30 seconds to try again.
+      })
 
-      return this.done(
-        `Cname not configured. Queueing to retry in 30 seconds.`,
-      )
+      return this.done(`Cname not configured. Queueing to retry in 30 seconds.`)
     }
 
     await websiteRepository.updateById(website.id, {
       websiteDomainVerifiedAt: new Date(),
     })
 
-    await Queue.websites().add(
-      IssueSSLCertificateForWebsiteJob.id,
-      payload,
-    )
+    await Queue.websites().add(IssueSSLCertificateForWebsiteJob.id, payload)
 
-    return this.done(
-      "Cname found, and SSL certificate issuing job scheduled.",
-    )
+    return this.done("Cname found, and SSL certificate issuing job scheduled.")
   }
 
   async failed() {}

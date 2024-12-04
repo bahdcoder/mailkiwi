@@ -1,10 +1,13 @@
 import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
 import { defaultChannels } from "@/cli/commands/chat/add_default_channels_comand.js"
+import { randomInt } from "crypto"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import type { CreateUserDto } from "@/auth/users/dto/create_user_dto.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+
+import { InsertUser } from "@/database/database_schema_types.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
@@ -18,17 +21,15 @@ export class RegisterUserAction {
     private database = makeDatabase(),
   ) {}
 
-  handle = async (payload: CreateUserDto) => {
+  handle = async (payload: InsertUser) => {
     const channels = await this.channelRepository.channels().findAll()
 
     const { user, team } = await this.database.transaction(async (tx) => {
-      const user = await this.userRepository
-        .transaction(tx)
-        .create(payload)
+      const user = await this.userRepository.transaction(tx).create({ ...payload })
 
       const team = await this.teamRepository
         .transaction(tx)
-        .create({ name: payload.name }, user.id)
+        .create({ name: user.id }, user.id)
 
       await this.channelRepository
         .transaction(tx)

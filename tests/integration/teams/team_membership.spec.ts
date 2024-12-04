@@ -32,13 +32,9 @@ export const setup = async (email?: string, role?: string) => {
   const json = await response.json()
 
   const getInvite = async () => {
-    const invite = await container
-      .make(TeamMembershipRepository)
-      .findById(json?.id)
+    const invite = await container.make(TeamMembershipRepository).findById(json?.id)
 
-    const teamWithMembers = await container
-      .make(TeamRepository)
-      .findById(team.id)
+    const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
     const token = new SignedUrlManager(appEnv.APP_KEY).encode(
       invite?.id?.toString() as string,
@@ -59,9 +55,7 @@ export const setup = async (email?: string, role?: string) => {
 
 describe("@memberships", () => {
   describe("Invites", () => {
-    test("can invite a new member via email to a team", async ({
-      expect,
-    }) => {
+    test("can invite a new member via email to a team", async ({ expect }) => {
       const { response, body, getInvite } = await setup()
 
       expect(response.status).toBe(200)
@@ -73,16 +67,10 @@ describe("@memberships", () => {
       expect(invite?.status).toEqual("PENDING")
       expect(invite?.email).toEqual(body.email)
 
-      const expiresInDays = DateTime.fromJSDate(
-        invite?.expiresAt as Date,
-      ).diffNow("days")
+      const expiresInDays = DateTime.fromJSDate(invite?.expiresAt as Date).diffNow("days")
 
-      expect(
-        parseInt(expiresInDays.days.toString()),
-      ).toBeGreaterThanOrEqual(6)
-      expect(parseInt(expiresInDays.days.toString())).toBeLessThanOrEqual(
-        8,
-      )
+      expect(parseInt(expiresInDays.days.toString())).toBeGreaterThanOrEqual(6)
+      expect(parseInt(expiresInDays.days.toString())).toBeLessThanOrEqual(8)
     })
 
     test("can invite an existing user to a team", async ({ expect }) => {
@@ -102,9 +90,7 @@ describe("@memberships", () => {
 
       expect(response.status).toBe(200)
 
-      const teamWithMembers = await container
-        .make(TeamRepository)
-        .findById(team.id)
+      const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
       expect(teamWithMembers?.members).toHaveLength(1)
 
@@ -123,9 +109,7 @@ describe("@memberships", () => {
 
       const jobs = await Queue.accounts().getJobs()
 
-      const accountJobs = jobs.filter(
-        (job) => job.data.inviteId === invite.id,
-      )
+      const accountJobs = jobs.filter((job) => job.data.inviteId === invite.id)
 
       expect(accountJobs).toHaveLength(1)
 
@@ -136,9 +120,7 @@ describe("@memberships", () => {
       expect(job?.data).toEqual({ inviteId: invite?.id })
     })
 
-    test("does not invite member if invalid payload is provided", async ({
-      expect,
-    }) => {
+    test("does not invite member if invalid payload is provided", async ({ expect }) => {
       const { user, team } = await createUser()
 
       const body = {
@@ -154,18 +136,17 @@ describe("@memberships", () => {
 
       const json = await response.json()
 
-      expect(
-        json.errors.map((error: { field: string }) => error.field),
-      ).toEqual(["email", "role"])
+      expect(json.errors.map((error: { field: string }) => error.field)).toEqual([
+        "email",
+        "role",
+      ])
     })
   })
 
   describe("Accept and reject invites", () => {
     test("can accept an invite to join a team", async ({ expect }) => {
       const { user: invitedUser } = await createUser()
-      const { team, body, getInvite, user } = await setup(
-        invitedUser.email,
-      )
+      const { team, body, getInvite, user } = await setup(invitedUser.email)
       const { token } = await getInvite()
 
       const response = await makeRequestAsUser(
@@ -180,9 +161,7 @@ describe("@memberships", () => {
 
       expect(response.status).toBe(200)
 
-      const teamWithMembers = await container
-        .make(TeamRepository)
-        .findById(team.id)
+      const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
       expect(teamWithMembers?.members).toHaveLength(1)
       expect(teamWithMembers?.members?.[0]?.status).toEqual("ACTIVE")
@@ -204,9 +183,7 @@ describe("@memberships", () => {
 
       expect(response.status).toBe(401)
 
-      const teamWithMembers = await container
-        .make(TeamRepository)
-        .findById(team.id)
+      const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
       expect(teamWithMembers?.members).toHaveLength(1)
       expect(teamWithMembers?.members?.[0]?.status).toEqual("PENDING")
@@ -229,9 +206,7 @@ describe("@memberships", () => {
 
       expect(response.status).toBe(200)
 
-      const teamWithMembers = await container
-        .make(TeamRepository)
-        .findById(team.id)
+      const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
       expect(teamWithMembers?.members).toHaveLength(0)
     })
@@ -256,9 +231,7 @@ describe("@memberships", () => {
 
       expect(response.status).toBe(401)
 
-      const teamWithMembers = await container
-        .make(TeamRepository)
-        .findById(team.id)
+      const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
       expect(teamWithMembers?.members).toHaveLength(1)
       expect(teamWithMembers?.members?.[0]?.status).toEqual("PENDING")
@@ -268,9 +241,7 @@ describe("@memberships", () => {
   describe("Revoke team member access", () => {
     test("can revoke a team member's access", async ({ expect }) => {
       const { user: invitedUser } = await createUser()
-      const { team, body, getInvite, user } = await setup(
-        invitedUser.email,
-      )
+      const { team, body, getInvite, user } = await setup(invitedUser.email)
 
       const { token, invite } = await getInvite()
 
@@ -284,9 +255,7 @@ describe("@memberships", () => {
         team.id,
       )
 
-      const teamWithMembers = await container
-        .make(TeamRepository)
-        .findById(team.id)
+      const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
       expect(teamWithMembers?.members).toHaveLength(1)
 
@@ -309,15 +278,10 @@ describe("@memberships", () => {
       expect(teamWithMembersAfterRevokedAccess?.members).toHaveLength(0)
     })
 
-    test("only an administrator can revoke team member access", async ({
-      expect,
-    }) => {
+    test("only an administrator can revoke team member access", async ({ expect }) => {
       const { user: invitedUser } = await createUser()
       const { user: secondInvitedUser } = await createUser()
-      const { team, body, getInvite } = await setup(
-        invitedUser.email,
-        "ADMINISTRATOR",
-      )
+      const { team, body, getInvite } = await setup(invitedUser.email, "ADMINISTRATOR")
 
       // add another user to the team as an author
       await container.make(TeamMembershipRepository).create({
@@ -341,9 +305,7 @@ describe("@memberships", () => {
         team.id,
       )
 
-      const teamWithMembers = await container
-        .make(TeamRepository)
-        .findById(team.id)
+      const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
       expect(teamWithMembers?.members).toHaveLength(2)
 
@@ -367,9 +329,7 @@ describe("@memberships", () => {
       expect(teamWithMembersAfterRevokedAccess?.members).toHaveLength(2)
     })
 
-    test("a user can revoke their own access from a team", async ({
-      expect,
-    }) => {
+    test("a user can revoke their own access from a team", async ({ expect }) => {
       const { user: invitedUser } = await createUser()
       const { user: secondInvitedUser } = await createUser()
       const { team, body, getInvite, user } = await setup(
@@ -397,9 +357,7 @@ describe("@memberships", () => {
         body,
       })
 
-      const teamWithMembers = await container
-        .make(TeamRepository)
-        .findById(team.id)
+      const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
       expect(teamWithMembers?.members).toHaveLength(2)
 

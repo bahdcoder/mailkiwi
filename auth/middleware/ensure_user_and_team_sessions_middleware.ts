@@ -1,9 +1,6 @@
 import type { Next } from "hono"
 
-import {
-  E_OPERATION_FAILED,
-  E_UNAUTHORIZED,
-} from "@/http/responses/errors.js"
+import { E_OPERATION_FAILED, E_UNAUTHORIZED } from "@/http/responses/errors.js"
 
 import type { HonoContext } from "@/shared/server/types.js"
 

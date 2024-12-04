@@ -1,10 +1,7 @@
 import { CreateWebsitePageDto } from "@/websites/dto/create_website_page_dto.js"
 import { eq } from "drizzle-orm"
 
-import {
-  UpdateWebsitePage,
-  WebsitePage,
-} from "@/database/database_schema_types.js"
+import { UpdateWebsitePage, WebsitePage } from "@/database/database_schema_types.js"
 import { websitePages } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"

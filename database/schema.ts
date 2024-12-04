@@ -28,9 +28,7 @@ export const binaryUuid = customType<{
   config: { length?: number }
 }>({
   dataType(config) {
-    return typeof config?.length !== "undefined"
-      ? `binary(${config.length})`
-      : `binary`
+    return typeof config?.length !== "undefined" ? `binary(${config.length})` : `binary`
   },
   fromDriver(buf) {
     return [
@@ -85,12 +83,14 @@ export const settings = mysqlTable("settings", {
 export const users = mysqlTable("users", {
   id,
   email: varchar("email", { length: 80 }).unique().notNull(),
-  name: varchar("name", { length: 80 }),
+  firstName: varchar("firstName", { length: 80 }),
+  lastName: varchar("lastName", { length: 80 }),
   avatarUrl: varchar("avatarUrl", { length: 256 }),
-  password: varchar("password", { length: 256 }).notNull(),
-  role: mysqlEnum("role", ["customer", "support", "team"]).$default(
-    () => "customer",
-  ),
+  password: varchar("password", { length: 256 }),
+  emailVerificationCode: varchar("emailVerificationCode", { length: 256 }),
+  emailVerifiedAt: timestamp("emailVerifiedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  role: mysqlEnum("role", ["customer", "support", "team"]).$default(() => "customer"),
 })
 
 export const sendingSources = mysqlTable("sendingSources", {
@@ -127,11 +127,7 @@ export const teams = mysqlTable("teams", {
   trackClicks: boolean("trackClicks"),
   trackOpens: boolean("trackOpens"),
   broadcastEditor: mysqlEnum("broadcastEditor", ["DEFAULT", "MARKDOWN"]),
-  commerceProvider: mysqlEnum("commerceProvider", [
-    "stripe",
-    "paystack",
-    "flutterwave",
-  ]),
+  commerceProvider: mysqlEnum("commerceProvider", ["stripe", "paystack", "flutterwave"]),
   commerceProviderAccountId: varchar("commerceProviderAccountId", {
     length: 255,
   }),
@@ -163,18 +159,16 @@ export const sendingDomains = mysqlTable("sendingDomains", {
   returnPathDomainVerifiedAt: timestamp("returnPathDomainVerifiedAt"),
 
   // sending ip addresses
-  sendingSourceId: primaryKeyCuid("sendingSourceId").references(
+  sendingSourceId: primaryKeyCuid("sendingSourceId").references(() => sendingSources.id),
+  secondarySendingSourceId: primaryKeyCuid("secondarySendingSourceId").references(
     () => sendingSources.id,
   ),
-  secondarySendingSourceId: primaryKeyCuid(
-    "secondarySendingSourceId",
-  ).references(() => sendingSources.id),
-  engageSendingSourceId: primaryKeyCuid(
-    "engageSendingSourceId",
-  ).references(() => sendingSources.id),
-  engageSecSendingSourceId: primaryKeyCuid(
-    "engageSecSendingSourceId",
-  ).references(() => sendingSources.id),
+  engageSendingSourceId: primaryKeyCuid("engageSendingSourceId").references(
+    () => sendingSources.id,
+  ),
+  engageSecSendingSourceId: primaryKeyCuid("engageSecSendingSourceId").references(
+    () => sendingSources.id,
+  ),
 
   // tracking
   trackingDomainCnameValue: varchar("trackingDomainCnameValue", {
@@ -240,8 +234,7 @@ export const audiences = mysqlTable("audiences", {
   teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
-  knownProperties:
-    json("knownProperties").$type<KnownAudienceProperty[]>(),
+  knownProperties: json("knownProperties").$type<KnownAudienceProperty[]>(),
   product: mysqlEnum("product", ["engage", "letters"]).default("engage"),
 })
 
@@ -298,29 +291,19 @@ export const websitePages = mysqlTable(
     publishedAt: timestamp("publishedAt"),
   },
   (table) => ({
-    websiteIdPathKey: unique("websiteIdPathKey").on(
-      table.websiteId,
-      table.path,
-    ),
+    websiteIdPathKey: unique("websiteIdPathKey").on(table.websiteId, table.path),
   }),
 )
 
 export const contactImports = mysqlTable("contactImports", {
   id,
-  fileIdentifier: varchar("fileIdentifier", { length: 64 })
-    .unique()
-    .notNull(),
+  fileIdentifier: varchar("fileIdentifier", { length: 64 }).unique().notNull(),
   name: varchar("name", { length: 50 }),
   audienceId: primaryKeyCuid("audienceId")
     .references(() => audiences.id)
     .notNull(),
   uploadUrl: varchar("url", { length: 100 }).notNull(),
-  status: mysqlEnum("status", [
-    "PENDING",
-    "PROCESSING",
-    "FAILED",
-    "SUCCESS",
-  ]),
+  status: mysqlEnum("status", ["PENDING", "PROCESSING", "FAILED", "SUCCESS"]),
   subscribeAllContacts: boolean("subscribeAllContacts").default(true),
   updateExistingContacts: boolean("updateExistingContacts").default(true),
   createdAt: timestamp("createdAt").defaultNow(),
@@ -330,9 +313,7 @@ export const contactImports = mysqlTable("contactImports", {
       firstName: string
       lastName: string
       headers: string[]
-      properties?:
-        | Record<string, Omit<KnownAudienceProperty, "options">>
-        | undefined
+      properties?: Record<string, Omit<KnownAudienceProperty, "options">> | undefined
       tags: string[] // for each of these, save a new tag to the tags table for this audience.
       tagIds: string[]
     }>()
@@ -355,9 +336,7 @@ export const contacts = mysqlTable(
     emailVerificationToken: varchar("emailVerificationToken", {
       length: 100,
     }),
-    emailVerificationTokenExpiresAt: timestamp(
-      "emailVerificationTokenExpiresAt",
-    ),
+    emailVerificationTokenExpiresAt: timestamp("emailVerificationTokenExpiresAt"),
     contactImportId: primaryKeyCuid("contactImportId").references(
       () => contactImports.id,
     ),
@@ -371,29 +350,21 @@ export const contacts = mysqlTable(
     lastSentAutomationEmailAt: timestamp("lastSentAutomationEmailAt"),
 
     lastOpenedBroadcastEmailAt: timestamp("lastOpenedBroadcastEmailAt"),
-    lastClickedBroadcastEmailLinkAt: timestamp(
-      "lastClickedBroadcastEmailLinkAt",
-    ),
+    lastClickedBroadcastEmailLinkAt: timestamp("lastClickedBroadcastEmailLinkAt"),
 
     lastOpenedAutomationEmailAt: timestamp("lastOpenedAutomationEmailAt"),
-    lastClickedAutomationEmailLinkAt: timestamp(
-      "lastClickedAutomationEmailLinkAt",
-    ),
+    lastClickedAutomationEmailLinkAt: timestamp("lastClickedAutomationEmailLinkAt"),
 
     // Device and location information
     lastTrackedActivityFrom: varchar("lastTrackedActivityFrom", {
       length: 10,
     }),
-    lastTrackedActivityUsingDevice: varchar(
-      "lastTrackedActivityUsingDevice",
-      { length: 56 },
-    ),
-    lastTrackedActivityUsingBrowser: varchar(
-      "lastTrackedActivityUsingBrowser",
-      {
-        length: 56,
-      },
-    ),
+    lastTrackedActivityUsingDevice: varchar("lastTrackedActivityUsingDevice", {
+      length: 56,
+    }),
+    lastTrackedActivityUsingBrowser: varchar("lastTrackedActivityUsingBrowser", {
+      length: 56,
+    }),
   },
   (table) => ({
     ContactEmailAudienceIdKey: unique("ContactEmailAudienceIdKey").on(
@@ -441,10 +412,7 @@ export const tags = mysqlTable(
       .notNull(),
   },
   (table) => ({
-    tagNameAudienceIdKey: unique("tagNameAudienceIdKey").on(
-      table.name,
-      table.audienceId,
-    ),
+    tagNameAudienceIdKey: unique("tagNameAudienceIdKey").on(table.name, table.audienceId),
   }),
 )
 
@@ -461,12 +429,14 @@ export const tagsOnContacts = mysqlTable(
     assignedAt: timestamp("assignedAt"),
   },
   (table) => ({
-    tagsOnContactsTagIdContactIdKey: unique(
-      "tagsOnContactsTagIdContactIdKey",
-    ).on(table.tagId, table.contactId),
-    tagsOnContactsTagIdContactIdIdx: index(
-      "tagsOnContactsTagIdContactIdIdx",
-    ).on(table.tagId, table.contactId),
+    tagsOnContactsTagIdContactIdKey: unique("tagsOnContactsTagIdContactIdKey").on(
+      table.tagId,
+      table.contactId,
+    ),
+    tagsOnContactsTagIdContactIdIdx: index("tagsOnContactsTagIdContactIdIdx").on(
+      table.tagId,
+      table.contactId,
+    ),
   }),
 )
 
@@ -486,12 +456,9 @@ export const emails = mysqlTable("emails", {
   audienceId: primaryKeyCuid("audienceId")
     .references(() => audiences.id, { onDelete: "cascade" })
     .notNull(),
-  emailContentId: primaryKeyCuid("emailContentId").references(
-    () => emailContents.id,
-    {
-      onDelete: "cascade",
-    },
-  ),
+  emailContentId: primaryKeyCuid("emailContentId").references(() => emailContents.id, {
+    onDelete: "cascade",
+  }),
 })
 
 export const abTestVariants = mysqlTable("abTestVariants", {
@@ -514,19 +481,14 @@ export const abTestVariants = mysqlTable("abTestVariants", {
 export const emailSends = mysqlTable("emailSends", {
   id,
   sendingId: varchar("sendingId", { length: 100 }).unique(), // from the mta
-  sendingDomainId: primaryKeyCuid("sendingDomainId").references(
-    () => sendingDomains.id,
-  ),
+  sendingDomainId: primaryKeyCuid("sendingDomainId").references(() => sendingDomains.id),
 
   // product
   product: mysqlEnum("product", ["engage", "send", "letters"]).notNull(),
   // if the email was sent from engage or letters, then the broadcastId will be set. This will be used for analytics queries like total bounced emails per broadcast.
-  broadcastId: primaryKeyCuid("broadcastId").references(
-    () => broadcasts.id,
-    {
-      onDelete: "cascade",
-    },
-  ),
+  broadcastId: primaryKeyCuid("broadcastId").references(() => broadcasts.id, {
+    onDelete: "cascade",
+  }),
 
   sender: varchar("sender", { length: 80 }),
   recipient: varchar("recipient", { length: 80 }),
@@ -539,9 +501,7 @@ export const emailSends = mysqlTable("emailSends", {
   size: int("size"),
   totalAttempts: int("totalAttempts"),
   createdAt: timestamp("createdAt"),
-  sendingSourceId: primaryKeyCuid("sendingSourceId").references(
-    () => sendingSources.id,
-  ),
+  sendingSourceId: primaryKeyCuid("sendingSourceId").references(() => sendingSources.id),
   links: json("links").$type<string[]>(),
   nodeId: varchar("nodeId", { length: 48 }),
   egressPool: varchar("egressPool", { length: 80 }),
@@ -584,12 +544,9 @@ export const emailSendEvents = mysqlTable("emailSendEvents", {
   contactId: primaryKeyCuid("contactId").references(() => contacts.id),
 
   // for engage to track events per broadcast and per audience
-  broadcastId: primaryKeyCuid("broadcastId").references(
-    () => broadcasts.id,
-    {
-      onDelete: "cascade",
-    },
-  ),
+  broadcastId: primaryKeyCuid("broadcastId").references(() => broadcasts.id, {
+    onDelete: "cascade",
+  }),
   audienceId: primaryKeyCuid("audienceId").references(() => audiences.id, {
     onDelete: "cascade",
   }),
@@ -644,17 +601,15 @@ export const broadcasts = mysqlTable("broadcasts", {
   trackClicks: boolean("trackClicks"),
   trackOpens: boolean("trackOpens"),
 
-  emailContentId: primaryKeyCuid("emailContentId").references(
-    () => emailContents.id,
+  emailContentId: primaryKeyCuid("emailContentId").references(() => emailContents.id, {
+    onDelete: "cascade",
+  }),
+  winningAbTestVariantId: primaryKeyCuid("winningAbTestVariantId").references(
+    (): AnyMySqlColumn => abTestVariants.id,
     {
       onDelete: "cascade",
     },
   ),
-  winningAbTestVariantId: primaryKeyCuid(
-    "winningAbTestVariantId",
-  ).references((): AnyMySqlColumn => abTestVariants.id, {
-    onDelete: "cascade",
-  }),
   // waitingTimeToPickWinner
   waitingTimeToPickWinner: int("waitingTimeToPickWinner").default(4), // in hours,
   status: mysqlEnum("status", [
@@ -667,11 +622,7 @@ export const broadcasts = mysqlTable("broadcasts", {
     "ARCHIVED",
   ]).default("DRAFT"),
   isAbTest: boolean("isAbTest").default(false).notNull(),
-  winningCriteria: mysqlEnum("winningCriteria", [
-    "OPENS",
-    "CLICKS",
-    "CONVERSIONS",
-  ]),
+  winningCriteria: mysqlEnum("winningCriteria", ["OPENS", "CLICKS", "CONVERSIONS"]),
   winningWaitTime: int("winningWaitTime"), // in hours
   sendAt: timestamp("sendAt").$type<Date | undefined>(),
 })
@@ -714,12 +665,7 @@ export const automationStepSubtypesRule = [
 
 export const automationStepSubtypesEnd = ["END"] as const
 
-export const automationStepTypes = [
-  "TRIGGER",
-  "ACTION",
-  "RULE",
-  "END",
-] as const
+export const automationStepTypes = ["TRIGGER", "ACTION", "RULE", "END"] as const
 export const automationStepSubtypes = [
   ...automationStepSubtypesTrigger,
   ...automationStepSubtypesAction,
@@ -789,9 +735,7 @@ export const automationSteps = mysqlTable("automationSteps", {
     },
   ),
   branchIndex: int("branchIndex"),
-  configuration: json("configuration")
-    .$type<AutomationStepConfiguration>()
-    .notNull(),
+  configuration: json("configuration").$type<AutomationStepConfiguration>().notNull(),
   emailId: primaryKeyCuid("emailId").references(() => emails.id),
   tagId: primaryKeyCuid("tagId").references(() => tags.id),
   audienceId: primaryKeyCuid("audienceId").references(() => audiences.id),
@@ -803,40 +747,35 @@ export const segments = mysqlTable("segments", {
   audienceId: primaryKeyCuid("audienceId")
     .references(() => audiences.id)
     .notNull(),
-  filterGroups: json("filterGroups")
-    .$type<ContactFilterGroups>()
-    .notNull(),
+  filterGroups: json("filterGroups").$type<ContactFilterGroups>().notNull(),
 })
 
-export const contactAutomationSteps = mysqlTable(
-  "contactAutomationSteps",
-  {
-    id,
-    automationStepId: primaryKeyCuid("automationStepId")
-      .references(() => automationSteps.id, {
-        onDelete: "cascade",
-      })
-      .notNull(),
-    contactId: primaryKeyCuid("contactId")
-      .references(() => contacts.id, {
-        onDelete: "cascade",
-      })
-      .notNull(),
-    status: mysqlEnum("status", [
-      "PENDING",
-      "ACTIVE",
-      "COMPLETED",
-      "FAILED",
-      "HALTED",
-    ]).default("PENDING"),
-    haltedAt: timestamp("haltedAt"),
-    failedAt: timestamp("failedAt"),
-    startedAt: timestamp("startedAt"),
-    completedAt: timestamp("completedAt"),
-    createdAt: timestamp("createdAt"),
-    output: json("output").$type<string[]>(),
-  },
-)
+export const contactAutomationSteps = mysqlTable("contactAutomationSteps", {
+  id,
+  automationStepId: primaryKeyCuid("automationStepId")
+    .references(() => automationSteps.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  contactId: primaryKeyCuid("contactId")
+    .references(() => contacts.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  status: mysqlEnum("status", [
+    "PENDING",
+    "ACTIVE",
+    "COMPLETED",
+    "FAILED",
+    "HALTED",
+  ]).default("PENDING"),
+  haltedAt: timestamp("haltedAt"),
+  failedAt: timestamp("failedAt"),
+  startedAt: timestamp("startedAt"),
+  completedAt: timestamp("completedAt"),
+  createdAt: timestamp("createdAt"),
+  output: json("output").$type<string[]>(),
+})
 
 export const contactPurchases = mysqlTable("contactPurchases", {
   id,
@@ -862,11 +801,7 @@ export const products = mysqlTable("products", {
     .references(() => teams.id)
     .notNull(),
   audienceId: primaryKeyCuid("audienceId").references(() => audiences.id),
-  billingCycle: mysqlEnum("cycle", [
-    "monthly",
-    "yearly",
-    "once",
-  ]).notNull(),
+  billingCycle: mysqlEnum("cycle", ["monthly", "yearly", "once"]).notNull(),
   name: varchar("name", { length: 50 }).notNull(),
   price: int("price"), // for one time payments
   priceYearly: int("priceYearly"), // for subscription payments
@@ -894,9 +829,7 @@ export const forms = mysqlTable("forms", {
     .notNull(),
   name: varchar("name", { length: 80 }).notNull(),
   fields:
-    json("fields").$type<
-      (CreateFormDto["fields"][number] & { deleted?: boolean })[]
-    >(),
+    json("fields").$type<(CreateFormDto["fields"][number] & { deleted?: boolean })[]>(),
   archivedAt: timestamp("archivedAt"),
   // on form submitted:
   // -> redirect to a page
@@ -959,12 +892,8 @@ export const messages = mysqlTable(
     updatedAt: timestamp("updatedAt"),
   },
   (table) => ({
-    messageChannelIdIndex: index("messageChannelIdIndex").on(
-      table.channelId,
-    ),
-    messageCreatedAtIndex: index("messageCreatedAtIndex").on(
-      table.createdAt,
-    ),
+    messageChannelIdIndex: index("messageChannelIdIndex").on(table.channelId),
+    messageCreatedAtIndex: index("messageCreatedAtIndex").on(table.createdAt),
   }),
 )
 

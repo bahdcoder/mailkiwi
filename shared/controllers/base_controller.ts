@@ -28,8 +28,8 @@ import {
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
 
-import { Session } from "@/shared/cookies/cookies.js"
 import type { HonoContext } from "@/shared/server/types.js"
+import { Session } from "@/shared/sessions/sessions.js"
 import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
 
 import { container } from "@/utils/typi.js"
@@ -75,21 +75,14 @@ export class BaseController {
   }
 
   protected getDecodedSignature(ctx: HonoContext) {
-    return new SignedUrlManager(appEnv.APP_KEY).decode(
-      ctx.req.param("signature"),
-    )
+    return new SignedUrlManager(appEnv.APP_KEY).decode(ctx.req.param("signature"))
   }
 
-  protected ensureBelongsToTeam(
-    ctx: HonoContext,
-    entity: { teamId: string },
-  ) {
+  protected ensureBelongsToTeam(ctx: HonoContext, entity: { teamId: string }) {
     const team = this.ensureTeam(ctx)
 
     if (team.id !== entity.teamId) {
-      throw E_UNAUTHORIZED(
-        `This entity does not belong to your selected team. `,
-      )
+      throw E_UNAUTHORIZED(`This entity does not belong to your selected team. `)
     }
   }
 
@@ -112,15 +105,10 @@ export class BaseController {
 
     const teamPolicy = container.make(TeamPolicy)
 
-    const canAdministrate = teamPolicy.canAdministrate(
-      team,
-      this.user(ctx)?.id,
-    )
+    const canAdministrate = teamPolicy.canAdministrate(team, this.user(ctx)?.id)
 
     if (!canAdministrate) {
-      throw E_UNAUTHORIZED(
-        "You are not authorised to administrate this team.",
-      )
+      throw E_UNAUTHORIZED("You are not authorised to administrate this team.")
     }
 
     return team
@@ -148,9 +136,7 @@ export class BaseController {
     const canManage = teamPolicy.canAuthor(team, this.user(ctx)?.id)
 
     if (!canManage) {
-      throw E_UNAUTHORIZED(
-        "You are not authorised to perform this action on this team.",
-      )
+      throw E_UNAUTHORIZED("You are not authorised to perform this action on this team.")
     }
 
     return team
@@ -164,9 +150,7 @@ export class BaseController {
     const canView = teamPolicy.canView(team, this.user(ctx)?.id)
 
     if (!canView) {
-      throw E_UNAUTHORIZED(
-        "You are not authorised to perform this action on this team.",
-      )
+      throw E_UNAUTHORIZED("You are not authorised to perform this action on this team.")
     }
 
     return team
@@ -180,24 +164,18 @@ export class BaseController {
     return ctx.get("team")
   }
 
-  protected ensureAuthorized(
-    ctx: HonoContext,
-    authorizedUserIds: string[],
-  ) {
+  protected ensureAuthorized(ctx: HonoContext, authorizedUserIds: string[]) {
     const userId = ctx.get("user")?.id
 
     if (!authorizedUserIds.includes(userId)) {
-      throw E_UNAUTHORIZED(
-        "You are not authorized to perform this action.",
-      )
+      throw E_UNAUTHORIZED("You are not authorized to perform this action.")
     }
   }
 
   protected ensureCanSendFromDomain(ctx: HonoContext, domain: string) {
     const team = ctx.get("teamWithSendingDomains")
 
-    if (!team)
-      throw E_OPERATION_FAILED("Could not resolve team from API key.")
+    if (!team) throw E_OPERATION_FAILED("Could not resolve team from API key.")
 
     if (team.sendingDomains.length === 0)
       throw E_OPERATION_FAILED("Team does not have any sending domains.")
@@ -207,17 +185,12 @@ export class BaseController {
     )
 
     if (!sendingDomain)
-      throw E_OPERATION_FAILED(
-        `Not authorised to send from domain: ${domain} `,
-      )
+      throw E_OPERATION_FAILED(`Not authorised to send from domain: ${domain} `)
 
     return sendingDomain
   }
 
-  protected async ensureExists<T>(
-    ctx: HonoContext,
-    param: ControllerParams,
-  ) {
+  protected async ensureExists<T>(ctx: HonoContext, param: ControllerParams) {
     const repositories = {
       tagId: TagRepository,
       contactId: ContactRepository,

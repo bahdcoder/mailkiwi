@@ -6,9 +6,7 @@ import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 import { container } from "@/utils/typi.js"
 
 export class CreateAudienceAction {
-  constructor(
-    private audienceRepository = container.make(AudienceRepository),
-  ) {}
+  constructor(private audienceRepository = container.make(AudienceRepository)) {}
 
   handle = async (payload: CreateAudienceDto, teamId: string) => {
     if (payload.product === "letters") {

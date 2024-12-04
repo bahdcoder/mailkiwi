@@ -12,9 +12,7 @@ export class DkimKeyPairTool {
     return {
       ...dkimKeyPair,
       encrypted: {
-        privateKey: new Encryption(this.appKey).encrypt(
-          dkimKeyPair.privateKey,
-        ),
+        privateKey: new Encryption(this.appKey).encrypt(dkimKeyPair.privateKey),
       },
     }
   }

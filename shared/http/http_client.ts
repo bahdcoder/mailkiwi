@@ -96,10 +96,7 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
         headers: {
           ...this.config.headers,
         },
-        body:
-          this.config.method !== "GET"
-            ? JSON.stringify(this.config.payload)
-            : null,
+        body: this.config.method !== "GET" ? JSON.stringify(this.config.payload) : null,
       })
 
       let data: any

@@ -10,9 +10,7 @@ import { differenceInSeconds } from "@/utils/dates.js"
 import { container } from "@/utils/typi.js"
 
 export class SendBroadcastAction {
-  constructor(
-    private broadcastRepository = container.make(BroadcastRepository),
-  ) {}
+  constructor(private broadcastRepository = container.make(BroadcastRepository)) {}
 
   async handle(broadcast: BroadcastWithoutContent) {
     if (broadcast.isAbTest) {
@@ -20,9 +18,7 @@ export class SendBroadcastAction {
         SendAbTestBroadcastJob.id,
         { broadcastId: broadcast.id },
         {
-          delay: broadcast.sendAt
-            ? differenceInSeconds(new Date(), broadcast.sendAt)
-            : 0,
+          delay: broadcast.sendAt ? differenceInSeconds(new Date(), broadcast.sendAt) : 0,
         },
       )
     }
@@ -32,9 +28,7 @@ export class SendBroadcastAction {
         SendBroadcastJob.id,
         { broadcastId: broadcast.id },
         {
-          delay: broadcast.sendAt
-            ? differenceInSeconds(new Date(), broadcast.sendAt)
-            : 0,
+          delay: broadcast.sendAt ? differenceInSeconds(new Date(), broadcast.sendAt) : 0,
         },
       )
     }

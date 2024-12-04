@@ -15,9 +15,7 @@ import { makeDatabase } from "@/shared/container/index.js"
 import { container } from "@/utils/typi.js"
 
 describe("@audiences", () => {
-  test("can create an audience only if authenticated", async ({
-    expect,
-  }) => {
+  test("can create an audience only if authenticated", async ({ expect }) => {
     const response = await makeRequest("audiences", {
       method: "POST",
     })
@@ -47,9 +45,7 @@ describe("@audiences", () => {
 
     const id = (await response.json())?.id
 
-    const createdAudience = await container
-      .make(AudienceRepository)
-      .findById(id)
+    const createdAudience = await container.make(AudienceRepository).findById(id)
 
     expect(createdAudience.product).toBe("letters")
     expect(createdAudience.name).toBe(payload.name)
@@ -75,9 +71,7 @@ describe("@audiences", () => {
     })
   })
 
-  test("can fetch all created audiences and filter by product", async ({
-    expect,
-  }) => {
+  test("can fetch all created audiences and filter by product", async ({ expect }) => {
     const { team, user } = await createUser()
     const database = makeDatabase()
 
@@ -219,9 +213,7 @@ describe("@audiences", () => {
     expect(audience?.name).toEqual(payload.name)
   })
 
-  test("can only create an audience when properly authorized", async ({
-    expect,
-  }) => {
+  test("can only create an audience when properly authorized", async ({ expect }) => {
     const { user } = await createUser()
 
     const { user: unauthorizedUser } = await createUser()
@@ -233,8 +225,7 @@ describe("@audiences", () => {
         name: "Newsletter",
       },
       headers: {
-        [appEnv.software.teamHeader]:
-          unauthorizedUser?.teams?.[0]?.id?.toString(),
+        [appEnv.software.teamHeader]: unauthorizedUser?.teams?.[0]?.id?.toString(),
       },
     })
 

@@ -66,11 +66,7 @@ export class MinioClient {
   }
 
   async presignedUrl(expiresIn?: number) {
-    return this.client.presignedGetObject(
-      this.bucketName,
-      this.objectName,
-      expiresIn,
-    )
+    return this.client.presignedGetObject(this.bucketName, this.objectName, expiresIn)
   }
 }
 

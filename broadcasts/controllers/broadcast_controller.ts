@@ -57,9 +57,7 @@ export class BroadcastController extends BaseController {
   index = async (ctx: HonoContext) => {
     this.ensureCanView(ctx)
 
-    const broadcasts = await container
-      .resolve(GetBroadcastsAction)
-      .handle()
+    const broadcasts = await container.resolve(GetBroadcastsAction).handle()
 
     return ctx.json(broadcasts)
   }
@@ -77,10 +75,7 @@ export class BroadcastController extends BaseController {
   }
 
   get = async (ctx: HonoContext) => {
-    const broadcast = await this.ensureExists<Broadcast>(
-      ctx,
-      "broadcastId",
-    )
+    const broadcast = await this.ensureExists<Broadcast>(ctx, "broadcastId")
     this.ensureCanView(ctx)
 
     return ctx.json(broadcast)
@@ -88,10 +83,7 @@ export class BroadcastController extends BaseController {
 
   delete = async (ctx: HonoContext) => {
     this.ensureCanManage(ctx)
-    const broadcast = await this.ensureExists<Broadcast>(
-      ctx,
-      "broadcastId",
-    )
+    const broadcast = await this.ensureExists<Broadcast>(ctx, "broadcastId")
 
     await container.resolve(DeleteBroadcastAction).handle(broadcast.id)
 
@@ -99,17 +91,12 @@ export class BroadcastController extends BaseController {
   }
 
   update = async (ctx: HonoContext) => {
-    const broadcast = await this.ensureExists<Broadcast>(
-      ctx,
-      "broadcastId",
-    )
+    const broadcast = await this.ensureExists<Broadcast>(ctx, "broadcastId")
     this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, UpdateBroadcastDto)
 
-    const { id } = await container
-      .resolve(UpdateBroadcastAction)
-      .handle(broadcast, data)
+    const { id } = await container.resolve(UpdateBroadcastAction).handle(broadcast, data)
 
     return ctx.json({ id })
   }
@@ -148,10 +135,7 @@ export class BroadcastController extends BaseController {
     if (broadcast.isAbTest) {
       const validations = await Promise.all(
         broadcast.abTestVariants.map((variant) =>
-          safeParseAsync(
-            SendBroadcastEmailContentSchema,
-            variant.emailContent,
-          ),
+          safeParseAsync(SendBroadcastEmailContentSchema, variant.emailContent),
         ),
       )
 

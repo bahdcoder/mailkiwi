@@ -408,9 +408,13 @@ CREATE TABLE `teams` (
 CREATE TABLE `users` (
 	`id` binary(16) NOT NULL,
 	`email` varchar(80) NOT NULL,
-	`name` varchar(80),
+	`firstName` varchar(80),
+	`lastName` varchar(80),
 	`avatarUrl` varchar(256),
-	`password` varchar(256) NOT NULL,
+	`password` varchar(256),
+	`emailVerificationCode` varchar(256),
+	`emailVerifiedAt` timestamp,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
 	`role` enum('customer','support','team'),
 	CONSTRAINT `users_id` PRIMARY KEY(`id`),
 	CONSTRAINT `users_email_unique` UNIQUE(`email`)

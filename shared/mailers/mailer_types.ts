@@ -25,7 +25,5 @@ export interface MailerDriverResponse {
 export type MailerDriverError = Error | null
 
 export interface MailerDriver {
-  send(
-    mail: MailObject,
-  ): Promise<[MailerDriverResponse, MailerDriverError]>
+  send(mail: MailObject): Promise<[MailerDriverResponse, MailerDriverError]>
 }

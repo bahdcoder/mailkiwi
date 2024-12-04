@@ -8,10 +8,7 @@ import { describe, test } from "vitest"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
 import { survey } from "@/tests/integration/forms/forms.spec.js"
-import {
-  createContactsForAudience,
-  createUser,
-} from "@/tests/mocks/auth/users.js"
+import { createContactsForAudience, createUser } from "@/tests/mocks/auth/users.js"
 
 import { tags, tagsOnContacts } from "@/database/schema.js"
 
@@ -59,9 +56,7 @@ describe("@tag-contact", () => {
     return { formId, tagIds, audience, contactId: contactIds?.[0] }
   }
 
-  test("correctly tags a contact based on the form response", async ({
-    expect,
-  }) => {
+  test("correctly tags a contact based on the form response", async ({ expect }) => {
     const { formId, contactId, tagIds } = await setup()
 
     const submitContent: Record<string, string[]> = {}

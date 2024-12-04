@@ -37,10 +37,7 @@ export class AutomationController extends BaseController {
 
     const action = container.make(CreateAutomationAction)
 
-    const automation = await action.handle(
-      data,
-      ctx.req.param("audienceId"),
-    )
+    const automation = await action.handle(data, ctx.req.param("audienceId"))
 
     return ctx.json(automation)
   }

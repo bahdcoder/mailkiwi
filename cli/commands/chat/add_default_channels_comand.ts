@@ -1,3 +1,4 @@
+import { appEnv } from "@/app/env/app_env.js"
 import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
 import { command } from "@drizzle-team/brocli"
 import { eq, inArray } from "drizzle-orm"
@@ -9,7 +10,6 @@ import { channels } from "@/database/schema.js"
 import { makeDatabase } from "@/shared/container/index.js"
 
 import { container } from "@/utils/typi.js"
-import { appEnv } from "@/app/env/app_env.js"
 
 export const defaultChannels: InsertChannel[] = [
   {
@@ -70,9 +70,7 @@ export const addDefaultChannelsCommand = command({
         ),
       )
 
-    const existingChannelNames = existingChannels.map(
-      (channel) => channel.name,
-    )
+    const existingChannelNames = existingChannels.map((channel) => channel.name)
 
     const nonExistingChannels = defaultChannels.filter(
       (channel) => !existingChannelNames.includes(channel.name),

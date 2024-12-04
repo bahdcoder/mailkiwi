@@ -4,14 +4,7 @@
 // 3. date ranges (start and end), without date range, would give results for all time events.
 // 4. specify if comparisms are needed, for example, compare date range with previous part of date range. if last 7 days is passed, compare with the 7 days before that period.
 // 5. aggregates (avg open rate, avg click rate, avg unsubscribe rate)
-import {
-  SQLWrapper,
-  and,
-  count,
-  countDistinct,
-  eq,
-  sql,
-} from "drizzle-orm"
+import { SQLWrapper, and, count, countDistinct, eq, sql } from "drizzle-orm"
 import { DateTime } from "luxon"
 
 import { EmailSendEvent } from "@/database/database_schema_types.js"
@@ -68,40 +61,29 @@ export class ReportBuilder {
     const conditions: SQLWrapper[] = []
 
     if (this.configuration.audienceId) {
-      conditions.push(
-        eq(emailSends.audienceId, this.configuration.audienceId),
-      )
+      conditions.push(eq(emailSends.audienceId, this.configuration.audienceId))
     }
 
     if (this.configuration.broadcastId) {
-      conditions.push(
-        eq(emailSends.broadcastId, this.configuration.broadcastId),
-      )
+      conditions.push(eq(emailSends.broadcastId, this.configuration.broadcastId))
     }
 
     return and(...conditions)
   }
 
   protected isAudienceReport() {
-    return (
-      this.configuration.audienceId !== undefined &&
-      !this.configuration.broadcastId
-    )
+    return this.configuration.audienceId !== undefined && !this.configuration.broadcastId
   }
 
   conditions() {
     const conditions: SQLWrapper[] = []
 
     if (this.configuration.audienceId) {
-      conditions.push(
-        eq(emailSendEvents.audienceId, this.configuration.audienceId),
-      )
+      conditions.push(eq(emailSendEvents.audienceId, this.configuration.audienceId))
     }
 
     if (this.configuration.broadcastId) {
-      conditions.push(
-        eq(emailSendEvents.broadcastId, this.configuration.broadcastId),
-      )
+      conditions.push(eq(emailSendEvents.broadcastId, this.configuration.broadcastId))
     }
 
     return and(...conditions)

@@ -6,10 +6,7 @@ import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
-import {
-  createBroadcastForUser,
-  createUser,
-} from "@/tests/mocks/auth/users.js"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
 
 import { abTestVariants, contacts } from "@/database/schema.js"
 
@@ -21,9 +18,7 @@ import { hoursToSeconds } from "@/utils/dates.js"
 import { container } from "@/utils/typi.js"
 
 describe("@abtests Pick Test winner", () => {
-  test("picks A/B test winner for click rate winning criteria", async ({
-    expect,
-  }) => {
+  test("picks A/B test winner for click rate winning criteria", async ({ expect }) => {
     const database = makeDatabase()
     const redis = makeRedis()
 
@@ -75,9 +70,7 @@ describe("@abtests Pick Test winner", () => {
       payload: { broadcastId },
     })
 
-    const broadcast = await container
-      .make(BroadcastRepository)
-      .findById(broadcastId)
+    const broadcast = await container.make(BroadcastRepository).findById(broadcastId)
 
     const jobs = await Queue.broadcasts().getJobs()
 
@@ -103,8 +96,7 @@ describe("@abtests Pick Test winner", () => {
 
     expect(totalSentToVariants).toBe(expectedTotalWeightsRecipients)
 
-    const finalSampleSize =
-      contactsForAudience - expectedTotalWeightsRecipients
+    const finalSampleSize = contactsForAudience - expectedTotalWeightsRecipients
 
     for (const variant of allVariants) {
       const allCallsForVariant = jobsFromBroadcastsQueue.filter(

@@ -14,12 +14,7 @@ import { TeamRepository } from "@/teams/repositories/team_repository.js"
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import {
-  Audience,
-  InsertProduct,
-  Team,
-  User,
-} from "@/database/database_schema_types.js"
+import { Audience, InsertProduct, Team, User } from "@/database/database_schema_types.js"
 import { products } from "@/database/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
@@ -46,9 +41,7 @@ describe("@commerce", () => {
   }
 
   const createFakeCommerceProvider = () => {
-    const createAccountFn = vi.fn(async function (
-      _account: AccountInformation,
-    ) {
+    const createAccountFn = vi.fn(async function (_account: AccountInformation) {
       const accountId = `acct_${faker.string.uuid()}`
       return {
         id: accountId,
@@ -75,9 +68,7 @@ describe("@commerce", () => {
     return { createAccountFn, createProviderFn }
   }
 
-  test("can connect commerce account to stripe provider", async ({
-    expect,
-  }) => {
+  test("can connect commerce account to stripe provider", async ({ expect }) => {
     const { user, team } = await createUser({
       enableCommerceOnTeam: false,
     })
@@ -106,9 +97,7 @@ describe("@commerce", () => {
     container.restoreAll()
   })
 
-  test("can connect commerce account to paystack provider", async ({
-    expect,
-  }) => {
+  test("can connect commerce account to paystack provider", async ({ expect }) => {
     const { user, team } = await createUser({
       enableCommerceOnTeam: false,
     })
@@ -194,15 +183,12 @@ describe("@commerce", () => {
     createFakeCommerceProvider()
 
     // const response = await connectCommerceProvider(user, team)
-    const response = await app.request(
-      `/products/${productId}/payments/initialize`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-        }),
-      },
-    )
+    const response = await app.request(`/products/${productId}/payments/initialize`, {
+      method: "POST",
+      body: JSON.stringify({
+        email,
+      }),
+    })
 
     const json = await response.json()
 

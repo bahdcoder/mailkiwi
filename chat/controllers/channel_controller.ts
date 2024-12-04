@@ -52,17 +52,14 @@ export class ChannelController extends BaseController {
 
     const messageSlug = cuid()
 
-    const { id } = await container
-      .make(MessageRepository)
-      .messages()
-      .create({
-        id: messageSlug,
-        userId: user?.id,
-        slug: messageSlug,
-        channelId: channel.id,
-        content: payload.content,
-        createdAt: DateTime.now().toJSDate(),
-      })
+    const { id } = await container.make(MessageRepository).messages().create({
+      id: messageSlug,
+      userId: user?.id,
+      slug: messageSlug,
+      channelId: channel.id,
+      content: payload.content,
+      createdAt: DateTime.now().toJSDate(),
+    })
 
     return ctx.json({ id })
   }

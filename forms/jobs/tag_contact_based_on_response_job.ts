@@ -21,10 +21,7 @@ export class TagContactBasedOnResponseJob extends BaseJob<TagContactBasedOnRespo
     return AVAILABLE_QUEUES.contacts
   }
 
-  async handle({
-    payload,
-    database,
-  }: JobContext<TagContactBasedOnResponseJobPayload>) {
+  async handle({ payload, database }: JobContext<TagContactBasedOnResponseJobPayload>) {
     const formResponse = await container
       .make(FormResponseRepository)
       .responses()
@@ -50,9 +47,7 @@ export class TagContactBasedOnResponseJob extends BaseJob<TagContactBasedOnRespo
     )
 
     if (!fields || fields.length === 0) {
-      return this.done(
-        `This form does not have any fields with auto tagging enabled.`,
-      )
+      return this.done(`This form does not have any fields with auto tagging enabled.`)
     }
 
     await database.transaction(async (trx) => {
@@ -68,10 +63,7 @@ export class TagContactBasedOnResponseJob extends BaseJob<TagContactBasedOnRespo
             await container
               .make(ContactRepository)
               .transaction(trx)
-              .attachTags(
-                formResponse.contactId as string,
-                autoTagRule.tagId,
-              )
+              .attachTags(formResponse.contactId as string, autoTagRule.tagId)
           }
         }
       }

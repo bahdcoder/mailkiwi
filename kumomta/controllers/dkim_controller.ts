@@ -14,13 +14,10 @@ export class DkimController extends BaseController {
   constructor(private app = makeApp()) {
     super()
 
-    this.app.defineRoutes(
-      [["POST", "/mta/dkim/", this.index.bind(this)]],
-      {
-        prefix: "/",
-        middleware: [container.make(AuthorizeMtaCallsMiddleware).handle],
-      },
-    )
+    this.app.defineRoutes([["POST", "/mta/dkim/", this.index.bind(this)]], {
+      prefix: "/",
+      middleware: [container.make(AuthorizeMtaCallsMiddleware).handle],
+    })
   }
 
   async index(ctx: HonoContext) {
@@ -34,9 +31,7 @@ export class DkimController extends BaseController {
 
     const { domain: domainDkim, send, engage } = sendingSource
 
-    const privateKey = new Encryption(appEnv.APP_KEY).decrypt(
-      domainDkim.dkimPrivateKey,
-    )
+    const privateKey = new Encryption(appEnv.APP_KEY).decrypt(domainDkim.dkimPrivateKey)
 
     const { returnPathSubDomain, dkimSubDomain } = domainDkim
 

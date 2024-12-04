@@ -5,10 +5,7 @@ import { describe, test } from "vitest"
 import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.js"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
-import {
-  createBroadcastForUser,
-  createUser,
-} from "@/tests/mocks/auth/users.js"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
 
 import { abTestVariants, broadcasts, contacts } from "@/database/schema.js"
 
@@ -79,9 +76,7 @@ describe("Send broadcast job", () => {
 
     const jobs = await queues.Queue.broadcasts().getJobs()
 
-    const broadcastsQueueJobs = jobs.filter(
-      (job) => job.data.broadcastId === broadcastId,
-    )
+    const broadcastsQueueJobs = jobs.filter((job) => job.data.broadcastId === broadcastId)
 
     const abTestsJobs = await queues.Queue.abTestsBroadcasts().getJobs()
 
@@ -102,8 +97,7 @@ describe("Send broadcast job", () => {
 
     expect(totalSentToVariants).toBe(expectedTotalWeightsRecipients)
 
-    const finalSampleSize =
-      contactsForAudience - expectedTotalWeightsRecipients
+    const finalSampleSize = contactsForAudience - expectedTotalWeightsRecipients
 
     for (const variant of allVariants) {
       const allCallsForVariant = broadcastsQueueJobs.filter(

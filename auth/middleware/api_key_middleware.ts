@@ -7,9 +7,7 @@ import type { HonoContext } from "@/shared/server/types.js"
 import { container } from "@/utils/typi.js"
 
 export class ApiKeyMiddleware {
-  constructor(
-    private accessTokenRepository = container.make(AccessTokenRepository),
-  ) {}
+  constructor(private accessTokenRepository = container.make(AccessTokenRepository)) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
     const authorization = ctx.req.header("Authorization")

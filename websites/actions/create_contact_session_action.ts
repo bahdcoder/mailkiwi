@@ -22,16 +22,11 @@ export class CreateContactSessionAction {
     contact: Pick<Contact, "id" | "email" | "firstName" | "lastName">,
     website: Website,
   ) {
-    const signedUrl = new SignedUrlManager(appEnv.APP_KEY).encode(
-      contact.id,
-      {
-        e: DateTime.now().toUTC().plus({ minutes: 60 }).toISO(),
-      },
-    )
+    const signedUrl = new SignedUrlManager(appEnv.APP_KEY).encode(contact.id, {
+      e: DateTime.now().toUTC().plus({ minutes: 60 }).toISO(),
+    })
 
-    const team = await container
-      .make(TeamRepository)
-      .findById(website.teamId)
+    const team = await container.make(TeamRepository).findById(website.teamId)
 
     const sendingDomain = await container
       .make(SendingDomainRepository)

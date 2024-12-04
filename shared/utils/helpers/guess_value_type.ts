@@ -27,9 +27,7 @@ export function isValueANumber(value: any) {
       const MYSQL_FLOAT_MIN = -3.402823466e38
       const MYSQL_FLOAT_MAX = 3.402823466e38
 
-      return (
-        parsedValue >= MYSQL_FLOAT_MIN && parsedValue <= MYSQL_FLOAT_MAX
-      )
+      return parsedValue >= MYSQL_FLOAT_MIN && parsedValue <= MYSQL_FLOAT_MAX
     }
   }
 

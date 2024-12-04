@@ -16,9 +16,7 @@ export function ipv4AdressFromIpAndPort(ipAndPort: string) {
   return ipAndPort?.split(":")?.[0]
 }
 
-export function stringFromReadableStream(
-  stream: Readable,
-): Promise<string> {
+export function stringFromReadableStream(stream: Readable): Promise<string> {
   return new Promise(function (resolve, reject) {
     let chunks: Uint8Array[] = []
 

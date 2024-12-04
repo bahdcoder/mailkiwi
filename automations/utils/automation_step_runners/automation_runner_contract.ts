@@ -1,10 +1,7 @@
 import type { Redis } from "ioredis"
 
 import type { DrizzleClient } from "@/database/client.js"
-import type {
-  AutomationStep,
-  Contact,
-} from "@/database/database_schema_types.js"
+import type { AutomationStep, Contact } from "@/database/database_schema_types.js"
 
 export interface AutomationStepRunnerContext {
   database: DrizzleClient

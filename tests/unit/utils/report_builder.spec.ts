@@ -5,16 +5,10 @@ import { describe, test } from "vitest"
 import { ReportBuilder } from "@/audiences/utils/report_builder/report_builder.js"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
-import {
-  createBroadcastForUser,
-  createUser,
-} from "@/tests/mocks/auth/users.js"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
 import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
 
-import {
-  Audience,
-  InsertEmailSendEvent,
-} from "@/database/database_schema_types.js"
+import { Audience, InsertEmailSendEvent } from "@/database/database_schema_types.js"
 import {
   contacts,
   emailSendEvents,
@@ -73,10 +67,7 @@ describe("@report-builder", () => {
     const TOTAL_BOUNCES = 435
 
     const deliveredContactIds = contactIds.slice(0, TOTAL_DELIVERED)
-    const bouncedContactIds = contactIds.slice(
-      TOTAL_DELIVERED,
-      TOTAL_SENDS,
-    )
+    const bouncedContactIds = contactIds.slice(TOTAL_DELIVERED, TOTAL_SENDS)
 
     const eventPayload = (
       contact: { id: string; emailSendId?: string },
@@ -112,10 +103,7 @@ describe("@report-builder", () => {
 
     // 6. create another 1,250 open events for 1,250 contacts (of the 7,250 contacts) (double open)
 
-    const doubleOpensContactIds = openContactIds.slice(
-      0,
-      TOTAL_DOUBLE_OPENS,
-    )
+    const doubleOpensContactIds = openContactIds.slice(0, TOTAL_DOUBLE_OPENS)
 
     await createEventsForContacts(doubleOpensContactIds, "Open")
 
@@ -138,38 +126,29 @@ describe("@report-builder", () => {
     }
   }
 
-  test(
-    "can get reports for a campaign",
-    { timeout: 20000 },
-    async ({ expect }) => {
-      const TOTAL_SENDS = 10_000
-      const { user, audience, sendingDomainId } =
-        await setupDomainForDnsChecks()
-      const database = makeDatabase()
-      // 1. create 10,000 contacts
-      await database
-        .insert(contacts)
-        .values(
-          faker.helpers
-            .multiple(faker.lorem.word, { count: TOTAL_SENDS })
-            .map(() => createFakeContact(audience.id)),
-        )
+  test("can get reports for a campaign", { timeout: 20000 }, async ({ expect }) => {
+    const TOTAL_SENDS = 10_000
+    const { user, audience, sendingDomainId } = await setupDomainForDnsChecks()
+    const database = makeDatabase()
+    // 1. create 10,000 contacts
+    await database
+      .insert(contacts)
+      .values(
+        faker.helpers
+          .multiple(faker.lorem.word, { count: TOTAL_SENDS })
+          .map(() => createFakeContact(audience.id)),
+      )
 
-      const [broadcastId, secondBroadcastId, thirdBroadcastId] =
-        await Promise.all([
-          createBroadcastForUser(user, audience.id),
-          createBroadcastForUser(user, audience.id),
-          createBroadcastForUser(user, audience.id),
-        ])
+    const [broadcastId, secondBroadcastId, thirdBroadcastId] = await Promise.all([
+      createBroadcastForUser(user, audience.id),
+      createBroadcastForUser(user, audience.id),
+      createBroadcastForUser(user, audience.id),
+    ])
 
-      const [source] = await database
-        .select()
-        .from(sendingSources)
-        .limit(1)
+    const [source] = await database.select().from(sendingSources).limit(1)
 
-      const [
-        { TOTAL_CLICKS, TOTAL_DELIVERED, TOTAL_DOUBLE_OPENS, TOTAL_OPENS },
-      ] = await Promise.all([
+    const [{ TOTAL_CLICKS, TOTAL_DELIVERED, TOTAL_DOUBLE_OPENS, TOTAL_OPENS }] =
+      await Promise.all([
         prepareBatchOfContactsForReport({
           broadcastId,
           source,
@@ -190,56 +169,48 @@ describe("@report-builder", () => {
         }),
       ])
 
-      const {
-        sends,
-        deliveries,
-        opens,
-        clicks,
-        bounces,
-        uniqueClicks,
-        uniqueOpens,
-        rates,
-      } = await container
-        .make(ReportBuilder)
-        .broadcast(broadcastId)
-        .build()
+    const {
+      sends,
+      deliveries,
+      opens,
+      clicks,
+      bounces,
+      uniqueClicks,
+      uniqueOpens,
+      rates,
+    } = await container.make(ReportBuilder).broadcast(broadcastId).build()
 
-      expect(sends).toBe(TOTAL_SENDS)
-      expect(deliveries).toBe(TOTAL_DELIVERED)
-      expect(opens).toBe(TOTAL_OPENS + TOTAL_DOUBLE_OPENS)
-      expect(uniqueOpens).toBe(TOTAL_OPENS)
-      expect(clicks).toBe(TOTAL_CLICKS)
-      expect(uniqueClicks).toBe(TOTAL_CLICKS)
-      expect(bounces).toBe(TOTAL_SENDS - TOTAL_DELIVERED)
+    expect(sends).toBe(TOTAL_SENDS)
+    expect(deliveries).toBe(TOTAL_DELIVERED)
+    expect(opens).toBe(TOTAL_OPENS + TOTAL_DOUBLE_OPENS)
+    expect(uniqueOpens).toBe(TOTAL_OPENS)
+    expect(clicks).toBe(TOTAL_CLICKS)
+    expect(uniqueClicks).toBe(TOTAL_CLICKS)
+    expect(bounces).toBe(TOTAL_SENDS - TOTAL_DELIVERED)
 
-      expect(rates.deliveries).toEqual("95.65")
-      expect(rates.opens).toEqual("88.87")
-      expect(rates.clicks).toEqual("36.59")
-      expect(rates.uniqueOpens).toEqual("75.80")
-      expect(rates.uniqueClicks).toEqual("36.59")
+    expect(rates.deliveries).toEqual("95.65")
+    expect(rates.opens).toEqual("88.87")
+    expect(rates.clicks).toEqual("36.59")
+    expect(rates.uniqueOpens).toEqual("75.80")
+    expect(rates.uniqueClicks).toEqual("36.59")
 
-      const audienceReport = await container
-        .make(ReportBuilder)
-        .audience(audience.id)
-        .build()
+    const audienceReport = await container
+      .make(ReportBuilder)
+      .audience(audience.id)
+      .build()
 
-      expect(audienceReport.rates.deliveries).toEqual("95.65")
-      expect(audienceReport.rates.opens).toEqual("88.87")
-      expect(audienceReport.rates.clicks).toEqual("36.59")
-      expect(audienceReport.rates.uniqueOpens).toEqual("75.80")
-      expect(audienceReport.rates.uniqueClicks).toEqual("36.59")
+    expect(audienceReport.rates.deliveries).toEqual("95.65")
+    expect(audienceReport.rates.opens).toEqual("88.87")
+    expect(audienceReport.rates.clicks).toEqual("36.59")
+    expect(audienceReport.rates.uniqueOpens).toEqual("75.80")
+    expect(audienceReport.rates.uniqueClicks).toEqual("36.59")
 
-      expect(audienceReport.sends).toEqual(TOTAL_SENDS * 3)
-      expect(audienceReport.deliveries).toEqual(TOTAL_DELIVERED * 3)
-      expect(audienceReport.opens).toEqual(
-        (TOTAL_OPENS + TOTAL_DOUBLE_OPENS) * 3,
-      )
-      expect(audienceReport.uniqueOpens).toEqual(TOTAL_OPENS * 3)
-      expect(audienceReport.clicks).toEqual(TOTAL_CLICKS * 3)
-      expect(audienceReport.uniqueClicks).toEqual(TOTAL_CLICKS * 3)
-      expect(audienceReport.bounces).toEqual(
-        (TOTAL_SENDS - TOTAL_DELIVERED) * 3,
-      )
-    },
-  )
+    expect(audienceReport.sends).toEqual(TOTAL_SENDS * 3)
+    expect(audienceReport.deliveries).toEqual(TOTAL_DELIVERED * 3)
+    expect(audienceReport.opens).toEqual((TOTAL_OPENS + TOTAL_DOUBLE_OPENS) * 3)
+    expect(audienceReport.uniqueOpens).toEqual(TOTAL_OPENS * 3)
+    expect(audienceReport.clicks).toEqual(TOTAL_CLICKS * 3)
+    expect(audienceReport.uniqueClicks).toEqual(TOTAL_CLICKS * 3)
+    expect(audienceReport.bounces).toEqual((TOTAL_SENDS - TOTAL_DELIVERED) * 3)
+  })
 })

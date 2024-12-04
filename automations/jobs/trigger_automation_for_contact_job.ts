@@ -38,9 +38,7 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
     payload,
     database,
   }: JobContext<TriggerAutomationsForContactJobPayload>) {
-    const contact = await container
-      .make(ContactRepository)
-      .findById(payload.contactId)
+    const contact = await container.make(ContactRepository).findById(payload.contactId)
 
     if (!contact) {
       return this.done(`Contact with id ${payload.contactId} not found.`)
@@ -49,10 +47,7 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
     const triggers = await database
       .select()
       .from(automationSteps)
-      .leftJoin(
-        automations,
-        eq(automations.id, automationSteps.automationId),
-      )
+      .leftJoin(automations, eq(automations.id, automationSteps.automationId))
       .where(
         and(
           eq(automationSteps.subtype, payload.trigger),
@@ -97,8 +92,7 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
         case "TRIGGER_CONTACT_TAG_ADDED":
           const tagAdded = contactTagIds.some((tagId) =>
             (
-              trigger.automationSteps
-                .configuration as TRIGGER_CONFIGURATION
+              trigger.automationSteps.configuration as TRIGGER_CONFIGURATION
             )?.tagIds?.includes(tagId),
           )
 
@@ -111,8 +105,7 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
           const tagRemoved = contactTagIds.some(
             (tagId) =>
               !(
-                trigger.automationSteps
-                  .configuration as TRIGGER_CONFIGURATION
+                trigger.automationSteps.configuration as TRIGGER_CONFIGURATION
               )?.tagIds?.includes(tagId),
           )
 

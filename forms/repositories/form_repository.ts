@@ -16,9 +16,7 @@ export class FormRepository extends BaseRepository {
 
     if (payload.fields) {
       for (const field of payload.fields) {
-        const exists = form.fields?.find(
-          (formField) => formField.id === field.id,
-        )
+        const exists = form.fields?.find((formField) => formField.id === field.id)
 
         if (!exists) {
           fields.push({ ...field, id: this.cuid() })

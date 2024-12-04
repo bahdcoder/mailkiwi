@@ -4,15 +4,10 @@ import { AudienceRepository } from "@/audiences/repositories/audience_repository
 import { container } from "@/utils/typi.js"
 
 export class UpdateAudienceAction {
-  constructor(
-    private audienceRepository = container.make(AudienceRepository),
-  ) {}
+  constructor(private audienceRepository = container.make(AudienceRepository)) {}
 
   handle = async (payload: CreateAudienceDto, audienceId: string) => {
-    const audience = await this.audienceRepository.update(
-      payload,
-      audienceId,
-    )
+    const audience = await this.audienceRepository.update(payload, audienceId)
 
     return audience
   }

@@ -59,9 +59,7 @@ export class EmailSendRepository extends BaseRepository {
   }
 
   async upsert(payload: InsertEmailSend) {
-    let emailSendExists = await this.findBySendingId(
-      payload.sendingId as string,
-    )
+    let emailSendExists = await this.findBySendingId(payload.sendingId as string)
 
     if (!emailSendExists?.id) {
       const id = this.cuid()
@@ -72,10 +70,7 @@ export class EmailSendRepository extends BaseRepository {
 
       emailSendExists = { ...payload, id } as EmailSend
     } else {
-      await this.update(
-        emailSendExists.id,
-        this.removeNullUndefined(payload),
-      )
+      await this.update(emailSendExists.id, this.removeNullUndefined(payload))
     }
 
     return { id: emailSendExists.id }

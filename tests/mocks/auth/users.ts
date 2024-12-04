@@ -185,12 +185,12 @@ export const createUser = async ({
   const registerUserAction = container.resolve(RegisterUserAction)
 
   const { user, team } = await registerUserAction.handle({
-    name: faker.person.fullName(),
-    email:
-      faker.number.int({ min: 0, max: 99 }) +
-      faker.internet.exampleEmail(),
-    password: "password",
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
+    email: faker.number.int({ min: 0, max: 99 }) + faker.internet.exampleEmail(),
   })
+
+  await container.make(UserRepository).update(user.id, { password: "password" })
 
   const teamRepository = container.resolve(TeamRepository)
   const teamObject = await teamRepository.findById(team.id)
@@ -206,8 +206,7 @@ export const createUser = async ({
   const audience = await audienceRepository.create(
     {
       name: "Newsletter",
-      slug:
-        faker.number.int({ min: 10, max: 100 }) + "-" + faker.lorem.slug(),
+      slug: faker.number.int({ min: 10, max: 100 }) + "-" + faker.lorem.slug(),
     },
     team.id,
   )
@@ -222,11 +221,7 @@ export const createUser = async ({
             id: "profession",
             label: "Your profession",
             type: "enum",
-            options: [
-              "frontend engineer",
-              "backend engineer",
-              "fullstack engineer",
-            ],
+            options: ["frontend engineer", "backend engineer", "fullstack engineer"],
           },
         ],
       })
@@ -251,30 +246,28 @@ export const createUser = async ({
   if (createEntireTeam) {
     let [administrator, manager, author, guest] = await Promise.all([
       registerUserAction.handle({
-        name: faker.person.fullName(),
+        firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
         password: "password",
       }),
       registerUserAction.handle({
-        name: faker.person.fullName(),
+        firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
         password: "password",
       }),
       registerUserAction.handle({
-        name: faker.person.fullName(),
+        firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
         password: "password",
       }),
       registerUserAction.handle({
-        name: faker.person.fullName(),
+        firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
         password: "password",
       }),
     ])
 
-    const teamMembershipRepository = container.make(
-      TeamMembershipRepository,
-    )
+    const teamMembershipRepository = container.make(TeamMembershipRepository)
 
     for (const [member, role] of [
       [administrator, "ADMINISTRATOR"],
@@ -294,9 +287,7 @@ export const createUser = async ({
 
     const userRepository = container.make(UserRepository)
 
-    administratorUser = (await userRepository.findById(
-      administrator.user.id,
-    )) as User
+    administratorUser = (await userRepository.findById(administrator.user.id)) as User
     managerUser = (await userRepository.findById(manager.user.id)) as User
 
     authorUser = (await userRepository.findById(author.user.id)) as User
@@ -306,19 +297,14 @@ export const createUser = async ({
 
   let audienceForNewsletter: { id: string } | undefined = undefined
   if (createAudienceForNewsletter) {
-    audienceForNewsletter = await container
-      .make(CreateAudienceAction)
-      .handle(
-        {
-          name: faker.lorem.words(3),
-          slug:
-            faker.number.int({ min: 10, max: 100 }) +
-            "-" +
-            faker.lorem.slug(),
-          product: "letters",
-        },
-        team.id,
-      )
+    audienceForNewsletter = await container.make(CreateAudienceAction).handle(
+      {
+        name: faker.lorem.words(3),
+        slug: faker.number.int({ min: 10, max: 100 }) + "-" + faker.lorem.slug(),
+        product: "letters",
+      },
+      team.id,
+    )
   }
 
   if (createAudienceForNewsletter || createWebsite) {
@@ -332,9 +318,7 @@ export const createUser = async ({
   }
 
   async function findWebsiteWithPages() {
-    const website = await container
-      .make(WebsiteRepository)
-      .findByTeamId(team?.id)
+    const website = await container.make(WebsiteRepository).findByTeamId(team?.id)
 
     if (!website) {
       return undefined

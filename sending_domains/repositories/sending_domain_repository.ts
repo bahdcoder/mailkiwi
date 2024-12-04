@@ -78,15 +78,9 @@ export class SendingDomainRepository extends BaseRepository {
 
     await cache.clear(domain)
 
-    const primarySendingSource = aliasedTable(
-      sendingSources,
-      "primarySendingSource",
-    )
+    const primarySendingSource = aliasedTable(sendingSources, "primarySendingSource")
 
-    const secondarySendingSource = aliasedTable(
-      sendingSources,
-      "secondarySendingSource",
-    )
+    const secondarySendingSource = aliasedTable(sendingSources, "secondarySendingSource")
 
     const primaryEngageSendingSource = aliasedTable(
       sendingSources,
@@ -108,24 +102,15 @@ export class SendingDomainRepository extends BaseRepository {
       )
       .leftJoin(
         secondarySendingSource,
-        eq(
-          secondarySendingSource.id,
-          sendingDomains.secondarySendingSourceId,
-        ),
+        eq(secondarySendingSource.id, sendingDomains.secondarySendingSourceId),
       )
       .leftJoin(
         primaryEngageSendingSource,
-        eq(
-          primaryEngageSendingSource.id,
-          sendingDomains.engageSendingSourceId,
-        ),
+        eq(primaryEngageSendingSource.id, sendingDomains.engageSendingSourceId),
       )
       .leftJoin(
         secondaryEngageSendingSource,
-        eq(
-          secondaryEngageSendingSource.id,
-          sendingDomains.engageSecSendingSourceId,
-        ),
+        eq(secondaryEngageSendingSource.id, sendingDomains.engageSecSendingSourceId),
       )
       .where(eq(sendingDomains.name, domain))
       .limit(1)
@@ -151,17 +136,11 @@ export class SendingDomainRepository extends BaseRepository {
       domain: sendingSource.sendingDomains,
       send: {
         primary: getSendingDetailsFromSource(sources.primarySendingSource),
-        secondary: getSendingDetailsFromSource(
-          sources.secondarySendingSource,
-        ),
+        secondary: getSendingDetailsFromSource(sources.secondarySendingSource),
       },
       engage: {
-        primary: getSendingDetailsFromSource(
-          sources.primaryEngageSendingSource,
-        ),
-        secondary: getSendingDetailsFromSource(
-          sources.secondaryEngageSendingSource,
-        ),
+        primary: getSendingDetailsFromSource(sources.primaryEngageSendingSource),
+        secondary: getSendingDetailsFromSource(sources.secondaryEngageSendingSource),
       },
     }
   }
@@ -179,19 +158,11 @@ export class SendingDomainRepository extends BaseRepository {
     })
   }
 
-  async getSendingDomainForTeam(
-    teamId: string,
-    product: "engage" | "send" = "engage",
-  ) {
+  async getSendingDomainForTeam(teamId: string, product: "engage" | "send" = "engage") {
     const [sendingDomain] = await this.database
       .select()
       .from(sendingDomains)
-      .where(
-        and(
-          eq(sendingDomains.teamId, teamId),
-          eq(sendingDomains.product, product),
-        ),
-      )
+      .where(and(eq(sendingDomains.teamId, teamId), eq(sendingDomains.product, product)))
       .limit(1)
 
     return sendingDomain

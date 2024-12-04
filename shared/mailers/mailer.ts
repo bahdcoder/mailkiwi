@@ -1,10 +1,6 @@
 import type { MailObject, MailerDriverResponse } from "./mailer_types.js"
 import { appEnv } from "@/app/env/app_env.js"
-import {
-  type SentMessageInfo,
-  type Transporter,
-  createTransport,
-} from "nodemailer"
+import { type SentMessageInfo, type Transporter, createTransport } from "nodemailer"
 import { v4 as uuidV4 } from "uuid"
 
 import { cuid } from "@/shared/utils/cuid/cuid.js"
@@ -78,12 +74,7 @@ export class MailBuilder {
   }
 
   async send(): Promise<[MailerDriverResponse, Error | null]> {
-    if (
-      !this.mail.from ||
-      !this.mail.to ||
-      !this.mail.content ||
-      !this.mail.subject
-    ) {
+    if (!this.mail.from || !this.mail.to || !this.mail.content || !this.mail.subject) {
       return [null, new Error("Incomplete mail object")] as unknown as [
         MailerDriverResponse,
         null,

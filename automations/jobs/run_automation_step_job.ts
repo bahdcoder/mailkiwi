@@ -27,19 +27,14 @@ export class RunAutomationStepJob extends BaseJob<RunAutomationStepJobPayload> {
     return AVAILABLE_QUEUES.automations
   }
 
-  async handle({
-    database,
-    payload,
-  }: JobContext<RunAutomationStepJobPayload>) {
+  async handle({ database, payload }: JobContext<RunAutomationStepJobPayload>) {
     // fetch the automation step alongside the automation.
     const automationStep = await database.query.automationSteps.findFirst({
       where: eq(automationSteps.id, payload.automationStepId),
     })
 
     if (!automationStep) {
-      return this.fail(
-        `Automation step not found with id ${payload.automationStepId}`,
-      )
+      return this.fail(`Automation step not found with id ${payload.automationStepId}`)
     }
     // fetch all contacts currently at that step, or have completed the previous step
 

@@ -35,10 +35,7 @@ export class Container {
 
   resolve = this.make
 
-  singleton<T>(
-    key: string | (new (...args: unknown[]) => T),
-    value?: T,
-  ): T {
+  singleton<T>(key: string | (new (...args: unknown[]) => T), value?: T): T {
     if (this.fakes.has(key)) {
       return this.fakes.get(key)
     }

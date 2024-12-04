@@ -11,10 +11,7 @@ export class CreateAutomationAction {
   ) {}
 
   handle = async (payload: CreateAutomationDto, audienceId: string) => {
-    const automation = await this.automationRepository.create(
-      payload,
-      audienceId,
-    )
+    const automation = await this.automationRepository.create(payload, audienceId)
 
     return automation
   }

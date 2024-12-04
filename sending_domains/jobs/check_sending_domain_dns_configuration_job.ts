@@ -30,9 +30,7 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
     payload,
   }: JobContext<CheckSendingDomainDnsConfigurationJobPayload>) {
     const sendingDomainRepository = container.make(SendingDomainRepository)
-    const sendingDomain = await sendingDomainRepository.findById(
-      payload.sendingDomainId,
-    )
+    const sendingDomain = await sendingDomainRepository.findById(payload.sendingDomainId)
 
     if (!sendingDomain) {
       return this.done(
@@ -40,14 +38,11 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
       )
     }
 
-    const {
-      returnPathCnameConfigured,
-      dkimConfigured,
-      trackingCnameConfigured,
-    } = await container
-      .make(DnsResolverTool)
-      .forDomain(sendingDomain.name)
-      .resolve(sendingDomain)
+    const { returnPathCnameConfigured, dkimConfigured, trackingCnameConfigured } =
+      await container
+        .make(DnsResolverTool)
+        .forDomain(sendingDomain.name)
+        .resolve(sendingDomain)
 
     const databaseCalls = []
 
@@ -84,17 +79,10 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
         .make(AssignSendingSourceToSendingDomainAction)
         .handle(sendingDomain.id)
 
-      await sendingDomainRepository.getDomainWithDkim(
-        sendingDomain.name,
-        true,
-      )
+      await sendingDomainRepository.getDomainWithDkim(sendingDomain.name, true)
     }
 
-    if (
-      !returnPathCnameConfigured ||
-      !dkimConfigured ||
-      !trackingCnameConfigured
-    ) {
+    if (!returnPathCnameConfigured || !dkimConfigured || !trackingCnameConfigured) {
       await Queue.sending_domains().add(
         CheckSendingDomainDnsConfigurationJob.id,
         payload,

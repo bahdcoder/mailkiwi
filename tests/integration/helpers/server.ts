@@ -14,9 +14,7 @@ export async function createTestServer() {
       port: appEnv.PORT + 100,
     },
     ({ address, port }) => {
-      console.log(
-        `@inject-tests: monolith api running on: ${address}:${port}`,
-      )
+      console.log(`@inject-tests: monolith api running on: ${address}:${port}`)
     },
   )
 

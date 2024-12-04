@@ -36,9 +36,7 @@ describe("@mta Http server", () => {
     expect(json.send.secondary.source_address).toBeDefined()
   })
 
-  test("cannot fetch dkim records without valid access token", async ({
-    expect,
-  }) => {
+  test("cannot fetch dkim records without valid access token", async ({ expect }) => {
     const { TEST_DOMAIN } = await setupDomainForDnsChecks()
 
     const app = makeApp()
@@ -56,9 +54,7 @@ describe("@mta Http server", () => {
   test("can authenticate smtp credentials", async ({ expect }) => {
     const { team } = await setupDomainForDnsChecks()
 
-    const { apiKey } = await container
-      .make(CreateTeamAccessTokenAction)
-      .handle(team.id)
+    const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(team.id)
 
     const app = makeApp()
 
@@ -76,14 +72,10 @@ describe("@mta Http server", () => {
     expect(await response.json()).toEqual({ status: "success" })
   })
 
-  test("authenticating with wrong credentials fails", async ({
-    expect,
-  }) => {
+  test("authenticating with wrong credentials fails", async ({ expect }) => {
     const { team } = await setupDomainForDnsChecks()
 
-    const { apiKey } = await container
-      .make(CreateTeamAccessTokenAction)
-      .handle(team.id)
+    const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(team.id)
 
     const app = makeApp()
 

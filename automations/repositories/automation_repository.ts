@@ -32,9 +32,7 @@ export class AutomationRepository extends BaseRepository {
 
   async create(payload: CreateAutomationDto, audienceId: string) {
     const id = this.cuid()
-    await this.database
-      .insert(automations)
-      .values({ id, ...payload, audienceId })
+    await this.database.insert(automations).values({ id, ...payload, audienceId })
 
     return { id }
   }

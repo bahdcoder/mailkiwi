@@ -74,9 +74,7 @@ describe("@forms", () => {
       .from(forms)
       .where(eq(forms.audienceId, audience.id))
 
-    expect(
-      savedForm.fields?.find((field) => field.type === "email"),
-    ).toBeDefined()
+    expect(savedForm.fields?.find((field) => field.type === "email")).toBeDefined()
   })
 
   test("can create a survey form", async ({ expect }) => {
@@ -99,9 +97,7 @@ describe("@forms", () => {
     expect(savedForm.fields).toHaveLength(2)
   })
 
-  test("can update a survey form fields by adding new fields", async ({
-    expect,
-  }) => {
+  test("can update a survey form fields by adding new fields", async ({ expect }) => {
     const { user, audience } = await createUser({
       createWebsite: true,
     })
@@ -134,9 +130,7 @@ describe("@forms", () => {
 
     const form = await formRepository.forms().findById(formId)
 
-    const newField = form.fields?.find(
-      (field) => field.label === "New field",
-    )
+    const newField = form.fields?.find((field) => field.label === "New field")
 
     expect(form.fields).toHaveLength(3)
     expect(newField).toBeDefined()
@@ -206,9 +200,7 @@ describe("@forms", () => {
     expect(form.archivedAt).toBeDefined()
   })
 
-  test("can submit a form response as an authenticated contact", async ({
-    expect,
-  }) => {
+  test("can submit a form response as an authenticated contact", async ({ expect }) => {
     const { audience, website } = await createUser({
       createWebsite: true,
     })
@@ -218,10 +210,7 @@ describe("@forms", () => {
       .forms()
       .create({ ...survey, audienceId: audience.id })
 
-    const form = await container
-      .make(FormRepository)
-      .forms()
-      .findById(formId)
+    const form = await container.make(FormRepository).forms().findById(formId)
 
     const submitContent: Record<string, string[]> = {}
 
@@ -256,9 +245,7 @@ describe("@forms", () => {
     )
 
     expect(tagContactBasedOnResponseJob).toBeDefined()
-    expect(tagContactBasedOnResponseJob?.data.formResponseId).toEqual(
-      formResponse.id,
-    )
+    expect(tagContactBasedOnResponseJob?.data.formResponseId).toEqual(formResponse.id)
 
     expect(response.status).toBe(200)
 
@@ -266,9 +253,7 @@ describe("@forms", () => {
     expect(formResponse.formId).toEqual(formId)
   })
 
-  test("can submit a sign up form response as a new contact", async ({
-    expect,
-  }) => {
+  test("can submit a sign up form response as a new contact", async ({ expect }) => {
     const { audience, website } = await createUser({
       createWebsite: true,
     })

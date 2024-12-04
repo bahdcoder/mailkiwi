@@ -62,14 +62,8 @@ export class VikeController extends BaseController {
     })
   }
 
-  page = async (
-    ctx: HonoContext,
-    next: Next,
-    pageProps?: Record<string, any>,
-  ) => {
-    const renderVikePage = container.make<VikePageRenderer>(
-      ContainerKey.vikeRenderPage,
-    )
+  page = async (ctx: HonoContext, next: Next, pageProps?: Record<string, any>) => {
+    const renderVikePage = container.make<VikePageRenderer>(ContainerKey.vikeRenderPage)
 
     return renderVikePage(ctx, next, pageProps)
   }

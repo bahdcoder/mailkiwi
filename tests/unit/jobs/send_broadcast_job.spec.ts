@@ -6,10 +6,7 @@ import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.js"
 import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_contact_job.js"
 
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
-import {
-  createBroadcastForUser,
-  createUser,
-} from "@/tests/mocks/auth/users.js"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
 
 import { broadcasts, contacts, segments } from "@/database/schema.js"
 
@@ -63,19 +60,15 @@ describe("@broadcasts send job", () => {
 
     const jobs = await queues.Queue.broadcasts().getJobs()
 
-    const broadcastsQueueJobs = jobs.filter(
-      (job) => job.data.broadcastId === broadcastId,
-    )
+    const broadcastsQueueJobs = jobs.filter((job) => job.data.broadcastId === broadcastId)
 
-    const sortedBroadcastsQueueJobs = broadcastsQueueJobs.sort(
-      (jobA, jobB) => (jobA.data.contactId > jobB.data.contactId ? 1 : -1),
+    const sortedBroadcastsQueueJobs = broadcastsQueueJobs.sort((jobA, jobB) =>
+      jobA.data.contactId > jobB.data.contactId ? 1 : -1,
     )
 
     expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
 
-    const contactIdsSorted = contactIds.sort((idA, idB) =>
-      idA > idB ? 1 : -1,
-    )
+    const contactIdsSorted = contactIds.sort((idA, idB) => (idA > idB ? 1 : -1))
 
     for (const [idx, job] of sortedBroadcastsQueueJobs.entries()) {
       expect(job.name).toBe(SendBroadcastToContact.id)
@@ -177,9 +170,7 @@ describe("@broadcasts send job", () => {
       expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
 
       for (const [, job] of broadcastsQueueJobs.entries()) {
-        const findContactId = contactIds.find(
-          (id) => id === job.data.contactId,
-        )
+        const findContactId = contactIds.find((id) => id === job.data.contactId)
 
         expect(job.name).toBe(SendBroadcastToContact.id)
         expect(job.data).toStrictEqual({

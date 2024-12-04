@@ -55,9 +55,7 @@ export const setupDomainForDnsChecks = async (
       sendingDomain?.dkimSubDomain as string,
     )
 
-  await container
-    .make(AssignSendingSourceToSendingDomainAction)
-    .handle(sendingDomainId)
+  await container.make(AssignSendingSourceToSendingDomainAction).handle(sendingDomainId)
 
   return {
     records,
@@ -99,10 +97,9 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
       payload: { sendingDomainId },
     })
 
-    const refreshedSendingDomain =
-      await database.query.sendingDomains.findFirst({
-        where: eq(sendingDomains.id, sendingDomainId),
-      })
+    const refreshedSendingDomain = await database.query.sendingDomains.findFirst({
+      where: eq(sendingDomains.id, sendingDomainId),
+    })
 
     expect(mockResolveCname).toHaveBeenCalledWith(
       `${appEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
@@ -113,9 +110,7 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
     )
 
     expect(refreshedSendingDomain?.dkimVerifiedAt).toBeDefined()
-    expect(
-      refreshedSendingDomain?.returnPathDomainVerifiedAt,
-    ).toBeDefined()
+    expect(refreshedSendingDomain?.returnPathDomainVerifiedAt).toBeDefined()
     expect(refreshedSendingDomain?.trackingDomainVerifiedAt).toBeDefined()
   })
 
@@ -139,9 +134,7 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
       .spyOn(dns, "resolveCname")
       .mockImplementation(async () => [appEnv.software.bounceHost])
 
-    const mockResolveTxt = vi
-      .spyOn(dns, "resolveTxt")
-      .mockImplementation(async () => [])
+    const mockResolveTxt = vi.spyOn(dns, "resolveTxt").mockImplementation(async () => [])
 
     await container.make(CheckSendingDomainDnsConfigurationJob).handle({
       database: makeDatabase(),
@@ -149,10 +142,9 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
       payload: { sendingDomainId },
     })
 
-    const refreshedSendingDomain =
-      await database.query.sendingDomains.findFirst({
-        where: eq(sendingDomains.id, sendingDomainId),
-      })
+    const refreshedSendingDomain = await database.query.sendingDomains.findFirst({
+      where: eq(sendingDomains.id, sendingDomainId),
+    })
 
     expect(mockResolveCname).toHaveBeenCalledWith(
       `${appEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,
@@ -163,9 +155,7 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
     )
 
     expect(refreshedSendingDomain?.dkimVerifiedAt).toBeFalsy()
-    expect(
-      refreshedSendingDomain?.returnPathDomainVerifiedAt,
-    ).toBeDefined()
+    expect(refreshedSendingDomain?.returnPathDomainVerifiedAt).toBeDefined()
   })
 
   test("marks only dkim as verified when only dkim dns records are correctly configured", async ({
@@ -214,10 +204,9 @@ describe("@sending-domains-dns Sending domain dns configuration check", () => {
         job?.name === CheckSendingDomainDnsConfigurationJob.id,
     )
 
-    const refreshedSendingDomain =
-      await database.query.sendingDomains.findFirst({
-        where: eq(sendingDomains.id, sendingDomainId),
-      })
+    const refreshedSendingDomain = await database.query.sendingDomains.findFirst({
+      where: eq(sendingDomains.id, sendingDomainId),
+    })
 
     expect(mockResolveCname).toHaveBeenCalledWith(
       `${appEnv.software.bounceSubdomain}.${TEST_DOMAIN}`,

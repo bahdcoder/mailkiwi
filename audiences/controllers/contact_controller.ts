@@ -70,9 +70,7 @@ export class ContactController extends BaseController {
       this.ensureExists<ContactWithProperties>(ctx, "contactId"),
     ])
 
-    return ctx.json(
-      await container.make(ContactRepository).getActivity(contact.id),
-    )
+    return ctx.json(await container.make(ContactRepository).getActivity(contact.id))
   }
 
   async store(ctx: HonoContext) {
@@ -82,9 +80,7 @@ export class ContactController extends BaseController {
 
     const data = await this.validate(ctx, CreateContactSchema)
 
-    const contact = await container
-      .resolve(CreateContactAction)
-      .handle(data, audience)
+    const contact = await container.resolve(CreateContactAction).handle(data, audience)
 
     return ctx.json(contact)
   }
@@ -116,9 +112,7 @@ export class ContactController extends BaseController {
 
     const data = await this.validate(ctx, AttachTagsToContactDto)
 
-    await container
-      .resolve(AttachTagsToContactAction)
-      .handle(contact.id, data)
+    await container.resolve(AttachTagsToContactAction).handle(contact.id, data)
 
     return ctx.json({ id: contact.id })
   }
@@ -133,9 +127,7 @@ export class ContactController extends BaseController {
 
     const data = await this.validate(ctx, DetachTagsFromContactDto)
 
-    await container
-      .resolve(DetachTagsFromContactAction)
-      .handle(contact.id, data)
+    await container.resolve(DetachTagsFromContactAction).handle(contact.id, data)
 
     return ctx.json({ id: contact.id })
   }

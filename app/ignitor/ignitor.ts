@@ -79,6 +79,7 @@ export class Ignitor {
             },
           }
         : undefined,
+      enabled: !this.env.isTest,
     })
 
     container.register(ContainerKey.logger, this.logger)
@@ -87,25 +88,19 @@ export class Ignitor {
 
     container.register(ContainerKey.app, this.app)
 
-    container.register(
-      ContainerKey.vikeRenderPage,
-      new VikeController().renderVikePage,
-    )
-
     return this
   }
 
   async start() {
-    const packageJsonFile = await readFile(
-      resolve("package.json"),
-      "utf-8",
-    )
+    const packageJsonFile = await readFile(resolve("package.json"), "utf-8")
 
     const { version } = JSON.parse(packageJsonFile)
 
     container.register(ContainerKey.version, version)
 
     await this.startDatabaseConnector()
+
+    container.register(ContainerKey.vikeRenderPage, new VikeController().renderVikePage)
 
     this.registerHttpControllers()
 

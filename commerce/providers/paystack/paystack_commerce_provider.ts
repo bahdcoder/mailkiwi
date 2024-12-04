@@ -69,9 +69,7 @@ export class PaystackCommerceProvider implements CommerceProviderContract {
           productId: product.id,
         }),
         transaction_charge: 0,
-        callback_url: commercePath(
-          `products/${product.id}/payments/callback`,
-        ),
+        callback_url: commercePath(`products/${product.id}/payments/callback`),
       })
       .asJson()
       .post()
@@ -88,9 +86,7 @@ export class PaystackCommerceProvider implements CommerceProviderContract {
     return { paymentUrl: data.data?.authorization_url }
   }
 
-  async confirmOneTimePayment({
-    reference,
-  }: ConfirmOneTimePaymentPayload) {
+  async confirmOneTimePayment({ reference }: ConfirmOneTimePaymentPayload) {
     const { data, error } = await this.httpClient
       .url(`/transaction/verify/${reference}`)
       .payload({})

@@ -8,10 +8,7 @@ import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
 } from "@/tests/mocks/audiences/email_content.js"
-import {
-  createBroadcastForUser,
-  createUser,
-} from "@/tests/mocks/auth/users.js"
+import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -19,9 +16,7 @@ import { makeDatabase } from "@/shared/container/index.js"
 import { container } from "@/utils/typi.js"
 
 describe("@broadcasts update broadcasts", () => {
-  test("can update a broadcast with ab test variants", async ({
-    expect,
-  }) => {
+  test("can update a broadcast with ab test variants", async ({ expect }) => {
     const { user, audience } = await createUser()
     const broadcastId = await createBroadcastForUser(user, audience.id)
 
@@ -116,8 +111,7 @@ describe("@broadcasts update broadcasts", () => {
       message: "Validation failed.",
       errors: [
         {
-          message:
-            "The sum of all ab test variant weights must be less than 100.",
+          message: "The sum of all ab test variant weights must be less than 100.",
         },
       ],
     })

@@ -7,14 +7,8 @@ import type {
   AutomationStepRunnerContract,
 } from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
 
-import type {
-  AutomationStep,
-  Contact,
-} from "@/database/database_schema_types.js"
-import {
-  type ACTION_UPDATE_CONTACT_ATTRIBUTES,
-  tags,
-} from "@/database/schema.js"
+import type { AutomationStep, Contact } from "@/database/database_schema_types.js"
+import { type ACTION_UPDATE_CONTACT_ATTRIBUTES, tags } from "@/database/schema.js"
 
 import { container } from "@/utils/typi.js"
 
