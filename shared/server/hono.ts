@@ -30,8 +30,7 @@ export type HonoInstance = BaseHono<{
 
 export class Hono
   extends BaseHono<{ Bindings: HttpBindings }>
-  implements HonoInstance
-{
+  implements HonoInstance {
   protected defaultMiddleware(): MiddlewareHandler[] {
     return [
       container.resolve(UserSessionMiddleware).handle,
@@ -87,7 +86,7 @@ export class Hono
   ) {
     const [method, , handler, additionalMiddleware = []] = route
 
-    d([method, resolvedPath])
+    // d([method, resolvedPath])
 
     const handlerArguments: [string, ...MiddlewareHandler[], Handler] = [
       resolvedPath,

@@ -8,7 +8,7 @@ export class Session {
   protected SESSION_COOKIE_NAME = "session"
   protected CONTACT_SESSION_COOKIE_NAME = "contact_session"
 
-  constructor(protected encryptionKey = appEnv.APP_KEY.release()) {}
+  constructor(protected encryptionKey = appEnv.APP_KEY.release()) { }
 
   async getContact(ctx: HonoContext) {
     return this.getUser(ctx, "contact")
@@ -19,9 +19,9 @@ export class Session {
       ctx,
       this.encryptionKey,
       "__Secure-" +
-        (type === "contact"
-          ? this.CONTACT_SESSION_COOKIE_NAME
-          : this.SESSION_COOKIE_NAME),
+      (type === "contact"
+        ? this.CONTACT_SESSION_COOKIE_NAME
+        : this.SESSION_COOKIE_NAME),
     )
 
     if (!sessionData) {
@@ -31,6 +31,9 @@ export class Session {
     const decryptedSessionData = new Encryption(appEnv.APP_KEY).decrypt(
       sessionData,
     )
+
+    // TODO: Verify session in session store (redis)
+    // TODO: Verify session using cryptographically generated session key
 
     if (!decryptedSessionData) {
       return null
@@ -57,6 +60,9 @@ export class Session {
     const sessionData = new Encryption(appEnv.APP_KEY).encrypt(
       JSON.stringify({ userId }),
     )
+
+    // TODO: Store session in session store (redis)
+    // TODO: Store session with userId and cryptographically generated session key
 
     await setSignedCookie(
       ctx,

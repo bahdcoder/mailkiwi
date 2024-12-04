@@ -2,17 +2,11 @@ import { Secret } from "@poppinss/utils"
 import { Redis } from "ioredis"
 
 export const REDIS_KNOWN_KEYS = {
-  API_KEY(username: string) {
-    return `API_KEY:${username}`
+  SESSION(sessionId: string) {
+    return `SESSION:${sessionId}`
   },
-  DOMAIN(domain: string) {
-    return `DOMAIN:${domain}`
-  },
-  ACCESS_KEY(username: string) {
-    return `ACCESS_KEY:${username}`
-  },
-  TEAM_USAGE_TRACKING(teamId: string) {
-    return `TEAM_USAGE_TRACKING:${teamId.toString()}`
+  CONTACT_SESSION(sessionId: string) {
+    return `CONTACT_SESSION:${sessionId}`
   },
 }
 

@@ -16,6 +16,7 @@ import { cuid } from "@/shared/utils/cuid/cuid.js"
 import { Encryption } from "@/shared/utils/encryption/encryption.js"
 
 import { container } from "@/utils/typi.js"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
 describe("@domains", () => {
   test("can create unique sending domains for a team", async ({
@@ -46,17 +47,14 @@ describe("@domains", () => {
     expect(checkDnsJobs[0]?.delay).toEqual(60000) // wait 60 seconds before running job
     expect(checkDnsJobs[0]?.data?.sendingDomainId).toEqual(domains[0].id)
 
-    const teamDkim = await container
-      .make(TeamRepository)
-      .dkim()
-      .forDomain(domains[0].name)
-      .get()
+    const [sendingDomain] = await container
+      .make(SendingDomainRepository)
+      .domains().findAll(
+        eq(sendingDomains.teamId, team.id),
+      )
 
-    expect(teamDkim?.encryptedDkimPrivateKey).toEqual(
-      domains[0]?.dkimPrivateKey,
-    )
     const dkimPrivateKey = new Encryption(appEnv.APP_KEY)
-      .decrypt(teamDkim?.encryptedDkimPrivateKey)
+      .decrypt(sendingDomain?.dkimPrivateKey)
       ?.release() as string
 
     /**

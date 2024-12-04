@@ -9,6 +9,7 @@ import { channels } from "@/database/schema.js"
 import { makeDatabase } from "@/shared/container/index.js"
 
 import { container } from "@/utils/typi.js"
+import { appEnv } from "@/app/env/app_env.js"
 
 export const defaultChannels: InsertChannel[] = [
   {
@@ -78,7 +79,9 @@ export const addDefaultChannelsCommand = command({
     )
 
     if (nonExistingChannels.length === 0) {
-      console.log("All channels already created.")
+      if (!appEnv.isTest) {
+        console.log("All channels already created.")
+      }
 
       return
     }

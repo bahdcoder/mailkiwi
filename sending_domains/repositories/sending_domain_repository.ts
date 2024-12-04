@@ -20,6 +20,10 @@ export class SendingDomainRepository extends BaseRepository {
     super()
   }
 
+  domains() {
+    return this.crud(sendingDomains)
+  }
+
   protected belongsToSendingSource = belongsTo(this.database, {
     from: sendingDomains,
     to: sendingSources,

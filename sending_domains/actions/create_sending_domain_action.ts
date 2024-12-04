@@ -22,7 +22,7 @@ export class CreateSendingDomainAction {
     private sendingDomainRepository = container.make(
       SendingDomainRepository,
     ),
-  ) {}
+  ) { }
 
   async handle(payload: CreateSendingDomainDto, teamId: string) {
     const {
@@ -45,14 +45,6 @@ export class CreateSendingDomainAction {
             trackingSubDomain: this.env.software.trackingSubdomain,
             trackingDomainCnameValue: this.env.software.trackingHostName,
             product: payload.product,
-          }),
-
-          this.teamRepository.dkim().forDomain(payload.name).save({
-            encryptedDkimPrivateKey: dkimPrivateKey.release(),
-            returnPathSubDomain: this.env.software.bounceSubdomain,
-            returnPathDomainCnameValue: this.env.software.bounceHost,
-            dkimSubDomain,
-            dkimPublicKey,
           }),
         ])
 

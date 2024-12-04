@@ -46,7 +46,7 @@ describe("@chat channels", () => {
     expect(openSourceChannel).toBeDefined()
   })
 
-  test("renders a specific channel, with its latest messages", async () => {})
+  test("renders a specific channel, with its latest messages", async () => { })
 })
 
 describe("@chat messages", () => {
@@ -481,7 +481,7 @@ describe("@chat messages", () => {
     )
 
     const response = await makeRequest(
-      `/community/${channelName}/${messageId}`,
+      `/community/${channelName}/m/${messageId}`,
       {
         method: "GET",
       },
@@ -534,7 +534,7 @@ describe("@chat messages", () => {
     await setupMessageReplies(channel.id, messageId, user.id)
 
     const response = await makeRequest(
-      `/community/${channelName}/${messageId}/replies`,
+      `/community/${channelName}/m/${messageId}/replies`,
       {
         method: "GET",
       },
@@ -553,7 +553,7 @@ describe("@chat messages", () => {
     expect(positions.slice(47, 50)).toEqual(["53", "52", "51"])
 
     const nextReplies = await makeRequest(
-      `/community/${channelName}/${messageId}/replies?replies_cursor=${data.pageProps.replies.next}`,
+      `/community/${channelName}/m/${messageId}/replies?replies_cursor=${data.pageProps.replies.next}`,
       {
         method: "GET",
       },
@@ -591,7 +591,7 @@ describe("@chat messages", () => {
     const replyId = allRepliesIds.slice(60, 100)[0]
 
     const response = await makeRequest(
-      `/community/${channelName}/${messageId}/replies/${replyId}`,
+      `/community/${channelName}/m/${messageId}/replies/${replyId}`,
       {
         method: "GET",
       },
@@ -607,7 +607,7 @@ describe("@chat messages", () => {
     expect(positions.slice(47, 50)).toEqual(["28", "27", "26"])
 
     const nextResponse = await makeRequest(
-      `/community/${channelName}/${messageId}/replies/${replyId}?replies_cursor=${data.pageProps.replies.next}`,
+      `/community/${channelName}/m/${messageId}/replies/${replyId}?replies_cursor=${data.pageProps.replies.next}`,
       {
         method: "GET",
       },
