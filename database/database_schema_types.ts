@@ -51,20 +51,30 @@ export type Channel = InferSelectModel<typeof channels>
 export type ChannelMembership = InferSelectModel<typeof channelMemberships>
 export type MessageReaction = InferSelectModel<typeof messageReactions>
 
-export type BroadcastWithoutContent = Omit<Broadcast, "contentHtml" | "contentText" | "contentJson">
+export type BroadcastWithoutContent = Omit<
+  Broadcast,
+  "contentHtml" | "contentText" | "contentJson"
+>
 export type AccessToken = InferSelectModel<typeof accessTokens>
 export type Team = InferSelectModel<typeof teams>
 export type SendingDomain = InferSelectModel<typeof sendingDomains>
 export type SendingSource = InferSelectModel<typeof sendingSources>
 export type TeamMembership = InferSelectModel<typeof teamMemberships>
 export type TagOnContact = InferSelectModel<typeof tagsOnContacts>
-export type FindUserByIdArgs = Parameters<ReturnType<typeof makeDatabase>["query"]["users"]["findFirst"]>[0]
+export type FindUserByIdArgs = Parameters<
+  ReturnType<typeof makeDatabase>["query"]["users"]["findFirst"]
+>[0]
 
-export type FindAutomationByIdArgs = Parameters<ReturnType<typeof makeDatabase>["query"]["automations"]["findFirst"]>[0]
+export type FindAutomationByIdArgs = Parameters<
+  ReturnType<typeof makeDatabase>["query"]["automations"]["findFirst"]
+>[0]
 
 export type UpdateSetContactInput = MySqlUpdateSetSource<typeof contacts>
 export type UpdateSetAudienceInput = MySqlUpdateSetSource<typeof audiences>
-export type UpdateSetBroadcastInput = Omit<MySqlUpdateSetSource<typeof broadcasts>, "sendAt"> & {
+export type UpdateSetBroadcastInput = Omit<
+  MySqlUpdateSetSource<typeof broadcasts>,
+  "sendAt"
+> & {
   sendAt: string | undefined
 }
 export type UpdateSetTeamMembershipInput = MySqlUpdateSetSource<typeof teamMemberships>

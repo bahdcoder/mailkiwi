@@ -46,7 +46,10 @@ container.registerInstance(ContainerKey.redis, redis)
 
 await refreshDatabase()
 
-await Promise.all([addDefaultChannelsCommand.handler?.(), seedDevSendingSourcesCommand.handler?.()])
+await Promise.all([
+  addDefaultChannelsCommand.handler?.(),
+  seedDevSendingSourcesCommand.handler?.(),
+])
 
 const registerUserAction = container.resolve(RegisterUserAction)
 const createAudienceAction = container.resolve(CreateAudienceAction)
@@ -125,7 +128,10 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
         avatarUrl: faker.image.avatarGitHub(),
       }))
 
-    console.log("Inserting contacts for audience:", `${mockContacts.length} mock contacts.`)
+    console.log(
+      "Inserting contacts for audience:",
+      `${mockContacts.length} mock contacts.`,
+    )
 
     await database.insert(contacts).values(mockContacts)
 
@@ -151,7 +157,14 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
         subject: faker.lorem.words(5),
         previewText: faker.lorem.words(5),
         contentHtml: await Fs.readFile(
-          Path.resolve(Path.dirname(fileURLToPath(import.meta.url)), "..", "tests", "snapshots", "emails", "foundation-emails-2.html"),
+          Path.resolve(
+            Path.dirname(fileURLToPath(import.meta.url)),
+            "..",
+            "tests",
+            "snapshots",
+            "emails",
+            "foundation-emails-2.html",
+          ),
           "utf-8",
         ),
         contentText: faker.lorem.paragraphs(12),
@@ -171,7 +184,9 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
 
   const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(team.id)
 
-  const { id: sendingDomainId } = await container.make(CreateSendingDomainAction).handle({ name: "kb.openmailer.org" }, team.id)
+  const { id: sendingDomainId } = await container
+    .make(CreateSendingDomainAction)
+    .handle({ name: "kb.openmailer.org" }, team.id)
 
   await seedDevSendingSourcesCommand?.handler?.()
 

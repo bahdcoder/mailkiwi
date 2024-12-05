@@ -1,7 +1,10 @@
 import { Secret } from "@poppinss/utils"
 import { beforeEach, describe, expect, test } from "vitest"
 
-import { SignedUrlManager, type UrlMetadata } from "@/shared/utils/links/signed_url_manager.js"
+import {
+  SignedUrlManager,
+  type UrlMetadata,
+} from "@/shared/utils/links/signed_url_manager.js"
 
 describe("@link-manager Link manager ", () => {
   let linkManager: SignedUrlManager
@@ -64,7 +67,8 @@ describe("@link-manager Link manager ", () => {
   })
 
   test("encode should handle long URLs and complex metadata", () => {
-    const original = "https://example.com/very/long/url/with/many/parameters?param1=value1&param2=value2"
+    const original =
+      "https://example.com/very/long/url/with/many/parameters?param1=value1&param2=value2"
     const metadata: UrlMetadata = {
       broadcastId: "123456789",
       abTestVariantId: "abcdefghijk",

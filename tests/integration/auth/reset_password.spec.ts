@@ -35,7 +35,11 @@ describe("@auth password resets", () => {
 
     expect(response.status).toBe(200)
 
-    const getUserPasswordResets = () => container.make(PasswordResetRepository).resets().findAll(eq(passwordResets.userId, user.id))
+    const getUserPasswordResets = () =>
+      container
+        .make(PasswordResetRepository)
+        .resets()
+        .findAll(eq(passwordResets.userId, user.id))
 
     const [userPasswordReset] = await getUserPasswordResets()
 
@@ -43,13 +47,16 @@ describe("@auth password resets", () => {
 
     const newPassword = faker.internet.password()
 
-    const resetResponse = await makeRequest(`/auth/passwords/reset/${passwordResetToken}`, {
-      method: "POST",
-      body: {
-        email: user.email,
-        password: newPassword,
+    const resetResponse = await makeRequest(
+      `/auth/passwords/reset/${passwordResetToken}`,
+      {
+        method: "POST",
+        body: {
+          email: user.email,
+          password: newPassword,
+        },
       },
-    })
+    )
 
     expect(resetResponse.status).toBe(200)
 

@@ -1,6 +1,3 @@
-import { EnsureUserAndTeamSessionsMiddleware } from "../middleware/ensure_user_and_team_sessions_middleware.js"
-import { MustBeAuthenticatedMiddleware } from "../middleware/must_be_authenticated_middleware.js"
-import { UserSessionMiddleware } from "../middleware/user_session_middleware.js"
 import { ConfirmEmailVerificationCodeSchema } from "../users/dto/confirm_email_verification_code_dto.js"
 import { SetUserNameSchema } from "../users/dto/set_user_name_dto.js"
 import { SetUserPasswordSchema } from "../users/dto/set_user_password_dto.js"
@@ -13,6 +10,8 @@ import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { VikeController } from "@/shared/controllers/vike_controller.js"
+import { middleware } from "@/shared/middleware/middleware_aliases.js"
+import { route } from "@/shared/routes/route_aliases.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
@@ -24,33 +23,41 @@ export class RegisterController extends VikeController {
   ) {
     super()
 
-    this.app.defineRoutes([...this.vikePath("/register", this.page), ["POST", "/register", this.register.bind(this)]], {
-      prefix: "auth",
-      middleware: [],
-    })
-
     this.app.defineRoutes(
       [
-        ...this.vikePath("/register/profile", this.page),
-        ...this.vikePath("/register/password", this.page),
-        ...this.vikePath("/register/email/confirm", this.page),
-        ["POST", "/register/password", this.password.bind(this)],
-        ["POST", "/register/profile", this.profile.bind(this)],
-        ["POST", "/register/email/confirm", this.emailConfirm.bind(this)],
+        ...this.vikePath("/register", this.page),
+        ["POST", "/register", this.register.bind(this)],
       ],
       {
         prefix: "auth",
-        middleware: [container.make(UserSessionMiddleware).handle, container.make(MustBeAuthenticatedMiddleware).handle],
+        middleware: [],
+      },
+    )
+
+    this.app.defineRoutes(
+      [
+        ...this.vikePath(route("auth_register_profile"), this.page),
+        ...this.vikePath(route("auth_register_password"), this.page),
+        ...this.vikePath(route("auth_register_email_confirm"), this.page),
+        ["POST", route("auth_register_password"), this.password.bind(this)],
+        ["POST", route("auth_register_profile"), this.profile.bind(this)],
+        ["POST", route("auth_register_email_confirm"), this.emailConfirm.bind(this)],
+      ],
+      {
+        prefix: "",
+        middleware: [middleware("user_session"), middleware("must_be_authenticated")],
       },
     )
   }
 
   async register(ctx: HonoContext) {
-    const { user } = await container.resolve(RegisterUserAction).handle(await this.validate(ctx, CreateUserSchema))
+    const { user } = await container
+      .resolve(RegisterUserAction)
+      .handle(await this.validate(ctx, CreateUserSchema))
 
     await this.session.createForUser(ctx, user.id)
 
-    return ctx.redirect("/auth/register/email/confirm")
+    return ctx.redirect(route("auth_register_email_confirm"))
   }
 
   async profile(ctx: HonoContext) {
@@ -60,7 +67,7 @@ export class RegisterController extends VikeController {
 
     await this.userRepository.update(user.id, payload)
 
-    return ctx.redirect("/welcome")
+    return ctx.redirect(route("welcome"))
   }
 
   async emailConfirm(ctx: HonoContext) {
@@ -68,18 +75,22 @@ export class RegisterController extends VikeController {
 
     const payload = await this.validate(ctx, ConfirmEmailVerificationCodeSchema)
 
-    const passed = await this.userRepository.confirmEmailVerificationCode(user, payload.code)
+    const passed = await this.userRepository.confirmEmailVerificationCode(
+      user,
+      payload.code,
+    )
 
     if (!passed) {
       throw E_VALIDATION_FAILED([
         {
-          message: "The verification code you provided was incorrect. Please check your email and try again.",
+          message:
+            "The verification code you provided was incorrect. Please check your email and try again.",
           field: "code",
         },
       ])
     }
 
-    return ctx.redirect("/auth/register/password")
+    return ctx.redirect(route("auth_register_password"))
   }
 
   async password(ctx: HonoContext) {
@@ -89,6 +100,6 @@ export class RegisterController extends VikeController {
 
     await this.userRepository.update(user.id, payload)
 
-    return ctx.redirect("/auth/register/profile")
+    return ctx.redirect(route("auth_register_profile"))
   }
 }

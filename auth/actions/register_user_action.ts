@@ -31,15 +31,19 @@ export class RegisterUserAction {
     if (userExists && userExists.emailVerifiedAt) {
       throw E_VALIDATION_FAILED([
         {
-          message: "A user with this email already exists. Are you trying to login instead?",
+          message:
+            "A user with this email already exists. Are you trying to login instead?",
           field: "email",
         },
       ])
     }
 
     if (userExists) {
-      const { emailVerificationCode, emailVerificationCodeExpiresAt, plainEmailVerificationCode } =
-        await this.userRepository.createUserEmailVerificationCode()
+      const {
+        emailVerificationCode,
+        emailVerificationCodeExpiresAt,
+        plainEmailVerificationCode,
+      } = await this.userRepository.createUserEmailVerificationCode()
 
       await this.userRepository.update(userExists.id, {
         emailVerificationCode,

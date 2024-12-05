@@ -41,7 +41,9 @@ export class PasswordResetRepository extends ScryptTokenRepository {
       userId: user.id,
       token: await this.hash(token),
       createdAt: new Date(),
-      expiresAt: DateTime.now().plus({ minutes: this.PASSWORD_RESETS_DEFAULT_EXPIRATION_TIME_IN_MINUTES }).toJSDate(),
+      expiresAt: DateTime.now()
+        .plus({ minutes: this.PASSWORD_RESETS_DEFAULT_EXPIRATION_TIME_IN_MINUTES })
+        .toJSDate(),
     })
 
     return { id, token }
@@ -54,7 +56,9 @@ export class PasswordResetRepository extends ScryptTokenRepository {
       return { valid: false, user }
     }
 
-    const [passwordReset] = await this.resets().findAll(eq(passwordResets.userId, user.id))
+    const [passwordReset] = await this.resets().findAll(
+      eq(passwordResets.userId, user.id),
+    )
 
     if (!passwordReset) {
       return { valid: false, user }

@@ -20,7 +20,13 @@ import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.js
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import type { Team, TeamMembership, User, Website, WebsiteWithPages } from "@/database/database_schema_types.js"
+import type {
+  Team,
+  TeamMembership,
+  User,
+  Website,
+  WebsiteWithPages,
+} from "@/database/database_schema_types.js"
 import { audiences, contacts } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -129,7 +135,10 @@ export async function createBroadcastForUser(
   return id as string
 }
 
-export async function createContactsForAudience(audienceId: string, contactsCount: number) {
+export async function createContactsForAudience(
+  audienceId: string,
+  contactsCount: number,
+) {
   const database = makeDatabase()
   const contactIds = faker.helpers.multiple(cuid, {
     count: contactsCount,
@@ -147,7 +156,13 @@ export async function createContactsForAudience(audienceId: string, contactsCoun
         }),
       ),
   )
-  await database.insert(contacts).values(faker.helpers.multiple(faker.lorem.word, { count: 23 }).map(() => createFakeContact(otherAudience.id)))
+  await database
+    .insert(contacts)
+    .values(
+      faker.helpers
+        .multiple(faker.lorem.word, { count: 23 })
+        .map(() => createFakeContact(otherAudience.id)),
+    )
 
   return { contactIds }
 }

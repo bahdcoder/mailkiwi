@@ -40,9 +40,17 @@ import { AutomationController } from "@/automations/controllers/automation_contr
 
 import { SendingDomainController } from "@/sending_domains/controllers/sending_domain_controller.js"
 
-import { type DrizzleClient, createDatabaseClient, createDrizzleDatabase } from "@/database/client.js"
+import {
+  type DrizzleClient,
+  createDatabaseClient,
+  createDrizzleDatabase,
+} from "@/database/client.js"
 
-import { ContainerKey, makeDatabaseConnection, makeRedis } from "@/shared/container/index.js"
+import {
+  ContainerKey,
+  makeDatabaseConnection,
+  makeRedis,
+} from "@/shared/container/index.js"
 import { VikeController } from "@/shared/controllers/vike_controller.js"
 import { Hono, type HonoInstance } from "@/shared/server/hono.js"
 import "@/shared/utils/log/dump.js"

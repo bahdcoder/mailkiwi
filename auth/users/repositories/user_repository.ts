@@ -2,7 +2,11 @@ import { eq } from "drizzle-orm"
 import { DateTime } from "luxon"
 
 import type { DrizzleClient } from "@/database/client.js"
-import { InsertUser, UpdateUser, UserWithTeams } from "@/database/database_schema_types.js"
+import {
+  InsertUser,
+  UpdateUser,
+  UserWithTeams,
+} from "@/database/database_schema_types.js"
 import { channelMemberships, teams, users } from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
@@ -40,14 +44,17 @@ export class UserRepository extends ScryptTokenRepository {
     return {
       plainEmailVerificationCode: emailVerificationCode,
       emailVerificationCode: await this.hash(emailVerificationCode.toString()),
-      emailVerificationCodeExpiresAt: DateTime.now().plus({ minutes: this.EMAIL_VERIFICATION_CODE_EXPIRATION_MINUTES }).toJSDate(),
+      emailVerificationCodeExpiresAt: DateTime.now()
+        .plus({ minutes: this.EMAIL_VERIFICATION_CODE_EXPIRATION_MINUTES })
+        .toJSDate(),
     }
   }
 
   async create(user: InsertUser) {
     const id = this.cuid()
 
-    const { emailVerificationCode, emailVerificationCodeExpiresAt } = await this.createUserEmailVerificationCode()
+    const { emailVerificationCode, emailVerificationCodeExpiresAt } =
+      await this.createUserEmailVerificationCode()
     const r = await this.database
       .insert(users)
       .values({
@@ -63,14 +70,19 @@ export class UserRepository extends ScryptTokenRepository {
 
   async confirmEmailVerificationCode(user: UserWithTeams, code: number) {
     if (user.emailVerificationCodeExpiresAt) {
-      const hasExpired = DateTime.fromJSDate(user.emailVerificationCodeExpiresAt as Date).diffNow().milliseconds < 0
+      const hasExpired =
+        DateTime.fromJSDate(user.emailVerificationCodeExpiresAt as Date).diffNow()
+          .milliseconds < 0
 
       if (hasExpired) {
         return false
       }
     }
 
-    const passed = await this.verify(code.toString(), user.emailVerificationCode as string)
+    const passed = await this.verify(
+      code.toString(),
+      user.emailVerificationCode as string,
+    )
 
     if (passed) {
       await this.update(user.id, {
@@ -96,19 +108,27 @@ export class UserRepository extends ScryptTokenRepository {
   }
 
   async findByEmail(email: string) {
-    const [user] = await this.database.select().from(users).where(eq(users.email, email)).limit(1)
+    const [user] = await this.database
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1)
 
     return user
   }
 
   async findByIdWithChannelMemberships(id: string) {
-    const [user] = await this.hasManyChannelMemberships((query) => query.where(eq(users.id, id)))
+    const [user] = await this.hasManyChannelMemberships((query) =>
+      query.where(eq(users.id, id)),
+    )
 
     return user
   }
 
   async findById(id: string) {
-    const userWithTeams = await this.hasManyTeams((query) => query.where(eq(users.id, id)))
+    const userWithTeams = await this.hasManyTeams((query) =>
+      query.where(eq(users.id, id)),
+    )
 
     return userWithTeams[0]
   }

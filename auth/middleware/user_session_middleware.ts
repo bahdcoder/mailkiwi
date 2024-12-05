@@ -22,7 +22,10 @@ export class UserSessionMiddleware {
   ) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
-    const [userSession, contactSession] = await Promise.all([new Session().getUser(ctx), new Session().getUser(ctx, "contact")])
+    const [userSession, contactSession] = await Promise.all([
+      new Session().getUser(ctx),
+      new Session().getUser(ctx, "contact"),
+    ])
 
     let authenticatedUser: UserWithTeams | null = null
 
@@ -48,7 +51,8 @@ export class UserSessionMiddleware {
       return next()
     }
 
-    let teamHeader = ctx.req.header(appEnv.software.teamHeader) ?? authenticatedUser?.teams?.[0]?.id
+    let teamHeader =
+      ctx.req.header(appEnv.software.teamHeader) ?? authenticatedUser?.teams?.[0]?.id
 
     if (teamHeader && teamHeader !== "undefined") {
       const team = await this.teamRepository.findById(teamHeader)

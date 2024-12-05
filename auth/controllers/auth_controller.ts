@@ -17,10 +17,17 @@ export class AuthController extends VikeController {
   ) {
     super()
 
-    this.app.defineRoutes([...this.vikePath("/login", this.page), ["POST", "/login", this.login], ["POST", "/logout", this.logout]], {
-      prefix: "auth",
-      middleware: [],
-    })
+    this.app.defineRoutes(
+      [
+        ...this.vikePath("/login", this.page),
+        ["POST", "/login", this.login],
+        ["POST", "/logout", this.logout],
+      ],
+      {
+        prefix: "auth",
+        middleware: [],
+      },
+    )
 
     this.app.defineRoutes([["POST", "/api-keys", this.createApiKey.bind(this)]], {
       prefix: "auth",
@@ -28,7 +35,9 @@ export class AuthController extends VikeController {
   }
 
   async createApiKey(ctx: HonoContext) {
-    const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(ctx.get("team").id)
+    const { apiKey } = await container
+      .make(CreateTeamAccessTokenAction)
+      .handle(ctx.get("team").id)
 
     return ctx.json({ apiKey })
   }
@@ -49,7 +58,10 @@ export class AuthController extends VikeController {
       throw E_VALIDATION_FAILED(invalidCredentials)
     }
 
-    const passwordIsValid = await this.userRepository.verify(data.password, user.password as string)
+    const passwordIsValid = await this.userRepository.verify(
+      data.password,
+      user.password as string,
+    )
 
     if (!passwordIsValid) {
       throw E_VALIDATION_FAILED(invalidCredentials)

@@ -55,12 +55,15 @@ describe("@auth user registration", () => {
     expect(response.status).toEqual(422)
     expect(json.errors).toMatchObject([
       {
-        message: "A user with this email already exists. Are you trying to login instead?",
+        message:
+          "A user with this email already exists. Are you trying to login instead?",
       },
     ])
   })
 
-  test("can confirm email with verification code and set new password", async ({ expect }) => {
+  test("can confirm email with verification code and set new password", async ({
+    expect,
+  }) => {
     const database = makeDatabase()
 
     const payload = {
@@ -80,7 +83,10 @@ describe("@auth user registration", () => {
 
     expect(response.status).toBe(302)
 
-    const [user] = await database.select().from(users).where(eq(users.email, payload.email))
+    const [user] = await database
+      .select()
+      .from(users)
+      .where(eq(users.email, payload.email))
 
     const userWithTeams = await container.make(UserRepository).findById(user.id)
 
@@ -93,10 +99,15 @@ describe("@auth user registration", () => {
     })
 
     expect(emailConfirmResponse.status).toBe(302)
-    expect(emailConfirmResponse.headers.get("Location")).toEqual("/auth/register/password")
+    expect(emailConfirmResponse.headers.get("Location")).toEqual(
+      "/auth/register/password",
+    )
 
     return
-    const [updatedUser] = await database.select().from(users).where(eq(users.email, payload.email))
+    const [updatedUser] = await database
+      .select()
+      .from(users)
+      .where(eq(users.email, payload.email))
 
     expect(updatedUser.emailVerificationCode).toBeNull()
 
@@ -127,12 +138,15 @@ describe("@auth user registration", () => {
 })
 
 describe("@auth user login", () => {
-  test("a user can login to their account and get a valid cookie session", async ({ expect }) => {
+  test("a user can login to their account and get a valid cookie session", async ({
+    expect,
+  }) => {
     const { user } = await createUser()
 
     const headers = {
       "x-forwarded-for": "160.212.38.149",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+      "user-agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
     }
 
     const response = await makeRequest("/auth/login", {
@@ -158,7 +172,9 @@ describe("@auth user login", () => {
       },
     ])
 
-    const expiry = DateTime.fromISO(redisSessionsForUser?.[0]?.expiresAt).diffNow().as("days")
+    const expiry = DateTime.fromISO(redisSessionsForUser?.[0]?.expiresAt)
+      .diffNow()
+      .as("days")
 
     expect(expiry).toBeGreaterThan(29)
 
