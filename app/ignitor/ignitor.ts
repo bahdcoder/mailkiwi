@@ -18,7 +18,6 @@ import { readFile } from "fs/promises"
 import type { Redis } from "ioredis"
 import { resolve } from "path"
 import { type Logger, pino } from "pino"
-import { renderPage } from "vike/server"
 
 import { BroadcastController } from "@/broadcasts/controllers/broadcast_controller.js"
 
@@ -33,23 +32,17 @@ import { TeamController } from "@/teams/controllers/team_controller.js"
 import { TeamMembershipController } from "@/teams/controllers/team_membership_controller.js"
 
 import { AuthController } from "@/auth/controllers/auth_controller.js"
+import { RegisterController } from "@/auth/controllers/register_controller.js"
 import { UserController } from "@/auth/controllers/user_controller.js"
+import { PasswordResetsController } from "@/auth/password_resets/controllers/password_resets_controller.js"
 
 import { AutomationController } from "@/automations/controllers/automation_controller.js"
 
 import { SendingDomainController } from "@/sending_domains/controllers/sending_domain_controller.js"
 
-import {
-  type DrizzleClient,
-  createDatabaseClient,
-  createDrizzleDatabase,
-} from "@/database/client.js"
+import { type DrizzleClient, createDatabaseClient, createDrizzleDatabase } from "@/database/client.js"
 
-import {
-  ContainerKey,
-  makeDatabaseConnection,
-  makeRedis,
-} from "@/shared/container/index.js"
+import { ContainerKey, makeDatabaseConnection, makeRedis } from "@/shared/container/index.js"
 import { VikeController } from "@/shared/controllers/vike_controller.js"
 import { Hono, type HonoInstance } from "@/shared/server/hono.js"
 import "@/shared/utils/log/dump.js"
@@ -141,6 +134,8 @@ export class Ignitor {
     container.resolve(TagController)
     container.resolve(AutomationController)
     container.resolve(AuthController)
+    container.resolve(RegisterController)
+    container.resolve(PasswordResetsController)
     container.resolve(UserController)
     container.resolve(ContactController)
     container.resolve(TeamController)

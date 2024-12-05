@@ -1,14 +1,9 @@
 import { MessageRepository } from "./message_repository.js"
-import { and, asc, desc, eq, gt, isNotNull, isNull, lt, sql } from "drizzle-orm"
+import { defaultChannels } from "@/cli/commands/chat/add_default_channels_comand.js"
+import { and, asc, desc, eq, gt, inArray, isNull, lt, sql } from "drizzle-orm"
 
 import { Channel, Message } from "@/database/database_schema_types.js"
-import {
-  channelMemberships,
-  channels,
-  messageReactions,
-  messages,
-  users,
-} from "@/database/schema.js"
+import { channelMemberships, channels, messageReactions, messages, users } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
@@ -31,6 +26,18 @@ export class ChannelRepository extends BaseRepository {
     return this.channels().findById(id)
   }
 
+  defaultChannels() {
+    return this.channels().findAll(
+      and(
+        eq(channels.private, false),
+        inArray(
+          channels.name,
+          defaultChannels.map((channel) => channel.name),
+        ),
+      ),
+    )
+  }
+
   async createPrivateChannelForUsers(userIds: string[]) {
     const id = this.cuid()
 
@@ -41,20 +48,13 @@ export class ChannelRepository extends BaseRepository {
         private: true,
       })
 
-      await trx
-        .insert(channelMemberships)
-        .values(userIds.map((userId) => ({ userId, channelId: id })))
+      await trx.insert(channelMemberships).values(userIds.map((userId) => ({ userId, channelId: id })))
     })
 
     return { id }
   }
 
-  channelMessages = async (
-    channel: Channel,
-    cursor: string | undefined,
-    direction: "older" | "newer" = "older",
-    parentMessageId?: string,
-  ) => {
+  channelMessages = async (channel: Channel, cursor: string | undefined, direction: "older" | "newer" = "older", parentMessageId?: string) => {
     const reactionsSubQuery = this.database
       .select({
         emoji: messageReactions.emoji,
@@ -99,27 +99,15 @@ export class ChannelRepository extends BaseRepository {
           .groupBy(messages.id),
       )
       .queryConditions([
-        and(
-          eq(messages.channelId, channel.id),
-          parentMessageId
-            ? eq(messages.parentMessageId, parentMessageId)
-            : isNull(messages.parentMessageId),
-        ),
+        and(eq(messages.channelId, channel.id), parentMessageId ? eq(messages.parentMessageId, parentMessageId) : isNull(messages.parentMessageId)),
       ])
-      .modifyCursorCondition(
-        and(
-          ...(cursor
-            ? [direction === "older" ? lt(messages.id, cursor) : gt(messages.id, cursor)]
-            : []),
-        ),
-      )
+      .modifyCursorCondition(and(...(cursor ? [direction === "older" ? lt(messages.id, cursor) : gt(messages.id, cursor)] : [])))
       .modifyCursorResults((results, originalCursorResults) =>
         direction === "older"
           ? originalCursorResults
           : {
               next: results[0][messages.id.name],
-              previous:
-                results[MessageRepository.MESSAGE_PAGE_SIZE - 1][messages.id.name],
+              previous: results[MessageRepository.MESSAGE_PAGE_SIZE - 1][messages.id.name],
             },
       )
       .cursorPaginate()

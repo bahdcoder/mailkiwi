@@ -12,8 +12,11 @@ import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_act
 
 import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
 
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
+
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
+import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import { AssignSendingSourceToSendingDomainAction } from "@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js"
 import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
@@ -43,10 +46,7 @@ container.registerInstance(ContainerKey.redis, redis)
 
 await refreshDatabase()
 
-await Promise.all([
-  addDefaultChannelsCommand.handler?.(),
-  seedDevSendingSourcesCommand.handler?.(),
-])
+await Promise.all([addDefaultChannelsCommand.handler?.(), seedDevSendingSourcesCommand.handler?.()])
 
 const registerUserAction = container.resolve(RegisterUserAction)
 const createAudienceAction = container.resolve(CreateAudienceAction)
@@ -55,7 +55,8 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
   console.log(`\nCreating user: ${userIndex + 1}\n`)
 
   const userDetails = {
-    name: faker.person.fullName(),
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
     email: faker.internet.email({
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
@@ -63,7 +64,18 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     password: "password",
   }
 
-  const { team, user } = await registerUserAction.handle(userDetails)
+  const { user } = await registerUserAction.handle(userDetails)
+
+  const team = await container.make(TeamRepository).create(
+    {
+      name: faker.company.buzzAdjective(),
+    },
+    user.id,
+  )
+
+  await container.make(UserRepository).update(user.id, {
+    password: userDetails.password,
+  })
 
   const audienceIds = []
 
@@ -113,10 +125,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
         avatarUrl: faker.image.avatarGitHub(),
       }))
 
-    console.log(
-      "Inserting contacts for audience:",
-      `${mockContacts.length} mock contacts.`,
-    )
+    console.log("Inserting contacts for audience:", `${mockContacts.length} mock contacts.`)
 
     await database.insert(contacts).values(mockContacts)
 
@@ -142,14 +151,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
         subject: faker.lorem.words(5),
         previewText: faker.lorem.words(5),
         contentHtml: await Fs.readFile(
-          Path.resolve(
-            Path.dirname(fileURLToPath(import.meta.url)),
-            "..",
-            "tests",
-            "snapshots",
-            "emails",
-            "foundation-emails-2.html",
-          ),
+          Path.resolve(Path.dirname(fileURLToPath(import.meta.url)), "..", "tests", "snapshots", "emails", "foundation-emails-2.html"),
           "utf-8",
         ),
         contentText: faker.lorem.paragraphs(12),
@@ -169,9 +171,7 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
 
   const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(team.id)
 
-  const { id: sendingDomainId } = await container
-    .make(CreateSendingDomainAction)
-    .handle({ name: "kb.openmailer.org" }, team.id)
+  const { id: sendingDomainId } = await container.make(CreateSendingDomainAction).handle({ name: "kb.openmailer.org" }, team.id)
 
   await seedDevSendingSourcesCommand?.handler?.()
 

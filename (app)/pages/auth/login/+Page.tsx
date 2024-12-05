@@ -11,6 +11,7 @@ function Page() {
     const response = await fetch("/auth/login/", {
       method: "POST",
       body: JSON.stringify(form),
+      redirect: "manual",
     })
   }
 
@@ -19,18 +20,13 @@ function Page() {
   }
 
   return (
-    <form
-      className="flex flex-col w-full max-w-2xl border border-gray-500 p-4 gap-6"
-      onSubmit={onSubmit}
-    >
+    <form className="flex flex-col w-full max-w-2xl border border-gray-500 p-4 gap-6" onSubmit={onSubmit}>
       <input
         type="email"
         placeholder="Email"
         className="border border-gray-500 p-4"
         name="email"
-        onChange={(event) =>
-          setForm((current) => ({ ...current, email: event.target.value }))
-        }
+        onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
       />
       <input
         type="password"
@@ -45,10 +41,7 @@ function Page() {
         }
       />
 
-      <button
-        type="submit"
-        className="bg-blue-500 rounded-md px-4 py-3 text-white hover:bg-blue-600"
-      >
+      <button type="submit" className="bg-blue-500 rounded-md px-4 py-3 text-white hover:bg-blue-600">
         Submit
       </button>
     </form>

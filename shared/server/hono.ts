@@ -28,10 +28,7 @@ export type HonoInstance = BaseHono<{
 
 export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoInstance {
   protected defaultMiddleware(): MiddlewareHandler[] {
-    return [
-      container.resolve(UserSessionMiddleware).handle,
-      container.resolve(EnsureUserAndTeamSessionsMiddleware).handle,
-    ]
+    return [container.resolve(UserSessionMiddleware).handle, container.resolve(EnsureUserAndTeamSessionsMiddleware).handle]
   }
 
   constructor(options?: HonoOptions<{ Bindings: HttpBindings }>) {
@@ -54,7 +51,7 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
     const logger = makeLogger()
 
     this.onError((error, ctx) => {
-      // d({ error })
+      d({ error })
 
       logger.error(error)
 
@@ -78,21 +75,12 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
     return `${prefix?.replace(/^\/|\/$/g, "")}${path === "/" ? "" : "/"}${path?.replace(/^\/|\/$/g, "")}`
   }
 
-  protected defineRoutesForMiddleware(
-    route: HonoRouteDefinition,
-    resolvedPath: string,
-    middleware: MiddlewareHandler[],
-  ) {
+  protected defineRoutesForMiddleware(route: HonoRouteDefinition, resolvedPath: string, middleware: MiddlewareHandler[]) {
     const [method, , handler, additionalMiddleware = []] = route
 
     // d([method, resolvedPath])
 
-    const handlerArguments: [string, ...MiddlewareHandler[], Handler] = [
-      resolvedPath,
-      ...middleware,
-      ...additionalMiddleware,
-      handler,
-    ]
+    const handlerArguments: [string, ...MiddlewareHandler[], Handler] = [resolvedPath, ...middleware, ...additionalMiddleware, handler]
 
     switch (method) {
       case "GET":
@@ -122,8 +110,7 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
       prefix?: string
     },
   ) {
-    const middleware: MiddlewareHandler[] =
-      routeOptions?.middleware ?? this.defaultMiddleware()
+    const middleware: MiddlewareHandler[] = routeOptions?.middleware ?? this.defaultMiddleware()
 
     for (const route of routes) {
       const [, path] = route

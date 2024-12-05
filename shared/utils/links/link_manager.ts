@@ -20,20 +20,14 @@ export class EmailLinkManager {
       timestamp: Date.now(),
     })
 
-    const hash = crypto
-      .createHmac("sha1", this.env.APP_KEY)
-      .update(data)
-      .digest("base64url")
-      .slice(0, 10)
+    const hash = crypto.createHmac("sha256", this.env.APP_KEY).update(data).digest("base64url").slice(0, 10)
 
     const encodedData = Buffer.from(data).toString("base64url")
 
     return `${hash}.${encodedData}`
   }
 
-  decodeLink(
-    encodedLink: string,
-  ): { originalLink: string; metadata: LinkMetadata } | null {
+  decodeLink(encodedLink: string): { originalLink: string; metadata: LinkMetadata } | null {
     const [receivedHash, encodedData] = encodedLink.split(".")
 
     if (!receivedHash || !encodedData) {
@@ -42,11 +36,7 @@ export class EmailLinkManager {
 
     const decodedData = Buffer.from(encodedData, "base64url").toString()
 
-    const computedHash = crypto
-      .createHmac("sha1", this.env.APP_KEY)
-      .update(decodedData)
-      .digest("base64url")
-      .slice(0, 10)
+    const computedHash = crypto.createHmac("sha256", this.env.APP_KEY).update(decodedData).digest("base64url").slice(0, 10)
 
     if (computedHash !== receivedHash) {
       return null

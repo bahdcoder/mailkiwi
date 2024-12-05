@@ -1,4 +1,6 @@
 import { createFakeAbTestEmailContent } from "../audiences/email_content.js"
+import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
+import { defaultChannels } from "@/cli/commands/chat/add_default_channels_comand.js"
 import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
@@ -18,13 +20,7 @@ import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.js
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
-import type {
-  Team,
-  TeamMembership,
-  User,
-  Website,
-  WebsiteWithPages,
-} from "@/database/database_schema_types.js"
+import type { Team, TeamMembership, User, Website, WebsiteWithPages } from "@/database/database_schema_types.js"
 import { audiences, contacts } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -133,10 +129,7 @@ export async function createBroadcastForUser(
   return id as string
 }
 
-export async function createContactsForAudience(
-  audienceId: string,
-  contactsCount: number,
-) {
+export async function createContactsForAudience(audienceId: string, contactsCount: number) {
   const database = makeDatabase()
   const contactIds = faker.helpers.multiple(cuid, {
     count: contactsCount,
@@ -154,13 +147,7 @@ export async function createContactsForAudience(
         }),
       ),
   )
-  await database
-    .insert(contacts)
-    .values(
-      faker.helpers
-        .multiple(faker.lorem.word, { count: 23 })
-        .map(() => createFakeContact(otherAudience.id)),
-    )
+  await database.insert(contacts).values(faker.helpers.multiple(faker.lorem.word, { count: 23 }).map(() => createFakeContact(otherAudience.id)))
 
   return { contactIds }
 }
@@ -184,15 +171,36 @@ export const createUser = async ({
 
   const registerUserAction = container.resolve(RegisterUserAction)
 
-  const { user, team } = await registerUserAction.handle({
+  const { user } = await registerUserAction.handle({
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     email: faker.number.int({ min: 0, max: 99 }) + faker.internet.exampleEmail(),
+    emailVerifiedAt: faker.date.past(),
   })
+
+  const channelRepository = container.make(ChannelRepository)
+
+  const channels = await channelRepository.defaultChannels()
+
+  await container
+    .make(ChannelRepository)
+    .memberships()
+    .bulkCreate(
+      channels.map((channel) => ({
+        channelId: channel.id,
+        userId: user.id,
+      })),
+    )
 
   await container.make(UserRepository).update(user.id, { password: "password" })
 
   const teamRepository = container.resolve(TeamRepository)
+  const team = await teamRepository.create(
+    {
+      name: faker.company.catchPhraseAdjective(),
+    },
+    user.id,
+  )
   const teamObject = await teamRepository.findById(team.id)
 
   if (enableCommerceOnTeam) {

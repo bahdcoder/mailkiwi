@@ -1,10 +1,6 @@
 import { SQLWrapper, and, eq } from "drizzle-orm"
 import { MySqlRawQueryResult } from "drizzle-orm/mysql2"
-import {
-  AnyMySqlColumn,
-  AnyMySqlTable,
-  MySqlUpdateSetSource,
-} from "drizzle-orm/mysql-core"
+import { AnyMySqlColumn, AnyMySqlTable, MySqlUpdateSetSource } from "drizzle-orm/mysql-core"
 
 import type { DrizzleClient } from "@/database/client.js"
 import { products } from "@/database/schema.js"
@@ -75,11 +71,7 @@ export class BaseRepository {
 
         return { id: values.map((value) => value.id) }
       },
-      async update(
-        id: string,
-        payload: MySqlUpdateSetSource<Table>,
-        conditions: SQLWrapper[] = [],
-      ) {
+      async update(id: string, payload: MySqlUpdateSetSource<Table>, conditions: SQLWrapper[] = []) {
         await database
           .update(table)
           .set(payload)
@@ -87,6 +79,9 @@ export class BaseRepository {
       },
       async delete(id: string, conditions: SQLWrapper[] = []) {
         await database.delete(table).where(and(eq(table.id, id), ...conditions))
+      },
+      async deleteAll(conditions?: SQLWrapper) {
+        await database.delete(table).where(and(conditions))
       },
       async findById(id: string) {
         const [row] = await database.select().from(table).where(eq(table.id, id)).limit(1)

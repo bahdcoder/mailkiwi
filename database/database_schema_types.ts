@@ -16,6 +16,7 @@ import type {
   forms,
   messageReactions,
   messages,
+  passwordResets,
   products,
   segments,
   sendingDomains,
@@ -50,30 +51,20 @@ export type Channel = InferSelectModel<typeof channels>
 export type ChannelMembership = InferSelectModel<typeof channelMemberships>
 export type MessageReaction = InferSelectModel<typeof messageReactions>
 
-export type BroadcastWithoutContent = Omit<
-  Broadcast,
-  "contentHtml" | "contentText" | "contentJson"
->
+export type BroadcastWithoutContent = Omit<Broadcast, "contentHtml" | "contentText" | "contentJson">
 export type AccessToken = InferSelectModel<typeof accessTokens>
 export type Team = InferSelectModel<typeof teams>
 export type SendingDomain = InferSelectModel<typeof sendingDomains>
 export type SendingSource = InferSelectModel<typeof sendingSources>
 export type TeamMembership = InferSelectModel<typeof teamMemberships>
 export type TagOnContact = InferSelectModel<typeof tagsOnContacts>
-export type FindUserByIdArgs = Parameters<
-  ReturnType<typeof makeDatabase>["query"]["users"]["findFirst"]
->[0]
+export type FindUserByIdArgs = Parameters<ReturnType<typeof makeDatabase>["query"]["users"]["findFirst"]>[0]
 
-export type FindAutomationByIdArgs = Parameters<
-  ReturnType<typeof makeDatabase>["query"]["automations"]["findFirst"]
->[0]
+export type FindAutomationByIdArgs = Parameters<ReturnType<typeof makeDatabase>["query"]["automations"]["findFirst"]>[0]
 
 export type UpdateSetContactInput = MySqlUpdateSetSource<typeof contacts>
 export type UpdateSetAudienceInput = MySqlUpdateSetSource<typeof audiences>
-export type UpdateSetBroadcastInput = Omit<
-  MySqlUpdateSetSource<typeof broadcasts>,
-  "sendAt"
-> & {
+export type UpdateSetBroadcastInput = Omit<MySqlUpdateSetSource<typeof broadcasts>, "sendAt"> & {
   sendAt: string | undefined
 }
 export type UpdateSetTeamMembershipInput = MySqlUpdateSetSource<typeof teamMemberships>
@@ -85,7 +76,7 @@ export type Segment = typeof segments.$inferSelect
 export type Product = typeof products.$inferSelect
 export type Form = typeof forms.$inferSelect
 export type FormResponse = typeof formResponses.$inferSelect
-
+export type PasswordReset = typeof passwordResets.$inferSelect
 export type InsertSegment = typeof segments.$inferInsert
 export type InsertTag = typeof tags.$inferInsert
 export type InsertEmailSend = typeof emailSends.$inferInsert
@@ -108,6 +99,8 @@ export type InsertMessageReaction = typeof messageReactions.$inferInsert
 export type InsertChannel = typeof channels.$inferInsert
 export type InsertChannelMembership = typeof channelMemberships.$inferInsert
 
+export type InsertPasswordReset = typeof passwordResets.$inferInsert
+
 export type UpdateAbTestVariant = MySqlUpdateSetSource<typeof abTestVariants>
 
 export type UpdateWebsite = MySqlUpdateSetSource<typeof websites>
@@ -115,6 +108,8 @@ export type UpdateWebsite = MySqlUpdateSetSource<typeof websites>
 export type UpdateWebsitePage = MySqlUpdateSetSource<typeof websitePages>
 
 export type UpdateForm = MySqlUpdateSetSource<typeof forms>
+
+export type UpdatePasswordReset = MySqlUpdateSetSource<typeof passwordResets>
 
 export type UpdateEmailSend = MySqlUpdateSetSource<typeof emailSends>
 export type UpdateSendingDomain = MySqlUpdateSetSource<typeof sendingDomains>

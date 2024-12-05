@@ -46,8 +46,7 @@ export const binaryUuid = customType<{
 
 export const uuidToBin = (uuid: string) => sql`UUID_TO_BIN(${uuid}, 1)`
 
-const primaryKeyCuid = <TName extends string>(name: TName) =>
-  binaryUuid(name, { length: 16 })
+const primaryKeyCuid = <TName extends string>(name: TName) => binaryUuid(name, { length: 16 })
 
 const id = primaryKeyCuid("id").primaryKey().$defaultFn(v1)
 
@@ -89,15 +88,26 @@ export const users = mysqlTable("users", {
   password: varchar("password", { length: 256 }),
   emailVerificationCode: varchar("emailVerificationCode", { length: 256 }),
   emailVerifiedAt: timestamp("emailVerifiedAt"),
+  emailVerificationCodeExpiresAt: timestamp("emailVerificationCodeExpiresAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   role: mysqlEnum("role", ["customer", "support", "team"]).$default(() => "customer"),
 })
 
+export const passwordResets = mysqlTable("passwordResets", {
+  id,
+  userId: primaryKeyCuid("userId")
+    .references(() => users.id)
+    .unique()
+    .notNull(),
+  token: varchar("token", { length: 255 }).unique().notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  usedAt: timestamp("usedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+})
+
 export const sendingSources = mysqlTable("sendingSources", {
   id,
-  status: mysqlEnum("status", ["inactive", "active", "warming"]).$default(
-    () => "inactive",
-  ),
+  status: mysqlEnum("status", ["inactive", "active", "warming"]).$default(() => "inactive"),
   address: varchar("address", { length: 80 }).notNull().unique(),
   ehloDomain: varchar("ehloDomain", { length: 80 }).notNull().unique(),
   proxyServer: varchar("proxyServer", { length: 80 }),
@@ -160,15 +170,9 @@ export const sendingDomains = mysqlTable("sendingDomains", {
 
   // sending ip addresses
   sendingSourceId: primaryKeyCuid("sendingSourceId").references(() => sendingSources.id),
-  secondarySendingSourceId: primaryKeyCuid("secondarySendingSourceId").references(
-    () => sendingSources.id,
-  ),
-  engageSendingSourceId: primaryKeyCuid("engageSendingSourceId").references(
-    () => sendingSources.id,
-  ),
-  engageSecSendingSourceId: primaryKeyCuid("engageSecSendingSourceId").references(
-    () => sendingSources.id,
-  ),
+  secondarySendingSourceId: primaryKeyCuid("secondarySendingSourceId").references(() => sendingSources.id),
+  engageSendingSourceId: primaryKeyCuid("engageSendingSourceId").references(() => sendingSources.id),
+  engageSecSendingSourceId: primaryKeyCuid("engageSecSendingSourceId").references(() => sendingSources.id),
 
   // tracking
   trackingDomainCnameValue: varchar("trackingDomainCnameValue", {
@@ -266,9 +270,7 @@ export const websites = mysqlTable("websites", {
   websiteSslCertChallengeToken: varchar("websiteSslCertChallengeToken", {
     length: 256,
   }),
-  websiteSslCertChallengeKeyAuthorization: text(
-    "websiteSslCertChallengeKeyAuthorization",
-  ),
+  websiteSslCertChallengeKeyAuthorization: text("websiteSslCertChallengeKeyAuthorization"),
 })
 
 export const websitePages = mysqlTable(
@@ -281,12 +283,8 @@ export const websitePages = mysqlTable(
     description: text("description"),
 
     websiteId: primaryKeyCuid("websiteId").references(() => websites.id),
-    websiteContent: json("websiteContent")
-      .$type<UpdateWebsitePageDto["draftWebsiteContent"]>()
-      .notNull(),
-    draftWebsiteContent: json("draftWebsiteContent")
-      .$type<UpdateWebsitePageDto["draftWebsiteContent"]>()
-      .notNull(),
+    websiteContent: json("websiteContent").$type<UpdateWebsitePageDto["draftWebsiteContent"]>().notNull(),
+    draftWebsiteContent: json("draftWebsiteContent").$type<UpdateWebsitePageDto["draftWebsiteContent"]>().notNull(),
 
     publishedAt: timestamp("publishedAt"),
   },
@@ -337,9 +335,7 @@ export const contacts = mysqlTable(
       length: 100,
     }),
     emailVerificationTokenExpiresAt: timestamp("emailVerificationTokenExpiresAt"),
-    contactImportId: primaryKeyCuid("contactImportId").references(
-      () => contactImports.id,
-    ),
+    contactImportId: primaryKeyCuid("contactImportId").references(() => contactImports.id),
     attributes: json("attributes").$type<Record<string, any>>(),
     createdAt: timestamp("createdAt").defaultNow(),
 
@@ -367,10 +363,7 @@ export const contacts = mysqlTable(
     }),
   },
   (table) => ({
-    ContactEmailAudienceIdKey: unique("ContactEmailAudienceIdKey").on(
-      table.email,
-      table.audienceId,
-    ),
+    ContactEmailAudienceIdKey: unique("ContactEmailAudienceIdKey").on(table.email, table.audienceId),
   }),
 )
 
@@ -394,10 +387,7 @@ export const contactProperties = mysqlTable(
       .notNull(),
   },
   (table) => ({
-    propertyNameContactIdKey: unique("propertyNameContactIdKey").on(
-      table.name,
-      table.contactId,
-    ),
+    propertyNameContactIdKey: unique("propertyNameContactIdKey").on(table.name, table.contactId),
   }),
 )
 
@@ -429,14 +419,8 @@ export const tagsOnContacts = mysqlTable(
     assignedAt: timestamp("assignedAt"),
   },
   (table) => ({
-    tagsOnContactsTagIdContactIdKey: unique("tagsOnContactsTagIdContactIdKey").on(
-      table.tagId,
-      table.contactId,
-    ),
-    tagsOnContactsTagIdContactIdIdx: index("tagsOnContactsTagIdContactIdIdx").on(
-      table.tagId,
-      table.contactId,
-    ),
+    tagsOnContactsTagIdContactIdKey: unique("tagsOnContactsTagIdContactIdKey").on(table.tagId, table.contactId),
+    tagsOnContactsTagIdContactIdIdx: index("tagsOnContactsTagIdContactIdIdx").on(table.tagId, table.contactId),
   }),
 )
 
@@ -604,23 +588,12 @@ export const broadcasts = mysqlTable("broadcasts", {
   emailContentId: primaryKeyCuid("emailContentId").references(() => emailContents.id, {
     onDelete: "cascade",
   }),
-  winningAbTestVariantId: primaryKeyCuid("winningAbTestVariantId").references(
-    (): AnyMySqlColumn => abTestVariants.id,
-    {
-      onDelete: "cascade",
-    },
-  ),
+  winningAbTestVariantId: primaryKeyCuid("winningAbTestVariantId").references((): AnyMySqlColumn => abTestVariants.id, {
+    onDelete: "cascade",
+  }),
   // waitingTimeToPickWinner
   waitingTimeToPickWinner: int("waitingTimeToPickWinner").default(4), // in hours,
-  status: mysqlEnum("status", [
-    "SENT",
-    "SENDING",
-    "DRAFT",
-    "QUEUED_FOR_SENDING",
-    "SENDING_FAILED",
-    "DRAFT_ARCHIVED",
-    "ARCHIVED",
-  ]).default("DRAFT"),
+  status: mysqlEnum("status", ["SENT", "SENDING", "DRAFT", "QUEUED_FOR_SENDING", "SENDING_FAILED", "DRAFT_ARCHIVED", "ARCHIVED"]).default("DRAFT"),
   isAbTest: boolean("isAbTest").default(false).notNull(),
   winningCriteria: mysqlEnum("winningCriteria", ["OPENS", "CLICKS", "CONVERSIONS"]),
   winningWaitTime: int("winningWaitTime"), // in hours
@@ -644,8 +617,7 @@ export const automationStepSubtypesTrigger = [
   // "TRIGGER_COMMERCE_PRODUCT_PURCHASED",
 ] as const
 
-export type AUTOMATION_STEP_SUB_TYPES_TRIGGER =
-  (typeof automationStepSubtypesTrigger)[number]
+export type AUTOMATION_STEP_SUB_TYPES_TRIGGER = (typeof automationStepSubtypesTrigger)[number]
 
 export const automationStepSubtypesAction = [
   "ACTION_SEND_EMAIL",
@@ -656,12 +628,7 @@ export const automationStepSubtypesAction = [
   "ACTION_UPDATE_CONTACT_ATTRIBUTES",
 ] as const
 
-export const automationStepSubtypesRule = [
-  "RULE_IF_ELSE",
-  "RULE_WAIT_FOR_DURATION",
-  "RULE_PERCENTAGE_SPLIT",
-  "RULE_WAIT_FOR_TRIGGER",
-] as const
+export const automationStepSubtypesRule = ["RULE_IF_ELSE", "RULE_WAIT_FOR_DURATION", "RULE_PERCENTAGE_SPLIT", "RULE_WAIT_FOR_TRIGGER"] as const
 
 export const automationStepSubtypesEnd = ["END"] as const
 
@@ -724,16 +691,11 @@ export const automationSteps = mysqlTable("automationSteps", {
     .references(() => automations.id)
     .notNull(),
   type: mysqlEnum("type", automationStepTypes).notNull(),
-  status: mysqlEnum("status", ["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"])
-    .notNull()
-    .default("DRAFT"),
+  status: mysqlEnum("status", ["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"]).notNull().default("DRAFT"),
   subtype: mysqlEnum("subtype", automationStepSubtypes).notNull(),
-  parentId: primaryKeyCuid("parentId").references(
-    (): AnyMySqlColumn => automationSteps.id,
-    {
-      onDelete: "cascade",
-    },
-  ),
+  parentId: primaryKeyCuid("parentId").references((): AnyMySqlColumn => automationSteps.id, {
+    onDelete: "cascade",
+  }),
   branchIndex: int("branchIndex"),
   configuration: json("configuration").$type<AutomationStepConfiguration>().notNull(),
   emailId: primaryKeyCuid("emailId").references(() => emails.id),
@@ -762,13 +724,7 @@ export const contactAutomationSteps = mysqlTable("contactAutomationSteps", {
       onDelete: "cascade",
     })
     .notNull(),
-  status: mysqlEnum("status", [
-    "PENDING",
-    "ACTIVE",
-    "COMPLETED",
-    "FAILED",
-    "HALTED",
-  ]).default("PENDING"),
+  status: mysqlEnum("status", ["PENDING", "ACTIVE", "COMPLETED", "FAILED", "HALTED"]).default("PENDING"),
   haltedAt: timestamp("haltedAt"),
   failedAt: timestamp("failedAt"),
   startedAt: timestamp("startedAt"),
@@ -818,18 +774,12 @@ export const productContents = mysqlTable("productContents", {
 export const forms = mysqlTable("forms", {
   id,
   type: mysqlEnum("type", ["survey", "signup"]),
-  appearance: mysqlEnum("appearance", [
-    "popover",
-    "inline",
-    "floating",
-    "fullscreen",
-  ]).notNull(),
+  appearance: mysqlEnum("appearance", ["popover", "inline", "floating", "fullscreen"]).notNull(),
   audienceId: primaryKeyCuid("audienceId")
     .references(() => audiences.id)
     .notNull(),
   name: varchar("name", { length: 80 }).notNull(),
-  fields:
-    json("fields").$type<(CreateFormDto["fields"][number] & { deleted?: boolean })[]>(),
+  fields: json("fields").$type<(CreateFormDto["fields"][number] & { deleted?: boolean })[]>(),
   archivedAt: timestamp("archivedAt"),
   // on form submitted:
   // -> redirect to a page
@@ -885,9 +835,7 @@ export const messages = mysqlTable(
       .references(() => users.id)
       .notNull(),
     content: json("content").$type<Record<string, string[]>>().notNull(),
-    parentMessageId: primaryKeyCuid("parentMessageId").references(
-      (): AnyMySqlColumn => messages.id,
-    ),
+    parentMessageId: primaryKeyCuid("parentMessageId").references((): AnyMySqlColumn => messages.id),
     createdAt: timestamp("createdAt").notNull(),
     updatedAt: timestamp("updatedAt"),
   },

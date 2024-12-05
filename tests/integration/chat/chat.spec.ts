@@ -10,12 +10,7 @@ import { createUser } from "@/tests/mocks/auth/users.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
 
-import {
-  Channel,
-  InsertMessageReaction,
-  Message,
-  MessageReaction,
-} from "@/database/database_schema_types.js"
+import { Channel, InsertMessageReaction, Message, MessageReaction } from "@/database/database_schema_types.js"
 import { channels, messages } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -46,15 +41,10 @@ describe("@chat channels", () => {
 })
 
 describe("@chat messages", () => {
-  test("a user can create a message in a channel as a member of that channel", async ({
-    expect,
-  }) => {
+  test("a user can create a message in a channel as a member of that channel", async ({ expect }) => {
     const { user } = await createUser()
 
-    const [channel] = await makeDatabase()
-      .select()
-      .from(channels)
-      .where(eq(channels.name, "support"))
+    const [channel] = await makeDatabase().select().from(channels).where(eq(channels.name, "support"))
 
     // as a registered user, attempt to send message
     // // messageContent, channel
@@ -70,25 +60,18 @@ describe("@chat messages", () => {
 
     expect(response.status).toBe(200)
 
-    const allUserMessages = await container
-      .make(MessageRepository)
-      .messages()
-      .findAll(eq(messages.userId, user.id))
+    const allUserMessages = await container.make(MessageRepository).messages().findAll(eq(messages.userId, user.id))
 
     expect(allUserMessages).toHaveLength(1)
     expect(allUserMessages[0].channelId).toEqual(channel.id)
   })
 
-  test("a user cannot send messages to a channel they are not a member of", async ({
-    expect,
-  }) => {
+  test("a user cannot send messages to a channel they are not a member of", async ({ expect }) => {
     const { user } = await createUser()
     const { user: secondUser } = await createUser()
     const { user: thirdUser } = await createUser()
 
-    const { id: privateChannelId } = await container
-      .make(ChannelRepository)
-      .createPrivateChannelForUsers([user.id, secondUser.id])
+    const { id: privateChannelId } = await container.make(ChannelRepository).createPrivateChannelForUsers([user.id, secondUser.id])
 
     const privateResponse = await makeRequestAsUser(secondUser, {
       method: "POST",
@@ -122,8 +105,7 @@ describe("@chat messages", () => {
       message: "Validation failed.",
       errors: [
         {
-          message:
-            "You are not a member of this channel. To send messages, please join this channel first. ",
+          message: "You are not a member of this channel. To send messages, please join this channel first. ",
           field: "channelId",
         },
       ],
@@ -227,14 +209,10 @@ describe("@chat messages", () => {
   }
 
   function getMessagePositionsFromResponse(data: any) {
-    return (data?.pageProps?.messages?.data || data).map(
-      (message: Message) => message.content?.blocks?.[1],
-    ) as string[]
+    return (data?.pageProps?.messages?.data || data).map((message: Message) => message.content?.blocks?.[1]) as string[]
   }
 
-  test("can fetch a cursor paginated list of all messages in a channel", async ({
-    expect,
-  }) => {
+  test("can fetch a cursor paginated list of all messages in a channel", async ({ expect }) => {
     const { channelName } = await setupTestMessages()
 
     const response = await makeRequest(`/community/${channelName}`, {
@@ -247,79 +225,29 @@ describe("@chat messages", () => {
 
     const messagePositions = getMessagePositionsFromResponse(data)
 
-    expect(messagePositions.slice(0, 10)).toEqual([
-      "249",
-      "248",
-      "247",
-      "246",
-      "245",
-      "244",
-      "243",
-      "242",
-      "241",
-      "240",
-    ])
+    expect(messagePositions.slice(0, 10)).toEqual(["249", "248", "247", "246", "245", "244", "243", "242", "241", "240"])
 
-    expect(messagePositions.slice(40, 50)).toEqual([
-      "209",
-      "208",
-      "207",
-      "206",
-      "205",
-      "204",
-      "203",
-      "202",
-      "201",
-      "200",
-    ])
+    expect(messagePositions.slice(40, 50)).toEqual(["209", "208", "207", "206", "205", "204", "203", "202", "201", "200"])
 
     const nextCursor = data.pageProps.messages.next
 
     expect(nextCursor).toBeDefined()
 
-    const nextResponse = await makeRequest(
-      `/community/${channelName}?cursor=${nextCursor}&direction=older`,
-      {
-        method: "GET",
-      },
-    )
+    const nextResponse = await makeRequest(`/community/${channelName}?cursor=${nextCursor}&direction=older`, {
+      method: "GET",
+    })
 
     const nextData = await nextResponse.json()
 
     const nextMessagePositions = getMessagePositionsFromResponse(nextData)
 
-    expect(nextMessagePositions.slice(0, 10)).toEqual([
-      "199",
-      "198",
-      "197",
-      "196",
-      "195",
-      "194",
-      "193",
-      "192",
-      "191",
-      "190",
-    ])
+    expect(nextMessagePositions.slice(0, 10)).toEqual(["199", "198", "197", "196", "195", "194", "193", "192", "191", "190"])
 
-    expect(nextMessagePositions.slice(40, 50)).toEqual([
-      "159",
-      "158",
-      "157",
-      "156",
-      "155",
-      "154",
-      "153",
-      "152",
-      "151",
-      "150",
-    ])
+    expect(nextMessagePositions.slice(40, 50)).toEqual(["159", "158", "157", "156", "155", "154", "153", "152", "151", "150"])
 
-    const secondNextResponse = await makeRequest(
-      `/community/${channelName}?cursor=${nextData.pageProps.messages.next}&direction=older`,
-      {
-        method: "GET",
-      },
-    )
+    const secondNextResponse = await makeRequest(`/community/${channelName}?cursor=${nextData.pageProps.messages.next}&direction=older`, {
+      method: "GET",
+    })
 
     const secondNextData = await secondNextResponse.json()
 
@@ -328,41 +256,30 @@ describe("@chat messages", () => {
     expect(secondNextMessagePositions.slice(0, 3)).toEqual(["149", "148", "147"])
     expect(secondNextMessagePositions.slice(47, 50)).toEqual(["102", "101", "100"])
 
-    const previousResponse = await makeRequest(
-      `/community/${channelName}?cursor=${secondNextData.pageProps.messages.previous}&direction=newer`,
-      {
-        method: "GET",
-      },
-    )
+    const previousResponse = await makeRequest(`/community/${channelName}?cursor=${secondNextData.pageProps.messages.previous}&direction=newer`, {
+      method: "GET",
+    })
     const previousData = await previousResponse.json()
 
-    const previousMessagePositions =
-      getMessagePositionsFromResponse(previousData).reverse()
+    const previousMessagePositions = getMessagePositionsFromResponse(previousData).reverse()
 
     expect(previousMessagePositions.slice(0, 3)).toEqual(["199", "198", "197"])
     expect(previousMessagePositions.slice(47, 50)).toEqual(["152", "151", "150"])
 
-    const secondPreviousResponse = await makeRequest(
-      `/community/${channelName}?cursor=${previousData.pageProps.messages.previous}&direction=newer`,
-      {
-        method: "GET",
-      },
-    )
+    const secondPreviousResponse = await makeRequest(`/community/${channelName}?cursor=${previousData.pageProps.messages.previous}&direction=newer`, {
+      method: "GET",
+    })
 
     const secondPreviousData = await secondPreviousResponse.json()
 
-    const secondPreviousMessagePositions =
-      getMessagePositionsFromResponse(secondPreviousData).reverse()
+    const secondPreviousMessagePositions = getMessagePositionsFromResponse(secondPreviousData).reverse()
 
     expect(secondPreviousMessagePositions.slice(0, 3)).toEqual(["249", "248", "247"])
     expect(secondPreviousMessagePositions.slice(47, 50)).toEqual(["202", "201", "200"])
 
-    const backToNextResponse = await makeRequest(
-      `/community/${channelName}?cursor=${secondPreviousData.pageProps.messages.next}&direction=older`,
-      {
-        method: "GET",
-      },
-    )
+    const backToNextResponse = await makeRequest(`/community/${channelName}?cursor=${secondPreviousData.pageProps.messages.next}&direction=older`, {
+      method: "GET",
+    })
 
     const backToNextData = await backToNextResponse.json()
 
@@ -371,17 +288,13 @@ describe("@chat messages", () => {
     expect(backToNextMessagePositions.slice(0, 3)).toEqual(["199", "198", "197"])
     expect(backToNextMessagePositions.slice(47, 50)).toEqual(["152", "151", "150"])
 
-    const backToNextSecondResponse = await makeRequest(
-      `/community/${channelName}?cursor=${backToNextData.pageProps.messages.next}&direction=older`,
-      {
-        method: "GET",
-      },
-    )
+    const backToNextSecondResponse = await makeRequest(`/community/${channelName}?cursor=${backToNextData.pageProps.messages.next}&direction=older`, {
+      method: "GET",
+    })
 
     const backToNextSecondData = await backToNextSecondResponse.json()
 
-    const backToNextSecondMessagePositions =
-      getMessagePositionsFromResponse(backToNextSecondData)
+    const backToNextSecondMessagePositions = getMessagePositionsFromResponse(backToNextSecondData)
 
     expect(backToNextSecondMessagePositions.slice(0, 3)).toEqual(["149", "148", "147"])
     expect(backToNextSecondMessagePositions.slice(47, 50)).toEqual(["102", "101", "100"])
@@ -392,37 +305,19 @@ describe("@chat messages", () => {
 
     const messageId = allMessagesIds.slice(75, 120)[0]
 
-    const [message] = await database
-      .select()
-      .from(messages)
-      .where(eq(messages.id, messageId))
+    const [message] = await database.select().from(messages).where(eq(messages.id, messageId))
 
-    const [channel] = await database
-      .select()
-      .from(channels)
-      .where(eq(channels.name, channelName))
+    const [channel] = await database.select().from(channels).where(eq(channels.name, channelName))
 
     const channelRepository = container.make(ChannelRepository)
 
     const latest = await channelRepository.channelMessages(channel, undefined, "older")
 
-    const secondLatest = await channelRepository.channelMessages(
-      channel,
-      latest.next,
-      "older",
-    )
+    const secondLatest = await channelRepository.channelMessages(channel, latest.next, "older")
 
-    const thirdLatest = await channelRepository.channelMessages(
-      channel,
-      secondLatest.next,
-      "older",
-    )
+    const thirdLatest = await channelRepository.channelMessages(channel, secondLatest.next, "older")
 
-    const fourthLatest = await channelRepository.channelMessages(
-      channel,
-      thirdLatest.next,
-      "older",
-    )
+    const fourthLatest = await channelRepository.channelMessages(channel, thirdLatest.next, "older")
 
     const fourthLatestPositions = getMessagePositionsFromResponse(fourthLatest.data)
 
@@ -437,12 +332,7 @@ describe("@chat messages", () => {
     expect(messagePositions).toEqual(fourthLatestPositions)
   })
 
-  const setupMessageReplies = async (
-    channelId: string,
-    parentMessageId: string,
-    userId: string,
-    count = 100,
-  ) => {
+  const setupMessageReplies = async (channelId: string, parentMessageId: string, userId: string, count = 100) => {
     const ids = faker.helpers.multiple(cuid, { count })
 
     await container
@@ -462,26 +352,18 @@ describe("@chat messages", () => {
     return { ids }
   }
 
-  test("can fetch a paginated list of replies in a message thread,", async ({
-    expect,
-  }) => {
+  test("can fetch a paginated list of replies in a message thread,", async ({ expect }) => {
     const { channelName, allMessagesIds, user } = await setupTestMessages()
 
     const messageId = allMessagesIds.slice(75, 120)[0]
 
-    const [channel] = await database
-      .select()
-      .from(channels)
-      .where(eq(channels.name, channelName))
+    const [channel] = await database.select().from(channels).where(eq(channels.name, channelName))
 
     await setupMessageReplies(channel.id, messageId, user.id)
 
-    const response = await makeRequest(
-      `/community/${channelName}/m/${messageId}/replies`,
-      {
-        method: "GET",
-      },
-    )
+    const response = await makeRequest(`/community/${channelName}/m/${messageId}/replies`, {
+      method: "GET",
+    })
 
     const data = await response.json()
 
@@ -493,18 +375,13 @@ describe("@chat messages", () => {
     expect(positions.slice(0, 3)).toEqual(["100", "99", "98"])
     expect(positions.slice(47, 50)).toEqual(["53", "52", "51"])
 
-    const nextReplies = await makeRequest(
-      `/community/${channelName}/m/${messageId}/replies?replies_cursor=${data.pageProps.replies.next}`,
-      {
-        method: "GET",
-      },
-    )
+    const nextReplies = await makeRequest(`/community/${channelName}/m/${messageId}/replies?replies_cursor=${data.pageProps.replies.next}`, {
+      method: "GET",
+    })
 
     const nextRepliesData = await nextReplies.json()
 
-    const nextRepliesPositions = getMessagePositionsFromResponse(
-      nextRepliesData.pageProps.replies.data,
-    )
+    const nextRepliesPositions = getMessagePositionsFromResponse(nextRepliesData.pageProps.replies.data)
 
     expect(nextRepliesPositions.slice(0, 3)).toEqual(["50", "49", "48"])
     expect(nextRepliesPositions.slice(47, 50)).toEqual(["3", "2", "1"])
@@ -515,26 +392,15 @@ describe("@chat messages", () => {
 
     const messageId = allMessagesIds.slice(75, 120)[0]
 
-    const [channel] = await database
-      .select()
-      .from(channels)
-      .where(eq(channels.name, channelName))
+    const [channel] = await database.select().from(channels).where(eq(channels.name, channelName))
 
-    const { ids: allRepliesIds } = await setupMessageReplies(
-      channel.id,
-      messageId,
-      user.id,
-      175,
-    )
+    const { ids: allRepliesIds } = await setupMessageReplies(channel.id, messageId, user.id, 175)
 
     const replyId = allRepliesIds.slice(60, 100)[0]
 
-    const response = await makeRequest(
-      `/community/${channelName}/m/${messageId}/replies/${replyId}`,
-      {
-        method: "GET",
-      },
-    )
+    const response = await makeRequest(`/community/${channelName}/m/${messageId}/replies/${replyId}`, {
+      method: "GET",
+    })
 
     const data = await response.json()
 

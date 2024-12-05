@@ -91,9 +91,7 @@ export async function makeRequestAsUser(
     headers: {
       "Content-Type": "application/json",
       Cookie: await getCookieSessionForUser(user),
-      [appEnv.software.teamHeader]: (
-        teamId ?? (user as User & { teams: Team[] })?.teams?.[0]?.id
-      ).toString(),
+      [appEnv.software.teamHeader]: (teamId ?? (user as User & { teams: Team[] })?.teams?.[0]?.id)?.toString(),
       ...restOfOptions.headers,
     },
   })

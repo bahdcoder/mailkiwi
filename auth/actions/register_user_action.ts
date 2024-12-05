@@ -1,49 +1,61 @@
 import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
-import { defaultChannels } from "@/cli/commands/chat/add_default_channels_comand.js"
-import { randomInt } from "crypto"
 
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
-
-import type { CreateUserDto } from "@/auth/users/dto/create_user_dto.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import { InsertUser } from "@/database/database_schema_types.js"
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { container } from "@/utils/typi.js"
 
 export class RegisterUserAction {
   constructor(
     private userRepository = container.make(UserRepository),
-    private teamRepository = container.make(TeamRepository),
     private channelRepository = container.make(ChannelRepository),
-    private database = makeDatabase(),
   ) {}
 
   handle = async (payload: InsertUser) => {
     const channels = await this.channelRepository.channels().findAll()
 
-    const { user, team } = await this.database.transaction(async (tx) => {
-      const user = await this.userRepository.transaction(tx).create({ ...payload })
+    const userExists = await this.userRepository.findByEmail(payload.email)
 
-      const team = await this.teamRepository
-        .transaction(tx)
-        .create({ name: user.id }, user.id)
+    if (!userExists) {
+      const user = await this.userRepository.create({ ...payload })
 
-      await this.channelRepository
-        .transaction(tx)
-        .memberships()
-        .bulkCreate(
-          channels.map((channel) => ({
-            channelId: channel.id,
-            userId: user.id,
-          })),
-        )
+      // TODO: Queue a job to send OTP to user's email. Use Trigger.dev for queueing system.
+      // TODO: Queue a job to invite user to community chat (insert them into channels based on their interest)
 
-      return { user, team }
-    })
+      return { user }
+    }
 
-    return { user, team }
+    if (userExists && userExists.emailVerifiedAt) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: "A user with this email already exists. Are you trying to login instead?",
+          field: "email",
+        },
+      ])
+    }
+
+    if (userExists) {
+      const { emailVerificationCode, emailVerificationCodeExpiresAt, plainEmailVerificationCode } =
+        await this.userRepository.createUserEmailVerificationCode()
+
+      await this.userRepository.update(userExists.id, {
+        emailVerificationCode,
+        emailVerificationCodeExpiresAt,
+      })
+
+      // TODO: Queue a job to send OTP to user's email. Use Trigger.dev for queueing system.
+      //
+      return { user: userExists }
+    }
+
+    const user = await this.userRepository.create({ ...payload })
+
+    // TODO: Queue a job to send OTP to user's email. Use Trigger.dev for queueing system.
+    // TODO: Queue a job to invite user to community chat (insert them into channels based on their interest)
+
+    return { user }
   }
 }
