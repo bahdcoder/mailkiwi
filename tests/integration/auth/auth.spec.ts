@@ -17,7 +17,7 @@ import { OtpGenerator } from "@/shared/tokens/otp_generator.js"
 import { container } from "@/utils/typi.js"
 
 describe("@auth user registration", () => {
-  test("can register a new user account", async ({ expect }) => {
+  test.only("can register a new user account", async ({ expect }) => {
     const database = makeDatabase()
 
     const payload = {

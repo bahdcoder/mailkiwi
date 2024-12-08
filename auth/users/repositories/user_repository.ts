@@ -68,7 +68,7 @@ export class UserRepository extends ScryptTokenRepository {
     return { id, emailVerificationCode }
   }
 
-  async confirmEmailVerificationCode(user: UserWithTeams, code: number) {
+  async confirmEmailVerificationCode(user: UserWithTeams, code: string) {
     if (user.emailVerificationCodeExpiresAt) {
       const hasExpired =
         DateTime.fromJSDate(user.emailVerificationCodeExpiresAt as Date).diffNow()

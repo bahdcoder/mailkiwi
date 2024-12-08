@@ -20,10 +20,10 @@ export interface PageTitleProps {
   description?: string | React.ReactNode
 }
 
-export function PageTitle({
+export const PageTitle = ({
   title,
   description,
-}: React.PropsWithChildren<PageTitleProps>) {
+}: React.PropsWithChildren<PageTitleProps>) => {
   return (
     <>
       <Heading variant="display" size="lg">

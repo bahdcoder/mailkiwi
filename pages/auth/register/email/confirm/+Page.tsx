@@ -1,11 +1,18 @@
 import "./page.css"
 import { PageContainer, PageTitle } from "@/components/auth/auth.jsx"
+import { useServerFormMutation } from "@/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
 import { Button } from "@kibamail/owly/button"
 import * as CodeInput from "@kibamail/owly/code-input"
 import { Text } from "@kibamail/owly/text"
 import React from "react"
 
 function EmailConfirmPage() {
+  const formRef = React.useRef<HTMLFormElement>(null)
+
+  const { ServerForm } = useServerFormMutation({
+    action: "/auth/register/email/confirm",
+  })
+
   return (
     <PageContainer>
       <div className="mb-10">
@@ -25,13 +32,20 @@ function EmailConfirmPage() {
       />
 
       <div className="grid grid-cols-1 gap-y-10">
-        <form className="flex flex-col w-full pt-6">
+        <ServerForm className="flex flex-col w-full pt-6 gap-y-6" ref={formRef}>
           <CodeInput.Input name="code" id="code" />
-        </form>
+          {/* TODO: PROVIDE A SUBMIT BUTTON FOR FORMS WITH NO JS */}
+
+          <Button type="submit">Confirm your email</Button>
+        </ServerForm>
 
         <Text>
           Didn{"'"}t receive mail? Check your spam folder or
-          <Button variant="tertiary" className="kb-content-link underline pl-0 ml-1">
+          <Button
+            type="button"
+            variant="tertiary"
+            className="kb-content-link underline pl-0 ml-1"
+          >
             Send again
           </Button>
         </Text>

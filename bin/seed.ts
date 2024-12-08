@@ -3,6 +3,7 @@ import { addDefaultChannelsCommand } from "@/cli/commands/chat/add_default_chann
 import { seedDevSendingSourcesCommand } from "@/cli/commands/seed_dev_sending_sources_command.js"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
+import { DateTime } from "luxon"
 import Fs from "node:fs/promises"
 import Path from "node:path"
 import { fileURLToPath } from "node:url"
@@ -68,6 +69,10 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
   }
 
   const { user } = await registerUserAction.handle(userDetails)
+
+  await container.make(UserRepository).update(user.id, {
+    emailVerifiedAt: DateTime.now().toJSDate(),
+  })
 
   const team = await container.make(TeamRepository).create(
     {

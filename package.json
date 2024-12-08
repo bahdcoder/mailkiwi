@@ -96,7 +96,7 @@
   },
   "dependencies": {
     "@epic-web/totp": "^2.0.0",
-    "@kibamail/owly": "1.0.14",
+    "@kibamail/owly": "1.0.15",
     "@maxmind/geoip2-node": "^5.0.0",
     "@paralleldrive/cuid2": "^2.2.2",
     "@poppinss/oauth-client": "^5.1.3",

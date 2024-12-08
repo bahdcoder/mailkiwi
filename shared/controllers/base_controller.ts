@@ -3,6 +3,7 @@ import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
 import { ProductRepository } from "@/commerce/repositories/product_repository.js"
 import { WebsitePageRepository } from "@/websites/repositories/website_page_repository.js"
 import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
+import { RedirectStatusCode, StatusCode } from "hono/utils/http-status"
 import {
   type BaseSchema,
   type BaseSchemaAsync,
@@ -46,6 +47,90 @@ type ControllerParams =
   | "productId"
   | "channelId"
 
+interface ResponseConfiguration {
+  type: "redirect" | "json"
+  payload: {
+    redirect: {
+      path: string
+      status?: RedirectStatusCode
+    }
+    json: {
+      status?: StatusCode
+      content: Record<string, any>
+    }
+  }
+}
+
+class ResponseBuilder {
+  constructor(protected ctx: HonoContext) {}
+
+  protected configuration: ResponseConfiguration = {
+    type: "json",
+    payload: {
+      redirect: {
+        path: "",
+        status: 302,
+      },
+      json: {
+        status: 200,
+        content: {},
+      },
+    },
+  }
+
+  html() {}
+
+  redirect<T extends RedirectStatusCode>(path: string, status?: T) {
+    this.configuration.type = "redirect"
+    this.configuration.payload.redirect = {
+      path,
+      status: status ?? 302,
+    }
+
+    return this
+  }
+
+  json(content: ResponseConfiguration["payload"], status?: StatusCode) {
+    this.configuration.type = "json"
+    this.configuration.payload.json = {
+      content,
+      status,
+    }
+
+    return this
+  }
+
+  protected isRequestAJsonSubmission() {
+    return this.ctx.req.header("Content-Type") === "application/json"
+  }
+
+  send() {
+    if (this.isRequestAJsonSubmission()) {
+      const payload =
+        this.configuration.type === "redirect"
+          ? this.configuration.payload.redirect
+          : this.configuration.payload.json
+
+      return this.ctx.json(
+        {
+          type: this.configuration.type,
+          payload,
+        },
+        this.configuration.payload.json.status,
+      )
+    }
+
+    if (this.configuration.type === "redirect") {
+      return this.ctx.redirect(
+        this.configuration.payload.redirect.path,
+        this.configuration.payload.redirect.status,
+      )
+    }
+
+    throw E_OPERATION_FAILED("Failed to understand what kind of request client needs.")
+  }
+}
+
 export class BaseController {
   protected session = container.make(Session)
 
@@ -55,6 +140,34 @@ export class BaseController {
     return id
   }
 
+  protected isRequestAskingForJson(ctx: HonoContext) {
+    return ctx.req.header("Accept")?.includes("application/json")
+  }
+
+  protected isRequestAFormSubmission(ctx: HonoContext) {
+    return ctx.req.header("Content-Type") === "application/x-www-form-urlencoded"
+  }
+
+  protected isRequestAJsonSubmission(ctx: HonoContext) {
+    return ctx.req.header("Content-Type") === "application/json"
+  }
+
+  protected async parseSubmittedDataFromRequest(ctx: HonoContext) {
+    if (this.isRequestAFormSubmission(ctx)) {
+      return ctx.req.parseBody()
+    }
+
+    if (this.isRequestAJsonSubmission(ctx)) {
+      return ctx.req.json()
+    }
+
+    return {}
+  }
+
+  protected response(ctx: HonoContext) {
+    return new ResponseBuilder(ctx)
+  }
+
   protected async validate<
     T extends BaseSchema<any, any, any> | BaseSchemaAsync<any, any, any>,
   >(
@@ -62,7 +175,7 @@ export class BaseController {
     schema: T,
     extraContext?: Record<string, string>,
   ): Promise<InferInput<T>> {
-    const payload = await ctx.req.json()
+    const payload = await this.parseSubmittedDataFromRequest(ctx)
 
     const { success, issues, output } = await safeParseAsync(schema, {
       ...payload,

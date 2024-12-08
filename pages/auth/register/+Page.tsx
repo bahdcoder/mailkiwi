@@ -4,6 +4,10 @@ import {
   PageContainer,
   PageTitle,
 } from "@/components/auth/auth.jsx"
+import {
+  ServerForm,
+  useServerFormMutation,
+} from "@/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
 import { Button } from "@kibamail/owly/button"
 import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"
@@ -16,9 +20,17 @@ interface RegisterPageProps {
 function RegisterPage({ teamInviteToken }: RegisterPageProps) {
   const isAnInvitedUser = teamInviteToken !== undefined
 
+  const { serverFormProps, isPending } = useServerFormMutation({
+    action: "/auth/register",
+  })
+
   const linkToLoginPage = isAnInvitedUser
     ? `/auth/invites/${teamInviteToken}/login`
     : "/auth/login"
+
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", {
+    loading: isPending,
+  })
 
   return (
     <PageContainer>
@@ -44,17 +56,27 @@ function RegisterPage({ teamInviteToken }: RegisterPageProps) {
 
       <AuthMethodsDivider>Or signup with</AuthMethodsDivider>
 
-      <form className="flex flex-col w-full py-4">
+      <ServerForm {...serverFormProps} className="flex flex-col w-full py-4">
         <div className="grid grid-cols-1 gap-4">
-          <TextField.Root id="email" placeholder="Enter your work email address">
+          <TextField.Root
+            id="email"
+            name="email"
+            placeholder="Enter your work email address"
+          >
             <TextField.Label htmlFor="email">Email address</TextField.Label>
           </TextField.Root>
         </div>
 
-        <Button type="submit" width="full" className="mt-2">
-          Sign up
+        <Button
+          type="submit"
+          width="full"
+          className="mt-2"
+          loading={isPending}
+          disabled={false}
+        >
+          Sign up {isPending === true ? "loading ..." : ""}
         </Button>
-      </form>
+      </ServerForm>
 
       <div className="flex justify-center">
         <Text>

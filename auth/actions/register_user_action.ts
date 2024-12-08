@@ -52,7 +52,7 @@ export class RegisterUserAction {
 
       // TODO: Queue a job to send OTP to user's email. Use Trigger.dev for queueing system.
       //
-      return { user: userExists }
+      return { user: userExists, plainEmailVerificationCode }
     }
 
     const user = await this.userRepository.create({ ...payload })

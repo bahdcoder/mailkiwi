@@ -25,11 +25,11 @@ export class RegisterController extends VikeController {
 
     this.app.defineRoutes(
       [
-        ...this.vikePath("/register", this.page),
-        ["POST", "/register", this.register.bind(this)],
+        ...this.vikePath(route("auth_register"), this.page),
+        ["POST", route("auth_register"), this.register.bind(this)],
       ],
       {
-        prefix: "auth",
+        prefix: "",
         middleware: [],
       },
     )
@@ -45,20 +45,22 @@ export class RegisterController extends VikeController {
       ],
       {
         prefix: "",
-        // middleware: [middleware("user_session"), middleware("must_be_authenticated")],
-        middleware: [],
+        middleware: [middleware("user_session"), middleware("must_be_authenticated")],
+        // middleware: [],
       },
     )
   }
 
   async register(ctx: HonoContext) {
-    const { user } = await container
+    const { user, plainEmailVerificationCode } = await container
       .resolve(RegisterUserAction)
       .handle(await this.validate(ctx, CreateUserSchema))
 
+    d({ plainEmailVerificationCode })
+
     await this.session.createForUser(ctx, user.id)
 
-    return ctx.redirect(route("auth_register_email_confirm"))
+    return this.response(ctx).redirect(route("auth_register_email_confirm")).send()
   }
 
   async profile(ctx: HonoContext) {

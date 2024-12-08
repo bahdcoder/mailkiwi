@@ -1,7 +1,7 @@
-import { type InferInput, maxValue, minValue, number, objectAsync, pipe } from "valibot"
+import { type InferInput, objectAsync, pipe, regex, string } from "valibot"
 
 export const ConfirmEmailVerificationCodeSchema = objectAsync({
-  code: pipe(number(), minValue(100000), maxValue(999999)),
+  code: pipe(string(), regex(/^\d{6}$/)),
 })
 
 export type ConfirmEmailVerificationCodeDto = InferInput<
