@@ -1,0 +1,30 @@
+@import "@kibamail/owly/styles/tokens.css";
+
+@import "@kibamail/owly/styles/text.css";
+@import "@kibamail/owly/styles/button.css";
+@import "@kibamail/owly/styles/heading.css";
+@import "@kibamail/owly/styles/progress.css";
+@import "@kibamail/owly/styles/text-field.css";
+
+@import "@kibamail/owly/styles/semantic-classes.css";
+
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+
+@font-face {
+  font-family: "RocaTwo";
+  src: url("/fonts/roca-two-rg.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply kb-background-brand-hover;
+}
+
+#root {
+  @apply h-screen w-screen flex flex-col overflow-y-auto kb-background-secondary;
+}

@@ -90,7 +90,7 @@ Read more about mailgun tracking here https://documentation.mailgun.com/docs/mai
   - [x] Custom domains (with SSL)
   - [x] Kibamail subdomain web hosting (With Wildcard SSL)
   - [~] Unlimited website templates
-  - [ ] Subscribe forms
+  - [x] Subscribe forms
   - [x] Surveys
   - [x] Custom webpages
   - [x] Advanced email capture

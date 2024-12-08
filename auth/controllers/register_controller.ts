@@ -45,7 +45,8 @@ export class RegisterController extends VikeController {
       ],
       {
         prefix: "",
-        middleware: [middleware("user_session"), middleware("must_be_authenticated")],
+        // middleware: [middleware("user_session"), middleware("must_be_authenticated")],
+        middleware: [],
       },
     )
   }

@@ -1,0 +1,13 @@
+import { CheckCircleSolidIcon } from "@/components/icons/check-circle-solid.svg.jsx"
+import { Text } from "@kibamail/owly/text"
+import React from "react"
+
+interface AuthPasswordsLayoutProps {}
+
+function AuthPasswordsLayout({
+  children,
+}: React.PropsWithChildren<AuthPasswordsLayoutProps>) {
+  return <>{children}</>
+}
+
+export { AuthPasswordsLayout as Layout }

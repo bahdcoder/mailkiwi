@@ -2,8 +2,6 @@ import { CreateFormSchema } from "@/forms/dto/create_form_dto.js"
 import { UpdateFormSchema } from "@/forms/dto/update_form_dto.js"
 import { FormRepository } from "@/forms/repositories/form_repository.js"
 
-import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
-
 import { Audience } from "@/database/database_schema_types.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
