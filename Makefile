@@ -22,12 +22,12 @@ help:
 # Build the application
 build:
 	@echo "Building the application..."
-	docker-compose $(COMPOSE_DEV) run --rm kibamail pnpm run build
+	docker compose $(COMPOSE_DEV) run --rm kibamail pnpm run build
 
 # Destroy the application environment
 down:
 	@echo "Destroying the application environment..."
-	docker-compose $(COMPOSE_DEV) down
+	docker compose $(COMPOSE_DEV) down
 
 # Build only the app Docker image
 app.build:
@@ -54,12 +54,12 @@ run:
 		echo "Please provide a command using cmd='your command'"; \
 		exit 1; \
 	fi
-	docker-compose $(COMPOSE_DEV) run --rm kibamail pnpm $(cmd)
+	docker compose $(COMPOSE_DEV) run --rm kibamail pnpm $(cmd)
 
 # Start all services
 dev:
 	@echo "Starting all services..."
-	docker-compose $(COMPOSE_DEV) up -d 
+	docker compose $(COMPOSE_DEV) up -d 
 
 api.dev:
 	pnpm dev
