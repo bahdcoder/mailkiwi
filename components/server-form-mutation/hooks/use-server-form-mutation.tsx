@@ -12,14 +12,16 @@ export interface ServerSubmissionResponse<TResponse = Record<"path" | string, an
   type: "redirect" | "json"
   payload: TResponse
   success: boolean
+  message: string
   errors: Record<"field" | "message", string>[]
+  errorsMap: Record<string, string>
 }
 
 export interface UseServerFormMutationProps
   extends Omit<
     MutationOptions<
       ServerSubmissionResponse,
-      DefaultError,
+      ServerSubmissionResponse,
       Record<string, FormDataEntryValue>
     >,
     "mutationFn"
@@ -49,6 +51,17 @@ export function useServerFormMutation({
 
       const submissionResponse: ServerSubmissionResponse = await response.json()
 
+      if (submissionResponse?.errors) {
+        submissionResponse.errorsMap = {}
+        for (const error of submissionResponse.errors) {
+          submissionResponse.errorsMap[error.field] = error.message
+        }
+      }
+
+      if (!response.ok) {
+        throw submissionResponse
+      }
+
       if (submissionResponse.type === "redirect") {
         await (navigate as any)(submissionResponse.payload.path)
       }
@@ -69,7 +82,7 @@ export function useServerFormMutation({
 type ServerFormProps = React.FormHTMLAttributes<HTMLFormElement> & {
   mutate: UseMutationResult<
     ServerSubmissionResponse<Record<string, any>>,
-    Error,
+    ServerSubmissionResponse,
     Record<string, FormDataEntryValue>,
     unknown
   >["mutate"]

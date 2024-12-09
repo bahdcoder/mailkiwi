@@ -46,7 +46,6 @@ export class RegisterController extends VikeController {
       {
         prefix: "",
         middleware: [middleware("user_session"), middleware("must_be_authenticated")],
-        // middleware: [],
       },
     )
   }
@@ -73,8 +72,18 @@ export class RegisterController extends VikeController {
     return ctx.redirect(route("welcome"))
   }
 
+  async redirectUserToCorrectOnboardingPage(ctx: HonoContext) {
+    // stages of onboarding:
+    // 1. pending email verification
+    // 2. pending password setting
+  }
+
   async emailConfirm(ctx: HonoContext) {
     const user = ctx.get("user")
+
+    if (user.emailVerifiedAt) {
+      return this.response(ctx).redirect(route("welcome")).send()
+    }
 
     const payload = await this.validate(ctx, ConfirmEmailVerificationCodeSchema)
 
@@ -93,7 +102,7 @@ export class RegisterController extends VikeController {
       ])
     }
 
-    return ctx.redirect(route("auth_register_password"))
+    return this.response(ctx).redirect(route("auth_register_password")).send()
   }
 
   async password(ctx: HonoContext) {

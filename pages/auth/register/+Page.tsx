@@ -20,17 +20,13 @@ interface RegisterPageProps {
 function RegisterPage({ teamInviteToken }: RegisterPageProps) {
   const isAnInvitedUser = teamInviteToken !== undefined
 
-  const { serverFormProps, isPending } = useServerFormMutation({
+  const { serverFormProps, isPending, error } = useServerFormMutation({
     action: "/auth/register",
   })
 
   const linkToLoginPage = isAnInvitedUser
     ? `/auth/invites/${teamInviteToken}/login`
     : "/auth/login"
-
-  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", {
-    loading: isPending,
-  })
 
   return (
     <PageContainer>
@@ -61,20 +57,19 @@ function RegisterPage({ teamInviteToken }: RegisterPageProps) {
           <TextField.Root
             id="email"
             name="email"
+            required
+            type="email"
             placeholder="Enter your work email address"
           >
             <TextField.Label htmlFor="email">Email address</TextField.Label>
+            {error?.errorsMap?.["email"] ? (
+              <TextField.Error>{error?.errorsMap?.["email"]}</TextField.Error>
+            ) : null}
           </TextField.Root>
         </div>
 
-        <Button
-          type="submit"
-          width="full"
-          className="mt-2"
-          loading={isPending}
-          disabled={false}
-        >
-          Sign up {isPending === true ? "loading ..." : ""}
+        <Button type="submit" width="full" className="mt-2" loading={isPending}>
+          Sign up
         </Button>
       </ServerForm>
 
