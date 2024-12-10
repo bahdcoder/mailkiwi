@@ -83,10 +83,6 @@ export class InjectEmailAction {
       const injectEmailPayload = {
         envelope_sender: `bounces@${sendingDomain.returnPathSubDomain}.${sendingDomain.name}`,
         recipients: [recipient],
-        from: {
-          email: payload.from.email,
-          name: payload.from.name,
-        },
         content: {
           from: payload.from,
           subject: payload.subject,
@@ -141,6 +137,7 @@ export class InjectEmailAction {
         async function attemptInjection() {
           try {
             const response = await injection.handle()
+
             return {
               ...response,
               messageId: injection.messageId,

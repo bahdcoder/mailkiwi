@@ -1,6 +1,7 @@
 import { ConfirmEmailVerificationCodeSchema } from "../users/dto/confirm_email_verification_code_dto.js"
 import { SetUserNameSchema } from "../users/dto/set_user_name_dto.js"
 import { SetUserPasswordSchema } from "../users/dto/set_user_password_dto.js"
+import { Next } from "hono"
 
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 import { CreateUserSchema } from "@/auth/users/dto/create_user_dto.js"
@@ -37,7 +38,7 @@ export class RegisterController extends VikeController {
     this.app.defineRoutes(
       [
         ...this.vikePath(route("auth_register_profile"), this.page),
-        ...this.vikePath(route("auth_register_password"), this.page),
+        ...this.vikePath(route("auth_register_password"), this.passwordPage),
         ...this.vikePath(route("auth_register_email_confirm"), this.page),
         ["POST", route("auth_register_password"), this.password.bind(this)],
         ["POST", route("auth_register_profile"), this.profile.bind(this)],
@@ -105,13 +106,32 @@ export class RegisterController extends VikeController {
     return this.response(ctx).redirect(route("auth_register_password")).send()
   }
 
+  passwordPage = async (ctx: HonoContext, next: Next) => {
+    const user = ctx.get("user")
+
+    if (user.password) {
+      return this.response(ctx).redirect(route("auth_register_profile")).send()
+    }
+
+    return this.page(ctx, next)
+  }
+
   async password(ctx: HonoContext) {
     const user = ctx.get("user")
+
+    if (user.password) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: "You have already set a password. Please login instead.",
+          field: "password",
+        },
+      ])
+    }
 
     const payload = await this.validate(ctx, SetUserPasswordSchema)
 
     await this.userRepository.update(user.id, payload)
 
-    return ctx.redirect(route("auth_register_profile"))
+    return this.response(ctx).redirect(route("auth_register_profile")).send()
   }
 }

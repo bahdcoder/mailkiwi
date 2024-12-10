@@ -53,9 +53,13 @@ export class UserRepository extends ScryptTokenRepository {
   async create(user: InsertUser) {
     const id = this.cuid()
 
-    const { emailVerificationCode, emailVerificationCodeExpiresAt } =
-      await this.createUserEmailVerificationCode()
-    const r = await this.database
+    const {
+      emailVerificationCode,
+      emailVerificationCodeExpiresAt,
+      plainEmailVerificationCode,
+    } = await this.createUserEmailVerificationCode()
+
+    await this.database
       .insert(users)
       .values({
         id,
@@ -65,7 +69,7 @@ export class UserRepository extends ScryptTokenRepository {
       })
       .execute()
 
-    return { id, emailVerificationCode }
+    return { id, emailVerificationCode: plainEmailVerificationCode }
   }
 
   async confirmEmailVerificationCode(user: UserWithTeams, code: string) {

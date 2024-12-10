@@ -161,7 +161,7 @@ export class BaseController {
       return ctx.req.json()
     }
 
-    return {}
+    return ctx.req.json()
   }
 
   protected response(ctx: HonoContext) {

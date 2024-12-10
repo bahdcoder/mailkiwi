@@ -1,10 +1,18 @@
 import { PageContainer, PageTitle } from "@/components/auth/auth.jsx"
 import { PasswordField } from "@/components/input/password-field.jsx"
+import {
+  ServerForm,
+  useServerFormMutation,
+} from "@/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
 import { Button } from "@kibamail/owly/button"
-import { Text } from "@kibamail/owly/text"
+import * as TextField from "@kibamail/owly/text-field"
 import React from "react"
 
 function RegisterPasswordPage() {
+  const { serverFormProps, isPending, error } = useServerFormMutation({
+    action: "/auth/register/password",
+  })
+
   return (
     <PageContainer>
       <PageTitle
@@ -12,15 +20,25 @@ function RegisterPasswordPage() {
         description="Choose a secure password to enable access to your account."
       />
 
-      <form className="flex flex-col w-full py-4 mt-10">
+      <ServerForm {...serverFormProps} className="flex flex-col w-full py-4 mt-10">
         <div className="grid grid-cols-1 gap-4 relative">
-          <PasswordField placeholder="Create your password" strengthIndicator />
+          <PasswordField
+            placeholder="Create your password"
+            strengthIndicator
+            name="password"
+          >
+            {error?.errorsMap?.password ? (
+              <TextField.Error className="mt-8">
+                {error.errorsMap.password}
+              </TextField.Error>
+            ) : null}
+          </PasswordField>
         </div>
 
-        <Button type="submit" width="full" className="mt-6">
+        <Button type="submit" width="full" className="mt-6" loading={isPending}>
           Continue
         </Button>
-      </form>
+      </ServerForm>
     </PageContainer>
   )
 }

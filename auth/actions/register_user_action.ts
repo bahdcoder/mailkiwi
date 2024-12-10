@@ -15,17 +15,14 @@ export class RegisterUserAction {
   ) {}
 
   handle = async (payload: InsertUser) => {
-    const channels = await this.channelRepository.channels().findAll()
-
-    const userExists = await this.userRepository.findByEmail(payload.email)
+    let userExists = await this.userRepository.findByEmail(payload.email)
 
     if (!userExists) {
-      const user = await this.userRepository.create({ ...payload })
+      const { id, emailVerificationCode } = await this.userRepository.create({
+        ...payload,
+      })
 
-      // TODO: Queue a job to send OTP to user's email. Use Trigger.dev for queueing system.
-      // TODO: Queue a job to invite user to community chat (insert them into channels based on their interest)
-
-      return { user }
+      return { user: { id }, plainEmailVerificationCode: emailVerificationCode }
     }
 
     if (userExists && userExists.emailVerifiedAt) {
@@ -38,28 +35,19 @@ export class RegisterUserAction {
       ])
     }
 
-    if (userExists) {
-      const {
-        emailVerificationCode,
-        emailVerificationCodeExpiresAt,
-        plainEmailVerificationCode,
-      } = await this.userRepository.createUserEmailVerificationCode()
+    const {
+      emailVerificationCode,
+      emailVerificationCodeExpiresAt,
+      plainEmailVerificationCode,
+    } = await this.userRepository.createUserEmailVerificationCode()
 
-      await this.userRepository.update(userExists.id, {
-        emailVerificationCode,
-        emailVerificationCodeExpiresAt,
-      })
-
-      // TODO: Queue a job to send OTP to user's email. Use Trigger.dev for queueing system.
-      //
-      return { user: userExists, plainEmailVerificationCode }
-    }
-
-    const user = await this.userRepository.create({ ...payload })
+    await this.userRepository.update(userExists.id, {
+      emailVerificationCode,
+      emailVerificationCodeExpiresAt,
+    })
 
     // TODO: Queue a job to send OTP to user's email. Use Trigger.dev for queueing system.
     // TODO: Queue a job to invite user to community chat (insert them into channels based on their interest)
-
-    return { user }
+    return { user: userExists, plainEmailVerificationCode }
   }
 }

@@ -33,7 +33,7 @@ describe("@auth user registration", () => {
       where: eq(users.email, payload.email),
     })
 
-    expect(response.status).toBe(302)
+    expect(response.status).toBe(200)
 
     expect(userFromDatabase).toBeDefined()
   })

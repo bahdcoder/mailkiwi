@@ -7,7 +7,7 @@ import { Progress } from "@kibamail/owly/progress"
 import * as TextField from "@kibamail/owly/text-field"
 import { composeRefs } from "@radix-ui/react-compose-refs"
 import cn from "classnames"
-import React from "react"
+import React, { useEffect } from "react"
 
 export interface PasswordFieldProps
   extends React.ComponentPropsWithoutRef<typeof TextField.Root> {
@@ -57,6 +57,10 @@ export const PasswordField = React.forwardRef<
     (child) => React.isValidElement(child) && child.type === TextField.Label,
   )
 
+  const hasError = allChildren.some(
+    (child) => React.isValidElement(child) && child.type === TextField.Error,
+  )
+
   const textFieldChildren = allChildren.filter(
     (child) => React.isValidElement(child) && child.type !== TextField.Label,
   )
@@ -91,7 +95,10 @@ export const PasswordField = React.forwardRef<
               return (
                 <TextField.Hint
                   key={idx}
-                  className={cn({ "mt-8": idx === 0, "kb-content-positive": passed })}
+                  className={cn({
+                    "mt-8": idx === 0 && !hasError,
+                    "kb-content-positive": passed,
+                  })}
                 >
                   <TextField.HintIcon>
                     {passed ? <CheckCircleIcon /> : <XMarkCircle />}
@@ -101,6 +108,7 @@ export const PasswordField = React.forwardRef<
               )
             })
           : null}
+        {textFieldChildren}
       </TextField.Root>
 
       {strengthIndicator ? (
@@ -112,7 +120,6 @@ export const PasswordField = React.forwardRef<
           />
         </div>
       ) : null}
-      {textFieldChildren}
     </>
   )
 })
