@@ -57,6 +57,16 @@ export class TeamRepository extends BaseRepository {
     return { id }
   }
 
+  async findUserFirstTeam(userId: string) {
+    const [team] = await this.database
+      .select({ id: teams.id })
+      .from(teams)
+      .where(eq(teams.userId, userId))
+      .limit(1)
+
+    return team
+  }
+
   async findUserDefaultTeam(userId: string) {
     const team = await this.hasManyMemberships((query) =>
       query

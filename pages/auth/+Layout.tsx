@@ -14,7 +14,7 @@ function PasswordResetsFlowLayout({
   children,
 }: React.PropsWithChildren<AuthLayoutProps>) {
   return (
-    <div className="h-screen w-screen flex flex-col overflow-y-hidden">
+    <div className="h-screen w-full flex flex-col overflow-y-hidden">
       <div className="w-full py-8 px-4 md:px-10">
         <img src="/logos/full-light.svg" className="h-8" />
       </div>
@@ -37,7 +37,7 @@ function AuthLayout({ children }: React.PropsWithChildren<AuthLayoutProps>) {
   }
 
   return (
-    <div className="h-screen w-screen overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-0">
+    <div className="h-screen w-full overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-0">
       <div className="flex flex-col kb-bg-secondary h-full w-full">
         <div className="w-full py-8 px-4 md:px-10">
           <a href="/">

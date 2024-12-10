@@ -173,6 +173,10 @@ export type TeamWithSendingDomains = Team & {
   sendingDomains: SendingDomain[]
 }
 
+export type TeamWithMemberships = Team & {
+  members: TeamMembership[]
+}
+
 export type ContactWithProperties = Contact & {
   properties: ContactProperty[]
 }

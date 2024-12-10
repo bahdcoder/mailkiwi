@@ -1,3 +1,5 @@
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
+
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
 import { LoginUserSchema } from "@/auth/users/dto/login_user_dto.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
@@ -6,6 +8,7 @@ import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { VikeController } from "@/shared/controllers/vike_controller.js"
+import { route } from "@/shared/routes/route_aliases.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
@@ -13,13 +16,14 @@ import { container } from "@/utils/typi.js"
 export class AuthController extends VikeController {
   constructor(
     private userRepository = container.make(UserRepository),
+    private teamRepository = container.make(TeamRepository),
     private app = makeApp(),
   ) {
     super()
 
     this.app.defineRoutes(
       [
-        ...this.vikePath("/login", this.page),
+        ...this.vikePath("/login", this.redirectToWelcomeIfAuthenticatedPage),
         ["POST", "/login", this.login],
         ["POST", "/logout", this.logout],
       ],
@@ -67,9 +71,11 @@ export class AuthController extends VikeController {
       throw E_VALIDATION_FAILED(invalidCredentials)
     }
 
-    await this.session.createForUser(ctx, user.id)
+    const team = await this.teamRepository.findUserDefaultTeam(user.id)
 
-    return ctx.redirect("/")
+    await this.session.createForUser(ctx, user.id, "user", team.id)
+
+    return this.response(ctx).redirect(route("dashboard")).send()
   }
 
   logout = async (ctx: HonoContext) => {

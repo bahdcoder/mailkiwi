@@ -52,6 +52,7 @@ import {
   makeRedis,
 } from "@/shared/container/index.js"
 import { VikeController } from "@/shared/controllers/vike_controller.js"
+import { middleware } from "@/shared/middleware/middleware_aliases.js"
 import { Hono, type HonoInstance } from "@/shared/server/hono.js"
 import "@/shared/utils/log/dump.js"
 
@@ -100,6 +101,8 @@ export class Ignitor {
     container.register(ContainerKey.version, version)
 
     await this.startDatabaseConnector()
+
+    this.app.use(middleware("user_session"))
 
     container.register(ContainerKey.vikeRenderPage, new VikeController().renderVikePage)
 

@@ -9,6 +9,7 @@ import path from "path"
 import { createServer as createViteServer } from "vite"
 
 import { VikeController } from "@/shared/controllers/vike_controller.js"
+import { middleware } from "@/shared/middleware/middleware_aliases.js"
 import { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"

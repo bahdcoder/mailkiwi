@@ -14,8 +14,11 @@ import { SidebarCollapseIcon } from "@/components/icons/sidebar-collapse.svg.jsx
 import { Button } from "@kibamail/owly/button"
 import { Progress } from "@kibamail/owly/progress"
 import { Text } from "@kibamail/owly/text"
+import cn from "classnames"
 import React from "react"
 import { usePageContext } from "vike-react/usePageContext"
+
+import { route } from "@/shared/routes/route_aliases.js"
 
 interface ApplicationLayoutProps extends React.PropsWithChildren {}
 
@@ -23,17 +26,17 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
   const ctx = usePageContext()
 
   return (
-    <div className="w-screen h-screen kb-background-secondary flex">
+    <div className="w-full h-screen kb-background-secondary flex">
       <div className="w-full max-w-[16.25rem] flex flex-col p-2">
         <div className="flex-grow w-full">
           <div className="py-2 px-1 flex items-center gap-x-2">
             <button className="flex-grow flex items-center">
               <span className="flex-grow flex items-center">
                 <span className="w-6 h-6 mr-1.5 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.10)_inset] kb-background-info rounded-lg flex items-center justify-center kb-content-primary-inverse">
-                  {"A"}
+                  {ctx?.team?.name?.slice(0, 1)?.[0]}
                 </span>
 
-                <Text className="kb-content-primary">Zibaletter workspace</Text>
+                <Text className="kb-content-primary">{ctx?.team?.name} workspace</Text>
               </span>
 
               <NavArrowDownIcon className="ml-1 w-4 h-4 kb-content-tertiary-inverse" />
@@ -45,7 +48,7 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
           </div>
 
           <div className="my-3">
-            <button className="w-full p-2 flex items-center border kb-border-tertiary kb-content-tertiary rounded-lg">
+            <button className="w-full p-2 flex items-center border kb-border-tertiary kb-content-tertiary rounded-lg hover:bg-[var(--background-hover)] transition-[background] ease-in-out">
               <SearchIcon className="w-5 h-5 mr-1.5" />
 
               <Text className="kb-content-tertiary flex-grow text-left">Search...</Text>
@@ -62,17 +65,17 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
           </div>
 
           <div className="flex flex-col">
-            <SubmenuItemLink>
-              <BookStackIcon href="/w/welcome" className="w-5 h-5" />
+            <SubmenuItemLink href={route("welcome")}>
+              <BookStackIcon className="w-5 h-5" />
               <Text className="kb-content-secondary font-medium">Get Started</Text>
             </SubmenuItemLink>
 
-            <SubmenuItemLink href="/w/dashboard">
+            <SubmenuItemLink href={route("dashboard")}>
               <HomeAltSlimHorizIcon className="w-5 h-5" />
               <Text className="kb-content-secondary font-medium">Dashboard</Text>
             </SubmenuItemLink>
 
-            <SubmenuItemLink href="/community">
+            <SubmenuItemLink href={route("community")}>
               <ChatBubbleEmptyIcon className="w-5 h-5" />
               <Text className="kb-content-secondary font-medium">Chat</Text>
             </SubmenuItemLink>
@@ -87,27 +90,27 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
           </div>
 
           <div className="flex flex-col">
-            <SubmenuItemLink href="/w/dashboard">
+            <SubmenuItemLink href={route("letters")}>
               <LettersIcon className="w-5 h-5" />
               <Text className="kb-content-secondary font-medium">Letters</Text>
             </SubmenuItemLink>
 
-            <SubmenuItemLink href="/community">
+            <SubmenuItemLink href={route("send")}>
               <SendIcon className="w-5 h-5" />
               <Text className="kb-content-secondary font-medium">Send</Text>
             </SubmenuItemLink>
 
-            <SubmenuItemLink href="/community">
+            <SubmenuItemLink href={route("engage")}>
               <EngageIcon className="w-5 h-5" />
               <Text className="kb-content-secondary font-medium">Engage</Text>
             </SubmenuItemLink>
 
-            <SubmenuItemLink href="/community">
+            <SubmenuItemLink href={route("optimise")}>
               <OptimiseIcon className="w-5 h-5" />
               <Text className="kb-content-secondary font-medium">Optimise</Text>
             </SubmenuItemLink>
 
-            <SubmenuItemLink href="/community">
+            <SubmenuItemLink href={route("insights")}>
               <InsightsIcon className="w-5 h-5" />
               <Text className="kb-content-secondary font-medium">Insights</Text>
             </SubmenuItemLink>
@@ -189,9 +192,14 @@ interface SubmenuItemLinkProps
     React.ComponentPropsWithoutRef<"a"> {}
 
 function SubmenuItemLink({ children, ...linkProps }: SubmenuItemLinkProps) {
+  const ctx = usePageContext()
+
   return (
     <a
-      className="w-full hover:bg-[var(--background-hover)] transition ease-in-out p-2 rounded-lg gap-x-2 flex items-center kb-content-tertiary"
+      className={cn(
+        "w-full hover:bg-[var(--background-hover)] transition ease-in-out p-2 rounded-lg gap-x-2 flex items-center kb-content-tertiary",
+        {},
+      )}
       {...linkProps}
     >
       {children}

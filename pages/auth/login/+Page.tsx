@@ -5,6 +5,10 @@ import {
   PageTitle,
 } from "@/components/auth/auth.jsx"
 import { PasswordField } from "@/components/input/password-field.jsx"
+import {
+  ServerForm,
+  useServerFormMutation,
+} from "@/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
 import { Button } from "@kibamail/owly/button"
 import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"
@@ -20,6 +24,10 @@ function LoginPage({ teamInviteToken }: LoginPageProps) {
   const linkToRegisterPage = isAnInvitedUser
     ? `/auth/invites/${teamInviteToken}/`
     : "/auth/register"
+
+  const { serverFormProps, error, isPending } = useServerFormMutation({
+    action: "/auth/login",
+  })
 
   return (
     <PageContainer>
@@ -45,13 +53,25 @@ function LoginPage({ teamInviteToken }: LoginPageProps) {
 
       <AuthMethodsDivider>Or continue with</AuthMethodsDivider>
 
-      <form className="flex flex-col w-full py-4">
+      <ServerForm {...serverFormProps} className="flex flex-col w-full py-4">
         <div className="grid grid-cols-1 gap-4">
-          <TextField.Root id="email" placeholder="Enter your work email address">
+          <TextField.Root
+            id="email"
+            placeholder="Enter your work email address"
+            name="email"
+          >
             <TextField.Label htmlFor="email">Email address</TextField.Label>
+
+            {error?.errorsMap?.email ? (
+              <TextField.Error>{error?.errorsMap?.email}</TextField.Error>
+            ) : null}
           </TextField.Root>
 
-          <PasswordField />
+          <PasswordField name="password">
+            {error?.errorsMap?.password ? (
+              <TextField.Error>{error?.errorsMap?.password}</TextField.Error>
+            ) : null}
+          </PasswordField>
         </div>
 
         <div className="flex justify-end">
@@ -60,10 +80,10 @@ function LoginPage({ teamInviteToken }: LoginPageProps) {
           </Button>
         </div>
 
-        <Button type="submit" width="full" className="mt-2">
+        <Button type="submit" loading={isPending} width="full" className="mt-2">
           Continue
         </Button>
-      </form>
+      </ServerForm>
 
       <div className="flex justify-center">
         <Text>

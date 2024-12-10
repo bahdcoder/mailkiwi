@@ -12,8 +12,6 @@ import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware
 
 import { Audience, Form } from "@/database/database_schema_types.js"
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
-
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import { Queue } from "@/shared/queue/queue.js"

@@ -12,6 +12,7 @@ export interface RedisSessionData {
   createdAt: string
   deviceInfo?: string
   location?: string
+  currentTeamId?: string
 }
 
 export class RedisSessionStore {
@@ -41,6 +42,14 @@ export class RedisSessionStore {
       .exec()
 
     return { sessionId }
+  }
+
+  async update(
+    sessionId: string,
+    key: keyof Omit<RedisSessionData, "userId">,
+    value: string,
+  ) {
+    await this.redis.multi().hset(REDIS_KNOWN_KEYS.SESSION(sessionId), key, value).exec()
   }
 
   async get(sessionId: string) {

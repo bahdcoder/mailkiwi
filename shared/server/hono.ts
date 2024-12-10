@@ -1,10 +1,10 @@
-import type { HonoRouteDefinition } from "./types.js"
-import { appEnv } from "@/app/env/app_env.js"
+import type { HonoContext, HonoRouteDefinition } from "./types.js"
 import type { HttpBindings } from "@hono/node-server"
 import { Hono as BaseHono, Handler, type MiddlewareHandler } from "hono"
 import { pinoLogger } from "hono-pino"
 import { HonoOptions } from "hono/hono-base"
 import { requestId } from "hono/request-id"
+import { StatusCode } from "hono/utils/http-status"
 
 import { EnsureUserAndTeamSessionsMiddleware } from "@/auth/middleware/ensure_user_and_team_sessions_middleware.js"
 import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
@@ -12,6 +12,9 @@ import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware
 import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js"
 
 import { makeLogger } from "@/shared/container/index.js"
+import { VikeController } from "@/shared/controllers/vike_controller.js"
+import { middleware } from "@/shared/middleware/middleware_aliases.js"
+import { route } from "@/shared/routes/route_aliases.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -54,21 +57,42 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
     const logger = makeLogger()
 
     this.onError((error, ctx) => {
-      d({ error })
-
       logger.error(error)
 
+      const jsonPayload =
+        error instanceof E_REQUEST_EXCEPTION
+          ? {
+              message: error?.message,
+              ...(error.payload ?? {}),
+            }
+          : {}
+
+      const controller = container.make(VikeController)
+      const requestContext = ctx as unknown as HonoContext
+
+      let redirectToPath = route("auth_login")
+      let statusCode: StatusCode = 200
+
       if (error instanceof E_REQUEST_EXCEPTION) {
-        return ctx.json(
-          {
-            message: error?.message,
-            ...(error.payload ?? {}),
-          },
-          error?.statusCode ?? 500,
-        )
+        statusCode = error?.statusCode
+        if (error?.statusCode === 401) {
+          redirectToPath = route("auth_login")
+        }
+
+        if (error?.statusCode === 500) {
+          redirectToPath = route("error_500")
+        }
+
+        if (error?.statusCode === 404) {
+          redirectToPath = route("error_404")
+        }
       }
 
-      return ctx.json({ message: error?.message }, 500)
+      return controller
+        .response(requestContext)
+        .redirect(redirectToPath)
+        .json(jsonPayload, statusCode)
+        .send()
     })
 
     return this

@@ -45,15 +45,11 @@ export function useServerFormMutation({
         },
       })
 
-      if (!response.ok) {
-        // TODO: Throw an error so other components can pass the onError callback and handle the errors.
-      }
-
       const submissionResponse: ServerSubmissionResponse = await response.json()
 
-      if (submissionResponse?.errors) {
+      if (submissionResponse?.payload?.errors) {
         submissionResponse.errorsMap = {}
-        for (const error of submissionResponse.errors) {
+        for (const error of submissionResponse?.payload?.errors) {
           submissionResponse.errorsMap[error.field] = error.message
         }
       }

@@ -5,8 +5,12 @@ import { Handler, MiddlewareHandler, Next } from "hono"
 import { PassThrough } from "stream"
 import { renderPage } from "vike/server"
 
+import { UserWithTeams } from "@/database/database_schema_types.js"
+
 import { BaseController } from "@/shared/controllers/base_controller.js"
+import { route } from "@/shared/routes/route_aliases.js"
 import { HonoContext, HonoRouteDefinition } from "@/shared/server/types.js"
+import { excludeKeys } from "@/shared/utils/helpers/exclude_keys.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -32,8 +36,12 @@ export class VikeController extends BaseController {
     next: Next,
     pageProps?: Record<string, any>,
   ) => {
+    d({ pageProps })
+
     const pageContext = await renderPage({
       pageProps,
+      user: pageProps?.user,
+      team: pageProps?.team,
       urlOriginal: ctx.req.url,
       headersOriginal: ctx.req.raw.headers,
     })
@@ -62,9 +70,45 @@ export class VikeController extends BaseController {
     })
   }
 
+  redirectToWelcomeIfAuthenticatedPage = async (ctx: HonoContext, next: Next) => {
+    const user = ctx.get("user")
+
+    if (user) {
+      return this.response(ctx).redirect(route("welcome")).send()
+    }
+
+    return this.page(ctx, next)
+  }
+
+  redirectToLoginIfNotAuthenticatedPage = async (ctx: HonoContext, next: Next) => {
+    const user = ctx.get("user")
+
+    if (!user) {
+      return this.response(ctx).redirect(route("auth_login")).send()
+    }
+
+    return this.page(ctx, next)
+  }
+
   page = async (ctx: HonoContext, next: Next, pageProps?: Record<string, any>) => {
     const renderVikePage = container.make<VikePageRenderer>(ContainerKey.vikeRenderPage)
 
-    return renderVikePage(ctx, next, pageProps)
+    let user = ctx.get("user")
+
+    if (user) {
+      const { password, ...rest } = user
+
+      user = rest as UserWithTeams
+    }
+
+    return renderVikePage(ctx, next, {
+      ...pageProps,
+      user: excludeKeys(ctx.get("user"), [
+        "emailVerificationCodeExpiresAt",
+        "emailVerificationCode",
+        "password",
+      ]),
+      team: excludeKeys(ctx.get("team"), ["commerceProviderAccountId"]),
+    })
   }
 }

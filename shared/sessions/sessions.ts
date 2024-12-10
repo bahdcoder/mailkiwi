@@ -68,16 +68,28 @@ export class Session {
     return this.createForUser(ctx, contactId, "contact")
   }
 
+  async updateCurrentSessionTeamId(ctx: HonoContext, teamId: string) {
+    const sessionId = await this.getCurrentSessionId(ctx, "user")
+
+    if (!sessionId) {
+      return
+    }
+
+    await this.sessionStore.update(sessionId, "currentTeamId", teamId)
+  }
+
   async createForUser(
     ctx: HonoContext,
     userId: string,
     type: "user" | "contact" = "user",
+    currentTeamId?: string,
   ) {
     const sessionId = randomBytes(32).toString("hex")
 
     await this.sessionStore.create(userId, sessionId, {
       ip: ctx.req.header("x-forwarded-for") || ctx.req.header("x-real-ip"),
       userAgent: ctx.req.header("user-agent"),
+      currentTeamId,
     })
 
     await setSignedCookie(

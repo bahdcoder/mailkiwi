@@ -24,8 +24,8 @@ export class PasswordResetsController extends VikeController {
     // reset password (with reset token) and redirect user to login page.
     this.app.defineRoutes(
       [
-        ...this.vikePath("forgot", this.page),
-        ...this.vikePath("/reset/:token", this.page),
+        ...this.vikePath("forgot", this.redirectToWelcomeIfAuthenticatedPage),
+        ...this.vikePath("/reset/:token", this.redirectToWelcomeIfAuthenticatedPage),
         ["POST", "forgot", this.request],
         ["POST", "reset/:token", this.reset],
       ],

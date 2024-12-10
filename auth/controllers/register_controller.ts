@@ -1,6 +1,7 @@
 import { ConfirmEmailVerificationCodeSchema } from "../users/dto/confirm_email_verification_code_dto.js"
 import { SetUserNameSchema } from "../users/dto/set_user_name_dto.js"
 import { SetUserPasswordSchema } from "../users/dto/set_user_password_dto.js"
+import { appEnv } from "@/app/env/app_env.js"
 import { Next } from "hono"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
@@ -16,6 +17,7 @@ import { VikeController } from "@/shared/controllers/vike_controller.js"
 import { middleware } from "@/shared/middleware/middleware_aliases.js"
 import { route } from "@/shared/routes/route_aliases.js"
 import type { HonoContext } from "@/shared/server/types.js"
+import { Session } from "@/shared/sessions/sessions.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -28,12 +30,15 @@ export class RegisterController extends VikeController {
 
     this.app.defineRoutes(
       [
-        ...this.vikePath(route("auth_register"), this.page),
+        ...this.vikePath(
+          route("auth_register"),
+          this.redirectToWelcomeIfAuthenticatedPage,
+        ),
         ["POST", route("auth_register"), this.register.bind(this)],
       ],
       {
         prefix: "",
-        middleware: [middleware("user_session")],
+        middleware: [],
       },
     )
 
@@ -48,7 +53,7 @@ export class RegisterController extends VikeController {
       ],
       {
         prefix: "",
-        middleware: [middleware("user_session"), middleware("must_be_authenticated")],
+        middleware: [middleware("must_be_authenticated")],
       },
     )
   }
@@ -57,16 +62,6 @@ export class RegisterController extends VikeController {
     const user = ctx.get("user")
 
     if (user.firstName || user.lastName) {
-      return this.response(ctx).redirect(route("welcome")).send()
-    }
-
-    return this.page(ctx, next)
-  }
-
-  registerPage = async (ctx: HonoContext, next: Next) => {
-    const user = ctx.get("user")
-
-    if (user) {
       return this.response(ctx).redirect(route("welcome")).send()
     }
 
@@ -99,16 +94,12 @@ export class RegisterController extends VikeController {
           .createFirstTeam({ name: payload.teamName }, user.id),
       ])
 
+      await new Session().updateCurrentSessionTeamId(ctx, team.id)
+
       return { team }
     })
 
     return this.response(ctx).redirect(route("welcome")).send()
-  }
-
-  async redirectUserToCorrectOnboardingPage(ctx: HonoContext) {
-    // stages of onboarding:
-    // 1. pending email verification
-    // 2. pending password setting
   }
 
   async emailConfirm(ctx: HonoContext) {

@@ -52,7 +52,9 @@ export class UserSessionMiddleware {
     }
 
     let teamHeader =
-      ctx.req.header(appEnv.software.teamHeader) ?? authenticatedUser?.teams?.[0]?.id
+      userSession?.currentTeamId ??
+      ctx.req.header(appEnv.software.teamHeader) ??
+      authenticatedUser?.teams?.[0]?.id
 
     if (teamHeader && teamHeader !== "undefined") {
       const team = await this.teamRepository.findById(teamHeader)

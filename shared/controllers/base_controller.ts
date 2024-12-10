@@ -78,8 +78,6 @@ class ResponseBuilder {
     },
   }
 
-  html() {}
-
   redirect<T extends RedirectStatusCode>(path: string, status?: T) {
     this.configuration.type = "redirect"
     this.configuration.payload.redirect = {
@@ -90,7 +88,10 @@ class ResponseBuilder {
     return this
   }
 
-  json(content: ResponseConfiguration["payload"], status?: StatusCode) {
+  json(
+    content: ResponseConfiguration["payload"]["json"]["content"],
+    status?: StatusCode,
+  ) {
     this.configuration.type = "json"
     this.configuration.payload.json = {
       content,
@@ -109,7 +110,7 @@ class ResponseBuilder {
       const payload =
         this.configuration.type === "redirect"
           ? this.configuration.payload.redirect
-          : this.configuration.payload.json
+          : this.configuration.payload.json.content
 
       return this.ctx.json(
         {
@@ -140,19 +141,19 @@ export class BaseController {
     return id
   }
 
-  protected isRequestAskingForJson(ctx: HonoContext) {
+  isRequestAskingForJson(ctx: HonoContext) {
     return ctx.req.header("Accept")?.includes("application/json")
   }
 
-  protected isRequestAFormSubmission(ctx: HonoContext) {
+  isRequestAFormSubmission(ctx: HonoContext) {
     return ctx.req.header("Content-Type") === "application/x-www-form-urlencoded"
   }
 
-  protected isRequestAJsonSubmission(ctx: HonoContext) {
+  isRequestAJsonSubmission(ctx: HonoContext) {
     return ctx.req.header("Content-Type") === "application/json"
   }
 
-  protected async parseSubmittedDataFromRequest(ctx: HonoContext) {
+  async parseSubmittedDataFromRequest(ctx: HonoContext) {
     if (this.isRequestAFormSubmission(ctx)) {
       return ctx.req.parseBody()
     }
@@ -164,7 +165,7 @@ export class BaseController {
     return ctx.req.json()
   }
 
-  protected response(ctx: HonoContext) {
+  response(ctx: HonoContext) {
     return new ResponseBuilder(ctx)
   }
 

@@ -27,5 +27,5 @@ body {
 }
 
 #root {
-  @apply h-screen w-screen flex flex-col overflow-y-auto kb-background-secondary;
+  @apply h-screen w-full flex flex-col overflow-y-auto kb-background-secondary;
 }
