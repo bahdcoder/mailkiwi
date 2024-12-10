@@ -72,6 +72,10 @@ export class UserRepository extends ScryptTokenRepository {
     return { id, emailVerificationCode: plainEmailVerificationCode }
   }
 
+  completedOnboarding(user: UserWithTeams) {
+    return Boolean(user.firstName && user.lastName && user.emailVerifiedAt)
+  }
+
   async confirmEmailVerificationCode(user: UserWithTeams, code: string) {
     if (user.emailVerificationCodeExpiresAt) {
       const hasExpired =

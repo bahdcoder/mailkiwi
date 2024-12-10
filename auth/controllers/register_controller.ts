@@ -3,13 +3,15 @@ import { SetUserNameSchema } from "../users/dto/set_user_name_dto.js"
 import { SetUserPasswordSchema } from "../users/dto/set_user_password_dto.js"
 import { Next } from "hono"
 
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
+
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
 import { CreateUserSchema } from "@/auth/users/dto/create_user_dto.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
-import { makeApp } from "@/shared/container/index.js"
+import { makeApp, makeDatabase } from "@/shared/container/index.js"
 import { VikeController } from "@/shared/controllers/vike_controller.js"
 import { middleware } from "@/shared/middleware/middleware_aliases.js"
 import { route } from "@/shared/routes/route_aliases.js"
@@ -31,13 +33,13 @@ export class RegisterController extends VikeController {
       ],
       {
         prefix: "",
-        middleware: [],
+        middleware: [middleware("user_session")],
       },
     )
 
     this.app.defineRoutes(
       [
-        ...this.vikePath(route("auth_register_profile"), this.page),
+        ...this.vikePath(route("auth_register_profile"), this.profilePage),
         ...this.vikePath(route("auth_register_password"), this.passwordPage),
         ...this.vikePath(route("auth_register_email_confirm"), this.page),
         ["POST", route("auth_register_password"), this.password.bind(this)],
@@ -49,6 +51,26 @@ export class RegisterController extends VikeController {
         middleware: [middleware("user_session"), middleware("must_be_authenticated")],
       },
     )
+  }
+
+  profilePage = async (ctx: HonoContext, next: Next) => {
+    const user = ctx.get("user")
+
+    if (user.firstName || user.lastName) {
+      return this.response(ctx).redirect(route("welcome")).send()
+    }
+
+    return this.page(ctx, next)
+  }
+
+  registerPage = async (ctx: HonoContext, next: Next) => {
+    const user = ctx.get("user")
+
+    if (user) {
+      return this.response(ctx).redirect(route("welcome")).send()
+    }
+
+    return this.page(ctx, next)
   }
 
   async register(ctx: HonoContext) {
@@ -68,9 +90,19 @@ export class RegisterController extends VikeController {
 
     const payload = await this.validate(ctx, SetUserNameSchema)
 
-    await this.userRepository.update(user.id, payload)
+    await makeDatabase().transaction(async (trx) => {
+      const [, team] = await Promise.all([
+        this.userRepository.transaction(trx).update(user.id, payload),
+        container
+          .make(TeamRepository)
+          .transaction(trx)
+          .createFirstTeam({ name: payload.teamName }, user.id),
+      ])
 
-    return ctx.redirect(route("welcome"))
+      return { team }
+    })
+
+    return this.response(ctx).redirect(route("welcome")).send()
   }
 
   async redirectUserToCorrectOnboardingPage(ctx: HonoContext) {

@@ -1,5 +1,5 @@
 export const aliases = {
-  welcome: "/welcome",
+  welcome: "/w/welcome",
 
   // email/password registration
   auth_register: "/auth/register",
@@ -10,6 +10,14 @@ export const aliases = {
   // login
 } as const
 
-export function route(alias: keyof typeof aliases) {
-  return aliases[alias]
+export function route(alias: keyof typeof aliases, routeParams?: Record<string, string>) {
+  const path = aliases[alias]
+
+  if (routeParams) {
+    for (const [key, value] of Object.entries(routeParams)) {
+      path.replace(`:${key}`, value)
+    }
+  }
+
+  return path
 }

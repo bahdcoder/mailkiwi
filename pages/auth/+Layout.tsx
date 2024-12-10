@@ -1,3 +1,4 @@
+import { AgreeToTermsAndPolicy } from "@/components/auth/agree-to-terms-and-policy.jsx"
 import { CheckCircleSolidIcon } from "@/components/icons/check-circle-solid.svg.jsx"
 import { Text } from "@kibamail/owly/text"
 import React from "react"
@@ -6,6 +7,8 @@ import { usePageContext } from "vike-react/usePageContext"
 interface AuthLayoutProps {}
 
 const PASSWORD_RESET_PATHS = "/passwords"
+
+const WELCOME_PATHS = "register/profile"
 
 function PasswordResetsFlowLayout({
   children,
@@ -27,6 +30,7 @@ function AuthLayout({ children }: React.PropsWithChildren<AuthLayoutProps>) {
   const ctx = usePageContext()
 
   const isPasswordResetsFlow = ctx.urlOriginal.includes(PASSWORD_RESET_PATHS)
+  const isRegisterWelcomeFlow = ctx.urlOriginal.includes(WELCOME_PATHS)
 
   if (isPasswordResetsFlow) {
     return <PasswordResetsFlowLayout>{children}</PasswordResetsFlowLayout>
@@ -94,25 +98,6 @@ function ProductFeature({ title, description }: ProductFeatureProps) {
 
         <Text className="kb-content-tertiary-inverse">{description}</Text>
       </div>
-    </div>
-  )
-}
-
-function AgreeToTermsAndPolicy() {
-  return (
-    <div className="w-full pt-6 sm:pt-10 pb-6 sm:pb-10 lg:pb-20 px-5 lg:px-10 flex items-center flex-col">
-      <Text className="kb-content-tertiary">
-        By continuing, you agree to Kibamail{"'"}s
-      </Text>
-      <Text className="kb-content-tertiary">
-        <a className="kb-content-primary underline" href="/legal/terms">
-          Terms of Service
-        </a>
-        <span className="mx-[2px]">and</span>
-        <a className="kb-content-primary underline" href="/legal/privacy">
-          privacy policy
-        </a>
-      </Text>
     </div>
   )
 }

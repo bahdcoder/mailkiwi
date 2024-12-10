@@ -37,6 +37,14 @@ export class TeamRepository extends BaseRepository {
     relationName: "sendingDomains",
   })
 
+  async createFirstTeam(payload: CreateTeamDto, userId: string) {
+    const [teamExists] = await this.teams().findAll(eq(teams.userId, userId))
+
+    if (teamExists) return teamExists
+
+    return this.create(payload, userId)
+  }
+
   async create(payload: CreateTeamDto, userId: string) {
     const id = this.cuid()
 
