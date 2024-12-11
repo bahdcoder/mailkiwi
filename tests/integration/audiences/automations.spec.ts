@@ -358,8 +358,10 @@ describe("@automations step validation", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: expect.stringContaining(
@@ -385,8 +387,10 @@ describe("@automations step validation", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: expect.stringContaining(
@@ -411,8 +415,10 @@ describe("@automations step validation", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: expect.stringContaining(
@@ -437,8 +443,10 @@ describe("@automations step validation", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: expect.stringContaining("The subtype must be valid for the type END."),
@@ -462,8 +470,10 @@ describe("@automations step validation", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: expect.stringContaining("Invalid input: Received"),
@@ -488,8 +498,10 @@ describe("@automations step validation", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: expect.stringContaining("Invalid input: Received"),
@@ -514,8 +526,10 @@ describe("@automations step validation", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: expect.stringContaining("Invalid input: Received"),
@@ -541,8 +555,10 @@ describe("@automations step validation", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       message: "Validation failed.",
       errors: [
         {
@@ -575,8 +591,10 @@ describe("@automations step validation", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       message: "Validation failed.",
       errors: [
         {

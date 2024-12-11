@@ -3,7 +3,10 @@ import { deleteCookie, getSignedCookie, setSignedCookie } from "hono/cookie"
 import { randomBytes } from "node:crypto"
 
 import { HonoContext } from "@/shared/server/types.js"
-import { RedisSessionStore } from "@/shared/sessions/stores/redis_session_store.js"
+import {
+  RedisSessionData,
+  RedisSessionStore,
+} from "@/shared/sessions/stores/redis_session_store.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -65,7 +68,7 @@ export class Session {
   }
 
   async createForContact(ctx: HonoContext, contactId: string) {
-    return this.createForUser(ctx, contactId, "contact")
+    return this.createForUser(ctx, { userId: contactId }, "contact")
   }
 
   async updateCurrentSessionTeamId(ctx: HonoContext, teamId: string) {
@@ -80,16 +83,15 @@ export class Session {
 
   async createForUser(
     ctx: HonoContext,
-    userId: string,
+    data: Pick<RedisSessionData, "userId" | "currentTeamId" | "userAgent">,
     type: "user" | "contact" = "user",
-    currentTeamId?: string,
   ) {
     const sessionId = randomBytes(32).toString("hex")
 
-    await this.sessionStore.create(userId, sessionId, {
+    await this.sessionStore.create(data.userId, sessionId, {
       ip: ctx.req.header("x-forwarded-for") || ctx.req.header("x-real-ip"),
       userAgent: ctx.req.header("user-agent"),
-      currentTeamId,
+      ...data,
     })
 
     await setSignedCookie(
@@ -105,5 +107,7 @@ export class Session {
         path: "/",
       },
     )
+
+    return { sessionId }
   }
 }

@@ -78,7 +78,7 @@ class ResponseBuilder {
     },
   }
 
-  redirect<T extends RedirectStatusCode>(path: string, status?: T) {
+  redirect = <T extends RedirectStatusCode>(path: string, status?: T) => {
     this.configuration.type = "redirect"
     this.configuration.payload.redirect = {
       path,
@@ -88,10 +88,10 @@ class ResponseBuilder {
     return this
   }
 
-  json(
+  json = (
     content: ResponseConfiguration["payload"]["json"]["content"],
     status?: StatusCode,
-  ) {
+  ) => {
     this.configuration.type = "json"
     this.configuration.payload.json = {
       content,
@@ -101,11 +101,11 @@ class ResponseBuilder {
     return this
   }
 
-  protected isRequestAJsonSubmission() {
+  protected isRequestAJsonSubmission = () => {
     return this.ctx.req.header("Content-Type") === "application/json"
   }
 
-  send() {
+  send = () => {
     if (this.isRequestAJsonSubmission()) {
       const payload =
         this.configuration.type === "redirect"

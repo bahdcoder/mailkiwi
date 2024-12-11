@@ -10,6 +10,7 @@ import { makeRequest } from "@/tests/utils/http.js"
 
 import { passwordResets } from "@/database/schema.js"
 
+import { route } from "@/shared/routes/route_aliases.js"
 import { TokenGenerator } from "@/shared/tokens/token_generator.js"
 
 import { container } from "@/utils/typi.js"
@@ -54,6 +55,7 @@ describe("@auth password resets", () => {
         body: {
           email: user.email,
           password: newPassword,
+          passwordConfirm: newPassword,
         },
       },
     )
@@ -69,11 +71,14 @@ describe("@auth password resets", () => {
       body: {
         email: user.email,
         password: newPassword,
+        passwordConfirm: newPassword,
       },
     })
 
-    expect(loginResponse.status).toBe(302)
-    expect(loginResponse.headers.get("location")).toBe("/")
-    expect(loginResponse.headers.get("set-cookie")).toContain("__Secure-session=")
+    const json = await loginResponse.json()
+
+    expect(json.type).toEqual("redirect")
+    expect(json.payload.path).toEqual(route("dashboard"))
+    expect(json.payload.status).toEqual(302)
   })
 })

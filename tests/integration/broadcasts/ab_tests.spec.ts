@@ -107,7 +107,7 @@ describe("@broadcasts update broadcasts", () => {
     const json = await response.json()
 
     expect(response.status).toBe(422)
-    expect(json).toMatchObject({
+    expect(json.payload).toMatchObject({
       message: "Validation failed.",
       errors: [
         {

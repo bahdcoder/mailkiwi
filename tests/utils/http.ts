@@ -31,6 +31,7 @@ export async function makeRequest(
       "Content-Type": "application/json",
       ...options?.headers,
     }),
+    redirect: "manual",
   })
 }
 

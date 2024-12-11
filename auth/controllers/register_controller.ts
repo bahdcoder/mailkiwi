@@ -73,9 +73,13 @@ export class RegisterController extends VikeController {
       .resolve(RegisterUserAction)
       .handle(await this.validate(ctx, CreateUserSchema))
 
-    d({ plainEmailVerificationCode })
+    if (appEnv.isDev) {
+      d({ plainEmailVerificationCode })
+    }
 
-    await this.session.createForUser(ctx, user.id)
+    await this.session.createForUser(ctx, {
+      userId: user.id,
+    })
 
     return this.response(ctx).redirect(route("auth_register_email_confirm")).send()
   }

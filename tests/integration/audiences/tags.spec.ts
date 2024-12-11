@@ -42,7 +42,7 @@ describe("@tags create", () => {
     const json = await response.json()
 
     expect(response.status).toBe(422)
-    expect(json.errors).toContainEqual(expect.objectContaining({ field: "name" }))
+    expect(json.payload.errors).toContainEqual(expect.objectContaining({ field: "name" }))
   })
 
   test("cannot create a tag without the right team permissions", async ({ expect }) => {
@@ -59,7 +59,7 @@ describe("@tags create", () => {
     const json = await response.json()
 
     expect(response.status).toBe(401)
-    expect(json.message).toBe(
+    expect(json.payload.message).toBe(
       `Unauthorized: You are not authorized to perform this action on team ${team.id} and audienceId ${audience.id}`,
     )
   })
@@ -79,7 +79,9 @@ describe("@tags create", () => {
 
     expect(response.status).toBe(422)
     const json = await response.json()
-    expect(json.errors).toContainEqual(expect.objectContaining({ field: "audienceId" }))
+    expect(json.payload.errors).toContainEqual(
+      expect.objectContaining({ field: "audienceId" }),
+    )
   })
 
   test("cannot create a tag in which the name already exists", async ({ expect }) => {
@@ -100,7 +102,7 @@ describe("@tags create", () => {
 
     expect(response.status).toBe(422)
     const json = await response.json()
-    expect(json.errors).toContainEqual(expect.objectContaining({ field: "name" }))
+    expect(json.payload.errors).toContainEqual(expect.objectContaining({ field: "name" }))
   })
 })
 
@@ -230,10 +232,11 @@ describe("@tags attach to contacts", () => {
       body: { tags: tagIds },
     })
 
-    expect(response.status).toBe(422)
     const json = await response.json()
 
-    expect(json.errors).toContainEqual(
+    expect(response.status).toBe(422)
+
+    expect(json.payload.errors).toContainEqual(
       expect.objectContaining({
         message: expect.stringContaining(
           "One or more of the provided tag IDs is invalid.",
@@ -408,7 +411,7 @@ describe("@tags detach from contacts", () => {
     expect(detachResponse.status).toBe(422)
     const json = await detachResponse.json()
 
-    expect(json.errors).toContainEqual(
+    expect(json.payload.errors).toContainEqual(
       expect.objectContaining({
         message: expect.stringContaining(
           "One or more of the provided tag IDs is invalid.",

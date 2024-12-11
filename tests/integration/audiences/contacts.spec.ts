@@ -225,7 +225,7 @@ describe("@contacts", () => {
     const json = await response.json()
 
     expect(response.status).toEqual(422)
-    expect(json.errors[0].field).toEqual("email")
+    expect(json.payload.errors[0].field).toEqual("email")
   })
 })
 

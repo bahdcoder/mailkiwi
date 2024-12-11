@@ -59,7 +59,7 @@ describe("@broadcasts create", () => {
     const json = await response.json()
 
     expect(response.status).toBe(422)
-    expect(json).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: "Invalid length: Expected !0 but received 0",
@@ -148,9 +148,10 @@ describe("@broadcasts update", () => {
         audienceId: cuid(),
       },
     })
+    const json = await response.json()
 
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: expect.stringMatching("Invalid input: Received"),
@@ -175,8 +176,10 @@ describe("@broadcasts update", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: expect.stringMatching("Invalid email: Received"),
@@ -227,8 +230,10 @@ describe("@broadcasts update", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [{ message: "Invalid broadcastId provided.", field: "broadcastId" }],
     })
   })
@@ -271,8 +276,10 @@ describe("@broadcasts update", () => {
       },
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       errors: [
         {
           message: "sendAt cannot be in the past.",
@@ -357,8 +364,10 @@ describe("@broadcasts send", () => {
       path: `/broadcasts/${broadcastId}/send`,
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       message: "Validation failed.",
       errors: [
         {
@@ -392,8 +401,10 @@ describe("@broadcasts send", () => {
       path: `/broadcasts/${broadcastId}/send`,
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toMatchObject({
+    expect(json.payload).toMatchObject({
       message: "Validation failed.",
       errors: [
         {
@@ -448,9 +459,10 @@ describe("@broadcasts send", () => {
     })
 
     const json = await response.json()
+
     expect(response.status).toBe(422)
 
-    expect(json.errors[0]).toEqual({
+    expect(json.payload.errors[0]).toEqual({
       message:
         "Some A/B test variants are invalid. Please make sure all variants are valid.",
       field: "abTestVariants",

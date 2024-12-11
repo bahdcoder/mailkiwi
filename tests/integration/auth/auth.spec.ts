@@ -11,13 +11,14 @@ import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
 import { users } from "@/database/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
+import { route } from "@/shared/routes/route_aliases.js"
 import { RedisSessionStore } from "@/shared/sessions/stores/redis_session_store.js"
 import { OtpGenerator } from "@/shared/tokens/otp_generator.js"
 
 import { container } from "@/utils/typi.js"
 
 describe("@auth user registration", () => {
-  test.only("can register a new user account", async ({ expect }) => {
+  test("can register a new user account", async ({ expect }) => {
     const database = makeDatabase()
 
     const payload = {
@@ -48,12 +49,15 @@ describe("@auth user registration", () => {
       body: JSON.stringify({
         email: user.email,
       }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
 
     const json = await response.json()
 
     expect(response.status).toEqual(422)
-    expect(json.errors).toMatchObject([
+    expect(json.payload.errors).toMatchObject([
       {
         message:
           "A user with this email already exists. Are you trying to login instead?",
@@ -67,21 +71,28 @@ describe("@auth user registration", () => {
     const database = makeDatabase()
 
     const payload = {
-      email: faker.internet.exampleEmail(),
+      email: faker.number.bigInt() + faker.internet.exampleEmail(),
     }
+
+    const MOCK_VERIFICATION_CODE = 123456
 
     container.fake(OtpGenerator, {
       generate() {
-        return 123456
+        return MOCK_VERIFICATION_CODE
       },
     })
 
-    const response = await makeRequest("/auth/register", {
+    const response = await makeRequest(route("auth_register"), {
       method: "POST",
       body: payload,
     })
 
-    expect(response.status).toBe(302)
+    expect(response.status).toBe(200)
+
+    const json = await response.json()
+
+    expect(json.type).toBe("redirect")
+    expect(json.payload.path).toBe(route("auth_register_email_confirm"))
 
     const [user] = await database
       .select()
@@ -92,18 +103,19 @@ describe("@auth user registration", () => {
 
     const emailConfirmResponse = await makeRequestAsUser(userWithTeams, {
       method: "POST",
-      path: "/auth/register/email/confirm",
+      path: route("auth_register_email_confirm"),
       body: {
-        code: 123456,
+        code: MOCK_VERIFICATION_CODE.toString(),
       },
     })
 
-    expect(emailConfirmResponse.status).toBe(302)
-    expect(emailConfirmResponse.headers.get("Location")).toEqual(
-      "/auth/register/password",
-    )
+    const emailConfirmJson = await emailConfirmResponse.json()
 
-    return
+    expect(emailConfirmResponse.status).toBe(200)
+
+    expect(emailConfirmJson.type).toBe("redirect")
+    expect(emailConfirmJson.payload.path).toBe(route("auth_register_password"))
+
     const [updatedUser] = await database
       .select()
       .from(users)
@@ -113,25 +125,56 @@ describe("@auth user registration", () => {
 
     container.restoreAll()
 
+    const NEW_PASSWORD = "new-123-Password"
+
     const setPasswordResponse = await makeRequestAsUser(userWithTeams, {
       method: "POST",
-      path: "/auth/register/password/",
+      path: route("auth_register_password"),
       body: {
-        password: "new-123-Password",
+        password: NEW_PASSWORD,
       },
     })
 
-    expect(setPasswordResponse.status).toEqual(302)
-    expect(setPasswordResponse.headers.get("Location")).toEqual("/auth/register/profile")
+    const setPasswordJson = await setPasswordResponse.json()
 
-    const loginResponse = await makeRequestAsUser(userWithTeams, {
+    expect(setPasswordJson.type).toBe("redirect")
+    expect(setPasswordJson.payload.path).toBe(route("auth_register_profile"))
+
+    const setProfileResponse = await makeRequestAsUser(userWithTeams, {
       method: "POST",
-      path: "/auth/login",
+      path: route("auth_register_profile"),
+      body: {
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        teamName: faker.company.name(),
+      },
+    })
+
+    const setProfileJson = await setProfileResponse.json()
+
+    expect(setProfileJson.type).toBe("redirect")
+    expect(setProfileJson.payload.path).toBe(route("welcome"))
+
+    const headers = {
+      "x-forwarded-for": "160.212.38.149",
+      "user-agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+    }
+
+    await container.make(RedisSessionStore).clear(user.id)
+
+    const loginResponse = await makeRequest(route("auth_login"), {
+      method: "POST",
       body: {
         email: payload.email,
-        password: "new-123-Password",
+        password: NEW_PASSWORD,
       },
+      headers,
     })
+
+    const redisSessionsForUser = await container.make(RedisSessionStore).list(user.id)
+
+    expect(redisSessionsForUser).toHaveLength(1)
 
     expect(loginResponse.headers.getSetCookie()?.[0]).toMatch("__Secure-session=")
   })
@@ -141,7 +184,7 @@ describe("@auth user login", () => {
   test("a user can login to their account and get a valid cookie session", async ({
     expect,
   }) => {
-    const { user } = await createUser()
+    const { user, team } = await createUser()
 
     const headers = {
       "x-forwarded-for": "160.212.38.149",
@@ -167,6 +210,7 @@ describe("@auth user login", () => {
         ip: headers["x-forwarded-for"],
         userAgent: headers["user-agent"],
         userId: user.id,
+        currentTeamId: team.id,
         expiresAt: expect.any(String),
         createdAt: expect.any(String),
       },
@@ -178,7 +222,10 @@ describe("@auth user login", () => {
 
     expect(expiry).toBeGreaterThan(29)
 
-    expect(response.status).toBe(302)
+    const json = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(json.type).toBe("redirect")
 
     const [sessionCookie] = response.headers.getSetCookie()
 
@@ -207,12 +254,17 @@ describe("@auth user login", () => {
         email: user.email,
         password: "invalid-password",
       }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
 
     const json = await response.json()
 
     expect(response.status).toBe(422)
-    expect(json.errors[0].message).toBe("These credentials do not match our records.")
+    expect(json.payload.errors[0].message).toBe(
+      "These credentials do not match our records.",
+    )
   })
 
   test("can logout, destroying currently active session", async ({ expect }) => {

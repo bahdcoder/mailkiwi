@@ -1,3 +1,5 @@
+import { appEnv } from "@/app/env/app_env.js"
+
 import { RequestPasswordResetSchema } from "@/auth/password_resets/dto/request_password_reset_dto.js"
 import { ResetPasswordSchema } from "@/auth/password_resets/dto/reset_password_dto.js"
 import { PasswordResetRepository } from "@/auth/password_resets/repositories/password_reset_repository.js"
@@ -46,7 +48,9 @@ export class PasswordResetsController extends VikeController {
     }
 
     // TODO: Queue email to send reset.token to user's email.
-    d({ reset })
+    if (appEnv.isDev) {
+      d({ reset })
+    }
 
     return ctx.json({ Ok: true })
   }

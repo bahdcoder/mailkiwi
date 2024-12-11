@@ -73,13 +73,16 @@ export class AuthController extends VikeController {
 
     const team = await this.teamRepository.findUserDefaultTeam(user.id)
 
-    await this.session.createForUser(ctx, user.id, "user", team.id)
+    await this.session.createForUser(ctx, {
+      userId: user.id,
+      currentTeamId: team.id,
+    })
 
     return this.response(ctx).redirect(route("dashboard")).send()
   }
 
   logout = async (ctx: HonoContext) => {
-    await this.session.clearForUser(ctx, "user")
+    await this.session.clearForUser(ctx)
 
     return ctx.json({
       Ok: true,

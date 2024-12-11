@@ -72,7 +72,7 @@ describe("@websites", () => {
     const json = await response.json()
 
     expect(response.status).toEqual(422)
-    expect(json).toMatchObject({
+    expect(json.payload).toMatchObject({
       message: "Validation failed.",
       errors: [
         {

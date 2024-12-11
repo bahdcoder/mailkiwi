@@ -22,6 +22,7 @@ export default defineConfig({
       "**/build/**",
       "components/**/*.spec.tsx",
       "**/*.client.spec.tsx",
+      "tests/e2e/**/*.spec.ts",
     ],
     reporters: ["verbose"],
     retry: 1,

@@ -118,7 +118,7 @@ describe("@chat messages", () => {
 
     const data = await response.json()
 
-    expect(data).toEqual({
+    expect(data.payload).toEqual({
       message: "Validation failed.",
       errors: [
         {

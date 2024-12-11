@@ -136,7 +136,7 @@ describe("@memberships", () => {
 
       const json = await response.json()
 
-      expect(json.errors.map((error: { field: string }) => error.field)).toEqual([
+      expect(json.payload.errors.map((error: { field: string }) => error.field)).toEqual([
         "email",
         "role",
       ])

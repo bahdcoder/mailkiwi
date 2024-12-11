@@ -111,8 +111,10 @@ describe("@audience segments", () => {
       body: payload,
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-    expect(await response.json()).toStrictEqual({
+    expect(json.payload).toStrictEqual({
       message: "Validation failed.",
       errors: [
         {

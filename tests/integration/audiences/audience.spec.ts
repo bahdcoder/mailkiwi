@@ -59,7 +59,7 @@ describe("@audiences", () => {
 
     const json = await secondCreateNewsletter.json()
 
-    expect(json).toMatchObject({
+    expect(json.payload).toMatchObject({
       message: "Validation failed.",
       errors: [
         {
