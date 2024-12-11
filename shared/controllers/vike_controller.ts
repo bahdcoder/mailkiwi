@@ -36,8 +36,6 @@ export class VikeController extends BaseController {
     next: Next,
     pageProps?: Record<string, any>,
   ) => {
-    d({ pageProps })
-
     const pageContext = await renderPage({
       pageProps,
       user: pageProps?.user,

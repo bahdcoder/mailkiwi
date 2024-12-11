@@ -5,3 +5,7 @@ node_modules/
 .env.test
 
 .aider*
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

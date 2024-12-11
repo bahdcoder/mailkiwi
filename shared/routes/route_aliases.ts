@@ -36,8 +36,6 @@ export const aliases = {
 export function route(alias: keyof typeof aliases, routeParams?: Record<string, string>) {
   let path = aliases[alias]
 
-  console.log({ path, routeParams })
-
   if (routeParams) {
     for (const [key, value] of Object.entries(routeParams)) {
       path = path.replace(`:${key}`, value)
