@@ -61,6 +61,8 @@ export const PasswordField = React.forwardRef<
     (child) => React.isValidElement(child) && child.type === TextField.Error,
   )
 
+  console.log({ hasError })
+
   const textFieldChildren = allChildren.filter(
     (child) => React.isValidElement(child) && child.type !== TextField.Label,
   )

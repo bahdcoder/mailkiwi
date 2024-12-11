@@ -46,12 +46,22 @@ export class PasswordResetsController extends VikeController {
     }
 
     // TODO: Queue email to send reset.token to user's email.
+    d({ reset })
 
     return ctx.json({ Ok: true })
   }
 
   reset = async (ctx: HonoContext) => {
     const payload = await this.validate(ctx, ResetPasswordSchema)
+
+    if (payload.password !== payload.passwordConfirm) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: "Please make sure your confirm password matches your chosen password.",
+          field: "passwordConfirm",
+        },
+      ])
+    }
 
     const { valid: isValidResetToken, user } =
       await this.passwordResetsRepository.confirm(payload.email, ctx.req.param("token"))

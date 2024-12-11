@@ -8,6 +8,8 @@ export const aliases = {
   auth_register_password: "/auth/register/password",
   auth_register_profile: "/auth/register/profile",
   auth_register_email_confirm: "/auth/register/email/confirm",
+  auth_passwords_forgot: "/auth/passwords/forgot",
+  auth_passwords_reset: "/auth/passwords/reset/:token",
 
   // login
   auth_login: "/auth/login",
@@ -32,11 +34,13 @@ export const aliases = {
 } as const
 
 export function route(alias: keyof typeof aliases, routeParams?: Record<string, string>) {
-  const path = aliases[alias]
+  let path = aliases[alias]
+
+  console.log({ path, routeParams })
 
   if (routeParams) {
     for (const [key, value] of Object.entries(routeParams)) {
-      path.replace(`:${key}`, value)
+      path = path.replace(`:${key}`, value)
     }
   }
 
