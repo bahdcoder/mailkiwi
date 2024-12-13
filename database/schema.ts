@@ -92,7 +92,33 @@ export const users = mysqlTable("users", {
   emailVerificationCodeExpiresAt: timestamp("emailVerificationCodeExpiresAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   role: mysqlEnum("role", ["customer", "support", "team"]).$default(() => "customer"),
+  lastLoggedInAt: timestamp("lastLoggedInAt"),
+  lastPasswordResetAt: timestamp("lastPasswordResetAt"),
+  lastLoggedInProvider: mysqlEnum("lastLoggedInProvider", [
+    "password",
+    "github",
+    "google",
+  ]),
 })
+
+export const oauth2Accounts = mysqlTable(
+  "oauth2Accounts",
+  {
+    id,
+    userId: primaryKeyCuid("userId")
+      .references(() => users.id)
+      .notNull(),
+    provider: mysqlEnum("provider", ["github", "google"]).notNull(),
+    providerId: varchar("providerId", { length: 80 }).unique().notNull(),
+    accessToken: varchar("accessToken", { length: 256 }).notNull(),
+  },
+  (table) => ({
+    Oauth2AccountProviderUserId: unique("Oauth2AccountProviderUserIdKey").on(
+      table.userId,
+      table.provider,
+    ),
+  }),
+)
 
 export const passwordResets = mysqlTable("passwordResets", {
   id,

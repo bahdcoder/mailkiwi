@@ -109,8 +109,6 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
   ) {
     const [method, , handler, additionalMiddleware = []] = route
 
-    // d([method, resolvedPath])
-
     const handlerArguments: [string, ...MiddlewareHandler[], Handler] = [
       resolvedPath,
       ...middleware,

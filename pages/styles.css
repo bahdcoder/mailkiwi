@@ -16,6 +16,7 @@
   src: url("/fonts/roca-two-rg.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @tailwind base;
@@ -28,4 +29,8 @@ body {
 
 #root {
   @apply h-screen w-full flex flex-col overflow-y-auto kb-background-secondary;
+}
+
+.page-transition .w-layout-container {
+  background: green !important;
 }

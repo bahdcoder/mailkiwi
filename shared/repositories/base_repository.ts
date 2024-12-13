@@ -1,3 +1,4 @@
+import { appEnv } from "@/app/env/app_env.js"
 import { SQLWrapper, and, eq } from "drizzle-orm"
 import { MySqlRawQueryResult } from "drizzle-orm/mysql2"
 import {
@@ -12,6 +13,7 @@ import { products } from "@/database/schema.js"
 import { Cache } from "@/shared/cache/cache.js"
 import { makeDatabase } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { Encryption } from "@/shared/utils/encryption/encryption.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -26,6 +28,10 @@ export class BaseRepository {
     this.database = transaction
 
     return this
+  }
+
+  encrypt(value: string) {
+    return new Encryption(appEnv.APP_KEY).encrypt(value)
   }
 
   primaryKey(result: MySqlRawQueryResult) {
@@ -61,6 +67,11 @@ export class BaseRepository {
         await database.insert(table).values({ id, ...payload })
 
         return { id }
+      },
+      async findOne(conditions?: SQLWrapper) {
+        const [row] = await database.select().from(table).where(and(conditions)).limit(1)
+
+        return row
       },
       async findAll(conditions?: SQLWrapper) {
         return database.select().from(table).where(and(conditions))

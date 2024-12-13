@@ -7,6 +7,8 @@ import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"
 import React from "react"
 
+import { route } from "@/shared/routes/route_aliases.js"
+
 export function PageContainer({ children }: React.PropsWithChildren) {
   return (
     <div className="w-full max-w-lg lg:max-w-[25rem] mx-auto flex flex-col py-12 sm:py-16 lg:py-24">
@@ -61,21 +63,21 @@ export function Oauth2Methods({ page }: Oauth2MethodsProps) {
     login: {
       google: {
         title: "Continue with Google",
-        link: "/auth/login/oauth2/google",
+        link: route("auth_oauth2_provider", { provider: "google", action: "login" }),
       },
       github: {
         title: "Continue with Github",
-        link: "/auth/login/oauth2/github",
+        link: route("auth_oauth2_provider", { provider: "github", action: "login" }),
       },
     },
     register: {
       google: {
         title: "Sign up with Google",
-        link: "/auth/login/oauth2/google",
+        link: route("auth_oauth2_provider", { provider: "google", action: "register" }),
       },
       github: {
         title: "Sign up with github",
-        link: "/auth/login/oauth2/github",
+        link: route("auth_oauth2_provider", { provider: "github", action: "register" }),
       },
     },
   }

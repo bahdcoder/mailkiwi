@@ -30,7 +30,7 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
       <div className="w-full max-w-[16.25rem] flex flex-col p-2">
         <div className="flex-grow w-full">
           <div className="py-2 px-1 flex items-center gap-x-2">
-            <button className="flex-grow flex items-center">
+            <button className="flex-grow flex items-center hover:bg-[var(--background-hover)] p-1 rounded-lg">
               <span className="flex-grow flex items-center">
                 <span className="w-6 h-6 mr-1.5 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.10)_inset] kb-background-info rounded-lg flex items-center justify-center kb-content-primary-inverse">
                   {ctx?.team?.name?.slice(0, 1)?.[0]}
@@ -42,13 +42,13 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
               <NavArrowDownIcon className="ml-1 w-4 h-4 kb-content-tertiary-inverse" />
             </button>
 
-            <button className="kb-reset">
+            <button aria-label="Collapse sidebar" className="kb-reset">
               <SidebarCollapseIcon className="kb-content-tertiary-inverse" />
             </button>
           </div>
 
           <div className="my-3">
-            <button className="w-full p-2 flex items-center border kb-border-tertiary kb-content-tertiary rounded-lg hover:bg-[var(--background-hover)] transition-[background] ease-in-out">
+            <button className="w-full p-2 flex items-center border kb-border-tertiary kb-content-tertiary rounded-lg hover:bg-[var(--background-secondary)] active:bg-[var(--background-hover)] transition-[background] ease-in-out">
               <SearchIcon className="w-5 h-5 mr-1.5" />
 
               <Text className="kb-content-tertiary flex-grow text-left">Search...</Text>
@@ -78,6 +78,15 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
             <SubmenuItemLink href={route("community")}>
               <ChatBubbleEmptyIcon className="w-5 h-5" />
               <Text className="kb-content-secondary font-medium">Chat</Text>
+
+              {/* TODO: Change border color here to use semantic color: kb-border-negative. Would require updating owly package.*/}
+              <span
+                className="w-6 h-5 kb-background-negative kb-content-primary-inverse flex items-center justify-center text-sm font-sans ml-auto rounded-full border border-[var(--red-200)]
+              shadow-[0px_2px_0px_0px_var(--white-5)_inset,0px_1px_0px_0px_var(--black-10)]
+              "
+              >
+                3
+              </span>
             </SubmenuItemLink>
           </div>
 
@@ -176,8 +185,9 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
           </div>
         </div>
       </div>
-      <div className="w-full py-2 pr-2">
-        <div className="w-full h-full rounded-lg border kb-border-tertiary">
+      <div className="w-full py-2 pr-2 flex">
+        <DraggableSidebarResizer />
+        <div className="w-full w-layout-container h-[calc(100vh-1rem)] rounded-lg border kb-border-tertiary overflow-y-auto">
           {children}
         </div>
       </div>
@@ -185,7 +195,11 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
   )
 }
 
-function Submenu() {}
+function DraggableSidebarResizer() {
+  return (
+    <div className="h-[calc(100vh-2.5rem)] cursor-col-resize rounded-t-xl rounded-b-xl my-auto ease-in-out transition-[background] w-1 hover:bg-[var(--border-focus)]"></div>
+  )
+}
 
 interface SubmenuItemLinkProps
   extends React.PropsWithChildren,
@@ -194,11 +208,19 @@ interface SubmenuItemLinkProps
 function SubmenuItemLink({ children, ...linkProps }: SubmenuItemLinkProps) {
   const ctx = usePageContext()
 
+  const isActive = ctx.urlOriginal.includes(linkProps.href as string)
+
   return (
     <a
+      data-active={isActive}
       className={cn(
-        "w-full hover:bg-[var(--background-hover)] transition ease-in-out p-2 rounded-lg gap-x-2 flex items-center kb-content-tertiary",
-        {},
+        "w-full p-2 border-t border-l border-r border-b-2 rounded-lg gap-x-2 flex items-center  transition-[background] ease-in-out group",
+        {
+          "bg-[var(--background-primary)] kb-border-tertiary shadow-[0px_1px_0px_0px_var(--black-5)] kb-content-primary [&>span]:text-[var(--content-primary)] [&>svg]:text-[var(--content-primary)]":
+            isActive,
+          "hover:bg-[var(--background-hover)] border-transparent kb-content-secondary":
+            !isActive,
+        },
       )}
       {...linkProps}
     >

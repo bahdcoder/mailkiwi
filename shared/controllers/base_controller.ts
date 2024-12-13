@@ -121,14 +121,10 @@ class ResponseBuilder {
       )
     }
 
-    if (this.configuration.type === "redirect") {
-      return this.ctx.redirect(
-        this.configuration.payload.redirect.path,
-        this.configuration.payload.redirect.status,
-      )
-    }
-
-    throw E_OPERATION_FAILED("Failed to understand what kind of request client needs.")
+    return this.ctx.redirect(
+      this.configuration.payload.redirect.path,
+      this.configuration.payload.redirect.status,
+    )
   }
 }
 

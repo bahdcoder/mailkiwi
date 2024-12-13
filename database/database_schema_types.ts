@@ -16,6 +16,7 @@ import type {
   forms,
   messageReactions,
   messages,
+  oauth2Accounts,
   passwordResets,
   products,
   segments,
@@ -60,6 +61,7 @@ export type Team = InferSelectModel<typeof teams>
 export type SendingDomain = InferSelectModel<typeof sendingDomains>
 export type SendingSource = InferSelectModel<typeof sendingSources>
 export type TeamMembership = InferSelectModel<typeof teamMemberships>
+export type Oauth2Account = InferSelectModel<typeof oauth2Accounts>
 export type TagOnContact = InferSelectModel<typeof tagsOnContacts>
 export type FindUserByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>["query"]["users"]["findFirst"]

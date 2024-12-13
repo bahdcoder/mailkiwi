@@ -29,7 +29,7 @@ export class UserSessionMiddleware {
 
     let authenticatedUser: UserWithTeams | null = null
 
-    if (userSession) {
+    if (userSession && userSession.userId) {
       const user = await this.userRepository.findById(userSession.userId)
 
       authenticatedUser = user
@@ -39,7 +39,7 @@ export class UserSessionMiddleware {
       }
     }
 
-    if (contactSession) {
+    if (contactSession && contactSession.userId) {
       const contact = await this.contactRepository.findById(contactSession.userId)
 
       if (contact) {

@@ -288,6 +288,17 @@ CREATE TABLE `messages` (
 	CONSTRAINT `messages_slug_unique` UNIQUE(`slug`)
 );
 --> statement-breakpoint
+CREATE TABLE `oauth2Accounts` (
+	`id` binary(16) NOT NULL,
+	`userId` binary(16) NOT NULL,
+	`provider` enum('github','google') NOT NULL,
+	`providerId` varchar(80) NOT NULL,
+	`accessToken` varchar(256) NOT NULL,
+	CONSTRAINT `oauth2Accounts_id` PRIMARY KEY(`id`),
+	CONSTRAINT `oauth2Accounts_providerId_unique` UNIQUE(`providerId`),
+	CONSTRAINT `Oauth2AccountProviderUserIdKey` UNIQUE(`userId`,`provider`)
+);
+--> statement-breakpoint
 CREATE TABLE `passwordResets` (
 	`id` binary(16) NOT NULL,
 	`userId` binary(16) NOT NULL,
@@ -429,6 +440,9 @@ CREATE TABLE `users` (
 	`emailVerificationCodeExpiresAt` timestamp,
 	`createdAt` timestamp NOT NULL DEFAULT (now()),
 	`role` enum('customer','support','team'),
+	`lastLoggedInAt` timestamp,
+	`lastPasswordResetAt` timestamp,
+	`lastLoggedInProvider` enum('password','github','google'),
 	CONSTRAINT `users_id` PRIMARY KEY(`id`),
 	CONSTRAINT `users_email_unique` UNIQUE(`email`)
 );
@@ -517,6 +531,7 @@ ALTER TABLE `messageReactions` ADD CONSTRAINT `messageReactions_userId_users_id_
 ALTER TABLE `messages` ADD CONSTRAINT `messages_channelId_channels_id_fk` FOREIGN KEY (`channelId`) REFERENCES `channels`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `messages` ADD CONSTRAINT `messages_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `messages` ADD CONSTRAINT `messages_parentMessageId_messages_id_fk` FOREIGN KEY (`parentMessageId`) REFERENCES `messages`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `oauth2Accounts` ADD CONSTRAINT `oauth2Accounts_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `passwordResets` ADD CONSTRAINT `passwordResets_userId_users_id_fk` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `productContents` ADD CONSTRAINT `productContents_productId_products_id_fk` FOREIGN KEY (`productId`) REFERENCES `products`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `products` ADD CONSTRAINT `products_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint

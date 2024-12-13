@@ -14,6 +14,8 @@ import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"
 import React from "react"
 
+import { route } from "@/shared/routes/route_aliases.js"
+
 interface LoginPageProps {
   teamInviteToken?: string
 }
@@ -76,7 +78,7 @@ function LoginPage({ teamInviteToken }: LoginPageProps) {
 
         <div className="flex justify-end">
           <Button asChild variant="tertiary" className="underline">
-            <a href="/auth/passwords/forgot">Forgot your password ?</a>
+            <a href={route("auth_passwords_forgot")}>Forgot your password ?</a>
           </Button>
         </div>
 

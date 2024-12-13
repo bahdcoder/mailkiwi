@@ -1,13 +1,19 @@
 import { eq } from "drizzle-orm"
 import { DateTime } from "luxon"
 
+import {
+  Oauth2Driver,
+  Oauth2Response,
+  Oauth2UserResponse,
+} from "@/auth/oauth2_drivers/base_driver.js"
+
 import type { DrizzleClient } from "@/database/client.js"
 import {
   InsertUser,
   UpdateUser,
   UserWithTeams,
 } from "@/database/database_schema_types.js"
-import { channelMemberships, teams, users } from "@/database/schema.js"
+import { channelMemberships, oauth2Accounts, teams, users } from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -38,6 +44,14 @@ export class UserRepository extends ScryptTokenRepository {
     relationName: "channels",
   })
 
+  private hasManyOauth2Accounts = hasMany(this.database, {
+    from: users,
+    to: oauth2Accounts,
+    primaryKey: users.id,
+    foreignKey: oauth2Accounts.userId,
+    relationName: "accounts",
+  })
+
   async createUserEmailVerificationCode() {
     const emailVerificationCode = container.make(OtpGenerator).generate()
 
@@ -48,6 +62,36 @@ export class UserRepository extends ScryptTokenRepository {
         .plus({ minutes: this.EMAIL_VERIFICATION_CODE_EXPIRATION_MINUTES })
         .toJSDate(),
     }
+  }
+
+  async createWithOauth2Account(oauth2Response: Oauth2Response) {
+    const id = this.cuid()
+
+    const accountId = this.cuid()
+
+    const self = this
+
+    await this.database.transaction(async (trx) => {
+      await trx.insert(users).values({
+        id,
+        email: oauth2Response.user.email as string,
+        firstName: oauth2Response.user.firstName,
+        lastName: oauth2Response.user.lastName,
+        emailVerifiedAt: DateTime.now().toJSDate(),
+        lastLoggedInAt: DateTime.now().toJSDate(),
+        lastLoggedInProvider: oauth2Response.provider,
+      })
+
+      await trx.insert(oauth2Accounts).values({
+        id: accountId,
+        userId: id,
+        provider: oauth2Response.provider,
+        providerId: oauth2Response.user.providerId,
+        accessToken: self.encrypt(oauth2Response.accessToken.token).release(),
+      })
+    })
+
+    return { id, accountId }
   }
 
   async create(user: InsertUser) {
@@ -124,6 +168,8 @@ export class UserRepository extends ScryptTokenRepository {
 
     return user
   }
+
+  async findByOauth2AccountProviderId(id: string) {}
 
   async findByIdWithChannelMemberships(id: string) {
     const [user] = await this.hasManyChannelMemberships((query) =>

@@ -5,10 +5,15 @@ import {
 } from "@/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
 import { Button } from "@kibamail/owly/button"
 import * as TextField from "@kibamail/owly/text-field"
+import { usePageContext } from "vike-react/usePageContext"
+
+import { route } from "@/shared/routes/route_aliases.js"
 
 function RegisterProfile() {
-  const { serverFormProps, error } = useServerFormMutation({
-    action: "/auth/register/profile",
+  const { user } = usePageContext()
+
+  const { serverFormProps, error, isPending } = useServerFormMutation({
+    action: route("auth_register_profile"),
   })
 
   return (
@@ -17,13 +22,21 @@ function RegisterProfile() {
 
       <ServerForm {...serverFormProps} className="mt-8 grid grid-cols-1 gap-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <TextField.Root name="firstName" placeholder="Max">
+          <TextField.Root
+            name="firstName"
+            placeholder="Max"
+            defaultValue={user?.firstName ?? undefined}
+          >
             <TextField.Label htmlFor="firstName">First name</TextField.Label>
             {error?.errorsMap?.firstName ? (
               <TextField.Error>{error.errorsMap.firstName}</TextField.Error>
             ) : null}
           </TextField.Root>
-          <TextField.Root name="lastName" placeholder="Payne">
+          <TextField.Root
+            name="lastName"
+            placeholder="Payne"
+            defaultValue={user?.lastName ?? undefined}
+          >
             <TextField.Label htmlFor="lastName">Last name</TextField.Label>
 
             {error?.errorsMap?.lastName ? (
@@ -43,7 +56,7 @@ function RegisterProfile() {
           ) : null}
         </TextField.Root>
 
-        <Button type="submit" width="full">
+        <Button type="submit" width="full" loading={isPending}>
           Create account
         </Button>
       </ServerForm>

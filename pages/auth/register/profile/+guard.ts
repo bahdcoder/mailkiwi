@@ -8,7 +8,7 @@ export function guard(ctx: PageContext) {
     throw redirect(route("auth_login"))
   }
 
-  if (!ctx.team) {
-    throw redirect(route("auth_register_profile"))
+  if (ctx.team && (ctx.user.firstName || ctx.user.lastName)) {
+    throw redirect(route("dashboard"))
   }
 }

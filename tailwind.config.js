@@ -4,6 +4,9 @@ export default {
   theme: {
     extend: {
       colors: {},
+      fontFamily: {
+        sans: "var(--default-font-family)",
+      },
     },
   },
   plugins: [],

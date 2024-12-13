@@ -11,6 +11,8 @@ export const aliases = {
   auth_passwords_forgot: "/auth/passwords/forgot",
   auth_passwords_reset: "/auth/passwords/reset/:token",
 
+  auth_oauth2_provider: "/auth/:action/oauth2/:provider/authorize",
+
   // login
   auth_login: "/auth/login",
 
@@ -33,7 +35,11 @@ export const aliases = {
   error_500: "/e/500",
 } as const
 
-export function route(alias: keyof typeof aliases, routeParams?: Record<string, string>) {
+export function route(
+  alias: keyof typeof aliases,
+  routeParams?: Record<string, string>,
+  queryParams?: Record<string, string>,
+) {
   let path = aliases[alias]
 
   if (routeParams) {
@@ -42,7 +48,13 @@ export function route(alias: keyof typeof aliases, routeParams?: Record<string, 
     }
   }
 
-  return path
+  let queryString = ""
+
+  if (queryParams) {
+    queryString = new URLSearchParams(queryParams).toString()
+  }
+
+  return `${path}${queryString ? `?${queryString}` : ""}`
 }
 
 export function wRoute() {}

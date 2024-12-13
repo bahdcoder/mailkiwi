@@ -44,7 +44,6 @@ export class RegisterController extends VikeController {
 
     this.app.defineRoutes(
       [
-        ...this.vikePath(route("auth_register_profile"), this.profilePage),
         ...this.vikePath(route("auth_register_password"), this.passwordPage),
         ...this.vikePath(route("auth_register_email_confirm"), this.page),
         ["POST", route("auth_register_password"), this.password.bind(this)],
@@ -56,16 +55,6 @@ export class RegisterController extends VikeController {
         middleware: [middleware("must_be_authenticated")],
       },
     )
-  }
-
-  profilePage = async (ctx: HonoContext, next: Next) => {
-    const user = ctx.get("user")
-
-    if (user.firstName || user.lastName) {
-      return this.response(ctx).redirect(route("welcome")).send()
-    }
-
-    return this.page(ctx, next)
   }
 
   async register(ctx: HonoContext) {

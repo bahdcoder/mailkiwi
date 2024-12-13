@@ -117,6 +117,11 @@ export const appEnv = makeExtraAppConfigurations(
 
       // logging
       LOG_LEVEL: str(),
+
+      // auth
+      GITHUB_CLIENT_ID: str(),
+      GITHUB_CLIENT_SECRET: str(),
+      GITHUB_CALLBACK_URL: str(),
     }),
   ),
   {

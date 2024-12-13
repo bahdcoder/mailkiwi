@@ -94,6 +94,66 @@ function WelcomePage() {
               libero et velit interdum.
             </Text>
           </ProductCard.Root>
+          <ProductCard.Root>
+            <InsightsIcon className="w-10 h-10" />
+
+            <Text size="lg" className="font-semibold">
+              Monetise
+            </Text>
+
+            <Text className="kb-content-tertiary">
+              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
+              libero et velit interdum.
+            </Text>
+          </ProductCard.Root>
+          <ProductCard.Root>
+            <InsightsIcon className="w-10 h-10" />
+
+            <Text size="lg" className="font-semibold">
+              Monetise
+            </Text>
+
+            <Text className="kb-content-tertiary">
+              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
+              libero et velit interdum.
+            </Text>
+          </ProductCard.Root>
+          <ProductCard.Root>
+            <InsightsIcon className="w-10 h-10" />
+
+            <Text size="lg" className="font-semibold">
+              Monetise
+            </Text>
+
+            <Text className="kb-content-tertiary">
+              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
+              libero et velit interdum.
+            </Text>
+          </ProductCard.Root>
+          <ProductCard.Root>
+            <InsightsIcon className="w-10 h-10" />
+
+            <Text size="lg" className="font-semibold">
+              Monetise
+            </Text>
+
+            <Text className="kb-content-tertiary">
+              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
+              libero et velit interdum.
+            </Text>
+          </ProductCard.Root>
+          <ProductCard.Root>
+            <InsightsIcon className="w-10 h-10" />
+
+            <Text size="lg" className="font-semibold">
+              Monetise
+            </Text>
+
+            <Text className="kb-content-tertiary">
+              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
+              libero et velit interdum.
+            </Text>
+          </ProductCard.Root>
         </div>
       </div>
     </div>

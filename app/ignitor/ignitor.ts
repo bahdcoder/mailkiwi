@@ -32,6 +32,7 @@ import { TeamController } from "@/teams/controllers/team_controller.js"
 import { TeamMembershipController } from "@/teams/controllers/team_membership_controller.js"
 
 import { AuthController } from "@/auth/controllers/auth_controller.js"
+import { Oauth2Controller } from "@/auth/controllers/oauth2_controller.js"
 import { RegisterController } from "@/auth/controllers/register_controller.js"
 import { UserController } from "@/auth/controllers/user_controller.js"
 import { PasswordResetsController } from "@/auth/password_resets/controllers/password_resets_controller.js"
@@ -145,6 +146,7 @@ export class Ignitor {
     container.resolve(TagController)
     container.resolve(AutomationController)
     container.resolve(AuthController)
+    container.resolve(Oauth2Controller)
     container.resolve(RegisterController)
     container.resolve(PasswordResetsController)
     container.resolve(UserController)
