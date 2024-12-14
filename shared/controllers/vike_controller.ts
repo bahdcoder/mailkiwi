@@ -3,6 +3,7 @@ import { VikePageRenderer, VikeRenderPage } from "../types/vike.js"
 import { createReadableStreamFromReadable } from "@remix-run/node"
 import { Handler, MiddlewareHandler, Next } from "hono"
 import { PassThrough } from "stream"
+import { UAParser } from "ua-parser-js"
 import { renderPage } from "vike/server"
 
 import { UserWithTeams } from "@/database/database_schema_types.js"
@@ -40,6 +41,7 @@ export class VikeController extends BaseController {
       pageProps,
       user: pageProps?.user,
       team: pageProps?.team,
+      userAgent: pageProps?.userAgent,
       urlOriginal: ctx.req.url,
       headersOriginal: ctx.req.raw.headers,
     })
@@ -99,6 +101,10 @@ export class VikeController extends BaseController {
       user = rest as UserWithTeams
     }
 
+    const userAgentHeader = ctx.req.header("user-agent")
+
+    const userAgent = userAgentHeader ? new UAParser(userAgentHeader) : undefined
+
     return renderVikePage(ctx, next, {
       ...pageProps,
       user: excludeKeys(ctx.get("user"), [
@@ -106,6 +112,13 @@ export class VikeController extends BaseController {
         "emailVerificationCode",
         "password",
       ]),
+      userAgent: userAgent
+        ? {
+            browser: userAgent.getBrowser(),
+            os: userAgent.getOS(),
+            device: userAgent.getDevice(),
+          }
+        : undefined,
       team: excludeKeys(ctx.get("team"), ["commerceProviderAccountId"]),
     })
   }

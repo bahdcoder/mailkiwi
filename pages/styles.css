@@ -31,6 +31,21 @@ body {
   @apply h-screen w-full flex flex-col overflow-y-auto kb-background-secondary;
 }
 
-.page-transition .w-layout-container {
-  background: green !important;
+.vike-router-transition-in .w-layout-container {
+  opacity: 1;
+  transition: opacity 200ms ease-in;
+}
+
+.vike-router-transition-out .w-layout-container {
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+
+.sidebar-draggable-resizer-active {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.sidebar-draggable-resizer-active .draggable-sidebar-resizer {
+  background: var(--border-focus);
 }

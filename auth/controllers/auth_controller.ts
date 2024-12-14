@@ -62,6 +62,15 @@ export class AuthController extends VikeController {
       throw E_VALIDATION_FAILED(invalidCredentials)
     }
 
+    if (!user.password) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: `You recently signed in using ${user.lastLoggedInProvider}. Please sign in using the same method.`,
+          field: "email",
+        },
+      ])
+    }
+
     const passwordIsValid = await this.userRepository.verify(
       data.password,
       user.password as string,
@@ -72,6 +81,8 @@ export class AuthController extends VikeController {
     }
 
     const team = await this.teamRepository.findUserDefaultTeam(user.id)
+
+    d({ team })
 
     await this.session.createForUser(ctx, {
       userId: user.id,
@@ -84,8 +95,6 @@ export class AuthController extends VikeController {
   logout = async (ctx: HonoContext) => {
     await this.session.clearForUser(ctx)
 
-    return ctx.json({
-      Ok: true,
-    })
+    return this.response(ctx).redirect(route("auth_login")).send()
   }
 }

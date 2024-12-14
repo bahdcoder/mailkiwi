@@ -9,5 +9,5 @@ const config: Config = {
   stream: true,
   ssr: true,
   extends: [vikeReact, vikeReactQuery],
-  passToClient: ["user", "team", "pageProps"],
+  passToClient: ["user", "team", "pageProps", "userAgent"],
 }

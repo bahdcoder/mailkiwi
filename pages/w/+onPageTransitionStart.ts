@@ -6,7 +6,6 @@ export { onPageTransitionStart }
 const onPageTransitionStart: OnPageTransitionStartAsync = async (
   ctx,
 ): ReturnType<OnPageTransitionStartAsync> => {
-  console.log("Page transition start")
-  console.log("Is backwards navigation?", ctx.isBackwardNavigation)
-  document.body.classList.add("page-transition")
+  document.body.classList.remove("vike-router-transition-in")
+  document.body.classList.add("vike-router-transition-out")
 }

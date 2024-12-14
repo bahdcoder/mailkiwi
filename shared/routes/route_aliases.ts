@@ -16,6 +16,9 @@ export const aliases = {
   // login
   auth_login: "/auth/login",
 
+  // logout
+  auth_logout: "/auth/logout",
+
   // dashboard
   welcome: w("welcome"),
   dashboard: w("dashboard"),

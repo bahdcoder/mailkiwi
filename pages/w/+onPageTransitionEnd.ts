@@ -5,8 +5,6 @@ export { onPageTransitionEnd }
 const onPageTransitionEnd: OnPageTransitionEndAsync = async (
   pageContext,
 ): ReturnType<OnPageTransitionEndAsync> => {
-  // ...
-  console.log("Page transition end")
-  console.log("Is backwards navigation?", pageContext.isBackwardNavigation)
-  document.body.classList.remove("page-transition")
+  document.body.classList.remove("vike-router-transition-out")
+  document.body.classList.add("vike-router-transition-in")
 }

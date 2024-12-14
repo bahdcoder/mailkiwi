@@ -1,8 +1,8 @@
-import { PageContainer, PageTitle } from "@/components/auth/auth.jsx"
+import { PageContainer, PageTitle } from "@/pages/components/auth/auth.jsx"
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
+} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
 import { Button } from "@kibamail/owly/button"
 import * as TextField from "@kibamail/owly/text-field"
 import { usePageContext } from "vike-react/usePageContext"

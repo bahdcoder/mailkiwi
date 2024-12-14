@@ -88,7 +88,7 @@ export class Oauth2Controller extends VikeController {
       ])
 
       if (response.action === "login") {
-        if (!accountExists && !userExists) {
+        if (!accountExists || !userExists) {
           return this.response(ctx)
             .redirect(
               route(
@@ -130,8 +130,6 @@ export class Oauth2Controller extends VikeController {
 
         return this.response(ctx).redirect(route("dashboard")).send()
       }
-
-      d({ params })
 
       // user is trying to register an account
       if (accountExists || userExists) {

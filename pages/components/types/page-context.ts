@@ -1,3 +1,5 @@
+import { type UAParser } from "ua-parser-js"
+
 import {
   type TeamWithMemberships,
   type UserWithTeams,
@@ -13,6 +15,7 @@ declare global {
     interface PageContext {
       user: DefaultPageProps["user"]
       team: DefaultPageProps["team"]
+      userAgent: UAParser.IResult
     }
   }
 }

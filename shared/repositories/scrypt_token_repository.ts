@@ -20,7 +20,7 @@ export class ScryptTokenRepository extends BaseRepository {
   }
 
   async verify(secretKey: string, hash: string) {
-    const [salt, secret] = hash.split(this.hashAndSaltSeparator)
+    const [salt, secret] = hash?.split(this.hashAndSaltSeparator)
 
     const derivedKey = await this.scryptAsync(
       secretKey,

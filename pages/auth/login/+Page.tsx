@@ -3,12 +3,12 @@ import {
   Oauth2Methods,
   PageContainer,
   PageTitle,
-} from "@/components/auth/auth.jsx"
-import { PasswordField } from "@/components/input/password-field.jsx"
+} from "@/pages/components/auth/auth.jsx"
+import { PasswordField } from "@/pages/components/input/password-field.jsx"
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
+} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
 import { Button } from "@kibamail/owly/button"
 import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"

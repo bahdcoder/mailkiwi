@@ -1,5 +1,5 @@
-import { AgreeToTermsAndPolicy } from "@/components/auth/agree-to-terms-and-policy.jsx"
-import { CheckCircleSolidIcon } from "@/components/icons/check-circle-solid.svg.jsx"
+import { AgreeToTermsAndPolicy } from "@/pages/components/auth/agree-to-terms-and-policy.jsx"
+import { CheckCircleSolidIcon } from "@/pages/components/icons/check-circle-solid.svg.jsx"
 import { Text } from "@kibamail/owly/text"
 import React from "react"
 import { usePageContext } from "vike-react/usePageContext"
