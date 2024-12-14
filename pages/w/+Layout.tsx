@@ -22,7 +22,7 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
     return {
       width: DEFAULT_SIDEBAR_WIDTH,
       floating: false,
-      offscreen: ctx.userAgent.device.type === "mobile",
+      offscreen: ctx.isMobile,
     }
   })
 

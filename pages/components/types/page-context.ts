@@ -16,6 +16,7 @@ declare global {
       user: DefaultPageProps["user"]
       team: DefaultPageProps["team"]
       userAgent: UAParser.IResult
+      isMobile: boolean
     }
   }
 }

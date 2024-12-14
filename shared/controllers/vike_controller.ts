@@ -43,6 +43,7 @@ export class VikeController extends BaseController {
       team: pageProps?.team,
       userAgent: pageProps?.userAgent,
       urlOriginal: ctx.req.url,
+      isMobile: pageProps?.isMobile,
       headersOriginal: ctx.req.raw.headers,
     })
 
@@ -119,6 +120,7 @@ export class VikeController extends BaseController {
             device: userAgent.getDevice(),
           }
         : undefined,
+      isMobile: userAgent?.getDevice().type === "mobile",
       team: excludeKeys(ctx.get("team"), ["commerceProviderAccountId"]),
     })
   }

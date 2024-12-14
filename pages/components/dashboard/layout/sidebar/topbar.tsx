@@ -9,14 +9,13 @@ import { usePageContext } from "vike-react/usePageContext"
 export function Topbar() {
   const ctx = usePageContext()
 
-  const isMobile = ctx.userAgent.device.type === "mobile"
   const [topbarVisible, setTopbarVisible] = React.useState(function () {
-    return isMobile
+    return ctx.isMobile
   })
   const { sidebar, setSidebar } = useApplicationLayoutContext("Topbar")
 
   function setSidebarOnScreen() {
-    if (isMobile) {
+    if (ctx.isMobile) {
       setSidebar((current) => ({ ...current, floating: true }))
 
       return

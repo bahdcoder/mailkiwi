@@ -16,6 +16,7 @@ import { SidebarCollapseIcon } from "@/pages/components/icons/sidebar-collapse.s
 import { Button } from "@kibamail/owly/button"
 import { Progress } from "@kibamail/owly/progress"
 import { Text } from "@kibamail/owly/text"
+import { usePageContext } from "vike-react/usePageContext"
 
 import { route } from "@/shared/routes/route_aliases.js"
 
@@ -24,9 +25,16 @@ interface SidebarContentProps {
 }
 
 export function SidebarContent({ rootId }: SidebarContentProps) {
+  const ctx = usePageContext()
   const { setSidebar } = useApplicationLayoutContext("Sidebar")
 
   function setSidebarOffscreen() {
+    if (ctx.isMobile) {
+      setSidebar((current) => ({ ...current, floating: false }))
+
+      return
+    }
+
     setSidebar((current) => ({ ...current, offscreen: true }))
   }
 
