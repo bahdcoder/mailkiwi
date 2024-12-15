@@ -47,8 +47,8 @@ export class Oauth2Controller extends VikeController {
 
   protected drivers(ctx: HonoContext) {
     return {
-      github: new GithubDriver(ctx),
-      google: new GoogleDriver(ctx),
+      github: container.make(GithubDriver).setCtx(ctx),
+      google: container.make(GoogleDriver).setCtx(ctx),
     } as const
   }
 

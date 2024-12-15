@@ -72,7 +72,7 @@ export class Session {
       sessionData.release(),
       this.encryptionKey,
       {
-        sameSite: "Strict",
+        sameSite: "Lax",
         prefix: "secure",
         secure: appEnv.isProd,
         httpOnly: true,

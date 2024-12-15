@@ -59,6 +59,8 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
     this.onError((error, ctx) => {
       logger.error(error)
 
+      d({ error })
+
       const jsonPayload =
         error instanceof E_REQUEST_EXCEPTION
           ? {

@@ -20,7 +20,7 @@ export default defineConfig({
     exclude: [
       ...configDefaults.exclude,
       "**/build/**",
-      "components/**/*.spec.tsx",
+      "pages/**/*.spec.tsx",
       "**/*.client.spec.tsx",
       "tests/e2e/**/*.spec.ts",
     ],

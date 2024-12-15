@@ -21,7 +21,7 @@ export default defineConfig({
     reporters: ["verbose"],
     retry: 1,
     environment: "jsdom",
-    include: ["components/**/*.spec.tsx", "**/*.client.spec.tsx"],
+    include: ["pages/**/*.spec.tsx", "**/*.client.spec.tsx"],
   },
   plugins: [tsconfigPaths()],
 })

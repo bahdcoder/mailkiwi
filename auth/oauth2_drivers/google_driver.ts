@@ -17,8 +17,9 @@ export class GoogleDriver
   OAUTH_2_ACTION_COOKIE_NAME = "google_action"
 
   state: string
+  protected ctx: HonoContext
 
-  constructor(protected ctx: HonoContext) {
+  constructor() {
     super({
       callbackUrl: appEnv.GOOGLE_CALLBACK_URL,
       clientId: appEnv.GOOGLE_CLIENT_ID,
@@ -28,6 +29,12 @@ export class GoogleDriver
     })
 
     this.state = this.getState()
+  }
+
+  setCtx(ctx: HonoContext) {
+    this.ctx = ctx
+
+    return this
   }
 
   /**

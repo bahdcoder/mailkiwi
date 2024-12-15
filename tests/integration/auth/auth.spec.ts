@@ -1,19 +1,23 @@
+import { appEnv } from "@/app/env/app_env.js"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { DateTime } from "luxon"
 import { describe, test } from "vitest"
 
+import { GithubDriver } from "@/auth/oauth2_drivers/github_driver.js"
+import { GoogleDriver } from "@/auth/oauth2_drivers/google_driver.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { users } from "@/database/schema.js"
+import { oauth2Accounts, users } from "@/database/schema.js"
 
 import { makeApp, makeDatabase } from "@/shared/container/index.js"
 import { route } from "@/shared/routes/route_aliases.js"
 import { RedisSessionStore } from "@/shared/sessions/stores/redis_session_store.js"
 import { OtpGenerator } from "@/shared/tokens/otp_generator.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
 
@@ -281,5 +285,177 @@ describe("@auth user login", () => {
     const userSessions = await container.make(RedisSessionStore).list(user.id)
 
     expect(userSessions).toHaveLength(0)
+  })
+})
+
+describe("@oauth ", () => {
+  function getFakeOauthProviderDriver(provider: string, action: string) {
+    const accessToken = faker.string.uuid()
+    const user = {
+      email: faker.internet.exampleEmail(),
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      providerId: faker.string.uuid(),
+    }
+    const FakeDriver: any = {
+      async handleCallback() {
+        return {
+          user,
+          accessToken: {
+            token: accessToken,
+            type: "bearer",
+          },
+          action,
+          provider: provider,
+        }
+      },
+      setCtx() {
+        return this
+      },
+    }
+
+    return { FakeDriver, user, accessToken }
+  }
+
+  test("can initiate user oauth2 register flow for github", async ({ expect }) => {
+    const response = await makeRequest("/auth/register/oauth2/github/authorize", {
+      method: "GET",
+    })
+
+    expect(response.status).toBe(302)
+
+    const cookies = response.headers.getSetCookie().join("|")
+
+    expect(cookies).toContain("gh_oauth_state=")
+    expect(cookies).toContain("gh_action=register")
+
+    const location = response.headers.get("Location")
+
+    const url = new URL(location as string)
+    const query = Object.fromEntries(url.searchParams.entries())
+
+    expect(location).toContain("https://github.com/login/oauth/authorize?redirect_uri=")
+
+    expect(query.scope).toEqual("user:email read:user")
+    expect(query.client_id).toEqual(appEnv.GITHUB_CLIENT_ID)
+    expect(query.redirect_uri).toEqual(appEnv.GITHUB_CALLBACK_URL)
+    expect(query.state).toBeDefined()
+  })
+
+  test("can initiate user oauth2 login flow for google", async ({ expect }) => {
+    const response = await makeRequest("/auth/login/oauth2/google/authorize", {
+      method: "GET",
+    })
+
+    expect(response.status).toBe(302)
+
+    const cookies = response.headers.getSetCookie().join("|")
+
+    expect(cookies).toContain("google_oauth_state=")
+    expect(cookies).toContain("google_action=login")
+
+    const location = response.headers.get("Location")
+
+    const url = new URL(location as string)
+    const query = Object.fromEntries(url.searchParams.entries())
+
+    expect(location).toContain("https://accounts.google.com/o/oauth2/v2/auth")
+    expect(query.state).toBeDefined()
+    expect(query.response_type).toBe("code")
+    expect(query.access_type).toBe("offline")
+    expect(query.prompt).toBe("select_account")
+    expect(query.client_id).toBe(appEnv.GOOGLE_CLIENT_ID)
+    expect(query.scope).toBe(
+      "openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
+    )
+  })
+
+  test("can handle a user registration callback authorization from google", async ({
+    expect,
+  }) => {
+    const { FakeDriver, user } = getFakeOauthProviderDriver("google", "register")
+    container.fake(GoogleDriver, FakeDriver)
+
+    const response = await makeRequest("/auth/oauth2/google/callback", {
+      method: "GET",
+    })
+
+    const cookies = response.headers.getSetCookie()
+
+    expect(cookies?.[0]).toContain("__Secure-session=")
+
+    const json = await response.json()
+
+    expect(json.type).toBe("redirect")
+    expect(json.payload.path).toBe(route("auth_register_profile"))
+
+    const [userFromDatabase] = await makeDatabase()
+      .select()
+      .from(users)
+      .where(eq(users.email, user.email))
+
+    const [accountFromDatabase] = await makeDatabase()
+      .select()
+      .from(oauth2Accounts)
+      .where(eq(oauth2Accounts.providerId, user.providerId))
+
+    expect(userFromDatabase).toBeDefined()
+    expect(accountFromDatabase?.userId).toEqual(userFromDatabase.id)
+
+    container.restoreAll()
+  })
+
+  test("user registration with github oauth fails if user is already registered", async ({
+    expect,
+  }) => {
+    const { FakeDriver, user } = getFakeOauthProviderDriver("github", "register")
+    container.fake(GithubDriver, FakeDriver)
+
+    await makeDatabase()
+      .insert(users)
+      .values({ email: user.email, firstName: user.firstName, lastName: user.lastName })
+
+    const response = await makeRequest("/auth/oauth2/github/callback", {
+      method: "GET",
+    })
+
+    const json = await response.json()
+
+    expect(json.type).toBe("redirect")
+    expect(json.payload.path).toContain(route("auth_register"))
+
+    container.restoreAll()
+  })
+
+  test("user can login with github after previous registration", async ({ expect }) => {
+    const { FakeDriver, user } = getFakeOauthProviderDriver("github", "login")
+    container.fake(GithubDriver, FakeDriver)
+
+    const userId = cuid()
+
+    await makeDatabase().insert(users).values({
+      id: userId,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    })
+
+    await makeDatabase().insert(oauth2Accounts).values({
+      userId,
+      provider: "github",
+      providerId: user.providerId,
+      accessToken: faker.string.uuid(),
+    })
+
+    const response = await makeRequest("/auth/oauth2/github/callback", {
+      method: "GET",
+    })
+
+    const json = await response.json()
+
+    expect(json.type).toBe("redirect")
+    expect(json.payload.path).toEqual(route("dashboard"))
+
+    container.restoreAll()
   })
 })

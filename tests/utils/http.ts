@@ -57,7 +57,7 @@ export async function getCookieSessionForUser(user: User) {
     sessionId,
     appEnv.APP_KEY.release(),
     {
-      sameSite: "Strict",
+      sameSite: "Lax",
       prefix: "secure",
       secure: appEnv.isProd,
       httpOnly: true,

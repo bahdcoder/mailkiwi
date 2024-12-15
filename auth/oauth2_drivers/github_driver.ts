@@ -17,7 +17,9 @@ export class GithubDriver
 
   state: string
 
-  constructor(protected ctx: HonoContext) {
+  protected ctx: HonoContext
+
+  constructor() {
     super({
       callbackUrl: appEnv.GITHUB_CALLBACK_URL,
       clientId: appEnv.GITHUB_CLIENT_ID,
@@ -27,6 +29,12 @@ export class GithubDriver
     })
 
     this.state = this.getState()
+  }
+
+  setCtx(ctx: HonoContext) {
+    this.ctx = ctx
+
+    return this
   }
 
   /**
