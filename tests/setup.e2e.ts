@@ -75,7 +75,11 @@ export default async function globalSetup(config: FullConfig) {
     return `${config?.projects?.[0]?.use?.baseURL}${path.startsWith("/") ? path : `/${path}`}`
   }
 
-  await new IgnitorDev().boot().start()
+  const ignitor = new IgnitorDev().boot()
+
+  // mock google and github drivers.
+
+  await ignitor.start()
 
   await refreshDatabase()
 
@@ -127,6 +131,24 @@ export default async function globalSetup(config: FullConfig) {
     await page.waitForTimeout(1000)
 
     await page.waitForURL(browserRoute(route("dashboard")), { timeout: 5000 })
+
+    if (name !== "owner") {
+      // make all users switch to the owner's team, so they are all on the team we will focus our testing on.
+
+      const openTeamSwitcherDropdown = page.getByTestId(
+        "offscreen-sidebar-dropdown-menu-trigger",
+      )
+
+      await openTeamSwitcherDropdown.click()
+
+      const switchTeamLink = page.getByTestId(
+        `offscreen-sidebar-switch-team-id-${teamMemberOwner?.team?.id}`,
+      )
+
+      await switchTeamLink.click()
+
+      await page.waitForURL(browserRoute(route("dashboard")), { timeout: 5000 })
+    }
 
     await page.context().storageState({ path: resolve(basePath, `auth.${name}.json`) })
 

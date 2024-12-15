@@ -25,10 +25,10 @@ import { CreateSendingDomainAction } from "@/sending_domains/actions/create_send
 import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
 
 import { createDatabaseClient, createDrizzleDatabase } from "@/database/client.js"
-import type { Broadcast } from "@/database/database_schema_types.js"
-import { broadcasts, contacts, teams } from "@/database/schema.js"
+import type { Broadcast, Team, User } from "@/database/database_schema_types.js"
+import { broadcasts, contacts, teamMemberships, teams } from "@/database/schema.js"
 
-import { ContainerKey } from "@/shared/container/index.js"
+import { ContainerKey, makeDatabase } from "@/shared/container/index.js"
 
 import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
 
@@ -55,7 +55,8 @@ await Promise.all([
 const registerUserAction = container.resolve(RegisterUserAction)
 const createAudienceAction = container.resolve(CreateAudienceAction)
 
-for (let userIndex = 0; userIndex < 1; userIndex++) {
+const allUsers: { user: Partial<User>; team: Partial<Team> }[] = []
+for (let userIndex = 0; userIndex < 3; userIndex++) {
   console.log(`\nCreating user: ${userIndex + 1}\n`)
 
   const userDetails = {
@@ -215,6 +216,28 @@ for (let userIndex = 0; userIndex < 1; userIndex++) {
     ],
     { depth: null },
   )
+
+  allUsers.push({ user, team })
+}
+
+for (const [idx, { user }] of allUsers.entries()) {
+  const otherUsers = allUsers.filter((_, uIdx) => uIdx !== idx)
+
+  await makeDatabase()
+    .insert(teamMemberships)
+    .values(
+      otherUsers.map((otherUser) => ({
+        teamId: otherUser.team.id as string,
+        userId: user.id as string,
+        role: "MANAGER" as const,
+        email: faker.internet.email(),
+        status: "ACTIVE" as const,
+        invitedAt: new Date(),
+        expiresAt: new Date(),
+      })),
+    )
+
+  console.log(`\nInvited user ${user?.id} to other teams ✅ `)
 }
 
 connection.destroy()

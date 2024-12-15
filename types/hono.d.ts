@@ -20,6 +20,7 @@ declare module "hono" {
     user: UserWithTeams
     contact: Contact
     memberships: (TeamMembership & { team: Team | null })[]
+    flash: string | undefined
   }
 
   interface Context {

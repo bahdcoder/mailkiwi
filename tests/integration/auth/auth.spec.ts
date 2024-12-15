@@ -458,4 +458,32 @@ describe("@oauth ", () => {
 
     container.restoreAll()
   })
+
+  test("user cannot login with github if not previously registered with github", async ({
+    expect,
+  }) => {
+    const { FakeDriver, user } = getFakeOauthProviderDriver("github", "login")
+    container.fake(GithubDriver, FakeDriver)
+
+    const response = await makeRequest("/auth/oauth2/github/callback", {
+      method: "GET",
+    })
+
+    const cookies = response.headers.getSetCookie()?.[0]?.split(";")?.[0]?.split("=")?.[1]
+
+    const flash = JSON.parse(decodeURIComponent(cookies))
+
+    expect(flash).toEqual({
+      title: "We could not find a user with this github account.",
+      description: "Please register a new account if you haven't done so before.",
+      variant: "error",
+    })
+
+    const json = await response.json()
+
+    expect(json.type).toBe("redirect")
+    expect(json.payload.path).toEqual(route("auth_login"))
+
+    container.restoreAll()
+  })
 })

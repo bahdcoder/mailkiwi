@@ -1,18 +1,15 @@
-import { Oauth2AccessToken } from "@poppinss/oauth-client/types"
 import { and, eq } from "drizzle-orm"
-import { getCookie, setCookie } from "hono/cookie"
+import { setCookie } from "hono/cookie"
 
 import { GithubDriver } from "@/auth/oauth2_drivers/github_driver.js"
 import { GoogleDriver } from "@/auth/oauth2_drivers/google_driver.js"
 import { Oauth2AccountsRepository } from "@/auth/users/repositories/oauth2_accounts_repository.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import { UserWithTeams } from "@/database/database_schema_types.js"
 import { oauth2Accounts } from "@/database/schema.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { VikeController } from "@/shared/controllers/vike_controller.js"
-import { makeHttpClient } from "@/shared/http/http_client.js"
 import { route } from "@/shared/routes/route_aliases.js"
 import { HonoContext } from "@/shared/server/types.js"
 
@@ -63,16 +60,13 @@ export class Oauth2Controller extends VikeController {
       const response = await client.handleCallback()
 
       if (!response.user?.email) {
+        this.flash(ctx, {
+          title: `We coudn't find a verified email on your ${params.provider} account.`,
+          description: `Please try again or use another authentication method.`,
+          variant: "error",
+        })
         return this.response(ctx)
-          .redirect(
-            route(
-              params.action === "login" ? "auth_login" : "auth_register",
-              {},
-              {
-                error: `We coudn't find a verified email on your ${params.provider} account. Please try again or use another authentication method.`,
-              },
-            ),
-          )
+          .redirect(route(params.action === "login" ? "auth_login" : "auth_register"))
           .send()
       }
 
@@ -90,17 +84,13 @@ export class Oauth2Controller extends VikeController {
 
       if (response.action === "login") {
         if (!accountExists || !userExists) {
-          return this.response(ctx)
-            .redirect(
-              route(
-                "auth_login",
-                {},
-                {
-                  error: `We could not find a user with this ${params.provider} account. Please register a new account if you haven't done so before.`,
-                },
-              ),
-            )
-            .send()
+          this.flash(ctx, {
+            title: `We could not find a user with this ${params.provider} account.`,
+            description: `Please register a new account if you haven't done so before.`,
+            variant: "error",
+          })
+
+          return this.response(ctx).redirect(route("auth_login")).send()
         }
 
         // TODO: Allow account linking here by creating a unique session, and asking user to confirm linking by providing their password. Here's now it will work:
@@ -112,17 +102,11 @@ export class Oauth2Controller extends VikeController {
 
         // Create a temporary session for the user by setting a cookie with
         if (userExists && !accountExists) {
-          return this.response(ctx)
-            .redirect(
-              route(
-                "auth_login",
-                {},
-                {
-                  error: `We found your account, but you previously logged in using ${userExists?.lastLoggedInProvider}. Please login with ${userExists?.lastLoggedInProvider} instead.`,
-                },
-              ),
-            )
-            .send()
+          this.flash(ctx, {
+            title: `We found your account, but you previously logged in using ${userExists?.lastLoggedInProvider}. Please login with ${userExists?.lastLoggedInProvider} instead.`,
+            variant: "error",
+          })
+          return this.response(ctx).redirect(route("auth_login")).send()
         }
 
         await this.session.createForUser(ctx, {
@@ -132,19 +116,12 @@ export class Oauth2Controller extends VikeController {
         return this.response(ctx).redirect(route("dashboard")).send()
       }
 
-      // user is trying to register an account
       if (accountExists || userExists) {
-        return this.response(ctx)
-          .redirect(
-            route(
-              "auth_register",
-              {},
-              {
-                error: `A user with this account already exists. Are you trying to login instead ?`,
-              },
-            ),
-          )
-          .send()
+        this.flash(ctx, {
+          title: `A user with this account already exists. Are you trying to login instead ?`,
+          variant: "error",
+        })
+        return this.response(ctx).redirect(route("auth_register")).send()
       }
 
       const user = await this.userRepository.createWithOauth2Account(response)
@@ -156,16 +133,13 @@ export class Oauth2Controller extends VikeController {
       return this.response(ctx).redirect(route("auth_register_profile")).send()
     } catch (error) {
       d({ error })
+      this.flash(ctx, {
+        title: `Failed to authenticate with ${params.provider}.`,
+        description: "Please try again or use another authentication method.",
+        variant: "error",
+      })
       return this.response(ctx)
-        .redirect(
-          route(
-            params.action === "login" ? "auth_login" : "auth_register",
-            {},
-            {
-              error: `Failed to authenticate with ${params.provider}. Please try again or use another authentication method.`,
-            },
-          ),
-        )
+        .redirect(route(params.action === "login" ? "auth_login" : "auth_register"))
         .send()
     }
   }

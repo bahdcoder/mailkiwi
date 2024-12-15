@@ -12,8 +12,6 @@ export function FloatingSidebar() {
 
   const { sidebar, setSidebar } = useApplicationLayoutContext("FloatingSidebar")
 
-  console.log("@floating", sidebar.floating)
-
   function onMouseEnter() {
     setVisible(true)
   }

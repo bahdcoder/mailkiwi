@@ -88,7 +88,11 @@ export class TeamMembershipRepository extends BaseRepository {
   }
 
   async findAllForUser(userId: string) {
-    return this.belongsToTeam((query) => query.where(eq(teamMemberships.userId, userId)))
+    return this.belongsToTeam((query) =>
+      query.where(
+        and(eq(teamMemberships.userId, userId), eq(teamMemberships.status, "ACTIVE")),
+      ),
+    )
   }
 
   async findById(membershipId: string) {

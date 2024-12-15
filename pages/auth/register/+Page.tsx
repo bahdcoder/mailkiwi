@@ -4,6 +4,7 @@ import {
   PageContainer,
   PageTitle,
 } from "@/pages/components/auth/auth.jsx"
+import { FlashMessage } from "@/pages/components/flash/flash_message.jsx"
 import {
   ServerForm,
   useServerFormMutation,
@@ -47,6 +48,8 @@ function RegisterPage({ teamInviteToken }: RegisterPageProps) {
             : "Choose your preferred method to access powerful emailing tools."
         }
       />
+
+      <FlashMessage className="mt-10" />
 
       <Oauth2Methods page="register" />
 

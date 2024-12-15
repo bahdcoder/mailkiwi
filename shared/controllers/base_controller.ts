@@ -29,6 +29,7 @@ import {
   E_VALIDATION_FAILED,
 } from "@/http/responses/errors.js"
 
+import { FlashController } from "@/shared/controllers/flash_controller.js"
 import type { HonoContext } from "@/shared/server/types.js"
 import { Session } from "@/shared/sessions/sessions.js"
 import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
@@ -128,7 +129,7 @@ class ResponseBuilder {
   }
 }
 
-export class BaseController {
+export class BaseController extends FlashController {
   protected session = container.make(Session)
 
   protected getParameter(ctx: HonoContext, param: ControllerParams) {

@@ -1,6 +1,8 @@
 import { type UAParser } from "ua-parser-js"
 
 import {
+  Team,
+  TeamMembership,
   type TeamWithMemberships,
   type UserWithTeams,
 } from "@/database/database_schema_types.js"
@@ -8,6 +10,8 @@ import {
 export interface DefaultPageProps {
   user: UserWithTeams
   team: TeamWithMemberships
+  userAgent: UAParser.IResult
+  memberships: (TeamMembership & { team: Team })[]
 }
 
 declare global {
@@ -15,8 +19,10 @@ declare global {
     interface PageContext {
       user: DefaultPageProps["user"]
       team: DefaultPageProps["team"]
-      userAgent: UAParser.IResult
+      userAgent: DefaultPageProps["userAgent"]
       isMobile: boolean
+      flash: string
+      memberships: DefaultPageProps["memberships"]
     }
   }
 }

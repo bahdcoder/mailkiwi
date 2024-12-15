@@ -1,12 +1,10 @@
 import { ContainerKey } from "../container/index.js"
-import { VikePageRenderer, VikeRenderPage } from "../types/vike.js"
+import { VikePageRenderer } from "../types/vike.js"
 import { createReadableStreamFromReadable } from "@remix-run/node"
 import { Handler, MiddlewareHandler, Next } from "hono"
 import { PassThrough } from "stream"
 import { UAParser } from "ua-parser-js"
 import { renderPage } from "vike/server"
-
-import { UserWithTeams } from "@/database/database_schema_types.js"
 
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import { route } from "@/shared/routes/route_aliases.js"
@@ -41,6 +39,8 @@ export class VikeController extends BaseController {
       pageProps,
       user: pageProps?.user,
       team: pageProps?.team,
+      flash: pageProps?.flash,
+      memberships: pageProps?.memberships,
       userAgent: pageProps?.userAgent,
       urlOriginal: ctx.req.url,
       isMobile: pageProps?.isMobile,
@@ -53,7 +53,21 @@ export class VikeController extends BaseController {
 
     const { statusCode, headers, pipe } = pageContext.httpResponse
 
-    headers.forEach(([name, value]) => responseHeaders.set(name, value))
+    headers.forEach(([name, value]) => {
+      responseHeaders.set(name, value)
+    })
+
+    // Pass headers from hono ctx through to new response, excluding the content type header.
+    const honoHeaders = ctx.newResponse("").headers.entries() as unknown as [
+      string,
+      string,
+    ][]
+
+    honoHeaders.forEach(([name, value]) => {
+      if (name !== "content-type") {
+        responseHeaders.set(name, value)
+      }
+    })
 
     return new Promise(function (resolve, reject) {
       const body = new PassThrough()
@@ -94,14 +108,6 @@ export class VikeController extends BaseController {
   page = async (ctx: HonoContext, next: Next, pageProps?: Record<string, any>) => {
     const renderVikePage = container.make<VikePageRenderer>(ContainerKey.vikeRenderPage)
 
-    let user = ctx.get("user")
-
-    if (user) {
-      const { password, ...rest } = user
-
-      user = rest as UserWithTeams
-    }
-
     const userAgentHeader = ctx.req.header("user-agent")
 
     const userAgent = userAgentHeader ? new UAParser(userAgentHeader) : undefined
@@ -113,6 +119,7 @@ export class VikeController extends BaseController {
         "emailVerificationCode",
         "password",
       ]),
+      flash: ctx.get("flash"),
       userAgent: userAgent
         ? {
             browser: userAgent.getBrowser(),
@@ -121,6 +128,7 @@ export class VikeController extends BaseController {
           }
         : undefined,
       isMobile: userAgent?.getDevice().type === "mobile",
+      memberships: ctx.get("memberships"),
       team: excludeKeys(ctx.get("team"), ["commerceProviderAccountId"]),
     })
   }

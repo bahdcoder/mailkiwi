@@ -33,6 +33,9 @@ export const aliases = {
   engage: w("engage"),
   insights: w("insights"),
 
+  // teams
+  teams_switch: "/teams/:teamId/switch",
+
   // error pages
   error_404: "/e/404",
   error_500: "/e/500",

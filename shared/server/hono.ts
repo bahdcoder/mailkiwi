@@ -2,6 +2,7 @@ import type { HonoContext, HonoRouteDefinition } from "./types.js"
 import type { HttpBindings } from "@hono/node-server"
 import { Hono as BaseHono, Handler, type MiddlewareHandler } from "hono"
 import { pinoLogger } from "hono-pino"
+import { compress } from "hono/compress"
 import { HonoOptions } from "hono/hono-base"
 import { requestId } from "hono/request-id"
 import { StatusCode } from "hono/utils/http-status"
@@ -13,6 +14,7 @@ import { E_REQUEST_EXCEPTION } from "@/http/responses/errors.js"
 
 import { makeLogger } from "@/shared/container/index.js"
 import { VikeController } from "@/shared/controllers/vike_controller.js"
+import { FlashMiddleware } from "@/shared/middleware/flash_middleware.js"
 import { middleware } from "@/shared/middleware/middleware_aliases.js"
 import { route } from "@/shared/routes/route_aliases.js"
 
@@ -49,7 +51,10 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
       }),
     )
 
+    this.use(compress())
+
     this.use("*", requestId())
+    this.use("*", container.make(FlashMiddleware).handle)
     this.defineErrorHandler()
   }
 

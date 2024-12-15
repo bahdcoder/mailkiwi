@@ -2,7 +2,9 @@ import { appEnv } from "@/app/env/app_env.js"
 import { Oauth2Client } from "@poppinss/oauth-client/oauth2"
 import { Oauth2AccessToken, RedirectRequestContract } from "@poppinss/oauth-client/types"
 import { getCookie } from "hono/cookie"
-import jwt from "jsonwebtoken"
+import { decode } from "hono/jwt"
+import { JWTPayload } from "hono/utils/jwt/types"
+import { JwtHeader } from "jsonwebtoken"
 
 import { Oauth2Driver, Oauth2Params } from "@/auth/oauth2_drivers/base_driver.js"
 
@@ -82,14 +84,17 @@ export class GoogleDriver
       request.param("code", code)
     })
 
-    const userInfo = jwt.decode(accessToken?.["id_token"]) as {
-      email: string
-      name: string
-      picture: string
-      given_name: string
-      family_name: string
-      email_verified: boolean
-      sub: string
+    const { payload: userInfo } = decode(accessToken?.["id_token"]) as {
+      header: JwtHeader
+      payload: JWTPayload & {
+        email: string
+        name: string
+        picture: string
+        given_name: string
+        family_name: string
+        email_verified: boolean
+        sub: string
+      }
     }
 
     return {

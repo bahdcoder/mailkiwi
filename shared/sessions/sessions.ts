@@ -105,6 +105,7 @@ export class Session {
         secure: appEnv.isProd,
         httpOnly: true,
         path: "/",
+        maxAge: 3600 * 24 * 30, // 30 days
       },
     )
 

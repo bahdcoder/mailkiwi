@@ -2,14 +2,21 @@ import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
 import { makeApp } from "@/shared/container/index.js"
 import { BaseController } from "@/shared/controllers/base_controller.js"
+import { route } from "@/shared/routes/route_aliases.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
 export class TeamController extends BaseController {
   constructor(private app = makeApp()) {
     super()
-    this.app.defineRoutes([["GET", "/:teamId", this.show.bind(this)]], {
-      prefix: "teams",
-    })
+    this.app.defineRoutes(
+      [
+        ["GET", "/:teamId", this.show.bind(this)],
+        ["GET", "/:teamId/switch", this.switch.bind(this)],
+      ],
+      {
+        prefix: "teams",
+      },
+    )
   }
 
   async show(ctx: HonoContext) {
@@ -26,5 +33,21 @@ export class TeamController extends BaseController {
     this.ensureCanView(ctx)
 
     return ctx.json(team)
+  }
+
+  async switch(ctx: HonoContext) {
+    const memberships = ctx.get("memberships")
+
+    const teamId = ctx.req.param("teamId")
+
+    const isAnActiveMemberOfTeam = memberships.find(
+      (membership) => membership.teamId === teamId,
+    )
+
+    if (isAnActiveMemberOfTeam) {
+      await this.session.updateCurrentSessionTeamId(ctx, teamId)
+    }
+
+    return this.response(ctx).redirect(route("dashboard")).send()
   }
 }

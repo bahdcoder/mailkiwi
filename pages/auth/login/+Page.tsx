@@ -4,6 +4,7 @@ import {
   PageContainer,
   PageTitle,
 } from "@/pages/components/auth/auth.jsx"
+import { FlashMessage } from "@/pages/components/flash/flash_message.jsx"
 import { PasswordField } from "@/pages/components/input/password-field.jsx"
 import {
   ServerForm,
@@ -50,6 +51,8 @@ function LoginPage({ teamInviteToken }: LoginPageProps) {
             : "Choose your preferred method to access powerful emailing tools."
         }
       />
+
+      <FlashMessage className="mt-10" />
 
       <Oauth2Methods page="login" />
 
