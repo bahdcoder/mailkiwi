@@ -122,6 +122,10 @@ export const appEnv = makeExtraAppConfigurations(
       GITHUB_CLIENT_ID: str(),
       GITHUB_CLIENT_SECRET: str(),
       GITHUB_CALLBACK_URL: str(),
+
+      GOOGLE_CLIENT_ID: str(),
+      GOOGLE_CLIENT_SECRET: str(),
+      GOOGLE_CALLBACK_URL: str(),
     }),
   ),
   {

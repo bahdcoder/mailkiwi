@@ -22,6 +22,7 @@ import {
   emails,
   messageReactions,
   messages,
+  oauth2Accounts,
   products,
   segments,
   sendingDomains,
@@ -75,6 +76,7 @@ export const refreshDatabase = async () => {
   await database.delete(channelMemberships)
   await database.delete(channels)
   await database.delete(teams)
+  await database.delete(oauth2Accounts)
   await database.delete(users)
 
   await database.execute(sql`SET FOREIGN_KEY_CHECKS=1;`)

@@ -30,12 +30,15 @@ export class UserSessionMiddleware {
     let authenticatedUser: UserWithTeams | null = null
 
     if (userSession && userSession.userId) {
-      const user = await this.userRepository.findById(userSession.userId)
+      const { user, memberships } = await container
+        .make(UserRepository)
+        .findWithTeamsAndMemberships(userSession.userId)
 
       authenticatedUser = user
 
       if (user) {
         ctx.set("user", user)
+        ctx.set("memberships", memberships)
       }
     }
 

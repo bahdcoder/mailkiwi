@@ -293,7 +293,7 @@ CREATE TABLE `oauth2Accounts` (
 	`userId` binary(16) NOT NULL,
 	`provider` enum('github','google') NOT NULL,
 	`providerId` varchar(80) NOT NULL,
-	`accessToken` varchar(256) NOT NULL,
+	`accessToken` text NOT NULL,
 	CONSTRAINT `oauth2Accounts_id` PRIMARY KEY(`id`),
 	CONSTRAINT `oauth2Accounts_providerId_unique` UNIQUE(`providerId`),
 	CONSTRAINT `Oauth2AccountProviderUserIdKey` UNIQUE(`userId`,`provider`)

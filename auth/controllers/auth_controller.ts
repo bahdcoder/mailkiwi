@@ -82,8 +82,6 @@ export class AuthController extends VikeController {
 
     const team = await this.teamRepository.findUserDefaultTeam(user.id)
 
-    d({ team })
-
     await this.session.createForUser(ctx, {
       userId: user.id,
       currentTeamId: team.id,

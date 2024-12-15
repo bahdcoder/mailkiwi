@@ -3,6 +3,8 @@ import "hono"
 import type {
   AccessToken,
   Contact,
+  Team,
+  TeamMembership,
   TeamWithSendingDomains,
   User,
   UserWithTeams,
@@ -17,6 +19,7 @@ declare module "hono" {
     teamWithSendingDomains: TeamWithSendingDomains
     user: UserWithTeams
     contact: Contact
+    memberships: (TeamMembership & { team: Team | null })[]
   }
 
   interface Context {

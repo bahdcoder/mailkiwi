@@ -1,6 +1,8 @@
 import { eq } from "drizzle-orm"
 import { DateTime } from "luxon"
 
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
+
 import {
   Oauth2Driver,
   Oauth2Response,
@@ -13,7 +15,13 @@ import {
   UpdateUser,
   UserWithTeams,
 } from "@/database/database_schema_types.js"
-import { channelMemberships, oauth2Accounts, teams, users } from "@/database/schema.js"
+import {
+  channelMemberships,
+  oauth2Accounts,
+  teamMemberships,
+  teams,
+  users,
+} from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
@@ -34,6 +42,14 @@ export class UserRepository extends ScryptTokenRepository {
     primaryKey: users.id,
     foreignKey: teams.userId,
     relationName: "teams",
+  })
+
+  private hasManyTeamMemberships = hasMany(this.database, {
+    from: users,
+    to: teamMemberships,
+    primaryKey: users.id,
+    foreignKey: teamMemberships.userId,
+    relationName: "memberships",
   })
 
   private hasManyChannelMemberships = hasMany(this.database, {
@@ -185,5 +201,14 @@ export class UserRepository extends ScryptTokenRepository {
     )
 
     return userWithTeams[0]
+  }
+
+  async findWithTeamsAndMemberships(id: string) {
+    const [memberships, user] = await Promise.all([
+      container.make(TeamMembershipRepository).findAllForUser(id),
+      this.findById(id),
+    ])
+
+    return { user, memberships }
   }
 }

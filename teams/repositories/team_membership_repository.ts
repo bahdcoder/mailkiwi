@@ -23,12 +23,24 @@ export class TeamMembershipRepository extends BaseRepository {
     super()
   }
 
+  memberships() {
+    return this.crud(teamMemberships)
+  }
+
   private belongsToUser = belongsTo(this.database, {
     from: teamMemberships,
     to: users,
     primaryKey: users.id,
     foreignKey: teamMemberships.userId,
     relationName: "user",
+  })
+
+  private belongsToTeam = belongsTo(this.database, {
+    from: teamMemberships,
+    to: teams,
+    primaryKey: teams.id,
+    foreignKey: teamMemberships.teamId,
+    relationName: "team",
   })
 
   async create(payload: InsertTeamMembership) {
@@ -73,6 +85,10 @@ export class TeamMembershipRepository extends BaseRepository {
         members: true,
       },
     })
+  }
+
+  async findAllForUser(userId: string) {
+    return this.belongsToTeam((query) => query.where(eq(teamMemberships.userId, userId)))
   }
 
   async findById(membershipId: string) {

@@ -3,9 +3,11 @@ import { and, eq } from "drizzle-orm"
 import { getCookie, setCookie } from "hono/cookie"
 
 import { GithubDriver } from "@/auth/oauth2_drivers/github_driver.js"
+import { GoogleDriver } from "@/auth/oauth2_drivers/google_driver.js"
 import { Oauth2AccountsRepository } from "@/auth/users/repositories/oauth2_accounts_repository.js"
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
+import { UserWithTeams } from "@/database/database_schema_types.js"
 import { oauth2Accounts } from "@/database/schema.js"
 
 import { makeApp } from "@/shared/container/index.js"
@@ -32,7 +34,6 @@ export class Oauth2Controller extends VikeController {
     this.app.defineRoutes(
       [
         ["GET", "/:action/oauth2/:provider/authorize", this.authorize],
-        ["GET", "/:action/oauth2/:provider/authorize", this.authorize],
 
         // callback
         ["GET", "/oauth2/:provider/callback", this.callback],
@@ -47,7 +48,7 @@ export class Oauth2Controller extends VikeController {
   protected drivers(ctx: HonoContext) {
     return {
       github: new GithubDriver(ctx),
-      google: new GithubDriver(ctx),
+      google: new GoogleDriver(ctx),
     } as const
   }
 
@@ -153,24 +154,6 @@ export class Oauth2Controller extends VikeController {
       })
 
       return this.response(ctx).redirect(route("auth_register_profile")).send()
-
-      // await this.oauth2AccountsRepository.accounts().create({
-      //   provider: params.provider,
-      //   providerId: response.user.providerId,
-      //   userId: userExists?.id,
-      // })
-
-      // create user, and create account.
-
-      // 1. user previously signed up with email/password, and now trying to login with Oauth2 account.
-      //        // 1. This means on Google/Github account email matches a user (userExists = true)
-      //        // Solution: Reject login attempt with a message telling user to login with email/password
-      // 2. user previously signed up with google, and now trying to login with github.
-      //        // 1. Solution, reject login and ask user to login with google.
-      // 4. user previously signed up with google, and now trying to login with google.
-      //        // Solution: login user successfully.
-      // 5. user previously signed up with email/password, and now trying to login with github.
-      //       // Solution: Reject login attempt with a message telling user to login with email/password
     } catch (error) {
       d({ error })
       return this.response(ctx)

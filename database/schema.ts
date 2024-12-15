@@ -110,7 +110,7 @@ export const oauth2Accounts = mysqlTable(
       .notNull(),
     provider: mysqlEnum("provider", ["github", "google"]).notNull(),
     providerId: varchar("providerId", { length: 80 }).unique().notNull(),
-    accessToken: varchar("accessToken", { length: 256 }).notNull(),
+    accessToken: text("accessToken").notNull(),
   },
   (table) => ({
     Oauth2AccountProviderUserId: unique("Oauth2AccountProviderUserIdKey").on(

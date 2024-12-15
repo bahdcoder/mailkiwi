@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "9ea42b42-dc61-4af5-b67f-05aa8133e53b",
+  "id": "e14c436d-081a-4110-a75b-e3d5673ebd9f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -2221,7 +2221,7 @@
         },
         "accessToken": {
           "name": "accessToken",
-          "type": "varchar(256)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
