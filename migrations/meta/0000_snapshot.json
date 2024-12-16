@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "e14c436d-081a-4110-a75b-e3d5673ebd9f",
+  "id": "a8c95a14-6e2b-4356-8d0a-f81f4979ff58",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -200,7 +200,7 @@
           "name": "name",
           "type": "varchar(50)",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "teamId": {
@@ -3438,6 +3438,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "audienceId": {
+          "name": "audienceId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "websiteDomain": {
           "name": "websiteDomain",
           "type": "varchar(120)",
@@ -3502,6 +3509,15 @@
           "tableFrom": "websites",
           "tableTo": "teams",
           "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "websites_audienceId_audiences_id_fk": {
+          "name": "websites_audienceId_audiences_id_fk",
+          "tableFrom": "websites",
+          "tableTo": "audiences",
+          "columnsFrom": ["audienceId"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"

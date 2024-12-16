@@ -7,6 +7,8 @@ import * as ProductCard from "@/pages/components/products/product-card.jsx"
 import { Heading } from "@kibamail/owly/heading"
 import { Text } from "@kibamail/owly/text"
 
+import { route } from "@/shared/routes/route_aliases.js"
+
 function WelcomePage() {
   return (
     <div className="w-full max-w-2xl mx-auto px-4 lg:px-0 py-12">
@@ -22,7 +24,7 @@ function WelcomePage() {
         </Text>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
-          <ProductCard.Root>
+          <ProductCard.Root href={route("letters")}>
             <LettersIcon className="w-10 h-10" />
 
             <Text size="lg" className="font-semibold">
@@ -75,6 +77,19 @@ function WelcomePage() {
 
             <Text size="lg" className="font-semibold">
               Insights
+            </Text>
+
+            <Text className="kb-content-tertiary">
+              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
+              libero et velit interdum.
+            </Text>
+          </ProductCard.Root>
+
+          <ProductCard.Root>
+            <EngageIcon className="w-10 h-10" />
+
+            <Text size="lg" className="font-semibold">
+              Monetise
             </Text>
 
             <Text className="kb-content-tertiary">

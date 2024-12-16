@@ -8,7 +8,7 @@ import { AudienceRepository } from "@/audiences/repositories/audience_repository
 import { createUser } from "@/tests/mocks/auth/users.js"
 import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
 
-import { audiences } from "@/database/schema.js"
+import { audiences, websites } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
@@ -156,6 +156,8 @@ describe("@audiences", () => {
         path: "/audiences",
         body: {
           name: faker.commerce.productName(),
+          product: "letters",
+          slug: faker.lorem.slug(),
         },
       },
       team.id,
@@ -169,6 +171,8 @@ describe("@audiences", () => {
       createEntireTeam: true,
     })
 
+    const websiteSlug = faker.lorem.slug()
+
     const response = await makeRequestAsUser(
       managerUser,
       {
@@ -176,12 +180,24 @@ describe("@audiences", () => {
         path: "/audiences",
         body: {
           name: faker.commerce.productName(),
+          product: "letters",
+          slug: websiteSlug,
         },
       },
       team.id,
     )
 
+    const json = await response.json()
+
     expect(response.status).toBe(200)
+
+    const [website] = await makeDatabase()
+      .select()
+      .from(websites)
+      .where(eq(websites.slug, websiteSlug))
+
+    expect(website).toBeDefined()
+    expect(website.audienceId).toEqual(json.id)
   })
 
   test("can create an audience when properly authenticated and authorized", async ({
@@ -192,6 +208,8 @@ describe("@audiences", () => {
 
     const payload = {
       name: faker.commerce.productName(),
+      product: "letters",
+      slug: faker.lorem.slug(),
     }
 
     const response = await makeRequestAsUser(user, {
@@ -223,6 +241,8 @@ describe("@audiences", () => {
       path: "/audiences",
       body: {
         name: "Newsletter",
+        product: "letters",
+        slug: faker.lorem.slug(),
       },
       headers: {
         [appEnv.software.teamHeader]: unauthorizedUser?.teams?.[0]?.id?.toString(),

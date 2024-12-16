@@ -270,7 +270,7 @@ export const teamMemberships = mysqlTable("teamMemberships", {
 
 export const audiences = mysqlTable("audiences", {
   id,
-  name: varchar("name", { length: 50 }).notNull(),
+  name: varchar("name", { length: 50 }),
   teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
@@ -284,6 +284,9 @@ export const websites = mysqlTable("websites", {
     .references(() => teams.id)
     .notNull(),
   slug: varchar("slug", { length: 72 }), // the subdomain of this specific newsletter website
+  audienceId: primaryKeyCuid("audienceId")
+    .references(() => audiences.id)
+    .notNull(),
   // Custom domain for website
 
   // Example: fastmedia.kibaletters.com -> fastmedia is the current website slug.

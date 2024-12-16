@@ -1,3 +1,4 @@
+import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
 import { and, eq } from "drizzle-orm"
 
 import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
@@ -43,11 +44,19 @@ export class AudienceRepository extends BaseRepository {
   async create(payload: CreateAudienceDto, teamId: string) {
     const id = this.cuid()
 
-    await this.database.insert(audiences).values({
-      id,
-      teamId,
-      name: payload.name,
-      product: payload.product,
+    await this.database.transaction(async (trx) => {
+      await trx.insert(audiences).values({
+        id,
+        teamId,
+        name: payload.name ?? payload.slug,
+        product: payload.product,
+      })
+
+      await container.make(WebsiteRepository).transaction(trx).create({
+        teamId,
+        slug: payload.slug,
+        audienceId: id,
+      })
     })
 
     return { id }

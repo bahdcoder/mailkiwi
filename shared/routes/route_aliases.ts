@@ -39,6 +39,14 @@ export const aliases = {
   // error pages
   error_404: "/e/404",
   error_500: "/e/500",
+
+  // letters
+
+  letters_welcome: w("letters/welcome"),
+  letters_onboarding: w("letters/onboarding"),
+
+  // audiences
+  audience_create: "/audiences",
 } as const
 
 export function route(

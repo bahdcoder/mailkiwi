@@ -24,7 +24,7 @@ CREATE TABLE `accessTokens` (
 --> statement-breakpoint
 CREATE TABLE `audiences` (
 	`id` binary(16) NOT NULL,
-	`name` varchar(50) NOT NULL,
+	`name` varchar(50),
 	`teamId` binary(16) NOT NULL,
 	`knownProperties` json,
 	`product` enum('engage','letters') DEFAULT 'engage',
@@ -473,6 +473,7 @@ CREATE TABLE `websites` (
 	`id` binary(16) NOT NULL,
 	`teamId` binary(16) NOT NULL,
 	`slug` varchar(72),
+	`audienceId` binary(16) NOT NULL,
 	`websiteDomain` varchar(120),
 	`websiteDomainCnameValue` varchar(120),
 	`websiteDomainVerifiedAt` timestamp,
@@ -551,6 +552,7 @@ ALTER TABLE `teams` ADD CONSTRAINT `teams_userId_users_id_fk` FOREIGN KEY (`user
 ALTER TABLE `webhooks` ADD CONSTRAINT `webhooks_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `websitePages` ADD CONSTRAINT `websitePages_websiteId_websites_id_fk` FOREIGN KEY (`websiteId`) REFERENCES `websites`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `websites` ADD CONSTRAINT `websites_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `websites` ADD CONSTRAINT `websites_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX `messageChannelIdIndex` ON `messages` (`channelId`);--> statement-breakpoint
 CREATE INDEX `messageCreatedAtIndex` ON `messages` (`createdAt`);--> statement-breakpoint
 CREATE INDEX `tagsOnContactsTagIdContactIdIdx` ON `tagsOnContacts` (`tagId`,`contactId`);

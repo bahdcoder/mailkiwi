@@ -26,17 +26,14 @@ export class WebsiteRepository extends BaseRepository {
     const id = this.cuid()
     const homePageId = this.cuid()
 
-    await this.database.transaction(async function (trx) {
-      await trx.insert(websites).values({ ...payload, id })
-
-      await trx.insert(websitePages).values({
-        path: "/",
-        id: homePageId,
-        websiteId: id,
-        publishedAt: new Date(),
-        websiteContent: { type: "doc", content: [] },
-        draftWebsiteContent: { type: "doc", content: [] },
-      })
+    await this.database.insert(websites).values({ ...payload, id })
+    await this.database.insert(websitePages).values({
+      path: "/",
+      id: homePageId,
+      websiteId: id,
+      publishedAt: new Date(),
+      websiteContent: { type: "doc", content: [] }, // TODO: Replace with correct website content once we have a website builder.
+      draftWebsiteContent: { type: "doc", content: [] }, // TODO: Replace with correct website content once we have a website builder.
     })
 
     return { id, homePageId }

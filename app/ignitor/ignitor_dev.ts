@@ -2,15 +2,15 @@ import { Ignitor } from "./ignitor.js"
 import { WebsocketServer } from "@/chat/websocket/websocket_server.js"
 import { createAdaptorServer, serve } from "@hono/node-server"
 import { readFile } from "fs/promises"
-import { setCookie } from "hono/cookie"
-import { HandlerResponse } from "hono/types"
+import { HandlerResponse, Next } from "hono/types"
 import { Server } from "https"
 import { createServer as createHttpsServer } from "node:https"
 import path from "path"
 import { createServer as createViteServer } from "vite"
 
+import { EnsureUserAndTeamSessionsMiddleware } from "@/auth/middleware/ensure_user_and_team_sessions_middleware.js"
+
 import { VikeController } from "@/shared/controllers/vike_controller.js"
-import { middleware } from "@/shared/middleware/middleware_aliases.js"
 import { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
@@ -36,11 +36,18 @@ export class IgnitorDev extends Ignitor {
   }
 
   protected registerCatchAllServerRoute() {
-    this.app.all("*", (ctx, next) => {
-      return container
-        .make(VikeController)
-        .page(ctx as unknown as HonoContext, next) as HandlerResponse<string>
-    })
+    const handler = (ctx: HonoContext, next: Next) =>
+      container.make(VikeController).page(ctx as unknown as HonoContext, next)
+
+    this.app.get(
+      "/w/*",
+      container.make(EnsureUserAndTeamSessionsMiddleware).handle,
+      handler,
+    )
+
+    this.app.get("/auth/*", handler)
+
+    this.app.all("*", handler)
   }
 
   async startHttpServer() {
