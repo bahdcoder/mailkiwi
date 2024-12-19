@@ -12,6 +12,11 @@ export interface DefaultPageProps {
   team: TeamWithMemberships
   userAgent: UAParser.IResult
   memberships: (TeamMembership & { team: Team })[]
+  letters: {
+    audience: {
+      id: string
+    }
+  }
 }
 
 declare global {
@@ -23,6 +28,7 @@ declare global {
       isMobile: boolean
       flash: string
       memberships: DefaultPageProps["memberships"]
+      letters: DefaultPageProps["letters"]
     }
   }
 }

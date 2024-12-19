@@ -1,5 +1,8 @@
 import { ArrowLeftIcon } from "@/pages/components/icons/arrow-left.svg.jsx"
-import { OnboardingProvider } from "@/pages/w/letters/onboarding/steps/context_provider.jsx"
+import {
+  FormState,
+  OnboardingProvider,
+} from "@/pages/w/letters/onboarding/steps/context_provider.jsx"
 import { CreatePublicationStep } from "@/pages/w/letters/onboarding/steps/step_one_create_publication.jsx"
 import { WriteYourFirstLetterStep } from "@/pages/w/letters/onboarding/steps/step_three_write_your_first_letter.jsx"
 import { AddSubscribersStep } from "@/pages/w/letters/onboarding/steps/step_two_add_subscribers.jsx"
@@ -11,10 +14,16 @@ import React from "react"
 import { route } from "@/shared/routes/route_aliases.js"
 
 function LettersOnboarding() {
-  const [step, setStep] = React.useState(1)
+  const [step, setStep] = React.useState(0)
+  const [formState, setFormState] = React.useState<FormState>({ audienceId: "" })
 
   return (
-    <OnboardingProvider step={step} setStep={setStep}>
+    <OnboardingProvider
+      step={step}
+      setStep={setStep}
+      formState={formState}
+      setFormState={setFormState}
+    >
       <div className="pr-4 pb-4 pl-2 pt-2">
         <div className="w-full flex items-center">
           <Button asChild variant="tertiary" className="kb-content-primary">

@@ -17,11 +17,11 @@ export interface ServerSubmissionResponse<TResponse = Record<"path" | string, an
   errorsMap: Record<string, string>
 }
 
-export interface UseServerFormMutationProps
+export interface UseServerFormMutationProps<TResponse = Record<"path" | string, any>>
   extends Omit<
     MutationOptions<
-      ServerSubmissionResponse,
-      ServerSubmissionResponse,
+      ServerSubmissionResponse<TResponse>,
+      ServerSubmissionResponse<TResponse>,
       Record<string, FormDataEntryValue>
     >,
     "mutationFn"
@@ -30,11 +30,11 @@ export interface UseServerFormMutationProps
   method?: "POST" | "PUT" | "DELETE" | "PATCH"
 }
 
-export function useServerFormMutation({
+export function useServerFormMutation<T extends Record<"path" | string, any>>({
   action,
   method = "POST",
   ...mutationOptions
-}: UseServerFormMutationProps) {
+}: UseServerFormMutationProps<T>) {
   const mutation = useMutation({
     async mutationFn(form) {
       const response = await fetch(action, {
@@ -62,7 +62,7 @@ export function useServerFormMutation({
         await (navigate as any)(submissionResponse.payload.path)
       }
 
-      return submissionResponse
+      return submissionResponse as ServerSubmissionResponse<T>
     },
     ...mutationOptions,
   })

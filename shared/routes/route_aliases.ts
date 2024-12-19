@@ -47,6 +47,9 @@ export const aliases = {
 
   // audiences
   audience_create: "/audiences",
+
+  // imports
+  contacts_import: "/audiences/:audienceId/imports",
 } as const
 
 export function route(

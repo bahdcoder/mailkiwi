@@ -17,12 +17,13 @@ import { route } from "@/shared/routes/route_aliases.js"
 
 export function CreatePublicationStep() {
   const ctx = usePageContext()
-  const { step, setStep } = useOnboardingContext("CreatePublicationStep")
+  const { step, setStep, setFormState } = useOnboardingContext("CreatePublicationStep")
 
-  const { serverFormProps, isPending, error } = useServerFormMutation({
+  const { serverFormProps, isPending, error } = useServerFormMutation<{ id: string }>({
     action: route("audience_create"),
-    onSuccess() {
+    onSuccess(response) {
       setStep((current) => current + 1)
+      setFormState((current) => ({ ...current, audienceId: response.payload.id }))
     },
   })
 

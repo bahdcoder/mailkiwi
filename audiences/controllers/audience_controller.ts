@@ -41,7 +41,7 @@ export class AudienceController extends BaseController {
       .field(audiences.id)
       .next()
 
-    return ctx.json(data)
+    return this.response(ctx).json(data).send()
   }
 
   async store(ctx: HonoContext) {
@@ -51,7 +51,7 @@ export class AudienceController extends BaseController {
 
     const audience = await container.make(CreateAudienceAction).handle(data, team.id)
 
-    return ctx.json(audience)
+    return this.response(ctx).json(audience).send()
   }
 
   async update(ctx: HonoContext) {
@@ -61,6 +61,6 @@ export class AudienceController extends BaseController {
 
     const audience = container.resolve(UpdateAudienceAction).handle(data, team.id)
 
-    return ctx.json(audience)
+    return this.response(ctx).json(audience).send()
   }
 }
