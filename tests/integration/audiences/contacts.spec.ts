@@ -534,7 +534,7 @@ describe("@contacts imports", () => {
       email: "Email",
       lastName: "Last Name",
       firstName: "First Name",
-      customProperties: [
+      customPropertiesHeaders: [
         "Index",
         "Customer Id",
         "Company",

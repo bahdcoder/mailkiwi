@@ -1,8 +1,13 @@
 import { createContext } from "@radix-ui/react-context"
 
+import { UpdateContactImportSettingsDto } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
+
 export type FormState = {
   audienceId: string
+  contactImportId: string
+  propertiesMap: UpdateContactImportSettingsDto["propertiesMap"]
 }
+
 export const [OnboardingProvider, useOnboardingContext] = createContext<{
   step: number
   setStep: React.Dispatch<React.SetStateAction<number>>

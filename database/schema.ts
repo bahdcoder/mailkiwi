@@ -356,6 +356,7 @@ export const contactImports = mysqlTable("contactImports", {
       firstName: string
       lastName: string
       headers: string[]
+      customPropertiesHeaders: string[]
       customProperties?:
         | Record<string, Omit<KnownAudienceProperty, "options">>
         | undefined

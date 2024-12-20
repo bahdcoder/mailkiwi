@@ -41,6 +41,7 @@ export class UpdateContactImportSettingsAction {
         propertiesMap: {
           ...payload.propertiesMap,
           headers,
+          customPropertiesHeaders: contactImport.propertiesMap.customPropertiesHeaders,
           tagIds: payload.tagIds ?? [],
           tags: payload.tags ?? [],
         },

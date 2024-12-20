@@ -100,7 +100,11 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
       return controller
         .response(requestContext)
         .redirect(redirectToPath)
-        .json(jsonPayload, statusCode)
+        .json(
+          jsonPayload,
+          statusCode,
+          ctx.req.header("Content-Type")?.includes("multipart/form-data"),
+        )
         .send()
     })
 

@@ -8,6 +8,7 @@ import { WriteYourFirstLetterStep } from "@/pages/w/letters/onboarding/steps/ste
 import { AddSubscribersStep } from "@/pages/w/letters/onboarding/steps/step_two_add_subscribers.jsx"
 import { Button } from "@kibamail/owly/button"
 import { Progress } from "@kibamail/owly/progress"
+import "@kibamail/owly/styles/select-field.css"
 import { Text } from "@kibamail/owly/text"
 import React from "react"
 
@@ -16,7 +17,13 @@ import { route } from "@/shared/routes/route_aliases.js"
 function LettersOnboarding() {
   const [step, setStep] = React.useState(1)
   const [formState, setFormState] = React.useState<FormState>({
-    audienceId: "e6257990-bead-11ef-a5af-af970760e85e",
+    audienceId: "73d58f40-bed2-11ef-8f0b-d31974ad4e0e",
+    contactImportId: "",
+    propertiesMap: {
+      email: "",
+      firstName: "",
+      lastName: "",
+    },
   })
 
   return (

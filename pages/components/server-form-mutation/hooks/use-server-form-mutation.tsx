@@ -15,6 +15,7 @@ export interface ServerSubmissionResponse<TResponse = Record<"path" | string, an
   message: string
   errors: Record<"field" | "message", string>[]
   errorsMap: Record<string, string>
+  errorsList: string[]
 }
 
 export interface UseServerFormMutationProps<TResponse = Record<"path" | string, any>>
@@ -28,17 +29,17 @@ export interface UseServerFormMutationProps<TResponse = Record<"path" | string, 
   > {
   action: string
   method?: "POST" | "PUT" | "DELETE" | "PATCH"
+  onProgress?: XHRHelperConfig["onProgress"]
 }
 
 export function useServerFormMutation<T extends Record<"path" | string, any>>({
   action,
   method = "POST",
+  onProgress,
   ...mutationOptions
 }: UseServerFormMutationProps<T>) {
   const mutation = useMutation({
     async mutationFn(form) {
-      console.log({ form })
-
       let isAMultiPartRequest = false
 
       for (const key in form) {
@@ -60,22 +61,35 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
         }
       }
 
-      const response = await fetch(action, {
-        method,
-        body: isAMultiPartRequest ? multipartForm : JSON.stringify(form),
-        headers: isAMultiPartRequest
-          ? undefined
-          : {
-              "Content-Type": "application/json",
-            },
-      })
+      let response: Response
+
+      if (isAMultiPartRequest) {
+        response = await xhrHelper({
+          method,
+          onProgress,
+          url: action,
+          formData: multipartForm,
+        })
+      } else {
+        response = await fetch(action, {
+          method,
+          body: JSON.stringify(form),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+      }
 
       const submissionResponse: ServerSubmissionResponse = await response.json()
 
       if (submissionResponse?.payload?.errors) {
         submissionResponse.errorsMap = {}
+        submissionResponse.errorsList = []
+
         for (const error of submissionResponse?.payload?.errors) {
           submissionResponse.errorsMap[error.field] = error.message
+
+          submissionResponse.errorsList.push(error.message)
         }
       }
 
@@ -152,3 +166,56 @@ export const ServerForm = React.forwardRef<React.ElementRef<"form">, ServerFormP
     )
   },
 )
+
+interface XHRHelperConfig {
+  formData: FormData
+  url: string
+  method?: UseServerFormMutationProps["method"]
+  onProgress?: (progress: {
+    percent: number
+    loaded: number
+    total: number | null
+  }) => void
+}
+
+function xhrHelper<T>(config: XHRHelperConfig): Promise<any> {
+  const { formData, url, method = "POST", onProgress } = config
+
+  async function json(payload: any) {
+    return payload
+  }
+
+  return new Promise((resolve) => {
+    const xhr = new XMLHttpRequest()
+    xhr.open(method, url, true)
+
+    xhr.onload = () => {
+      const jsonResponse: T = JSON.parse(xhr.responseText)
+
+      resolve({
+        ok: xhr.status >= 200 && xhr.status < 300,
+        json: () => json(jsonResponse),
+      })
+    }
+
+    xhr.onerror = () => {
+      resolve({
+        ok: false,
+        json: () => json({ message: "Network error occurred during the request." }),
+      })
+    }
+
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        const percent = event.lengthComputable ? (event.loaded / event.total) * 100 : 0
+        onProgress({
+          percent: Math.ceil(percent),
+          loaded: event.loaded,
+          total: event.lengthComputable ? event.total : null,
+        })
+      }
+    }
+
+    xhr.send(formData)
+  })
+}

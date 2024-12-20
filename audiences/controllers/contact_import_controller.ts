@@ -40,11 +40,13 @@ export class ContactImportController extends BaseController {
 
     const file = form.get("file") as File
 
-    const { id, propertiesMap } = await container
+    const { id, propertiesMap, headerCounts, headerSamples } = await container
       .make(CreateContactImportAction)
       .handle(file, audience.id)
 
-    return this.response(ctx).json({ id, propertiesMap }, 200, true).send()
+    return this.response(ctx)
+      .json({ id, propertiesMap, headerCounts, headerSamples }, 200, true)
+      .send()
   }
 
   async update(ctx: HonoContext) {

@@ -5,6 +5,7 @@ import { Readable } from "stream"
 
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
+import { readHeadersAndRowsFromCsvStream } from "@/shared/utils/csv/read_headers_and_rows_from_csv_stream.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 import { container } from "@/utils/typi.js"
@@ -40,27 +41,57 @@ export class CreateContactImportAction {
 
     const stream = await minio.read()
 
-    const headers = await this.readHeadersAndFirstNRows(stream)
-    const propertiesMap = this.mapCsvHeaders(headers)
+    const { headers, headerCounts, headerSamples } =
+      await this.readHeadersAndFirstNRows(stream)
+
+    const { customProperties, ...propertiesMap } = this.mapCsvHeaders(headers)
 
     const { id } = await this.contactImportRepository.create({
       uploadUrl: url,
       audienceId,
       status: "PENDING",
       fileIdentifier,
-      propertiesMap,
+      propertiesMap: { ...propertiesMap, customPropertiesHeaders: customProperties },
     })
 
-    return { id, extension, propertiesMap }
+    return {
+      id,
+      extension,
+      headerCounts,
+      headerSamples,
+      propertiesMap: { ...propertiesMap, customPropertiesHeaders: customProperties },
+    }
   }
 
-  private async readHeadersAndFirstNRows(stream: Readable, n = 3): Promise<string[]> {
-    const parser = stream.pipe(CsvParser())
+  private async readHeadersAndFirstNRows(
+    stream: Readable,
+    n = 3,
+  ): Promise<{
+    headers: string[]
+    headerCounts: Record<string, number>
+    headerSamples: Record<string, string[]>
+  }> {
+    const { headers, rows } = await readHeadersAndRowsFromCsvStream(stream)
 
-    return new Promise(function (resolve, reject) {
-      parser.on("headers", resolve)
-      parser.on("error", reject)
-    })
+    const headerCounts: Record<string, number> = {}
+    const headerSamples: Record<string, string[]> = {}
+
+    for (const row of rows) {
+      for (const header of headers) {
+        headerCounts[header] = headerCounts[header] ?? 0
+        headerSamples[header] = headerSamples[header] ?? []
+
+        if (row[header]) {
+          headerCounts[header]++
+
+          if (headerSamples[header].length < 5) {
+            headerSamples[header].push(row[header])
+          }
+        }
+      }
+    }
+
+    return { headers, headerCounts, headerSamples }
   }
 
   private mapCsvHeaders(headers: string[]): HeaderMap {
