@@ -13,13 +13,13 @@ type HeaderMap = {
   email: string
   firstName: string
   lastName: string
-  attributes: string[]
+  customProperties: string[]
   headers: string[]
   tags: string[]
   tagIds: string[]
 }
 
-type FieldType = keyof Omit<HeaderMap, "attributes" | "headers" | "tags" | "tagIds">
+type FieldType = keyof Omit<HeaderMap, "customProperties" | "headers" | "tags" | "tagIds">
 
 export class CreateContactImportAction {
   constructor(
@@ -41,16 +41,17 @@ export class CreateContactImportAction {
     const stream = await minio.read()
 
     const headers = await this.readHeadersAndFirstNRows(stream)
+    const propertiesMap = this.mapCsvHeaders(headers)
 
     const { id } = await this.contactImportRepository.create({
       uploadUrl: url,
       audienceId,
       status: "PENDING",
       fileIdentifier,
-      attributesMap: this.mapCsvHeaders(headers),
+      propertiesMap,
     })
 
-    return { id, extension }
+    return { id, extension, propertiesMap }
   }
 
   private async readHeadersAndFirstNRows(stream: Readable, n = 3): Promise<string[]> {
@@ -67,7 +68,7 @@ export class CreateContactImportAction {
       email: "",
       firstName: "",
       lastName: "",
-      attributes: [],
+      customProperties: [],
       tags: [],
       tagIds: [],
       headers,
@@ -91,7 +92,7 @@ export class CreateContactImportAction {
       }
 
       if (!matched) {
-        csvToContactAttributes.attributes.push(header)
+        csvToContactAttributes.customProperties.push(header)
       }
     })
 

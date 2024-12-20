@@ -28,7 +28,7 @@ const PropertiesObjectSchema = record(
     label: string(),
     type: picklist(["boolean", "float", "text", "date"]),
   }),
-  "Please provide a valid properties object.",
+  "Please provide a valid object of custom properties.",
 )
 
 export const UpdateContactImportSettingsSchema = objectAsync({
@@ -51,11 +51,11 @@ export const UpdateContactImportSettingsSchema = objectAsync({
       return existingTags.length === input.length
     }, "One or more of the provided tag Ids is invalid."),
   ), // existing tags in the database
-  attributesMap: objectAsync({
+  propertiesMap: objectAsync({
     firstName: pipe(string("Please define the first name attribute."), nonEmpty()),
     lastName: pipe(string("Please define the last name attribute."), nonEmpty()),
     email: pipe(string("Please define the email attribute."), nonEmpty()),
-    properties: optional(PropertiesObjectSchema),
+    customProperties: optional(PropertiesObjectSchema),
   }),
 })
 

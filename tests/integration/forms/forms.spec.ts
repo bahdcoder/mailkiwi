@@ -124,8 +124,6 @@ describe("@forms", () => {
       },
     })
 
-    d(await response.json())
-
     expect(response.status).toBe(200)
 
     const form = await formRepository.forms().findById(formId)

@@ -27,7 +27,6 @@ describe("@audiences", () => {
     expect,
   }) => {
     const { user, team } = await createUser()
-    const database = makeDatabase()
 
     const payload = {
       name: faker.commerce.productName(),
@@ -43,7 +42,7 @@ describe("@audiences", () => {
 
     expect(response.status).toBe(200)
 
-    const id = (await response.json())?.id
+    const id = (await response.json())?.payload?.id
 
     const createdAudience = await container.make(AudienceRepository).findById(id)
 
@@ -100,8 +99,8 @@ describe("@audiences", () => {
 
     expect(response.status).toBe(200)
 
-    expect(json.data).toHaveLength(10)
-    expect(json.next).toBeDefined()
+    expect(json.payload.data).toHaveLength(10)
+    expect(json.payload.next).toBeDefined()
   })
 
   test("can fetch audiences filtered by product", async ({ expect }) => {
@@ -139,8 +138,8 @@ describe("@audiences", () => {
 
     expect(response.status).toBe(200)
 
-    expect(json.data).toHaveLength(1)
-    expect(json.finished).toBe(true)
+    expect(json.payload.data).toHaveLength(1)
+    expect(json.payload.finished).toBe(true)
   })
 
   test("cannot create an audience if not a member of the team or project", async ({
@@ -197,7 +196,7 @@ describe("@audiences", () => {
       .where(eq(websites.slug, websiteSlug))
 
     expect(website).toBeDefined()
-    expect(website.audienceId).toEqual(json.id)
+    expect(website.audienceId).toEqual(json.payload.id)
   })
 
   test("can create an audience when properly authenticated and authorized", async ({

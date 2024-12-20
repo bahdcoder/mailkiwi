@@ -138,7 +138,8 @@ function FileUploadDropbox({ ...props }: FileUploadDropboxProps) {
         <Button
           {...getTriggerProps()}
           variant="tertiary"
-          className="kb-content-tertiary -mt-1"
+          type="button"
+          className="kb-content-tertiary -mt-0.5"
         >
           or click here to select from your device
         </Button>

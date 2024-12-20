@@ -114,7 +114,7 @@ CREATE TABLE `contactImports` (
 	`subscribeAllContacts` boolean DEFAULT true,
 	`updateExistingContacts` boolean DEFAULT true,
 	`createdAt` timestamp DEFAULT (now()),
-	`attributesMap` json NOT NULL,
+	`propertiesMap` json NOT NULL,
 	CONSTRAINT `contactImports_id` PRIMARY KEY(`id`),
 	CONSTRAINT `contactImports_fileIdentifier_unique` UNIQUE(`fileIdentifier`)
 );

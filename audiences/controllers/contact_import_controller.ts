@@ -40,11 +40,11 @@ export class ContactImportController extends BaseController {
 
     const file = form.get("file") as File
 
-    const { id } = await container
+    const { id, propertiesMap } = await container
       .make(CreateContactImportAction)
       .handle(file, audience.id)
 
-    return ctx.json({ id })
+    return this.response(ctx).json({ id, propertiesMap }, 200, true).send()
   }
 
   async update(ctx: HonoContext) {
@@ -57,7 +57,7 @@ export class ContactImportController extends BaseController {
 
     await container.make(UpdateContactImportSettingsAction).handle(contactImport, data)
 
-    return ctx.json({ id: 1 })
+    return this.response(ctx).json({ id: contactImport.id }).send()
   }
 
   private async ensureContactImportExists(ctx: HonoContext) {

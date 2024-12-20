@@ -350,13 +350,15 @@ export const contactImports = mysqlTable("contactImports", {
   subscribeAllContacts: boolean("subscribeAllContacts").default(true),
   updateExistingContacts: boolean("updateExistingContacts").default(true),
   createdAt: timestamp("createdAt").defaultNow(),
-  attributesMap: json("attributesMap")
+  propertiesMap: json("propertiesMap")
     .$type<{
       email: string
       firstName: string
       lastName: string
       headers: string[]
-      properties?: Record<string, Omit<KnownAudienceProperty, "options">> | undefined
+      customProperties?:
+        | Record<string, Omit<KnownAudienceProperty, "options">>
+        | undefined
       tags: string[] // for each of these, save a new tag to the tags table for this audience.
       tagIds: string[]
     }>()

@@ -115,10 +115,10 @@ export async function createBroadcastForUser(
         },
         ...(options?.updateWithABTestsContent
           ? {
-              emailContentVariants: options?.weights?.map((weight) => ({
-                ...createFakeAbTestEmailContent(),
-                weight,
-              })) ?? [
+            emailContentVariants: options?.weights?.map((weight) => ({
+              ...createFakeAbTestEmailContent(),
+              weight,
+            })) ?? [
                 createFakeAbTestEmailContent({
                   weight: 25,
                 }),
@@ -126,7 +126,7 @@ export async function createBroadcastForUser(
                   weight: 15,
                 }),
               ],
-            }
+          }
           : {}),
       },
     })
@@ -230,6 +230,7 @@ export const createUser = async ({
     {
       name: "Newsletter",
       slug: faker.number.int({ min: 10, max: 100 }) + "-" + faker.lorem.slug(),
+      product: 'engage'
     },
     team.id,
   )
@@ -337,6 +338,7 @@ export const createUser = async ({
       websiteDomain: "news-" + faker.lorem.slug() + ".fastmedia.com",
       websiteDomainVerifiedAt: DateTime.now().toJSDate(),
       websiteDomainCnameValue: `${faker.lorem.slug()}.fastmedia.com`,
+      audienceId: audienceForNewsletter?.id || audience?.id,
     })
   }
 

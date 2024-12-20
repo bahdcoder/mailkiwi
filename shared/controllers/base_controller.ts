@@ -65,6 +65,8 @@ interface ResponseConfiguration {
 class ResponseBuilder {
   constructor(protected ctx: HonoContext) {}
 
+  protected forceJson?: boolean = false
+
   protected configuration: ResponseConfiguration = {
     type: "json",
     payload: {
@@ -92,8 +94,10 @@ class ResponseBuilder {
   json = (
     content: ResponseConfiguration["payload"]["json"]["content"],
     status?: StatusCode,
+    force = false,
   ) => {
     this.configuration.type = "json"
+    this.forceJson = force
     this.configuration.payload.json = {
       content,
       status,
@@ -103,6 +107,10 @@ class ResponseBuilder {
   }
 
   protected isRequestAJsonSubmission = () => {
+    if (this.forceJson) {
+      return true
+    }
+
     return this.ctx.req.header("Content-Type") === "application/json"
   }
 

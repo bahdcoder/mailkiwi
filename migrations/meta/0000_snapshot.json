@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "a8c95a14-6e2b-4356-8d0a-f81f4979ff58",
+  "id": "910e7d12-2e42-46e8-8375-3a306628f4b6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -885,8 +885,8 @@
           "autoincrement": false,
           "default": "(now())"
         },
-        "attributesMap": {
-          "name": "attributesMap",
+        "propertiesMap": {
+          "name": "propertiesMap",
           "type": "json",
           "primaryKey": false,
           "notNull": true,

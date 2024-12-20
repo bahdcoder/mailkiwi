@@ -23,9 +23,9 @@ export class UpdateContactImportSettingsAction {
     contactImport: ContactImport,
     payload: UpdateContactImportSettingsDto,
   ) => {
-    const headers = contactImport.attributesMap.headers
+    const headers = contactImport.propertiesMap.headers
 
-    this.validateAttributes(payload, contactImport.attributesMap.headers)
+    this.validateAttributes(payload, contactImport.propertiesMap.headers)
 
     await this.database.transaction(async (trx) => {
       await this.contactImportRepository.transaction(trx).update(contactImport.id, {
@@ -38,8 +38,8 @@ export class UpdateContactImportSettingsAction {
           payload.updateExistingContacts === undefined
             ? true
             : payload.updateExistingContacts,
-        attributesMap: {
-          ...payload.attributesMap,
+        propertiesMap: {
+          ...payload.propertiesMap,
           headers,
           tagIds: payload.tagIds ?? [],
           tags: payload.tags ?? [],
@@ -50,7 +50,7 @@ export class UpdateContactImportSettingsAction {
         .transaction(trx)
         .updateKnownProperties(
           contactImport.audienceId,
-          Object.values(payload.attributesMap.properties ?? {}),
+          Object.values(payload.propertiesMap.customProperties ?? {}),
         )
     })
 
@@ -63,10 +63,10 @@ export class UpdateContactImportSettingsAction {
 
   private validateAttributes(payload: UpdateContactImportSettingsDto, headers: string[]) {
     const headersFromPayload: string[] = [
-      payload.attributesMap.email,
-      payload.attributesMap.firstName,
-      payload.attributesMap.lastName,
-      ...Object.keys(payload.attributesMap.properties ?? {}),
+      payload.propertiesMap.email,
+      payload.propertiesMap.firstName,
+      payload.propertiesMap.lastName,
+      ...Object.keys(payload.propertiesMap.customProperties ?? {}),
     ]
 
     const headersSet = new Set(headers)
@@ -77,7 +77,7 @@ export class UpdateContactImportSettingsAction {
         {
           message:
             "Invalid headers were provided. Please make sure the headers match the values in the uploaded CSV.",
-          field: "attributesMap",
+          field: "propertiesMap",
         },
       ])
     }

@@ -35,38 +35,6 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
     return AVAILABLE_QUEUES.contacts
   }
 
-  guessCsvCustomProperties(properties: string[], rows: any[]) {
-    return properties.map((property) => {
-      const guessedTypesFrequency: Record<string, number> = {}
-
-      for (const row of rows) {
-        const type = guessValueType(row[property])
-
-        guessedTypesFrequency[type] = (guessedTypesFrequency[type] || 0) + 1
-      }
-
-      function getKeyWithHighestValue(record: Record<string, number>) {
-        let maxKey: string | null = null
-        let maxValue = -Infinity // Initialize with the smallest possible value
-
-        // Iterate over the object's keys and values
-        for (const [key, value] of Object.entries(record)) {
-          if (value > maxValue) {
-            maxValue = value
-            maxKey = key
-          }
-        }
-
-        return maxKey as KnownAudienceProperty["type"]
-      }
-
-      return {
-        name: property,
-        type: getKeyWithHighestValue(guessedTypesFrequency),
-      }
-    })
-  }
-
   async handle({ database, payload }: JobContext<ImportContactsJobPayload>) {
     const contactImport = await container
       .make(ContactImportRepository)
@@ -103,7 +71,7 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
     const chunkSize = 1000
 
     await database.transaction(async (tx) => {
-      const tagsToCreate = contactImport.attributesMap.tags.map((tag) => ({
+      const tagsToCreate = contactImport.propertiesMap.tags.map((tag) => ({
         id: cuid(),
         name: tag,
         audienceId: contactImport.audienceId,
@@ -116,7 +84,7 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
 
       const tagIdsToAttachToContacts = [
         ...createdTags.map((tag) => tag.id),
-        ...contactImport.attributesMap.tagIds,
+        ...contactImport.propertiesMap.tagIds,
       ]
 
       // const tagsToCreate
@@ -127,13 +95,11 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
 
         const values = batch.map((row) => {
           const contactId = cuid()
-          const attributes: Record<string, ContactImport["attributesMap"]["properties"]> =
-            {}
 
-          Object.keys(contactImport.attributesMap.properties ?? {}).forEach(
+          Object.keys(contactImport.propertiesMap.customProperties ?? {}).forEach(
             function (csvColumnHeaderName) {
               const property =
-                contactImport.attributesMap.properties?.[csvColumnHeaderName]
+                contactImport.propertiesMap.customProperties?.[csvColumnHeaderName]
 
               const value = row[csvColumnHeaderName]
 
@@ -155,9 +121,9 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
 
           return {
             id: contactId,
-            email: row[contactImport.attributesMap.email],
-            firstName: row[contactImport.attributesMap.firstName],
-            lastName: row[contactImport.attributesMap.lastName],
+            email: row[contactImport.propertiesMap.email],
+            firstName: row[contactImport.propertiesMap.firstName],
+            lastName: row[contactImport.propertiesMap.lastName],
             subscribedAt: contactImport.subscribeAllContacts
               ? DateTime.now().toJSDate()
               : undefined,

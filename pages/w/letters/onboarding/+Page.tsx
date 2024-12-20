@@ -14,8 +14,10 @@ import React from "react"
 import { route } from "@/shared/routes/route_aliases.js"
 
 function LettersOnboarding() {
-  const [step, setStep] = React.useState(0)
-  const [formState, setFormState] = React.useState<FormState>({ audienceId: "" })
+  const [step, setStep] = React.useState(1)
+  const [formState, setFormState] = React.useState<FormState>({
+    audienceId: "e6257990-bead-11ef-a5af-af970760e85e",
+  })
 
   return (
     <OnboardingProvider

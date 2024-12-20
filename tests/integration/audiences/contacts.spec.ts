@@ -78,11 +78,11 @@ export const setupImport = async (fileName: string, updateSettings = false) => {
         subscribeAllContacts: false,
         tagIds: [mockTag.id],
         tags: ["interested-in-book", "ecommerce-prospects"],
-        attributesMap: {
+        propertiesMap: {
           firstName: "First Name",
           lastName: "Last Name",
           email: "Email",
-          properties: {
+          customProperties: {
             Company: {
               id: "company",
               label: "Company",
@@ -530,11 +530,11 @@ describe("@contacts imports", () => {
 
     expect(imports).toHaveLength(1)
     expect(imports[0].status).toBe("PENDING")
-    expect(imports[0].attributesMap).toMatchObject({
+    expect(imports[0].propertiesMap).toMatchObject({
       email: "Email",
       lastName: "Last Name",
       firstName: "First Name",
-      attributes: [
+      customProperties: [
         "Index",
         "Customer Id",
         "Company",
@@ -562,21 +562,57 @@ describe("@contacts imports", () => {
         subscribeAllContacts: false,
         tags: [],
         tagIds: [],
-        attributesMap: {
+        propertiesMap: {
           firstName: "First Name",
           lastName: "Last Name",
           email: "Email",
-          attributes: [
-            "Index",
-            "Customer Id",
-            "Company",
-            "City",
-            "Country",
-            "Phone 1",
-            "Phone 2",
-            "Subscription Date",
-            "Website",
-          ],
+          customProperties: {
+            Index: {
+              id: "Index",
+              label: "Index",
+              type: "float",
+            },
+            "Customer Id": {
+              id: "Customer Id",
+              label: "Customer Id",
+              type: "text",
+            },
+            Company: {
+              id: "Company",
+              label: "Company",
+              type: "text",
+            },
+            City: {
+              id: "City",
+              label: "City",
+              type: "text",
+            },
+            Country: {
+              id: "Country",
+              label: "Country",
+              type: "text",
+            },
+            "Phone 1": {
+              id: "Phone 1",
+              label: "Phone 1",
+              type: "text",
+            },
+            "Phone 2": {
+              id: "Phone 2",
+              label: "Phone 2",
+              type: "text",
+            },
+            "Subscription Date": {
+              id: "Subscription Date",
+              label: "Subscription Date",
+              type: "date",
+            },
+            Website: {
+              id: "Website",
+              label: "Website",
+              type: "text",
+            },
+          },
         },
       },
     })

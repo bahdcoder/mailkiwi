@@ -37,12 +37,37 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
 }: UseServerFormMutationProps<T>) {
   const mutation = useMutation({
     async mutationFn(form) {
+      console.log({ form })
+
+      let isAMultiPartRequest = false
+
+      for (const key in form) {
+        if (form[key] instanceof File) {
+          isAMultiPartRequest = true
+          break
+        }
+      }
+
+      const multipartForm = new FormData()
+
+      if (isAMultiPartRequest) {
+        for (const key in form) {
+          if (form[key] instanceof File) {
+            multipartForm.append(key, form[key])
+          } else {
+            multipartForm.set(key, form[key])
+          }
+        }
+      }
+
       const response = await fetch(action, {
         method,
-        body: JSON.stringify(form),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        body: isAMultiPartRequest ? multipartForm : JSON.stringify(form),
+        headers: isAMultiPartRequest
+          ? undefined
+          : {
+              "Content-Type": "application/json",
+            },
       })
 
       const submissionResponse: ServerSubmissionResponse = await response.json()
