@@ -62,7 +62,7 @@ export function StepOneUploadACsv() {
   }
 
   return (
-    <div className="pt-24">
+    <div className="pt-10 lg:pt-24">
       <Dialog.Title asChild className="text-center">
         <Heading>Upload subscriber list</Heading>
       </Dialog.Title>

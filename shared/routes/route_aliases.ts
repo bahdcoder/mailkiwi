@@ -50,6 +50,7 @@ export const aliases = {
 
   // imports
   contacts_import: "/audiences/:audienceId/imports",
+  update_contacts_import: "/audiences/:audienceId/imports/:importId",
 } as const
 
 export function route(

@@ -65,8 +65,8 @@ export class UpdateContactImportSettingsAction {
   private validateAttributes(payload: UpdateContactImportSettingsDto, headers: string[]) {
     const headersFromPayload: string[] = [
       payload.propertiesMap.email,
-      payload.propertiesMap.firstName,
-      payload.propertiesMap.lastName,
+      ...(payload.propertiesMap.firstName ? [payload.propertiesMap.firstName] : []),
+      ...(payload.propertiesMap.lastName ? [payload.propertiesMap.lastName] : []),
       ...Object.keys(payload.propertiesMap.customProperties ?? {}),
     ]
 

@@ -52,9 +52,9 @@ export const UpdateContactImportSettingsSchema = objectAsync({
     }, "One or more of the provided tag Ids is invalid."),
   ), // existing tags in the database
   propertiesMap: objectAsync({
-    firstName: pipe(string("Please define the first name attribute."), nonEmpty()),
-    lastName: pipe(string("Please define the last name attribute."), nonEmpty()),
-    email: pipe(string("Please define the email attribute."), nonEmpty()),
+    firstName: optional(string()),
+    lastName: optional(string()),
+    email: pipe(string("Please match the email property."), nonEmpty()),
     customProperties: optional(PropertiesObjectSchema),
   }),
 })

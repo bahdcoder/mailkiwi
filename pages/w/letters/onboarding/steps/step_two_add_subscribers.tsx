@@ -25,18 +25,22 @@ export function AddSubscribersStep() {
 
       <div className="flex flex-col gap-y-4 mt-6">
         <ButtonCard>
-          <Text size="lg" className="font-semibold">
+          <Text size="lg" className="font-semibold text-left">
             Add subscribers manually
           </Text>
-          <Text>Add a single subscriber by entering their name and email.</Text>
+          <Text className="text-left">
+            Add a single subscriber by entering their name and email.
+          </Text>
         </ButtonCard>
 
         <ImportContactsDialog audienceId={formState.audienceId}>
           <ButtonCard>
-            <Text size="lg" className="font-semibold">
+            <Text size="lg" className="font-semibold text-left">
               Upload subscriber list
             </Text>
-            <Text>Upload a csv to add multiple subscribers at once.</Text>
+            <Text className="text-left">
+              Upload a csv to add multiple subscribers at once.
+            </Text>
           </ButtonCard>
         </ImportContactsDialog>
       </div>

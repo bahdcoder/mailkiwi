@@ -14,6 +14,8 @@ export type FormState = {
 
   headerCounts: Record<string, number>
   headerSamples: Record<string, string[]>
+
+  contactProperties: UpdateContactImportSettingsDto["propertiesMap"]
 }
 
 export const [ImportContactsProvider, useImportcontactsContext] = createContext<{

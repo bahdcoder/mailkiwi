@@ -1,4 +1,4 @@
-import { useImportcontactsContext } from "../state/import_contacts_context.jsx"
+import { FormState, useImportcontactsContext } from "../state/import_contacts_context.jsx"
 import { CalendarIcon } from "@/pages/components/icons/calendar.jsx"
 import { CheckCircleSolidIcon } from "@/pages/components/icons/check-circle-solid.svg.jsx"
 import { CheckSquareIcon } from "@/pages/components/icons/check-square.svg.jsx"
@@ -8,6 +8,7 @@ import { MailIcon } from "@/pages/components/icons/mail.svg.jsx"
 import { NavArrowRightIcon } from "@/pages/components/icons/nav-arrow-right.svg.jsx"
 import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
 import { TextIcon } from "@/pages/components/icons/text.svg.jsx"
+import { slugify } from "@/pages/utils/slugify.js"
 import * as Alert from "@kibamail/owly/alert"
 import { Button } from "@kibamail/owly/button"
 import * as Dialog from "@kibamail/owly/dialog"
@@ -19,7 +20,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import cn from "classnames"
 import * as React from "react"
 
-type PropertyType = "date" | "number" | "text" | "boolean" | "standard" | "skip"
+type PropertyType = "date" | "float" | "text" | "boolean" | "standard" | "skip"
 type SelectFieldPropertyState = Record<
   string,
   {
@@ -32,12 +33,14 @@ type SelectFieldPropertyState = Record<
   }
 >
 
+const standardProperties = ["email", "firstName", "lastName"] as const
+const standardPropertyNames = ["Email address", "First name", "Last name"] as const
+
 export function StepTwoMatchCsvHeadersToContactProperties() {
-  const { step, formState } = useImportcontactsContext(
+  const { step, setStep, formState, setFormState } = useImportcontactsContext(
     "MatchCsvHeadersToContactProperties",
   )
-
-  console.log({ formState })
+  const matchingErrorAlertRef = React.useRef<HTMLDivElement | null>(null)
 
   const [addingCustomPropertyForColumn, setAddingCustomPropertyForColumn] =
     React.useState("")
@@ -46,8 +49,59 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
     React.useState<SelectFieldPropertyState>(function () {
       let defaultFieldPropertyStates: SelectFieldPropertyState = {}
 
-      const standardProperties = ["email", "firstName", "lastName"] as const
-      const standardPropertyNames = ["Email address", "First name", "Last name"] as const
+      if (
+        formState.contactProperties &&
+        Object.keys(formState.contactProperties).length > 1
+      ) {
+        for (const standardProperty of standardProperties) {
+          if (formState.contactProperties?.[standardProperty]) {
+            defaultFieldPropertyStates[formState.contactProperties?.[standardProperty]] =
+              {
+                open: false,
+                property: {
+                  id: standardProperty,
+                  name: standardPropertyNames[
+                    standardProperties.indexOf(standardProperty)
+                  ],
+                  type: "standard",
+                },
+              }
+          }
+        }
+
+        if (formState.contactProperties.customProperties) {
+          for (const column in formState.contactProperties.customProperties) {
+            const property = formState.contactProperties.customProperties[column]
+
+            defaultFieldPropertyStates[column] = {
+              open: false,
+              property: {
+                id: property.id,
+                name: property.label,
+                type: property.type,
+              },
+            }
+          }
+        }
+
+        for (const propertyId of Object.keys(formState.contactProperties)) {
+        }
+
+        for (const column of formState.propertiesMap.customPropertiesHeaders) {
+          if (!defaultFieldPropertyStates[column]) {
+            defaultFieldPropertyStates[column] = {
+              open: false,
+              property: {
+                id: "skip",
+                name: "None - Skip this column",
+                type: "skip",
+              },
+            }
+          }
+        }
+
+        return defaultFieldPropertyStates
+      }
 
       for (const propertyId of standardProperties) {
         if (formState.propertiesMap?.[propertyId]) {
@@ -77,7 +131,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
       const icons = {
         date: CalendarIcon,
-        number: HashTagIcon,
+        float: HashTagIcon,
         text: TextIcon,
         boolean: CheckSquareIcon,
         standard: TextIcon,
@@ -165,6 +219,62 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
     setAddingCustomPropertyForColumn(column)
   }
 
+  function onGoBack() {
+    setStep((current) => current - 1)
+  }
+
+  function onFinaliseImport() {
+    if (!hasMatchedAllColumns()) {
+      callUserAttentionToFormError()
+
+      return
+    }
+
+    // serverFormProps.mutate({})
+    console.log(selectFieldPropertyStates, properties)
+
+    let contactProperties: FormState["contactProperties"] = {
+      email: "",
+      firstName: "",
+      lastName: "",
+    }
+
+    for (const standardProperty of standardProperties) {
+      const assignedColumn = Object.keys(selectFieldPropertyStates).find((column) => {
+        return selectFieldPropertyStates[column]?.property?.id === standardProperty
+      })
+
+      if (assignedColumn) {
+        contactProperties[standardProperty] = assignedColumn
+      }
+    }
+
+    Object.keys(selectFieldPropertyStates).forEach((column) => {
+      const property = selectFieldPropertyStates[column]?.property
+
+      if (!property) {
+        return
+      }
+
+      if (property.type === "skip" || property.type === "standard") {
+        return
+      }
+
+      if (!contactProperties.customProperties) {
+        contactProperties.customProperties = {}
+      }
+
+      contactProperties.customProperties[column] = {
+        id: property.id,
+        label: property.name,
+        type: property.type,
+      }
+    })
+
+    setFormState((state) => ({ ...state, contactProperties }))
+    setStep((current) => current + 1)
+  }
+
   const isAddingCustomPropertyForColumn = addingCustomPropertyForColumn !== ""
 
   function onAddingCustomPropertyDialogOpenChange(open: boolean) {
@@ -180,6 +290,24 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
       ...state,
       [name]: { open, property: state?.[name]?.property },
     }))
+  }
+
+  function callUserAttentionToFormError() {
+    const alert = matchingErrorAlertRef.current
+
+    if (!alert) {
+      return
+    }
+
+    alert.classList.toggle("animation-shake")
+
+    alert.addEventListener(
+      "animationend",
+      function () {
+        alert.classList.remove("animation-shake")
+      },
+      { once: true },
+    )
   }
 
   function onSelectPropertyValueChange(column: string, value: string) {
@@ -228,13 +356,13 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
     const formData = new FormData(form)
 
     const name = formData.get("name") as string
-    const type = formData.get("type") as "text" | "number" | "date" | "boolean"
+    const type = formData.get("type") as "text" | "float" | "date" | "boolean"
 
     setSelectFieldPropertyStates((state) => ({
       ...state,
       [addingCustomPropertyForColumn]: {
         open: false,
-        property: { id: name.toLowerCase(), name, type },
+        property: { id: slugify(name), name, type },
       },
     }))
 
@@ -258,6 +386,52 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
       ).length > 1
     )
   }
+
+  function hasMatchedAllColumns() {
+    return matches.length === Object.keys(selectFieldPropertyStates).length
+  }
+
+  function hasMatchedAnEmailColumnProperty() {
+    const matchedToEmailProperty = Object.values(selectFieldPropertyStates).some(
+      (value) => value?.property?.id === "email",
+    )
+
+    return matchedToEmailProperty
+  }
+
+  function getMatchingErrorAlertContent():
+    | {
+        title: string
+        description: React.ReactNode
+        variant?: Alert.AlertRootProps["variant"]
+      }
+    | undefined {
+    if (!hasMatchedAnEmailColumnProperty()) {
+      return {
+        title: "An email address is required in your csv complete the import.",
+        description:
+          "Please make sure you've matched an email address column to the email address property.",
+        variant: "error",
+      }
+    }
+
+    if (!hasMatchedAllColumns()) {
+      return {
+        title: "You need to match all columns in your csv to a contact property.",
+        description: (
+          <>
+            For the columns you don't want to match, please select{" "}
+            <strong>None - Skip this column.</strong>
+          </>
+        ),
+        variant: "warning",
+      }
+    }
+
+    return undefined
+  }
+
+  const matchingErrorAlert = getMatchingErrorAlertContent()
 
   return (
     <>
@@ -424,7 +598,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                     <Select.Separator />
                     <button
                       value="create-new-property"
-                      className="kb-select-item kb-reset"
+                      className="kb-select-item kb-reset sticky bottom-0 bg-[var(--background-primary)]"
                       onClick={function () {
                         onCreateNewProperty(match.column.name)
                       }}
@@ -452,13 +626,29 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
             </div>
           )
         })}
+
+        {matchingErrorAlert ? (
+          <Alert.Root variant={matchingErrorAlert.variant} ref={matchingErrorAlertRef}>
+            <Alert.Icon>
+              <InfoCircleSolidIcon />
+            </Alert.Icon>
+            <div className="w-full flex flex-col">
+              <Alert.Title className="font-medium">
+                {matchingErrorAlert?.title}
+              </Alert.Title>
+              <Text className="kb-content-secondary mt-1">
+                {matchingErrorAlert?.description}
+              </Text>
+            </div>
+          </Alert.Root>
+        ) : null}
       </div>
 
       <div className="mt-12 pb-64 flex items-center justify-between">
-        <DialogPrimitive.Close asChild>
-          <Button variant="tertiary">Cancel import </Button>
-        </DialogPrimitive.Close>
-        <Button>Finalise import </Button>
+        <Button variant="tertiary" onClick={onGoBack}>
+          Go back
+        </Button>
+        <Button onClick={onFinaliseImport}>Finalise import </Button>
       </div>
     </>
   )

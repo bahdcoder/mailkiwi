@@ -353,8 +353,8 @@ export const contactImports = mysqlTable("contactImports", {
   propertiesMap: json("propertiesMap")
     .$type<{
       email: string
-      firstName: string
-      lastName: string
+      firstName?: string
+      lastName?: string
       headers: string[]
       customPropertiesHeaders: string[]
       customProperties?:

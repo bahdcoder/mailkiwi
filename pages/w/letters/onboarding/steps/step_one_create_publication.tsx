@@ -4,6 +4,7 @@ import {
   ServerForm,
   useServerFormMutation,
 } from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
+import { slugify } from "@/pages/utils/slugify.js"
 import { Button } from "@kibamail/owly/button"
 import { Heading } from "@kibamail/owly/heading"
 import { Progress } from "@kibamail/owly/progress"
@@ -59,13 +60,4 @@ export function CreatePublicationStep() {
       </Button>
     </ServerForm>
   )
-}
-
-function slugify(name: string) {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9 -]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
 }

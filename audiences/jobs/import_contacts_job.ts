@@ -122,8 +122,12 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
           return {
             id: contactId,
             email: row[contactImport.propertiesMap.email],
-            firstName: row[contactImport.propertiesMap.firstName],
-            lastName: row[contactImport.propertiesMap.lastName],
+            firstName: contactImport.propertiesMap.firstName
+              ? row[contactImport.propertiesMap.firstName]
+              : undefined,
+            lastName: contactImport.propertiesMap.lastName
+              ? row[contactImport.propertiesMap.lastName]
+              : undefined,
             subscribedAt: contactImport.subscribeAllContacts
               ? DateTime.now().toJSDate()
               : undefined,

@@ -94,6 +94,7 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
     const audiencePayload = {
       name: faker.commerce.productName(),
       slug: faker.lorem.words(3),
+      product: "engage" as "engage" | "letters",
     }
 
     console.log("Creating audience: ", `${audienceIndex}: ${audiencePayload.name}`)
