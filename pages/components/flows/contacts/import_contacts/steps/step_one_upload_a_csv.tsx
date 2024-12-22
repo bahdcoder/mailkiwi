@@ -61,10 +61,6 @@ export function StepOneUploadACsv() {
     setStep((current) => current + 1)
   }
 
-  if (step !== 0) {
-    return null
-  }
-
   return (
     <div className="pt-24">
       <Dialog.Title asChild className="text-center">

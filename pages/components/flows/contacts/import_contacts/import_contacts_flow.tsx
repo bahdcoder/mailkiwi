@@ -2,6 +2,7 @@ import { FormState, ImportContactsProvider } from "./state/import_contacts_conte
 import { StepOneUploadACsv } from "./steps/step_one_upload_a_csv.jsx"
 import { StepTwoMatchCsvHeadersToContactProperties } from "./steps/step_two_match_csv_headers_to_contact_properties.jsx"
 import { ButtonCard } from "@/pages/components/button/button-card.jsx"
+import { StepsRenderer } from "@/pages/components/flows/steps_renderer.jsx"
 import { CancelIcon } from "@/pages/components/icons/cancel.svg.jsx"
 import * as Dialog from "@radix-ui/react-dialog"
 import { FocusScope } from "@radix-ui/react-focus-scope"
@@ -54,8 +55,13 @@ export function ImportContactsDialog({
               </div>
 
               <div className="w-full max-w-[40rem] mx-auto grid grid-cols-1 gap-y-2">
-                <StepOneUploadACsv />
-                <StepTwoMatchCsvHeadersToContactProperties />
+                <StepsRenderer
+                  current={step}
+                  steps={{
+                    0: StepOneUploadACsv,
+                    1: StepTwoMatchCsvHeadersToContactProperties,
+                  }}
+                />
               </div>
             </Dialog.Content>
           </FocusScope>

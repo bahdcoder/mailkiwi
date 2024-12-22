@@ -37,15 +37,33 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
     "MatchCsvHeadersToContactProperties",
   )
 
+  console.log({ formState })
+
   const [addingCustomPropertyForColumn, setAddingCustomPropertyForColumn] =
     React.useState("")
 
   const [selectFieldPropertyStates, setSelectFieldPropertyStates] =
-    React.useState<SelectFieldPropertyState>({})
+    React.useState<SelectFieldPropertyState>(function () {
+      let defaultFieldPropertyStates: SelectFieldPropertyState = {}
 
-  if (step !== 1) {
-    return null
-  }
+      const standardProperties = ["email", "firstName", "lastName"] as const
+      const standardPropertyNames = ["Email address", "First name", "Last name"] as const
+
+      for (const propertyId of standardProperties) {
+        if (formState.propertiesMap?.[propertyId]) {
+          defaultFieldPropertyStates[formState.propertiesMap?.[propertyId]] = {
+            open: false,
+            property: {
+              id: propertyId,
+              name: standardPropertyNames[standardProperties.indexOf(propertyId)],
+              type: "standard",
+            },
+          }
+        }
+      }
+
+      return defaultFieldPropertyStates
+    })
 
   const newProperties = Object.keys(selectFieldPropertyStates)
     .filter(
@@ -63,6 +81,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
         text: TextIcon,
         boolean: CheckSquareIcon,
         standard: TextIcon,
+        skip: TextIcon,
       }
 
       return {
@@ -101,11 +120,6 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
     ...(formState.propertiesMap?.["email"]
       ? [
           {
-            property: {
-              name: "Email address",
-              id: "email",
-              type: "standard",
-            },
             column: {
               name: formState.propertiesMap?.["email"],
               count: formState.headerCounts?.[formState.propertiesMap?.["email"]],
@@ -122,22 +136,12 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
               count: formState.headerCounts?.[formState.propertiesMap?.["firstName"]],
               samples: formState.headerSamples?.[formState.propertiesMap?.["firstName"]],
             },
-            property: {
-              name: "First name",
-              id: "firstName",
-              type: "standard",
-            },
           },
         ]
       : []),
     ...(formState.propertiesMap?.["lastName"]
       ? [
           {
-            property: {
-              name: "Last name",
-              id: "lastName",
-              type: "standard",
-            },
             column: {
               name: formState.propertiesMap?.["lastName"],
               count: formState.headerCounts?.[formState.propertiesMap?.["lastName"]],
@@ -153,7 +157,6 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
           count: formState.headerCounts?.[header],
           samples: formState.headerSamples?.[header],
         },
-        property: undefined,
       }
     }),
   ]
@@ -458,79 +461,5 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
         <Button>Finalise import </Button>
       </div>
     </>
-  )
-}
-
-interface SelectPropertyProps {
-  onCreateNewProperty?: () => void
-}
-
-function SelectProperty({
-  onCreateNewProperty: defaultOncreateNewProperty,
-}: SelectPropertyProps) {
-  const [open, setOpen] = React.useState(false)
-  const properties = [
-    {
-      name: "Email address",
-      id: "email",
-      type: "standard",
-      icon: MailIcon,
-    },
-    {
-      name: "First name",
-      id: "firstName",
-      type: "standard",
-      icon: TextIcon,
-    },
-    {
-      name: "Last name",
-      id: "lastName",
-      type: "standard",
-      icon: TextIcon,
-    },
-  ]
-
-  function onCreateNewProperty() {
-    setOpen(false)
-    defaultOncreateNewProperty?.()
-  }
-
-  return (
-    <Select.Root open={open} onOpenChange={setOpen}>
-      <Select.Trigger placeholder="Select a property" />
-      <Select.Content
-      // onCloseAutoFocus={function (event) {
-      //   console.log({ event })
-      //   event.preventDefault()
-      // }}
-      >
-        <Select.Item value="skip">None - Skip this column</Select.Item>
-        <Select.Separator />
-
-        {properties.map((property) => (
-          <Select.Item key={property.id} value={property.id}>
-            <property.icon className="w-5 h-5" />
-            {property.name}
-          </Select.Item>
-        ))}
-        <Select.Separator />
-        <Select.Item
-          value="create-new-property"
-          className="kb-select-item kb-reset"
-          onSelect={function (event) {
-            console.log({ event })
-            event.preventDefault()
-            onCreateNewProperty?.()
-          }}
-        >
-          <span className="kb-text kb-reset kb-r-size-md kb-select-item-text">
-            <PlusIcon className="w-5 h-5" />
-            Create a custom property
-          </span>
-
-          <NavArrowRightIcon />
-        </Select.Item>
-      </Select.Content>
-    </Select.Root>
   )
 }
