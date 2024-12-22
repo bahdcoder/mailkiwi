@@ -18,7 +18,7 @@ export function AddSubscribersStep() {
 
   return (
     <div>
-      <Heading variant="display">Add subscribers</Heading>
+      <Heading size="sm">Add subscribers</Heading>
       <Text className="kb-content-tertiary" as="label" htmlFor="slug">
         Bring your existing subscribers to your Kibamail Letters account.
       </Text>

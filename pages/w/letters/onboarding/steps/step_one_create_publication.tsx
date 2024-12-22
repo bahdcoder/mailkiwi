@@ -33,7 +33,7 @@ export function CreatePublicationStep() {
 
   return (
     <ServerForm {...serverFormProps}>
-      <Heading variant="display">Create your publication</Heading>
+      <Heading size="sm">Create your publication</Heading>
       <Text className="kb-content-tertiary" as="label" htmlFor="slug">
         Set a unique url for your publication
       </Text>

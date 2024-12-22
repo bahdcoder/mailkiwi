@@ -14,7 +14,7 @@ function WelcomePage() {
     <div className="w-full max-w-2xl mx-auto px-4 lg:px-0 py-12">
       <div className="mt-24"></div>
       <div className="border-t kb-border-tertiary py-8">
-        <Heading size="lg">
+        <Heading size="xs" variant="display">
           Welcome to Kibamail, <br /> What product would you like to use ?
         </Heading>
 
