@@ -2,7 +2,7 @@ import { FormState, useImportcontactsContext } from "../state/import_contacts_co
 import {
   UseFileUploadProps,
   useFileUpload,
-} from "@/pages/components/file-upload/hooks/useFileUploads.js"
+} from "@/pages/components/file-upload/hooks/use_file_upload.js"
 import { CloudUploadIcon } from "@/pages/components/icons/cloud-upload.svg.jsx"
 import {
   ServerForm,
@@ -15,8 +15,6 @@ import { Progress } from "@kibamail/owly/progress"
 import { Text } from "@kibamail/owly/text"
 import * as Dialog from "@radix-ui/react-dialog"
 import React, { useRef } from "react"
-
-import { UpdateContactImportSettingsDto } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
 
 import { route } from "@/shared/routes/route_aliases.js"
 
@@ -143,7 +141,6 @@ function FileUploadDropbox({
           </div>
         ) : (
           <Button
-            {...getTriggerProps()}
             variant="tertiary"
             type="button"
             className="kb-content-tertiary -mt-0.5"

@@ -8,13 +8,14 @@ import cn from "classnames"
 import { useCombobox, useMultipleSelection } from "downshift"
 import React, { useEffect } from "react"
 
-type Item = { id: string; label: string }
+export type ComboboxItem = { id: string; label: string; new?: boolean }
 
 interface TagsComboboxProps {
-  defaultValue?: Item[]
-  items: Item[]
+  defaultValue?: Omit<ComboboxItem, "new">[]
+  name?: string
+  items: Omit<ComboboxItem, "new">[]
   maxWidth?: number
-  onChange?: (value: Item[]) => void
+  onChange?: (value: ComboboxItem[]) => void
 }
 
 export function TagsCombobox({
@@ -22,11 +23,11 @@ export function TagsCombobox({
   defaultValue,
   onChange,
   maxWidth,
+  name,
 }: TagsComboboxProps) {
   const [inputValue, setInputValue] = React.useState("")
   const [selectedItems, setSelectedItems] = React.useState(defaultValue ?? [])
-  const [allItems, setAllItems] =
-    React.useState<(Item & { new?: boolean })[]>(defaultAllItems)
+  const [allItems, setAllItems] = React.useState<ComboboxItem[]>(defaultAllItems)
   const items = React.useMemo(() => searchItems(inputValue), [selectedItems, inputValue])
 
   function searchItems(inputValue: string) {
@@ -127,8 +128,11 @@ export function TagsCombobox({
 
   return (
     <div className="w-full" style={{ maxWidth }}>
+      {selectedItems.map((item) => (
+        <input key={item.id} type="hidden" name={`${name}[]`} value={item.id} />
+      ))}
       <TextField.Root
-        placeholder="Best book ever"
+        placeholder="Search tags or type to add a new tag"
         className="w-full"
         {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
       >

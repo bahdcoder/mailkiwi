@@ -5,11 +5,15 @@ import {
   ServerForm,
   useServerFormMutation,
 } from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { TagsCombobox } from "@/pages/components/tags/tags_combobox.jsx"
+import {
+  type ComboboxItem,
+  TagsCombobox,
+} from "@/pages/components/tags/tags_combobox.jsx"
 import { Button } from "@kibamail/owly/button"
 import { Heading } from "@kibamail/owly/heading"
 import { Text } from "@kibamail/owly/text"
 import * as Dialog from "@radix-ui/react-dialog"
+import * as React from "react"
 
 import { route } from "@/shared/routes/route_aliases.js"
 
@@ -22,12 +26,18 @@ export function StepThreeImportSettings() {
     },
   })
 
+  const selectedTagsRef = React.useRef<ComboboxItem[]>([])
+
   function onGoBack() {
     setStep((current) => current - 1)
   }
 
+  function onTagsChange(selectedTags: ComboboxItem[]) {
+    selectedTagsRef.current = selectedTags
+  }
+
   return (
-    <div className="pt-10 lg:pt-24">
+    <div className="pt-10 lg:pt-24 flex flex-col gap-y-2">
       <Dialog.Title asChild className="text-left">
         <Heading>Tag new subscribers</Heading>
       </Dialog.Title>
@@ -40,7 +50,8 @@ export function StepThreeImportSettings() {
       </Dialog.Description>
 
       <div className="my-6 grid grid-cols-1 gap-y-6">
-        <TagsCombobox items={[]} maxWidth={640} />
+        {/* TODO: Load all tags from user's account and populate into the items list here. tags will be from usePageContext, and available globally. */}
+        <TagsCombobox items={[]} maxWidth={640} name="tags" onChange={onTagsChange} />
 
         <CheckboxField.Root id="subscribeAllContacts" name="subscribeAllContacts">
           <CheckboxField.Label htmlFor="subscribeAllContacts">

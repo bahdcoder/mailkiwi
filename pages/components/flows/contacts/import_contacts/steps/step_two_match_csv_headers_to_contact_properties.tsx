@@ -388,7 +388,12 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
   }
 
   function hasMatchedAllColumns() {
-    return matches.length === Object.keys(selectFieldPropertyStates).length
+    return (
+      matches.length ===
+      Object.keys(selectFieldPropertyStates).filter(
+        (column) => selectFieldPropertyStates[column]?.property,
+      ).length
+    )
   }
 
   function hasMatchedAnEmailColumnProperty() {

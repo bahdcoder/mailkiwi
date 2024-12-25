@@ -114,7 +114,6 @@ type CommonTriggerProps = React.ComponentPropsWithoutRef<"button"> & {
   [key in `data-${string}`]?: any | undefined
 }
 
-// Hook implementation
 export function useFileUpload(initialConfig: UseFileUploadProps) {
   const [state, dispatch] = useReducer(fileUploadReducer, {
     ...initialState,
@@ -162,7 +161,6 @@ export function useFileUpload(initialConfig: UseFileUploadProps) {
       rejected,
     })
 
-    // Trigger callbacks
     initialConfig.onFileChange?.({
       acceptedFiles: totalAccepted,
       rejectedFiles: rejected,
