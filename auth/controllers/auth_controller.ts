@@ -1,3 +1,5 @@
+import { t } from "@lingui/core/macro"
+
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
@@ -53,7 +55,7 @@ export class AuthController extends VikeController {
 
     const invalidCredentials = [
       {
-        message: "These credentials do not match our records.",
+        message: t`These credentials do not match our records.`,
         field: "email",
       },
     ]
