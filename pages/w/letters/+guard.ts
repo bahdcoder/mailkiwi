@@ -4,8 +4,10 @@ import { PageContext } from "vike/types"
 import { route } from "@/shared/routes/route_aliases.js"
 
 export function guard(ctx: PageContext) {
+  console.log({ ctx: ctx.letters })
   if (ctx.urlPathname === route("letters")) {
-    // todo: check if user has completed onboarding. if not, force redirect to letters onboarding.
-    throw redirect(route("letters_welcome"))
+    if (!ctx.letters.audience) {
+      throw redirect(route("letters_welcome"))
+    }
   }
 }

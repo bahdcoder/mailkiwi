@@ -13,15 +13,15 @@ export class CreateAudienceAction {
       const newsletterCreated =
         await this.audienceRepository.getNewsletterAudienceForTeam(teamId)
 
-      if (newsletterCreated) {
-        throw E_VALIDATION_FAILED([
-          {
-            message:
-              "You may only have one newsletter per team. To create another newsletter, please create another team.",
-            field: "slug",
-          },
-        ])
-      }
+      // if (newsletterCreated) {
+      //   throw E_VALIDATION_FAILED([
+      //     {
+      //       message:
+      //         "You may only have one newsletter per team. To create another newsletter, please create another team.",
+      //       field: "slug",
+      //     },
+      //   ])
+      // }
     }
 
     const self = this

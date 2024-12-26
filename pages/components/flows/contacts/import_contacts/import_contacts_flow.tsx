@@ -12,6 +12,12 @@ const StepOneUploadACsv = clientOnly(() =>
   ),
 )
 
+const StepFourImportProcessing = clientOnly(() =>
+  import("./steps/step_four_import_processing.jsx").then(
+    ({ StepFourImportProcessing }) => StepFourImportProcessing,
+  ),
+)
+
 const StepTwoMatchCsvHeadersToContactProperties = clientOnly(() =>
   import("./steps/step_two_match_csv_headers_to_contact_properties.jsx").then(
     ({ StepTwoMatchCsvHeadersToContactProperties }) =>
@@ -27,11 +33,13 @@ const StepThreeImportSettings = clientOnly(() =>
 
 export interface ImportContactsDialogProps {
   audienceId: string
+  onImportCompleted?: () => void
 }
 
 export function ImportContactsDialog({
   audienceId,
   children,
+  onImportCompleted,
 }: PropsWithChildren<ImportContactsDialogProps>) {
   const [step, setStep] = React.useState(0)
   const [formState, setFormState] = React.useState<FormState>({
@@ -50,6 +58,12 @@ export function ImportContactsDialog({
     },
   })
 
+  function onOpenChange(open: boolean) {
+    if (open === false) {
+      onImportCompleted?.()
+    }
+  }
+
   return (
     <ImportContactsProvider
       step={step}
@@ -58,7 +72,7 @@ export function ImportContactsDialog({
       audienceId={audienceId}
       setFormState={setFormState}
     >
-      <Dialog.Root>
+      <Dialog.Root onOpenChange={onOpenChange}>
         <Dialog.Trigger asChild>{children}</Dialog.Trigger>
         <Dialog.Portal>
           <FocusScope>
@@ -81,6 +95,7 @@ export function ImportContactsDialog({
                     0: StepOneUploadACsv,
                     1: StepTwoMatchCsvHeadersToContactProperties,
                     2: StepThreeImportSettings,
+                    3: StepFourImportProcessing,
                   }}
                 />
               </div>

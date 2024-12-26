@@ -6,6 +6,8 @@ import { PassThrough } from "stream"
 import { UAParser } from "ua-parser-js"
 import { renderPage } from "vike/server"
 
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import { route } from "@/shared/routes/route_aliases.js"
 import { HonoContext, HonoRouteDefinition } from "@/shared/server/types.js"
@@ -45,6 +47,7 @@ export class VikeController extends BaseController {
       urlOriginal: ctx.req.url,
       isMobile: pageProps?.isMobile,
       headersOriginal: ctx.req.raw.headers,
+      letters: pageProps?.letters,
     })
 
     if (!pageContext.httpResponse) return next()
@@ -112,6 +115,10 @@ export class VikeController extends BaseController {
 
     const userAgent = userAgentHeader ? new UAParser(userAgentHeader) : undefined
 
+    const audience = await container
+      .make(AudienceRepository)
+      .findForProduct(ctx.get("team")?.id, "letters")
+
     return renderVikePage(ctx, next, {
       ...pageProps,
       user: excludeKeys(ctx.get("user"), [
@@ -130,6 +137,9 @@ export class VikeController extends BaseController {
       isMobile: userAgent?.getDevice().type === "mobile",
       memberships: ctx.get("memberships"),
       team: excludeKeys(ctx.get("team"), ["commerceProviderAccountId"]),
+      letters: {
+        audience,
+      },
     })
   }
 }

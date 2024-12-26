@@ -16,9 +16,9 @@ import React from "react"
 import { route } from "@/shared/routes/route_aliases.js"
 
 function LettersOnboarding() {
-  const [step, setStep] = React.useState(1)
+  const [step, setStep] = React.useState(0)
   const [formState, setFormState] = React.useState<FormState>({
-    audienceId: "733c2a30-bfea-11ef-8c21-a9e9303002a6",
+    audienceId: "",
     contactImportId: "",
     propertiesMap: {
       email: "",

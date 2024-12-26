@@ -37,7 +37,7 @@ const standardProperties = ["email", "firstName", "lastName"] as const
 const standardPropertyNames = ["Email address", "First name", "Last name"] as const
 
 export function StepTwoMatchCsvHeadersToContactProperties() {
-  const { step, setStep, formState, setFormState } = useImportcontactsContext(
+  const { setStep, formState, setFormState } = useImportcontactsContext(
     "MatchCsvHeadersToContactProperties",
   )
   const matchingErrorAlertRef = React.useRef<HTMLDivElement | null>(null)
@@ -230,7 +230,6 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
       return
     }
 
-    // serverFormProps.mutate({})
     console.log(selectFieldPropertyStates, properties)
 
     let contactProperties: FormState["contactProperties"] = {

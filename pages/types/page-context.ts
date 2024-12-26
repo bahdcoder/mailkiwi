@@ -1,10 +1,11 @@
 import { type UAParser } from "ua-parser-js"
 
-import {
+import type {
+  Audience,
   Team,
   TeamMembership,
-  type TeamWithMemberships,
-  type UserWithTeams,
+  TeamWithMemberships,
+  UserWithTeams,
 } from "@/database/database_schema_types.js"
 
 export interface DefaultPageProps {
@@ -13,9 +14,7 @@ export interface DefaultPageProps {
   userAgent: UAParser.IResult
   memberships: (TeamMembership & { team: Team })[]
   letters: {
-    audience: {
-      id: string
-    }
+    audience: Audience
   }
 }
 

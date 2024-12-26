@@ -23,10 +23,11 @@ export function TagsCombobox({
   defaultValue,
   onChange,
   maxWidth,
-  name,
 }: TagsComboboxProps) {
   const [inputValue, setInputValue] = React.useState("")
-  const [selectedItems, setSelectedItems] = React.useState(defaultValue ?? [])
+  const [selectedItems, setSelectedItems] = React.useState<ComboboxItem[]>(
+    defaultValue ?? [],
+  )
   const [allItems, setAllItems] = React.useState<ComboboxItem[]>(defaultAllItems)
   const items = React.useMemo(() => searchItems(inputValue), [selectedItems, inputValue])
 
@@ -128,9 +129,6 @@ export function TagsCombobox({
 
   return (
     <div className="w-full" style={{ maxWidth }}>
-      {selectedItems.map((item) => (
-        <input key={item.id} type="hidden" name={`${name}[]`} value={item.id} />
-      ))}
       <TextField.Root
         placeholder="Search tags or type to add a new tag"
         className="w-full"

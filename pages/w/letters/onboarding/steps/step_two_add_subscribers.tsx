@@ -33,7 +33,10 @@ export function AddSubscribersStep() {
           </Text>
         </ButtonCard>
 
-        <ImportContactsDialog audienceId={formState.audienceId}>
+        <ImportContactsDialog
+          audienceId={formState.audienceId}
+          onImportCompleted={goToNextStep}
+        >
           <ButtonCard>
             <Text size="lg" className="font-semibold text-left">
               Upload subscriber list

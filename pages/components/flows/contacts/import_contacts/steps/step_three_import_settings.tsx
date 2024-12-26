@@ -2,6 +2,7 @@ import * as CheckboxField from "@/pages/components/checkbox-field/checkbox-field
 import { useImportcontactsContext } from "@/pages/components/flows/contacts/import_contacts/state/import_contacts_context.jsx"
 import { NavArrowLeftIcon } from "@/pages/components/icons/nav-arrow-left.svg.jsx"
 import {
+  FormPayload,
   ServerForm,
   useServerFormMutation,
 } from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
@@ -18,15 +19,39 @@ import * as React from "react"
 import { route } from "@/shared/routes/route_aliases.js"
 
 export function StepThreeImportSettings() {
-  const { step, setStep, formState } = useImportcontactsContext("ImportSettings")
-  const { serverFormProps, isPending } = useServerFormMutation({
-    action: route("update_contacts_import", { importId: formState.contactImportId }),
+  const selectedTagsRef = React.useRef<ComboboxItem[]>([])
+  const { setStep, formState, audienceId } = useImportcontactsContext("ImportSettings")
+  const { serverFormProps, isPending, ServerErrorsList } = useServerFormMutation({
+    method: "PUT",
+    action: route("update_contacts_import", {
+      importId: formState.contactImportId,
+      audienceId,
+    }),
     onSuccess() {
       setStep((current) => current + 1)
     },
-  })
+    transform(form) {
+      let tags: string[] = []
+      let tagIds: string[] = []
 
-  const selectedTagsRef = React.useRef<ComboboxItem[]>([])
+      for (const item of selectedTagsRef.current) {
+        if (item.new) {
+          tags.push(item.label)
+        } else {
+          tagIds.push(item.id)
+        }
+      }
+
+      form.tags = tags
+      form.tagIds = tagIds
+      form.subscribeAllContacts = form.subscribeAllContacts === "on"
+      form.updateExistingContacts = form.updateExistingContacts === "on"
+
+      form.propertiesMap = formState.contactProperties as unknown as FormPayload[string]
+
+      return form
+    },
+  })
 
   function onGoBack() {
     setStep((current) => current - 1)
@@ -37,7 +62,7 @@ export function StepThreeImportSettings() {
   }
 
   return (
-    <div className="pt-10 lg:pt-24 flex flex-col gap-y-2">
+    <ServerForm {...serverFormProps} className="pt-10 lg:pt-24 flex flex-col gap-y-2">
       <Dialog.Title asChild className="text-left">
         <Heading>Tag new subscribers</Heading>
       </Dialog.Title>
@@ -48,6 +73,8 @@ export function StepThreeImportSettings() {
           you can segment and filter by them in future.
         </Text>
       </Dialog.Description>
+
+      {ServerErrorsList}
 
       <div className="my-6 grid grid-cols-1 gap-y-6">
         {/* TODO: Load all tags from user's account and populate into the items list here. tags will be from usePageContext, and available globally. */}
@@ -76,13 +103,15 @@ export function StepThreeImportSettings() {
       </div>
 
       <div className="mt-6 flex items-center justify-between">
-        <Button variant="tertiary" onClick={onGoBack}>
+        <Button type="button" variant="tertiary" onClick={onGoBack}>
           <NavArrowLeftIcon />
           Back to matching columns
         </Button>
 
-        <Button onClick={console.log}>Finish</Button>
+        <Button type="submit" loading={isPending}>
+          Finish
+        </Button>
       </div>
-    </div>
+    </ServerForm>
   )
 }

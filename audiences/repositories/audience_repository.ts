@@ -4,7 +4,7 @@ import { and, eq } from "drizzle-orm"
 import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
 
 import type { DrizzleClient } from "@/database/client.js"
-import { UpdateSetAudienceInput } from "@/database/database_schema_types.js"
+import { Audience, UpdateSetAudienceInput } from "@/database/database_schema_types.js"
 import { KnownAudienceProperty, audiences } from "@/database/schema.js"
 
 import { ContainerKey } from "@/shared/container/index.js"
@@ -66,6 +66,16 @@ export class AudienceRepository extends BaseRepository {
     await this.database.update(audiences).set(payload).where(eq(audiences.id, audienceId))
 
     return { id: audienceId }
+  }
+
+  async findForProduct(teamId: string, product: NonNullable<Audience["product"]>) {
+    const [audience] = await this.database
+      .select()
+      .from(audiences)
+      .where(and(eq(audiences.teamId, teamId), eq(audiences.product, product)))
+      .limit(1)
+
+    return audience
   }
 
   async updateKnownProperties(
