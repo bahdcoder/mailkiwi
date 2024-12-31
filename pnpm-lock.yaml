@@ -12,8 +12,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@kibamail/owly':
-        specifier: 1.0.27
-        version: 1.0.27(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 1.0.31
+        version: 1.0.31(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@maxmind/geoip2-node':
         specifier: ^5.0.0
         version: 5.0.0
@@ -1171,8 +1171,8 @@ packages:
   '@kibamail/colors@1.0.0':
     resolution: {integrity: sha512-G9QkqRtpqAJcj36yVVKWNJx4i+psKrCe8wul1A9C8f5lE9upNaCnNOB1cU3au1ajf9pWQXyhYVZklMwbX0F8GQ==}
 
-  '@kibamail/owly@1.0.27':
-    resolution: {integrity: sha512-XSJyX2mmF2UAbqSFlQAN+uAJLcViB0fUwyaVw/RgcEDePKRe/oHU9JV9hHHkGKxocLrNF2KjytuPpMukvzzihA==}
+  '@kibamail/owly@1.0.31':
+    resolution: {integrity: sha512-86cYeKplWzzoPATOAIvgcGpGPrB7s0vyDZNQIBBiXEu+fGjYueMEE0JVlqKMOpk/29tYgk9IR34tzSyjljpJqg==}
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
@@ -6323,7 +6323,7 @@ snapshots:
 
   '@kibamail/colors@1.0.0': {}
 
-  '@kibamail/owly@1.0.27(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@kibamail/owly@1.0.31(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@kibamail/colors': 1.0.0
       '@radix-ui/primitive': 1.1.1

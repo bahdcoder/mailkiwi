@@ -70,7 +70,16 @@ export type ContactFilterGroups = {
 export type KnownAudienceProperty = {
   id: string
   label: string
+  description?: string
   options?: string[]
+
+  // If a contact can update, on their preferences / settings screen, they can mark this property as true / false for a boolean field, Or Type in a value for a text field.
+
+  // Example use case: Weekly newsletter -> false
+  // Example use case: Cyber Monday Sale -> false
+
+  default?: boolean | string | number
+  canContactUpdate?: boolean
   type: "boolean" | "float" | "date" | "text" | "enum" | "list"
 }
 
@@ -419,9 +428,6 @@ export const contacts = mysqlTable(
     ),
   }),
 )
-
-// Example usage: Find all contacts where attributes->age > 25.
-// select count(*) from contactProperties where name = 'age' and audienceId = 'audienceXXX' and float > 25
 
 export const contactProperties = mysqlTable(
   "contactProperties",

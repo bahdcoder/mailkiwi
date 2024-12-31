@@ -115,9 +115,11 @@ export class VikeController extends BaseController {
 
     const userAgent = userAgentHeader ? new UAParser(userAgentHeader) : undefined
 
-    const audience = await container
-      .make(AudienceRepository)
-      .findForProduct(ctx.get("team")?.id, "letters")
+    const audience = ctx.get("team")
+      ? await container
+          .make(AudienceRepository)
+          .findForProduct(ctx.get("team")?.id, "letters")
+      : undefined
 
     return renderVikePage(ctx, next, {
       ...pageProps,

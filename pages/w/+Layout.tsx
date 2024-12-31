@@ -1,3 +1,4 @@
+import "./styles.css"
 import {
   ApplicationLayoutProvider,
   SidebarState,
@@ -43,12 +44,9 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
         >
           <DraggableSidebarResizer />
           <div
-            className={cn(
-              "w-full w-layout-container rounded-lg border kb-border-tertiary overflow-y-auto",
-              {
-                "h-[calc(100vh-1rem)]": !sidebarState.offscreen,
-              },
-            )}
+            className={cn("w-full rounded-lg border kb-border-tertiary overflow-y-auto", {
+              "h-[calc(100vh-1rem)]": !sidebarState.offscreen,
+            })}
           >
             {children}
           </div>
