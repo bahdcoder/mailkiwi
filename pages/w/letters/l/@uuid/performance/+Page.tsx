@@ -70,6 +70,10 @@ function LetterPerformancePage() {
           ))}
         </div>
       </div>
+
+      <div className="mb-3 flex items-center justify-between mt-6">
+        <Heading size="xs">Web metrics</Heading>
+      </div>
     </Tabs.Content>
   )
 }

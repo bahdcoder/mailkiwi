@@ -41,7 +41,7 @@ function LettersPage() {
             </TextField.Root>
           </div>
 
-          <div className="w-full">
+          <div className="w-full lg:w-auto">
             <Tabs.List className="lg:w-[fit-content]">
               <Tabs.Trigger value={LetterStatus.ALL} asChild>
                 <a href={route("letters")}>All</a>
@@ -77,8 +77,10 @@ function LettersPage() {
                 </Text>
               </div>
 
-              <div className="w-full max-w-[24%] flex justify-center">
-                <Badge variant="success">Sent</Badge>
+              <div className="w-full max-w-[24%] flex justify-center items-center">
+                <Badge variant="success" size="sm">
+                  Sent
+                </Badge>
               </div>
 
               <div className="w-full max-w-[8%] flex items-center justify-center">
