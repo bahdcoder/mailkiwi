@@ -6,9 +6,11 @@ import { OneFingerSelectHandGestureIcon } from "@/pages/components/icons/one-fin
 import { SearchIcon } from "@/pages/components/icons/search.svg.jsx"
 import { Badge } from "@kibamail/owly/badge"
 import { Button } from "@kibamail/owly/button"
+import { Heading } from "@kibamail/owly/heading"
 import * as Tabs from "@kibamail/owly/tabs"
 import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"
+import * as React from "react"
 import { usePageContext } from "vike-react/usePageContext"
 
 import { route } from "@/shared/routes/route_aliases.js"
@@ -24,6 +26,14 @@ function LettersPage() {
   const ctx = usePageContext()
 
   const defaultTabValue = ctx.urlParsed?.search?.status ?? LetterStatus.ALL
+
+  const groups = [
+    "Product marketing",
+    "Newsletter",
+    "Announcements",
+    "Offers",
+    "Weekly product updates",
+  ]
 
   return (
     <Tabs.Content value="letters" className="pt-6">
@@ -60,67 +70,84 @@ function LettersPage() {
           </div>
         </div>
 
-        <div className="w-full pt-4" data-orientation="horizontal" role="tabpanel">
-          {[1, 2, 3, 4].map((i) => (
-            <a
-              key={i}
-              href={route("letters_overview", { uuid: i.toString() })}
-              className="h-[4.5rem] hidden lg:flex w-full py-4 px-2 box-border border-b border-[var(--black-5)] ease-in-out duration-300 transition-[background-color] hover:bg-[var(--background-hover)] cursor-pointer"
-            >
-              <div className="w-full max-w-[40%] flex flex-col">
-                <Text className="kb-content-secondary font-medium">
-                  Welcome to 2025. Software engineering is cooked.
-                </Text>
-                <Text className="kb-content-tertiary truncate overflow-ellipsis">
-                  Stay updated with our latest news and insights! Discover tips, trends,
-                  and exclusive offers that can help you thrive in your endeavors.
-                </Text>
-              </div>
+        <div
+          className="w-full pt-4 flex flex-col gap-8 pb-32"
+          data-orientation="horizontal"
+          role="tabpanel"
+        >
+          {groups.map((group) => (
+            <div key={group} className="">
+              <Heading size="sm" className="px-2 font-display kb-content-brand">
+                {group}
+              </Heading>
+              <div className="flex flex-col">
+                {[1, 2, 3, 4].map((i) => (
+                  <a
+                    key={i}
+                    href={route("letters_overview", { uuid: i.toString() })}
+                    className="h-[4.5rem] hidden lg:flex w-full py-4 px-2 box-border border-b border-[var(--black-5)] ease-in-out duration-300 transition-[background-color] hover:bg-[var(--background-hover)] cursor-pointer"
+                  >
+                    <div className="w-full max-w-[40%] flex flex-col">
+                      <Text className="kb-content-secondary font-medium">
+                        Welcome to 2025. Software engineering is cooked.
+                      </Text>
+                      <Text className="kb-content-tertiary truncate overflow-ellipsis">
+                        Stay updated with our latest news and insights! Discover tips,
+                        trends, and exclusive offers that can help you thrive in your
+                        endeavors.
+                      </Text>
+                    </div>
 
-              <div className="w-full max-w-[24%] flex justify-center items-center">
-                <Badge variant="success" size="sm">
-                  Sent
-                </Badge>
-              </div>
+                    <div className="w-full max-w-[24%] flex justify-center items-center">
+                      <Badge variant="success" size="sm">
+                        Sent
+                      </Badge>
+                    </div>
 
-              <div className="w-full max-w-[8%] flex items-center justify-center">
-                <div className="flex items-center gap-2">
-                  <Text className="kb-content-tertiary">
-                    <MailOutIcon className="w-5 h-5 kb-content-disabled" />
-                  </Text>
-                  <Text className="kb-content-tertiary">4,827</Text>
-                </div>
+                    <div className="w-full max-w-[8%] flex items-center justify-center">
+                      <div className="flex items-center gap-2">
+                        <Text className="kb-content-tertiary">
+                          <MailOutIcon className="w-5 h-5 kb-content-disabled" />
+                        </Text>
+                        <Text className="kb-content-tertiary">4,827</Text>
+                      </div>
+                    </div>
+                    <div className="w-full max-w-[8%] flex items-center justify-center">
+                      <div className="flex items-center gap-2">
+                        <Text className="kb-content-tertiary">
+                          <MailOpenIcon className="w-5 h-5 kb-content-disabled" />
+                        </Text>
+                        <Text className="kb-content-tertiary">63%</Text>
+                      </div>
+                    </div>
+                    <div className="w-full max-w-[8%] flex items-center justify-center">
+                      <div className="flex items-center gap-2">
+                        <Text className="kb-content-tertiary">
+                          <OneFingerSelectHandGestureIcon className="w-5 h-5 kb-content-disabled" />
+                        </Text>
+                        <Text className="kb-content-tertiary">63%</Text>
+                      </div>
+                    </div>
+                    <div className="w-full max-w-[10%] flex items-center justify-end">
+                      <Text className="kb-content-tertiary truncate overflow-ellipsis">
+                        Edited 23 mins ago
+                      </Text>
+                    </div>
+                    <div className="w-full max-w-[2%] flex items-center">
+                      <Button
+                        variant="tertiary"
+                        onClick={(event) => [
+                          event.stopPropagation(),
+                          event.preventDefault(),
+                        ]}
+                      >
+                        <MoreVertIcon className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </a>
+                ))}
               </div>
-              <div className="w-full max-w-[8%] flex items-center justify-center">
-                <div className="flex items-center gap-2">
-                  <Text className="kb-content-tertiary">
-                    <MailOpenIcon className="w-5 h-5 kb-content-disabled" />
-                  </Text>
-                  <Text className="kb-content-tertiary">63%</Text>
-                </div>
-              </div>
-              <div className="w-full max-w-[8%] flex items-center justify-center">
-                <div className="flex items-center gap-2">
-                  <Text className="kb-content-tertiary">
-                    <OneFingerSelectHandGestureIcon className="w-5 h-5 kb-content-disabled" />
-                  </Text>
-                  <Text className="kb-content-tertiary">63%</Text>
-                </div>
-              </div>
-              <div className="w-full max-w-[10%] flex items-center justify-end">
-                <Text className="kb-content-tertiary truncate overflow-ellipsis">
-                  Edited 23 mins ago
-                </Text>
-              </div>
-              <div className="w-full max-w-[2%] flex items-center">
-                <Button
-                  variant="tertiary"
-                  onClick={(event) => [event.stopPropagation(), event.preventDefault()]}
-                >
-                  <MoreVertIcon className="w-5 h-5" />
-                </Button>
-              </div>
-            </a>
+            </div>
           ))}
         </div>
       </Tabs.Root>

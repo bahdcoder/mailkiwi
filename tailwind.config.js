@@ -8,6 +8,7 @@ export default {
       colors: {},
       fontFamily: {
         sans: "var(--default-font-family)",
+        display: "var(--default-font-family-display)",
       },
     },
   },

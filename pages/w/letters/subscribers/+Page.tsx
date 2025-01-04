@@ -213,6 +213,22 @@ function SubscribersPage() {
     [filters, deletedFilters],
   )
 
+  function onClearFilters() {
+    setSearch("")
+    setRowSelection({})
+    table.resetPageIndex()
+
+    setDeletedFilters((current) => {
+      const newState = { ...current }
+
+      filters.forEach((filter) => {
+        newState[filter.id] = true
+      })
+
+      return newState
+    })
+  }
+
   const { data } = useQuery<{ data: ContactWithTagsAndProperties[]; total: number }>({
     queryKey: ["contacts", debouncedSearch, activeFilters, pagination],
     initialData: { total: pageProps.contacts.total, data: pageProps.contacts.data },
@@ -363,24 +379,6 @@ function SubscribersPage() {
 
           <FiltersBuilder onFiltersChange={onFiltersChange} />
         </div>
-
-        <div className="w-full lg:w-auto">
-          <div className="flex items-center gap-2">
-            <Select.Root name="type">
-              <Select.Trigger placeholder="Select a segment" className="min-w-52" />
-              <Select.Content className="z-[99]">
-                <Select.Item value="text">All subscribers</Select.Item>
-                <Select.Item value="number">Gmail users</Select.Item>
-                <Select.Item value="date">Bought a book</Select.Item>
-                <Select.Item value="boolean">Have not bought a book</Select.Item>
-              </Select.Content>
-            </Select.Root>
-
-            <Button variant="tertiary">
-              <MoreVertIcon className="!w-5 !h-5" />
-            </Button>
-          </div>
-        </div>
       </div>
 
       {activeFilters.length > 0 ? (
@@ -488,6 +486,7 @@ function SubscribersPage() {
                 variant="tertiary"
                 className="py-1 text-xs"
                 data-testid="w-subscribers-filters-clear"
+                onClick={onClearFilters}
               >
                 Clear filters
               </Button>
