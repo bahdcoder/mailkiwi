@@ -1,10 +1,12 @@
 import { type UAParser } from "ua-parser-js"
 
-import {
+import type {
+  Audience,
+  Tag,
   Team,
   TeamMembership,
-  type TeamWithMemberships,
-  type UserWithTeams,
+  TeamWithMemberships,
+  UserWithTeams,
 } from "@/database/database_schema_types.js"
 
 export interface DefaultPageProps {
@@ -13,10 +15,11 @@ export interface DefaultPageProps {
   userAgent: UAParser.IResult
   memberships: (TeamMembership & { team: Team })[]
   letters: {
-    audience: {
-      id: string
-    }
+    audience: Audience
   }
+  audience: Audience
+  tags: Tag[]
+  pageProps: Record<string, any>
 }
 
 declare global {
@@ -29,6 +32,8 @@ declare global {
       flash: string
       memberships: DefaultPageProps["memberships"]
       letters: DefaultPageProps["letters"]
+      tags: DefaultPageProps["tags"]
+      pageProps: DefaultPageProps["pageProps"]
     }
   }
 }

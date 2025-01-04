@@ -1,5 +1,4 @@
 import { defineConfig } from "drizzle-kit"
-import { resolve } from "node:path"
 
 export default defineConfig({
   dialect: "mysql",

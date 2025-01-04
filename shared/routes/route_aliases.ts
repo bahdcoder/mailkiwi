@@ -27,7 +27,7 @@ export const aliases = {
   community: "community",
 
   // products
-  letters: w("letters"),
+  letters: w("letters/"),
   send: w("send"),
   optimise: w("optimise"),
   engage: w("engage"),
@@ -44,6 +44,12 @@ export const aliases = {
 
   letters_welcome: w("letters/welcome"),
   letters_onboarding: w("letters/onboarding"),
+  letters_subscribers: w("letters/subscribers"),
+  letters_automations: w("letters/automations"),
+
+  // single letter pages
+  letters_overview: w("letters/l/:uuid/"),
+  letters_performance: w("letters/l/:uuid/performance"),
 
   // audiences
   audience_create: "/audiences",
@@ -51,6 +57,10 @@ export const aliases = {
   // imports
   contacts_import: "/audiences/:audienceId/imports",
   update_contacts_import: "/audiences/:audienceId/imports/:importId",
+
+  // contacts
+  get_contacts: "/audiences/:audienceId/contacts",
+  contacts_search: "/audiences/:audienceId/contacts/search",
 } as const
 
 export function route(

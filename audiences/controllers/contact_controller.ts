@@ -4,6 +4,7 @@ import { UpdateContactAction } from "@/audiences/actions/contacts/update_contact
 import { AttachTagsToContactAction } from "@/audiences/actions/tags/attach_tags_to_contact_action.js"
 import { DetachTagsFromContactAction } from "@/audiences/actions/tags/detach_tags_from_contact_action.js"
 import { CreateContactSchema } from "@/audiences/dto/contacts/create_contact_dto.js"
+import { SearchContactsSchema } from "@/audiences/dto/contacts/search_contacts_dto.js"
 import { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js"
 import { AttachTagsToContactDto } from "@/audiences/dto/tags/attach_tags_to_contact_dto.js"
 import { DetachTagsFromContactDto } from "@/audiences/dto/tags/detach_tags_from_contact_dto.js"
@@ -16,19 +17,20 @@ import {
 } from "@/database/database_schema_types.js"
 
 import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
+import { VikeController } from "@/shared/controllers/vike_controller.js"
 import type { HonoInstance } from "@/shared/server/hono.js"
 import type { HonoContext } from "@/shared/server/types.js"
 
 import { container } from "@/utils/typi.js"
 
-export class ContactController extends BaseController {
+export class ContactController extends VikeController {
   constructor(private app: HonoInstance = makeApp()) {
     super()
 
     this.app.defineRoutes(
       [
         ["GET", "/", this.index.bind(this)],
+        ["POST", "/search", this.search.bind(this)],
         ["POST", "/", this.store.bind(this)],
         ["GET", "/:contactId", this.get.bind(this)],
         ["PATCH", "/:contactId", this.update.bind(this)],
@@ -42,17 +44,34 @@ export class ContactController extends BaseController {
     )
   }
 
-  async index(ctx: HonoContext) {
-    const paginatedContacts = await container
+  paginatedContacts = (ctx: HonoContext, audienceId: string) =>
+    container
       .make(GetContactsAction)
       .handle(
-        ctx.req.param("audienceId"),
+        audienceId,
         ctx.req.query("segmentId") as string,
         Number.parseInt(ctx.req.query("page") ?? "1"),
         Number.parseInt(ctx.req.query("perPage") ?? "10"),
       )
 
-    return ctx.json(paginatedContacts)
+  async search(ctx: HonoContext) {
+    const payload = await this.validate(ctx, SearchContactsSchema)
+
+    return ctx.json(
+      await container
+        .make(GetContactsAction)
+        .handle(
+          ctx.req.param("audienceId"),
+          ctx.req.query("segmentId") as string,
+          Number.parseInt(ctx.req.query("page") ?? "1"),
+          Number.parseInt(ctx.req.query("perPage") ?? "10"),
+          payload.filters,
+        ),
+    )
+  }
+
+  async index(ctx: HonoContext) {
+    return ctx.json(await this.paginatedContacts(ctx, ctx.req.param("audienceId")))
   }
 
   async get(ctx: HonoContext) {

@@ -1,3 +1,4 @@
+import { InputError } from "@kibamail/owly/input-hint"
 import { composeRefs } from "@radix-ui/react-compose-refs"
 import {
   DefaultError,
@@ -18,29 +19,40 @@ export interface ServerSubmissionResponse<TResponse = Record<"path" | string, an
   errorsList: string[]
 }
 
+export type FormPayload = Record<
+  string,
+  FormDataEntryValue | FormDataEntryValue[] | boolean
+>
+
 export interface UseServerFormMutationProps<TResponse = Record<"path" | string, any>>
   extends Omit<
     MutationOptions<
       ServerSubmissionResponse<TResponse>,
       ServerSubmissionResponse<TResponse>,
-      Record<string, FormDataEntryValue>
+      FormPayload
     >,
     "mutationFn"
   > {
   action: string
+  baseId?: string
   method?: "POST" | "PUT" | "DELETE" | "PATCH"
   onProgress?: XHRHelperConfig["onProgress"]
+  transform?: (form: FormPayload) => FormPayload
 }
 
 export function useServerFormMutation<T extends Record<"path" | string, any>>({
   action,
   method = "POST",
   onProgress,
+  transform,
+  baseId: defaultBaseId,
   ...mutationOptions
 }: UseServerFormMutationProps<T>) {
   const mutation = useMutation({
-    async mutationFn(form) {
+    async mutationFn(submittedForm) {
       let isAMultiPartRequest = false
+
+      const form = transform ? transform(submittedForm) : submittedForm
 
       for (const key in form) {
         if (form[key] instanceof File) {
@@ -56,7 +68,7 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
           if (form[key] instanceof File) {
             multipartForm.append(key, form[key])
           } else {
-            multipartForm.set(key, form[key])
+            multipartForm.set(key, form[key] as FormDataEntryValue)
           }
         }
       }
@@ -106,9 +118,33 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
     ...mutationOptions,
   })
 
+  const baseId = defaultBaseId ?? React.useId()
+
+  const { error } = mutation
+
+  const ServerErrorsList = React.useMemo(
+    function () {
+      if (!error) {
+        return null
+      }
+
+      return (
+        <div className="w-full flex flex-col gap-y-1">
+          {error?.errorsList.map((error, idx) => (
+            <InputError baseId={baseId} key={idx}>
+              {error}
+            </InputError>
+          ))}
+        </div>
+      )
+    },
+    [error],
+  )
+
   return {
     action,
     method,
+    ServerErrorsList,
     ...mutation,
     serverFormProps: { method, action, mutate: mutation.mutate },
   }
@@ -118,7 +154,7 @@ type ServerFormProps = React.FormHTMLAttributes<HTMLFormElement> & {
   mutate: UseMutationResult<
     ServerSubmissionResponse<Record<string, any>>,
     ServerSubmissionResponse,
-    Record<string, FormDataEntryValue>,
+    FormPayload,
     unknown
   >["mutate"]
 }
@@ -139,7 +175,7 @@ export const ServerForm = React.forwardRef<React.ElementRef<"form">, ServerFormP
 
       const form = new FormData(formElement)
 
-      const payload: Record<string, FormDataEntryValue> = {}
+      const payload: FormPayload = {}
 
       for (const [name, value] of form.entries()) {
         payload[name] = value
@@ -147,8 +183,6 @@ export const ServerForm = React.forwardRef<React.ElementRef<"form">, ServerFormP
 
       mutate(payload)
     }
-
-    // TODO: Automatically inject CSRF token into form here.
 
     return (
       <form

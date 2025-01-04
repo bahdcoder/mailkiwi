@@ -1,0 +1,58 @@
+import { FastArrowLeftIcon } from "@/pages/components/icons/fast-arrow-left.svg.jsx"
+import { FastArrowRightIcon } from "@/pages/components/icons/fast-arrow-right.svg.jsx"
+import { NavArrowLeftIcon } from "@/pages/components/icons/nav-arrow-left.svg.jsx"
+import { NavArrowRightIcon } from "@/pages/components/icons/nav-arrow-right.svg.jsx"
+import { Button } from "@kibamail/owly/button"
+import { Text } from "@kibamail/owly/text"
+import { Table } from "@tanstack/react-table"
+
+import { ContactWithTagsAndProperties } from "@/database/database_schema_types.js"
+
+import { route } from "@/shared/routes/route_aliases.js"
+
+export interface PaginationProps {
+  table: Table<ContactWithTagsAndProperties>
+}
+
+export function Pagination({ table }: PaginationProps) {
+  const { pageIndex } = table.getState().pagination
+
+  return (
+    <div className="w-full h-8 flex items-center justify-between">
+      <Text data-testid="w-subscribers-pagination-page-number">
+        Page {pageIndex + 1} of {table.getPageCount()}
+      </Text>
+
+      <div className="flex items-center gap-2">
+        <Button
+          variant="tertiary"
+          onClick={table.firstPage}
+          disabled={!table.getCanPreviousPage()}
+        >
+          <FastArrowLeftIcon />
+        </Button>
+        <Button
+          variant="tertiary"
+          onClick={table.previousPage}
+          disabled={!table.getCanPreviousPage()}
+        >
+          <NavArrowLeftIcon />
+        </Button>
+        <Button
+          variant="tertiary"
+          onClick={table.nextPage}
+          disabled={!table.getCanNextPage()}
+        >
+          <NavArrowRightIcon />
+        </Button>
+        <Button
+          variant="tertiary"
+          onClick={table.lastPage}
+          disabled={!table.getCanNextPage()}
+        >
+          <FastArrowRightIcon />
+        </Button>
+      </div>
+    </div>
+  )
+}

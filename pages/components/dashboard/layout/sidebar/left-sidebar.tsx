@@ -1,12 +1,22 @@
 import { useApplicationLayoutContext } from "@/pages/components/dashboard/layout/application-layout-context.jsx"
 import { SidebarContent } from "@/pages/components/dashboard/layout/sidebar/sidebar-content.jsx"
 import cn from "classnames"
-import { usePageContext } from "vike-react/usePageContext"
+import { useEffect } from "react"
 
 export const DEFAULT_SIDEBAR_WIDTH = 260
 
 export function LeftSidebar() {
   const { sidebar } = useApplicationLayoutContext("Sidebar")
+
+  useEffect(
+    function () {
+      document.body.style.setProperty(
+        "--w-sidebar-width",
+        sidebar.offscreen ? "0px" : `${sidebar.width}px`,
+      )
+    },
+    [sidebar.width, sidebar.offscreen],
+  )
 
   return (
     <nav

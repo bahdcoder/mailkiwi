@@ -171,6 +171,11 @@ export type ContactWithTags = Contact & {
   })[]
 }
 
+export type ContactWithTagsAndProperties = Contact & {
+  properties: ContactProperty[]
+  tags: Tag[]
+}
+
 export type TeamWithSendingDomains = Team & {
   sendingDomains: SendingDomain[]
 }

@@ -5,7 +5,8 @@ import { route } from "@/shared/routes/route_aliases.js"
 
 export function guard(ctx: PageContext) {
   if (ctx.urlPathname === route("letters")) {
-    // todo: check if user has completed onboarding. if not, force redirect to letters onboarding.
-    throw redirect(route("letters_welcome"))
+    if (!ctx.letters.audience) {
+      throw redirect(route("letters_welcome"))
+    }
   }
 }

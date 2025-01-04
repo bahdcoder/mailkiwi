@@ -29,6 +29,7 @@
 
 body {
   @apply kb-background-brand-hover;
+  --w-sidebar-width: 260px;
 }
 
 #root {

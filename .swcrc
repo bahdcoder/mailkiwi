@@ -11,17 +11,10 @@
       "dynamicImport": true
     },
     "target": "es2022",
-    "paths": {
-     "ipaddr.js": ["./node_modules/ipaddr.js/lib/ipaddr.js"]
-    },
     "baseUrl": ".",
     "experimental": {
-     "plugins": [["@lingui/swc-plugin", {}]]
+      "plugins": [["@lingui/swc-plugin", {}]]
     }
   },
-  "exclude": [
-    ".*\\.d\\.ts$",
-    "build",
-    "node_modules"
-  ]
+  "exclude": ["node_modules/**/**"]
 }

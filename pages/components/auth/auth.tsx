@@ -28,7 +28,7 @@ export const PageTitle = ({
 }: React.PropsWithChildren<PageTitleProps>) => {
   return (
     <>
-      <Heading variant="display" size="lg">
+      <Heading variant="display" size="xs">
         {title}
       </Heading>
 

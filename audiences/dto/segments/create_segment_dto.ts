@@ -18,6 +18,12 @@ const allowedFilterFields = [
   "subscribedAt",
   "tags",
 
+  // Subscribed, unsubscribed, archived.
+  "status",
+
+  // website, import, api, manual, etc.
+  "source",
+
   // sent events
   "lastSentBroadcastEmailAt",
   "lastSentAutomationEmailAt",
@@ -38,7 +44,7 @@ const allowedFilterFields = [
   //
 ] as const
 
-type AllowedFilterField = (typeof allowedFilterFields)[number]
+export type AllowedFilterField = (typeof allowedFilterFields)[number]
 
 const AllowedFilterFieldPickList = picklist(allowedFilterFields)
 

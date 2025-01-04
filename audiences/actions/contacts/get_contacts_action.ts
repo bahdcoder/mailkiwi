@@ -1,11 +1,18 @@
 import { type SQLWrapper, and, eq, inArray } from "drizzle-orm"
 
+import { SearchContactsDto } from "@/audiences/dto/contacts/search_contacts_dto.js"
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
 import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
 import type { Audience, Contact, Segment } from "@/database/database_schema_types.js"
-import { contactProperties, contacts, tags, tagsOnContacts } from "@/database/schema.js"
+import {
+  ContactFilterGroup,
+  contactProperties,
+  contacts,
+  tags,
+  tagsOnContacts,
+} from "@/database/schema.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
@@ -26,6 +33,7 @@ export class GetContactsAction {
     segmentId?: string,
     page?: number,
     perPage?: number,
+    filters?: SearchContactsDto["filters"],
   ) => {
     let segment: Segment | undefined
     let audience: Audience | undefined
@@ -50,6 +58,10 @@ export class GetContactsAction {
       queryConditions.push(eq(contacts.audienceId, audience.id))
     }
 
+    if (filters) {
+      queryConditions.push(new SegmentBuilder(filters, audience as Audience).build())
+    }
+
     if (segmentId) {
       segment = await this.segmentRepository.findById(segmentId)
 
@@ -67,7 +79,7 @@ export class GetContactsAction {
 
     return new Paginator<Contact>(contacts)
       .queryConditions([...queryConditions])
-      .size(perPage ?? 10)
+      .size(perPage ?? 100)
       .page(page ?? 1)
       .transformRows(async (rows: any[]) => {
         const [tagsForContacts, allContactProperties] = await Promise.all([

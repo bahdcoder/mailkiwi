@@ -1,0 +1,7 @@
+@import "@kibamail/owly/styles/badge.css";
+
+.w-search-letters {
+  .kb-text-field-content {
+    border-radius: var(--radius-lg);
+  }
+}

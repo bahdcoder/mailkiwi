@@ -1,4 +1,5 @@
 {
- "ext": "ts,js",
- "exec": "SWCRC=true env-cmd node --enable-source-maps --import @swc-node/register/esm-register app/start/dev.ts"
+  "ext": "ts,js",
+  "ignore": ["node_modules", "build", "dist", "migrations", "locales"],
+  "exec": "SWCRC=true env-cmd node --enable-source-maps --import @swc-node/register/esm-register ./app/start/dev.ts"
 }

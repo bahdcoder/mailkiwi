@@ -8,7 +8,9 @@ interface SubmenuItemLinkProps
 export function SubmenuItemLink({ children, ...linkProps }: SubmenuItemLinkProps) {
   const ctx = usePageContext()
 
-  const isActive = ctx.urlOriginal.includes(linkProps.href as string)
+  const isActive =
+    ctx.urlOriginal.includes(linkProps.href as string) ||
+    `${ctx.urlOriginal}/`.includes(linkProps.href as string)
 
   return (
     <a
