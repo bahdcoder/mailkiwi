@@ -2,6 +2,7 @@ import { type UAParser } from "ua-parser-js"
 
 import type {
   Audience,
+  Tag,
   Team,
   TeamMembership,
   TeamWithMemberships,
@@ -16,6 +17,9 @@ export interface DefaultPageProps {
   letters: {
     audience: Audience
   }
+  audience: Audience
+  tags: Tag[]
+  pageProps: Record<string, any>
 }
 
 declare global {
@@ -28,6 +32,8 @@ declare global {
       flash: string
       memberships: DefaultPageProps["memberships"]
       letters: DefaultPageProps["letters"]
+      tags: DefaultPageProps["tags"]
+      pageProps: DefaultPageProps["pageProps"]
     }
   }
 }

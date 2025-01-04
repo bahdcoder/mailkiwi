@@ -18,5 +18,6 @@ const config: Config = {
     "memberships",
     "flash",
     "letters",
+    "tags",
   ],
 }

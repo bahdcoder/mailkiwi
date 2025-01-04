@@ -39,12 +39,15 @@ export class TeamController extends BaseController {
     const memberships = ctx.get("memberships")
 
     const teamId = ctx.req.param("teamId")
+    const user = ctx.get("user")
 
-    const isAnActiveMemberOfTeam = memberships.find(
+    const isAnActiveMemberOfTeam = memberships.some(
       (membership) => membership.teamId === teamId,
     )
 
-    if (isAnActiveMemberOfTeam) {
+    const isTeamOwner = user?.teams.some((team) => team.id === teamId)
+
+    if (isAnActiveMemberOfTeam || isTeamOwner) {
       await this.session.updateCurrentSessionTeamId(ctx, teamId)
     }
 

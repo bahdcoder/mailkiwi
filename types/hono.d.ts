@@ -21,6 +21,7 @@ declare module "hono" {
     contact: Contact
     memberships: (TeamMembership & { team: Team | null })[]
     flash: string | undefined
+    pageProps: Record<string, any>
   }
 
   interface Context {

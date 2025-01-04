@@ -24,7 +24,12 @@ function LettersLayout({ children }: React.PropsWithChildren) {
 
   return (
     <PageLayout>
-      <Tabs.Root variant="secondary" defaultValue={getDefaultTabValue()} width={"full"}>
+      <Tabs.Root
+        variant="secondary"
+        defaultValue={getDefaultTabValue()}
+        width={"full"}
+        className="relative"
+      >
         <ProductPageHeading>
           <div className="w-full flex">
             <div className="w-full lg:w-auto">

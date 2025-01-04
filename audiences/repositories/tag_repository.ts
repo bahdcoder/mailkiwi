@@ -14,6 +14,10 @@ export class TagRepository extends BaseRepository {
     super()
   }
 
+  tags() {
+    return this.crud(tags)
+  }
+
   async findById(id: string) {
     return this.findFirst({ where: eq(tags.id, id) })
   }

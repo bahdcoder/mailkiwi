@@ -1,14 +1,19 @@
 import { ContainerKey } from "../container/index.js"
 import { VikePageRenderer } from "../types/vike.js"
 import { createReadableStreamFromReadable } from "@remix-run/node"
+import { and, eq } from "drizzle-orm"
 import { Handler, MiddlewareHandler, Next } from "hono"
 import { PassThrough } from "stream"
 import { UAParser } from "ua-parser-js"
 import { renderPage } from "vike/server"
 
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import { TagRepository } from "@/audiences/repositories/tag_repository.js"
+
+import { tags as tagsTable } from "@/database/schema.js"
 
 import { BaseController } from "@/shared/controllers/base_controller.js"
+import { PagePropsResolver } from "@/shared/controllers/page_props/page_props_resolver.js"
 import { route } from "@/shared/routes/route_aliases.js"
 import { HonoContext, HonoRouteDefinition } from "@/shared/server/types.js"
 import { excludeKeys } from "@/shared/utils/helpers/exclude_keys.js"
@@ -38,16 +43,10 @@ export class VikeController extends BaseController {
     pageProps?: Record<string, any>,
   ) => {
     const pageContext = await renderPage({
-      pageProps,
-      user: pageProps?.user,
-      team: pageProps?.team,
-      flash: pageProps?.flash,
-      memberships: pageProps?.memberships,
-      userAgent: pageProps?.userAgent,
+      pageProps: await container.make(PagePropsResolver).handle(ctx, pageProps as any),
+      ...pageProps,
       urlOriginal: ctx.req.url,
-      isMobile: pageProps?.isMobile,
       headersOriginal: ctx.req.raw.headers,
-      letters: pageProps?.letters,
     })
 
     if (!pageContext.httpResponse) return next()
@@ -121,6 +120,13 @@ export class VikeController extends BaseController {
           .findForProduct(ctx.get("team")?.id, "letters")
       : undefined
 
+    const tags = audience?.id
+      ? await container
+          .make(TagRepository)
+          .tags()
+          .findAll(eq(tagsTable.audienceId, audience.id))
+      : []
+
     return renderVikePage(ctx, next, {
       ...pageProps,
       user: excludeKeys(ctx.get("user"), [
@@ -142,6 +148,8 @@ export class VikeController extends BaseController {
       letters: {
         audience,
       },
+      audience,
+      tags,
     })
   }
 }

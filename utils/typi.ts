@@ -27,10 +27,15 @@ export class Container {
 
     if (this.instances.has(key)) {
       const instance = this.instances.get(key)
-      return new instance()
+
+      return instance
     }
 
-    return new key()
+    const instance = new key()
+
+    this.instances.set(key, instance)
+
+    return instance
   }
 
   resolve = this.make

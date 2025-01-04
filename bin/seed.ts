@@ -7,11 +7,13 @@ import { DateTime } from "luxon"
 import Fs from "node:fs/promises"
 import Path from "node:path"
 import { fileURLToPath } from "node:url"
+import { v1 } from "uuid"
 
 import { CreateBroadcastAction } from "@/broadcasts/actions/create_broadcast_action.js"
 import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_action.js"
 
 import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
@@ -26,7 +28,14 @@ import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
 
 import { createDatabaseClient, createDrizzleDatabase } from "@/database/client.js"
 import type { Broadcast, Team, User } from "@/database/database_schema_types.js"
-import { broadcasts, contacts, teamMemberships, teams } from "@/database/schema.js"
+import {
+  broadcasts,
+  contacts,
+  tags,
+  tagsOnContacts,
+  teamMemberships,
+  teams,
+} from "@/database/schema.js"
 
 import { ContainerKey, makeDatabase } from "@/shared/container/index.js"
 
@@ -90,16 +99,18 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
 
   const broadcastIds = []
 
-  for (let audienceIndex = 0; audienceIndex < 5; audienceIndex++) {
+  for (let audienceIndex = 0; audienceIndex < 1; audienceIndex++) {
     const audiencePayload = {
       name: faker.commerce.productName(),
       slug: faker.lorem.words(3),
-      product: "engage" as "engage" | "letters",
+      product: (audienceIndex === 0 ? "letters" : "engage") as "engage" | "letters",
     }
 
     console.log("Creating audience: ", `${audienceIndex}: ${audiencePayload.name}`)
 
-    const audience = await createAudienceAction.handle(audiencePayload, team.id)
+    const audience = await container
+      .make(AudienceRepository)
+      .create(audiencePayload, team.id)
 
     await seedAutomation({
       audienceId: audience.id,
@@ -108,8 +119,8 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
     })
 
     const contactsCount = faker.helpers.rangeToNumber({
-      min: 50,
-      max: 1000,
+      min: 5000,
+      max: 10000,
     })
 
     audienceIds.push({
@@ -122,6 +133,7 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
         count: contactsCount,
       })
       .map((firstName) => ({
+        id: v1(),
         firstName,
         email: faker.internet
           .email({
@@ -140,7 +152,44 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
       `${mockContacts.length} mock contacts.`,
     )
 
+    // create 10 fake tags
+    // insert a random number of tags for each contact
+    const tagsCount = faker.helpers.rangeToNumber({
+      min: 5,
+      max: 15,
+    })
+
+    const tagsToCreate = faker.helpers
+      .multiple(faker.lorem.word, {
+        count: tagsCount,
+      })
+      .map((name) => ({
+        name,
+        id: v1(),
+        audienceId: audience.id,
+      }))
+
+    await database.insert(tags).values(tagsToCreate)
     await database.insert(contacts).values(mockContacts)
+
+    const contactsWithTags = mockContacts
+      .map((contact) => {
+        return {
+          tags: tagsToCreate
+            .slice(0, faker.helpers.rangeToNumber({ min: 0, max: 5 }))
+            .map((tag) => tag.id),
+          id: contact.id,
+        }
+      })
+      .map((tag) =>
+        tag.tags.map((tagId) => ({
+          tagId,
+          contactId: tag.id,
+        })),
+      )
+      .flat()
+
+    await database.insert(tagsOnContacts).values(contactsWithTags)
 
     // create a broadcast with complete information
     const { id: broadcastId } = await container.make(CreateBroadcastAction).handle(

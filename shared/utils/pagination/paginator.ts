@@ -176,6 +176,8 @@ export class Paginator<RowType extends object = any> {
   async paginate(): Promise<{
     data: RowType[]
     total: number
+    page: number
+    perPage: number
   }> {
     const countSelect = this.$modifyQuery(
       this.database.select({ count: count() }).from(this.table).$dynamic(),
@@ -203,6 +205,8 @@ export class Paginator<RowType extends object = any> {
     return {
       data: results,
       total: countResult[0].count,
+      page: this.offsetPagination.page,
+      perPage: this.offsetPagination.size,
     }
   }
 }

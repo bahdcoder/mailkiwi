@@ -31,7 +31,7 @@ export class AudienceController extends BaseController {
   async index(ctx: HonoContext) {
     const team = this.ensureTeam(ctx)
 
-    const product = (ctx.req.query("product") || "engage") as "letters" | "engage"
+    const product = (ctx.req.query("product") || "letters") as "letters" | "engage"
 
     const data = await new Paginator(audiences)
       .queryConditions([

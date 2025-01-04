@@ -8,7 +8,7 @@ export interface ProductPageHeadingProps extends React.PropsWithChildren {
 
 export function ProductPageHeading({ children, header }: ProductPageHeadingProps) {
   return (
-    <div className="w-full pt-6 flex flex-col sticky top-0 kb-background-secondary">
+    <div className="w-full pt-6 flex flex-col sticky top-0 kb-background-secondary z-[100]">
       {header ? (
         header
       ) : (
