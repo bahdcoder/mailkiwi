@@ -26,10 +26,10 @@ function SingleLetterLayout({ children }: React.PropsWithChildren) {
               <div className="flex flex-col">
                 <div className="flex items-center text-sm mb-1">
                   <a
-                    href={route("letters")}
+                    href={route("engage")}
                     className="kb-content-tertiary hover:text-[var(--kb-content-secondary)]"
                   >
-                    Letters
+                    Broadcasts
                   </a>
                   <SlashIcon className="w-4 h-4" />
                   <span>This is the newsletter #{ctx.routeParams.uuid}</span>
@@ -49,12 +49,12 @@ function SingleLetterLayout({ children }: React.PropsWithChildren) {
             <div className="w-full lg:w-auto">
               <Tabs.List className="lg:w-[fit-content] gap-x-4">
                 <Tabs.Trigger asChild value="overview" className="px-0">
-                  <a href={route("letters_overview", { uuid: ctx.routeParams.uuid })}>
+                  <a href={route("engage_overview", { uuid: ctx.routeParams.uuid })}>
                     Overview
                   </a>
                 </Tabs.Trigger>
                 <Tabs.Trigger asChild value="performance" className="px-0">
-                  <a href={route("letters_performance", { uuid: ctx.routeParams.uuid })}>
+                  <a href={route("engage_performance", { uuid: ctx.routeParams.uuid })}>
                     Performance
                   </a>
                 </Tabs.Trigger>

@@ -27,7 +27,6 @@ CREATE TABLE `audiences` (
 	`name` varchar(50),
 	`teamId` binary(16) NOT NULL,
 	`knownProperties` json,
-	`product` enum('engage','letters') DEFAULT 'engage',
 	CONSTRAINT `audiences_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -54,11 +53,21 @@ CREATE TABLE `automations` (
 	CONSTRAINT `automations_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `broadcastGroups` (
+	`id` binary(16) NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`description` text,
+	`teamId` binary(16) NOT NULL,
+	CONSTRAINT `broadcastGroups_id` PRIMARY KEY(`id`),
+	CONSTRAINT `broadcastGroupNameOnTeamIdKey` UNIQUE(`teamId`,`name`)
+);
+--> statement-breakpoint
 CREATE TABLE `broadcasts` (
 	`id` binary(16) NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`audienceId` binary(16) NOT NULL,
 	`segmentId` binary(16),
+	`broadcastGroupId` binary(16) NOT NULL,
 	`teamId` binary(16) NOT NULL,
 	`trackClicks` boolean,
 	`trackOpens` boolean,
@@ -497,8 +506,10 @@ ALTER TABLE `automationSteps` ADD CONSTRAINT `automationSteps_emailId_emails_id_
 ALTER TABLE `automationSteps` ADD CONSTRAINT `automationSteps_tagId_tags_id_fk` FOREIGN KEY (`tagId`) REFERENCES `tags`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `automationSteps` ADD CONSTRAINT `automationSteps_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `automations` ADD CONSTRAINT `automations_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `broadcastGroups` ADD CONSTRAINT `broadcastGroups_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_segmentId_segments_id_fk` FOREIGN KEY (`segmentId`) REFERENCES `segments`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_broadcastGroupId_broadcastGroups_id_fk` FOREIGN KEY (`broadcastGroupId`) REFERENCES `broadcastGroups`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_emailContentId_emailContents_id_fk` FOREIGN KEY (`emailContentId`) REFERENCES `emailContents`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `broadcasts` ADD CONSTRAINT `broadcasts_winningAbTestVariantId_abTestVariants_id_fk` FOREIGN KEY (`winningAbTestVariantId`) REFERENCES `abTestVariants`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

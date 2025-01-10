@@ -22,7 +22,7 @@ describe("@abtests Pick Test winner", () => {
     const database = makeDatabase()
     const redis = makeRedis()
 
-    const { user, audience } = await createUser()
+    const { user, audience, broadcastGroupId } = await createUser()
 
     const contactsForAudience = faker.number.int({
       min: 277,
@@ -42,11 +42,16 @@ describe("@abtests Pick Test winner", () => {
       0,
     )
 
-    const broadcastId = await createBroadcastForUser(user, audience.id, {
-      updateWithValidContent: true,
-      updateWithABTestsContent: true,
-      weights: testAbVariantWeights,
-    })
+    const broadcastId = await createBroadcastForUser(
+      user,
+      audience.id,
+      broadcastGroupId,
+      {
+        updateWithValidContent: true,
+        updateWithABTestsContent: true,
+        weights: testAbVariantWeights,
+      },
+    )
 
     const contactIds = faker.helpers.multiple(cuid, {
       count: contactsForAudience,

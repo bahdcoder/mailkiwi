@@ -1,18 +1,19 @@
-import { columns, getCommonPinningStyles } from "./components/columns.js"
-import * as Table from "./components/table.js"
 import "./styles.css"
 import * as Dropdown from "@/pages/components/dropdown/dropdown.jsx"
 import { CancelIcon } from "@/pages/components/icons/cancel.svg.jsx"
 import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
-import { MoreVertIcon } from "@/pages/components/icons/more-vert.svg.jsx"
 import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
 import { SearchIcon } from "@/pages/components/icons/search.svg.jsx"
+import { getCommonPinningStyles } from "@/pages/w/engage/contacts/components/columns.jsx"
 import {
   FilterCondition,
   FiltersBuilder,
   TextFilterInputForm,
-} from "@/pages/w/letters/subscribers/components/filters.jsx"
-import { Pagination } from "@/pages/w/letters/subscribers/components/pagination.jsx"
+} from "@/pages/w/engage/contacts/components/filters.jsx"
+import { Pagination } from "@/pages/w/engage/contacts/components/pagination.jsx"
+import * as Table from "@/pages/w/engage/contacts/components/table.jsx"
+import { useContacts } from "@/pages/w/engage/contacts/hooks/use-contacts.js"
+import { useFilterOperations } from "@/pages/w/engage/contacts/hooks/use-filter-operations.js"
 import { Button } from "@kibamail/owly/button"
 import { Checkbox } from "@kibamail/owly/checkbox"
 import * as Select from "@kibamail/owly/select-field"
@@ -27,11 +28,7 @@ import { useDebounce } from "use-debounce"
 import { usePageContext } from "vike-react/usePageContext"
 import { PageContext } from "vike/types"
 
-import { AllowedFilterField } from "@/audiences/dto/segments/create_segment_dto.js"
-
 import { ContactWithTagsAndProperties, Tag } from "@/database/database_schema_types.js"
-
-import { route } from "@/shared/routes/route_aliases.js"
 
 interface PageProps {
   contacts: { data: ContactWithTagsAndProperties[]; total: number }
@@ -178,181 +175,21 @@ const filterOperationOptions: FilterOperationOptions = {
 }
 
 function SubscribersPage() {
-  const [enabled, setEnabled] = React.useState(false)
-  const [filters, setFilters] = React.useState<FilterCondition[]>([])
-  const [deletedFilters, setDeletedFilters] = React.useState<Record<string, boolean>>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [search, setSearch] = React.useState<string>("")
   const ctx = usePageContext()
-  const pageProps = usePageContext().pageProps as PageProps
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 100,
-  })
+  const {
+    table,
+    onClearFilters,
+    tagNames,
+    setFilters,
+    setDeletedFilters,
+    setSearch,
+    pagination,
+    data,
+    activeFilters,
+  } = useContacts()
 
-  const tagNames = React.useMemo(() => {
-    return ctx.tags.reduce(
-      (acc, tag) => {
-        acc[tag.id] = tag.name
-        return acc
-      },
-      {} as Record<string, string>,
-    )
-  }, [ctx.tags])
-
-  const [debouncedSearch] = useDebounce(search, 300)
-
-  const activeFilters = React.useMemo(
-    function () {
-      return filters.filter(
-        (filter) =>
-          !deletedFilters[filter.id] &&
-          (Array.isArray(filter.value) ? filter.value.length > 0 : filter.value),
-      )
-    },
-    [filters, deletedFilters],
-  )
-
-  function onClearFilters() {
-    setSearch("")
-    setRowSelection({})
-    table.resetPageIndex()
-
-    setDeletedFilters((current) => {
-      const newState = { ...current }
-
-      filters.forEach((filter) => {
-        newState[filter.id] = true
-      })
-
-      return newState
-    })
-  }
-
-  const { data } = useQuery<{ data: ContactWithTagsAndProperties[]; total: number }>({
-    queryKey: ["contacts", debouncedSearch, activeFilters, pagination],
-    initialData: { total: pageProps.contacts.total, data: pageProps.contacts.data },
-    placeholderData: (previous) => previous,
-    async queryFn() {
-      const response = await fetch(
-        route(
-          "contacts_search",
-          { audienceId: ctx.letters.audience.id },
-          {
-            page: (pagination.pageIndex + 1).toString(),
-            perPage: pagination.pageSize.toString(),
-          },
-        ),
-        {
-          method: "post",
-          body: JSON.stringify({
-            filters: {
-              type: "AND",
-              groups: [
-                {
-                  type: "AND",
-                  conditions: activeFilters,
-                },
-                ...(search
-                  ? [
-                      {
-                        type: "OR",
-                        conditions: [
-                          {
-                            field: "email",
-                            operation: "contains",
-                            value: debouncedSearch,
-                          },
-                          {
-                            field: "lastName",
-                            operation: "contains",
-                            value: debouncedSearch,
-                          },
-                          {
-                            field: "firstName",
-                            operation: "contains",
-                            value: debouncedSearch,
-                          },
-                        ],
-                      },
-                    ]
-                  : []),
-              ],
-            },
-          }),
-          headers: { "Content-Type": "application/json" },
-        },
-      )
-
-      return response.json()
-    },
-    enabled,
-  })
-
-  React.useEffect(
-    function () {
-      if (filters.length > 0 || search || pagination.pageIndex > 0) {
-        setEnabled(true)
-      }
-    },
-    [filters, pagination.pageIndex, search],
-  )
-
-  const table = useReactTable({
-    data: data.data,
-    columns,
-    pageCount: Math.ceil(data.total / pagination.pageSize),
-    manualPagination: true,
-    state: {
-      rowSelection,
-      pagination,
-    },
-    enableRowSelection: true,
-    getRowId(row) {
-      return row.id
-    },
-    onPaginationChange: setPagination,
-    onRowSelectionChange: setRowSelection,
-    getCoreRowModel: getCoreRowModel(),
-    initialState: {
-      columnPinning: {
-        left: ["emailAddress"],
-      },
-    },
-  })
-
-  function onFiltersChange(filters: FilterCondition[]) {
-    setFilters((current) =>
-      filters.map((filter) => {
-        const existing = current.find(
-          (currentFilter) => currentFilter.field === filter.field,
-        )
-
-        return { ...existing, ...filter }
-      }),
-    )
-
-    table.resetPageIndex()
-  }
-
-  function removeFilter(filter: FilterCondition) {
-    setDeletedFilters((current) => ({ ...current, [filter.id]: true }))
-  }
-
-  function updateFilterOperation(
-    filter: FilterCondition,
-    operation: FilterCondition["operation"],
-  ) {
-    setFilters((current) =>
-      current.map((f) => (f.id === filter.id ? { ...f, operation } : f)),
-    )
-  }
-
-  function updateFilterValue(filter: FilterCondition, value: FilterCondition["value"]) {
-    setFilters((current) =>
-      current.map((f) => (f.id === filter.id ? { ...f, value } : f)),
-    )
-  }
+  const { onFiltersChange, removeFilter, updateFilterOperation, updateFilterValue } =
+    useFilterOperations({ setFilters, setDeletedFilters, table })
 
   const startOfPage = pagination.pageIndex * pagination.pageSize + 1
   const endOfPage = Math.min(

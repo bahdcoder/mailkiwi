@@ -14,10 +14,10 @@ export function ProductPageHeading({ children, header }: ProductPageHeadingProps
       ) : (
         <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between">
           <Heading variant="display" size="xs">
-            Letters
+            Engage
           </Heading>
 
-          <Button>Write a letter</Button>
+          <Button>Compose a broadcast</Button>
         </div>
       )}
 

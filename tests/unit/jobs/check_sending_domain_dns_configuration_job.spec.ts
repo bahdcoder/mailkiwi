@@ -26,7 +26,7 @@ export const setupDomainForDnsChecks = async (
   domain?: string,
   domainSettings?: UpdateSendingDomain,
 ) => {
-  const { team, user, audience } = await createUser()
+  const { team, user, audience, broadcastGroupId } = await createUser()
 
   const TEST_DOMAIN = domain ?? faker.internet.domainName()
 
@@ -65,6 +65,7 @@ export const setupDomainForDnsChecks = async (
     team,
     user,
     audience,
+    broadcastGroupId,
   }
 }
 

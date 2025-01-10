@@ -24,15 +24,16 @@ function WelcomePage() {
         </Text>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
-          <ProductCard.Root href={route("letters")}>
-            <LettersIcon className="w-10 h-10" />
+          <ProductCard.Root>
+            <EngageIcon className="w-10 h-10" />
 
             <Text size="lg" className="font-semibold">
-              Letters
+              Engage
             </Text>
 
             <Text className="kb-content-tertiary">
-              Create, Publish, Grow and Monetise your newsletters.
+              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
+              libero et velit interdum.
             </Text>
           </ProductCard.Root>
           <ProductCard.Root>
@@ -47,18 +48,7 @@ function WelcomePage() {
               inbox.
             </Text>
           </ProductCard.Root>
-          <ProductCard.Root>
-            <EngageIcon className="w-10 h-10" />
 
-            <Text size="lg" className="font-semibold">
-              Engage
-            </Text>
-
-            <Text className="kb-content-tertiary">
-              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
-              libero et velit interdum.
-            </Text>
-          </ProductCard.Root>
           <ProductCard.Root>
             <OptimiseIcon className="w-10 h-10" />
 

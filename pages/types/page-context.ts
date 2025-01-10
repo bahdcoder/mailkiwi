@@ -14,9 +14,6 @@ export interface DefaultPageProps {
   team: TeamWithMemberships
   userAgent: UAParser.IResult
   memberships: (TeamMembership & { team: Team })[]
-  letters: {
-    audience: Audience
-  }
   audience: Audience
   tags: Tag[]
   pageProps: Record<string, any>
@@ -31,7 +28,7 @@ declare global {
       isMobile: boolean
       flash: string
       memberships: DefaultPageProps["memberships"]
-      letters: DefaultPageProps["letters"]
+      audience: DefaultPageProps["audience"]
       tags: DefaultPageProps["tags"]
       pageProps: DefaultPageProps["pageProps"]
     }

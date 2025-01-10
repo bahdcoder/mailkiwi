@@ -29,6 +29,7 @@ import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
 import { createDatabaseClient, createDrizzleDatabase } from "@/database/client.js"
 import type { Broadcast, Team, User } from "@/database/database_schema_types.js"
 import {
+  broadcastGroups,
   broadcasts,
   contacts,
   tags,
@@ -62,7 +63,6 @@ await Promise.all([
 ])
 
 const registerUserAction = container.resolve(RegisterUserAction)
-const createAudienceAction = container.resolve(CreateAudienceAction)
 
 const allUsers: { user: Partial<User>; team: Partial<Team> }[] = []
 for (let userIndex = 0; userIndex < 3; userIndex++) {
@@ -97,13 +97,24 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
 
   const audienceIds = []
 
+  const broadcastGroupIds = faker.helpers.multiple(v1, {
+    count: 5,
+  })
+
+  await database.insert(broadcastGroups).values(
+    broadcastGroupIds.map((id) => ({
+      id,
+      name: faker.lorem.words(3),
+      teamId: team.id,
+    })),
+  )
+
   const broadcastIds = []
 
   for (let audienceIndex = 0; audienceIndex < 1; audienceIndex++) {
     const audiencePayload = {
       name: faker.commerce.productName(),
       slug: faker.lorem.words(3),
-      product: (audienceIndex === 0 ? "letters" : "engage") as "engage" | "letters",
     }
 
     console.log("Creating audience: ", `${audienceIndex}: ${audiencePayload.name}`)
@@ -196,6 +207,7 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
       {
         name: faker.commerce.productName(),
         audienceId: audience.id,
+        broadcastGroupId: faker.helpers.arrayElement(broadcastGroupIds),
       },
       team.id,
     )

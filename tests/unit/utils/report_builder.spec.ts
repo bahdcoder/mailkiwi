@@ -33,7 +33,7 @@ describe("@report-builder", () => {
     broadcastId: string
     sendingDomainId: string
   }) {
-    const TOTAL_SENDS = 10_000
+    const TOTAL_SENDS = 100
     const database = makeDatabase()
     let contactIds: { id: string; emailSendId?: string }[] = await database
       .select({ id: contacts.id })
@@ -60,11 +60,11 @@ describe("@report-builder", () => {
       })),
     )
 
-    const TOTAL_DELIVERED = 9_565
-    const TOTAL_OPENS = 7_250
-    const TOTAL_DOUBLE_OPENS = 1_250
-    const TOTAL_CLICKS = 3_500
-    const TOTAL_BOUNCES = 435
+    const TOTAL_DELIVERED = 95
+    const TOTAL_OPENS = 73
+    const TOTAL_DOUBLE_OPENS = 13
+    const TOTAL_CLICKS = 35
+    const TOTAL_BOUNCES = 43
 
     const deliveredContactIds = contactIds.slice(0, TOTAL_DELIVERED)
     const bouncedContactIds = contactIds.slice(TOTAL_DELIVERED, TOTAL_SENDS)
@@ -127,8 +127,9 @@ describe("@report-builder", () => {
   }
 
   test("can get reports for a campaign", { timeout: 20000 }, async ({ expect }) => {
-    const TOTAL_SENDS = 10_000
-    const { user, audience, sendingDomainId } = await setupDomainForDnsChecks()
+    const TOTAL_SENDS = 100
+    const { user, audience, sendingDomainId, broadcastGroupId } =
+      await setupDomainForDnsChecks()
     const database = makeDatabase()
     // 1. create 10,000 contacts
     await database
@@ -140,9 +141,9 @@ describe("@report-builder", () => {
       )
 
     const [broadcastId, secondBroadcastId, thirdBroadcastId] = await Promise.all([
-      createBroadcastForUser(user, audience.id),
-      createBroadcastForUser(user, audience.id),
-      createBroadcastForUser(user, audience.id),
+      createBroadcastForUser(user, audience.id, broadcastGroupId),
+      createBroadcastForUser(user, audience.id, broadcastGroupId),
+      createBroadcastForUser(user, audience.id, broadcastGroupId),
     ])
 
     const [source] = await database.select().from(sendingSources).limit(1)
@@ -169,6 +170,8 @@ describe("@report-builder", () => {
         }),
       ])
 
+    const broadcastReport = await new ReportBuilder().broadcast(broadcastId).build()
+
     const {
       sends,
       deliveries,
@@ -178,7 +181,7 @@ describe("@report-builder", () => {
       uniqueClicks,
       uniqueOpens,
       rates,
-    } = await container.make(ReportBuilder).broadcast(broadcastId).build()
+    } = broadcastReport
 
     expect(sends).toBe(TOTAL_SENDS)
     expect(deliveries).toBe(TOTAL_DELIVERED)
@@ -188,22 +191,21 @@ describe("@report-builder", () => {
     expect(uniqueClicks).toBe(TOTAL_CLICKS)
     expect(bounces).toBe(TOTAL_SENDS - TOTAL_DELIVERED)
 
-    expect(rates.deliveries).toEqual("95.65")
-    expect(rates.opens).toEqual("88.87")
-    expect(rates.clicks).toEqual("36.59")
-    expect(rates.uniqueOpens).toEqual("75.80")
-    expect(rates.uniqueClicks).toEqual("36.59")
+    expect(rates.deliveries).toEqual("95.00")
+    expect(rates.opens).toEqual("90.53")
+    expect(rates.clicks).toEqual("36.84")
+    expect(rates.bounces).toEqual("5.26")
+    expect(rates.uniqueOpens).toEqual("76.84")
+    expect(rates.uniqueClicks).toEqual("36.84")
 
-    const audienceReport = await container
-      .make(ReportBuilder)
-      .audience(audience.id)
-      .build()
+    const audienceReport = await new ReportBuilder().audience(audience.id).build()
 
-    expect(audienceReport.rates.deliveries).toEqual("95.65")
-    expect(audienceReport.rates.opens).toEqual("88.87")
-    expect(audienceReport.rates.clicks).toEqual("36.59")
-    expect(audienceReport.rates.uniqueOpens).toEqual("75.80")
-    expect(audienceReport.rates.uniqueClicks).toEqual("36.59")
+    expect(audienceReport.rates.deliveries).toEqual("95.00")
+    expect(audienceReport.rates.opens).toEqual("90.53")
+    expect(audienceReport.rates.clicks).toEqual("36.84")
+    expect(audienceReport.rates.bounces).toEqual("5.26")
+    expect(audienceReport.rates.uniqueOpens).toEqual("76.84")
+    expect(audienceReport.rates.uniqueClicks).toEqual("36.84")
 
     expect(audienceReport.sends).toEqual(TOTAL_SENDS * 3)
     expect(audienceReport.deliveries).toEqual(TOTAL_DELIVERED * 3)

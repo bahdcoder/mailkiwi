@@ -15,17 +15,17 @@ import { usePageContext } from "vike-react/usePageContext"
 
 import { route } from "@/shared/routes/route_aliases.js"
 
-enum LetterStatus {
+enum BroadcastStatus {
   DRAFT = "draft",
   SENT = "sent",
   SCHEDULED = "scheduled",
   ALL = "all",
 }
 
-function LettersPage() {
+function EngagePage() {
   const ctx = usePageContext()
 
-  const defaultTabValue = ctx.urlParsed?.search?.status ?? LetterStatus.ALL
+  const defaultTabValue = ctx.urlParsed?.search?.status ?? BroadcastStatus.ALL
 
   const groups = [
     "Product marketing",
@@ -36,14 +36,14 @@ function LettersPage() {
   ]
 
   return (
-    <Tabs.Content value="letters" className="pt-6">
+    <Tabs.Content value="broadcasts" className="pt-6">
       <Tabs.Root variant="primary" defaultValue={defaultTabValue} width={"full"}>
         <div className="w-full flex flex-col gap-y-2 lg:gap-y-0 lg:flex-row items-center lg:justify-between">
           <div className="w-full lg:max-w-72">
             <TextField.Root
               type="search"
-              placeholder="Search letters"
-              className="w-search-letters"
+              placeholder="Search broadcasts"
+              className="w-search-broadcasts"
             >
               <TextField.Slot side="left">
                 <SearchIcon />
@@ -53,17 +53,17 @@ function LettersPage() {
 
           <div className="w-full lg:w-auto">
             <Tabs.List className="lg:w-[fit-content]">
-              <Tabs.Trigger value={LetterStatus.ALL} asChild>
-                <a href={route("letters")}>All</a>
+              <Tabs.Trigger value={BroadcastStatus.ALL} asChild>
+                <a href={route("engage")}>All</a>
               </Tabs.Trigger>
-              <Tabs.Trigger value={LetterStatus.SENT} asChild>
-                <a href={route("letters", {}, { status: "sent" })}>Sent</a>
+              <Tabs.Trigger value={BroadcastStatus.SENT} asChild>
+                <a href={route("engage", {}, { status: "sent" })}>Sent</a>
               </Tabs.Trigger>
-              <Tabs.Trigger value={LetterStatus.SCHEDULED} asChild>
-                <a href={route("letters", {}, { status: "scheduled" })}>Scheduled</a>
+              <Tabs.Trigger value={BroadcastStatus.SCHEDULED} asChild>
+                <a href={route("engage", {}, { status: "scheduled" })}>Scheduled</a>
               </Tabs.Trigger>
-              <Tabs.Trigger value={LetterStatus.DRAFT} asChild>
-                <a href={route("letters", {}, { status: "draft" })}>Drafts</a>
+              <Tabs.Trigger value={BroadcastStatus.DRAFT} asChild>
+                <a href={route("engage", {}, { status: "draft" })}>Drafts</a>
               </Tabs.Trigger>
               <Tabs.Indicator />
             </Tabs.List>
@@ -84,7 +84,7 @@ function LettersPage() {
                 {[1, 2, 3, 4].map((i) => (
                   <a
                     key={i}
-                    href={route("letters_overview", { uuid: i.toString() })}
+                    href={route("engage_overview", { uuid: i.toString() })}
                     className="h-[4.5rem] hidden lg:flex w-full py-4 px-2 box-border border-b border-[var(--black-5)] ease-in-out duration-300 transition-[background-color] hover:bg-[var(--background-hover)] cursor-pointer"
                   >
                     <div className="w-full max-w-[40%] flex flex-col">
@@ -155,4 +155,4 @@ function LettersPage() {
   )
 }
 
-export { LettersPage as Page }
+export { EngagePage as Page }

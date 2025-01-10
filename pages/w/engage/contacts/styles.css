@@ -1,11 +1,11 @@
 @import "@kibamail/owly/styles/select-field.css";
 
-.w-search-subscribers {
+.w-search-contacts {
   .kb-text-field-content {
     border-radius: var(--radius-lg);
   }
 }
 
-.w-letters-filter-button {
+.w-contacts-filter-button {
   border-radius: var(--radius-lg);
 }

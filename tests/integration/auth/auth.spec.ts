@@ -288,7 +288,7 @@ describe("@auth user login", () => {
   })
 })
 
-describe("@oauth ", () => {
+describe.sequential("@oauth ", () => {
   function getFakeOauthProviderDriver(provider: string, action: string) {
     const accessToken = faker.string.uuid()
     const user = {

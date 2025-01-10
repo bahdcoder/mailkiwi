@@ -313,7 +313,7 @@ function FiltersBuilder() {
       <Dropdown.Trigger asChild>
         <Button
           variant="secondary"
-          className="flex-shrink-0 w-letters-filter-button"
+          className="flex-shrink-0 w-contacts-filter-button"
           data-testid="w-subscribers-filters-builder-trigger"
         >
           <FilterListIcon />

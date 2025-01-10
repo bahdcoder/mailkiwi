@@ -10,7 +10,7 @@ import { container } from "@/utils/typi.js"
 
 export class PagePropsResolver {
   protected DEFAULT_PROPS_FETCHERS = {
-    [route("letters_subscribers")]: async function (
+    [route("engage_contacts")]: async function (
       ctx: HonoContext,
       { audience }: DefaultPageProps,
     ) {

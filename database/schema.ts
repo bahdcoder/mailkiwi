@@ -284,7 +284,6 @@ export const audiences = mysqlTable("audiences", {
     .references(() => teams.id)
     .notNull(),
   knownProperties: json("knownProperties").$type<KnownAudienceProperty[]>(),
-  product: mysqlEnum("product", ["engage", "letters"]).default("engage"),
 })
 
 export const websites = mysqlTable("websites", {
@@ -647,6 +646,9 @@ export const broadcasts = mysqlTable("broadcasts", {
     .references(() => audiences.id)
     .notNull(),
   segmentId: primaryKeyCuid("segmentId").references(() => segments.id),
+  broadcastGroupId: primaryKeyCuid("broadcastGroupId")
+    .references(() => broadcastGroups.id)
+    .notNull(),
   teamId: primaryKeyCuid("teamId")
     .references(() => teams.id)
     .notNull(),
@@ -662,7 +664,6 @@ export const broadcasts = mysqlTable("broadcasts", {
       onDelete: "cascade",
     },
   ),
-  // waitingTimeToPickWinner
   waitingTimeToPickWinner: int("waitingTimeToPickWinner").default(4), // in hours,
   status: mysqlEnum("status", [
     "SENT",
@@ -675,9 +676,27 @@ export const broadcasts = mysqlTable("broadcasts", {
   ]).default("DRAFT"),
   isAbTest: boolean("isAbTest").default(false).notNull(),
   winningCriteria: mysqlEnum("winningCriteria", ["OPENS", "CLICKS", "CONVERSIONS"]),
-  winningWaitTime: int("winningWaitTime"), // in hours
+  winningWaitTime: int("winningWaitTime"),
   sendAt: timestamp("sendAt").$type<Date | undefined>(),
 })
+
+export const broadcastGroups = mysqlTable(
+  "broadcastGroups",
+  {
+    id,
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description"),
+    teamId: primaryKeyCuid("teamId")
+      .references(() => teams.id)
+      .notNull(),
+  },
+  (table) => ({
+    broadcastGroupNameOnTeamIdKey: unique("broadcastGroupNameOnTeamIdKey").on(
+      table.teamId,
+      table.name,
+    ),
+  }),
+)
 
 export const automationStepSubtypesTriggerMap = {
   TRIGGER_CONTACT_SUBSCRIBED: "TRIGGER_CONTACT_SUBSCRIBED",

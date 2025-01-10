@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "910e7d12-2e42-46e8-8375-3a306628f4b6",
+  "id": "738f26d3-d687-4248-85ef-63f78c59cc35",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -216,14 +216,6 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
-        },
-        "product": {
-          "name": "product",
-          "type": "enum('engage','letters')",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'engage'"
         }
       },
       "indexes": {},
@@ -436,6 +428,63 @@
       },
       "uniqueConstraints": {}
     },
+    "broadcastGroups": {
+      "name": "broadcastGroups",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "teamId": {
+          "name": "teamId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "broadcastGroups_teamId_teams_id_fk": {
+          "name": "broadcastGroups_teamId_teams_id_fk",
+          "tableFrom": "broadcastGroups",
+          "tableTo": "teams",
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "broadcastGroups_id": {
+          "name": "broadcastGroups_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {
+        "broadcastGroupNameOnTeamIdKey": {
+          "name": "broadcastGroupNameOnTeamIdKey",
+          "columns": ["teamId", "name"]
+        }
+      }
+    },
     "broadcasts": {
       "name": "broadcasts",
       "columns": {
@@ -465,6 +514,13 @@
           "type": "binary(16)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false
+        },
+        "broadcastGroupId": {
+          "name": "broadcastGroupId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
           "autoincrement": false
         },
         "teamId": {
@@ -564,6 +620,15 @@
           "tableFrom": "broadcasts",
           "tableTo": "segments",
           "columnsFrom": ["segmentId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "broadcasts_broadcastGroupId_broadcastGroups_id_fk": {
+          "name": "broadcasts_broadcastGroupId_broadcastGroups_id_fk",
+          "tableFrom": "broadcasts",
+          "tableTo": "broadcastGroups",
+          "columnsFrom": ["broadcastGroupId"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"

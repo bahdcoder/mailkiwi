@@ -18,7 +18,7 @@ import { container } from "@/utils/typi.js"
 
 describe("@broadcasts create", () => {
   test("can create a broadcast for an audience", async ({ expect }) => {
-    const { user, audience } = await createUser()
+    const { user, audience, broadcastGroupId } = await createUser()
     const database = makeDatabase()
 
     const broadcastName = faker.lorem.words(3)
@@ -28,6 +28,7 @@ describe("@broadcasts create", () => {
       body: {
         name: broadcastName,
         audienceId: audience.id,
+        broadcastGroupId,
       },
     })
 
@@ -45,7 +46,7 @@ describe("@broadcasts create", () => {
   })
 
   test("cannot create a broadcast without a valid name", async ({ expect }) => {
-    const { user, audience } = await createUser()
+    const { user, audience, broadcastGroupId } = await createUser()
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -53,6 +54,7 @@ describe("@broadcasts create", () => {
       body: {
         name: "",
         audienceId: audience.id,
+        broadcastGroupId,
       },
     })
 
@@ -97,11 +99,16 @@ describe("@broadcasts create", () => {
 
 describe("@broadcasts update", () => {
   test("can update a broadcast with valid data", async ({ expect }) => {
-    const { user, audience } = await createUser()
-    const broadcastId = await createBroadcastForUser(user, audience.id, {
-      updateWithABTestsContent: true,
-      updateWithValidContent: true,
-    })
+    const { user, audience, broadcastGroupId } = await createUser()
+    const broadcastId = await createBroadcastForUser(
+      user,
+      audience.id,
+      broadcastGroupId,
+      {
+        updateWithABTestsContent: true,
+        updateWithValidContent: true,
+      },
+    )
     const database = makeDatabase()
 
     const updateData = {
@@ -138,8 +145,8 @@ describe("@broadcasts update", () => {
   })
 
   test("cannot update a broadcast with an invalid audience ID", async ({ expect }) => {
-    const { user, audience } = await createUser()
-    const broadcastId = await createBroadcastForUser(user, audience.id)
+    const { user, audience, broadcastGroupId } = await createUser()
+    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
 
     const response = await makeRequestAsUser(user, {
       method: "PUT",
@@ -162,8 +169,8 @@ describe("@broadcasts update", () => {
   })
 
   test("cannot update a broadcast with invalid email addresses", async ({ expect }) => {
-    const { user, audience } = await createUser()
-    const broadcastId = await createBroadcastForUser(user, audience.id)
+    const { user, audience, broadcastGroupId } = await createUser()
+    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
 
     const response = await makeRequestAsUser(user, {
       method: "PUT",
@@ -194,8 +201,8 @@ describe("@broadcasts update", () => {
   })
 
   test("can update individual fields of a broadcast", async ({ expect }) => {
-    const { user, audience } = await createUser()
-    const broadcastId = await createBroadcastForUser(user, audience.id)
+    const { user, audience, broadcastGroupId } = await createUser()
+    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
 
     const updateData = {
       emailContent: {
@@ -239,9 +246,9 @@ describe("@broadcasts update", () => {
   })
 
   test("can update sendAt to a valid timestamp", async ({ expect }) => {
-    const { user, audience } = await createUser()
+    const { user, audience, broadcastGroupId } = await createUser()
     const database = makeDatabase()
-    const broadcastId = await createBroadcastForUser(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
 
     const sendAt = new Date(Date.now() + 86400000) // 24 hours from now
 
@@ -263,8 +270,8 @@ describe("@broadcasts update", () => {
   })
 
   test("cannot update sendAt to a past timestamp", async ({ expect }) => {
-    const { user, audience } = await createUser()
-    const broadcastId = await createBroadcastForUser(user, audience.id)
+    const { user, audience, broadcastGroupId } = await createUser()
+    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
 
     const sendAt = new Date(Date.now() - 86400000) // 24 hours ago
 
@@ -292,10 +299,14 @@ describe("@broadcasts update", () => {
 
 describe("@broadcasts delete", () => {
   test("cannot delete a broadcast from another team", async ({ expect }) => {
-    const { user: user1, audience: audience1 } = await createUser()
+    const { user: user1, audience: audience1, broadcastGroupId } = await createUser()
     const { user: user2 } = await createUser()
 
-    const broadcastId = await createBroadcastForUser(user1, audience1.id)
+    const broadcastId = await createBroadcastForUser(
+      user1,
+      audience1.id,
+      broadcastGroupId,
+    )
 
     const response = await makeRequestAsUser(user2, {
       method: "DELETE",
@@ -309,9 +320,9 @@ describe("@broadcasts delete", () => {
   })
 
   test("can delete a broadcast", async ({ expect }) => {
-    const { user, audience } = await createUser()
+    const { user, audience, broadcastGroupId } = await createUser()
 
-    const broadcastId = await createBroadcastForUser(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
 
     const response = await makeRequestAsUser(user, {
       method: "DELETE",
@@ -330,12 +341,17 @@ describe("@broadcasts delete", () => {
 
 describe("@broadcasts send", () => {
   test("can queue a broadcast for sending", async ({ expect }) => {
-    const { user, audience } = await createUser()
+    const { user, audience, broadcastGroupId } = await createUser()
 
-    const broadcastId = await createBroadcastForUser(user, audience.id, {
-      updateWithValidContent: true,
-      updateWithABTestsContent: true,
-    })
+    const broadcastId = await createBroadcastForUser(
+      user,
+      audience.id,
+      broadcastGroupId,
+      {
+        updateWithValidContent: true,
+        updateWithABTestsContent: true,
+      },
+    )
 
     await refreshRedisDatabase()
     const response = await makeRequestAsUser(user, {
@@ -355,9 +371,9 @@ describe("@broadcasts send", () => {
   test("cannot queue a broadcast if all required information is not provided", async ({
     expect,
   }) => {
-    const { user, audience } = await createUser()
+    const { user, audience, broadcastGroupId } = await createUser()
 
-    const broadcastId = await createBroadcastForUser(user, audience.id)
+    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -382,13 +398,18 @@ describe("@broadcasts send", () => {
   test("cannot queue a broadcast if the account has sending disabled", async ({
     expect,
   }) => {
-    const { user, audience } = await createUser()
+    const { user, audience, broadcastGroupId } = await createUser()
 
     const database = makeDatabase()
 
-    const broadcastId = await createBroadcastForUser(user, audience.id, {
-      updateWithValidContent: true,
-    })
+    const broadcastId = await createBroadcastForUser(
+      user,
+      audience.id,
+      broadcastGroupId,
+      {
+        updateWithValidContent: true,
+      },
+    )
 
     await database
       .update(broadcasts)
@@ -419,11 +440,16 @@ describe("@broadcasts send", () => {
   test("cannot send a broadcast with invalid or incomplete a/b variants information", async ({
     expect,
   }) => {
-    const { user, audience, team } = await createUser()
+    const { user, audience, broadcastGroupId } = await createUser()
 
-    const broadcastId = await createBroadcastForUser(user, audience.id, {
-      updateWithValidContent: true,
-    })
+    const broadcastId = await createBroadcastForUser(
+      user,
+      audience.id,
+      broadcastGroupId,
+      {
+        updateWithValidContent: true,
+      },
+    )
 
     const updateData = {
       name: faker.lorem.words(3),

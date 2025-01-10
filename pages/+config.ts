@@ -17,7 +17,7 @@ const config: Config = {
     "isMobile",
     "memberships",
     "flash",
-    "letters",
+    "audience",
     "tags",
   ],
 }

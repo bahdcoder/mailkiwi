@@ -5,7 +5,6 @@ export const AVAILABLE_QUEUES = {
   automations: "automations",
   accounts: "accounts",
   sending_domains: "sending_domains",
-  letters: "letters",
   websites: "websites",
   contacts: "contacts",
   mta_logs: "mta_logs",

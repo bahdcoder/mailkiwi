@@ -15,17 +15,17 @@ export function WriteYourFirstLetterStep() {
 
   return (
     <div>
-      <Heading variant="display">Write your first letter</Heading>
+      <Heading variant="display">Compose your first broadcast</Heading>
       <Text className="kb-content-tertiary" as="label" htmlFor="slug">
         Experience the Letters editor, and begin writing your first letter.
       </Text>
 
       <div className="flex items-center justify-between">
         <Button className="mt-6" asChild>
-          <a href={route("letters")}>Write a letter</a>
+          <a href={route("engage")}>Compose a broadcast</a>
         </Button>
         <Button variant="tertiary" className="mt-6" asChild>
-          <a href={route("letters")}>Skip for now</a>
+          <a href={route("engage")}>Skip for now</a>
         </Button>
       </div>
     </div>

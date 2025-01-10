@@ -31,34 +31,30 @@ export class AudienceRepository extends BaseRepository {
     return audience
   }
 
-  async getNewsletterAudienceForTeam(teamId: string) {
-    const [newsletter] = await this.database
+  async getAudienceForTeam(teamId: string) {
+    const [audience] = await this.database
       .select()
       .from(audiences)
-      .where(and(eq(audiences.teamId, teamId), eq(audiences.product, "letters")))
+      .where(and(eq(audiences.teamId, teamId)))
       .limit(1)
 
-    return newsletter
+    return audience
   }
 
   async create(payload: CreateAudienceDto, teamId: string) {
     const id = this.cuid()
 
-    await this.database.transaction(async (trx) => {
-      await trx.insert(audiences).values({
-        id,
-        teamId,
-        name: payload.name ?? payload.slug,
-        product: payload.product,
-      })
-
-      await container.make(WebsiteRepository).transaction(trx).create({
-        teamId,
-        slug: payload.slug,
-        audienceId: id,
-      })
+    await this.database.insert(audiences).values({
+      id,
+      teamId,
+      name: payload.name ?? payload.slug,
     })
 
+    await container.make(WebsiteRepository).create({
+      teamId,
+      slug: payload.slug,
+      audienceId: id,
+    })
     return { id }
   }
 
@@ -66,16 +62,6 @@ export class AudienceRepository extends BaseRepository {
     await this.database.update(audiences).set(payload).where(eq(audiences.id, audienceId))
 
     return { id: audienceId }
-  }
-
-  async findForProduct(teamId: string, product: NonNullable<Audience["product"]>) {
-    const [audience] = await this.database
-      .select()
-      .from(audiences)
-      .where(and(eq(audiences.teamId, teamId), eq(audiences.product, product)))
-      .limit(1)
-
-    return audience
   }
 
   async updateKnownProperties(

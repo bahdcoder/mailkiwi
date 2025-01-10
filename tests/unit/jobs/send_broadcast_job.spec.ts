@@ -20,12 +20,17 @@ describe("@broadcasts send job", () => {
   }) => {
     const database = makeDatabase()
 
-    const { user, audience } = await createUser()
+    const { user, audience, broadcastGroupId } = await createUser()
     const { audience: otherAudience } = await createUser()
 
-    const broadcastId = await createBroadcastForUser(user, audience.id, {
-      updateWithValidContent: true,
-    })
+    const broadcastId = await createBroadcastForUser(
+      user,
+      audience.id,
+      broadcastGroupId,
+      {
+        updateWithValidContent: true,
+      },
+    )
 
     const contactsForAudience = 13
 
@@ -85,12 +90,17 @@ describe("@broadcasts send job", () => {
     async ({ expect }) => {
       const database = makeDatabase()
 
-      const { user, audience } = await createUser()
+      const { user, audience, broadcastGroupId } = await createUser()
       const { audience: otherAudience } = await createUser()
 
-      const broadcastId = await createBroadcastForUser(user, audience.id, {
-        updateWithValidContent: true,
-      })
+      const broadcastId = await createBroadcastForUser(
+        user,
+        audience.id,
+        broadcastGroupId,
+        {
+          updateWithValidContent: true,
+        },
+      )
 
       const emailStartsWith = faker.string.uuid()
 

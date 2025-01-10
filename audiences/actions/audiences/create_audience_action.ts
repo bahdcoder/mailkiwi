@@ -9,22 +9,18 @@ export class CreateAudienceAction {
   constructor(private audienceRepository = container.make(AudienceRepository)) {}
 
   handle = async (payload: CreateAudienceDto, teamId: string) => {
-    if (payload.product === "letters") {
-      const newsletterCreated =
-        await this.audienceRepository.getNewsletterAudienceForTeam(teamId)
-
-      // if (newsletterCreated) {
-      //   throw E_VALIDATION_FAILED([
-      //     {
-      //       message:
-      //         "You may only have one newsletter per team. To create another newsletter, please create another team.",
-      //       field: "slug",
-      //     },
-      //   ])
-      // }
-    }
-
     const self = this
+
+    const audienceForTeam = await self.audienceRepository.getAudienceForTeam(teamId)
+
+    if (audienceForTeam) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: "You may only have one audience per team.",
+          field: "slug",
+        },
+      ])
+    }
 
     const audience = await self.audienceRepository.create(payload, teamId)
 

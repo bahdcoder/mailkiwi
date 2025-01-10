@@ -115,9 +115,7 @@ export class VikeController extends BaseController {
     const userAgent = userAgentHeader ? new UAParser(userAgentHeader) : undefined
 
     const audience = ctx.get("team")
-      ? await container
-          .make(AudienceRepository)
-          .findForProduct(ctx.get("team")?.id, "letters")
+      ? await container.make(AudienceRepository).getAudienceForTeam(ctx.get("team")?.id)
       : undefined
 
     const tags = audience?.id
@@ -145,9 +143,6 @@ export class VikeController extends BaseController {
       isMobile: userAgent?.getDevice().type === "mobile",
       memberships: ctx.get("memberships"),
       team: excludeKeys(ctx.get("team"), ["commerceProviderAccountId"]),
-      letters: {
-        audience,
-      },
       audience,
       tags,
     })

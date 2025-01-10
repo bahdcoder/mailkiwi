@@ -99,13 +99,15 @@ export class ReportBuilder {
   }
 
   totalUniqueEventCount(event: EmailSendEvent["type"]) {
+    const countDistinctEvents = this.isAudienceReport()
+      ? count(
+          sql`DISTINCT CONCAT(${emailSendEvents.contactId}, ${emailSendEvents.broadcastId})`,
+        )
+      : countDistinct(emailSendEvents.contactId)
+
     return this.database
       .select({
-        count: this.isAudienceReport()
-          ? count(
-              sql`DISTINCT CONCAT(${emailSendEvents.contactId}, '-', ${emailSendEvents.broadcastId})`,
-            )
-          : countDistinct(emailSendEvents.contactId),
+        count: countDistinctEvents,
       })
       .from(emailSendEvents)
       .where(and(this.conditions(), eq(emailSendEvents.type, event)))

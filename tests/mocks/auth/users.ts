@@ -27,7 +27,7 @@ import type {
   Website,
   WebsiteWithPages,
 } from "@/database/database_schema_types.js"
-import { audiences, contacts } from "@/database/schema.js"
+import { audiences, broadcastGroups, contacts } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 import { cuid } from "@/shared/utils/cuid/cuid.js"
@@ -37,6 +37,7 @@ import { container } from "@/utils/typi.js"
 export async function createBroadcastForUser(
   user: User,
   audienceId: string,
+  broadcastGroupId: string,
   options?: {
     updateWithValidContent?: boolean
     updateWithABTestsContent?: boolean
@@ -53,10 +54,17 @@ export async function createBroadcastForUser(
     body: {
       name: faker.lorem.words(3),
       audienceId,
+      broadcastGroupId,
     },
   })
 
-  const { id } = await response.json()
+  const json = await response.json()
+
+  if (!json.id) {
+    throw new Error("No id in response to create a broadcast")
+  }
+
+  const { id } = json
 
   if (options?.updateWithValidContent) {
     const rr = await makeRequestAsUser(user, {
@@ -174,12 +182,14 @@ export const createUser = async ({
   enableCommerceOnTeam = true,
   createWebsite = false,
   createKnownProperties = true,
+  createAudience = true,
 }: {
   createBroadcast?: boolean
   createEntireTeam?: boolean
   enableCommerceOnTeam?: boolean
   createAudienceForNewsletter?: boolean
   createWebsite?: boolean
+  createAudience?: boolean
   createKnownProperties?: boolean
 } = {}) => {
   const audienceRepository = container.resolve(AudienceRepository)
@@ -218,6 +228,16 @@ export const createUser = async ({
   )
   const teamObject = await teamRepository.findById(team.id)
 
+  const broadcastGroupId = cuid()
+
+  await makeDatabase()
+    .insert(broadcastGroups)
+    .values({
+      id: broadcastGroupId,
+      name: faker.lorem.words(3),
+      teamId: team.id,
+    })
+
   if (enableCommerceOnTeam) {
     await teamRepository.teams().update(team.id, {
       commerceProvider: "paystack",
@@ -226,16 +246,21 @@ export const createUser = async ({
     })
   }
 
-  const audience = await audienceRepository.create(
-    {
-      name: "Newsletter",
-      slug: faker.number.int({ min: 10, max: 100 }) + "-" + faker.lorem.slug(),
-      product: "engage",
-    },
-    team.id,
-  )
+  let audienceId: string | undefined = undefined
 
-  if (createKnownProperties) {
+  if (createAudience) {
+    const audience = await audienceRepository.create(
+      {
+        name: "Newsletter",
+        slug: faker.number.int({ min: 10, max: 100 }) + "-" + faker.lorem.slug(),
+      },
+      team.id,
+    )
+
+    audienceId = audience.id
+  }
+
+  if (createKnownProperties && createAudience) {
     await makeDatabase()
       .update(audiences)
       .set({
@@ -249,7 +274,7 @@ export const createUser = async ({
           },
         ],
       })
-      .where(eq(audiences.id, audience.id))
+      .where(eq(audiences.id, audienceId as string))
   }
 
   const freshUser = await container.make(UserRepository).findById(user.id)
@@ -257,9 +282,14 @@ export const createUser = async ({
   let broadcastId: string | undefined = undefined
 
   if (createBroadcast) {
-    broadcastId = await createBroadcastForUser(freshUser, audience.id, {
-      updateWithValidContent: true,
-    })
+    broadcastId = await createBroadcastForUser(
+      freshUser,
+      audienceId as string,
+      broadcastGroupId,
+      {
+        updateWithValidContent: true,
+      },
+    )
   }
 
   let administratorUser: User = undefined as unknown as User
@@ -319,26 +349,14 @@ export const createUser = async ({
     guestUser = (await userRepository.findById(guest.user.id)) as User
   }
 
-  let audienceForNewsletter: { id: string } | undefined = undefined
-  if (createAudienceForNewsletter) {
-    audienceForNewsletter = await container.make(CreateAudienceAction).handle(
-      {
-        name: faker.lorem.words(3),
-        slug: faker.number.int({ min: 10, max: 100 }) + "-" + faker.lorem.slug(),
-        product: "letters",
-      },
-      team.id,
-    )
-  }
-
-  if (createAudienceForNewsletter || createWebsite) {
+  if (createWebsite) {
     await container.make(WebsiteRepository).create({
       slug: faker.lorem.slug(),
       teamId: team.id,
       websiteDomain: "news-" + faker.lorem.slug() + ".fastmedia.com",
       websiteDomainVerifiedAt: DateTime.now().toJSDate(),
       websiteDomainCnameValue: `${faker.lorem.slug()}.fastmedia.com`,
-      audienceId: audienceForNewsletter?.id || audience?.id,
+      audienceId: audienceId as string,
     })
   }
 
@@ -355,13 +373,13 @@ export const createUser = async ({
   return {
     user: freshUser,
     team: teamObject as Team,
-    audience,
+    audience: { id: audienceId as string },
     administratorUser,
     managerUser,
     guestUser,
     authorUser,
     broadcastId,
-    audienceForNewsletter,
+    broadcastGroupId,
     website: (await findWebsiteWithPages()) as WebsiteWithPages,
   }
 }

@@ -27,7 +27,6 @@ export const aliases = {
   community: "community",
 
   // products
-  letters: w("letters/"),
   send: w("send"),
   optimise: w("optimise"),
   engage: w("engage"),
@@ -40,16 +39,14 @@ export const aliases = {
   error_404: "/e/404",
   error_500: "/e/500",
 
-  // letters
-
-  letters_welcome: w("letters/welcome"),
-  letters_onboarding: w("letters/onboarding"),
-  letters_subscribers: w("letters/subscribers"),
-  letters_automations: w("letters/automations"),
+  engage_welcome: w("engage/welcome"),
+  engage_onboarding: w("engage/onboarding"),
+  engage_contacts: w("engage/contacts"),
+  engage_automations: w("engage/automations"),
 
   // single letter pages
-  letters_overview: w("letters/l/:uuid/"),
-  letters_performance: w("letters/l/:uuid/performance"),
+  engage_overview: w("engage/broadcasts/:uuid/"),
+  engage_performance: w("engage/broadcasts/:uuid/performance"),
 
   // audiences
   audience_create: "/audiences",
@@ -61,6 +58,9 @@ export const aliases = {
   // contacts
   get_contacts: "/audiences/:audienceId/contacts",
   contacts_search: "/audiences/:audienceId/contacts/search",
+
+  // broadcasts
+  broadcasts: w("broadcasts"),
 } as const
 
 export function route(

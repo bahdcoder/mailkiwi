@@ -11,7 +11,7 @@ function LettersWelcomePage() {
       <div className="w-full border kb-border-tertiary h-80 kb-background-primary rounded-2xl"></div>
 
       <Heading size="xs" variant="display">
-        Letters
+        Engage
       </Heading>
 
       <Text className="kb-content-tertiary font-medium">
@@ -20,7 +20,7 @@ function LettersWelcomePage() {
       </Text>
 
       <Button className="mt-2" size={"lg"} asChild>
-        <a href={route("letters_onboarding")}>Get started</a>
+        <a href={route("engage_onboarding")}>Get started</a>
       </Button>
 
       <Divider />

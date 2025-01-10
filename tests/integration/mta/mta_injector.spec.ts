@@ -557,7 +557,7 @@ describe.sequential("@mta", () => {
   })
 
   test("@send-broadcasts-to-contact job injects email into mta", async ({ expect }) => {
-    const { user, audience, team } = await createUser()
+    const { user, audience, team, broadcastGroupId } = await createUser()
 
     const TEST_DOMAIN = "localgmail.net"
 
@@ -568,12 +568,17 @@ describe.sequential("@mta", () => {
 
     const fromEmail = "jonathan@" + TEST_DOMAIN
 
-    const broadcastId = await createBroadcastForUser(user, audience.id, {
-      updateWithValidContent: true,
-      emailContent: {
-        fromEmail,
+    const broadcastId = await createBroadcastForUser(
+      user,
+      audience.id,
+      broadcastGroupId,
+      {
+        updateWithValidContent: true,
+        emailContent: {
+          fromEmail,
+        },
       },
-    })
+    )
 
     const { id: contactId } = await container.make(ContactRepository).create(
       {

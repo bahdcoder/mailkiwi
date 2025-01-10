@@ -4,7 +4,7 @@ import { PageContext } from "vike/types"
 import { route } from "@/shared/routes/route_aliases.js"
 
 export function guard(ctx: PageContext) {
-  if (ctx.letters.audience) {
-    throw redirect(route("letters"))
+  if (ctx.audience) {
+    throw redirect(route("engage"))
   }
 }

@@ -64,7 +64,7 @@ describe("@process-mta-log", () => {
   it("logs engage specific events and updates the contact information accordingly", async ({
     expect,
   }) => {
-    const { user, audience, team } = await createUser()
+    const { user, audience, team, broadcastGroupId } = await createUser()
 
     const TEST_DOMAIN = "localgmail.net"
     const { sendingDomain } = await setupDomainForDnsChecks(TEST_DOMAIN, {
@@ -78,12 +78,17 @@ describe("@process-mta-log", () => {
 
     const fromEmail = "mary.nathan@" + TEST_DOMAIN
 
-    const broadcastId = await createBroadcastForUser(user, audience.id, {
-      updateWithValidContent: true,
-      emailContent: {
-        fromEmail,
+    const broadcastId = await createBroadcastForUser(
+      user,
+      audience.id,
+      broadcastGroupId,
+      {
+        updateWithValidContent: true,
+        emailContent: {
+          fromEmail,
+        },
       },
-    })
+    )
 
     const { id } = await container.make(EmailSendRepository).create(v1(), {
       sendingDomainId: sendingDomain.id,

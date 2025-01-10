@@ -92,19 +92,14 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
         </div>
 
         <div className="flex flex-col">
-          <SubmenuItemLink href={route("letters")}>
-            <LettersIcon className="w-5 h-5" />
-            <Text className="kb-content-secondary font-medium">Letters</Text>
+          <SubmenuItemLink href={route("engage")}>
+            <EngageIcon className="w-5 h-5" />
+            <Text className="kb-content-secondary font-medium">Engage</Text>
           </SubmenuItemLink>
 
           <SubmenuItemLink href={route("send")}>
             <SendIcon className="w-5 h-5" />
             <Text className="kb-content-secondary font-medium">Send</Text>
-          </SubmenuItemLink>
-
-          <SubmenuItemLink href={route("engage")}>
-            <EngageIcon className="w-5 h-5" />
-            <Text className="kb-content-secondary font-medium">Engage</Text>
           </SubmenuItemLink>
 
           <SubmenuItemLink href={route("optimise")}>

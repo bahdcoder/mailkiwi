@@ -85,9 +85,7 @@ describe("@websites", () => {
   })
 
   test("can update website page content", async ({ expect }) => {
-    const { website, user, team, audienceForNewsletter } = await createUser({
-      createAudienceForNewsletter: true,
-    })
+    const { website, user, team } = await createUser()
 
     const draftWebsiteContent = {
       type: "doc",
@@ -172,9 +170,7 @@ describe("@websites", () => {
   })
 
   test("can publish website pages", async ({ expect }) => {
-    const { website, user, team, audienceForNewsletter } = await createUser({
-      createAudienceForNewsletter: true,
-    })
+    const { website, user, team } = await createUser()
 
     const draftWebsiteContent = {
       type: "doc" as "doc",
@@ -227,9 +223,7 @@ describe("@websites", () => {
   })
 
   test("can unpublish website pages", async ({ expect }) => {
-    const { website, user, team, audienceForNewsletter } = await createUser({
-      createAudienceForNewsletter: true,
-    })
+    const { website, user, team } = await createUser()
 
     const draftWebsiteContent = {
       type: "doc" as "doc",
