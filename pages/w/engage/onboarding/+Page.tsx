@@ -3,9 +3,9 @@ import {
   FormState,
   OnboardingProvider,
 } from "@/pages/w/engage/onboarding/steps/context_provider.jsx"
-import { CreatePublicationStep } from "@/pages/w/engage/onboarding/steps/step_one_create_publication.jsx"
+import { CreateBroadcastGroupStep } from "@/pages/w/engage/onboarding/steps/step_one_create_broadcast_group.jsx"
 import { WriteYourFirstLetterStep } from "@/pages/w/engage/onboarding/steps/step_three_write_your_first_letter.jsx"
-import { AddSubscribersStep } from "@/pages/w/engage/onboarding/steps/step_two_add_subscribers.jsx"
+import { AddContactsStep } from "@/pages/w/engage/onboarding/steps/step_two_add_contacts.jsx"
 import { Button } from "@kibamail/owly/button"
 import { Progress } from "@kibamail/owly/progress"
 import "@kibamail/owly/styles/dialog.css"
@@ -53,8 +53,8 @@ function LettersOnboarding() {
             <Progress value={step === 2 ? 100 : 0} />
           </div>
 
-          <CreatePublicationStep />
-          <AddSubscribersStep />
+          <CreateBroadcastGroupStep />
+          <AddContactsStep />
           <WriteYourFirstLetterStep />
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { makeRedis } from "@/shared/container/index.js"
 
-type CacheNamespace = "domains" | "teams" | "access_tokens" | "websites"
+type CacheNamespace = "domains" | "teams" | "access_tokens" | "websites" | "audiences"
 
 export class Cache {
   constructor(protected redis = makeRedis()) {}

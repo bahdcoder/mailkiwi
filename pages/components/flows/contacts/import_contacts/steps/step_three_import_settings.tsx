@@ -64,12 +64,12 @@ export function StepThreeImportSettings() {
   return (
     <ServerForm {...serverFormProps} className="pt-10 lg:pt-24 flex flex-col gap-y-2">
       <Dialog.Title asChild className="text-left">
-        <Heading>Tag new subscribers</Heading>
+        <Heading>Tag new contacts</Heading>
       </Dialog.Title>
 
       <Dialog.Description asChild>
         <Text as="p">
-          You may optionally tag all new subscribers with a new or existing tag. That way,
+          You may optionally tag all new contacts with a new or existing tag. That way,
           you can segment and filter by them in future.
         </Text>
       </Dialog.Description>
@@ -85,9 +85,9 @@ export function StepThreeImportSettings() {
             Auto subscribe all contacts
           </CheckboxField.Label>
           <CheckboxField.Description>
-            We'll automatically subscribe all new subscribers to your audience. By
-            checking this option, you agree that all the contacts in the import have
-            consented to being subscribed to your newsletter.
+            We'll automatically subscribe all new contacts to your audience. By checking
+            this option, you agree that all the contacts in the import have consented to
+            being subscribed to your newsletter.
           </CheckboxField.Description>
         </CheckboxField.Root>
 

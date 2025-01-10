@@ -21,6 +21,10 @@ export class AudienceRepository extends BaseRepository {
     return []
   }
 
+  audiences() {
+    return this.crud(audiences)
+  }
+
   async findById(audienceId: string) {
     const [audience] = await this.database
       .select()
@@ -32,13 +36,19 @@ export class AudienceRepository extends BaseRepository {
   }
 
   async getAudienceForTeam(teamId: string) {
-    const [audience] = await this.database
-      .select()
-      .from(audiences)
-      .where(and(eq(audiences.teamId, teamId)))
-      .limit(1)
+    const self = this
 
-    return audience
+    return self.cache
+      .namespace("teams")
+      .get([teamId, "audience"].join("/"), async function () {
+        const [audience] = await self.database
+          .select()
+          .from(audiences)
+          .where(and(eq(audiences.teamId, teamId)))
+          .limit(1)
+
+        return audience
+      })
   }
 
   async create(payload: CreateAudienceDto, teamId: string) {
@@ -64,27 +74,37 @@ export class AudienceRepository extends BaseRepository {
     return { id: audienceId }
   }
 
-  async updateKnownProperties(
-    audienceId: string,
-    knownProperties: KnownAudienceProperty[],
-  ) {
+  async updateKnownProperties(audienceId: string, properties: KnownAudienceProperty[]) {
     const audience = await this.findById(audienceId)
 
     if (!audience) {
       return
     }
 
-    const existingPropertiesNames =
-      audience.knownProperties?.map((property) => property.id) ?? []
+    const existingProperties: Record<string, KnownAudienceProperty> = {}
 
-    const propertiesToBeCreated = knownProperties.filter(
-      (property) => !existingPropertiesNames.includes(property.id),
+    audience.knownProperties?.forEach((property) => {
+      existingProperties[property.id] = property
+    })
+
+    const propertiesToBeCreated = properties.filter(
+      (property) => !existingProperties[property.id],
+    )
+
+    const propertiesToBeUpdated = properties.filter(
+      (property) => existingProperties[property.id],
     )
 
     await this.database
       .update(audiences)
       .set({
-        knownProperties: [...(audience.knownProperties ?? []), ...propertiesToBeCreated],
+        knownProperties: [
+          ...propertiesToBeUpdated.map((property) => ({
+            ...existingProperties[property.id],
+            ...property,
+          })),
+          ...propertiesToBeCreated,
+        ],
       })
       .where(eq(audiences.id, audienceId))
   }

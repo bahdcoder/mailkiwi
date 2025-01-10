@@ -66,64 +66,75 @@ export function useContacts() {
     })
   }
 
-  const { data } = useQuery<{ data: ContactWithTagsAndProperties[]; total: number }>({
-    queryKey: ["contacts", debouncedSearch, activeFilters, pagination],
-    initialData: { total: pageProps.contacts.total, data: pageProps.contacts.data },
-    async queryFn() {
-      const response = await fetch(
-        route(
-          "contacts_search",
-          { audienceId: ctx.audience.id },
-          {
-            page: (pagination.pageIndex + 1).toString(),
-            perPage: pagination.pageSize.toString(),
-          },
-        ),
-        {
-          method: "post",
-          body: JSON.stringify({
-            filters: {
-              type: "AND",
-              groups: [
-                {
-                  type: "AND",
-                  conditions: activeFilters,
-                },
-                ...(search
-                  ? [
-                      {
-                        type: "OR",
-                        conditions: [
-                          {
-                            field: "email",
-                            operation: "contains",
-                            value: debouncedSearch,
-                          },
-                          {
-                            field: "lastName",
-                            operation: "contains",
-                            value: debouncedSearch,
-                          },
-                          {
-                            field: "firstName",
-                            operation: "contains",
-                            value: debouncedSearch,
-                          },
-                        ],
-                      },
-                    ]
-                  : []),
-              ],
-            },
-          }),
-          headers: { "Content-Type": "application/json" },
-        },
-      )
+  const contactsQuery = useQuery<{ data: ContactWithTagsAndProperties[]; total: number }>(
+    {
+      queryKey: ["contacts", debouncedSearch, activeFilters, pagination],
+      // initialData: { total: pageProps.contacts.total, data: pageProps.contacts.data },
+      initialData() {
+        if (enabled) {
+          return undefined
+        }
 
-      return response.json()
+        return { total: pageProps.contacts.total, data: pageProps.contacts.data }
+      },
+      async queryFn() {
+        const response = await fetch(
+          route(
+            "contacts_search",
+            { audienceId: ctx.audience.id },
+            {
+              page: (pagination.pageIndex + 1).toString(),
+              perPage: pagination.pageSize.toString(),
+            },
+          ),
+          {
+            method: "post",
+            body: JSON.stringify({
+              filters: {
+                type: "AND",
+                groups: [
+                  {
+                    type: "AND",
+                    conditions: activeFilters,
+                  },
+                  ...(search
+                    ? [
+                        {
+                          type: "OR",
+                          conditions: [
+                            {
+                              field: "email",
+                              operation: "contains",
+                              value: debouncedSearch,
+                            },
+                            {
+                              field: "lastName",
+                              operation: "contains",
+                              value: debouncedSearch,
+                            },
+                            {
+                              field: "firstName",
+                              operation: "contains",
+                              value: debouncedSearch,
+                            },
+                          ],
+                        },
+                      ]
+                    : []),
+                ],
+              },
+            }),
+            headers: { "Content-Type": "application/json" },
+          },
+        )
+
+        return response.json()
+      },
+      enabled,
     },
-    enabled,
-  })
+  )
+
+  const { data } = contactsQuery
 
   React.useEffect(
     function () {
@@ -135,9 +146,9 @@ export function useContacts() {
   )
 
   const table = useReactTable({
-    data: data.data,
+    data: data?.data ?? [],
     columns,
-    pageCount: Math.ceil(data.total / pagination.pageSize),
+    pageCount: Math.ceil((data?.total ?? 0) / pagination.pageSize),
     manualPagination: true,
     state: {
       rowSelection,
@@ -170,5 +181,6 @@ export function useContacts() {
     pagination,
     data,
     activeFilters,
+    contactsQuery,
   }
 }

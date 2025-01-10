@@ -10,6 +10,8 @@ import { renderPage } from "vike/server"
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
+
 import { tags as tagsTable } from "@/database/schema.js"
 
 import { BaseController } from "@/shared/controllers/base_controller.js"
@@ -114,8 +116,10 @@ export class VikeController extends BaseController {
 
     const userAgent = userAgentHeader ? new UAParser(userAgentHeader) : undefined
 
-    const audience = ctx.get("team")
-      ? await container.make(AudienceRepository).getAudienceForTeam(ctx.get("team")?.id)
+    const teamId = ctx.get("team")?.id
+
+    const audience = teamId
+      ? await container.make(AudienceRepository).getAudienceForTeam(teamId)
       : undefined
 
     const tags = audience?.id
@@ -145,6 +149,16 @@ export class VikeController extends BaseController {
       team: excludeKeys(ctx.get("team"), ["commerceProviderAccountId"]),
       audience,
       tags,
+      engage: {
+        onboarded: teamId
+          ? await container.make(TeamRepository).completedOnboarding(teamId).engage()
+          : false,
+      },
+      send: {
+        onboarded: teamId
+          ? await container.make(TeamRepository).completedOnboarding(teamId).send()
+          : false,
+      },
     })
   }
 }

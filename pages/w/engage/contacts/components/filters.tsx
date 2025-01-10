@@ -29,7 +29,7 @@ type FiltersBuilderCtx = {
   setFilterConditions: React.Dispatch<React.SetStateAction<FilterCondition[]>>
 }
 const [FiltersBuilderProvider, useFiltersBuilder] = createContext<FiltersBuilderCtx>(
-  "SubscribersFiltersBuilder",
+  "ContactsFiltersBuilder",
 )
 
 type FilterDefinition = {
@@ -45,7 +45,7 @@ const fields: FilterDefinition[] = [
     name: "Tags",
     options: ({ pageCtx: { tags } }) => {
       const { setFilterBuilderOpen, setFilterConditions, filterBuilderOpen } =
-        useFiltersBuilder("SubscribersFiltersBuilderTags")
+        useFiltersBuilder("ContactsFiltersBuilderTags")
 
       const [id] = React.useState(() => Math.random().toString(36).slice(2))
 
@@ -84,7 +84,7 @@ const fields: FilterDefinition[] = [
       return (
         <div className="flex flex-col gap-1">
           {tags.map((tag) => {
-            const id = `w-subscribers-filters-select-tag-${tag.id}`
+            const id = `w-contacts-filters-select-tag-${tag.id}`
 
             return (
               <label
@@ -199,7 +199,7 @@ export function TextFilterInputForm({
           placeholder="Enter value"
           autoFocus
           defaultValue={defaultValue}
-          data-testid={`w-subscribers-filters-builder-input-${id}`}
+          data-testid={`w-contacts-filters-builder-input-${id}`}
         >
           <TextField.Label>Value</TextField.Label>
         </TextField.Root>
@@ -211,7 +211,7 @@ export function TextFilterInputForm({
           variant="tertiary"
           className="h-9"
           onClick={onCancel}
-          data-testid={`w-subscribers-filters-builder-input-cancel-${id}`}
+          data-testid={`w-contacts-filters-builder-input-cancel-${id}`}
         >
           <Text>Cancel</Text>
         </Button>
@@ -220,7 +220,7 @@ export function TextFilterInputForm({
           type="submit"
           variant="primary"
           className="h-9"
-          data-testid={`w-subscribers-filters-builder-input-add-${id}`}
+          data-testid={`w-contacts-filters-builder-input-add-${id}`}
         >
           <Text>{defaultValue ? "Update" : "Add"}</Text>
         </Button>
@@ -275,7 +275,7 @@ function FiltersBuilder() {
     setFilterConditions,
     filterBuilderOpen,
     setFilterBuilderOpen,
-  } = useFiltersBuilder("SubscribersFiltersBuilder")
+  } = useFiltersBuilder("ContactsFiltersBuilder")
 
   function onFilterSelected(event: Event, filter: FilterDefinition) {
     event.preventDefault()
@@ -314,7 +314,7 @@ function FiltersBuilder() {
         <Button
           variant="secondary"
           className="flex-shrink-0 w-contacts-filter-button"
-          data-testid="w-subscribers-filters-builder-trigger"
+          data-testid="w-contacts-filters-builder-trigger"
         >
           <FilterListIcon />
           Add a filter
@@ -341,7 +341,7 @@ function FiltersBuilder() {
                       <Button
                         variant="tertiary"
                         disabled={field.disabled}
-                        data-testid={`w-subscribers-filters-builder-item-${field.name}`}
+                        data-testid={`w-contacts-filters-builder-item-${field.name}`}
                       >
                         <Text>{field.name}</Text>
                       </Button>

@@ -17,6 +17,12 @@ export interface DefaultPageProps {
   audience: Audience
   tags: Tag[]
   pageProps: Record<string, any>
+  engage: {
+    onboarded: boolean
+  }
+  send: {
+    onboarded: boolean
+  }
 }
 
 declare global {
@@ -31,6 +37,8 @@ declare global {
       audience: DefaultPageProps["audience"]
       tags: DefaultPageProps["tags"]
       pageProps: DefaultPageProps["pageProps"]
+      engage: DefaultPageProps["engage"]
+      send: DefaultPageProps["send"]
     }
   }
 }

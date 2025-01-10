@@ -22,6 +22,10 @@ function EngageLayout({ children }: React.PropsWithChildren) {
     return <>{children}</>
   }
 
+  if (!ctx.engage.onboarded) {
+    return <>{children}</>
+  }
+
   return (
     <PageLayout>
       <Tabs.Root

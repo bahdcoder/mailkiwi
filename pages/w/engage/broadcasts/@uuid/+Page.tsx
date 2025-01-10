@@ -30,7 +30,7 @@ function LetterOverviewPage() {
           </dt>
           <dd className="w-full flex-grow">
             <Text className="kb-content-secondary">
-              Join over 38,000 subscribers and stay updated with our latest news!
+              Join over 38,000 contacts and stay updated with our latest news!
             </Text>
           </dd>
         </dl>
@@ -41,7 +41,7 @@ function LetterOverviewPage() {
             <Text className="kb-content-tertiary">Recipients</Text>
           </dt>
           <dd className="w-full flex-grow flex gap-2">
-            <Text className="kb-content-secondary">26,118 subscribers</Text>
+            <Text className="kb-content-secondary">26,118 contact</Text>
           </dd>
         </dl>
 

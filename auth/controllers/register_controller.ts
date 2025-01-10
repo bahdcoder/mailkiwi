@@ -4,6 +4,8 @@ import { SetUserPasswordSchema } from "../users/dto/set_user_password_dto.js"
 import { appEnv } from "@/app/env/app_env.js"
 import { Next } from "hono"
 
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
@@ -87,7 +89,13 @@ export class RegisterController extends VikeController {
           .createFirstTeam({ name: payload.teamName }, user.id),
       ])
 
-      await new Session().updateCurrentSessionTeamId(ctx, team.id)
+      await Promise.all([
+        container.make(AudienceRepository).audiences().create({
+          name: payload.teamName,
+          teamId: team.id,
+        }),
+        new Session().updateCurrentSessionTeamId(ctx, team.id),
+      ])
 
       return { team }
     })

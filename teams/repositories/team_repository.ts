@@ -1,9 +1,15 @@
 import { Secret } from "@poppinss/utils"
-import { eq } from "drizzle-orm"
+import { count, eq } from "drizzle-orm"
 
 import type { CreateTeamDto } from "@/teams/dto/create_team_dto.js"
 
-import { sendingDomains, teamMemberships, teams, users } from "@/database/schema.js"
+import {
+  broadcastGroups,
+  sendingDomains,
+  teamMemberships,
+  teams,
+  users,
+} from "@/database/schema.js"
 import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
@@ -95,6 +101,25 @@ export class TeamRepository extends BaseRepository {
 
   teams() {
     return this.crud(teams)
+  }
+
+  completedOnboarding(teamId: string) {
+    const self = this
+
+    return {
+      async engage() {
+        const [broadcastGroupsCount] = await self.database
+          .select({ count: count() })
+          .from(broadcastGroups)
+          .where(eq(broadcastGroups.teamId, teamId))
+
+        return broadcastGroupsCount.count > 0
+      },
+      async send() {
+        // TODO: Check if user has added sending domain.
+        return false
+      },
+    }
   }
 
   async findByIdWithDomains(teamId: string) {

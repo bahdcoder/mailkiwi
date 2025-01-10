@@ -78,6 +78,7 @@ export type KnownAudienceProperty = {
   // Example use case: Weekly newsletter -> false
   // Example use case: Cyber Monday Sale -> false
 
+  archived?: boolean
   default?: boolean | string | number
   canContactUpdate?: boolean
   type: "boolean" | "float" | "date" | "text" | "enum" | "list"

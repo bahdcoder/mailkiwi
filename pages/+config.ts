@@ -19,5 +19,7 @@ const config: Config = {
     "flash",
     "audience",
     "tags",
+    "engage",
+    "send",
   ],
 }

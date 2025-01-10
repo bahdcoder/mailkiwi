@@ -1,11 +1,11 @@
-import { useOnboardingContext } from "./context_provider.jsx"
+import { useOnboardingContext } from "./context_provider.js"
 import { ButtonCard } from "@/pages/components/button/button-card.jsx"
 import { ImportContactsDialog } from "@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx"
 import { Button } from "@kibamail/owly/button"
 import { Heading } from "@kibamail/owly/heading"
 import { Text } from "@kibamail/owly/text"
 
-export function AddSubscribersStep() {
+export function AddContactsStep() {
   const { step, setStep, formState } = useOnboardingContext("CreatePublicationStep")
 
   function goToNextStep() {
@@ -18,18 +18,20 @@ export function AddSubscribersStep() {
 
   return (
     <div>
-      <Heading size="sm">Add subscribers</Heading>
+      <Heading className="font-display kb-content-brand text-xl mb-2">
+        Add contacts
+      </Heading>
       <Text className="kb-content-tertiary" as="label" htmlFor="slug">
-        Bring your existing subscribers to your Kibamail Letters account.
+        Bring your existing contacts to your Kibamail Letters account.
       </Text>
 
       <div className="flex flex-col gap-y-4 mt-6">
         <ButtonCard>
           <Text size="lg" className="font-semibold text-left">
-            Add subscribers manually
+            Add contacts manually
           </Text>
           <Text className="text-left">
-            Add a single subscriber by entering their name and email.
+            Add a single contact by entering their name and email.
           </Text>
         </ButtonCard>
 
@@ -39,10 +41,10 @@ export function AddSubscribersStep() {
         >
           <ButtonCard>
             <Text size="lg" className="font-semibold text-left">
-              Upload subscriber list
+              Upload contacts list
             </Text>
             <Text className="text-left">
-              Upload a csv to add multiple subscribers at once.
+              Upload a csv to add multiple contacts at once.
             </Text>
           </ButtonCard>
         </ImportContactsDialog>

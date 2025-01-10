@@ -97,7 +97,7 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
 
   const audienceIds = []
 
-  const broadcastGroupIds = faker.helpers.multiple(v1, {
+  const broadcastGroupIds = faker.helpers.multiple(() => v1(), {
     count: 5,
   })
 

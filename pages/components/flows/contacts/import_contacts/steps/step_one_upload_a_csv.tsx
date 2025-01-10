@@ -15,6 +15,7 @@ import { Progress } from "@kibamail/owly/progress"
 import { Text } from "@kibamail/owly/text"
 import * as Dialog from "@radix-ui/react-dialog"
 import React, { useRef } from "react"
+import { usePageContext } from "vike-react/usePageContext"
 
 import { route } from "@/shared/routes/route_aliases.js"
 
@@ -22,8 +23,8 @@ export function StepOneUploadACsv() {
   const [uploadProgress, setUploadProgress] = React.useState(0)
   const formRef = useRef<HTMLFormElement | null>(null)
 
-  const { setFormState, step, setStep, audienceId } =
-    useImportcontactsContext("UploadACsv")
+  const ctx = usePageContext()
+  const { setFormState, step, setStep } = useImportcontactsContext("UploadACsv")
 
   const { serverFormProps, isPending, error } = useServerFormMutation<{
     id: string
@@ -31,7 +32,7 @@ export function StepOneUploadACsv() {
     headerSamples: FormState["headerSamples"]
     propertiesMap: FormState["propertiesMap"]
   }>({
-    action: route("contacts_import", { audienceId }),
+    action: route("contacts_import", { audienceId: ctx.audience.id }),
     onSuccess({ payload }) {
       setFormState((current) => ({
         ...current,
@@ -62,7 +63,9 @@ export function StepOneUploadACsv() {
   return (
     <div className="pt-10 lg:pt-24">
       <Dialog.Title asChild className="text-center">
-        <Heading>Upload subscriber list</Heading>
+        <Heading className="font-display kb-content-brand text-2xl mb-4">
+          Upload contacts list
+        </Heading>
       </Dialog.Title>
 
       <Dialog.Description asChild>

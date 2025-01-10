@@ -20,6 +20,7 @@ import { resolve } from "path"
 import { type Logger, pino } from "pino"
 
 import { BroadcastController } from "@/broadcasts/controllers/broadcast_controller.js"
+import { BroadcastGroupController } from "@/broadcasts/controllers/broadcast_group_controller.js"
 
 import { AudienceController } from "@/audiences/controllers/audience_controller.js"
 import { ContactController } from "@/audiences/controllers/contact_controller.js"
@@ -174,6 +175,7 @@ export class Ignitor {
 
     container.resolve(ChatController)
     container.resolve(ChannelController)
+    container.resolve(BroadcastGroupController)
   }
 
   async shutdown() {

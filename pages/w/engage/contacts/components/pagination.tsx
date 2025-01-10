@@ -19,7 +19,7 @@ export function Pagination({ table }: PaginationProps) {
 
   return (
     <div className="w-full h-8 flex items-center justify-between">
-      <Text data-testid="w-subscribers-pagination-page-number">
+      <Text data-testid="w-contacts-pagination-page-number">
         Page {pageIndex + 1} of {table.getPageCount()}
       </Text>
 

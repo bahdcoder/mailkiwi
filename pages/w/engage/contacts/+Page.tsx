@@ -2,11 +2,13 @@ import { columns, getCommonPinningStyles } from "./components/columns.js"
 import * as Table from "./components/table.js"
 import "./styles.css"
 import * as Dropdown from "@/pages/components/dropdown/dropdown.jsx"
+import { CreateCustomContactProperty } from "@/pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx"
 import { CancelIcon } from "@/pages/components/icons/cancel.svg.jsx"
 import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
 import { MoreVertIcon } from "@/pages/components/icons/more-vert.svg.jsx"
 import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
 import { SearchIcon } from "@/pages/components/icons/search.svg.jsx"
+import { NewContactProperty } from "@/pages/w/engage/contacts/components/actions/new_contact_property.jsx"
 import {
   FilterCondition,
   FiltersBuilder,
@@ -145,7 +147,7 @@ const filterOperationOptions: FilterOperationOptions = {
 
           <Dropdown.Content>
             {pageCtx.tags.map((tag) => {
-              const id = `w-subscribers-filters-select-tag-update-${tag.id}`
+              const id = `w-contacts-filters-select-tag-update-${tag.id}`
 
               const isChecked = (filter.value as string[]).some(
                 (tagId) => tagId === tag.id,
@@ -186,6 +188,7 @@ function ContactsPage() {
     pagination,
     data,
     activeFilters,
+    contactsQuery,
   } = useContacts()
 
   const { onFiltersChange, removeFilter, updateFilterOperation, updateFilterValue } =
@@ -194,7 +197,7 @@ function ContactsPage() {
   const startOfPage = pagination.pageIndex * pagination.pageSize + 1
   const endOfPage = Math.min(
     pagination.pageIndex * pagination.pageSize + pagination.pageSize,
-    data.total,
+    data?.total ?? 0,
   )
 
   return (
@@ -240,7 +243,7 @@ function ContactsPage() {
                   className="h-7 border border-[var(--border-tertiary)] flex items-center bg-[var(--background-secondary)] shadow-[0px_-2px_0px_0px_var(--black-5)_inset,0px_2px_0px_0px_var(--white-100)_inset] rounded-lg"
                 >
                   <span
-                    data-testid={`w-subscribers-filters-select-field-trigger-${filter.field}`}
+                    data-testid={`w-contacts-filters-select-field-trigger-${filter.field}`}
                     className="kb-reset flex h-full items-center capitalize text-xs border-r border-[var(--border-tertiary)] px-2.5"
                   >
                     <Text className="text-xs kb-content-tertiary">
@@ -251,7 +254,7 @@ function ContactsPage() {
                   <Dropdown.Root>
                     <Dropdown.Trigger asChild>
                       <button
-                        data-testid={`w-subscribers-filters-select-operation-trigger-${filter.field}`}
+                        data-testid={`w-contacts-filters-select-operation-trigger-${filter.field}`}
                         className="kb-reset text-xs cursor-pointer border-r border-[var(--border-tertiary)] hover:bg-[var(--background-hover)] transition ease-linear px-2.5 h-full"
                       >
                         <Text className="text-xs kb-content-tertiary lowercase">
@@ -261,14 +264,14 @@ function ContactsPage() {
                     </Dropdown.Trigger>
 
                     <Dropdown.Content
-                      data-testid={`w-subscribers-filters-select-operation-content-${filter.field}`}
+                      data-testid={`w-contacts-filters-select-operation-content-${filter.field}`}
                     >
                       {filterOperationOptions[filter.field].operations.map((option) => (
                         <Dropdown.Item asChild key={option.value}>
                           <Button
                             variant="tertiary"
                             onClick={() => updateFilterOperation(filter, option.value)}
-                            data-testid={`w-subscribers-filters-select-operation-${option.value}`}
+                            data-testid={`w-contacts-filters-select-operation-${option.value}`}
                             className="w-full flex items-center h-9 justify-between px-3 cursor-pointer"
                           >
                             <Text className="text-sm">
@@ -300,7 +303,7 @@ function ContactsPage() {
 
                   <button
                     onClick={() => removeFilter(filter)}
-                    data-testid={`w-subscribers-filters-select-remove-filter-${filter.field}`}
+                    data-testid={`w-contacts-filters-select-remove-filter-${filter.field}`}
                     className="px-2.5 cursor-pointer hover:bg-[var(--background-hover)] transition ease-linear h-full rounded-r-lg"
                   >
                     <CancelIcon className="w-4 h-4 kb-content-tertiary" />
@@ -315,14 +318,14 @@ function ContactsPage() {
               <Button
                 variant="secondary"
                 className="py-1 text-xs"
-                data-testid="w-subscribers-filters-save-as-segment"
+                data-testid="w-contacts-filters-save-as-segment"
               >
                 Save filter as a segment
               </Button>
               <Button
                 variant="tertiary"
                 className="py-1 text-xs"
-                data-testid="w-subscribers-filters-clear"
+                data-testid="w-contacts-filters-clear"
                 onClick={onClearFilters}
               >
                 Clear filters
@@ -333,17 +336,11 @@ function ContactsPage() {
       ) : null}
 
       <div className="mt-4 border-t border-b border-[var(--black-5)] h-12 box-border pl-6 flex items-center justify-between">
-        <Text className="kb-content-tertiary" data-testid="w-subscribers-filters-showing">
-          Showing {startOfPage}-{endOfPage} of {data.total} contacts
+        <Text className="kb-content-tertiary" data-testid="w-contacts-filters-showing">
+          Showing {startOfPage}-{endOfPage} of {data?.total ?? 0} contacts
         </Text>
 
-        <Button
-          variant="tertiary"
-          data-testid="w-subscribers-filters-new-subscriber-property"
-        >
-          <PlusIcon className="!w-5 !h-5" />
-          New subscriber property
-        </Button>
+        <NewContactProperty />
       </div>
 
       <div className="w-full max-w-[calc(100vw-var(--w-sidebar-width)-64px)] overflow-x-auto block border-r kb-border-tertiary">
@@ -389,7 +386,7 @@ function ContactsPage() {
         </Table.Root>
       </div>
 
-      <div className="sticky bottom-0 kb-background-secondary z-[40] py-2">
+      <div className="sticky bottom-0 kb-background-secondary z-[2] py-2">
         <Pagination table={table} />
       </div>
     </Tabs.Content>

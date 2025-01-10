@@ -61,6 +61,9 @@ export const aliases = {
 
   // broadcasts
   broadcasts: w("broadcasts"),
+
+  // broadcast groups
+  create_broadcast_group: "/broadcasts_groups",
 } as const
 
 export function route(

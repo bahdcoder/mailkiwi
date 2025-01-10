@@ -5,7 +5,7 @@ import { route } from "@/shared/routes/route_aliases.js"
 
 export function guard(ctx: PageContext) {
   if (ctx.urlPathname === route("engage")) {
-    if (!ctx.audience) {
+    if (!ctx.engage.onboarded) {
       throw redirect(route("engage_welcome"))
     }
   }

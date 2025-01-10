@@ -551,7 +551,7 @@ export const seedAutomation = async (
   // Next automation point: Waits 2 days ✅
   // Next automation point: Receives a second email about my book ✅
   // Next automation point: Waits 1 day ✅
-  // Next automation point: A branch, if / else statement checking if the subscriber has a tag "purchased-book" or not ✅
+  // Next automation point: A branch, if / else statement checking if the contact has a tag "purchased-book" or not ✅
   // automation for If has tag purchased book, automation is:
   // 1. Receives thank you email for purchasing ✅
   // 2. wait 4 days. ✅
@@ -560,19 +560,19 @@ export const seedAutomation = async (
   // 5. Send discount for purchasing online course ✅
   // 6. End automation. ✅
 
-  // automation for if subscriber does not have the "purchased-book" tag:
+  // automation for if contact does not have the "purchased-book" tag:
 
   // 1. Receives email with an 80% discount ✅
   // 2. wait 3 days ✅
-  // 3. automation splits again with if / else statement, checking if subscriber has email ending with "@gmail.com". ✅
+  // 3. automation splits again with if / else statement, checking if contact has email ending with "@gmail.com". ✅
 
-  // If email ends with "@gmail.com", subscriber should get removed from the email list. End automation.
+  // If email ends with "@gmail.com", contact should get removed from the email list. End automation.
 
-  // If not ends with "@gmail.com", subscriber should:
+  // If not ends with "@gmail.com", contact should:
 
   // 1. Receive another email with 90% discount ✅
   // 2. wait 5 days ✅
-  // 3. Check if subscriber has "purchased-book" tag. If yes, add them to list "Purchasers". End automation. If no, remove them from email list. End automation. ✅
+  // 3. Check if contact has "purchased-book" tag. If yes, add them to list "Purchasers". End automation. If no, remove them from email list. End automation. ✅
 
   // Provide sample api responses for each of the endpoints related to automations . all automation points must be their own database rows to allow for full flexibility to allow for features like drag and drop and reordering of automation points
 

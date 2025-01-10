@@ -1,4 +1,4 @@
-import { useOnboardingContext } from "./context_provider.jsx"
+import { useOnboardingContext } from "./context_provider.js"
 import { ArrowLeftIcon } from "@/pages/components/icons/arrow-left.svg.jsx"
 import {
   ServerForm,
@@ -16,12 +16,12 @@ import { usePageContext } from "vike-react/usePageContext"
 
 import { route } from "@/shared/routes/route_aliases.js"
 
-export function CreatePublicationStep() {
+export function CreateBroadcastGroupStep() {
   const ctx = usePageContext()
-  const { step, setStep, setFormState } = useOnboardingContext("CreatePublicationStep")
+  const { step, setStep, setFormState } = useOnboardingContext("CreateBroadcastGroupStep")
 
   const { serverFormProps, isPending, error } = useServerFormMutation<{ id: string }>({
-    action: route("audience_create"),
+    action: route("create_broadcast_group"),
     onSuccess(response) {
       setStep((current) => current + 1)
       setFormState((current) => ({ ...current, audienceId: response.payload.id }))
@@ -34,25 +34,22 @@ export function CreatePublicationStep() {
 
   return (
     <ServerForm {...serverFormProps}>
-      <Heading size="sm">Create your publication</Heading>
+      <Heading className="font-display kb-content-brand text-xl mb-2">
+        Create a broadcast group
+      </Heading>
       <Text className="kb-content-tertiary" as="label" htmlFor="slug">
-        Set a unique url for your publication
+        A broadcast group is a great way to organise all your marketing emails. Examples
+        would be <strong className="kb-content-brand">Newsletters</strong>,{" "}
+        <strong className="kb-content-brand">Promotions</strong>, or{" "}
+        <strong className="kb-content-brand">Weekly changelogs</strong>.
       </Text>
 
-      <input type="hidden" name="product" value={"letters"} />
-
       <div className="flex items-center mt-6 gap-x-2">
-        <TextField.Root
-          autoFocus
-          id="slug"
-          name="slug"
-          defaultValue={slugify(ctx.team?.name || "")}
-        >
-          {error?.errorsMap?.slug ? (
-            <TextField.Error>{error.errorsMap.slug}</TextField.Error>
+        <TextField.Root autoFocus id="name" name="name" placeholder="Newsletters">
+          {error?.errorsMap?.name ? (
+            <TextField.Error>{error.errorsMap.name}</TextField.Error>
           ) : null}
         </TextField.Root>
-        <Text>.kibasites.com</Text>
       </div>
 
       <Button type="submit" loading={isPending} className="mt-6">

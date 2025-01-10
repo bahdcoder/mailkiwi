@@ -71,7 +71,7 @@ function EngagePage() {
         </div>
 
         <div
-          className="w-full pt-4 flex flex-col gap-8 pb-32"
+          className="w-full max-w-[calc(100vw-var(--w-sidebar-width)-64px)] pt-4 flex flex-col gap-8 pb-32"
           data-orientation="horizontal"
           role="tabpanel"
         >
