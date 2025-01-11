@@ -1,7 +1,8 @@
 import { type DefaultPageProps } from "@/pages/types/page-context.js"
 
+import { BroadcastGroupRepository } from "@/broadcasts/repositories/broadcast_group_repository.js"
+
 import { GetContactsAction } from "@/audiences/actions/contacts/get_contacts_action.js"
-import { ContactController } from "@/audiences/controllers/contact_controller.js"
 
 import { route } from "@/shared/routes/route_aliases.js"
 import { HonoContext } from "@/shared/server/types.js"
@@ -9,11 +10,11 @@ import { HonoContext } from "@/shared/server/types.js"
 import { container } from "@/utils/typi.js"
 
 export class PagePropsResolver {
-  protected DEFAULT_PROPS_FETCHERS = {
-    [route("engage_contacts")]: async function (
-      ctx: HonoContext,
-      { audience }: DefaultPageProps,
-    ) {
+  protected DEFAULT_PROPS_FETCHERS: Record<
+    string,
+    (ctx: HonoContext, defaultPageProps: DefaultPageProps) => Promise<Record<string, any>>
+  > = {
+    async [route("engage_contacts")](ctx, { audience }) {
       const contacts = await container
         .make(GetContactsAction)
         .handle(
@@ -24,6 +25,14 @@ export class PagePropsResolver {
         )
 
       return { contacts }
+    },
+
+    async [route("engage")](_ctx, { team }) {
+      const groups = await container
+        .make(BroadcastGroupRepository)
+        .findWithBroadcastsForTeam(team.id)
+
+      return { groups }
     },
   }
 

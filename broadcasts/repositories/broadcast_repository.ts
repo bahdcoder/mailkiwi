@@ -25,6 +25,10 @@ export class BroadcastRepository extends BaseRepository {
     super()
   }
 
+  broadcasts() {
+    return this.crud(broadcasts)
+  }
+
   async create(data: CreateBroadcastDto, teamId: string) {
     const id = this.cuid()
     await this.database.insert(broadcasts).values({ ...data, teamId, id })

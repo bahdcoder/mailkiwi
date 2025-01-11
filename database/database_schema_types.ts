@@ -3,6 +3,7 @@ import type {
   accessTokens,
   audiences,
   automationSteps,
+  broadcastGroups,
   broadcasts,
   channelMemberships,
   channels,
@@ -45,6 +46,7 @@ export type Contact = InferSelectModel<typeof contacts>
 export type User = InferSelectModel<typeof users>
 export type ContactProperty = InferSelectModel<typeof contactProperties>
 export type Broadcast = InferSelectModel<typeof broadcasts>
+export type BroadcastGroup = InferSelectModel<typeof broadcastGroups>
 
 // Chat
 export type Message = InferSelectModel<typeof messages>
@@ -103,6 +105,7 @@ export type InsertAbTestVariant = typeof abTestVariants.$inferInsert
 export type InsertProduct = typeof products.$inferInsert
 export type InsertWebsite = typeof websites.$inferInsert
 export type InsertForm = typeof forms.$inferInsert
+export type InsertBroadcastGroup = typeof broadcastGroups.$inferInsert
 
 // Chat
 export type InsertUser = typeof users.$inferInsert
@@ -190,4 +193,8 @@ export type ContactWithProperties = Contact & {
 
 export type WebsiteWithPages = Website & {
   pages: WebsitePage[]
+}
+
+export type BroadcastGroupWithBroadcasts = BroadcastGroup & {
+  broadcasts: Broadcast[]
 }

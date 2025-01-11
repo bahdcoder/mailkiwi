@@ -13,6 +13,11 @@ import * as TextField from "@kibamail/owly/text-field"
 import * as React from "react"
 import { usePageContext } from "vike-react/usePageContext"
 
+import {
+  BroadcastGroup,
+  BroadcastGroupWithBroadcasts,
+} from "@/database/database_schema_types.js"
+
 import { route } from "@/shared/routes/route_aliases.js"
 
 enum BroadcastStatus {
@@ -22,18 +27,16 @@ enum BroadcastStatus {
   ALL = "all",
 }
 
+type EngagePageProps = {
+  groups: BroadcastGroupWithBroadcasts[]
+}
+
 function EngagePage() {
   const ctx = usePageContext()
 
   const defaultTabValue = ctx.urlParsed?.search?.status ?? BroadcastStatus.ALL
 
-  const groups = [
-    "Product marketing",
-    "Newsletter",
-    "Announcements",
-    "Offers",
-    "Weekly product updates",
-  ]
+  const { groups } = ctx.pageProps as EngagePageProps
 
   return (
     <Tabs.Content value="broadcasts" className="pt-6">
@@ -76,9 +79,12 @@ function EngagePage() {
           role="tabpanel"
         >
           {groups.map((group) => (
-            <div key={group} className="">
-              <Heading size="sm" className="px-2 font-display kb-content-brand">
-                {group}
+            <div key={group.id} className="">
+              <Heading
+                size="sm"
+                className="px-2 font-display kb-content-brand capitalize"
+              >
+                {group?.name}
               </Heading>
               <div className="flex flex-col">
                 {[1, 2, 3, 4].map((i) => (
