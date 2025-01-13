@@ -1,4 +1,5 @@
 @import "@kibamail/owly/styles/select-field.css";
+@import "@kibamail/owly/styles/dialog.css";
 
 .w-search-contacts {
   .kb-text-field-content {

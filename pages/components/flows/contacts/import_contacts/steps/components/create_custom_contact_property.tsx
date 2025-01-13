@@ -1,51 +1,51 @@
 import { CalendarIcon } from "@/pages/components/icons/calendar.jsx"
 import { CheckSquareIcon } from "@/pages/components/icons/check-square.svg.jsx"
 import { HashTagIcon } from "@/pages/components/icons/hashtag.svg.jsx"
-import { InfoCircleSolidIcon } from "@/pages/components/icons/info-circle-solid.svg.jsx"
 import { TextIcon } from "@/pages/components/icons/text.svg.jsx"
-import * as Alert from "@kibamail/owly/alert"
 import { Button } from "@kibamail/owly/button"
 import * as Dialog from "@kibamail/owly/dialog"
 import * as Select from "@kibamail/owly/select-field"
-import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"
 import * as React from "react"
 
-export interface CreateCustomContactPropertyProps {
+export interface CreateCustomContactPropertyProps extends React.PropsWithChildren {
   open: boolean
   onOpenChange: (open: boolean) => void
 
-  form: {
+  form?: {
     defaultValue?: string
-    onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
+    onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void
   }
 }
 
 export function CreateCustomContactProperty({
   open,
-  form: { onSubmit, defaultValue },
   onOpenChange,
+  children,
+  form,
 }: CreateCustomContactPropertyProps) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Content>
         <Dialog.Header>
-          <Dialog.Title>Create custom contact property</Dialog.Title>
-          {defaultValue ? (
-            <Dialog.Description>
-              The column <strong>{defaultValue}</strong> will be mapped to this new
+          <Dialog.Title className="text-center">
+            Create custom contact property
+          </Dialog.Title>
+          {form?.defaultValue ? (
+            <Dialog.Description className="text-center">
+              The column <strong>{form.defaultValue}</strong> will be mapped to this new
               contact property.
             </Dialog.Description>
           ) : null}
         </Dialog.Header>
 
-        <form onSubmit={onSubmit}>
+        <form onSubmit={form?.onSubmit}>
           <div className="p-6 grid grid-cols-1 gap-6">
             <TextField.Root
               autoFocus
               name="name"
               id="custom-property-name"
-              placeholder={defaultValue}
+              placeholder={form?.defaultValue ?? "Job title, Interests, Company, etc."}
             >
               <TextField.Label htmlFor="custom-property-name">Name</TextField.Label>
             </TextField.Root>
@@ -76,29 +76,11 @@ export function CreateCustomContactProperty({
               </Select.Content>
             </Select.Root>
 
-            {defaultValue ? (
-              <Alert.Root variant="info">
-                <Alert.Icon>
-                  <InfoCircleSolidIcon />
-                </Alert.Icon>
-                <div className="flex flex-col w-full">
-                  <Alert.Title className="font-medium">
-                    A note on custom property types
-                  </Alert.Title>
-
-                  <Text as="p" className="kb-content-secondary">
-                    Please select a type that correctly represents the data in your csv.
-                    For example, only select the <strong>Date</strong> type if the data in
-                    the <strong>{`${defaultValue} `}</strong>
-                    column of your csv is in a correct date format.
-                  </Text>
-                </div>
-              </Alert.Root>
-            ) : null}
+            {children}
           </div>
 
           <Dialog.Footer className="flex justify-between gap-2">
-            <Dialog.Close asChild>
+            <Dialog.Close asChild type="button">
               <Button variant="tertiary" width={"full"} type="button">
                 Close
               </Button>

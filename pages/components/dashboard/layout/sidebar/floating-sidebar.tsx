@@ -67,7 +67,7 @@ export function FloatingSidebar() {
         role="button"
         onClick={ctx.isMobile ? undefined : hideFloatingSidebar}
         className={cn(
-          "w-full h-screen bg-[rgba(17,17,17,0.10)] transition-opacity ease-in-out duration-200 absolute top-0 pl-2 left-0 py-6 flex items-center",
+          "w-full h-screen bg-[rgba(17,17,17,0.10)] transition-opacity ease-in-out duration-200 absolute top-0 pl-2 left-0 z-[5] py-6 flex items-center",
           {
             "pointer-events-none opacity-0": !sidebar.floating,
             "pointer-events-auto opacity-100": sidebar.floating,

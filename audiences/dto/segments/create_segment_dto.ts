@@ -41,7 +41,8 @@ const allowedFilterFields = [
   "lastTrackedActivityUsingDevice",
   "lastTrackedActivityUsingBrowser",
 
-  //
+  // segmentId
+  "segmentId",
 ] as const
 
 export type AllowedFilterField = (typeof allowedFilterFields)[number]

@@ -50,6 +50,7 @@ export const aliases = {
 
   // audiences
   audience_create: "/audiences",
+  audiences_update: "/audiences/:audienceId",
 
   // imports
   contacts_import: "/audiences/:audienceId/imports",
@@ -58,6 +59,9 @@ export const aliases = {
   // contacts
   get_contacts: "/audiences/:audienceId/contacts",
   contacts_search: "/audiences/:audienceId/contacts/search",
+
+  // segments
+  create_segment: "/audiences/:audienceId/segments",
 
   // broadcasts
   broadcasts: w("broadcasts"),

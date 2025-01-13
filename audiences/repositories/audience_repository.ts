@@ -38,17 +38,25 @@ export class AudienceRepository extends BaseRepository {
   async getAudienceForTeam(teamId: string) {
     const self = this
 
-    return self.cache
-      .namespace("teams")
-      .get([teamId, "audience"].join("/"), async function () {
-        const [audience] = await self.database
-          .select()
-          .from(audiences)
-          .where(and(eq(audiences.teamId, teamId)))
-          .limit(1)
+    const [audience] = await self.database
+      .select()
+      .from(audiences)
+      .where(and(eq(audiences.teamId, teamId)))
+      .limit(1)
 
-        return audience
-      })
+    return audience
+
+    // return self.cache
+    //   .namespace("teams")
+    //   .get([teamId, "audience"].join("/"), async function () {
+    //     const [audience] = await self.database
+    //       .select()
+    //       .from(audiences)
+    //       .where(and(eq(audiences.teamId, teamId)))
+    //       .limit(1)
+
+    //     return audience
+    //   })
   }
 
   async create(payload: CreateAudienceDto, teamId: string) {
@@ -82,9 +90,18 @@ export class AudienceRepository extends BaseRepository {
     }
 
     const existingProperties: Record<string, KnownAudienceProperty> = {}
+    const incomingProperties: Record<string, KnownAudienceProperty> = {}
+
+    if (!audience.knownProperties) {
+      audience.knownProperties = []
+    }
 
     audience.knownProperties?.forEach((property) => {
       existingProperties[property.id] = property
+    })
+
+    properties.forEach((property) => {
+      incomingProperties[property.id] = property
     })
 
     const propertiesToBeCreated = properties.filter(
@@ -95,10 +112,15 @@ export class AudienceRepository extends BaseRepository {
       (property) => existingProperties[property.id],
     )
 
+    const propertiesUnchanged = audience.knownProperties?.filter(
+      (property) => !incomingProperties[property.id],
+    )
+
     await this.database
       .update(audiences)
       .set({
         knownProperties: [
+          ...propertiesUnchanged,
           ...propertiesToBeUpdated.map((property) => ({
             ...existingProperties[property.id],
             ...property,

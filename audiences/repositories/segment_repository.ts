@@ -12,6 +12,10 @@ export class SegmentRepository extends BaseRepository {
     super()
   }
 
+  segments() {
+    return this.crud(segments)
+  }
+
   async create(payload: InsertSegment) {
     const id = this.cuid()
     await this.database.insert(segments).values({ id, ...payload })

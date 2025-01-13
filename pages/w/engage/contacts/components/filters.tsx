@@ -1,4 +1,5 @@
 import * as Dropdown from "@/pages/components/dropdown/dropdown.jsx"
+import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
 import { FilterListIcon } from "@/pages/components/icons/filter-list.svg.jsx"
 import { Button } from "@kibamail/owly/button"
 import { Checkbox } from "@kibamail/owly/checkbox"
@@ -15,7 +16,7 @@ import type {
   CreateSegmentDto,
 } from "@/audiences/dto/segments/create_segment_dto.js"
 
-import { Tag } from "@/database/database_schema_types.js"
+import { Segment, Tag } from "@/database/database_schema_types.js"
 
 export type FilterCondition =
   CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number] & {
@@ -99,6 +100,68 @@ const fields: FilterDefinition[] = [
                 />
                 <Text className="capitalize">{tag.name}</Text>
               </label>
+            )
+          })}
+        </div>
+      )
+    },
+  },
+  {
+    id: "segmentId",
+    name: "Segments",
+    options({ pageCtx }) {
+      const { setFilterBuilderOpen, setFilterConditions } = useFiltersBuilder(
+        "ContactsFiltersBuilderTags",
+      )
+
+      const { segments } = pageCtx?.pageProps as { segments: Segment[] }
+
+      function onSegmentSelected(segment: Segment) {
+        setFilterBuilderOpen(false)
+        setFilterConditions((conditions) => {
+          const existingCondition = conditions.find(
+            (condition) => condition.field === "segmentId",
+          )
+
+          if (existingCondition) {
+            return conditions.map((condition) => {
+              if (condition.field !== "segmentId") {
+                return condition
+              }
+
+              return {
+                ...condition,
+                value: segment.id,
+              }
+            })
+          }
+
+          return [
+            ...conditions,
+            {
+              id: "segmentId",
+              operation: "eq",
+              field: "segmentId",
+              value: segment.id,
+            } satisfies FilterCondition,
+          ]
+        })
+      }
+
+      return (
+        <div className="flex flex-col gap-1">
+          {segments.map((segment) => {
+            const id = `w-contacts-filters-select-segment-${segment.id}`
+
+            return (
+              <button
+                id={id}
+                key={segment.id}
+                onClick={() => onSegmentSelected(segment)}
+                className="gap-4 px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] h-8 flex items-center justify-between cursor-pointer"
+              >
+                <Text className="">{segment.name}</Text>
+              </button>
             )
           })}
         </div>

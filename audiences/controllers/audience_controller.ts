@@ -4,7 +4,9 @@ import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audie
 import { UpdateAudienceAction } from "@/audiences/actions/audiences/update_audience_action.js"
 import { CreateAudienceSchema } from "@/audiences/dto/audiences/create_audience_dto.js"
 import { UpdateAudienceSchema } from "@/audiences/dto/audiences/update_audience_dto.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 
+import { Audience } from "@/database/database_schema_types.js"
 import { audiences } from "@/database/schema.js"
 
 import { makeApp } from "@/shared/container/index.js"
@@ -22,7 +24,7 @@ export class AudienceController extends BaseController {
       [
         ["GET", "/", this.index.bind(this)],
         ["POST", "/", this.store.bind(this)],
-        ["PUT", "/", this.update.bind(this)],
+        ["PUT", "/:audienceId", this.update.bind(this)],
       ],
       {
         prefix: "audiences",
@@ -53,12 +55,17 @@ export class AudienceController extends BaseController {
   }
 
   async update(ctx: HonoContext) {
+    this.ensureCanManage(ctx)
+
+    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
     const data = await this.validate(ctx, UpdateAudienceSchema)
 
-    const team = this.ensureCanManage(ctx)
+    await container.make(UpdateAudienceAction).handle(data, audience.id)
 
-    const audience = await container.make(UpdateAudienceAction).handle(data, team.id)
+    const updatedAudience = await container
+      .make(AudienceRepository)
+      .getAudienceForTeam(audience.teamId)
 
-    return this.response(ctx).json(audience).send()
+    return this.response(ctx).json(updatedAudience).send()
   }
 }

@@ -8,7 +8,6 @@ import { WriteYourFirstLetterStep } from "@/pages/w/engage/onboarding/steps/step
 import { AddContactsStep } from "@/pages/w/engage/onboarding/steps/step_two_add_contacts.jsx"
 import { Button } from "@kibamail/owly/button"
 import { Progress } from "@kibamail/owly/progress"
-import "@kibamail/owly/styles/dialog.css"
 import "@kibamail/owly/styles/select-field.css"
 import { Text } from "@kibamail/owly/text"
 import React from "react"

@@ -21,7 +21,11 @@ export interface ServerSubmissionResponse<TResponse = Record<"path" | string, an
 
 export type FormPayload = Record<
   string,
-  FormDataEntryValue | FormDataEntryValue[] | boolean
+  | FormDataEntryValue
+  | FormDataEntryValue[]
+  | boolean
+  | Record<string, any>
+  | Record<string, any>[]
 >
 
 export interface UseServerFormMutationProps<TResponse = Record<"path" | string, any>>
@@ -150,7 +154,7 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
   }
 }
 
-type ServerFormProps = React.FormHTMLAttributes<HTMLFormElement> & {
+export type ServerFormProps = React.FormHTMLAttributes<HTMLFormElement> & {
   mutate: UseMutationResult<
     ServerSubmissionResponse<Record<string, any>>,
     ServerSubmissionResponse,

@@ -447,7 +447,27 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
           onSubmit: onCreateNewCustomPropertySubmit,
           defaultValue: addingCustomPropertyForColumn,
         }}
-      />
+      >
+        {addingCustomPropertyForColumn ? (
+          <Alert.Root variant="info">
+            <Alert.Icon>
+              <InfoCircleSolidIcon />
+            </Alert.Icon>
+            <div className="flex flex-col w-full">
+              <Alert.Title className="font-medium">
+                A note on custom property types
+              </Alert.Title>
+
+              <Text as="p" className="kb-content-secondary">
+                Please select a type that correctly represents the data in your csv. For
+                example, only select the <strong>Date</strong> type if the data in the{" "}
+                <strong>{`${addingCustomPropertyForColumn} `}</strong>
+                column of your csv is in a correct date format.
+              </Text>
+            </div>
+          </Alert.Root>
+        ) : null}
+      </CreateCustomContactProperty>
       <DialogPrimitive.Title asChild className="text-left">
         <Heading>Match your csv to contact properties</Heading>
       </DialogPrimitive.Title>

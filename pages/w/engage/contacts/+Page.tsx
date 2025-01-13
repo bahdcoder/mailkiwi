@@ -9,6 +9,8 @@ import { MoreVertIcon } from "@/pages/components/icons/more-vert.svg.jsx"
 import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
 import { SearchIcon } from "@/pages/components/icons/search.svg.jsx"
 import { NewContactProperty } from "@/pages/w/engage/contacts/components/actions/new_contact_property.jsx"
+import { SaveFilterAsSegmentForm } from "@/pages/w/engage/contacts/components/actions/save_filter_as_segment.jsx"
+import { UpdateContactProperty } from "@/pages/w/engage/contacts/components/actions/update_contact_property.jsx"
 import {
   FilterCondition,
   FiltersBuilder,
@@ -28,7 +30,11 @@ import * as React from "react"
 import { usePageContext } from "vike-react/usePageContext"
 import { PageContext } from "vike/types"
 
-import { ContactWithTagsAndProperties, Tag } from "@/database/database_schema_types.js"
+import {
+  ContactWithTagsAndProperties,
+  Segment,
+  Tag,
+} from "@/database/database_schema_types.js"
 
 import { route } from "@/shared/routes/route_aliases.js"
 
@@ -121,6 +127,42 @@ const filterOperationOptions: FilterOperationOptions = {
     ],
     options: TextFilterOptions,
   },
+  segmentId: {
+    name: "Segment",
+    operations: [
+      { label: "Is in", value: "eq" },
+      { label: "Is not in", value: "ne" },
+    ],
+    options({ pageCtx, children, onChange, filter }) {
+      const segments = pageCtx.pageProps?.segments as Segment[]
+
+      const selectedSegment = segments.find((segment) => segment.id === filter.value)
+
+      return (
+        <Dropdown.Root>
+          <Dropdown.Trigger asChild>
+            <button className="gap-4 box-border px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] flex items-center justify-between cursor-pointer">
+              <Text className="text-xs">{selectedSegment?.name}</Text>
+            </button>
+          </Dropdown.Trigger>
+
+          <Dropdown.Content className="p-1" sideOffset={12}>
+            {segments.map((segment) => (
+              <Dropdown.Item
+                key={segment.id}
+                className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-[var(--background-hover)] rounded-lg"
+                onSelect={console.log}
+              >
+                <Text className="kb-content-tertiary">{segment.name}</Text>
+
+                <CheckIcon className="w-4 h-4 kb-content-tertiary" />
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Content>
+        </Dropdown.Root>
+      )
+    },
+  },
   tags: {
     name: "Tags",
     operations: [
@@ -189,6 +231,9 @@ function ContactsPage() {
     data,
     activeFilters,
     contactsQuery,
+    filterGroups,
+    isEditingProperty,
+    setIsEditingProperty,
   } = useContacts()
 
   const { onFiltersChange, removeFilter, updateFilterOperation, updateFilterValue } =
@@ -202,6 +247,10 @@ function ContactsPage() {
 
   return (
     <Tabs.Content value="contacts" className="py-6">
+      <UpdateContactProperty
+        property={isEditingProperty}
+        setProperty={setIsEditingProperty}
+      />
       <div className="w-full flex flex-col gap-y-2 lg:gap-y-0 lg:flex-row items-center lg:justify-between">
         <div className="w-fit gap-2 flex items-center">
           <TextField.Root
@@ -255,7 +304,7 @@ function ContactsPage() {
                     <Dropdown.Trigger asChild>
                       <button
                         data-testid={`w-contacts-filters-select-operation-trigger-${filter.field}`}
-                        className="kb-reset text-xs cursor-pointer border-r border-[var(--border-tertiary)] hover:bg-[var(--background-hover)] transition ease-linear px-2.5 h-full"
+                        className="kb-reset text-xs cursor-pointer border-r border-[var(--border-tertiary)] hover:bg-[var(--background-hover)] transition ease-linear px-2.5 h-full flex-shrink-0"
                       >
                         <Text className="text-xs kb-content-tertiary lowercase">
                           {filterOperationLabels[filter.operation]}
@@ -265,6 +314,7 @@ function ContactsPage() {
 
                     <Dropdown.Content
                       data-testid={`w-contacts-filters-select-operation-content-${filter.field}`}
+                      className="flex-shrink-0"
                     >
                       {filterOperationOptions[filter.field].operations.map((option) => (
                         <Dropdown.Item asChild key={option.value}>
@@ -315,13 +365,15 @@ function ContactsPage() {
 
           <div className="flex-shrink-0">
             <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                className="py-1 text-xs"
-                data-testid="w-contacts-filters-save-as-segment"
-              >
-                Save filter as a segment
-              </Button>
+              <SaveFilterAsSegmentForm filterGroups={filterGroups}>
+                <Button
+                  variant="secondary"
+                  className="py-1 text-xs"
+                  data-testid="w-contacts-filters-save-as-segment"
+                >
+                  Save filter as a segment
+                </Button>
+              </SaveFilterAsSegmentForm>
               <Button
                 variant="tertiary"
                 className="py-1 text-xs"
