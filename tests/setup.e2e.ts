@@ -3,6 +3,7 @@ import { addDefaultChannelsCommand } from "@/cli/commands/chat/add_default_chann
 import { seedDevSendingSourcesCommand } from "@/cli/commands/seed_dev_sending_sources_command.js"
 import { faker } from "@faker-js/faker"
 import { FullConfig, chromium } from "@playwright/test"
+import { writeFile } from "fs/promises"
 import { DateTime } from "luxon"
 import { resolve } from "path"
 
@@ -15,7 +16,7 @@ import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 import { basePath } from "@/tests/e2e/helpers/storage_state_paths.js"
 import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
 
-import { Team, type TeamMembership } from "@/database/database_schema_types.js"
+import { Team, type TeamMembership, User } from "@/database/database_schema_types.js"
 
 import { route } from "@/shared/routes/route_aliases.js"
 
@@ -49,9 +50,11 @@ async function createUser({
     password: userDetails.password,
   })
 
+  const teamName = faker.company.buzzAdjective()
+
   let team: Partial<Team> = await container.make(TeamRepository).create(
     {
-      name: faker.company.buzzAdjective(),
+      name: teamName,
     },
     user.id,
   )
@@ -67,7 +70,7 @@ async function createUser({
     })
   }
 
-  return { user: { ...user, ...userDetails }, team }
+  return { user: { ...user, ...userDetails }, team: { ...team, name: teamName } }
 }
 
 export default async function globalSetup(config: FullConfig) {
@@ -113,6 +116,17 @@ export default async function globalSetup(config: FullConfig) {
     { name: "administrator", user: teamMemberAdministrator },
   ]
 
+  const usersMap: Record<
+    "owner" | "guest" | "author" | "manager" | "administrator",
+    { user: Partial<User>; team: { id?: string } }
+  > = {
+    guest: teamMemberGuest,
+    owner: teamMemberOwner,
+    author: teamMemberAuthor,
+    manager: teamMemberManager,
+    administrator: teamMemberAdministrator,
+  }
+
   const browser = await chromium.launch()
 
   for (const {
@@ -154,5 +168,8 @@ export default async function globalSetup(config: FullConfig) {
 
     await page.close()
   }
+
+  await writeFile(resolve(basePath, "seed.users.json"), JSON.stringify(usersMap))
+
   await browser.close()
 }
