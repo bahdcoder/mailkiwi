@@ -6,6 +6,7 @@ import { fixTypescriptImportsCommand } from "@/cli/commands/fix_typescript_impor
 import { generateAcmeAccountIdentityCommand } from "@/cli/commands/generate_acme_account_identity.js"
 import { resetDatabaseCommand } from "@/cli/commands/reset_database_command.js"
 import { seedDevSendingSourcesCommand } from "@/cli/commands/seed_dev_sending_sources_command.js"
+import { syncGoogleFontsCommand } from "@/cli/commands/sync_google_fonts_command.js"
 import { IgnitorCli } from "@/cli/ignitor/ignitor_cli.js"
 import { run } from "@drizzle-team/brocli"
 
@@ -24,6 +25,9 @@ await run([
 
   // database
   resetDatabaseCommand,
+
+  // composer editor
+  syncGoogleFontsCommand,
 ])
 
 await ignitor.shutdown()

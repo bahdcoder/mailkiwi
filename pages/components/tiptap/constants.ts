@@ -1,0 +1,62 @@
+export const languages: any[] = [
+  { name: "arabic", label: "Arabic", value: "ar" as any["value"] },
+  { name: "chinese", label: "Chinese", value: "zh" as any["value"] },
+  { name: "english", label: "English", value: "en" as any["value"] },
+  { name: "french", label: "French", value: "fr" as any["value"] },
+  { name: "german", label: "German", value: "de" as any["value"] },
+  { name: "greek", label: "Greek", value: "gr" as any["value"] },
+  { name: "italian", label: "Italian", value: "it" as any["value"] },
+  { name: "japanese", label: "Japanese", value: "jp" as any["value"] },
+  { name: "korean", label: "Korean", value: "ko" as any["value"] },
+  { name: "russian", label: "Russian", value: "ru" as any["value"] },
+  { name: "spanish", label: "Spanish", value: "es" as any["value"] },
+  { name: "swedish", label: "Swedish", value: "sv" as any["value"] },
+  { name: "ukrainian", label: "Ukrainian", value: "ua" as any["value"] },
+]
+
+export const userNames = [
+  "Lea Thompson",
+  "Cyndi Lauper",
+  "Tom Cruise",
+  "Madonna",
+  "Jerry Hall",
+  "Joan Collins",
+  "Winona Ryder",
+  "Christina Applegate",
+  "Alyssa Milano",
+  "Molly Ringwald",
+  "Ally Sheedy",
+  "Debbie Harry",
+  "Olivia Newton-John",
+  "Elton John",
+  "Michael J. Fox",
+  "Axl Rose",
+  "Emilio Estevez",
+  "Ralph Macchio",
+  "Rob Lowe",
+  "Jennifer Grey",
+  "Mickey Rourke",
+  "John Cusack",
+  "Matthew Broderick",
+  "Justine Bateman",
+  "Lisa Bonet",
+]
+
+export const userColors = [
+  "#fb7185",
+  "#fdba74",
+  "#d9f99d",
+  "#a7f3d0",
+  "#a5f3fc",
+  "#a5b4fc",
+  "#f0abfc",
+]
+
+export const themeColors = [
+  "#fb7185",
+  "#fdba74",
+  "#d9f99d",
+  "#a7f3d0",
+  "#a5f3fc",
+  "#a5b4fc",
+]

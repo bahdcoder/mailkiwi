@@ -126,6 +126,8 @@ export const appEnv = makeExtraAppConfigurations(
       GOOGLE_CLIENT_ID: str(),
       GOOGLE_CLIENT_SECRET: str(),
       GOOGLE_CALLBACK_URL: str(),
+
+      GOOGLE_FONTS_API_KEY: str(),
     }),
   ),
   {

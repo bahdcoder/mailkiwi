@@ -979,3 +979,13 @@ export const messageReactions = mysqlTable("messageReactions", {
     .notNull(),
   emoji: varchar("emoji", { length: 50 }).notNull(),
 })
+
+export const fonts = mysqlTable("fonts", {
+  id,
+  family: varchar("family", { length: 50 }).notNull(),
+  category: varchar("category", { length: 50 }).notNull(),
+  files: json("files").$type<Record<string, string>>().notNull(),
+  teamId: primaryKeyCuid("teamId").references(() => teams.id),
+  subsets: varchar("subsets", { length: 255 }),
+  variants: varchar("variants", { length: 255 }),
+})
