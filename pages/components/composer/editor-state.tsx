@@ -100,27 +100,27 @@ export function useEditorContext<T>(
 }
 
 export function useTiptapEditor() {
-  const {
-    editor,
+  // const {
+  //   editor,
 
-    setEditor,
-    setJson,
+  //   setEditor,
+  //   setJson,
 
-    isEditorFocused,
-    setState,
-  } = useEditorContext((s) => s)
+  //   isEditorFocused,
+  //   setState,
+  // } = useEditorContext((s) => s)
 
-  useEditor({
+  const editor = useEditor({
     immediatelyRender: true,
-    shouldRerenderOnTransaction: false,
+    // shouldRerenderOnTransaction: false,
     autofocus: true,
-    onCreate({ editor }) {
-      setEditor(editor)
-    },
-    onUpdate({ editor }) {
-      setEditor(editor)
-      setJson(editor.getJSON())
-    },
+    // onCreate({ editor }) {
+    //   setEditor(editor)
+    // },
+    // onUpdate({ editor }) {
+    //   setEditor(editor)
+    //   setJson(editor.getJSON())
+    // },
     extensions: [
       // Document,
       // Text,
@@ -228,33 +228,9 @@ export function useTiptapEditor() {
     },
   })
 
-  React.useEffect(() => {
-    if (!editor) {
-      return
-    }
-
-    editor.on("focus", function onFocus() {
-      setState({
-        isEditorFocused: true,
-      })
-    })
-
-    editor.on("blur", function onBlur() {
-      setState({
-        isEditorFocused: false,
-      })
-    })
-
-    return function cleanup() {
-      editor.off("focus")
-      editor.off("blur")
-    }
-  }, [editor])
+  // window.editor = editor
 
   return {
     editor,
-    setEditor,
-    setJson,
-    isEditorFocused,
   }
 }

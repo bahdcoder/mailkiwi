@@ -1,5 +1,5 @@
-import { Extension } from '@tiptap/core'
-import { Plugin, PluginKey } from '@tiptap/pm/state'
+import { Extension } from "@tiptap/core"
+import { Plugin, PluginKey } from "@tiptap/pm/state"
 
 // @ts-ignore
 function nodeEqualsType({ types, node }) {
@@ -18,12 +18,12 @@ export interface TrailingNodeOptions {
 }
 
 export const TrailingNode = Extension.create<TrailingNodeOptions>({
-  name: 'trailingNode',
+  name: "trailingNode",
 
   addOptions() {
     return {
-      node: 'paragraph',
-      notAfter: ['paragraph'],
+      node: "paragraph",
+      notAfter: ["paragraph"],
     }
   },
 
@@ -31,7 +31,7 @@ export const TrailingNode = Extension.create<TrailingNodeOptions>({
     const plugin = new PluginKey(this.name)
     const disabledNodes = Object.entries(this.editor.schema.nodes)
       .map(([, value]) => value)
-      .filter(node => this.options.notAfter.includes(node.name))
+      .filter((node) => this.options.notAfter.includes(node.name))
 
     return [
       new Plugin({

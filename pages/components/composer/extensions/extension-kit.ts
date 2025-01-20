@@ -52,20 +52,16 @@ interface ExtensionKitProps {}
 export const ExtensionKit = () => [
   Document,
   Columns,
-  TaskList,
-  TaskItem.configure({
-    nested: true,
-  }),
   Column,
-  Selection,
+  // Selection,
   Heading.configure({
     levels: [1, 2, 3, 4],
   }),
   HorizontalRule,
-  UniqueID.configure({
-    types: ["paragraph", "heading", "blockquote", "codeBlock", "table"],
-    // filterTransaction: (transaction) => !isChangeOrigin(transaction),
-  }),
+  // UniqueID.configure({
+  //   types: ["paragraph", "heading", "blockquote", "codeBlock", "table"],
+  //   // filterTransaction: (transaction) => !isChangeOrigin(transaction),
+  // }),
   StarterKit.configure({
     document: false,
     dropcursor: false,
@@ -75,53 +71,53 @@ export const ExtensionKit = () => [
     history: false,
     codeBlock: false,
   }),
-  Details.configure({
-    persist: true,
-    HTMLAttributes: {
-      class: "details",
-    },
-  }),
-  DetailsContent,
-  DetailsSummary,
-  CodeBlock,
+  // Details.configure({
+  //   persist: true,
+  //   HTMLAttributes: {
+  //     class: "details",
+  //   },
+  // }),
+  // DetailsContent,
+  // DetailsSummary,
+  // CodeBlock,
   TextStyle,
   FontSize,
   FontFamily,
   Color,
-  TrailingNode,
+  // TrailingNode,
   Link.configure({
     openOnClick: false,
   }),
-  Highlight.configure({ multicolor: true }),
+  // Highlight.configure({ multicolor: true }),
   Underline,
-  CharacterCount.configure({ limit: 50000 }),
-  TableOfContents,
-  TableOfContentsNode,
-  ImageUpload.configure(),
-  ImageBlock,
-  FileHandler.configure({
-    allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
-    onDrop: (currentEditor, files, pos) => {
-      console.log({ files })
-      // files.forEach(async (file) => {
-      //   const url = await API.uploadImage(file)
+  // CharacterCount.configure({ limit: 50000 }),
+  // TableOfContents,
+  // TableOfContentsNode,
+  // ImageUpload.configure(),
+  // ImageBlock,
+  // FileHandler.configure({
+  //   allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
+  //   onDrop: (currentEditor, files, pos) => {
+  //     console.log({ files })
+  //     // files.forEach(async (file) => {
+  //     //   const url = await API.uploadImage(file)
 
-      //   currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run()
-      // })
-    },
-    onPaste: (currentEditor, files) => {
-      // files.forEach(async (file) => {
-      //   const url = await API.uploadImage(file)
+  //     //   currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run()
+  //     // })
+  //   },
+  //   onPaste: (currentEditor, files) => {
+  //     // files.forEach(async (file) => {
+  //     //   const url = await API.uploadImage(file)
 
-      //   return currentEditor
-      //     .chain()
-      //     .setImageBlockAt({ pos: currentEditor.state.selection.anchor, src: url })
-      //     .focus()
-      //     .run()
-      // })
-      console.log({ files })
-    },
-  }),
+  //     //   return currentEditor
+  //     //     .chain()
+  //     //     .setImageBlockAt({ pos: currentEditor.state.selection.anchor, src: url })
+  //     //     .focus()
+  //     //     .run()
+  //     // })
+  //     console.log({ files })
+  //   },
+  // }),
   Emoji.configure({
     enableEmoticons: true,
     suggestion: emojiSuggestion,
@@ -133,24 +129,24 @@ export const ExtensionKit = () => [
   }).configure({
     types: ["heading", "paragraph"],
   }),
-  Subscript,
-  Superscript,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
+  // Subscript,
+  // Superscript,
+  // Table,
+  // TableCell,
+  // TableHeader,
+  // TableRow,
   Typography,
-  Placeholder.configure({
-    includeChildren: true,
-    showOnlyCurrent: false,
-    placeholder: () => "",
-  }),
+  // Placeholder.configure({
+  //   includeChildren: true,
+  //   showOnlyCurrent: false,
+  //   placeholder: () => "",
+  // }),
   SlashCommand,
-  Focus,
-  Figcaption,
-  BlockquoteFigure,
-  Dropcursor.configure({
-    width: 2,
-    class: "ProseMirror-dropcursor border-black",
-  }),
+  // Focus,
+  // Figcaption,
+  // BlockquoteFigure,
+  // Dropcursor.configure({
+  //   width: 2,
+  //   class: "ProseMirror-dropcursor border-black",
+  // }),
 ]

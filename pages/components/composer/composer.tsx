@@ -1,19 +1,24 @@
+import "./composer.styles.css"
 import { ComposerProvider, useTiptapEditor } from "./editor-state.jsx"
 import { BlockEditor } from "@/pages/components/composer/block-editor.jsx"
-import { TextMenu } from "@/pages/components/tiptap/menus/index.js"
+import LinkMenu from "@/pages/components/composer/components/link-menu/link-menu.jsx"
+import { TextMenu } from "@/pages/components/composer/components/text-menu/text-menu.jsx"
+import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
+import { Button } from "@kibamail/owly/button"
 import * as Tabs from "@kibamail/owly/tabs"
-// import { TextMenu } from '../menus/TextMenu';
-// import { ContentItemMenu } from '../menus/ContentItemMenu';
-// import { EditorHeader } from './components/EditorHeader';
-// import ImageBlockMenu from "@/extensions/ImageBlock/components/ImageBlockMenu"
-// import { ColumnsMenu } from "@/extensions/MultiColumn/menus"
-// import { TableColumnMenu, TableRowMenu } from "@/extensions/Table/menus"
-// import { suggestions } from "@/pages/components/composer/extensions.jsx"
-// import { SlashCmd, SlashCmdProvider } from "@harshtalks/slash-tiptap"
-import { Editor, EditorContent, useEditorState } from "@tiptap/react"
+import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
+import React from "react"
 
-export function ComposerContent() {
+export function Composer() {
   const { editor } = useTiptapEditor()
+  // const editor = useEditor({
+  //   immediatelyRender: true,
+  //   shouldRerenderOnTransaction: true,
+  //   autofocus: true,
+  //   extensions: [StarterKit.configure({})],
+  // })
+  const menuContainerRef = React.useRef<HTMLDivElement | null>(null)
 
   if (!editor) {
     return <p>Loading composer</p>
@@ -33,7 +38,10 @@ export function ComposerContent() {
           <Tabs.Content value="blocks">Blocks here</Tabs.Content>
         </Tabs.Root>
       </div>
-      <div className="flex-grow h-full p-6 overflow-y-auto w-composer-inter">
+      <div
+        className="flex-grow h-full p-6 overflow-y-auto w-composer-inter"
+        ref={menuContainerRef}
+      >
         <div className="w-full max-w-[45rem] mx-auto h-full flex flex-col gap-2">
           {/* TODO: Make this an auto expandable textarea */}
           <textarea
@@ -42,21 +50,17 @@ export function ComposerContent() {
           />
 
           <div className="w-full w-composer-content flex-grow p-8 bg-white shadow-[0px_16px_24px_-8px_var(--black-10)]">
+            {/* <EditorContent editor={editor} />
+            <TextMenu editor={editor} /> */}
+            <TextMenu editor={editor} />
+            <LinkMenu editor={editor} appendTo={menuContainerRef} />
             <EditorContent editor={editor} />
           </div>
         </div>
       </div>
       <div className="w-[16.25rem] h-full border-l kb-border-tertiary">
-        <BlockEditor />
+        <BlockEditor editor={editor} />
       </div>
     </div>
-  )
-}
-
-export function Composer() {
-  return (
-    <ComposerProvider>
-      <ComposerContent />
-    </ComposerProvider>
   )
 }

@@ -3,6 +3,8 @@ import { Button } from "@kibamail/owly/button"
 import { Heading } from "@kibamail/owly/heading"
 import React from "react"
 
+import { route } from "@/shared/routes/route_aliases.js"
+
 export interface ProductPageHeadingProps extends React.PropsWithChildren {
   header?: React.ReactNode
 }
@@ -18,9 +20,9 @@ export function ProductPageHeading({ children, header }: ProductPageHeadingProps
             Engage
           </Heading>
 
-          <ComposeBroadcastFlow>
-            <Button>Compose a broadcast</Button>
-          </ComposeBroadcastFlow>
+          <Button asChild>
+            <a href={route("broadcasts_composer")}>Compose a broadcast</a>
+          </Button>
         </div>
       )}
 

@@ -1,5 +1,13 @@
+function trimLastSlash(path: string) {
+  return path.endsWith("/") ? path.slice(0, -1) : path
+}
+
 function w(path: string) {
-  return `/w/${path}`
+  return `/w/${trimLastSlash(path)}`
+}
+
+function engage(path: string) {
+  return w(`engage/${path}`)
 }
 
 export const aliases = {
@@ -64,7 +72,8 @@ export const aliases = {
   create_segment: "/audiences/:audienceId/segments",
 
   // broadcasts
-  broadcasts: w("broadcasts"),
+  broadcasts: engage("/"),
+  broadcasts_composer: engage("broadcasts/composer"),
 
   // broadcast groups
   create_broadcast_group: "/broadcasts_groups",

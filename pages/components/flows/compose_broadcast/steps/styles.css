@@ -1,20 +1,20 @@
 @import "https://rsms.me/inter/inter.css";
 
-.w-composer-inter * {
+.w-composer-inter {
   font-family: Inter, sans-serif;
   font-feature-settings:
     "liga" 1,
-    "calt" 1; /* fix for Chrome */
+    "calt" 1;
 }
 
 .w-composer-content {
-  font-size: 18px;
+  /* font-size: 18px;
   line-height: 1.5;
-  color: var(--content-secondary);
+  color: var(--content-secondary); */
 }
 
 @supports (font-variation-settings: normal) {
-  .w-composer-inter * {
+  .w-composer-inter {
     font-family: InterVariable, sans-serif;
   }
 }
@@ -146,4 +146,8 @@
 
 .kb-code {
   @apply px-1 relative py-0.5 bg-[#efefef] text-sm rounded-md tracking-normal font-normal;
+}
+
+[data-theme="slash-command"] {
+  width: 1000vw;
 }

@@ -1,6 +1,8 @@
 import { appEnv } from "@/app/env/app_env.js"
 import { command } from "@drizzle-team/brocli"
 
+import { fonts as fontsTable } from "@/database/schema.js"
+
 import { makeDatabase } from "@/shared/container/index.js"
 
 type GoogleFont = {
@@ -29,15 +31,15 @@ export const syncGoogleFontsCommand = command({
 
     const items = fonts.items as GoogleFont[]
 
-    const allExistingFonts = await database.select().from(fonts)
+    const allExistingFonts = await database.select().from(fontsTable)
     const allExistingFontsNames: Record<string, boolean> = {}
     allExistingFonts.forEach((font) => {
       allExistingFontsNames[font.family] = true
     })
 
-    const newFontsToInsert = items.filter((item) => allExistingFontsNames[item.family])
+    const newFontsToInsert = items.filter((item) => !allExistingFontsNames[item.family])
 
-    await database.insert(fonts).values(
+    await database.insert(fontsTable).values(
       newFontsToInsert.map((font) => ({
         family: font.family,
         category: font.category,

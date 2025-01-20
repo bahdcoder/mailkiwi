@@ -3,6 +3,8 @@ import { Command, MenuListProps } from "./types.js"
 import { DropdownButton } from "@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx"
 import { Icon } from "@/pages/components/tiptap/ui/Icon.js"
 import { Surface } from "@/pages/components/tiptap/ui/Surface.js"
+import { Text } from "@kibamail/owly/text"
+import cn from "classnames"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 
 export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
@@ -116,6 +118,44 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
   if (!props.items.length) {
     return null
   }
+
+  return (
+    <div className="w-full max-w-40 rounded-xl border kb-border-tertiary p-1">
+      {props.items.map((group, groupIndex) => (
+        <div
+          key={group.title}
+          className={cn({
+            "border-b kb-border-tertiary": groupIndex !== props.items.length - 1,
+          })}
+        >
+          <div className="grid grid-cols-1 gap-1">
+            {group.commands.map((command, commandIndex) => (
+              <button
+                ref={
+                  selectedGroupIndex === groupIndex &&
+                  selectedCommandIndex === commandIndex
+                    ? activeItem
+                    : null
+                }
+                onClick={createCommandClickHandler(groupIndex, commandIndex)}
+                className={cn(
+                  "flex items-center w-full h-8 box-border p-2 gap-1 hover:bg-[var(--background-secondary)] cursor-pointer rounded-lg kb-reset transition ease-in-out duration-100",
+                  {
+                    "bg-[var(--background-secondary)]":
+                      selectedGroupIndex === groupIndex &&
+                      selectedCommandIndex === commandIndex,
+                  },
+                )}
+              >
+                {command.icon}
+                <Text>{command.label}</Text>
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
 
   return (
     <Surface

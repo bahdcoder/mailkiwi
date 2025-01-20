@@ -29,7 +29,7 @@ export const Link = TiptapLink.extend({
         mergeAttributes(
           this.options.HTMLAttributes,
           { ...HTMLAttributes, href: "" },
-          { class: "link" },
+          { class: "kb-composer-link" },
         ),
         0,
       ]
@@ -37,7 +37,9 @@ export const Link = TiptapLink.extend({
 
     return [
       "a",
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { class: "link" }),
+      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+        class: "kb-composer-link",
+      }),
       0,
     ]
   },

@@ -104,13 +104,13 @@ function EngagePage() {
                       </Text>
                     </div>
 
-                    <div className="w-full max-w-[24%] flex justify-center items-center">
+                    <div className="w-full max-w-[18%] flex justify-center items-center">
                       <Badge variant="success" size="sm">
                         Sent
                       </Badge>
                     </div>
 
-                    <div className="w-full max-w-[8%] flex items-center justify-center">
+                    <div className="w-full max-w-[10%] flex items-center justify-center">
                       <div className="flex items-center gap-2">
                         <Text className="kb-content-tertiary">
                           <MailOutIcon className="w-5 h-5 kb-content-disabled" />
@@ -118,7 +118,7 @@ function EngagePage() {
                         <Text className="kb-content-tertiary">4,827</Text>
                       </div>
                     </div>
-                    <div className="w-full max-w-[8%] flex items-center justify-center">
+                    <div className="w-full max-w-[10%] flex items-center justify-center">
                       <div className="flex items-center gap-2">
                         <Text className="kb-content-tertiary">
                           <MailOpenIcon className="w-5 h-5 kb-content-disabled" />
@@ -126,7 +126,7 @@ function EngagePage() {
                         <Text className="kb-content-tertiary">63%</Text>
                       </div>
                     </div>
-                    <div className="w-full max-w-[8%] flex items-center justify-center">
+                    <div className="w-full max-w-[10%] flex items-center justify-center">
                       <div className="flex items-center gap-2">
                         <Text className="kb-content-tertiary">
                           <OneFingerSelectHandGestureIcon className="w-5 h-5 kb-content-disabled" />
