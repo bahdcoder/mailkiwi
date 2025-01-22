@@ -1,8 +1,4 @@
-import { CommandButton } from "./CommandButton.js"
-import { Command, MenuListProps } from "./types.js"
-import { DropdownButton } from "@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.js"
-import { Surface } from "@/pages/components/tiptap/ui/Surface.js"
+import { MenuListProps } from "./types.js"
 import { Text } from "@kibamail/owly/text"
 import cn from "classnames"
 import React, { useCallback, useEffect, useRef, useState } from "react"
@@ -155,45 +151,6 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
         </div>
       ))}
     </div>
-  )
-
-  return (
-    <Surface
-      ref={scrollContainer}
-      className="text-black max-h-[min(80vh,24rem)] overflow-auto flex-wrap mb-8 p-2"
-    >
-      <div className="grid grid-cols-1 gap-0.5">
-        {props.items.map((group, groupIndex: number) => (
-          <React.Fragment key={`${group.title}-wrapper`}>
-            <div
-              className="text-neutral-500 text-[0.65rem] col-[1/-1] mx-2 mt-4 font-semibold tracking-wider select-none uppercase first:mt-0.5"
-              key={`${group.title}`}
-            >
-              {group.title}
-            </div>
-            {group.commands.map((command: Command, commandIndex: number) => (
-              <DropdownButton
-                key={`${command.label}`}
-                ref={
-                  selectedGroupIndex === groupIndex &&
-                  selectedCommandIndex === commandIndex
-                    ? activeItem
-                    : null
-                }
-                isActive={
-                  selectedGroupIndex === groupIndex &&
-                  selectedCommandIndex === commandIndex
-                }
-                onClick={createCommandClickHandler(groupIndex, commandIndex)}
-              >
-                <Icon name={command.iconName} className="mr-1" />
-                {command.label}
-              </DropdownButton>
-            ))}
-          </React.Fragment>
-        ))}
-      </div>
-    </Surface>
   )
 })
 

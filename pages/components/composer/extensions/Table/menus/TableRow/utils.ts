@@ -1,9 +1,8 @@
-import { Editor } from '@tiptap/react'
-import { EditorState } from '@tiptap/pm/state'
-import { EditorView } from '@tiptap/pm/view'
-
-import { isTableSelected } from '../../utils'
-import { Table } from '../..'
+import { Table } from "../.."
+import { isTableSelected } from "../../utils"
+import { EditorState } from "@tiptap/pm/state"
+import { EditorView } from "@tiptap/pm/view"
+import { Editor } from "@tiptap/react"
 
 export const isRowGripSelected = ({
   editor,
@@ -26,11 +25,12 @@ export const isRowGripSelected = ({
 
   let container = node
 
-  while (container && !['TD', 'TH'].includes(container.tagName)) {
+  while (container && !["TD", "TH"].includes(container.tagName)) {
     container = container.parentElement!
   }
 
-  const gripRow = container && container.querySelector && container.querySelector('a.grip-row.selected')
+  const gripRow =
+    container && container.querySelector && container.querySelector("a.grip-row.selected")
 
   return !!gripRow
 }

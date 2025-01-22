@@ -1,7 +1,7 @@
-import { findParentNode } from '@tiptap/core'
-import { Selection, Transaction } from '@tiptap/pm/state'
-import { CellSelection, Rect, TableMap } from '@tiptap/pm/tables'
-import { Node, ResolvedPos } from '@tiptap/pm/model'
+import { findParentNode } from "@tiptap/core"
+import { Node, ResolvedPos } from "@tiptap/pm/model"
+import { Selection, Transaction } from "@tiptap/pm/state"
+import { CellSelection, Rect, TableMap } from "@tiptap/pm/tables"
 
 export const isRectSelected = (rect: Rect) => (selection: CellSelection) => {
   const map = TableMap.get(selection.$anchorCell.node(-1))
@@ -21,9 +21,12 @@ export const isRectSelected = (rect: Rect) => (selection: CellSelection) => {
 }
 
 export const findTable = (selection: Selection) =>
-  findParentNode(node => node.type.spec.tableRole && node.type.spec.tableRole === 'table')(selection)
+  findParentNode(
+    (node) => node.type.spec.tableRole && node.type.spec.tableRole === "table",
+  )(selection)
 
-export const isCellSelection = (selection: Selection): selection is CellSelection => selection instanceof CellSelection
+export const isCellSelection = (selection: Selection): selection is CellSelection =>
+  selection instanceof CellSelection
 
 export const isColumnSelected = (columnIndex: number) => (selection: Selection) => {
   if (isCellSelection(selection)) {
@@ -70,39 +73,40 @@ export const isTableSelected = (selection: Selection) => {
   return false
 }
 
-export const getCellsInColumn = (columnIndex: number | number[]) => (selection: Selection) => {
-  const table = findTable(selection)
-  if (table) {
-    const map = TableMap.get(table.node)
-    const indexes = Array.isArray(columnIndex) ? columnIndex : Array.from([columnIndex])
+export const getCellsInColumn =
+  (columnIndex: number | number[]) => (selection: Selection) => {
+    const table = findTable(selection)
+    if (table) {
+      const map = TableMap.get(table.node)
+      const indexes = Array.isArray(columnIndex) ? columnIndex : Array.from([columnIndex])
 
-    return indexes.reduce(
-      (acc, index) => {
-        if (index >= 0 && index <= map.width - 1) {
-          const cells = map.cellsInRect({
-            left: index,
-            right: index + 1,
-            top: 0,
-            bottom: map.height,
-          })
+      return indexes.reduce(
+        (acc, index) => {
+          if (index >= 0 && index <= map.width - 1) {
+            const cells = map.cellsInRect({
+              left: index,
+              right: index + 1,
+              top: 0,
+              bottom: map.height,
+            })
 
-          return acc.concat(
-            cells.map(nodePos => {
-              const node = table.node.nodeAt(nodePos)
-              const pos = nodePos + table.start
+            return acc.concat(
+              cells.map((nodePos) => {
+                const node = table.node.nodeAt(nodePos)
+                const pos = nodePos + table.start
 
-              return { pos, start: pos + 1, node }
-            }),
-          )
-        }
+                return { pos, start: pos + 1, node }
+              }),
+            )
+          }
 
-        return acc
-      },
-      [] as { pos: number; start: number; node: Node | null | undefined }[],
-    )
+          return acc
+        },
+        [] as { pos: number; start: number; node: Node | null | undefined }[],
+      )
+    }
+    return null
   }
-  return null
-}
 
 export const getCellsInRow = (rowIndex: number | number[]) => (selection: Selection) => {
   const table = findTable(selection)
@@ -122,7 +126,7 @@ export const getCellsInRow = (rowIndex: number | number[]) => (selection: Select
           })
 
           return acc.concat(
-            cells.map(nodePos => {
+            cells.map((nodePos) => {
               const node = table.node.nodeAt(nodePos)
               const pos = nodePos + table.start
               return { pos, start: pos + 1, node }
@@ -151,7 +155,7 @@ export const getCellsInTable = (selection: Selection) => {
       bottom: map.height,
     })
 
-    return cells.map(nodePos => {
+    return cells.map((nodePos) => {
       const node = table.node.nodeAt(nodePos)
       const pos = nodePos + table.start
 
@@ -162,7 +166,10 @@ export const getCellsInTable = (selection: Selection) => {
   return null
 }
 
-export const findParentNodeClosestToPos = ($pos: ResolvedPos, predicate: (node: Node) => boolean) => {
+export const findParentNodeClosestToPos = (
+  $pos: ResolvedPos,
+  predicate: (node: Node) => boolean,
+) => {
   for (let i = $pos.depth; i > 0; i -= 1) {
     const node = $pos.node(i)
 
@@ -180,14 +187,15 @@ export const findParentNodeClosestToPos = ($pos: ResolvedPos, predicate: (node: 
 }
 
 export const findCellClosestToPos = ($pos: ResolvedPos) => {
-  const predicate = (node: Node) => node.type.spec.tableRole && /cell/i.test(node.type.spec.tableRole)
+  const predicate = (node: Node) =>
+    node.type.spec.tableRole && /cell/i.test(node.type.spec.tableRole)
 
   return findParentNodeClosestToPos($pos, predicate)
 }
 
-const select = (type: 'row' | 'column') => (index: number) => (tr: Transaction) => {
+const select = (type: "row" | "column") => (index: number) => (tr: Transaction) => {
   const table = findTable(tr.selection)
-  const isRowSelection = type === 'row'
+  const isRowSelection = type === "row"
 
   if (table) {
     const map = TableMap.get(table.node)
@@ -227,9 +235,9 @@ const select = (type: 'row' | 'column') => (index: number) => (tr: Transaction) 
   return tr
 }
 
-export const selectColumn = select('column')
+export const selectColumn = select("column")
 
-export const selectRow = select('row')
+export const selectRow = select("row")
 
 export const selectTable = (tr: Transaction) => {
   const table = findTable(tr.selection)

@@ -19,7 +19,15 @@ export const GROUPS: Group[] = [
         description: "High priority section title",
         aliases: ["h1"],
         action: (editor) => {
-          editor.chain().focus().setHeading({ level: 1 }).run()
+          editor
+            .chain()
+            .focus()
+            .setHeading({
+              level: 1,
+              // @ts-ignore
+              styles: { padding: "40px", "font-size": "32px" },
+            })
+            .run()
         },
       },
       {

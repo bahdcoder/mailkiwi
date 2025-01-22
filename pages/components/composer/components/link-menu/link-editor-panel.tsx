@@ -43,7 +43,7 @@ export function LinkEditorPanel({ editor, initialUrl, children }: LinkEditorPane
     if (initialUrl) {
       editor.chain().focus().extendMarkRange("link").setLink({ href: href }).run()
     } else {
-      editor.chain().focus().setLink({ href }).run()
+      editor.chain().focus().setLink({ href }).setUnderline().run()
     }
 
     setIsOpen(false)

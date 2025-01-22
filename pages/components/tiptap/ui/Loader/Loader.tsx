@@ -1,6 +1,5 @@
-import { createPortal } from 'react-dom'
-
-import { LoaderProps, LoadingWrapperProps } from './types'
+import { LoaderProps, LoadingWrapperProps } from "./types"
+import { createPortal } from "react-dom"
 
 const LoadingWrapper = ({ label }: LoadingWrapperProps) => {
   return (
@@ -17,7 +16,11 @@ const LoadingWrapper = ({ label }: LoadingWrapperProps) => {
       >
         <path d="M21 12a9 9 0 1 1-6.219-8.56" />
       </svg>
-      {label && <p className="text-sm font-semibold leading-tight text-white dark:text-black">{label}</p>}
+      {label && (
+        <p className="text-sm font-semibold leading-tight text-white dark:text-black">
+          {label}
+        </p>
+      )}
     </div>
   )
 }

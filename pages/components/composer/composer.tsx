@@ -6,18 +6,13 @@ import { TextMenu } from "@/pages/components/composer/components/text-menu/text-
 import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
 import { Button } from "@kibamail/owly/button"
 import * as Tabs from "@kibamail/owly/tabs"
-import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react"
+import { BubbleMenu, Editor, EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import React from "react"
 
 export function Composer() {
   const { editor } = useTiptapEditor()
-  // const editor = useEditor({
-  //   immediatelyRender: true,
-  //   shouldRerenderOnTransaction: true,
-  //   autofocus: true,
-  //   extensions: [StarterKit.configure({})],
-  // })
+
   const menuContainerRef = React.useRef<HTMLDivElement | null>(null)
 
   if (!editor) {
@@ -26,18 +21,20 @@ export function Composer() {
 
   return (
     <div className="w-full flex items-center h-full">
-      <div className="w-[16.25rem] h-full border-r kb-border-tertiary p-2">
-        <Tabs.Root defaultValue="layers" width="full">
-          <Tabs.List>
-            <Tabs.TabsTrigger value="layers">Layers</Tabs.TabsTrigger>
-            <Tabs.TabsTrigger value="blocks">Blocks</Tabs.TabsTrigger>
-            <Tabs.Indicator />
-          </Tabs.List>
+      {false ? (
+        <div className="w-[16.25rem] h-full border-r kb-border-tertiary p-2">
+          <Tabs.Root defaultValue="layers" width="full">
+            <Tabs.List>
+              <Tabs.TabsTrigger value="layers">Layers</Tabs.TabsTrigger>
+              <Tabs.TabsTrigger value="blocks">Blocks</Tabs.TabsTrigger>
+              <Tabs.Indicator />
+            </Tabs.List>
 
-          <Tabs.Content value="layers">Layers here</Tabs.Content>
-          <Tabs.Content value="blocks">Blocks here</Tabs.Content>
-        </Tabs.Root>
-      </div>
+            <Tabs.Content value="layers">Layers here</Tabs.Content>
+            <Tabs.Content value="blocks">Blocks here</Tabs.Content>
+          </Tabs.Root>
+        </div>
+      ) : null}
       <div
         className="flex-grow h-full p-6 overflow-y-auto w-composer-inter"
         ref={menuContainerRef}
@@ -58,9 +55,11 @@ export function Composer() {
           </div>
         </div>
       </div>
-      <div className="w-[16.25rem] h-full border-l kb-border-tertiary">
-        <BlockEditor editor={editor} />
-      </div>
+      {false ? (
+        <div className="w-[16.25rem] h-full border-l kb-border-tertiary">
+          <BlockEditor editor={editor as Editor} />
+        </div>
+      ) : null}
     </div>
   )
 }

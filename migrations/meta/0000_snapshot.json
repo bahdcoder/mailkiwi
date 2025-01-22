@@ -57,12 +57,8 @@
           "name": "abTestVariants_broadcastId_broadcasts_id_fk",
           "tableFrom": "abTestVariants",
           "tableTo": "broadcasts",
-          "columnsFrom": [
-            "broadcastId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["broadcastId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -70,12 +66,8 @@
           "name": "abTestVariants_emailContentId_emailContents_id_fk",
           "tableFrom": "abTestVariants",
           "tableTo": "emailContents",
-          "columnsFrom": [
-            "emailContentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["emailContentId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -83,9 +75,7 @@
       "compositePrimaryKeys": {
         "abTestVariants_id": {
           "name": "abTestVariants_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -173,12 +163,8 @@
           "name": "accessTokens_userId_users_id_fk",
           "tableFrom": "accessTokens",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -186,12 +172,8 @@
           "name": "accessTokens_teamId_teams_id_fk",
           "tableFrom": "accessTokens",
           "tableTo": "teams",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -199,9 +181,7 @@
       "compositePrimaryKeys": {
         "accessTokens_id": {
           "name": "accessTokens_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -244,12 +224,8 @@
           "name": "audiences_teamId_teams_id_fk",
           "tableFrom": "audiences",
           "tableTo": "teams",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -257,9 +233,7 @@
       "compositePrimaryKeys": {
         "audiences_id": {
           "name": "audiences_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -352,12 +326,8 @@
           "name": "automationSteps_automationId_automations_id_fk",
           "tableFrom": "automationSteps",
           "tableTo": "automations",
-          "columnsFrom": [
-            "automationId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["automationId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -365,12 +335,8 @@
           "name": "automationSteps_parentId_automationSteps_id_fk",
           "tableFrom": "automationSteps",
           "tableTo": "automationSteps",
-          "columnsFrom": [
-            "parentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parentId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -378,12 +344,8 @@
           "name": "automationSteps_emailId_emails_id_fk",
           "tableFrom": "automationSteps",
           "tableTo": "emails",
-          "columnsFrom": [
-            "emailId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["emailId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -391,12 +353,8 @@
           "name": "automationSteps_tagId_tags_id_fk",
           "tableFrom": "automationSteps",
           "tableTo": "tags",
-          "columnsFrom": [
-            "tagId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tagId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -404,12 +362,8 @@
           "name": "automationSteps_audienceId_audiences_id_fk",
           "tableFrom": "automationSteps",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -417,9 +371,7 @@
       "compositePrimaryKeys": {
         "automationSteps_id": {
           "name": "automationSteps_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -462,12 +414,8 @@
           "name": "automations_audienceId_audiences_id_fk",
           "tableFrom": "automations",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -475,9 +423,7 @@
       "compositePrimaryKeys": {
         "automations_id": {
           "name": "automations_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -520,12 +466,8 @@
           "name": "broadcastGroups_teamId_teams_id_fk",
           "tableFrom": "broadcastGroups",
           "tableTo": "teams",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -533,18 +475,13 @@
       "compositePrimaryKeys": {
         "broadcastGroups_id": {
           "name": "broadcastGroups_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "broadcastGroupNameOnTeamIdKey": {
           "name": "broadcastGroupNameOnTeamIdKey",
-          "columns": [
-            "teamId",
-            "name"
-          ]
+          "columns": ["teamId", "name"]
         }
       }
     },
@@ -673,12 +610,8 @@
           "name": "broadcasts_audienceId_audiences_id_fk",
           "tableFrom": "broadcasts",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -686,12 +619,8 @@
           "name": "broadcasts_segmentId_segments_id_fk",
           "tableFrom": "broadcasts",
           "tableTo": "segments",
-          "columnsFrom": [
-            "segmentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["segmentId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -699,12 +628,8 @@
           "name": "broadcasts_broadcastGroupId_broadcastGroups_id_fk",
           "tableFrom": "broadcasts",
           "tableTo": "broadcastGroups",
-          "columnsFrom": [
-            "broadcastGroupId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["broadcastGroupId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -712,12 +637,8 @@
           "name": "broadcasts_teamId_teams_id_fk",
           "tableFrom": "broadcasts",
           "tableTo": "teams",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -725,12 +646,8 @@
           "name": "broadcasts_emailContentId_emailContents_id_fk",
           "tableFrom": "broadcasts",
           "tableTo": "emailContents",
-          "columnsFrom": [
-            "emailContentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["emailContentId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -738,12 +655,8 @@
           "name": "broadcasts_winningAbTestVariantId_abTestVariants_id_fk",
           "tableFrom": "broadcasts",
           "tableTo": "abTestVariants",
-          "columnsFrom": [
-            "winningAbTestVariantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["winningAbTestVariantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -751,9 +664,7 @@
       "compositePrimaryKeys": {
         "broadcasts_id": {
           "name": "broadcasts_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -789,12 +700,8 @@
           "name": "channelMemberships_channelId_channels_id_fk",
           "tableFrom": "channelMemberships",
           "tableTo": "channels",
-          "columnsFrom": [
-            "channelId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["channelId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -802,12 +709,8 @@
           "name": "channelMemberships_userId_users_id_fk",
           "tableFrom": "channelMemberships",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -815,9 +718,7 @@
       "compositePrimaryKeys": {
         "channelMemberships_id": {
           "name": "channelMemberships_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -866,17 +767,13 @@
       "compositePrimaryKeys": {
         "channels_id": {
           "name": "channels_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "channels_name_unique": {
           "name": "channels_name_unique",
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       }
     },
@@ -961,12 +858,8 @@
           "name": "contactAutomationSteps_automationStepId_automationSteps_id_fk",
           "tableFrom": "contactAutomationSteps",
           "tableTo": "automationSteps",
-          "columnsFrom": [
-            "automationStepId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["automationStepId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -974,12 +867,8 @@
           "name": "contactAutomationSteps_contactId_contacts_id_fk",
           "tableFrom": "contactAutomationSteps",
           "tableTo": "contacts",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -987,9 +876,7 @@
       "compositePrimaryKeys": {
         "contactAutomationSteps_id": {
           "name": "contactAutomationSteps_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -1077,12 +964,8 @@
           "name": "contactImports_audienceId_audiences_id_fk",
           "tableFrom": "contactImports",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1090,17 +973,13 @@
       "compositePrimaryKeys": {
         "contactImports_id": {
           "name": "contactImports_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "contactImports_fileIdentifier_unique": {
           "name": "contactImports_fileIdentifier_unique",
-          "columns": [
-            "fileIdentifier"
-          ]
+          "columns": ["fileIdentifier"]
         }
       }
     },
@@ -1170,12 +1049,8 @@
           "name": "contactProperties_contactId_contacts_id_fk",
           "tableFrom": "contactProperties",
           "tableTo": "contacts",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1183,12 +1058,8 @@
           "name": "contactProperties_audienceId_audiences_id_fk",
           "tableFrom": "contactProperties",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1196,18 +1067,13 @@
       "compositePrimaryKeys": {
         "contactProperties_id": {
           "name": "contactProperties_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "propertyNameContactIdKey": {
           "name": "propertyNameContactIdKey",
-          "columns": [
-            "name",
-            "contactId"
-          ]
+          "columns": ["name", "contactId"]
         }
       }
     },
@@ -1270,12 +1136,8 @@
           "name": "contactPurchases_productId_products_id_fk",
           "tableFrom": "contactPurchases",
           "tableTo": "products",
-          "columnsFrom": [
-            "productId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["productId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1283,12 +1145,8 @@
           "name": "contactPurchases_contactId_contacts_id_fk",
           "tableFrom": "contactPurchases",
           "tableTo": "contacts",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1296,9 +1154,7 @@
       "compositePrimaryKeys": {
         "contactPurchases_id": {
           "name": "contactPurchases_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -1468,12 +1324,8 @@
           "name": "contacts_audienceId_audiences_id_fk",
           "tableFrom": "contacts",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1481,12 +1333,8 @@
           "name": "contacts_contactImportId_contactImports_id_fk",
           "tableFrom": "contacts",
           "tableTo": "contactImports",
-          "columnsFrom": [
-            "contactImportId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactImportId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1494,18 +1342,13 @@
       "compositePrimaryKeys": {
         "contacts_id": {
           "name": "contacts_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "ContactEmailAudienceIdKey": {
           "name": "ContactEmailAudienceIdKey",
-          "columns": [
-            "email",
-            "audienceId"
-          ]
+          "columns": ["email", "audienceId"]
         }
       }
     },
@@ -1588,9 +1431,7 @@
       "compositePrimaryKeys": {
         "emailContents_id": {
           "name": "emailContents_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -1759,12 +1600,8 @@
           "name": "emailSendEvents_emailSendId_emailSends_id_fk",
           "tableFrom": "emailSendEvents",
           "tableTo": "emailSends",
-          "columnsFrom": [
-            "emailSendId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["emailSendId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1772,12 +1609,8 @@
           "name": "emailSendEvents_contactId_contacts_id_fk",
           "tableFrom": "emailSendEvents",
           "tableTo": "contacts",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1785,12 +1618,8 @@
           "name": "emailSendEvents_broadcastId_broadcasts_id_fk",
           "tableFrom": "emailSendEvents",
           "tableTo": "broadcasts",
-          "columnsFrom": [
-            "broadcastId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["broadcastId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1798,12 +1627,8 @@
           "name": "emailSendEvents_audienceId_audiences_id_fk",
           "tableFrom": "emailSendEvents",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1811,9 +1636,7 @@
       "compositePrimaryKeys": {
         "emailSendEvents_id": {
           "name": "emailSendEvents_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -1991,12 +1814,8 @@
           "name": "emailSends_sendingDomainId_sendingDomains_id_fk",
           "tableFrom": "emailSends",
           "tableTo": "sendingDomains",
-          "columnsFrom": [
-            "sendingDomainId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sendingDomainId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -2004,12 +1823,8 @@
           "name": "emailSends_broadcastId_broadcasts_id_fk",
           "tableFrom": "emailSends",
           "tableTo": "broadcasts",
-          "columnsFrom": [
-            "broadcastId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["broadcastId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2017,12 +1832,8 @@
           "name": "emailSends_contactId_contacts_id_fk",
           "tableFrom": "emailSends",
           "tableTo": "contacts",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -2030,12 +1841,8 @@
           "name": "emailSends_audienceId_audiences_id_fk",
           "tableFrom": "emailSends",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -2043,12 +1850,8 @@
           "name": "emailSends_sendingSourceId_sendingSources_id_fk",
           "tableFrom": "emailSends",
           "tableTo": "sendingSources",
-          "columnsFrom": [
-            "sendingSourceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sendingSourceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2056,17 +1859,13 @@
       "compositePrimaryKeys": {
         "emailSends_id": {
           "name": "emailSends_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "emailSends_sendingId_unique": {
           "name": "emailSends_sendingId_unique",
-          "columns": [
-            "sendingId"
-          ]
+          "columns": ["sendingId"]
         }
       }
     },
@@ -2115,12 +1914,8 @@
           "name": "emails_audienceId_audiences_id_fk",
           "tableFrom": "emails",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2128,12 +1923,8 @@
           "name": "emails_emailContentId_emailContents_id_fk",
           "tableFrom": "emails",
           "tableTo": "emailContents",
-          "columnsFrom": [
-            "emailContentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["emailContentId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2141,9 +1932,7 @@
       "compositePrimaryKeys": {
         "emails_id": {
           "name": "emails_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -2207,12 +1996,8 @@
           "name": "fonts_teamId_teams_id_fk",
           "tableFrom": "fonts",
           "tableTo": "teams",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2220,9 +2005,7 @@
       "compositePrimaryKeys": {
         "fonts_id": {
           "name": "fonts_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -2265,12 +2048,8 @@
           "name": "formResponses_formId_forms_id_fk",
           "tableFrom": "formResponses",
           "tableTo": "forms",
-          "columnsFrom": [
-            "formId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["formId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -2278,12 +2057,8 @@
           "name": "formResponses_contactId_contacts_id_fk",
           "tableFrom": "formResponses",
           "tableTo": "contacts",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2291,9 +2066,7 @@
       "compositePrimaryKeys": {
         "formResponses_id": {
           "name": "formResponses_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -2357,12 +2130,8 @@
           "name": "forms_audienceId_audiences_id_fk",
           "tableFrom": "forms",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2370,9 +2139,7 @@
       "compositePrimaryKeys": {
         "forms_id": {
           "name": "forms_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -2415,12 +2182,8 @@
           "name": "messageReactions_messageId_messages_id_fk",
           "tableFrom": "messageReactions",
           "tableTo": "messages",
-          "columnsFrom": [
-            "messageId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["messageId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -2428,12 +2191,8 @@
           "name": "messageReactions_userId_users_id_fk",
           "tableFrom": "messageReactions",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2441,9 +2200,7 @@
       "compositePrimaryKeys": {
         "messageReactions_id": {
           "name": "messageReactions_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -2518,16 +2275,12 @@
       "indexes": {
         "messageChannelIdIndex": {
           "name": "messageChannelIdIndex",
-          "columns": [
-            "channelId"
-          ],
+          "columns": ["channelId"],
           "isUnique": false
         },
         "messageCreatedAtIndex": {
           "name": "messageCreatedAtIndex",
-          "columns": [
-            "createdAt"
-          ],
+          "columns": ["createdAt"],
           "isUnique": false
         }
       },
@@ -2536,12 +2289,8 @@
           "name": "messages_channelId_channels_id_fk",
           "tableFrom": "messages",
           "tableTo": "channels",
-          "columnsFrom": [
-            "channelId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["channelId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -2549,12 +2298,8 @@
           "name": "messages_userId_users_id_fk",
           "tableFrom": "messages",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -2562,12 +2307,8 @@
           "name": "messages_parentMessageId_messages_id_fk",
           "tableFrom": "messages",
           "tableTo": "messages",
-          "columnsFrom": [
-            "parentMessageId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parentMessageId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2575,17 +2316,13 @@
       "compositePrimaryKeys": {
         "messages_id": {
           "name": "messages_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "messages_slug_unique": {
           "name": "messages_slug_unique",
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       }
     },
@@ -2634,12 +2371,8 @@
           "name": "oauth2Accounts_userId_users_id_fk",
           "tableFrom": "oauth2Accounts",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2647,24 +2380,17 @@
       "compositePrimaryKeys": {
         "oauth2Accounts_id": {
           "name": "oauth2Accounts_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "oauth2Accounts_providerId_unique": {
           "name": "oauth2Accounts_providerId_unique",
-          "columns": [
-            "providerId"
-          ]
+          "columns": ["providerId"]
         },
         "Oauth2AccountProviderUserIdKey": {
           "name": "Oauth2AccountProviderUserIdKey",
-          "columns": [
-            "userId",
-            "provider"
-          ]
+          "columns": ["userId", "provider"]
         }
       }
     },
@@ -2721,12 +2447,8 @@
           "name": "passwordResets_userId_users_id_fk",
           "tableFrom": "passwordResets",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2734,23 +2456,17 @@
       "compositePrimaryKeys": {
         "passwordResets_id": {
           "name": "passwordResets_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "passwordResets_userId_unique": {
           "name": "passwordResets_userId_unique",
-          "columns": [
-            "userId"
-          ]
+          "columns": ["userId"]
         },
         "passwordResets_token_unique": {
           "name": "passwordResets_token_unique",
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       }
     },
@@ -2785,12 +2501,8 @@
           "name": "productContents_productId_products_id_fk",
           "tableFrom": "productContents",
           "tableTo": "products",
-          "columnsFrom": [
-            "productId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["productId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2798,9 +2510,7 @@
       "compositePrimaryKeys": {
         "productContents_id": {
           "name": "productContents_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -2871,12 +2581,8 @@
           "name": "products_teamId_teams_id_fk",
           "tableFrom": "products",
           "tableTo": "teams",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -2884,12 +2590,8 @@
           "name": "products_audienceId_audiences_id_fk",
           "tableFrom": "products",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2897,9 +2599,7 @@
       "compositePrimaryKeys": {
         "products_id": {
           "name": "products_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -2942,12 +2642,8 @@
           "name": "segments_audienceId_audiences_id_fk",
           "tableFrom": "segments",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2955,9 +2651,7 @@
       "compositePrimaryKeys": {
         "segments_id": {
           "name": "segments_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -3136,12 +2830,8 @@
           "name": "sendingDomains_teamId_teams_id_fk",
           "tableFrom": "sendingDomains",
           "tableTo": "teams",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -3149,12 +2839,8 @@
           "name": "sendingDomains_sendingSourceId_sendingSources_id_fk",
           "tableFrom": "sendingDomains",
           "tableTo": "sendingSources",
-          "columnsFrom": [
-            "sendingSourceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sendingSourceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -3162,12 +2848,8 @@
           "name": "sendingDomains_secondarySendingSourceId_sendingSources_id_fk",
           "tableFrom": "sendingDomains",
           "tableTo": "sendingSources",
-          "columnsFrom": [
-            "secondarySendingSourceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["secondarySendingSourceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -3175,12 +2857,8 @@
           "name": "sendingDomains_engageSendingSourceId_sendingSources_id_fk",
           "tableFrom": "sendingDomains",
           "tableTo": "sendingSources",
-          "columnsFrom": [
-            "engageSendingSourceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["engageSendingSourceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -3188,12 +2866,8 @@
           "name": "sendingDomains_engageSecSendingSourceId_sendingSources_id_fk",
           "tableFrom": "sendingDomains",
           "tableTo": "sendingSources",
-          "columnsFrom": [
-            "engageSecSendingSourceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["engageSecSendingSourceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -3201,9 +2875,7 @@
       "compositePrimaryKeys": {
         "sendingDomains_id": {
           "name": "sendingDomains_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -3266,29 +2938,21 @@
       "compositePrimaryKeys": {
         "sendingSources_id": {
           "name": "sendingSources_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "sendingSources_address_unique": {
           "name": "sendingSources_address_unique",
-          "columns": [
-            "address"
-          ]
+          "columns": ["address"]
         },
         "sendingSources_ehloDomain_unique": {
           "name": "sendingSources_ehloDomain_unique",
-          "columns": [
-            "ehloDomain"
-          ]
+          "columns": ["ehloDomain"]
         },
         "sendingSources_addressIpv6_unique": {
           "name": "sendingSources_addressIpv6_unique",
-          "columns": [
-            "addressIpv6"
-          ]
+          "columns": ["addressIpv6"]
         }
       }
     },
@@ -3315,9 +2979,7 @@
       "compositePrimaryKeys": {
         "settings_id": {
           "name": "settings_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -3360,12 +3022,8 @@
           "name": "tags_audienceId_audiences_id_fk",
           "tableFrom": "tags",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -3373,18 +3031,13 @@
       "compositePrimaryKeys": {
         "tags_id": {
           "name": "tags_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "tagNameAudienceIdKey": {
           "name": "tagNameAudienceIdKey",
-          "columns": [
-            "name",
-            "audienceId"
-          ]
+          "columns": ["name", "audienceId"]
         }
       }
     },
@@ -3423,10 +3076,7 @@
       "indexes": {
         "tagsOnContactsTagIdContactIdIdx": {
           "name": "tagsOnContactsTagIdContactIdIdx",
-          "columns": [
-            "tagId",
-            "contactId"
-          ],
+          "columns": ["tagId", "contactId"],
           "isUnique": false
         }
       },
@@ -3435,12 +3085,8 @@
           "name": "tagsOnContacts_tagId_tags_id_fk",
           "tableFrom": "tagsOnContacts",
           "tableTo": "tags",
-          "columnsFrom": [
-            "tagId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tagId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -3448,12 +3094,8 @@
           "name": "tagsOnContacts_contactId_contacts_id_fk",
           "tableFrom": "tagsOnContacts",
           "tableTo": "contacts",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -3461,18 +3103,13 @@
       "compositePrimaryKeys": {
         "tagsOnContacts_id": {
           "name": "tagsOnContacts_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "tagsOnContactsTagIdContactIdKey": {
           "name": "tagsOnContactsTagIdContactIdKey",
-          "columns": [
-            "tagId",
-            "contactId"
-          ]
+          "columns": ["tagId", "contactId"]
         }
       }
     },
@@ -3543,12 +3180,8 @@
           "name": "teamMemberships_userId_users_id_fk",
           "tableFrom": "teamMemberships",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -3556,12 +3189,8 @@
           "name": "teamMemberships_teamId_teams_id_fk",
           "tableFrom": "teamMemberships",
           "tableTo": "teams",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -3569,9 +3198,7 @@
       "compositePrimaryKeys": {
         "teamMemberships_id": {
           "name": "teamMemberships_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -3649,12 +3276,8 @@
           "name": "teams_userId_users_id_fk",
           "tableFrom": "teams",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -3662,9 +3285,7 @@
       "compositePrimaryKeys": {
         "teams_id": {
           "name": "teams_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -3777,17 +3398,13 @@
       "compositePrimaryKeys": {
         "users_id": {
           "name": "users_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "users_email_unique": {
           "name": "users_email_unique",
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       }
     },
@@ -3836,12 +3453,8 @@
           "name": "webhooks_teamId_teams_id_fk",
           "tableFrom": "webhooks",
           "tableTo": "teams",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -3849,9 +3462,7 @@
       "compositePrimaryKeys": {
         "webhooks_id": {
           "name": "webhooks_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -3922,12 +3533,8 @@
           "name": "websitePages_websiteId_websites_id_fk",
           "tableFrom": "websitePages",
           "tableTo": "websites",
-          "columnsFrom": [
-            "websiteId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["websiteId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -3935,18 +3542,13 @@
       "compositePrimaryKeys": {
         "websitePages_id": {
           "name": "websitePages_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "websiteIdPathKey": {
           "name": "websiteIdPathKey",
-          "columns": [
-            "websiteId",
-            "path"
-          ]
+          "columns": ["websiteId", "path"]
         }
       }
     },
@@ -4044,12 +3646,8 @@
           "name": "websites_teamId_teams_id_fk",
           "tableFrom": "websites",
           "tableTo": "teams",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -4057,12 +3655,8 @@
           "name": "websites_audienceId_audiences_id_fk",
           "tableFrom": "websites",
           "tableTo": "audiences",
-          "columnsFrom": [
-            "audienceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["audienceId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -4070,17 +3664,13 @@
       "compositePrimaryKeys": {
         "websites_id": {
           "name": "websites_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "websites_websiteDomain_unique": {
           "name": "websites_websiteDomain_unique",
-          "columns": [
-            "websiteDomain"
-          ]
+          "columns": ["websiteDomain"]
         }
       }
     }

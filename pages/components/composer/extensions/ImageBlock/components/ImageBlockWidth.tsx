@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from "react"
 
 export type ImageBlockWidthProps = {
   onChange: (value: number) => void
@@ -37,4 +37,4 @@ export const ImageBlockWidth = memo(({ onChange, value }: ImageBlockWidthProps) 
   )
 })
 
-ImageBlockWidth.displayName = 'ImageBlockWidth'
+ImageBlockWidth.displayName = "ImageBlockWidth"

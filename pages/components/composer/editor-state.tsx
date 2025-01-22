@@ -1,6 +1,8 @@
 "use client"
 
+import { EnterHandler } from "./extensions/EnterHandler/EnterHandler.js"
 import { editorExtensions } from "@/pages/components/composer/extensions.jsx"
+import { NodeStyles } from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
 import { ExtensionKit } from "@/pages/components/composer/extensions/extension-kit.js"
 import { enableKeyboardNavigation } from "@harshtalks/slash-tiptap"
 import type { JSONContent, Editor as TiptapEditor } from "@tiptap/core"
@@ -100,33 +102,15 @@ export function useEditorContext<T>(
 }
 
 export function useTiptapEditor() {
-  // const {
-  //   editor,
-
-  //   setEditor,
-  //   setJson,
-
-  //   isEditorFocused,
-  //   setState,
-  // } = useEditorContext((s) => s)
-
   const editor = useEditor({
-    immediatelyRender: true,
-    // shouldRerenderOnTransaction: false,
-    autofocus: true,
-    // onCreate({ editor }) {
-    //   setEditor(editor)
-    // },
-    // onUpdate({ editor }) {
-    //   setEditor(editor)
-    //   setJson(editor.getJSON())
-    // },
     extensions: [
       // Document,
       // Text,
       // Heading,
       // Paragraph,
       ...ExtensionKit(),
+      NodeStyles,
+      EnterHandler,
       // Placeholder.configure({
       //   placeholder({ node }) {
       //     if (node.type.name === "heading") {

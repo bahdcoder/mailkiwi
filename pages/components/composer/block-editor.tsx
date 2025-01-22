@@ -3,7 +3,7 @@ import * as SelectField from "@kibamail/owly/select-field"
 import * as Tabs from "@kibamail/owly/tabs"
 import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"
-import { Editor } from "@tiptap/core"
+import { Editor, findParentNode } from "@tiptap/core"
 import { Node, ResolvedPos } from "@tiptap/pm/model"
 import { NodeSelection } from "@tiptap/pm/state"
 import { useEditorState } from "@tiptap/react"
@@ -13,7 +13,40 @@ export interface BlockEditorProps {
 }
 
 export function BlockEditor({ editor }: BlockEditorProps) {
-  const tree = useEditorHierarchyTree(editor)
+  const nodeStyles = useEditorState({
+    editor,
+    selector(ctx) {
+      const { selection } = ctx.editor.state
+      const parentBlock = findParentNode((node) => node.type.isBlock)(selection)
+
+      return (parentBlock?.node?.attrs?.styles || {}) as Record<string, string>
+    },
+  })
+
+  const applyStyle = (property: string, value: string) => {
+    const { selection } = editor.state
+
+    // Find the closest parent block node
+    const parentBlock = findParentNode((node) => node.type.isBlock)(selection)
+
+    if (!parentBlock) {
+      return false
+    }
+
+    const { node, pos } = parentBlock
+    const currentStyles = node.attrs.styles || {}
+
+    // Update the parent block's attributes
+    editor
+      .chain()
+      .updateAttributes(node.type.name, {
+        styles: {
+          ...currentStyles,
+          [property]: value,
+        },
+      })
+      .run()
+  }
 
   return (
     <div className="p-2">
@@ -28,11 +61,41 @@ export function BlockEditor({ editor }: BlockEditorProps) {
       <div className="flex flex-col w-full gap-4">
         <div className="py-4">
           <TextField.Root
+            type="text"
+            value={nodeStyles.padding || ""}
+            onChange={(event) => {
+              applyStyle("padding", event.target.value)
+            }}
+          >
+            <TextField.Label>Padding</TextField.Label>
+          </TextField.Root>
+        </div>
+
+        <div className="py-4">
+          <SelectField.Root
+            onValueChange={(value) => {
+              applyStyle("text-align", value)
+            }}
+            value={nodeStyles["text-align"]}
+          >
+            <SelectField.Label>Text Align</SelectField.Label>
+            <SelectField.Trigger placeholder="Select alignment" />
+            <SelectField.Content className="z-[3]">
+              {["left", "center", "right", "justify"].map((align) => (
+                <SelectField.Item key={align} value={align}>
+                  {align}
+                </SelectField.Item>
+              ))}
+            </SelectField.Content>
+          </SelectField.Root>
+        </div>
+        <div className="py-4">
+          <TextField.Root
             type="number"
             onChange={(event) => {
               const value = event.target.value
 
-              editor.chain().setFontSize(`${value}px`).run()
+              applyStyle("font-size", `${value}px`)
             }}
           >
             <TextField.Label>Font size</TextField.Label>
@@ -67,48 +130,4 @@ export function BlockEditor({ editor }: BlockEditorProps) {
       </div>
     </div>
   )
-}
-
-export function useEditorHierarchyTree(editor: Editor) {
-  return useEditorState({
-    editor,
-    selector(ctx) {
-      const nodes: {
-        node: Node
-        position: number
-        hasChildren: boolean
-        resolvedPosition: ResolvedPos
-      }[] = []
-
-      const doc = ctx.editor.state.doc
-
-      doc.descendants(function (node, position) {
-        const pos = doc.resolve(position)
-        nodes.push({
-          node,
-          position,
-          resolvedPosition: doc.resolve(position),
-          hasChildren: node.content.childCount > 0,
-        })
-
-        return true
-      })
-
-      function selectNode(position: number) {
-        const { state, dispatch } = ctx.editor.view
-
-        const transaction = state.tr.setSelection(
-          NodeSelection.create(state.doc, position),
-        )
-
-        dispatch(transaction)
-
-        ctx.editor.view.focus()
-      }
-
-      const activeNode = ctx.editor.state.doc.resolve(ctx.editor.state.selection.from)
-
-      return { doc, nodes, selectNode, activeNode: activeNode.nodeAfter }
-    },
-  })
 }
