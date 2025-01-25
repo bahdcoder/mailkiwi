@@ -1,3 +1,4 @@
+import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
 import { Node, mergeAttributes } from "@tiptap/core"
 
 export interface ParagraphOptions {

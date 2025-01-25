@@ -45,6 +45,7 @@ export const NodeStyles = Extension.create({
           "bulletList",
           "orderedList",
           "listItem",
+          "code",
         ],
         attributes: {
           styles: {

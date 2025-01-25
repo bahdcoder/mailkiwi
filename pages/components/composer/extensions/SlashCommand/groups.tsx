@@ -1,4 +1,5 @@
 import { Group } from "./types.js"
+import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
 import { BlockQuoteIcon } from "@/pages/components/icons/blockquote.svg.jsx"
 import { CodeBlockIcon } from "@/pages/components/icons/codeblock.svg.jsx"
 import { HeadingOneIcon } from "@/pages/components/icons/heading-one.svg.jsx"
@@ -24,8 +25,7 @@ export const GROUPS: Group[] = [
             .focus()
             .setHeading({
               level: 1,
-              // @ts-ignore
-              styles: { padding: "40px", "font-size": "32px" },
+              ...getDefaultStylesForNode("headingOne"),
             })
             .run()
         },
@@ -37,7 +37,11 @@ export const GROUPS: Group[] = [
         description: "Medium priority section title",
         aliases: ["h2"],
         action: (editor) => {
-          editor.chain().focus().setHeading({ level: 2 }).run()
+          editor
+            .chain()
+            .focus()
+            .setHeading({ level: 2, ...getDefaultStylesForNode("headingTwo") })
+            .run()
         },
       },
       {
@@ -47,7 +51,11 @@ export const GROUPS: Group[] = [
         description: "Low priority section title",
         aliases: ["h3"],
         action: (editor) => {
-          editor.chain().focus().setHeading({ level: 3 }).run()
+          editor
+            .chain()
+            .focus()
+            .setHeading({ level: 3, ...getDefaultStylesForNode("headingThree") })
+            .run()
         },
       },
       {
@@ -99,7 +107,7 @@ export const GROUPS: Group[] = [
           {
             name: "table",
             label: "Table",
-            iconName: "Table",
+            icon: "Table icon here.",
             description: "Insert a table",
             shouldBeHidden: (editor) => editor.isActive("columns"),
             action: (editor) => {
@@ -113,7 +121,7 @@ export const GROUPS: Group[] = [
           {
             name: "image",
             label: "Image",
-            iconName: "Image",
+            icon: "Image icon here",
             description: "Insert an image",
             aliases: ["img"],
             action: (editor) => {
@@ -123,7 +131,7 @@ export const GROUPS: Group[] = [
           {
             name: "columns",
             label: "Columns",
-            iconName: "Columns2",
+            icon: "2 columns icon here",
             description: "Add two column content",
             aliases: ["cols"],
             shouldBeHidden: (editor) => editor.isActive("columns"),
@@ -139,7 +147,7 @@ export const GROUPS: Group[] = [
           {
             name: "horizontalRule",
             label: "Horizontal Rule",
-            iconName: "Minus",
+            icon: "Minus icon here",
             description: "Insert a horizontal divider",
             aliases: ["hr"],
             action: (editor) => {
@@ -149,7 +157,7 @@ export const GROUPS: Group[] = [
           {
             name: "toc",
             label: "Table of Contents",
-            iconName: "Book",
+            icon: "Book icon here",
             aliases: ["outline"],
             description: "Insert a table of contents",
             shouldBeHidden: (editor) => editor.isActive("columns"),

@@ -1,6 +1,8 @@
 import { LinkEditorPanel } from "@/pages/components/composer/components/link-menu/link-editor-panel.jsx"
 import { ContentTypeSelector } from "@/pages/components/composer/components/text-menu/content-type-selector.jsx"
+import { useTextmenuStates } from "@/pages/components/composer/components/text-menu/use-text-menu-states.js"
 import { BoldIcon } from "@/pages/components/icons/bold.svg.jsx"
+import { CodeBlockIcon } from "@/pages/components/icons/codeblock.svg.jsx"
 import { ItalicIcon } from "@/pages/components/icons/italic.svg.jsx"
 import { LinkIcon } from "@/pages/components/icons/link.svg.jsx"
 import { NavArrowDownIcon } from "@/pages/components/icons/nav-arrow-down.svg.jsx"
@@ -55,15 +57,64 @@ const textMenuActions: TextMenuAction[] = [
       return editor.chain().focus().toggleStrike().run()
     },
   },
+  {
+    id: "code",
+    name: "Code",
+    icon: <CodeBlockIcon className="w-4 h-4" />,
+    command(editor) {
+      editor
+        .chain()
+        .focus()
+        .toggleCode()
+        .updateAttributes("code", {
+          styles: {
+            "background-color": "var(--black-5)",
+            color: "var(--content-primary)",
+            "border-radius": "4px",
+            padding: "2px 4px",
+            "font-family": "monospace",
+          },
+        })
+        .run()
+    },
+  },
 ]
 
 export function TextMenu({ editor }: TextMenuProps) {
+  const { shouldShow } = useTextmenuStates(editor)
+
   if (!editor) {
     return null
   }
 
   return (
-    <BubbleMenu editor={editor} tippyOptions={{ animation: "scale" }}>
+    <BubbleMenu
+      editor={editor}
+      tippyOptions={{
+        popperOptions: {
+          placement: "top-start",
+          modifiers: [
+            {
+              name: "preventOverflow",
+              options: {
+                boundary: "viewport",
+                padding: 8,
+              },
+            },
+            {
+              name: "flip",
+              options: {
+                fallbackPlacements: ["bottom-start", "top-end", "bottom-end"],
+              },
+            },
+          ],
+        },
+        maxWidth: "calc(100vw - 16px)",
+      }}
+      pluginKey="textMenu"
+      shouldShow={shouldShow}
+      updateDelay={100}
+    >
       <div
         className="flex items-center bg-[var(--background-inverse)] gap-0.5 box-border rounded-lg p-1 shadow[0px_2px_0px_0px_var(--white-5)_inset,_0px_1px_0px_0px_var(--black-10)]
       "

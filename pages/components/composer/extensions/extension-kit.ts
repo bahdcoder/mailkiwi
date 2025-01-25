@@ -46,6 +46,7 @@ import {
   UniqueID,
   emojiSuggestion,
 } from "./index.js"
+import Code from "@tiptap/extension-code"
 
 interface ExtensionKitProps {}
 
@@ -84,6 +85,7 @@ export const ExtensionKit = () => [
   FontSize,
   FontFamily,
   Color,
+  Code,
   // TrailingNode,
   Link.configure({
     openOnClick: false,

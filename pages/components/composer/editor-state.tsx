@@ -4,6 +4,7 @@ import { EnterHandler } from "./extensions/EnterHandler/EnterHandler.js"
 import { editorExtensions } from "@/pages/components/composer/extensions.jsx"
 import { NodeStyles } from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
 import { ExtensionKit } from "@/pages/components/composer/extensions/extension-kit.js"
+import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
 import { enableKeyboardNavigation } from "@harshtalks/slash-tiptap"
 import type { JSONContent, Editor as TiptapEditor } from "@tiptap/core"
 import { Color } from "@tiptap/extension-color"
@@ -163,6 +164,21 @@ export function useTiptapEditor() {
       // Color.configure({ types: [TextStyle.name, ListItem.name] }),
       // TextStyle.configure(),
     ],
+    content: {
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "Hello World!",
+            },
+          ],
+          attrs: getDefaultStylesForNode("paragraph"),
+        },
+      ],
+    },
     // extensions: [
     //   Document,
     //   Text,

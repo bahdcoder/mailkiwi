@@ -136,6 +136,7 @@
     "@tiptap/extension-bubble-menu": "^2.11.2",
     "@tiptap/extension-bullet-list": "^2.11.2",
     "@tiptap/extension-character-count": "^2.11.2",
+    "@tiptap/extension-code": "^2.11.3",
     "@tiptap/extension-code-block-lowlight": "^2.11.2",
     "@tiptap/extension-collaboration": "^2.11.2",
     "@tiptap/extension-collaboration-cursor": "^2.11.2",

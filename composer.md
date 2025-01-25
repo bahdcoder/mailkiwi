@@ -2,23 +2,23 @@
 
 1. Decent text editing experience
 
-- [ ] Bold marker
-- [ ] Underline marker
-- [ ] Strike through marker
-- [ ] Inline code marker
+- [x] Bold marker
+- [x] Underline marker
+- [x] Strike through marker
+- [x] Inline code marker
 
 2. Link editing
 
-- [ ] Add new Link
-- [ ] Edit existing link
-- [ ] Remove link
-- [ ] Select link presets (Contact unsubscribe, Contact preferences)
+- [x] Add new Link
+- [x] Edit existing link
+- [x] Remove link
+- [x] Select link presets (Contact unsubscribe, Contact preferences)
 
 3. Headings editing
 
-- [ ] Heading 1 with default styles
-- [ ] Heading 2 with default styles
-- [ ] Heading 3 with default styles
+- [x] Heading 1 with default styles
+- [x] Heading 2 with default styles
+- [x] Heading 3 with default styles
 
 4. Button editing
 

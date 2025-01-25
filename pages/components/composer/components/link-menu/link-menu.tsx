@@ -1,4 +1,4 @@
-import { LinkEditorPanel } from "./link-editor-panel.jsx"
+import { LinkEditorPanel, linkPresets } from "./link-editor-panel.jsx"
 import { ToolbarButton } from "@/pages/components/composer/components/toolbar/toolbar.jsx"
 import { ToolbarContainer } from "@/pages/components/composer/components/toolbar/toolbar.jsx"
 import { EditPencilIcon } from "@/pages/components/icons/edit-pencil.svg.jsx"
@@ -13,7 +13,7 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
     editor,
     selector: (ctx) => {
       const attrs = ctx.editor.getAttributes("link")
-      return { link: attrs.href, target: attrs.target }
+      return { link: attrs.href as string, target: attrs.target }
     },
   })
 
@@ -28,10 +28,12 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
     return null
   }, [editor])
 
+  const presetLink = linkPresets.find((preset) => preset.value === link)
+
   return (
     <BaseBubbleMenu
       editor={editor}
-      pluginKey="textMenu"
+      pluginKey="linkMenu"
       shouldShow={shouldShow}
       updateDelay={0}
       tippyOptions={{
@@ -45,17 +47,21 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
     >
       <ToolbarContainer>
         <div className="flex items-center px-2 border-r border-[var(--white-10)]">
-          <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="cursor-pointer text-white underline underline-offset-2 decoration-[var(--content-tertiary-inverse)]"
-          >
-            <Text className="kb-content-tertiary-inverse">{link}</Text>
-          </a>
+          {presetLink ? (
+            <p className="text-white text-sm">{presetLink?.name}</p>
+          ) : (
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer text-white underline underline-offset-2 decoration-[var(--content-tertiary-inverse)]"
+            >
+              <Text className="text-white">{link}</Text>
+            </a>
+          )}
         </div>
         <LinkEditorPanel editor={editor} initialUrl={link}>
-          <button>
+          <button className="hover:text-white">
             <EditPencilIcon className="w-4 h-4" />
           </button>
         </LinkEditorPanel>

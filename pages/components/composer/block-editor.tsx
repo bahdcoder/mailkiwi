@@ -4,8 +4,6 @@ import * as Tabs from "@kibamail/owly/tabs"
 import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"
 import { Editor, findParentNode } from "@tiptap/core"
-import { Node, ResolvedPos } from "@tiptap/pm/model"
-import { NodeSelection } from "@tiptap/pm/state"
 import { useEditorState } from "@tiptap/react"
 
 export interface BlockEditorProps {

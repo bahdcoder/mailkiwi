@@ -24,7 +24,7 @@ export function ToolbarButton({
   return (
     <button
       className={cn(
-        "w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md",
+        "w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md hover:text-white",
         {
           "bg-white bg-opacity-[0.08] text-white": isActive,
           "hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]":

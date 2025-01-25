@@ -1,3 +1,4 @@
+import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
 import { LinkIcon } from "@/pages/components/icons/link.svg.jsx"
 import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"
@@ -6,12 +7,14 @@ import { Editor } from "@tiptap/core"
 import cn from "classnames"
 import React, { PropsWithChildren } from "react"
 
-const linkPresets = [
+export const linkPresets = [
   {
     name: "Contact unsubscribe",
+    value: "{{contact_unsubscribe_url}}",
   },
   {
     name: "Contact preferences",
+    value: "contact_preferences_url",
   },
 ]
 
@@ -23,6 +26,18 @@ export interface LinkEditorPanelProps extends PropsWithChildren {
 export function LinkEditorPanel({ editor, initialUrl, children }: LinkEditorPanelProps) {
   const [isOpen, setIsOpen] = React.useState(false)
   const [isInvalidUrl, setIsInvalidUrl] = React.useState(false)
+
+  function onValidUrlSubmitted(href: string) {
+    setIsInvalidUrl(false)
+
+    if (initialUrl) {
+      editor.chain().focus().extendMarkRange("link").setLink({ href }).run()
+    } else {
+      editor.chain().focus().setLink({ href }).run()
+    }
+
+    setIsOpen(false)
+  }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -38,16 +53,12 @@ export function LinkEditorPanel({ editor, initialUrl, children }: LinkEditorPane
       return
     }
 
-    setIsInvalidUrl(false)
-
-    if (initialUrl) {
-      editor.chain().focus().extendMarkRange("link").setLink({ href: href }).run()
-    } else {
-      editor.chain().focus().setLink({ href }).setUnderline().run()
-    }
-
-    setIsOpen(false)
+    onValidUrlSubmitted(href)
   }
+
+  const internalLinkPreset = linkPresets.find((preset) => preset.value === initialUrl)
+
+  const urlDefaultValue = internalLinkPreset ? "" : initialUrl
 
   return (
     <Popover.Root open={isOpen} onOpenChange={setIsOpen}>
@@ -72,9 +83,11 @@ export function LinkEditorPanel({ editor, initialUrl, children }: LinkEditorPane
       >
         <form onSubmit={onSubmit} method="post" action="">
           <TextField.Root
-            placeholder="Paste or type a link"
+            placeholder={
+              internalLinkPreset ? internalLinkPreset.name : "Paste or type a link"
+            }
             name="url"
-            defaultValue={initialUrl}
+            defaultValue={urlDefaultValue}
           >
             {isInvalidUrl ? (
               <TextField.Error>Please enter a valid url.</TextField.Error>
@@ -86,9 +99,14 @@ export function LinkEditorPanel({ editor, initialUrl, children }: LinkEditorPane
           {linkPresets.map((preset) => (
             <button
               key={preset.name}
-              className="flex items-center w-full h-8 box-border p-2 gap-1 hover:bg-[var(--background-secondary)] cursor-pointer rounded-lg"
+              onClick={() => onValidUrlSubmitted(preset.value)}
+              className="flex items-center justify-between w-full h-8 box-border p-2 gap-1 hover:bg-[var(--background-secondary)] cursor-pointer rounded-lg"
             >
               <Text>{preset.name}</Text>
+
+              {internalLinkPreset && internalLinkPreset.value === preset.value ? (
+                <CheckIcon className="w-5 h-5" />
+              ) : null}
             </button>
           ))}
         </div>
