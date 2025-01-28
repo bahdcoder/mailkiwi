@@ -22,9 +22,11 @@
 
 4. Button editing
 
-- [ ] Change CSS properties of button
-- [ ] Edit button inline text
-- [ ] Add link to button
+- [x] Change CSS properties of button
+- [x] Edit button inline text
+- [x] Add link to button
+- [x] Button alignment (left, right, center)
+- [x] Button background color
 
 5. Blocks drag and drop
 
@@ -61,3 +63,13 @@
 - [ ] Highlight active node with blue border
 - [ ] Add drag handle to active node
 - [ ] Add options dropdown to active node
+
+11. Global styles
+
+- [ ] Can edit global configurations, such as font size, line height, etc.
+- [ ] Global styles apply to all blocks in the editor
+- [ ] Backend correctly interprets default global styles when building email template.
+
+12. Bug fixes
+
+- [ ] When button is first node in editor, using backspace deletes the button when i try to delete the last character text inside the button. It should only delete the button if i hit backspace when there's absolutely no text or space in the button.

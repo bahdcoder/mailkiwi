@@ -2,6 +2,7 @@ import { Group } from "./types.js"
 import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
 import { BlockQuoteIcon } from "@/pages/components/icons/blockquote.svg.jsx"
 import { CodeBlockIcon } from "@/pages/components/icons/codeblock.svg.jsx"
+import { ContainerIcon } from "@/pages/components/icons/container.svg.jsx"
 import { HeadingOneIcon } from "@/pages/components/icons/heading-one.svg.jsx"
 import { HeadingThreeIcon } from "@/pages/components/icons/heading-three.svg.jsx"
 import { HeadingTwoIcon } from "@/pages/components/icons/heading-two.svg.jsx"
@@ -102,71 +103,28 @@ export const GROUPS: Group[] = [
   {
     name: "insert",
     title: "Insert",
-    commands: false
-      ? [
-          {
-            name: "table",
-            label: "Table",
-            icon: "Table icon here.",
-            description: "Insert a table",
-            shouldBeHidden: (editor) => editor.isActive("columns"),
-            action: (editor) => {
-              editor
-                .chain()
-                .focus()
-                .insertTable({ rows: 3, cols: 3, withHeaderRow: false })
-                .run()
-            },
-          },
-          {
-            name: "image",
-            label: "Image",
-            icon: "Image icon here",
-            description: "Insert an image",
-            aliases: ["img"],
-            action: (editor) => {
-              editor.chain().focus().setImageUpload().run()
-            },
-          },
-          {
-            name: "columns",
-            label: "Columns",
-            icon: "2 columns icon here",
-            description: "Add two column content",
-            aliases: ["cols"],
-            shouldBeHidden: (editor) => editor.isActive("columns"),
-            action: (editor) => {
-              editor
-                .chain()
-                .focus()
-                .setColumns()
-                .focus(editor.state.selection.head - 1)
-                .run()
-            },
-          },
-          {
-            name: "horizontalRule",
-            label: "Horizontal Rule",
-            icon: "Minus icon here",
-            description: "Insert a horizontal divider",
-            aliases: ["hr"],
-            action: (editor) => {
-              editor.chain().focus().setHorizontalRule().run()
-            },
-          },
-          {
-            name: "toc",
-            label: "Table of Contents",
-            icon: "Book icon here",
-            aliases: ["outline"],
-            description: "Insert a table of contents",
-            shouldBeHidden: (editor) => editor.isActive("columns"),
-            action: (editor) => {
-              editor.chain().focus().insertTableOfContents().run()
-            },
-          },
-        ]
-      : [],
+    commands: [
+      {
+        name: "container",
+        label: "Container",
+        icon: <ContainerIcon className="w-4 h-4" />,
+        description: "A container to wrap other elements in.",
+        shouldBeHidden: (editor) => false,
+        action(editor) {
+          editor.chain().focus().setContainer().run()
+        },
+      },
+      {
+        name: "button",
+        label: "Button",
+        icon: <ContainerIcon className="w-4 h-4" />,
+        description: "A button with a link",
+        shouldBeHidden: (editor) => editor.isActive("button"),
+        action(editor) {
+          editor.chain().focus().setButton({ href: "" }).run()
+        },
+      },
+    ],
   },
 ]
 

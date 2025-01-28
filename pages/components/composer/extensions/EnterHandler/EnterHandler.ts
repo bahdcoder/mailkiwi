@@ -43,24 +43,16 @@ export const EnterHandler = Extension.create({
             return false
           }
 
-          // If the current node is empty, remove styles instead of creating new node
-          if (currentNode.content.size === 0) {
-            if (dispatch) {
-              const tr = state.tr.setNodeMarkup($from.before(), currentNode.type, {
-                styles: {},
-              })
-              dispatch(tr)
-            }
-            return true
-          }
-
-          // Create a new paragraph with empty styles
-          const newParagraph = state.schema.nodes.paragraph.create(
-            getDefaultStylesForNode("paragraph"),
-          )
-
           if (dispatch) {
-            const tr = state.tr.replaceSelectionWith(newParagraph)
+            const pos = $from.pos
+
+            const tr = state.tr
+              .split(pos)
+              .setNodeMarkup(
+                $from.after(),
+                state.schema.nodes.paragraph,
+                getDefaultStylesForNode("paragraph"),
+              )
             dispatch(tr)
           }
 

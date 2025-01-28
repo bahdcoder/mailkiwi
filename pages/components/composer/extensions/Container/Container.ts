@@ -1,0 +1,64 @@
+import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
+import { Node, mergeAttributes } from "@tiptap/core"
+
+declare module "@tiptap/core" {
+  interface Commands<ReturnType> {
+    container: {
+      setContainer: () => ReturnType
+    }
+  }
+}
+
+export const Container = Node.create({
+  name: "container",
+
+  group: "block",
+
+  content: "block+", // Only allow block nodes inside
+
+  isolating: true, // Prevents text selection from crossing container boundaries
+
+  defining: true, // Makes it a semantic boundary for backspace/delete
+
+  parseHTML() {
+    return [
+      {
+        tag: 'div[data-type="container"]',
+      },
+    ]
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["div", mergeAttributes({ "data-type": "container" }, HTMLAttributes), 0]
+  },
+
+  addCommands() {
+    return {
+      setContainer:
+        () =>
+        ({ chain, state }) => {
+          const insertPos = state.selection.$from.pos
+          const containerNode = {
+            type: this.name,
+            attrs: getDefaultStylesForNode("container"),
+            content: [
+              {
+                type: "paragraph",
+                attrs: getDefaultStylesForNode("paragraph"),
+              },
+            ],
+          }
+
+          const paragraphNode = {
+            type: "paragraph",
+            attrs: getDefaultStylesForNode("paragraph"),
+          }
+
+          return chain()
+            .insertContent([containerNode, paragraphNode])
+            .focus(insertPos + 2)
+            .run()
+        },
+    }
+  },
+})

@@ -45,10 +45,12 @@ export const SlashCommand = Extension.create({
         pluginKey: new PluginKey(extensionName),
         allow: ({ state, range }) => {
           const $from = state.doc.resolve(range.from)
-          const isRootDepth = $from.depth === 1
           const isParagraph = $from.parent.type.name === "paragraph"
           const isStartOfNode = $from.parent.textContent?.charAt(0) === "/"
-          // TODO
+          const isInContainer =
+            $from.parent.type.name === "paragraph" &&
+            $from.node(-1)?.type.name === "container"
+          const isRootDepth = $from.depth === 1
           const isInColumn = this.editor.isActive("column")
 
           const afterContent = $from.parent.textContent?.substring(
@@ -58,7 +60,8 @@ export const SlashCommand = Extension.create({
 
           return (
             ((isRootDepth && isParagraph && isStartOfNode) ||
-              (isInColumn && isParagraph && isStartOfNode)) &&
+              (isInColumn && isParagraph && isStartOfNode) ||
+              (isInContainer && isStartOfNode)) &&
             isValidAfterContent
           )
         },
@@ -164,8 +167,6 @@ export const SlashCommand = Extension.create({
                   getReferenceClientRect,
                 })
               }
-
-              console.log("parentElement", view.dom?.parentElement)
 
               view.dom.parentElement?.addEventListener("scroll", scrollHandler)
 

@@ -30,6 +30,10 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
 
   const presetLink = linkPresets.find((preset) => preset.value === link)
 
+  function onValidUrlSubmitted(href: string) {
+    editor.chain().focus().extendMarkRange("link").setLink({ href }).run()
+  }
+
   return (
     <BaseBubbleMenu
       editor={editor}
@@ -60,7 +64,7 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
             </a>
           )}
         </div>
-        <LinkEditorPanel editor={editor} initialUrl={link}>
+        <LinkEditorPanel initialUrl={link} onSubmit={onValidUrlSubmitted}>
           <button className="hover:text-white">
             <EditPencilIcon className="w-4 h-4" />
           </button>

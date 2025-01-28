@@ -46,6 +46,7 @@ import {
   UniqueID,
   emojiSuggestion,
 } from "./index.js"
+import { Container } from "@/pages/components/composer/extensions/Container/Container.js"
 import Code from "@tiptap/extension-code"
 
 interface ExtensionKitProps {}
@@ -71,6 +72,7 @@ export const ExtensionKit = () => [
     blockquote: false,
     history: false,
     codeBlock: false,
+    code: false,
   }),
   // Details.configure({
   //   persist: true,
@@ -137,6 +139,7 @@ export const ExtensionKit = () => [
   // TableCell,
   // TableHeader,
   // TableRow,
+  // Container,
   Typography,
   // Placeholder.configure({
   //   includeChildren: true,

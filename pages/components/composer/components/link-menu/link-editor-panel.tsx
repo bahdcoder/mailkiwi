@@ -19,22 +19,22 @@ export const linkPresets = [
 ]
 
 export interface LinkEditorPanelProps extends PropsWithChildren {
-  editor: Editor
   initialUrl?: string
+  onSubmit?: (href: string) => void
 }
 
-export function LinkEditorPanel({ editor, initialUrl, children }: LinkEditorPanelProps) {
+export function LinkEditorPanel({
+  initialUrl,
+  children,
+  onSubmit: onValidFormSubmitted,
+}: LinkEditorPanelProps) {
   const [isOpen, setIsOpen] = React.useState(false)
   const [isInvalidUrl, setIsInvalidUrl] = React.useState(false)
 
   function onValidUrlSubmitted(href: string) {
     setIsInvalidUrl(false)
 
-    if (initialUrl) {
-      editor.chain().focus().extendMarkRange("link").setLink({ href }).run()
-    } else {
-      editor.chain().focus().setLink({ href }).run()
-    }
+    onValidFormSubmitted?.(href)
 
     setIsOpen(false)
   }
@@ -67,9 +67,9 @@ export function LinkEditorPanel({ editor, initialUrl, children }: LinkEditorPane
         className={cn(
           "w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md",
           {
-            "bg-white bg-opacity-[0.08] text-white": false,
+            "bg-white bg-opacity-[0.08] text-white": initialUrl,
             "hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]":
-              true,
+              !initialUrl,
           },
         )}
       >

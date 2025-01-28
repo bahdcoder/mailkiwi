@@ -1,14 +1,60 @@
 import "./composer.styles.css"
-import { ComposerProvider, useTiptapEditor } from "./editor-state.jsx"
+import { useTiptapEditor } from "./editor-state.jsx"
+import { useTextMenuState } from "@/maily/packages/core/src/editor/components/text-menu/use-text-menu-state.jsx"
 import { BlockEditor } from "@/pages/components/composer/block-editor.jsx"
 import LinkMenu from "@/pages/components/composer/components/link-menu/link-menu.jsx"
 import { TextMenu } from "@/pages/components/composer/components/text-menu/text-menu.jsx"
-import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
-import { Button } from "@kibamail/owly/button"
+import { useTextmenuStates } from "@/pages/components/composer/components/text-menu/use-text-menu-states.js"
+import { ButtonMenu } from "@/pages/components/composer/extensions/Button/button-menu.jsx"
+import { ShouldShowProps } from "@/pages/components/tiptap/menus/types.js"
+import isCustomNodeSelected from "@/pages/components/tiptap/utils/isCustomNodeSelected.js"
+import isTextSelected from "@/pages/components/tiptap/utils/isTextSelected.js"
 import * as Tabs from "@kibamail/owly/tabs"
-import { BubbleMenu, Editor, EditorContent, useEditor } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
-import React from "react"
+import { Editor, EditorContent } from "@tiptap/react"
+import React, { useCallback } from "react"
+
+interface ComposerMenusProps {
+  editor: Editor
+  container: React.MutableRefObject<HTMLDivElement | null>
+}
+
+function ComposerMenus({ editor, container }: ComposerMenusProps) {
+  const { shouldShow } = useTextmenuStates(editor)
+
+  const shouldShowTextMenu = useCallback(
+    ({ view, from }: ShouldShowProps) => {
+      return shouldShow({ view, from }) && !editor.isActive("button")
+    },
+    [editor],
+  )
+
+  const shouldShowNodeTextEditingMenu = useCallback(
+    ({ view, from }: ShouldShowProps) => {
+      // TODO: Add more conditions for other blocks like container, columns, etc
+      return shouldShow({ view, from }) && editor.isActive("button")
+    },
+    [editor],
+  )
+
+  return (
+    <>
+      <TextMenu
+        editor={editor}
+        pluginKey="textMenu"
+        shouldShow={shouldShowTextMenu}
+        tippyProps={{ placement: "top" }}
+      />
+      <ButtonMenu editor={editor} appendTo={container} />
+      <TextMenu
+        editor={editor}
+        shouldShow={shouldShowNodeTextEditingMenu}
+        pluginKey="buttonTextMenu"
+        tippyProps={{ placement: "bottom" }}
+      />
+      <LinkMenu editor={editor} appendTo={container} />
+    </>
+  )
+}
 
 export function Composer() {
   const { editor } = useTiptapEditor()
@@ -45,10 +91,7 @@ export function Composer() {
           />
 
           <div className="w-full w-composer-content flex-grow p-8 bg-white shadow-[0px_16px_24px_-8px_var(--black-10)]">
-            {/* <EditorContent editor={editor} />
-            <TextMenu editor={editor} /> */}
-            <TextMenu editor={editor} />
-            <LinkMenu editor={editor} appendTo={menuContainerRef} />
+            <ComposerMenus container={menuContainerRef} editor={editor} />
             <EditorContent editor={editor} />
           </div>
         </div>

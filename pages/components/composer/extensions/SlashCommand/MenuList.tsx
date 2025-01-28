@@ -116,7 +116,7 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
   }
 
   return (
-    <div className="w-full max-w-40 rounded-xl border kb-border-tertiary p-1">
+    <div className="w-full max-w-40 rounded-xl border kb-border-tertiary p-1 bg-white">
       {props.items.map((group, groupIndex) => (
         <div
           key={group.title}
@@ -133,6 +133,7 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
                     ? activeItem
                     : null
                 }
+                key={command.name}
                 onClick={createCommandClickHandler(groupIndex, commandIndex)}
                 className={cn(
                   "flex items-center w-full h-8 box-border p-2 gap-1 hover:bg-[var(--background-secondary)] cursor-pointer rounded-lg kb-reset transition ease-in-out duration-100",

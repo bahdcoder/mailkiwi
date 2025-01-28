@@ -1,4 +1,4 @@
-import { Editor, Extension } from "@tiptap/core"
+import { CommandProps, Editor, Extension } from "@tiptap/core"
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -14,6 +14,64 @@ const stylesToString = (styles: Record<string, string>) => {
   return Object.entries(styles)
     .map(([property, value]) => `${property}: ${value}`)
     .join("; ")
+}
+
+export function getStyleAttributeDefinition(defaultAttributes?: Record<string, any>) {
+  return {
+    default: defaultAttributes ?? {},
+    parseHTML(element: HTMLElement) {
+      const styleString = element.getAttribute("style")
+      return styleString ? parseStyleString(styleString) : {}
+    },
+    renderHTML(attributes: Record<string, any>) {
+      if (!attributes.styles || Object.keys(attributes.styles).length === 0) {
+        return {}
+      }
+      return { style: stylesToString(attributes.styles) }
+    },
+  }
+}
+
+export function getStyleAttributeDefaultCommands() {
+  return {
+    setNodeStyle:
+      (property: string, value: string) =>
+      ({ chain, state }: CommandProps) => {
+        const { selection } = state
+        const { $from } = selection
+
+        const node = $from.node()
+        const currentStyles = node.attrs.styles || {}
+
+        return chain()
+          .updateAttributes(node.type.name, {
+            styles: {
+              ...currentStyles,
+              [property]: value,
+            },
+          })
+          .run()
+      },
+
+    removeNodeStyle:
+      (property: string) =>
+      ({ chain, state }: CommandProps) => {
+        const { selection } = state
+        const { $from } = selection
+        const node = $from.node()
+
+        if (!node.attrs.styles) return false
+
+        const newStyles = { ...node.attrs.styles }
+        delete newStyles[property]
+
+        return chain()
+          .updateAttributes(node.type.name, {
+            styles: newStyles,
+          })
+          .run()
+      },
+  }
 }
 
 // Parse CSS string to object when reading from HTML
@@ -46,6 +104,7 @@ export const NodeStyles = Extension.create({
           "orderedList",
           "listItem",
           "code",
+          "container",
         ],
         attributes: {
           styles: {

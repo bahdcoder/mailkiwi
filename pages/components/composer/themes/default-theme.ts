@@ -57,6 +57,27 @@ export function defaultEditorStylesTheme(defaultThemeOptions?: StyleThemeGlobalO
       ...commonStyles,
       "font-family": monospaceFontFamily,
     },
+    container: {
+      width: "100%",
+      padding: "1em",
+      "box-sizing": "border-box",
+      "border-width": "1px",
+      "border-style": "solid",
+      "border-color": "transparent",
+    },
+    button: {
+      ...commonStyles,
+      padding: "0.5em 0.8em",
+      "border-style": "solid",
+      "border-color": "transparent",
+      "border-width": "1px",
+      "box-sizing": "border-box",
+      "background-color": "#000000",
+      color: "#fff",
+      width: "fit-content",
+      "border-radius": "0.5em",
+      display: "inline-block",
+    },
   }
 }
 

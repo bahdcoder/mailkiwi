@@ -1,20 +1,27 @@
 import { LinkEditorPanel } from "@/pages/components/composer/components/link-menu/link-editor-panel.jsx"
 import { ContentTypeSelector } from "@/pages/components/composer/components/text-menu/content-type-selector.jsx"
-import { useTextmenuStates } from "@/pages/components/composer/components/text-menu/use-text-menu-states.js"
+import { FontSizePanel } from "@/pages/components/composer/components/text-menu/font-size-panel.jsx"
+import { TextColorPanel } from "@/pages/components/composer/components/text-menu/text-color-panel.jsx"
+import {
+  ToolbarButton,
+  ToolbarContainer,
+  ToolbarSection,
+} from "@/pages/components/composer/components/toolbar/toolbar.jsx"
 import { BoldIcon } from "@/pages/components/icons/bold.svg.jsx"
 import { CodeBlockIcon } from "@/pages/components/icons/codeblock.svg.jsx"
 import { ItalicIcon } from "@/pages/components/icons/italic.svg.jsx"
 import { LinkIcon } from "@/pages/components/icons/link.svg.jsx"
-import { NavArrowDownIcon } from "@/pages/components/icons/nav-arrow-down.svg.jsx"
-import { StrikeThroughIcon } from "@/pages/components/icons/strikethrough.svg.jsx"
 import { UnderlineIcon } from "@/pages/components/icons/underline.svg.jsx"
+import { ShouldShowProps } from "@/pages/components/tiptap/menus/types.js"
 import { BubbleMenu, Editor } from "@tiptap/react"
-import cn from "classnames"
 import React from "react"
-import "tippy.js/animations/scale.css"
+import { Props as TippyProps } from "tippy.js"
 
 export interface TextMenuProps {
   editor: Editor
+  pluginKey: string
+  tippyProps?: Partial<TippyProps>
+  shouldShow: ({ view, from }: ShouldShowProps) => boolean
 }
 
 type TextMenuAction = {
@@ -22,9 +29,11 @@ type TextMenuAction = {
   name: string
   icon: React.ReactNode
   command: (editor: Editor) => void
+  hidden?: (editor: Editor) => boolean
+  isActive: (editor: Editor) => boolean
 }
 
-const textMenuActions: TextMenuAction[] = [
+export const textMenuActions: TextMenuAction[] = [
   {
     id: "bold",
     name: "Bold",
@@ -32,11 +41,17 @@ const textMenuActions: TextMenuAction[] = [
     command(editor) {
       return editor.chain().focus().toggleBold().run()
     },
+    isActive(editor) {
+      return editor.isActive("bold")
+    },
   },
   {
     id: "italic",
     name: "Italic",
     icon: <ItalicIcon className="w-4 h-4" />,
+    isActive(editor) {
+      return editor.isActive("italic")
+    },
     command(editor) {
       return editor.chain().focus().toggleItalic().run()
     },
@@ -48,13 +63,8 @@ const textMenuActions: TextMenuAction[] = [
     command(editor) {
       return editor.chain().focus().toggleUnderline().run()
     },
-  },
-  {
-    id: "strike",
-    name: "Strike through",
-    icon: <StrikeThroughIcon className="w-3 h-3" />,
-    command(editor) {
-      return editor.chain().focus().toggleStrike().run()
+    isActive(editor) {
+      return editor.isActive("underline")
     },
   },
   {
@@ -77,78 +87,73 @@ const textMenuActions: TextMenuAction[] = [
         })
         .run()
     },
+    hidden(editor) {
+      return editor.isActive("button")
+    },
+    isActive(editor) {
+      return editor.isActive("code")
+    },
   },
 ]
 
-export function TextMenu({ editor }: TextMenuProps) {
-  const { shouldShow } = useTextmenuStates(editor)
+export function TextMenu({ editor, pluginKey, tippyProps, shouldShow }: TextMenuProps) {
+  const isInsideButton = editor.isActive("button")
 
   if (!editor) {
     return null
   }
 
+  function onValidUrlSubmitted(href: string) {
+    editor.chain().focus().setLink({ href }).run()
+  }
+
   return (
     <BubbleMenu
       editor={editor}
-      tippyOptions={{
-        popperOptions: {
-          placement: "top-start",
-          modifiers: [
-            {
-              name: "preventOverflow",
-              options: {
-                boundary: "viewport",
-                padding: 8,
-              },
-            },
-            {
-              name: "flip",
-              options: {
-                fallbackPlacements: ["bottom-start", "top-end", "bottom-end"],
-              },
-            },
-          ],
-        },
-        maxWidth: "calc(100vw - 16px)",
-      }}
-      pluginKey="textMenu"
+      pluginKey={pluginKey}
       shouldShow={shouldShow}
-      updateDelay={100}
+      tippyOptions={tippyProps}
     >
-      <div
-        className="flex items-center bg-[var(--background-inverse)] gap-0.5 box-border rounded-lg p-1 shadow[0px_2px_0px_0px_var(--white-5)_inset,_0px_1px_0px_0px_var(--black-10)]
-      "
-      >
-        <div className="flex box-border border-r border-[var(--white-10)] pr-1">
-          <ContentTypeSelector editor={editor} />
-        </div>
+      <ToolbarContainer>
+        {isInsideButton ? null : (
+          <div className="flex box-border border-r border-[var(--white-10)] pr-1">
+            <ContentTypeSelector editor={editor} />
+          </div>
+        )}
 
-        {textMenuActions.map((action) => (
-          <button
-            key={action.name}
-            onClick={() => action.command(editor)}
-            className={cn(
-              "w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md",
-              {
-                "bg-white bg-opacity-[0.08] text-white": editor.isActive(action.id),
-                "hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]":
-                  !editor.isActive(action.id),
-              },
-            )}
-            aria-label={action.name}
-          >
-            {action.icon}
-          </button>
-        ))}
+        {textMenuActions
+          .filter((action) =>
+            action?.hidden === undefined ? true : !action?.hidden(editor),
+          )
+          .map((action) => (
+            <ToolbarButton
+              key={action.name}
+              aria-label={action.name}
+              isActive={action.isActive(editor)}
+              onClick={() => action.command(editor)}
+            >
+              {action.icon}
+            </ToolbarButton>
+          ))}
 
-        <div className="flex box-border border-l border-[var(--white-10)] px-1">
-          <LinkEditorPanel editor={editor}>
-            <button>
-              <LinkIcon className="w-4 h-4" />
-            </button>
-          </LinkEditorPanel>
-        </div>
-      </div>
+        <ToolbarSection divider="left">
+          <TextColorPanel editor={editor} />
+        </ToolbarSection>
+
+        <ToolbarSection divider="left">
+          <FontSizePanel editor={editor} />
+        </ToolbarSection>
+
+        {isInsideButton ? null : (
+          <div className="flex box-border border-l border-[var(--white-10)] px-1">
+            <LinkEditorPanel onSubmit={onValidUrlSubmitted}>
+              <button>
+                <LinkIcon className="w-4 h-4" />
+              </button>
+            </LinkEditorPanel>
+          </div>
+        )}
+      </ToolbarContainer>
     </BubbleMenu>
   )
 }
