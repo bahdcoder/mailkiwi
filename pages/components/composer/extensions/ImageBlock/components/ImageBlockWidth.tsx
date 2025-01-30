@@ -1,3 +1,4 @@
+import { Slider } from "@/pages/components/slider/slider.jsx"
 import { memo, useCallback, useEffect, useState } from "react"
 
 export type ImageBlockWidthProps = {
@@ -19,6 +20,18 @@ export const ImageBlockWidth = memo(({ onChange, value }: ImageBlockWidthProps) 
       setCurrentValue(nextValue)
     },
     [onChange],
+  )
+
+  return (
+    <div className="h-6 flex items-center px-1">
+      <Slider
+        min={0}
+        max={100}
+        className=" min-w-48"
+        value={[currentValue]}
+        onValueChange={(changedValue) => onChange?.(changedValue?.[0])}
+      />
+    </div>
   )
 
   return (

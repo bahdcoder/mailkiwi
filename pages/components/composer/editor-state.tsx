@@ -3,6 +3,7 @@ import { Button } from "@/pages/components/composer/extensions/Button/Button.js"
 import { Container } from "@/pages/components/composer/extensions/Container/Container.js"
 import { NodeStyles } from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
 import { ExtensionKit } from "@/pages/components/composer/extensions/extension-kit.js"
+import { TrailingNode } from "@/pages/components/composer/extensions/index.js"
 import { useEditor } from "@tiptap/react"
 
 export function useTiptapEditor() {
@@ -18,6 +19,7 @@ export function useTiptapEditor() {
       EnterHandler,
       Container,
       Button,
+      TrailingNode,
     ],
 
     editorProps: {

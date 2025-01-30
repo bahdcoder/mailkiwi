@@ -94,11 +94,11 @@ export const ExtensionKit = () => [
   }),
   // Highlight.configure({ multicolor: true }),
   Underline,
+  ImageUpload.configure(),
   // CharacterCount.configure({ limit: 50000 }),
   // TableOfContents,
   // TableOfContentsNode,
-  // ImageUpload.configure(),
-  // ImageBlock,
+  ImageBlock,
   // FileHandler.configure({
   //   allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
   //   onDrop: (currentEditor, files, pos) => {
@@ -147,8 +147,8 @@ export const ExtensionKit = () => [
   //   placeholder: () => "",
   // }),
   SlashCommand,
-  // Focus,
-  // Figcaption,
+  Focus,
+  Figcaption,
   // BlockquoteFigure,
   // Dropcursor.configure({
   //   width: 2,

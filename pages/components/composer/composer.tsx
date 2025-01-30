@@ -6,6 +6,7 @@ import LinkMenu from "@/pages/components/composer/components/link-menu/link-menu
 import { TextMenu } from "@/pages/components/composer/components/text-menu/text-menu.jsx"
 import { useTextmenuStates } from "@/pages/components/composer/components/text-menu/use-text-menu-states.js"
 import { ButtonMenu } from "@/pages/components/composer/extensions/Button/button-menu.jsx"
+import ImageBlockMenu from "@/pages/components/composer/extensions/ImageBlock/components/ImageBlockMenu.jsx"
 import { ShouldShowProps } from "@/pages/components/tiptap/menus/types.js"
 import isCustomNodeSelected from "@/pages/components/tiptap/utils/isCustomNodeSelected.js"
 import isTextSelected from "@/pages/components/tiptap/utils/isTextSelected.js"
@@ -47,11 +48,12 @@ function ComposerMenus({ editor, container }: ComposerMenusProps) {
       <ButtonMenu editor={editor} appendTo={container} />
       <TextMenu
         editor={editor}
-        shouldShow={shouldShowNodeTextEditingMenu}
         pluginKey="buttonTextMenu"
         tippyProps={{ placement: "bottom" }}
+        shouldShow={shouldShowNodeTextEditingMenu}
       />
       <LinkMenu editor={editor} appendTo={container} />
+      <ImageBlockMenu editor={editor} appendTo={container} />
     </>
   )
 }

@@ -1,6 +1,6 @@
 import React from "react"
 
-export const CloudUploadIcon = React.forwardRef<
+export const StyleBorderIcon = React.forwardRef<
   React.ElementRef<"svg">,
   React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
@@ -17,16 +17,19 @@ export const CloudUploadIcon = React.forwardRef<
       ref={forwardedRef}
     >
       <path
-        d="M12 22V13M12 13L15.5 16.5M12 13L8.5 16.5"
+        d="M16 2H8C4.68629 2 2 4.68629 2 8V16C2 19.3137 4.68629 22 8 22H16C19.3137 22 22 19.3137 22 16V8C22 4.68629 19.3137 2 16 2Z"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeMiterlimit="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+        strokeDasharray="2 2"
       />
       <path
-        d="M20 17.6073C21.4937 17.0221 23 15.6889 23 13C23 9 19.6667 8 18 8C18 6 18 2 12 2C6 2 6 6 6 8C4.33333 8 1 9 1 13C1 15.6889 2.50628 17.0221 4 17.6073"
+        d="M16 5H8C6.34315 5 5 6.34315 5 8V16C5 17.6569 6.34315 19 8 19H16C17.6569 19 19 17.6569 19 16V8C19 6.34315 17.6569 5 16 5Z"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeMiterlimit="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

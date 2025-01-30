@@ -1,6 +1,6 @@
-import { Button, ButtonProps } from "./Button"
-import { Surface } from "./Surface"
-import Tooltip from "./Tooltip"
+import { Button, ButtonProps } from "./Button/Button.jsx"
+import { Surface } from "./Surface.jsx"
+import Tooltip from "./Tooltip/index.jsx"
 import { cn } from "@/pages/components/tiptap/utils/index.js"
 import React, { ButtonHTMLAttributes, HTMLProps, forwardRef } from "react"
 
@@ -22,7 +22,12 @@ const ToolbarWrapper = forwardRef<HTMLDivElement, ToolbarWrapperProps>(
 
     return (
       shouldShowContent && (
-        <Surface className={toolbarClassName} {...rest} ref={ref}>
+        <Surface
+          id="show-content-bubble-menu"
+          className={toolbarClassName}
+          {...rest}
+          ref={ref}
+        >
           {children}
         </Surface>
       )

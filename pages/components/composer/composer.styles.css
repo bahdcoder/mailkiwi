@@ -1,3 +1,18 @@
+.w-composer-node-container {
+  @apply w-full border p-4 transition-[border-color] ease-in-out duration-200;
+}
+
+.w-composer-node-container-active {
+  border-color: var(--border-focus);
+}
+
+.w-composer-node-container-inactive {
+  border-color: var(--border-tertiary);
+}
+
+.ProseMirror .ProseMirror-trailingBreak {
+  /* displa */
+}
 /* .ProseMirror {
   @apply caret-black dark:caret-white outline-0 pr-8 pl-20 py-16 z-0 lg:pl-8 lg:pr-8 mx-auto max-w-2xl;
 

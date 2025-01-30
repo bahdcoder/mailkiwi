@@ -22,6 +22,7 @@ export const ImageBlockView = (props: ImageBlockViewProps) => {
   const { src } = node.attrs
 
   const wrapperClassName = cn(
+    "",
     node.attrs.align === "left" ? "ml-0" : "ml-auto",
     node.attrs.align === "right" ? "mr-0" : "mr-auto",
     node.attrs.align === "center" && "mx-auto",
@@ -31,15 +32,24 @@ export const ImageBlockView = (props: ImageBlockViewProps) => {
     editor.commands.setNodeSelection(getPos())
   }, [getPos, editor.commands])
 
+  const isSelected = editor.isActive("imageBlock")
+
   return (
     <NodeViewWrapper>
       <div
-        className={wrapperClassName}
-        style={{ width: node.attrs.width }}
-        data-drag-handle
+        className={cn("w-composer-node-container", {
+          "w-composer-node-container-active": isSelected,
+          "w-composer-node-container-inactive": !isSelected,
+        })}
       >
-        <div contentEditable={false} ref={imageWrapperRef}>
-          <img className="block" src={src} alt="" onClick={onClick} />
+        <div
+          className={wrapperClassName}
+          style={{ width: node.attrs.width }}
+          data-drag-handle
+        >
+          <div contentEditable={false} ref={imageWrapperRef}>
+            <img className="block" src={src} alt="" onClick={onClick} />
+          </div>
         </div>
       </div>
     </NodeViewWrapper>

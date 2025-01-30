@@ -1,5 +1,4 @@
 import { DragEvent, useCallback, useEffect, useRef, useState } from "react"
-import toast from "react-hot-toast"
 
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
   const [loading, setLoading] = useState(false)
@@ -17,6 +16,7 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
       // }
       setTimeout(() => {
         setLoading(false)
+        onUpload("https://templates.tiptap.dev/placeholder-image.jpg")
       }, 3000)
     },
     [onUpload],

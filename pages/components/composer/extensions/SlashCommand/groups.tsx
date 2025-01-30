@@ -124,6 +124,16 @@ export const GROUPS: Group[] = [
           editor.chain().focus().setButton({ href: "" }).run()
         },
       },
+      {
+        name: "image",
+        label: "Image",
+        icon: <ContainerIcon className="w-4 h-4" />,
+        description: "Upload an image",
+        shouldBeHidden: (editor) => editor.isActive("button"),
+        action(editor) {
+          editor.chain().focus().setImageUpload().run()
+        },
+      },
     ],
   },
 ]

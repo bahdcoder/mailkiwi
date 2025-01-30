@@ -19,6 +19,7 @@ import { OpenNewWindowIcon } from "@/pages/components/icons/open-new-window.svg.
 import { TrashIcon } from "@/pages/components/icons/trash.svg.jsx"
 import { BubbleMenu, Editor } from "@tiptap/react"
 import React, { useCallback } from "react"
+import { sticky } from "tippy.js"
 import "tippy.js/animations/scale.css"
 
 export interface ButtonMenuProps {
@@ -141,6 +142,8 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
           ],
         },
         maxWidth: "calc(100vw - 16px)",
+        plugins: [sticky],
+        sticky: "popper",
       }}
       pluginKey="buttonMenu"
       shouldShow={shouldShow}

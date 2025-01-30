@@ -1,7 +1,18 @@
 import { ImageBlockWidth } from "./ImageBlockWidth.js"
+import { LinkEditorPanel } from "@/pages/components/composer/components/link-menu/link-editor-panel.jsx"
+import {
+  ToolbarButton,
+  ToolbarContainer,
+  ToolbarSection,
+} from "@/pages/components/composer/components/toolbar/toolbar.jsx"
+import { EditImageInformationPanel } from "@/pages/components/composer/extensions/ImageBlock/components/edit-image-information-panel.jsx"
+import { CompAlignCenterIcon } from "@/pages/components/icons/comp-align-center.svg.jsx"
+import { CompAlignLeftIcon } from "@/pages/components/icons/comp-align-left.svg.jsx"
+import { CompAlignRightIcon } from "@/pages/components/icons/comp-align-right.svg.jsx"
+import { EditPencilIcon } from "@/pages/components/icons/edit-pencil.svg.jsx"
+import { LinkIcon } from "@/pages/components/icons/link.svg.jsx"
+import { TrashIcon } from "@/pages/components/icons/trash.svg.jsx"
 import { MenuProps } from "@/pages/components/tiptap/menus/types.js"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.js"
-import { Toolbar } from "@/pages/components/tiptap/ui/Toolbar.js"
 import { getRenderContainer } from "@/pages/components/tiptap/utils/index.js"
 import { BubbleMenu as BaseBubbleMenu, useEditorState } from "@tiptap/react"
 import React, { useCallback, useRef } from "react"
@@ -72,6 +83,21 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
     },
   })
 
+  function onDeleteNode() {
+    editor
+      .chain()
+      .focus()
+      .command(({ tr }) => {
+        const node = tr.selection.$anchor.node()
+        if (node.type.name === "imageBlock") {
+          tr.delete(tr.selection.$anchor.before(), tr.selection.$anchor.after())
+          return true
+        }
+        return false
+      })
+      .run()
+  }
+
   return (
     <BaseBubbleMenu
       editor={editor}
@@ -92,33 +118,41 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
         },
         plugins: [sticky],
         sticky: "popper",
+        maxWidth: "calc(100vw - 16px)",
       }}
     >
-      <Toolbar.Wrapper shouldShowContent={shouldShow()} ref={menuRef}>
-        <Toolbar.Button
-          tooltip="Align image left"
-          active={isImageLeft}
-          onClick={onAlignImageLeft}
-        >
-          <Icon name="AlignHorizontalDistributeStart" />
-        </Toolbar.Button>
-        <Toolbar.Button
-          tooltip="Align image center"
-          active={isImageCenter}
-          onClick={onAlignImageCenter}
-        >
-          <Icon name="AlignHorizontalDistributeCenter" />
-        </Toolbar.Button>
-        <Toolbar.Button
-          tooltip="Align image right"
-          active={isImageRight}
-          onClick={onAlignImageRight}
-        >
-          <Icon name="AlignHorizontalDistributeEnd" />
-        </Toolbar.Button>
-        <Toolbar.Divider />
-        <ImageBlockWidth onChange={onWidthChange} value={width} />
-      </Toolbar.Wrapper>
+      <ToolbarContainer>
+        <ToolbarSection divider="right">
+          <LinkEditorPanel onSubmit={console.log}>
+            <button>
+              <LinkIcon className="w-4 h-4" />
+            </button>
+          </LinkEditorPanel>
+        </ToolbarSection>
+        <ToolbarSection divider="right">
+          <EditImageInformationPanel />
+        </ToolbarSection>
+        <ToolbarSection divider="right"></ToolbarSection>
+        <ToolbarSection divider="right">
+          <ToolbarButton isActive={isImageLeft} onClick={onAlignImageLeft}>
+            <CompAlignLeftIcon className="w-4 h-4" />
+          </ToolbarButton>
+          <ToolbarButton isActive={isImageCenter} onClick={onAlignImageCenter}>
+            <CompAlignCenterIcon className="w-4 h-4" />
+          </ToolbarButton>
+          <ToolbarButton isActive={isImageRight} onClick={onAlignImageRight}>
+            <CompAlignRightIcon className="w-4 h-4" />
+          </ToolbarButton>
+        </ToolbarSection>
+        <ToolbarSection divider="right">
+          <ImageBlockWidth onChange={onWidthChange} value={width} />
+        </ToolbarSection>
+        <ToolbarSection divider="none">
+          <ToolbarButton onClick={onDeleteNode}>
+            <TrashIcon className="w-3 h-3" />
+          </ToolbarButton>
+        </ToolbarSection>
+      </ToolbarContainer>
     </BaseBubbleMenu>
   )
 }

@@ -6,8 +6,16 @@ export type ButtonNodeViewProps = NodeViewProps
 export function ButtonNodeView(props: ButtonNodeViewProps) {
   const { textAlign, ...styles } = convertToReactStyles(props.node.attrs.styles)
 
+  // const isSelected = editor.isAC
+  const isSelected = props.editor.isActive("button")
+
   return (
-    <NodeViewWrapper className="w-full flex flex-col">
+    <NodeViewWrapper
+      className={cn("w-full flex flex-col w-composer-node-container", {
+        "w-composer-node-container-active": isSelected,
+        "w-composer-node-container-inactive": !isSelected,
+      })}
+    >
       <NodeViewContent
         style={styles}
         className={cn("text-center transition-all ease-in-out duration-200", {

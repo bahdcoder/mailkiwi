@@ -59,7 +59,7 @@
 }
 
 .ProseMirror-selectednode:not(.node-add-block) {
-  outline: 4px solid green;
+  /* outline: 4px solid green; */
 }
 
 .kb-container {
@@ -125,7 +125,7 @@
 
 .kb-column {
   padding: 30px;
-  border: 2px solid green;
+  /* border: 2px solid green; */
 }
 
 .kb-paragraph {

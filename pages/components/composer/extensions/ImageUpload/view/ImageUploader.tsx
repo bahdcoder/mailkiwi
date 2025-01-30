@@ -1,8 +1,8 @@
 import { useDropZone, useFileUpload, useUploader } from "./hooks.js"
-import { Button } from "@/pages/components/tiptap/ui/Button/Button.jsx"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.js"
+import { CloudUploadIcon } from "@/pages/components/icons/cloud-upload.svg.jsx"
 import { Spinner } from "@/pages/components/tiptap/ui/Spinner/Spinner.jsx"
 import { cn } from "@/pages/components/tiptap/utils/index.js"
+import { Text } from "@kibamail/owly/text"
 import { ChangeEvent, useCallback } from "react"
 
 export const ImageUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
@@ -26,37 +26,28 @@ export const ImageUploader = ({ onUpload }: { onUpload: (url: string) => void })
     )
   }
 
-  const wrapperClass = cn(
-    "flex flex-col items-center justify-center px-8 py-10 rounded-lg bg-opacity-80",
-    draggedInside && "bg-neutral-100",
-  )
-
   return (
     <div
-      className={wrapperClass}
+      className={cn(
+        "flex flex-col items-center border border-dashed kb-border-secondary justify-center px-8 py-10 rounded-lg bg-opacity-80 kb-background-hover h-72",
+        {
+          "bg-neutral-100": draggedInside,
+        },
+      )}
       onDrop={onDrop}
       onDragOver={onDragEnter}
       onDragLeave={onDragLeave}
       contentEditable={false}
     >
-      <Icon
-        name="Image"
-        className="w-12 h-12 mb-4 text-black dark:text-white opacity-20"
-      />
-      <div className="flex flex-col items-center justify-center gap-2">
-        <div className="text-sm font-medium text-center text-neutral-400 dark:text-neutral-500">
-          {draggedInside ? "Drop image here" : "Drag and drop or"}
-        </div>
+      <CloudUploadIcon className="w-6 h-6 mb-2 kb-content-tertiary" />
+      <div className="flex flex-col items-center justify-center gap-1">
+        <Text size="lg" className="kb-content-primary">
+          {draggedInside ? "Drop image here" : "Drag and drop an image or gif"}
+        </Text>
         <div>
-          <Button
-            disabled={draggedInside}
-            onClick={handleUploadClick}
-            variant="primary"
-            buttonSize="small"
-          >
-            <Icon name="Upload" />
-            Upload an image
-          </Button>
+          <button disabled={draggedInside} onClick={handleUploadClick}>
+            <Text className="kb-content-secondary">or select from your device.</Text>
+          </button>
         </div>
       </div>
       <input
