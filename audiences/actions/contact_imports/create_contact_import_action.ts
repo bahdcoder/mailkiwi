@@ -1,5 +1,4 @@
 import { makeMinioClient } from "@/minio/minio_client.js"
-import CsvParser from "csv-parser"
 import mime from "mime-types"
 import { Readable } from "stream"
 

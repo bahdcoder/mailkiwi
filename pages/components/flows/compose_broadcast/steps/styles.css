@@ -19,24 +19,17 @@
   }
 }
 
-.tiptap p.is-empty::before,
-.tiptap h1.is-empty::before {
+.tiptap p.is-empty::before {
   @apply text-[var(--content-tertiary-inverse)] float-left h-0 pointer-events-none;
   content: attr(data-placeholder);
 }
 
-/*****
-*
-* -----> THE CURSOR
-*
-****/
-
-.tiptap .kb-container,
-.tiptap .kb-columns,
-.tiptap .kb-column {
-  cursor: default;
+.tiptap ul {
+  list-style-type: decimal;
+  margin-left: 0.5em;
 }
 
+/* 
 .tiptap p,
 .tiptap h1,
 .tiptap h2,
@@ -45,109 +38,4 @@
 .tiptap h5,
 .tiptap h6 {
   cursor: text !important;
-}
-
-/*****
-*
-* -----> THE CONTAINER
-*
-****/
-
-.tiptap .kb-container,
-.tiptap .kb-container-wide,
-.tiptap .kb-container-full {
-}
-
-.ProseMirror-selectednode:not(.node-add-block) {
-  /* outline: 4px solid green; */
-}
-
-.kb-container {
-  /* position: relative; */
-}
-
-.kb-container:hover {
-  /* outline: 4px solid blue; */
-}
-
-.kb-container-medium:hover .add-block-popover,
-.kb-container-wide:hover .add-block-popover,
-.kb-container-full:hover .add-block-popover {
-  @apply opacity-100;
-}
-
-.kb-container-content-medium {
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.kb-container-content-wide {
-  max-width: 1280px;
-  margin: 0 auto;
-  background: transparent;
-}
-
-/*****
-*
-* -----> THE COLUMNS
-*
-****/
-
-.kb-columns {
-  display: flex;
-  flex-wrap: no-wrap;
-}
-
-.kb-columns-count-2 .kb-column {
-  flex: 1 1 50%;
-}
-
-/* Other possible column counts */
-.kb-columns-count-3 .kb-column {
-  flex: 1 1 33.33%;
-}
-
-.kb-columns-count-4 .kb-column {
-  flex: 1 1 25%;
-}
-
-.kb-columns-count-5 .kb-column {
-  flex: 1 1 20%;
-}
-
-.kb-columns-count-6 .kb-column {
-  flex: 1 1 16.67%;
-}
-
-.kb-column[data-column-width] {
-  flex: 0 0 var(--kb-column-width);
-}
-
-.kb-column {
-  padding: 30px;
-  /* border: 2px solid green; */
-}
-
-.kb-paragraph {
-  position: relative;
-}
-
-.kb-bullet-list {
-  position: relative;
-}
-
-.kb-ordered-list {
-  position: relative;
-}
-
-.kb-blockquote {
-  @apply border-l-4 border-gray-300 pl-4 mt-4 mb-4 relative;
-}
-
-.kb-code {
-  @apply px-1 relative py-0.5 bg-[#efefef] text-sm rounded-md tracking-normal font-normal;
-}
-
-[data-theme="slash-command"] {
-  width: 1000vw;
-}
+} */

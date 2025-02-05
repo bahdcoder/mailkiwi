@@ -115,7 +115,7 @@
     "@floating-ui/react": "^0.27.3",
     "@floating-ui/react-dom": "^2.1.2",
     "@harshtalks/slash-tiptap": "^1.3.0",
-    "@kibamail/owly": "1.0.32",
+    "@kibamail/owly": "1.0.33",
     "@maxmind/geoip2-node": "^5.0.0",
     "@paralleldrive/cuid2": "^2.2.2",
     "@poppinss/oauth-client": "^5.1.3",
@@ -154,6 +154,7 @@
     "@tiptap/extension-gapcursor": "^2.11.2",
     "@tiptap/extension-heading": "^2.11.2",
     "@tiptap/extension-highlight": "^2.11.2",
+    "@tiptap/extension-history": "^2.11.5",
     "@tiptap/extension-horizontal-rule": "^2.11.2",
     "@tiptap/extension-image": "^2.11.2",
     "@tiptap/extension-link": "^2.11.2",
@@ -230,6 +231,7 @@
     "vike-react": "^0.5.7",
     "vike-react-query": "^0.1.1",
     "ws": "^8.18.0",
+    "y-prosemirror": "^1.2.15",
     "zustand": "^5.0.3"
   },
   "engines": {

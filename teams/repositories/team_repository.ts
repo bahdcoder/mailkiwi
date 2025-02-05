@@ -1,4 +1,3 @@
-import { Secret } from "@poppinss/utils"
 import { count, eq } from "drizzle-orm"
 
 import type { CreateTeamDto } from "@/teams/dto/create_team_dto.js"
@@ -14,10 +13,6 @@ import { hasMany } from "@/database/utils/relationships.js"
 
 import { makeDatabase, makeRedis } from "@/shared/container/index.js"
 import { BaseRepository } from "@/shared/repositories/base_repository.js"
-
-import { REDIS_KNOWN_KEYS } from "@/redis/redis_client.js"
-
-import { container } from "@/utils/typi.js"
 
 export class TeamRepository extends BaseRepository {
   constructor(

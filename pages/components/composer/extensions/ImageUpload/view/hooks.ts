@@ -1,7 +1,14 @@
+import { useServerFormMutation } from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
 import { DragEvent, useCallback, useEffect, useRef, useState } from "react"
+
+import { route } from "@/shared/routes/route_aliases.js"
 
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
   const [loading, setLoading] = useState(false)
+
+  useServerFormMutation({
+    action: route("add_media_documents"),
+  })
 
   const uploadFile = useCallback(
     async (file: File) => {

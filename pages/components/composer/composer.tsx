@@ -5,11 +5,16 @@ import { BlockEditor } from "@/pages/components/composer/block-editor.jsx"
 import LinkMenu from "@/pages/components/composer/components/link-menu/link-menu.jsx"
 import { TextMenu } from "@/pages/components/composer/components/text-menu/text-menu.jsx"
 import { useTextmenuStates } from "@/pages/components/composer/components/text-menu/use-text-menu-states.js"
+import { DefaultStylesEditor } from "@/pages/components/composer/default-styles-editor.jsx"
 import { ButtonMenu } from "@/pages/components/composer/extensions/Button/button-menu.jsx"
+import { ContainerMenu } from "@/pages/components/composer/extensions/Container/container-menu.jsx"
 import ImageBlockMenu from "@/pages/components/composer/extensions/ImageBlock/components/ImageBlockMenu.jsx"
+import { ContentItemMenu } from "@/pages/components/composer/menus/ContentItemMenu/ContentItemMenu.jsx"
+import { EditPencilIcon } from "@/pages/components/icons/edit-pencil.svg.jsx"
 import { ShouldShowProps } from "@/pages/components/tiptap/menus/types.js"
 import isCustomNodeSelected from "@/pages/components/tiptap/utils/isCustomNodeSelected.js"
 import isTextSelected from "@/pages/components/tiptap/utils/isTextSelected.js"
+import { Button } from "@kibamail/owly/button"
 import * as Tabs from "@kibamail/owly/tabs"
 import { Editor, EditorContent } from "@tiptap/react"
 import React, { useCallback } from "react"
@@ -54,6 +59,8 @@ function ComposerMenus({ editor, container }: ComposerMenusProps) {
       />
       <LinkMenu editor={editor} appendTo={container} />
       <ImageBlockMenu editor={editor} appendTo={container} />
+      <ContainerMenu editor={editor} appendTo={container} />
+      {/* <ContentItemMenu editor={editor} /> */}
     </>
   )
 }
@@ -68,19 +75,7 @@ export function Composer() {
   }
 
   return (
-    <div className="w-full flex items-center h-full">
-      <div className="w-[16.25rem] h-full border-r kb-border-tertiary p-2">
-        <Tabs.Root defaultValue="layers" width="full">
-          <Tabs.List>
-            <Tabs.TabsTrigger value="layers">Layers</Tabs.TabsTrigger>
-            <Tabs.TabsTrigger value="blocks">Blocks</Tabs.TabsTrigger>
-            <Tabs.Indicator />
-          </Tabs.List>
-
-          <Tabs.Content value="layers">Layers here</Tabs.Content>
-          <Tabs.Content value="blocks">Blocks here</Tabs.Content>
-        </Tabs.Root>
-      </div>
+    <div className="w-full flex items-center justify-center h-full">
       <div
         className="flex-grow h-full p-6 overflow-y-auto w-composer-inter"
         ref={menuContainerRef}
@@ -97,9 +92,6 @@ export function Composer() {
             <EditorContent editor={editor} />
           </div>
         </div>
-      </div>
-      <div className="w-[16.25rem] h-full border-l kb-border-tertiary">
-        <BlockEditor editor={editor as Editor} />
       </div>
     </div>
   )

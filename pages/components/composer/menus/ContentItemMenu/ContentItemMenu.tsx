@@ -1,11 +1,11 @@
 import useContentItemActions from "./hooks/useContentItemActions.jsx"
 import { useData } from "./hooks/useData.jsx"
+import { DragHandle } from "@/pages/components/composer/extensions/DragHandle/drag-handle.jsx"
 import { DropdownButton } from "@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx"
 import { Icon } from "@/pages/components/tiptap/ui/Icon.jsx"
 import { Surface } from "@/pages/components/tiptap/ui/Surface.jsx"
 import { Toolbar } from "@/pages/components/tiptap/ui/Toolbar.jsx"
 import * as Popover from "@radix-ui/react-popover"
-import DragHandle from "@tiptap-pro/extension-drag-handle-react"
 import { Editor } from "@tiptap/react"
 import { useEffect, useState } from "react"
 
@@ -32,14 +32,11 @@ export const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
       editor={editor}
       onNodeChange={data.handleNodeChange}
       tippyOptions={{
-        offset: [-2, 16],
+        offset: [-4, 0],
         zIndex: 99,
       }}
     >
       <div className="flex items-center gap-0.5">
-        <Toolbar.Button onClick={actions.handleAdd}>
-          <Icon name="Plus" />
-        </Toolbar.Button>
         <Popover.Root open={menuOpen} onOpenChange={setMenuOpen}>
           <Popover.Trigger asChild>
             <Toolbar.Button>

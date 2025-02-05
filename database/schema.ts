@@ -989,3 +989,13 @@ export const fonts = mysqlTable("fonts", {
   subsets: varchar("subsets", { length: 255 }),
   variants: varchar("variants", { length: 255 }),
 })
+
+export const mediaDocuments = mysqlTable("mediaDocuments", {
+  id,
+  name: varchar("name", { length: 255 }),
+  altText: varchar("altText", { length: 255 }),
+  teamId: primaryKeyCuid("teamId")
+    .references(() => teams.id)
+    .notNull(),
+  url: text("url").notNull(),
+})

@@ -1,9 +1,5 @@
 import { FormState, useImportcontactsContext } from "../state/import_contacts_context.jsx"
-import {
-  UseFileUploadProps,
-  useFileUpload,
-} from "@/pages/components/file-upload/hooks/use_file_upload.js"
-import { CloudUploadIcon } from "@/pages/components/icons/cloud-upload.svg.jsx"
+import { FileUploadDropbox } from "@/pages/components/file-upload/file-upload-dropbox.jsx"
 import {
   ServerForm,
   useServerFormMutation,
@@ -11,7 +7,6 @@ import {
 import { Button } from "@kibamail/owly/button"
 import { Heading } from "@kibamail/owly/heading"
 import { InputError } from "@kibamail/owly/input-hint"
-import { Progress } from "@kibamail/owly/progress"
 import { Text } from "@kibamail/owly/text"
 import * as Dialog from "@radix-ui/react-dialog"
 import React, { useRef } from "react"
@@ -24,7 +19,7 @@ export function StepOneUploadACsv() {
   const formRef = useRef<HTMLFormElement | null>(null)
 
   const ctx = usePageContext()
-  const { setFormState, step, setStep } = useImportcontactsContext("UploadACsv")
+  const { setFormState, setStep } = useImportcontactsContext("UploadACsv")
 
   const { serverFormProps, isPending, error } = useServerFormMutation<{
     id: string
@@ -82,6 +77,7 @@ export function StepOneUploadACsv() {
             isFileUploadingToServer={isPending}
             fileUploadProgress={uploadProgress}
             onFileAccept={onCsvFileAccepted}
+            accept={[".csv"]}
           />
           {error?.errorsList && error?.errorsList.length > 0 ? (
             <div className="mt-2">
@@ -102,64 +98,6 @@ export function StepOneUploadACsv() {
 
         <Button onClick={onContinue}>Continue</Button>
       </div>
-    </div>
-  )
-}
-
-type FileUploadDropboxProps = UseFileUploadProps & {
-  isFileUploadingToServer?: boolean
-  fileUploadProgress?: number
-}
-
-function FileUploadDropbox({
-  isFileUploadingToServer,
-  fileUploadProgress,
-  ...props
-}: FileUploadDropboxProps) {
-  const { state, getRootProps, getDropzoneProps, getHiddenInputProps, getTriggerProps } =
-    useFileUpload({
-      ...props,
-      accept: [".csv"],
-      maxFiles: 1,
-      isDisabled: isFileUploadingToServer,
-      allowDrop: !isFileUploadingToServer,
-    })
-
-  return (
-    <div className="w-full" {...getRootProps()}>
-      <div
-        {...getDropzoneProps()}
-        className="w-full h-72 rounded-3xl kb-background-hover border border-dashed kb-border-secondary data-[dragging]:border-[var(--border-focus)] data-[dragging]:bg-[var(--background-info-subtle)] transition-[border,background] ease-in-out flex items-center justify-center flex-col"
-      >
-        <CloudUploadIcon />
-
-        <Text size="lg" className="font-semibold">
-          {isFileUploadingToServer ? "Uploading..." : "Drag and drop your file here"}
-        </Text>
-        {isFileUploadingToServer ? (
-          <div className="w-full max-w-xs flex mt-2 flex-col items-center">
-            <Progress value={fileUploadProgress} />
-
-            <Text className="mt-1 kb-content-tertiary">{fileUploadProgress}%</Text>
-          </div>
-        ) : (
-          <Button
-            variant="tertiary"
-            type="button"
-            className="kb-content-tertiary -mt-0.5"
-          >
-            or click here to select from your device
-          </Button>
-        )}
-      </div>
-
-      {state.rejectedFiles.length > 0 ? (
-        <InputError baseId="file-upload-error" className="mt-2">
-          You seem to have uploaded an invalid file. Please upload only a valid CSV file.
-        </InputError>
-      ) : null}
-
-      <input {...getHiddenInputProps()} name="file" />
     </div>
   )
 }

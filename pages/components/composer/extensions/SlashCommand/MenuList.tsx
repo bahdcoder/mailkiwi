@@ -116,7 +116,7 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
   }
 
   return (
-    <div className="w-full max-w-40 rounded-xl border kb-border-tertiary p-1 bg-white">
+    <div className="w-64 rounded-xl border kb-border-tertiary p-1 bg-white">
       {props.items.map((group, groupIndex) => (
         <div
           key={group.title}

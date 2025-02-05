@@ -1,0 +1,33 @@
+import {
+  getStyleAttributeDefaultCommands,
+  getStyleAttributeDefinition,
+} from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
+import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
+import { BulletList as BaseBulletList } from "@tiptap/extension-bullet-list"
+
+declare module "@tiptap/core" {
+  interface Commands<ReturnType> {
+    bullettedList: {
+      setButton: (attributes: { href: string }) => ReturnType
+      setBullettedListStyles: (key: string, value: string) => ReturnType
+      removeBullettedListStyles: (key: string) => ReturnType
+    }
+  }
+}
+
+export const BullettedList = BaseBulletList.extend({
+  addAttributes() {
+    return {
+      styles: getStyleAttributeDefinition(
+        getDefaultStylesForNode("unorderedList").styles,
+      ),
+    }
+  },
+
+  addCommands() {
+    return {
+      setBullettedListStyles: getStyleAttributeDefaultCommands().setNodeStyle,
+      removeBullettedListStyles: getStyleAttributeDefaultCommands().removeNodeStyle,
+    }
+  },
+})

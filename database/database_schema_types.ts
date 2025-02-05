@@ -15,6 +15,7 @@ import type {
   emailSends,
   formResponses,
   forms,
+  mediaDocuments,
   messageReactions,
   messages,
   oauth2Accounts,
@@ -82,7 +83,9 @@ export type UpdateSetBroadcastInput = Omit<
   sendAt: string | undefined
 }
 export type UpdateSetTeamMembershipInput = MySqlUpdateSetSource<typeof teamMemberships>
+export type UpdateMediaDocument = MySqlUpdateSetSource<typeof mediaDocuments>
 
+export type MediaDocument = typeof mediaDocuments.$inferSelect
 export type ContactImport = typeof contactImports.$inferSelect
 export type AbTestVariant = typeof abTestVariants.$inferSelect
 export type EmailSendEvent = typeof emailSendEvents.$inferSelect

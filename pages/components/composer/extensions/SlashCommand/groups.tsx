@@ -1,4 +1,4 @@
-import { Group } from "./types.js"
+import { Command, Group } from "./types.js"
 import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
 import { BlockQuoteIcon } from "@/pages/components/icons/blockquote.svg.jsx"
 import { CodeBlockIcon } from "@/pages/components/icons/codeblock.svg.jsx"
@@ -6,6 +6,9 @@ import { ContainerIcon } from "@/pages/components/icons/container.svg.jsx"
 import { HeadingOneIcon } from "@/pages/components/icons/heading-one.svg.jsx"
 import { HeadingThreeIcon } from "@/pages/components/icons/heading-three.svg.jsx"
 import { HeadingTwoIcon } from "@/pages/components/icons/heading-two.svg.jsx"
+import { LinkIcon } from "@/pages/components/icons/link.svg.jsx"
+import { MediaImageIcon } from "@/pages/components/icons/media-image.svg.jsx"
+import { MinusIcon } from "@/pages/components/icons/minus.svg.jsx"
 import { NumberedListIcon } from "@/pages/components/icons/numbered-list.svg.jsx"
 import { UnorderedListIcon } from "@/pages/components/icons/unordered-list.svg.jsx"
 
@@ -79,45 +82,54 @@ export const GROUPS: Group[] = [
           editor.chain().focus().toggleOrderedList().run()
         },
       },
-      {
-        name: "blockquote",
-        label: "Blockquote",
-        icon: <BlockQuoteIcon className="w-4 h-4" />,
-        description: "Element for quoting",
-        action: (editor) => {
-          editor.chain().focus().setBlockquote().run()
-        },
-      },
-      {
-        name: "codeBlock",
-        label: "Code Block",
-        icon: <CodeBlockIcon className="w-4 h-4" />,
-        description: "Code block with syntax highlighting",
-        shouldBeHidden: (editor) => editor.isActive("columns"),
-        action: (editor) => {
-          editor.chain().focus().setCodeBlock().run()
-        },
-      },
+
+      ...(false
+        ? [
+            {
+              name: "blockquote",
+              label: "Blockquote",
+              icon: <BlockQuoteIcon className="w-4 h-4" />,
+              description: "Element for quoting",
+              action: (editor) => {
+                editor.chain().focus().setBlockquote().run()
+              },
+            } satisfies Command,
+            {
+              name: "codeBlock",
+              label: "Code Block",
+              icon: <CodeBlockIcon className="w-4 h-4" />,
+              description: "Code block with syntax highlighting",
+              shouldBeHidden: (editor) => editor.isActive("columns"),
+              action: (editor) => {
+                editor.chain().focus().setCodeBlock().run()
+              },
+            } satisfies Command,
+          ]
+        : []),
     ],
   },
   {
     name: "insert",
     title: "Insert",
     commands: [
-      {
-        name: "container",
-        label: "Container",
-        icon: <ContainerIcon className="w-4 h-4" />,
-        description: "A container to wrap other elements in.",
-        shouldBeHidden: (editor) => false,
-        action(editor) {
-          editor.chain().focus().setContainer().run()
-        },
-      },
+      ...(false
+        ? [
+            {
+              name: "container",
+              label: "Container",
+              icon: <ContainerIcon className="w-4 h-4" />,
+              description: "A container to wrap other elements in.",
+              shouldBeHidden: (editor) => false,
+              action(editor) {
+                editor.chain().focus().setContainer().run()
+              },
+            } satisfies Command,
+          ]
+        : []),
       {
         name: "button",
         label: "Button",
-        icon: <ContainerIcon className="w-4 h-4" />,
+        icon: <LinkIcon className="w-4 h-4" />,
         description: "A button with a link",
         shouldBeHidden: (editor) => editor.isActive("button"),
         action(editor) {
@@ -127,11 +139,22 @@ export const GROUPS: Group[] = [
       {
         name: "image",
         label: "Image",
-        icon: <ContainerIcon className="w-4 h-4" />,
+        icon: <MediaImageIcon className="w-4 h-4" />,
         description: "Upload an image",
         shouldBeHidden: (editor) => editor.isActive("button"),
         action(editor) {
           editor.chain().focus().setImageUpload().run()
+        },
+      },
+      {
+        name: "horizontalRule",
+        label: "Content break",
+        icon: <MinusIcon className="w-4 h-4" />,
+        aliases: ["horizontal", "rule", "break"],
+        description: "Add a content break",
+        shouldBeHidden: (editor) => editor.isActive("horizontalRule"),
+        action(editor) {
+          editor.chain().focus().setHorizontalRule().run()
         },
       },
     ],

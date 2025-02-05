@@ -27,7 +27,7 @@ export function useTiptapEditor() {
         autocomplete: "off",
         autocorrect: "off",
         autocapitalize: "off",
-        class: "min-h-full bg-white shadow-sm focus:outline-none",
+        class: "min-h-full focus:outline-none",
       },
       handleDOMEvents: {
         keydown(_view, event) {

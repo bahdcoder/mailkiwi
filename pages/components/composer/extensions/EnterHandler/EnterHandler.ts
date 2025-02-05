@@ -23,6 +23,12 @@ export const EnterHandler = Extension.create({
             return false
           }
 
+          const isInsideListItem =
+            $from.depth > 0 && $from.node(-1).type.name === "listItem"
+          if (isInsideListItem) {
+            return false
+          }
+
           // Don't interfere with special nodes (like codeBlock, lists, etc)
           if (!["paragraph", "heading"].includes(currentNode.type.name)) {
             return false
@@ -35,6 +41,8 @@ export const EnterHandler = Extension.create({
           ) {
             return false
           }
+
+          console.log("===== i interferred.")
 
           // If we're at the end of the node, create a new paragraph
           const isAtEnd = $from.parentOffset === currentNode.nodeSize - 2

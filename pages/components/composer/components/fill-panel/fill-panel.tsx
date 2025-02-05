@@ -39,7 +39,7 @@ export function FillPanel({
       <div className="mt-4 flex gap-1 w-full items-center ">
         <TextField.Root
           className="flex-shrink-0 w-2/5"
-          value={value}
+          value={value ?? ""}
           onChange={(event) => onHexColorManuallyChanged(event.target.value)}
         >
           <TextField.Slot side="left">

@@ -4,7 +4,7 @@ import { Readable } from "stream"
 
 import { container } from "@/utils/typi.js"
 
-type BucketName = "contacts" | "attachments" | "emails"
+type BucketName = "contacts" | "attachments" | "emails" | "media"
 
 export class MinioClient {
   private client = new Client({
@@ -59,6 +59,12 @@ export class MinioClient {
     return {
       url: `/${this.bucketName}/${this.objectName}`,
     }
+  }
+
+  getFullPath() {
+    return new URL(
+      `${appEnv.FILE_UPLOADS_ENDPOINT}:${appEnv.FILE_UPLOADS_PORT}/${this.bucketName}/${this.objectName}`,
+    ).toString()
   }
 
   async read() {

@@ -13,13 +13,13 @@ export function defaultEditorStylesTheme(defaultThemeOptions?: StyleThemeGlobalO
     "Consolas,Liberation Mono,Menlo,Courier,monospace"
 
   const commonStyles = {
-    "line-height": "24px",
+    "line-height": "24px", // var(--w-composer-default-paragraph-line-height)
     "word-break": "break-word",
-    "font-size": "1em",
-    "font-family": fontFamily,
-    "letter-spacing": "-0.16px",
+    "font-size": "1em", // var(--w-composer-default-paragraph-font-size)
+    "font-family": fontFamily, // var(--w-composer-default-paragraph-font-family)
+    "letter-spacing": "-0.16px", // var(--w-composer-default-paragraph-letter-spacing)
     "font-variation-settings": `"wght" 440`,
-    color: "#3D3B39",
+    color: "#3D3B39", // var(--w-composer-default-paragraph-color)
   }
 
   return {
@@ -59,7 +59,7 @@ export function defaultEditorStylesTheme(defaultThemeOptions?: StyleThemeGlobalO
     },
     container: {
       width: "100%",
-      padding: "1em",
+      padding: "0.5em",
       "box-sizing": "border-box",
       "border-width": "1px",
       "border-style": "solid",
@@ -77,6 +77,21 @@ export function defaultEditorStylesTheme(defaultThemeOptions?: StyleThemeGlobalO
       width: "fit-content",
       "border-radius": "0.5em",
       display: "inline-block",
+    },
+    unorderedList: {
+      ...commonStyles,
+      padding: "0em 1.8em",
+      margin: "0.5em 0em",
+      "list-style-type": "disc",
+    },
+    orderedList: {
+      ...commonStyles,
+      padding: "0em 1.8em",
+      margin: "0.5em 0em",
+      "list-style-type": "decimal",
+    },
+    horizontalRule: {
+      margin: "1.5em 0em",
     },
   }
 }

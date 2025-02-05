@@ -84,18 +84,21 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
   })
 
   function onDeleteNode() {
-    editor
-      .chain()
-      .focus()
-      .command(({ tr }) => {
-        const node = tr.selection.$anchor.node()
-        if (node.type.name === "imageBlock") {
-          tr.delete(tr.selection.$anchor.before(), tr.selection.$anchor.after())
+    const { state } = editor
+    const pos = state.selection.$anchor.pos
+    const node = state.doc.nodeAt(pos)
+
+    if (node?.type.name === "imageBlock") {
+      editor
+        .chain()
+        .focus()
+        .setNodeSelection(pos)
+        .command(({ tr }) => {
+          tr.delete(pos, pos + node.nodeSize)
           return true
-        }
-        return false
-      })
-      .run()
+        })
+        .run()
+    }
   }
 
   return (
@@ -130,9 +133,8 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
           </LinkEditorPanel>
         </ToolbarSection>
         <ToolbarSection divider="right">
-          <EditImageInformationPanel />
+          <EditImageInformationPanel editor={editor} />
         </ToolbarSection>
-        <ToolbarSection divider="right"></ToolbarSection>
         <ToolbarSection divider="right">
           <ToolbarButton isActive={isImageLeft} onClick={onAlignImageLeft}>
             <CompAlignLeftIcon className="w-4 h-4" />

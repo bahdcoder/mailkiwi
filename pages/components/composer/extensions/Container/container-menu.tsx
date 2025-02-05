@@ -23,12 +23,12 @@ import React, { useCallback } from "react"
 import { sticky } from "tippy.js"
 import "tippy.js/animations/scale.css"
 
-export interface ButtonMenuProps {
+export interface ContainerMenuProps {
   editor: Editor
   appendTo?: React.RefObject<any>
 }
 
-type ButtonMenuAction = {
+type ContainerMenuAction = {
   id: string
   name: string
   icon: React.ReactNode
@@ -36,14 +36,14 @@ type ButtonMenuAction = {
   hidden?: (editor: Editor) => boolean
 }
 
-const buttonMenuActions: ButtonMenuAction[] = [
+const ContainerMenuActions: ContainerMenuAction[] = [
   {
     id: "left-align",
     name: "Left align",
     icon: <CompAlignLeftIcon className="w-4 h-4" />,
     command(editor) {
       // todo: align left
-      editor.chain().focus().setButtonStyles("text-align", "left").run()
+      editor.chain().focus().setContainerStyles("text-align", "left").run()
     },
   },
   {
@@ -51,7 +51,7 @@ const buttonMenuActions: ButtonMenuAction[] = [
     name: "Center align",
     icon: <CompAlignCenterIcon className="w-4 h-4" />,
     command(editor) {
-      editor.chain().focus().setButtonStyles("text-align", "center").run()
+      editor.chain().focus().setContainerStyles("text-align", "center").run()
     },
   },
   {
@@ -59,17 +59,17 @@ const buttonMenuActions: ButtonMenuAction[] = [
     name: "Right align",
     icon: <CompAlignRightIcon className="w-4 h-4" />,
     command(editor) {
-      editor.chain().focus().setButtonStyles("text-align", "right").run()
+      editor.chain().focus().setContainerStyles("text-align", "right").run()
     },
   },
 ]
 
-export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
+export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
   const { isFullWidth, isLeftAlign, isCenterAlign, isRightAlign, isFilled } =
-    useButtonMenuStates(editor)
+    useContainerMenuStates(editor)
 
   const getReferenceClientRect = useCallback(() => {
-    const renderContainer = getRenderContainer(editor, "node-button")
+    const renderContainer = getRenderContainer(editor, "node-container")
     const rect =
       renderContainer?.getBoundingClientRect() || new DOMRect(-1000, -1000, 0, 0)
 
@@ -77,34 +77,37 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
   }, [editor])
 
   const shouldShow = useCallback(() => {
-    return editor?.isActive("button")
+    return editor?.isActive("container")
   }, [editor])
 
   if (!editor) {
     return null
   }
 
-  const button = editor.state.selection.$anchor.node()
+  const Container = editor.state.selection.$anchor.node()
 
   function onValidUrlSubmitted(href: string) {
     editor
       .chain()
       .focus()
-      .updateAttributes("button", {
+      .updateAttributes("Container", {
         href: href,
       })
       .run()
   }
 
-  const currentButtonHref = button?.attrs?.href
+  const currentContainerHref = Container?.attrs?.href
 
   function onDeleteNode() {
+    // todo: delete node
+    const pos = editor.state.selection.$anchor.pos
+
     editor
       .chain()
       .focus()
       .command(({ tr }) => {
         const node = tr.selection.$anchor.node()
-        if (node.type.name === "button") {
+        if (node.type.name === "Container") {
           tr.delete(tr.selection.$anchor.before(), tr.selection.$anchor.after())
           return true
         }
@@ -117,7 +120,7 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
     if (fill.type === "color") {
       editor
         .chain()
-        .setButtonStyles("background-color", fill.value ?? "transparent")
+        .setContainerStyles("background-color", fill.value ?? "transparent")
         .run()
     }
   }
@@ -152,32 +155,18 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
         plugins: [sticky],
         sticky: "popper",
       }}
-      pluginKey="buttonMenu"
+      pluginKey="containerMenu"
       shouldShow={shouldShow}
       updateDelay={100}
     >
       <ToolbarContainer>
-        {buttonMenuActions
-          .filter((action) =>
-            action?.hidden === undefined ? true : !action?.hidden(editor),
-          )
-          .map((action) => (
-            <ToolbarButton
-              key={action.name}
-              aria-label={action.name}
-              onClick={() => action.command(editor)}
-            >
-              {action.icon}
-            </ToolbarButton>
-          ))}
-
         <ToolbarSection divider="both">
           <ToolbarButton
             isActive={isFullWidth}
             onClick={() =>
               isFullWidth
-                ? editor.chain().focus().setButtonStyles("width", "fit-content").run()
-                : editor.chain().focus().setButtonStyles("width", "100%").run()
+                ? editor.chain().focus().setContainerStyles("width", "fit-content").run()
+                : editor.chain().focus().setContainerStyles("width", "100%").run()
             }
           >
             <FullWidthIcon className="w-4 h-4" />
@@ -187,7 +176,7 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
         <ToolbarSection divider="right">
           <FillPanel
             onChange={onBackgroundUpdated}
-            value={button.attrs.styles?.["background-color"]}
+            value={Container.attrs.styles?.["background-color"]}
           >
             <button className={getToolbarClassNames(isFilled)}>
               <FillColorIcon className="w-4 h-4" />
@@ -196,14 +185,17 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
         </ToolbarSection>
 
         <ToolbarSection divider="right">
-          <LinkEditorPanel onSubmit={onValidUrlSubmitted} initialUrl={currentButtonHref}>
+          <LinkEditorPanel
+            onSubmit={onValidUrlSubmitted}
+            initialUrl={currentContainerHref}
+          >
             <button>
               <LinkIcon className="w-4 h-4" />
             </button>
           </LinkEditorPanel>
 
-          {currentButtonHref ? (
-            <a href={currentButtonHref} rel="noreferrer nofollow" target="_blank">
+          {currentContainerHref ? (
+            <a href={currentContainerHref} rel="noreferrer nofollow" target="_blank">
               <ToolbarButton as="span">
                 <OpenNewWindowIcon className="w-3 h-3" />
               </ToolbarButton>
@@ -221,13 +213,13 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
   )
 }
 
-export function useButtonMenuStates(editor: Editor) {
-  const isInsideButton = editor.isActive("button")
-  const button = editor.state.selection.$anchor.node()
-  const styles = button.attrs.styles
+export function useContainerMenuStates(editor: Editor) {
+  const isInsideContainer = editor.isActive("container")
+  const Container = editor.state.selection.$anchor.node()
+  const styles = Container.attrs.styles
 
   return {
-    isInsideButton,
+    isInsideContainer,
     isFilled: styles?.["background-color"] !== undefined,
     isFullWidth: styles?.["width"] === "100%",
     isLeftAlign: styles?.["text-align"] === "left",

@@ -1,10 +1,18 @@
+import { ContainerNodeView } from "@/pages/components/composer/extensions/Container/container-node-view.jsx"
+import {
+  getStyleAttributeDefaultCommands,
+  getStyleAttributeDefinition,
+} from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
 import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
 import { Node, mergeAttributes } from "@tiptap/core"
+import { ReactNodeViewRenderer } from "@tiptap/react"
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     container: {
       setContainer: () => ReturnType
+      setContainerStyles: (key: string, value: string) => ReturnType
+      removeContainerStyles: (key: string) => ReturnType
     }
   }
 }
@@ -26,6 +34,12 @@ export const Container = Node.create({
         tag: 'div[data-type="container"]',
       },
     ]
+  },
+
+  addAttributes() {
+    return {
+      styles: getStyleAttributeDefinition(getDefaultStylesForNode("container").styles),
+    }
   },
 
   renderHTML({ HTMLAttributes }) {
@@ -59,6 +73,12 @@ export const Container = Node.create({
             .focus(insertPos + 2)
             .run()
         },
+      setContainerStyles: getStyleAttributeDefaultCommands().setNodeStyle,
+      removeContainerStyles: getStyleAttributeDefaultCommands().removeNodeStyle,
     }
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(ContainerNodeView)
   },
 })

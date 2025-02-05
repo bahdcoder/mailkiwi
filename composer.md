@@ -34,17 +34,17 @@
 
 6. Image uploads
 
-- [ ] Slash command upload image
+- [x] Slash command upload image
 - [ ] Drag and drop image into editor
-- [ ] Resize uploaded image
-- [ ] Delete uploaded image
-- [ ] Set image alt description
+- [x] Resize uploaded image
+- [x] Delete uploaded image
+- [x] Set image alt description
 - [ ] Upload image from Upsplash
 
 7. Lists
 
-- [ ] Ordered Lists
-- [ ] Unordered Lists
+- [x] Ordered Lists
+- [x] Unordered Lists
 - [ ] Edit css properties on lists
 
 8. Horizontal line / Divider
@@ -60,7 +60,7 @@
 
 10. Active node
 
-- [ ] Highlight active node with blue border
+- [x] Highlight active node with blue border
 - [ ] Add drag handle to active node
 - [ ] Add options dropdown to active node
 

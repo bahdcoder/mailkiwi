@@ -77,6 +77,9 @@ export const aliases = {
 
   // broadcast groups
   create_broadcast_group: "/broadcasts_groups",
+
+  // media
+  add_media_documents: "/media-documents",
 } as const
 
 export function route(

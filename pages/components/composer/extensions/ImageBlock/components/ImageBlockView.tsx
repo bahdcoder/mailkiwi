@@ -37,7 +37,7 @@ export const ImageBlockView = (props: ImageBlockViewProps) => {
   return (
     <NodeViewWrapper>
       <div
-        className={cn("w-composer-node-container", {
+        className={cn("w-composer-node-container p-2", {
           "w-composer-node-container-active": isSelected,
           "w-composer-node-container-inactive": !isSelected,
         })}

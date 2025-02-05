@@ -9,6 +9,8 @@ declare module "@tiptap/core" {
       setImageBlock: (attributes: { src: string }) => ReturnType
       setImageBlockAt: (attributes: { src: string; pos: number | Range }) => ReturnType
       setImageBlockAlign: (align: "left" | "center" | "right") => ReturnType
+      setImageBlockAlt: (alt: string) => ReturnType
+      setImageBlockTitle: (title: string) => ReturnType
       setImageBlockWidth: (width: number) => ReturnType
     }
   }
@@ -91,6 +93,16 @@ export const ImageBlock = Image.extend({
         (align) =>
         ({ commands }) =>
           commands.updateAttributes("imageBlock", { align }),
+
+      setImageBlockAlt:
+        (alt) =>
+        ({ commands }) =>
+          commands.updateAttributes("imageBlock", { alt }),
+
+      setImageBlockTitle:
+        (title) =>
+        ({ commands }) =>
+          commands.updateAttributes("imageBlock", { title }),
 
       setImageBlockWidth:
         (width) =>

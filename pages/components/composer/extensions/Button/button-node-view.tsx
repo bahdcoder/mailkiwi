@@ -1,3 +1,4 @@
+import { convertToReactStyles } from "@/pages/components/composer/utils/convert-styles-to-react-styles.js"
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 import cn from "classnames"
 
@@ -11,7 +12,7 @@ export function ButtonNodeView(props: ButtonNodeViewProps) {
 
   return (
     <NodeViewWrapper
-      className={cn("w-full flex flex-col w-composer-node-container", {
+      className={cn("w-full flex flex-col p-2 w-composer-node-container", {
         "w-composer-node-container-active": isSelected,
         "w-composer-node-container-inactive": !isSelected,
       })}
@@ -26,18 +27,4 @@ export function ButtonNodeView(props: ButtonNodeViewProps) {
       />
     </NodeViewWrapper>
   )
-}
-
-function convertToReactStyles(cssStyles: Record<string, string>) {
-  const reactStyles: Record<string, string> = {}
-
-  for (const [key, value] of Object.entries(cssStyles)) {
-    // Convert CSS property names to camelCase
-    const reactKey = key.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase())
-
-    // Assign the value to the new key
-    reactStyles[reactKey] = value
-  }
-
-  return reactStyles
 }

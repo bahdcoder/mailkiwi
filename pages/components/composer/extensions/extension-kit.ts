@@ -1,53 +1,35 @@
-"use client"
-
 import { ImageUpload } from "./ImageUpload/ImageUpload.js"
-import { TableOfContentsNode } from "./TableOfContentsNode/TableOfContentsNode.jsx"
 import {
   BlockquoteFigure,
-  CharacterCount,
-  CodeBlock,
+  BullettedList,
   Color,
   Column,
   Columns,
-  Details,
-  DetailsContent,
-  DetailsSummary,
   Document,
   Dropcursor,
   Emoji,
   Figcaption,
-  FileHandler,
   Focus,
   FontFamily,
   FontSize,
   Heading,
-  Highlight,
   HorizontalRule,
   ImageBlock,
   Link,
+  NumberedList,
+  Paragraph,
   Placeholder,
   Selection,
   SlashCommand,
   StarterKit,
-  Subscript,
-  Superscript,
-  Table,
-  TableCell,
-  TableHeader,
-  TableOfContents,
-  TableRow,
-  TaskItem,
-  TaskList,
   TextAlign,
   TextStyle,
-  TrailingNode,
   Typography,
   Underline,
-  UniqueID,
   emojiSuggestion,
 } from "./index.js"
-import { Container } from "@/pages/components/composer/extensions/Container/Container.js"
 import Code from "@tiptap/extension-code"
+import History from "@tiptap/extension-history"
 
 interface ExtensionKitProps {}
 
@@ -55,15 +37,15 @@ export const ExtensionKit = () => [
   Document,
   Columns,
   Column,
-  // Selection,
+  Selection,
+  History,
   Heading.configure({
     levels: [1, 2, 3, 4],
   }),
+  Paragraph,
   HorizontalRule,
-  // UniqueID.configure({
-  //   types: ["paragraph", "heading", "blockquote", "codeBlock", "table"],
-  //   // filterTransaction: (transaction) => !isChangeOrigin(transaction),
-  // }),
+  BullettedList,
+  NumberedList,
   StarterKit.configure({
     document: false,
     dropcursor: false,
@@ -73,55 +55,23 @@ export const ExtensionKit = () => [
     history: false,
     codeBlock: false,
     code: false,
+    paragraph: false,
+    bulletList: false,
+    orderedList: false,
   }),
-  // Details.configure({
-  //   persist: true,
-  //   HTMLAttributes: {
-  //     class: "details",
-  //   },
-  // }),
-  // DetailsContent,
-  // DetailsSummary,
-  // CodeBlock,
+
   TextStyle,
   FontSize,
   FontFamily,
   Color,
   Code,
-  // TrailingNode,
   Link.configure({
     openOnClick: false,
   }),
-  // Highlight.configure({ multicolor: true }),
   Underline,
   ImageUpload.configure(),
-  // CharacterCount.configure({ limit: 50000 }),
-  // TableOfContents,
-  // TableOfContentsNode,
+
   ImageBlock,
-  // FileHandler.configure({
-  //   allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
-  //   onDrop: (currentEditor, files, pos) => {
-  //     console.log({ files })
-  //     // files.forEach(async (file) => {
-  //     //   const url = await API.uploadImage(file)
-
-  //     //   currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run()
-  //     // })
-  //   },
-  //   onPaste: (currentEditor, files) => {
-  //     // files.forEach(async (file) => {
-  //     //   const url = await API.uploadImage(file)
-
-  //     //   return currentEditor
-  //     //     .chain()
-  //     //     .setImageBlockAt({ pos: currentEditor.state.selection.anchor, src: url })
-  //     //     .focus()
-  //     //     .run()
-  //     // })
-  //     console.log({ files })
-  //   },
-  // }),
   Emoji.configure({
     enableEmoticons: true,
     suggestion: emojiSuggestion,
@@ -133,25 +83,18 @@ export const ExtensionKit = () => [
   }).configure({
     types: ["heading", "paragraph"],
   }),
-  // Subscript,
-  // Superscript,
-  // Table,
-  // TableCell,
-  // TableHeader,
-  // TableRow,
-  // Container,
   Typography,
-  // Placeholder.configure({
-  //   includeChildren: true,
-  //   showOnlyCurrent: false,
-  //   placeholder: () => "",
-  // }),
+  Placeholder.configure({
+    includeChildren: false,
+    showOnlyCurrent: true,
+    placeholder: () => "Type / to browse commands",
+  }),
   SlashCommand,
   Focus,
   Figcaption,
   // BlockquoteFigure,
-  // Dropcursor.configure({
-  //   width: 2,
-  //   class: "ProseMirror-dropcursor border-black",
-  // }),
+  Dropcursor.configure({
+    width: 2,
+    class: "ProseMirror-dropcursor",
+  }),
 ]

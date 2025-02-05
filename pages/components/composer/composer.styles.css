@@ -1,5 +1,5 @@
 .w-composer-node-container {
-  @apply w-full border p-4 transition-[border-color] ease-in-out duration-200;
+  @apply w-full border transition-[border-color] ease-in-out border-dashed p-2 border-opacity-40 duration-200;
 }
 
 .w-composer-node-container-active {
