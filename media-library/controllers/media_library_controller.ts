@@ -17,12 +17,13 @@ export class MediaDocumentController extends VikeController {
 
   async store(ctx: HonoContext) {
     this.ensureCanAuthor(ctx)
+    const team = this.ensureTeam(ctx)
 
     const form = await ctx.req.formData()
 
     const file = form.get("file") as File
 
-    const { url } = await container.make(AddMediaDocumentAction).handle(file)
+    const { url } = await container.make(AddMediaDocumentAction).handle(file, team.id)
 
     return this.response(ctx).json({ url }, 200, true).send()
   }

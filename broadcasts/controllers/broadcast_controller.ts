@@ -71,7 +71,7 @@ export class BroadcastController extends BaseController {
       .resolve(CreateBroadcastAction)
       .handle(data, ctx.get("team").id)
 
-    return ctx.json(broadcast, 201)
+    return this.response(ctx).json(broadcast, 201).send()
   }
 
   get = async (ctx: HonoContext) => {

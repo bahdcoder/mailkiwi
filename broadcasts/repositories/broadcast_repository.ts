@@ -31,7 +31,14 @@ export class BroadcastRepository extends BaseRepository {
 
   async create(data: CreateBroadcastDto, teamId: string) {
     const id = this.cuid()
-    await this.database.insert(broadcasts).values({ ...data, teamId, id })
+    const emailContentId = this.cuid()
+
+    await this.database.transaction(async (trx) => {
+      await trx.insert(emailContents).values({
+        id: emailContentId,
+      })
+      await trx.insert(broadcasts).values({ ...data, teamId, id, emailContentId })
+    })
 
     return { id }
   }

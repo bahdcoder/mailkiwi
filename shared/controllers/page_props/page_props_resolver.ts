@@ -2,6 +2,7 @@ import { type DefaultPageProps } from "@/pages/types/page-context.js"
 import { eq } from "drizzle-orm"
 
 import { BroadcastGroupRepository } from "@/broadcasts/repositories/broadcast_group_repository.js"
+import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
 import { GetContactsAction } from "@/audiences/actions/contacts/get_contacts_action.js"
 import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
@@ -46,6 +47,25 @@ export class PagePropsResolver {
     },
   }
 
+  protected async dynamicPropFetchers(
+    pathname: string,
+    defaultPageProps: DefaultPageProps,
+  ) {
+    if (pathname.includes("/w/engage/broadcasts")) {
+      const broadcastId = pathname
+        .split("/w/engage/broadcasts/")?.[1]
+        ?.split("/composer")?.[0]
+
+      const broadcast = await container
+        .make(BroadcastRepository)
+        .findByIdWithAbTestVariants(broadcastId)
+
+      return { broadcast }
+    }
+
+    return {}
+  }
+
   handle = async (ctx: HonoContext, defaultPageProps: DefaultPageProps) => {
     let pathname = new URL(ctx.req.url)?.pathname
 
@@ -59,6 +79,8 @@ export class PagePropsResolver {
       return pageProps
     }
 
-    return {}
+    const dynamicPageProps = await this.dynamicPropFetchers(pathname, defaultPageProps)
+
+    return dynamicPageProps
   }
 }

@@ -93,11 +93,13 @@ export const appEnv = makeExtraAppConfigurations(
       MTA_ACCESS_TOKEN: str(),
       MTA_INJECTOR_URL: host(),
 
-      // Minio file uploads
+      // S3 file uploads
       FILE_UPLOADS_ACCESS_KEY: str(),
       FILE_UPLOADS_ACCESS_SECRET: str(),
-      FILE_UPLOADS_ENDPOINT: host(),
+      FILE_UPLOADS_ENDPOINT: str(),
       FILE_UPLOADS_PORT: port(),
+      FILE_UPLOADS_BUCKET: str(),
+      FILE_UPLOADS_REGION: str(),
 
       // emails
       EVENT_TRACKING_DOMAIN: str(),

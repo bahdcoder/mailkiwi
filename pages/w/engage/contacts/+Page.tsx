@@ -1,12 +1,9 @@
-import { columns, getCommonPinningStyles } from "./components/columns.js"
+import { getCommonPinningStyles } from "./components/columns.js"
 import * as Table from "./components/table.js"
 import "./styles.css"
 import * as Dropdown from "@/pages/components/dropdown/dropdown.jsx"
-import { CreateCustomContactProperty } from "@/pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx"
 import { CancelIcon } from "@/pages/components/icons/cancel.svg.jsx"
 import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
-import { MoreVertIcon } from "@/pages/components/icons/more-vert.svg.jsx"
-import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
 import { SearchIcon } from "@/pages/components/icons/search.svg.jsx"
 import { NewContactProperty } from "@/pages/w/engage/contacts/components/actions/new_contact_property.jsx"
 import { SaveFilterAsSegmentForm } from "@/pages/w/engage/contacts/components/actions/save_filter_as_segment.jsx"
@@ -35,12 +32,6 @@ import {
   Segment,
   Tag,
 } from "@/database/database_schema_types.js"
-
-import { route } from "@/shared/routes/route_aliases.js"
-
-interface PageProps {
-  contacts: { data: ContactWithTagsAndProperties[]; total: number }
-}
 
 const filterOperationLabels: Record<string, string> = {
   eq: "Is",
@@ -230,7 +221,6 @@ function ContactsPage() {
     pagination,
     data,
     activeFilters,
-    contactsQuery,
     filterGroups,
     isEditingProperty,
     setIsEditingProperty,

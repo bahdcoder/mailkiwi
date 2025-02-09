@@ -111,6 +111,9 @@
     "vitest": "^1.6.0"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.741.0",
+    "@aws-sdk/lib-storage": "^3.741.0",
+    "@aws-sdk/s3-request-presigner": "^3.741.0",
     "@epic-web/totp": "^2.0.0",
     "@floating-ui/react": "^0.27.3",
     "@floating-ui/react-dom": "^2.1.2",
@@ -132,6 +135,7 @@
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-toolbar": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.6",
+    "@react-hook/debounce": "^4.0.0",
     "@remix-run/node": "^2.12.1",
     "@remix-run/react": "^2.12.1",
     "@tanstack/react-query-devtools": "^5.62.3",
@@ -195,6 +199,7 @@
     "edge.js": "^6.0.2",
     "env-cmd": "^10.1.0",
     "envalid": "^8.0.0",
+    "flydrive": "^1.1.0",
     "hono": "^4.5.0",
     "hono-pino": "^0.6.0",
     "iconv-lite": "^0.6.3",

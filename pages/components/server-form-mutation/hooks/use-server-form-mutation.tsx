@@ -98,15 +98,18 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
 
       const submissionResponse: ServerSubmissionResponse = await response.json()
 
+      submissionResponse.errorsMap = {}
+      submissionResponse.errorsList = []
       if (submissionResponse?.payload?.errors) {
-        submissionResponse.errorsMap = {}
-        submissionResponse.errorsList = []
-
         for (const error of submissionResponse?.payload?.errors) {
           submissionResponse.errorsMap[error.field] = error.message
 
           submissionResponse.errorsList.push(error.message)
         }
+      }
+
+      if (submissionResponse?.payload?.message) {
+        submissionResponse.errorsList.push(submissionResponse?.payload?.message)
       }
 
       if (!response.ok) {
@@ -134,7 +137,7 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
 
       return (
         <div className="w-full flex flex-col gap-y-1">
-          {error?.errorsList.map((error, idx) => (
+          {error?.errorsList?.map((error, idx) => (
             <InputError baseId={baseId} key={idx}>
               {error}
             </InputError>

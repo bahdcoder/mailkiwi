@@ -1,6 +1,7 @@
 import { and, count, eq, inArray } from "drizzle-orm"
 import {
   type InferInput,
+  any,
   array,
   boolean,
   check,
@@ -15,6 +16,7 @@ import {
   optional,
   pipe,
   pipeAsync,
+  record,
   string,
 } from "valibot"
 
@@ -30,7 +32,7 @@ const emailContentFields = {
   replyToEmail: optional(pipe(string(), email())),
   replyToName: optional(string()),
 
-  contentJson: optional(string()),
+  contentJson: optional(record(string(), any())),
   contentText: optional(string()),
   contentHtml: optional(string()),
 

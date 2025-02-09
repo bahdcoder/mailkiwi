@@ -27,7 +27,7 @@ enum BroadcastStatus {
   ALL = "all",
 }
 
-type EngagePageProps = {
+export type EngagePageProps = {
   groups: BroadcastGroupWithBroadcasts[]
 }
 
@@ -87,15 +87,19 @@ function EngagePage() {
                 {group?.name}
               </Heading>
               <div className="flex flex-col">
-                {[1, 2, 3, 4].map((i) => (
+                {group?.broadcasts?.map((broadcast) => (
                   <a
-                    key={i}
-                    href={route("engage_overview", { uuid: i.toString() })}
+                    key={broadcast.id}
+                    href={
+                      broadcast?.status === "SENT"
+                        ? route("engage_overview", { uuid: broadcast.id })
+                        : route("broadcasts_composer", { uuid: broadcast.id })
+                    }
                     className="h-[4.5rem] hidden lg:flex w-full py-4 px-2 box-border border-b border-[var(--black-5)] ease-in-out duration-300 transition-[background-color] hover:bg-[var(--background-hover)] cursor-pointer"
                   >
                     <div className="w-full max-w-[40%] flex flex-col">
                       <Text className="kb-content-secondary font-medium">
-                        Welcome to 2025. Software engineering is cooked.
+                        {broadcast.name}
                       </Text>
                       <Text className="kb-content-tertiary truncate overflow-ellipsis">
                         Stay updated with our latest news and insights! Discover tips,

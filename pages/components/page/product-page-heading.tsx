@@ -1,4 +1,5 @@
 import { ComposeBroadcastFlow } from "@/pages/components/flows/compose_broadcast/compose_broadcast_flow.jsx"
+import { CreateBroadcastFlow } from "@/pages/components/flows/compose_broadcast/create_broadcast_flow.jsx"
 import { Button } from "@kibamail/owly/button"
 import { Heading } from "@kibamail/owly/heading"
 import React from "react"
@@ -20,9 +21,9 @@ export function ProductPageHeading({ children, header }: ProductPageHeadingProps
             Engage
           </Heading>
 
-          <Button asChild>
-            <a href={route("broadcasts_composer")}>Compose a broadcast</a>
-          </Button>
+          <CreateBroadcastFlow>
+            <Button>Compose a broadcast</Button>
+          </CreateBroadcastFlow>
         </div>
       )}
 

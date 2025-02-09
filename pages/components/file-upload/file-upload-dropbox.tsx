@@ -44,7 +44,11 @@ export function FileUploadDropbox({
           <div className="w-full max-w-xs flex mt-2 flex-col items-center">
             <Progress value={fileUploadProgress} />
 
-            <Text className="mt-1 kb-content-tertiary">{fileUploadProgress}%</Text>
+            <Text className="mt-1 kb-content-tertiary">
+              {isFileUploadingToServer && fileUploadProgress === 100
+                ? `Finishing upload...`
+                : `${fileUploadProgress}%`}
+            </Text>
           </div>
         ) : (
           <Button

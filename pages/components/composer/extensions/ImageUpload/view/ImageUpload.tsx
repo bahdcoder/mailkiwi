@@ -33,12 +33,12 @@ export const ImageUpload = ({
     [getPos, editor],
   )
 
-  const { serverFormProps, isPending, error } = useServerFormMutation<{
+  const { serverFormProps, isPending, ServerErrorsList } = useServerFormMutation<{
     url: string
   }>({
     action: route("add_media_documents"),
     onSuccess({ payload }) {
-      console.log({ payload })
+      onUpload(payload.url)
       setUploadProgress(0)
     },
     onProgress({ percent }) {
@@ -62,6 +62,7 @@ export const ImageUpload = ({
             onFileAccept={onFileAccepted}
             accept={[".png", ".jpg", ".gif", ".jpeg"]}
           />
+          {ServerErrorsList ? <div className="my-4">{ServerErrorsList}</div> : null}
         </ServerForm>
       </div>
     </NodeViewWrapper>

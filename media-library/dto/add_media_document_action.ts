@@ -1,25 +1,25 @@
 import { makeMinioClient } from "@/minio/minio_client.js"
+import { makeS3Client } from "@/minio/s3_client.js"
 import mime from "mime-types"
 import { Readable } from "stream"
 
 import { cuid } from "@/shared/utils/cuid/cuid.js"
 
 export class AddMediaDocumentAction {
-  handle = async (file: File) => {
+  handle = async (file: File, teamId: string) => {
     const fileIdentifier = cuid()
-
     const extension = mime.extension(file.type) as string
 
-    const minio = makeMinioClient()
-      .bucket("media")
-      .name(`${fileIdentifier}.${extension}`)
-      .metadata({
-        acl: "public-read",
-        "Content-Type": mime.contentType(file.type) as string,
-      })
+    const fileKey = `${teamId}/media/${fileIdentifier}.${extension}`
 
-    // @ts-ignore
-    const { url } = await minio.write(Readable.from(file.stream()))
+    const url = await makeS3Client().putObject(
+      fileKey,
+      Readable.from(file.stream() as any),
+      {
+        ACL: "public-read",
+        ContentType: `${mime.contentType(file.type)}`,
+      },
+    )
 
     return { url }
   }

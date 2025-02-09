@@ -4,7 +4,7 @@ interface StepsRendererProps {
   current: number
   steps: Record<
     number,
-    | React.FC
+    | React.FC<any>
     | React.ComponentType<{
         fallback?: React.ReactNode
       }>
