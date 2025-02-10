@@ -28,8 +28,10 @@ import {
   Underline,
   emojiSuggestion,
 } from "./index.js"
+import { BulletList as BaseBulletList } from "@tiptap/extension-bullet-list"
 import Code from "@tiptap/extension-code"
 import History from "@tiptap/extension-history"
+import { OrderedList as BaseNumberedList } from "@tiptap/extension-ordered-list"
 
 interface ExtensionKitProps {}
 
@@ -39,6 +41,8 @@ export const ExtensionKit = () => [
   Column,
   Selection,
   History,
+  BaseNumberedList,
+  BaseBulletList,
   Heading.configure({
     levels: [1, 2, 3, 4],
   }),

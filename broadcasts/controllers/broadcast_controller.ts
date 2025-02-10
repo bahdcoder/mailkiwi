@@ -5,6 +5,7 @@ import { DeleteBroadcastAction } from "@/broadcasts/actions/delete_broadcast_act
 import { GetBroadcastsAction } from "@/broadcasts/actions/get_broadcasts_action.js"
 import { SendBroadcastAction } from "@/broadcasts/actions/send_broadcast_action.js"
 import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_action.js"
+import { ValidateBroadcastEmailContentAction } from "@/broadcasts/actions/validate_broadcast_email_content_action.js"
 import { BroadcastValidationAndAuthorizationConcern } from "@/broadcasts/concerns/broadcast_validation_concern.js"
 import { CreateBroadcastDto } from "@/broadcasts/dto/create_broadcast_dto.js"
 import {
@@ -14,7 +15,7 @@ import {
 import { UpdateBroadcastDto } from "@/broadcasts/dto/update_broadcast_dto.js"
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
 
-import { Broadcast } from "@/database/database_schema_types.js"
+import { Broadcast, BroadcastWithEmailContent } from "@/database/database_schema_types.js"
 
 import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
@@ -48,6 +49,7 @@ export class BroadcastController extends BaseController {
         ["DELETE", "/", this.delete],
         ["GET", "/", this.get],
         ["PUT", "/", this.update],
+        ["PUT", "/validate", this.validateContent],
         ["POST", "/send", this.send],
       ],
       { prefix: "broadcasts/:broadcastId" },
@@ -99,6 +101,19 @@ export class BroadcastController extends BaseController {
     const { id } = await container.resolve(UpdateBroadcastAction).handle(broadcast, data)
 
     return ctx.json({ id })
+  }
+
+  validateContent = async (ctx: HonoContext) => {
+    const broadcast = await this.ensureExists<BroadcastWithEmailContent>(
+      ctx,
+      "broadcastId",
+    )
+
+    const results = await container
+      .make(ValidateBroadcastEmailContentAction)
+      .handle(broadcast)
+
+    return this.response(ctx).json(results).send()
   }
 
   send = async (ctx: HonoContext) => {

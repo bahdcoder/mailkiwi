@@ -47,10 +47,7 @@ export class PagePropsResolver {
     },
   }
 
-  protected async dynamicPropFetchers(
-    pathname: string,
-    defaultPageProps: DefaultPageProps,
-  ) {
+  protected async dynamicPropFetchers(pathname: string, { audience }: DefaultPageProps) {
     if (pathname.includes("/w/engage/broadcasts")) {
       const broadcastId = pathname
         .split("/w/engage/broadcasts/")?.[1]
@@ -59,8 +56,12 @@ export class PagePropsResolver {
       const broadcast = await container
         .make(BroadcastRepository)
         .findByIdWithAbTestVariants(broadcastId)
+      const segments = await container
+        .make(SegmentRepository)
+        .segments()
+        .findAll(eq(segmentsTable.audienceId, audience.id))
 
-      return { broadcast }
+      return { broadcast, segments }
     }
 
     return {}

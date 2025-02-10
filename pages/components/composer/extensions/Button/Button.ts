@@ -50,6 +50,10 @@ export const Button = Node.create({
     ]
   },
 
+  renderHTML({ HTMLAttributes }) {
+    return ["a", { "data-type": "button", ...HTMLAttributes }, 0]
+  },
+
   addCommands() {
     return {
       setButton:

@@ -10,9 +10,18 @@ import React from "react"
 
 import { route } from "@/shared/routes/route_aliases.js"
 
+enum ComposeBroadcastSteps {
+  COMPOSE = 0,
+  CONTACTS = 1,
+  CONFIGURE = 2,
+  PREVIEW = 3,
+}
 export function ComposeBroadcastTopBar() {
   const {
     syncContentToServerMutation: { isSuccess, isPending, isError },
+    validateBroadcastEmailContentMutation,
+    step,
+    setStep,
   } = useComposeBroadcastContext("ComposeBroadcastTopBar")
 
   return (
@@ -34,28 +43,49 @@ export function ComposeBroadcastTopBar() {
         </Button>
       </div>
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3">
-        <Button variant="secondary" className="rounded-full">
+        <Button
+          variant={step === ComposeBroadcastSteps.COMPOSE ? "secondary" : "tertiary"}
+          className="rounded-full"
+          onClick={() => setStep(ComposeBroadcastSteps.COMPOSE)}
+        >
           Compose
         </Button>
 
         <MinusIcon className="text-[var(--border-tertiary)]" />
 
-        <Button variant="tertiary" className="rounded-full">
-          Recipients
+        <Button
+          variant={step === ComposeBroadcastSteps.CONTACTS ? "secondary" : "tertiary"}
+          className="rounded-full"
+          onClick={() => setStep(ComposeBroadcastSteps.CONTACTS)}
+        >
+          Contacts
         </Button>
         <MinusIcon className="text-[var(--border-tertiary)]" />
-        <Button variant="tertiary" className="rounded-full">
+        <Button
+          variant={step === ComposeBroadcastSteps.CONFIGURE ? "secondary" : "tertiary"}
+          className="rounded-full"
+          onClick={() => setStep(ComposeBroadcastSteps.CONFIGURE)}
+        >
           Configure
         </Button>
         <MinusIcon className="text-[var(--border-tertiary)]" />
-        <Button variant="tertiary" className="rounded-full">
+        <Button
+          variant={step === ComposeBroadcastSteps.PREVIEW ? "secondary" : "tertiary"}
+          className="rounded-full"
+          onClick={() => setStep(ComposeBroadcastSteps.PREVIEW)}
+        >
           Preview
         </Button>
       </div>
 
       <div className="flex items-center gap-4">
-        <Button variant="secondary">Preview</Button>
-        <Button>
+        <Button disabled={isPending} variant="secondary">
+          Preview
+        </Button>
+        <Button
+          disabled={isPending}
+          onClick={() => setStep(ComposeBroadcastSteps.CONFIGURE)}
+        >
           Next <ArrowRightIcon />
         </Button>
       </div>

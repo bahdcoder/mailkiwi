@@ -1,6 +1,7 @@
 import { ComposeBroadcastProvider } from "./state/compose_broadcast_context.jsx"
 import { ComposeBroadcastTopBar } from "@/pages/components/flows/compose_broadcast/compose_broadcast_top_bar.jsx"
 import { useSyncComposerContentToServer } from "@/pages/components/flows/compose_broadcast/hooks/use_sync_composer_content_to_server.js"
+import { useValidateBroadcastContentMutation } from "@/pages/components/flows/compose_broadcast/hooks/use_validate_broadcast_content_mutation.js"
 import { StepsRenderer } from "@/pages/components/flows/steps_renderer.jsx"
 import React, { PropsWithChildren } from "react"
 import { clientOnly } from "vike-react/clientOnly"
@@ -33,9 +34,15 @@ export function ComposeBroadcastFlow({
   const [step, setStep] = React.useState(0)
 
   const syncContentToServerMutation = useSyncComposerContentToServer()
+  const validateBroadcastContentMutation = useValidateBroadcastContentMutation()
 
   return (
-    <ComposeBroadcastProvider syncContentToServerMutation={syncContentToServerMutation}>
+    <ComposeBroadcastProvider
+      step={step}
+      setStep={setStep}
+      syncContentToServerMutation={syncContentToServerMutation}
+      validateBroadcastEmailContentMutation={validateBroadcastContentMutation}
+    >
       <div className="DialogContent w-screen h-screen px-2 pb-2 box-border kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out z-[2]">
         <div className="flex flex-col">
           <ComposeBroadcastTopBar />

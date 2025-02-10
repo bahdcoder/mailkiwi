@@ -16,6 +16,7 @@ declare module "@tiptap/core" {
 }
 
 export const BullettedList = BaseBulletList.extend({
+  // name: "bullettedListWithStyles",
   addAttributes() {
     return {
       styles: getStyleAttributeDefinition(

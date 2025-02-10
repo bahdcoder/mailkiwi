@@ -16,6 +16,7 @@ declare module "@tiptap/core" {
 }
 
 export const NumberedList = BaseNumberedList.extend({
+  // name: "numberedListWithStyles",
   addAttributes() {
     return {
       styles: getStyleAttributeDefinition(getDefaultStylesForNode("orderedList").styles),

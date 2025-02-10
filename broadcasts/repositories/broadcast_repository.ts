@@ -107,13 +107,7 @@ export class BroadcastRepository extends BaseRepository {
   }
 
   async findById(id: string) {
-    const results = await this.database
-      .select()
-      .from(broadcasts)
-      .where(eq(broadcasts.id, id))
-      .limit(1)
-
-    return results?.[0]
+    return this.findByIdWithAbTestVariants(id)
   }
 
   async findAll() {
