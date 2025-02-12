@@ -108,7 +108,7 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
         }
       }
 
-      if (submissionResponse?.payload?.message) {
+      if (submissionResponse?.payload?.message && !submissionResponse?.payload?.errors) {
         submissionResponse.errorsList.push(submissionResponse?.payload?.message)
       }
 

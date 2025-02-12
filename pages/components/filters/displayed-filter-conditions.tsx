@@ -248,7 +248,10 @@ export function DisplayedFilterCondition({
         const Component = filterOperationOptions[filter.field]?.options
 
         const filterValue = (
-          <button className="kb-reset text-xs border-r border-[var(--border-tertiary)] px-2.5 h-full max-w-48 truncate text-ellipsis">
+          <button
+            className="kb-reset text-xs border-r border-[var(--border-tertiary)] px-2.5 h-full max-w-48 truncate text-ellipsis"
+            key={`${filter.value}-${filter.field}`}
+          >
             <Text className="text-xs kb-content-secondary font-medium">
               {Array.isArray(filter.value)
                 ? filter.value.map((value) => tagNames[value] ?? value).join(", ")
@@ -288,7 +291,7 @@ export function DisplayedFilterCondition({
                 className="flex-shrink-0"
               >
                 {filterOperationOptions[filter.field].operations.map((option) => (
-                  <Dropdown.Item asChild key={option.value}>
+                  <Dropdown.Item asChild key={`${option.value}-${option.label}`}>
                     <Button
                       variant="tertiary"
                       onClick={() =>

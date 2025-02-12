@@ -23,7 +23,9 @@ export function StepOneComposer() {
 
   const { editor } = useTiptapEditor({
     onUpdate({ editor }) {
-      syncContentToServerMutation.mutate({ emailContent: editor.getJSON() })
+      syncContentToServerMutation.mutate({
+        emailContent: { contentJson: editor.getJSON() },
+      })
     },
     content: ctx.pageProps.broadcast?.emailContent?.contentJson,
   })

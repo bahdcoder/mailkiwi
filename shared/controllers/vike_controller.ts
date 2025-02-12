@@ -12,7 +12,12 @@ import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
 import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
-import { tags as tagsTable } from "@/database/schema.js"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+
+import {
+  sendingDomains as sendingDomainsTable,
+  tags as tagsTable,
+} from "@/database/schema.js"
 
 import { BaseController } from "@/shared/controllers/base_controller.js"
 import { PagePropsResolver } from "@/shared/controllers/page_props/page_props_resolver.js"
@@ -122,6 +127,13 @@ export class VikeController extends BaseController {
       ? await container.make(AudienceRepository).getAudienceForTeam(teamId)
       : undefined
 
+    const sendingDomains = teamId
+      ? await container
+          .make(SendingDomainRepository)
+          .domains()
+          .findAll(eq(sendingDomainsTable.teamId, teamId))
+      : []
+
     const tags = audience?.id
       ? await container
           .make(TagRepository)
@@ -147,6 +159,18 @@ export class VikeController extends BaseController {
       isMobile: userAgent?.getDevice().type === "mobile",
       memberships: ctx.get("memberships"),
       team: excludeKeys(ctx.get("team"), ["commerceProviderAccountId"]),
+      sendingDomains: sendingDomains.map((domain) =>
+        excludeKeys(domain, [
+          "engageSecSendingSourceId",
+          "engageSendingSourceId",
+          "sendingSourceId",
+          "secondarySendingSourceId",
+          "dkimPrivateKey",
+          "dkimPublicKey",
+          "trackingSslCertSecret",
+          "trackingSslCertKey",
+        ]),
+      ),
       audience,
       tags,
       engage: {

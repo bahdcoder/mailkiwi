@@ -1,9 +1,15 @@
-import { ComposeBroadcastProvider } from "./state/compose_broadcast_context.jsx"
+import {
+  ComposeBroadcastContextInterface,
+  ComposeBroadcastProvider,
+} from "./state/compose_broadcast_context.jsx"
 import { ComposeBroadcastTopBar } from "@/pages/components/flows/compose_broadcast/compose_broadcast_top_bar.jsx"
+import { useGetBroadcastRecipientsCount } from "@/pages/components/flows/compose_broadcast/hooks/use_get_broadcast_recipients_count.js"
 import { useSyncComposerContentToServer } from "@/pages/components/flows/compose_broadcast/hooks/use_sync_composer_content_to_server.js"
 import { useValidateBroadcastContentMutation } from "@/pages/components/flows/compose_broadcast/hooks/use_validate_broadcast_content_mutation.js"
 import { StepsRenderer } from "@/pages/components/flows/steps_renderer.jsx"
-import React, { PropsWithChildren } from "react"
+import { usePageProps } from "@/pages/hooks/use_page_props.js"
+import { EngageBroadcastsComposerPageProps } from "@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx"
+import React from "react"
 import { clientOnly } from "vike-react/clientOnly"
 
 const StepOneComposer = clientOnly(() =>
@@ -28,18 +34,34 @@ const StepFourPreview = clientOnly(() =>
 
 export interface ComposeBroadcastFlowProps {}
 
-export function ComposeBroadcastFlow({
-  children,
-}: PropsWithChildren<ComposeBroadcastFlowProps>) {
+export function ComposeBroadcastFlow() {
+  const { broadcast } = usePageProps<EngageBroadcastsComposerPageProps>()
   const [step, setStep] = React.useState(0)
+  const [formState, setFormState] = React.useState<
+    ComposeBroadcastContextInterface["formState"]
+  >({
+    segmentId: broadcast?.segmentId ?? "all",
+    previewText: broadcast?.emailContent?.previewText ?? "",
+    subject: broadcast?.name ?? "",
+    replyToEmail: broadcast?.emailContent?.replyToEmail ?? "",
+    fromEmail: broadcast?.emailContent?.fromEmail ?? "",
+    fromName: broadcast?.emailContent?.fromName ?? "",
+  })
 
-  const syncContentToServerMutation = useSyncComposerContentToServer()
+  const syncContentToServerMutation = useSyncComposerContentToServer({
+    currentStep: step,
+    setStep,
+  })
   const validateBroadcastContentMutation = useValidateBroadcastContentMutation()
+  const getBroadcastRecipientsCount = useGetBroadcastRecipientsCount(formState.segmentId)
 
   return (
     <ComposeBroadcastProvider
       step={step}
       setStep={setStep}
+      formState={formState}
+      setFormState={setFormState}
+      getBroadcastRecipientsCount={getBroadcastRecipientsCount}
       syncContentToServerMutation={syncContentToServerMutation}
       validateBroadcastEmailContentMutation={validateBroadcastContentMutation}
     >

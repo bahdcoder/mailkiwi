@@ -1,6 +1,8 @@
 import { eq } from "drizzle-orm"
+import { DateTime } from "luxon"
 import {
   type InferInput,
+  any,
   boolean,
   check,
   checkAsync,
@@ -16,6 +18,7 @@ import {
   optional,
   pipe,
   pipeAsync,
+  record,
   string,
 } from "valibot"
 
@@ -23,20 +26,24 @@ import { audiences } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
-import { isDateInPast } from "@/utils/dates.js"
-
 export const SendBroadcastEmailContentSchema = object({
-  subject: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
-  fromName: pipe(string(), nonEmpty()),
-  fromEmail: pipe(string(), nonEmpty(), email()),
-  replyToEmail: pipe(string(), nonEmpty(), email()),
-  replyToName: pipe(string(), nonEmpty()),
+  subject: pipe(
+    string("Please provide a valid subject"),
+    nonEmpty(),
+    minLength(8),
+    maxLength(120),
+  ),
+  fromName: pipe(string('Please provide a valid "from" name'), nonEmpty()),
+  fromEmail: pipe(string('Please provide a valid "from" email'), nonEmpty(), email()),
+  replyToEmail: pipe(
+    string("Please provide a valid 'reply to' email "),
+    nonEmpty(),
+    email(),
+  ),
 
-  contentJson: nullable(optional(string())),
-  contentText: pipe(string(), nonEmpty()),
-  contentHtml: pipe(string(), nonEmpty()),
+  contentJson: record(string(), any()),
 
-  previewText: nullable(optional(string())),
+  previewText: pipe(string("Please provide a valid preview text"), nonEmpty()),
 })
 
 export const SendBroadcastSchema = objectAsync({
@@ -64,10 +71,17 @@ export const SendBroadcastSchema = objectAsync({
     nullable(optional(string())),
     check((input) => {
       if (!input) return true
+
       const date = new Date(input)
 
-      return !Number.isNaN(date.getTime())
-    }),
+      if (Number.isNaN(date.getTime())) {
+        return false
+      }
+
+      const dateTime = DateTime.fromJSDate(date).diffNow("hours")
+
+      return dateTime.hours > 1
+    }, "You may schedule to send this broadcast at least on hour in the future."),
   ),
 })
 

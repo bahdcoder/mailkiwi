@@ -208,11 +208,13 @@ export const sendingDomains = mysqlTable("sendingDomains", {
   }).notNull(),
   returnPathDomainVerifiedAt: timestamp("returnPathDomainVerifiedAt"),
 
-  // sending ip addresses
+  // transactional email
   sendingSourceId: primaryKeyCuid("sendingSourceId").references(() => sendingSources.id),
   secondarySendingSourceId: primaryKeyCuid("secondarySendingSourceId").references(
     () => sendingSources.id,
   ),
+
+  // marketing email
   engageSendingSourceId: primaryKeyCuid("engageSendingSourceId").references(
     () => sendingSources.id,
   ),

@@ -77,6 +77,7 @@ export const aliases = {
   create_broadcast: "/broadcasts",
   update_broadcast: "/broadcasts/:uuid/",
   validate_broadcast: "/broadcasts/:uuid/validate",
+  send_broadcast: "/broadcasts/:uuid/send",
 
   // broadcast groups
   create_broadcast_group: "/broadcasts_groups",

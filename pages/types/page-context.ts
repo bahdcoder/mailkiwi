@@ -2,6 +2,7 @@ import { type UAParser } from "ua-parser-js"
 
 import type {
   Audience,
+  SendingDomain,
   Tag,
   Team,
   TeamMembership,
@@ -23,6 +24,7 @@ export interface DefaultPageProps {
   send: {
     onboarded: boolean
   }
+  sendingDomains: SendingDomain[]
 }
 
 declare global {
@@ -39,6 +41,7 @@ declare global {
       pageProps: DefaultPageProps["pageProps"]
       engage: DefaultPageProps["engage"]
       send: DefaultPageProps["send"]
+      sendingDomains: DefaultPageProps["sendingDomains"]
     }
   }
 }

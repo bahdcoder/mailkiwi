@@ -21,5 +21,6 @@ const config: Config = {
     "tags",
     "engage",
     "send",
+    "sendingDomains",
   ],
 }

@@ -23,6 +23,7 @@ import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import { AssignSendingSourceToSendingDomainAction } from "@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js"
 import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
 import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
 
@@ -254,9 +255,18 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
 
   const { id: sendingDomainId } = await container
     .make(CreateSendingDomainAction)
-    .handle({ name: "kb.openmailer.org" }, team.id)
+    .handle(
+      { name: `${faker.internet.domainWord()}.${faker.internet.domainName()}` },
+      team.id,
+    )
 
   await seedDevSendingSourcesCommand?.handler?.()
+
+  await container.make(SendingDomainRepository).domains().update(sendingDomainId, {
+    returnPathDomainVerifiedAt: DateTime.now().toJSDate(),
+    dkimVerifiedAt: DateTime.now().toJSDate(),
+    trackingDomainVerifiedAt: DateTime.now().toJSDate(),
+  })
 
   await container.make(AssignSendingSourceToSendingDomainAction).handle(sendingDomainId)
 

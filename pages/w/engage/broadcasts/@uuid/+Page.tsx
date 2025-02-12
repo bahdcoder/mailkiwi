@@ -13,7 +13,7 @@ function LetterOverviewPage() {
 
   return (
     <Tabs.Content value="overview" className="pt-6">
-      <BroadcastDetails />
+      {/* <BroadcastDetails /> */}
 
       <div className="w-full mt-9">
         <div className="w-full rounded-2xl flex flex-col lg:flex-row border border-[var(--border-tertiary)] box-border">

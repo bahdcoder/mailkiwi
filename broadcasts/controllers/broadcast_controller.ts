@@ -119,9 +119,15 @@ export class BroadcastController extends BaseController {
   send = async (ctx: HonoContext) => {
     this.ensureCanManage(ctx)
 
-    const broadcast = await container
+    let broadcast = await container
       .make(BroadcastRepository)
       .findByIdWithAbTestVariants(ctx.req.param("broadcastId"))
+
+    async function refreshBroadcast() {
+      broadcast = await container
+        .make(BroadcastRepository)
+        .findByIdWithAbTestVariants(ctx.req.param("broadcastId"))
+    }
 
     if (!broadcast) {
       throw E_VALIDATION_FAILED([
@@ -139,6 +145,12 @@ export class BroadcastController extends BaseController {
           field: "status",
         },
       ])
+
+    const data = await this.validate(ctx, UpdateBroadcastDto)
+
+    await container.resolve(UpdateBroadcastAction).handle(broadcast, data)
+
+    await refreshBroadcast()
 
     const { success, issues } = await safeParseAsync(SendBroadcastSchema, {
       ...broadcast,

@@ -10,6 +10,7 @@ import {
   maxLength,
   minLength,
   nonEmpty,
+  nullable,
   number,
   object,
   objectAsync,
@@ -81,7 +82,7 @@ export const UpdateBroadcastDto = pipeAsync(
     ),
 
     segmentId: pipeAsync(
-      optional(string()),
+      optional(nullable(string())),
       checkAsync(async (value) => {
         if (!value) return true
 
@@ -111,7 +112,7 @@ export const UpdateBroadcastDto = pipeAsync(
         if (!input) return true
 
         return isDateInPast(input) === false
-      }, "sendAt cannot be in the past."),
+      }, "Please select a scheduled date at least six hours into the future."),
     ),
     waitingTimeToPickWinner: optional(number()), // in hours
   }),

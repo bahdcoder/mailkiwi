@@ -1,4 +1,6 @@
 import { useComposeBroadcastContext } from "./state/compose_broadcast_context.jsx"
+import { ComposeBroadcastTopBarActions } from "@/pages/components/flows/compose_broadcast/compose_broadcast_top_bar_actions.jsx"
+import { ComposeBroadcastSteps } from "@/pages/components/flows/compose_broadcast/compose_broadcast_types.js"
 import { ArrowRightIcon } from "@/pages/components/icons/arrow-right.svg.jsx"
 import { CancelIcon } from "@/pages/components/icons/cancel.svg.jsx"
 import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
@@ -10,12 +12,6 @@ import React from "react"
 
 import { route } from "@/shared/routes/route_aliases.js"
 
-enum ComposeBroadcastSteps {
-  COMPOSE = 0,
-  CONTACTS = 1,
-  CONFIGURE = 2,
-  PREVIEW = 3,
-}
 export function ComposeBroadcastTopBar() {
   const {
     syncContentToServerMutation: { isSuccess, isPending, isError },
@@ -78,17 +74,7 @@ export function ComposeBroadcastTopBar() {
         </Button>
       </div>
 
-      <div className="flex items-center gap-4">
-        <Button disabled={isPending} variant="secondary">
-          Preview
-        </Button>
-        <Button
-          disabled={isPending}
-          onClick={() => setStep(ComposeBroadcastSteps.CONFIGURE)}
-        >
-          Next <ArrowRightIcon />
-        </Button>
-      </div>
+      <ComposeBroadcastTopBarActions />
     </header>
   )
 }
