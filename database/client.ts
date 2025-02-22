@@ -3,7 +3,9 @@ import { drizzle } from "drizzle-orm/mysql2"
 import mysql from "mysql2/promise"
 
 export const createDatabaseClient = (databaseConnectionUrl: string) =>
-  mysql.createConnection(databaseConnectionUrl)
+  mysql.createConnection({
+    uri: databaseConnectionUrl,
+  })
 
 export type DrizzleClient = ReturnType<typeof drizzle<typeof schema>>
 

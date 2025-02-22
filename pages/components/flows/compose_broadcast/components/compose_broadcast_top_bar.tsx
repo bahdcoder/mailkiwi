@@ -1,7 +1,6 @@
-import { useComposeBroadcastContext } from "./state/compose_broadcast_context.jsx"
-import { ComposeBroadcastTopBarActions } from "@/pages/components/flows/compose_broadcast/compose_broadcast_top_bar_actions.jsx"
+import { ComposeBroadcastTopBarActions } from "@/pages/components/flows/compose_broadcast/components/compose_broadcast_top_bar_actions.jsx"
 import { ComposeBroadcastSteps } from "@/pages/components/flows/compose_broadcast/compose_broadcast_types.js"
-import { ArrowRightIcon } from "@/pages/components/icons/arrow-right.svg.jsx"
+import { useComposeBroadcastContext } from "@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx"
 import { CancelIcon } from "@/pages/components/icons/cancel.svg.jsx"
 import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
 import { MinusIcon } from "@/pages/components/icons/minus.svg.jsx"
@@ -63,6 +62,14 @@ export function ComposeBroadcastTopBar() {
           onClick={() => setStep(ComposeBroadcastSteps.CONFIGURE)}
         >
           Configure
+        </Button>
+        <MinusIcon className="text-[var(--border-tertiary)]" />
+        <Button
+          variant={step === ComposeBroadcastSteps.TRACKING ? "secondary" : "tertiary"}
+          className="rounded-full"
+          onClick={() => setStep(ComposeBroadcastSteps.TRACKING)}
+        >
+          Tracking
         </Button>
         <MinusIcon className="text-[var(--border-tertiary)]" />
         <Button

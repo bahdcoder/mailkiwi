@@ -39,6 +39,9 @@ export function useSyncComposerContentToServer({
           setStep(ComposeBroadcastSteps.CONFIGURE)
           break
         case ComposeBroadcastSteps.CONFIGURE:
+          setStep(ComposeBroadcastSteps.TRACKING)
+          break
+        case ComposeBroadcastSteps.TRACKING:
           setStep(ComposeBroadcastSteps.PREVIEW)
           break
         default:

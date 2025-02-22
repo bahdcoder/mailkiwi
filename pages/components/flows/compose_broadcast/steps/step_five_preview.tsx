@@ -3,7 +3,7 @@ import { EngageBroadcastsComposerPageProps } from "@/pages/w/engage/broadcasts/@
 import { Heading } from "@kibamail/owly/heading"
 import { usePageContext } from "vike-react/usePageContext"
 
-export function StepFourPreview() {
+export function StepFivePreview() {
   const ctx = usePageContext()
   const pageProps = ctx.pageProps as EngageBroadcastsComposerPageProps
 

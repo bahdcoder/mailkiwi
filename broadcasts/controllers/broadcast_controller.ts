@@ -4,6 +4,7 @@ import { CreateBroadcastAction } from "@/broadcasts/actions/create_broadcast_act
 import { DeleteBroadcastAction } from "@/broadcasts/actions/delete_broadcast_action.js"
 import { GetBroadcastsAction } from "@/broadcasts/actions/get_broadcasts_action.js"
 import { SendBroadcastAction } from "@/broadcasts/actions/send_broadcast_action.js"
+import { UnsendBroadcastAction } from "@/broadcasts/actions/unsend_broadcast_action.js"
 import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_action.js"
 import { ValidateBroadcastEmailContentAction } from "@/broadcasts/actions/validate_broadcast_email_content_action.js"
 import { BroadcastValidationAndAuthorizationConcern } from "@/broadcasts/concerns/broadcast_validation_concern.js"
@@ -51,6 +52,7 @@ export class BroadcastController extends BaseController {
         ["PUT", "/", this.update],
         ["PUT", "/validate", this.validateContent],
         ["POST", "/send", this.send],
+        ["POST", "/unsend", this.unsend],
       ],
       { prefix: "broadcasts/:broadcastId" },
     )
@@ -116,6 +118,25 @@ export class BroadcastController extends BaseController {
     return this.response(ctx).json(results).send()
   }
 
+  unsend = async (ctx: HonoContext) => {
+    this.ensureCanManage(ctx)
+    const broadcast = await this.ensureExists<Broadcast>(ctx, "broadcastId")
+
+    const allowedStatuses: Broadcast["status"][] = ["QUEUED_FOR_SENDING"]
+
+    if (!allowedStatuses?.includes(broadcast.status))
+      throw E_VALIDATION_FAILED([
+        {
+          message: "Only a broadcast that is already queued for sending can be unqueued.",
+          field: "status",
+        },
+      ])
+
+    await container.resolve(UnsendBroadcastAction).handle(broadcast)
+
+    return ctx.json({ id: broadcast.id })
+  }
+
   send = async (ctx: HonoContext) => {
     this.ensureCanManage(ctx)
 
@@ -138,7 +159,9 @@ export class BroadcastController extends BaseController {
       ])
     }
 
-    if (broadcast.status !== "DRAFT")
+    const allowedStatuses: Broadcast["status"][] = ["DRAFT", "QUEUED_FOR_SENDING"]
+
+    if (!allowedStatuses?.includes(broadcast.status))
       throw E_VALIDATION_FAILED([
         {
           message: "Only a draft broadcast can be sent.",

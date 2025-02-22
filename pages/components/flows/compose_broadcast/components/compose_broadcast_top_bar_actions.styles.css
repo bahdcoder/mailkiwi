@@ -1,0 +1,5 @@
+.kb-calendar-input {
+  input {
+    @apply text-left;
+  }
+}

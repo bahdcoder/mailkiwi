@@ -18,11 +18,7 @@ export class DeploySslCertificateForTrackingDomainJob extends BaseJob<DeploySslC
     return AVAILABLE_QUEUES.sending_domains
   }
 
-  async handle({
-    database,
-    redis,
-    payload,
-  }: JobContext<DeploySslCertificateForTrackingDomainJobPayload>) {
+  async handle({ payload }: JobContext<DeploySslCertificateForTrackingDomainJobPayload>) {
     const sendingDomainRepository = container.make(SendingDomainRepository)
     const sendingDomain = await sendingDomainRepository.findById(payload.sendingDomainId)
 

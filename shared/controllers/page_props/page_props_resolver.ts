@@ -43,7 +43,15 @@ export class PagePropsResolver {
         .make(BroadcastGroupRepository)
         .findWithBroadcastsForTeam(team.id)
 
-      return { groups }
+      return {
+        groups: groups.map((group) => ({
+          ...group,
+          broadcasts: group.broadcasts.map((broadcast) => ({
+            ...broadcast,
+            sendAt: broadcast.sendAt ? broadcast.sendAt.toISOString() : null,
+          })),
+        })),
+      }
     },
   }
 
@@ -61,7 +69,13 @@ export class PagePropsResolver {
         .segments()
         .findAll(eq(segmentsTable.audienceId, audience.id))
 
-      return { broadcast, segments }
+      return {
+        broadcast: {
+          ...broadcast,
+          sendAt: broadcast?.sendAt ? broadcast.sendAt.toISOString() : null,
+        },
+        segments,
+      }
     }
 
     return {}

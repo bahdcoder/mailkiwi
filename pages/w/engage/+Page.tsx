@@ -11,6 +11,7 @@ import * as Tabs from "@kibamail/owly/tabs"
 import { Text } from "@kibamail/owly/text"
 import * as TextField from "@kibamail/owly/text-field"
 import * as React from "react"
+import { toast } from "sonner"
 import { usePageContext } from "vike-react/usePageContext"
 
 import {
@@ -102,9 +103,7 @@ function EngagePage() {
                         {broadcast.name}
                       </Text>
                       <Text className="kb-content-tertiary truncate overflow-ellipsis">
-                        Stay updated with our latest news and insights! Discover tips,
-                        trends, and exclusive offers that can help you thrive in your
-                        endeavors.
+                        {broadcast?.name}
                       </Text>
                     </div>
 

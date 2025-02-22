@@ -17,6 +17,10 @@ function SingleLetterLayout({ children }: React.PropsWithChildren) {
     return "overview"
   }
 
+  if (ctx.urlPathname.includes("composer")) {
+    return <>{children}</>
+  }
+
   return (
     <PageLayout>
       <Tabs.Root variant="secondary" defaultValue={getDefaultTabValue()} width={"full"}>

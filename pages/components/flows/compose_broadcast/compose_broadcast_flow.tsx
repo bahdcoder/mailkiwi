@@ -2,13 +2,18 @@ import {
   ComposeBroadcastContextInterface,
   ComposeBroadcastProvider,
 } from "./state/compose_broadcast_context.jsx"
-import { ComposeBroadcastTopBar } from "@/pages/components/flows/compose_broadcast/compose_broadcast_top_bar.jsx"
+import { ComposeBroadcastTopBar } from "@/pages/components/flows/compose_broadcast/components/compose_broadcast_top_bar.jsx"
 import { useGetBroadcastRecipientsCount } from "@/pages/components/flows/compose_broadcast/hooks/use_get_broadcast_recipients_count.js"
 import { useSyncComposerContentToServer } from "@/pages/components/flows/compose_broadcast/hooks/use_sync_composer_content_to_server.js"
 import { useValidateBroadcastContentMutation } from "@/pages/components/flows/compose_broadcast/hooks/use_validate_broadcast_content_mutation.js"
+import {
+  getTodayFormatted,
+  parseISODateToFormattedScheduleDate,
+} from "@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js"
 import { StepsRenderer } from "@/pages/components/flows/steps_renderer.jsx"
 import { usePageProps } from "@/pages/hooks/use_page_props.js"
 import { EngageBroadcastsComposerPageProps } from "@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx"
+import dayjs from "dayjs"
 import React from "react"
 import { clientOnly } from "vike-react/clientOnly"
 
@@ -28,8 +33,14 @@ const StepThreeConfigure = clientOnly(() =>
   ),
 )
 
-const StepFourPreview = clientOnly(() =>
-  import("./steps/step_four_preview.jsx").then(({ StepFourPreview }) => StepFourPreview),
+const StepFivePreview = clientOnly(() =>
+  import("./steps/step_five_preview.jsx").then(({ StepFivePreview }) => StepFivePreview),
+)
+
+const StepFourTracking = clientOnly(() =>
+  import("./steps/step_four_tracking.jsx").then(
+    ({ StepFourTracking }) => StepFourTracking,
+  ),
 )
 
 export interface ComposeBroadcastFlowProps {}
@@ -46,6 +57,16 @@ export function ComposeBroadcastFlow() {
     replyToEmail: broadcast?.emailContent?.replyToEmail ?? "",
     fromEmail: broadcast?.emailContent?.fromEmail ?? "",
     fromName: broadcast?.emailContent?.fromName ?? "",
+    trackClicks: broadcast?.trackClicks ?? false,
+    trackOpens: broadcast?.trackOpens ?? false,
+    scheduledAt: broadcast?.sendAt
+      ? parseISODateToFormattedScheduleDate(broadcast?.sendAt)
+      : {
+          minute: "00",
+          hour: "09",
+          ampm: "AM",
+          value: dayjs().add(1, "day").toDate(),
+        },
   })
 
   const syncContentToServerMutation = useSyncComposerContentToServer({
@@ -65,7 +86,7 @@ export function ComposeBroadcastFlow() {
       syncContentToServerMutation={syncContentToServerMutation}
       validateBroadcastEmailContentMutation={validateBroadcastContentMutation}
     >
-      <div className="DialogContent w-screen h-screen px-2 pb-2 box-border kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out z-[2]">
+      <div className="DialogContent w-screen h-screen px-2 pb-2 box-border kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out">
         <div className="flex flex-col">
           <ComposeBroadcastTopBar />
           <div className="flex flex-grow w-full h-[calc(100vh-4.25rem)] box-border border kb-border-tertiary rounded-xl kb-background-hover">
@@ -75,7 +96,8 @@ export function ComposeBroadcastFlow() {
                 0: StepOneComposer,
                 1: StepTwoRecipients,
                 2: StepThreeConfigure,
-                3: StepFourPreview,
+                3: StepFourTracking,
+                4: StepFivePreview,
               }}
             />
           </div>

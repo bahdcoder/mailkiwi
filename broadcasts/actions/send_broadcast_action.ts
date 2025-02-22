@@ -1,3 +1,5 @@
+import { Job } from "bullmq"
+
 import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.js"
 import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.js"
 import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
@@ -24,11 +26,19 @@ export class SendBroadcastAction {
     }
 
     if (!broadcast.isAbTest) {
+      const jobId = `SEND_BROADCAST_${broadcast.id}`
+      const existingJob: Job = await Queue.broadcasts().getJob(jobId)
+
+      if (existingJob) {
+        await existingJob.remove()
+      }
+
       await Queue.broadcasts().add(
         SendBroadcastJob.id,
         { broadcastId: broadcast.id },
         {
           delay: broadcast.sendAt ? differenceInSeconds(new Date(), broadcast.sendAt) : 0,
+          jobId,
         },
       )
     }

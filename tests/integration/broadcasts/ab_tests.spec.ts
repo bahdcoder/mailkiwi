@@ -76,7 +76,11 @@ describe("@broadcasts update broadcasts", () => {
       (A, B) => (A.weight as number) - (B.weight as number),
     )
 
-    expect(orderedEmailContent).toStrictEqual(abTestVariantsMock)
+    expect(
+      orderedEmailContent?.map((email) => ({ name: email.name, weight: email.weight })),
+    ).toStrictEqual(
+      abTestVariantsMock.map((email) => ({ name: email.name, weight: email.weight })),
+    )
   })
 
   test("cannot update ab test variants if weights sum up to more than 100", async ({

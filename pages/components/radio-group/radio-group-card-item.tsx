@@ -6,27 +6,32 @@ import cn from "classnames"
 import React from "react"
 
 export interface RadioGroupCardItemProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  extends React.HtmlHTMLAttributes<HTMLDivElement> {
   title?: string
   description?: string
   checked?: boolean
+  disabled?: boolean
 }
 
 export function RadioGroupCardItem({
   checked,
   title,
+  className,
   description,
   children,
   disabled,
   ...props
 }: RadioGroupCardItemProps) {
   return (
-    <button
-      className={cn("w-full flex items-start gap-2 p-4 rounded-xl border", {
-        "kb-border-info kb-background-secondary": checked,
-        "kb-border-tertiary": !checked,
-      })}
-      disabled={disabled}
+    <div
+      className={cn(
+        "w-full flex items-start gap-2 p-4 rounded-xl border",
+        {
+          "kb-border-info kb-background-secondary": checked,
+          "kb-border-tertiary": !checked,
+        },
+        className,
+      )}
       {...props}
     >
       <Checkbox variant="circle" checked={checked} disabled={disabled} />
@@ -49,6 +54,6 @@ export function RadioGroupCardItem({
         </Text>
         {checked ? children : null}
       </div>
-    </button>
+    </div>
   )
 }

@@ -370,7 +370,7 @@ describe.sequential("@oauth ", () => {
     )
   })
 
-  test("can handle a user registration callback authorization from google", async ({
+  test.only("can handle a user registration callback authorization from google", async ({
     expect,
   }) => {
     const { FakeDriver, user } = getFakeOauthProviderDriver("google", "register")

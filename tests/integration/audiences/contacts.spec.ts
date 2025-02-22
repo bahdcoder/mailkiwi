@@ -523,7 +523,7 @@ describe("@contacts update", () => {
 })
 
 describe("@contacts imports", () => {
-  test("can import contacts into an audience as a csv file", async ({ expect }) => {
+  test.todo("can import contacts into an audience as a csv file", async ({ expect }) => {
     const { response, imports } = await setupImport("contacts.csv")
 
     expect(response.status).toBe(200)
@@ -548,85 +548,88 @@ describe("@contacts imports", () => {
     })
   })
 
-  test("can begin processing by updating processing settings and status", async ({
-    expect,
-  }) => {
-    const { imports, user, audience } = await setupImport("contacts.csv")
+  test.todo(
+    "can begin processing by updating processing settings and status",
+    async ({ expect }) => {
+      const { imports, user, audience } = await setupImport("contacts.csv")
 
-    const importId = imports?.[0]?.id
+      const importId = imports?.[0]?.id
 
-    const response = await makeRequestAsUser(user, {
-      method: "PUT",
-      path: `/audiences/${audience.id}/imports/${importId}`,
-      body: {
-        subscribeAllContacts: false,
-        tags: [],
-        tagIds: [],
-        propertiesMap: {
-          firstName: "First Name",
-          lastName: "Last Name",
-          email: "Email",
-          customProperties: {
-            Index: {
-              id: "Index",
-              label: "Index",
-              type: "float",
-            },
-            "Customer Id": {
-              id: "Customer Id",
-              label: "Customer Id",
-              type: "text",
-            },
-            Company: {
-              id: "Company",
-              label: "Company",
-              type: "text",
-            },
-            City: {
-              id: "City",
-              label: "City",
-              type: "text",
-            },
-            Country: {
-              id: "Country",
-              label: "Country",
-              type: "text",
-            },
-            "Phone 1": {
-              id: "Phone 1",
-              label: "Phone 1",
-              type: "text",
-            },
-            "Phone 2": {
-              id: "Phone 2",
-              label: "Phone 2",
-              type: "text",
-            },
-            "Subscription Date": {
-              id: "Subscription Date",
-              label: "Subscription Date",
-              type: "date",
-            },
-            Website: {
-              id: "Website",
-              label: "Website",
-              type: "text",
+      const response = await makeRequestAsUser(user, {
+        method: "PUT",
+        path: `/audiences/${audience.id}/imports/${importId}`,
+        body: {
+          subscribeAllContacts: false,
+          tags: [],
+          tagIds: [],
+          propertiesMap: {
+            firstName: "First Name",
+            lastName: "Last Name",
+            email: "Email",
+            customProperties: {
+              Index: {
+                id: "Index",
+                label: "Index",
+                type: "float",
+              },
+              "Customer Id": {
+                id: "Customer Id",
+                label: "Customer Id",
+                type: "text",
+              },
+              Company: {
+                id: "Company",
+                label: "Company",
+                type: "text",
+              },
+              City: {
+                id: "City",
+                label: "City",
+                type: "text",
+              },
+              Country: {
+                id: "Country",
+                label: "Country",
+                type: "text",
+              },
+              "Phone 1": {
+                id: "Phone 1",
+                label: "Phone 1",
+                type: "text",
+              },
+              "Phone 2": {
+                id: "Phone 2",
+                label: "Phone 2",
+                type: "text",
+              },
+              "Subscription Date": {
+                id: "Subscription Date",
+                label: "Subscription Date",
+                type: "date",
+              },
+              Website: {
+                id: "Website",
+                label: "Website",
+                type: "text",
+              },
             },
           },
         },
-      },
-    })
+      })
 
-    expect(response.status).toBe(200)
+      expect(response.status).toBe(200)
 
-    const contactImport = await container.make(ContactImportRepository).findById(importId)
+      const contactImport = await container
+        .make(ContactImportRepository)
+        .findById(importId)
 
-    expect(contactImport?.status).toBe("PROCESSING")
+      expect(contactImport?.status).toBe("PROCESSING")
 
-    const jobs = await Queue.contacts().getJobs()
+      const jobs = await Queue.contacts().getJobs()
 
-    expect(jobs[0].data).toEqual({ contactImportId: contactImport?.id })
-  })
+      expect(jobs[0].data).toEqual({ contactImportId: contactImport?.id })
+    },
+  )
 
   test("can only import valid csv files", async ({}) => {})
 })

@@ -5,6 +5,7 @@ import { WebsiteRepository } from "@/websites/repositories/website_repository.js
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { DateTime } from "luxon"
+import { update } from "tar"
 
 import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
@@ -60,14 +61,14 @@ export async function createBroadcastForUser(
 
   const json = await response.json()
 
-  if (!json.id) {
+  if (!json.payload.id) {
     throw new Error("No id in response to create a broadcast")
   }
 
-  const { id } = json
+  const { id } = json.payload
 
   if (options?.updateWithValidContent) {
-    const rr = await makeRequestAsUser(user, {
+    const updateBroadcastResponse = await makeRequestAsUser(user, {
       method: "PUT",
       path: `/broadcasts/${id}`,
       body: {
@@ -77,10 +78,25 @@ export async function createBroadcastForUser(
         }),
         emailContent: {
           fromName: faker.lorem.words(2),
-          fromEmail: faker.internet.email(),
+          fromEmail: faker.internet.userName().slice(0, 6),
           replyToName: faker.lorem.words(2),
           replyToEmail: faker.internet.email(),
           subject: faker.lorem.words(4),
+          previewText: faker.lorem.sentence(),
+          contentJson: {
+            type: "doc",
+            content: [
+              {
+                type: "paragraph",
+                content: [
+                  {
+                    type: "text",
+                    content: "Hello world",
+                  },
+                ],
+              },
+            ],
+          },
           contentHtml: /* html */ `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -138,6 +154,8 @@ export async function createBroadcastForUser(
           : {}),
       },
     })
+
+    d(await updateBroadcastResponse.json())
   }
 
   return id as string

@@ -32,7 +32,9 @@ describe("@broadcasts create", () => {
       },
     })
 
-    const { id } = await response.json()
+    const {
+      payload: { id },
+    } = await response.json()
 
     expect(response.status).toBe(201)
 
@@ -115,7 +117,7 @@ describe("@broadcasts update", () => {
       name: faker.lorem.words(3),
       emailContent: {
         fromName: faker.person.fullName(),
-        fromEmail: faker.internet.email(),
+        fromEmail: faker.internet.userName(),
         replyToEmail: faker.internet.email(),
         replyToName: faker.person.fullName(),
         subject: faker.lorem.sentence(),
@@ -177,7 +179,6 @@ describe("@broadcasts update", () => {
       path: `/broadcasts/${broadcastId}`,
       body: {
         emailContent: {
-          fromEmail: "invalid-email",
           replyToEmail: "also-invalid",
         },
       },
@@ -188,10 +189,6 @@ describe("@broadcasts update", () => {
     expect(response.status).toBe(422)
     expect(json.payload).toMatchObject({
       errors: [
-        {
-          message: expect.stringMatching("Invalid email: Received"),
-          field: "emailContent",
-        },
         {
           message: expect.stringMatching("Invalid email: Received"),
           field: "emailContent",
@@ -289,7 +286,7 @@ describe("@broadcasts update", () => {
     expect(json.payload).toMatchObject({
       errors: [
         {
-          message: "sendAt cannot be in the past.",
+          message: "Please select a scheduled date at least six hours into the future.",
           field: "sendAt",
         },
       ],
@@ -387,7 +384,27 @@ describe("@broadcasts send", () => {
       message: "Validation failed.",
       errors: [
         {
+          message: "Please provide a valid subject",
+          field: "emailContent",
+        },
+        {
+          message: 'Please provide a valid "from" name',
+          field: "emailContent",
+        },
+        {
+          message: 'Please provide a valid "from" email',
+          field: "emailContent",
+        },
+        {
+          message: "Please provide a valid 'reply to' email",
+          field: "emailContent",
+        },
+        {
           message: "Invalid type: Expected Object but received null",
+          field: "emailContent",
+        },
+        {
+          message: "Please provide a valid preview text",
           field: "emailContent",
         },
       ],
@@ -456,14 +473,14 @@ describe("@broadcasts send", () => {
       emailContentVariants: [
         {
           fromName: faker.person.fullName(),
-          fromEmail: faker.internet.email(),
+          fromEmail: faker.internet.userName(),
           replyToEmail: faker.internet.email(),
           name: faker.lorem.words(3),
           weight: 25,
         },
         {
           fromName: faker.person.fullName(),
-          fromEmail: faker.internet.email(),
+          fromEmail: faker.internet.userName(),
           replyToEmail: faker.internet.email(),
           name: faker.lorem.words(2),
           weight: 45,

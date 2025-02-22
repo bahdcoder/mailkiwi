@@ -26,6 +26,10 @@ function EngageLayout({ children }: React.PropsWithChildren) {
     return <>{children}</>
   }
 
+  if (ctx.urlPathname.includes("composer")) {
+    return <>{children}</>
+  }
+
   return (
     <PageLayout>
       <Tabs.Root

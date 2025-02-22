@@ -1,13 +1,15 @@
 import "./styles.css"
 import React from "react"
+import { Toaster } from "sonner"
 
-function RootLayout({ children }: React.PropsWithChildren<{}>) {
-  {
-    /*  max-w-screen-2xl overflow-hidden mx-auto*/
-  }
-
+function RootLayout({ children }: React.PropsWithChildren) {
   return (
-    <div className="w-full h-screen border-l border-r kb-border-tertiary">{children}</div>
+    <>
+      <Toaster />
+      <div className="w-full h-screen border-l border-r kb-border-tertiary">
+        {children}
+      </div>
+    </>
   )
 }
 

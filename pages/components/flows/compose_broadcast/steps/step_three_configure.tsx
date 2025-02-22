@@ -20,8 +20,6 @@ export function StepThreeConfigure() {
   const { formState, setFormState } = useComposeBroadcastContext("StepThreeConfigure")
   const pageProps = ctx.pageProps as EngageBroadcastsComposerPageProps
 
-  console.log({ ctx })
-
   const engageSendingDomain = ctx.sendingDomains.find(
     (domain) => domain.product === "engage",
   )
@@ -73,18 +71,37 @@ export function StepThreeConfigure() {
 
       {engageSendingDomain ? (
         <div className="mt-6 grid grid-cols-1 gap-4">
-          <TextField.Root>
+          <TextField.Root
+            value={formState.fromEmail}
+            onChange={(event) =>
+              setFormState((current) => ({ ...current, fromEmail: event.target.value }))
+            }
+          >
             <TextField.Label>From email</TextField.Label>
             <TextField.Slot side="right">
               <Text>@{engageSendingDomain?.name}</Text>
             </TextField.Slot>
           </TextField.Root>
 
-          <TextField.Root>
+          <TextField.Root
+            value={formState.fromName}
+            onChange={(event) =>
+              setFormState((current) => ({ ...current, fromName: event.target.value }))
+            }
+          >
             <TextField.Label>From name</TextField.Label>
           </TextField.Root>
 
-          <TextField.Root type="email">
+          <TextField.Root
+            type="email"
+            value={formState.replyToEmail}
+            onChange={(event) =>
+              setFormState((current) => ({
+                ...current,
+                replyToEmail: event.target.value,
+              }))
+            }
+          >
             <TextField.Label>Reply to</TextField.Label>
           </TextField.Root>
         </div>

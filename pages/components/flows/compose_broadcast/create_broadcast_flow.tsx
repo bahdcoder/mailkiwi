@@ -19,14 +19,16 @@ export interface CreateBroadcastFlowProps extends React.PropsWithChildren {}
 export function CreateBroadcastFlow({ children }: CreateBroadcastFlowProps) {
   const ctx = usePageContext()
 
-  const { serverFormProps, isPending, error } = useServerFormMutation<{ id: string }>({
+  const { serverFormProps, isPending, error, ServerErrorsList } = useServerFormMutation<{
+    id: string
+  }>({
     action: route("create_broadcast"),
     transform(form) {
       form["audienceId"] = ctx.audience?.id
       return form
     },
     async onSuccess(response) {
-      await navigate(route("broadcasts_composer", { broadcastId: response.payload.id }))
+      await navigate(route("broadcasts_composer", { uuid: response.payload.id }))
     },
   })
 
@@ -66,6 +68,8 @@ export function CreateBroadcastFlow({ children }: CreateBroadcastFlowProps) {
                 </SelectField.Error>
               ) : null}
             </SelectField.Root>
+
+            {ServerErrorsList}
           </div>
           <Dialog.Footer className="flex justify-between">
             <Dialog.Close asChild disabled={isPending}>

@@ -29,7 +29,7 @@ import { isDateInPast } from "@/utils/dates.js"
 
 const emailContentFields = {
   fromName: optional(string()),
-  fromEmail: optional(pipe(string(), email())),
+  fromEmail: optional(pipe(string(), maxLength(16))),
   replyToEmail: optional(pipe(string(), email())),
   replyToName: optional(string()),
 

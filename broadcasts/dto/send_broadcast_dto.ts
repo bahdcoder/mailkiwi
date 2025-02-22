@@ -34,9 +34,9 @@ export const SendBroadcastEmailContentSchema = object({
     maxLength(120),
   ),
   fromName: pipe(string('Please provide a valid "from" name'), nonEmpty()),
-  fromEmail: pipe(string('Please provide a valid "from" email'), nonEmpty(), email()),
+  fromEmail: pipe(string('Please provide a valid "from" email'), nonEmpty()),
   replyToEmail: pipe(
-    string("Please provide a valid 'reply to' email "),
+    string("Please provide a valid 'reply to' email"),
     nonEmpty(),
     email(),
   ),

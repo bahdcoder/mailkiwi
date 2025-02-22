@@ -27,6 +27,10 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
     }
   })
 
+  if (ctx.urlPathname.includes("composer")) {
+    return <>{children}</>
+  }
+
   return (
     <ApplicationLayoutProvider sidebar={sidebarState} setSidebar={setSidebarState}>
       <Topbar />
