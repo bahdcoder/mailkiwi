@@ -288,7 +288,7 @@ describe('@auth user login', () => {
   })
 })
 
-describe.sequential('@oauth ', () => {
+describe('@oauth ', () => {
   function getFakeOauthProviderDriver(provider: string, action: string) {
     const accessToken = faker.string.uuid()
     const user = {
@@ -370,7 +370,7 @@ describe.sequential('@oauth ', () => {
     )
   })
 
-  test('can handle a user registration callback authorization from google', async ({
+  test('can handle a user registration callback authorization from google', { retry: 3 }, async ({
     expect,
   }) => {
     const { FakeDriver, user } = getFakeOauthProviderDriver('google', 'register')

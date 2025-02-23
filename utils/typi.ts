@@ -25,12 +25,6 @@ export class Container {
       return this.instances.get(key)
     }
 
-    if (this.instances.has(key)) {
-      const instance = this.instances.get(key)
-
-      return instance
-    }
-
     const instance = new key()
 
     this.instances.set(key, instance)

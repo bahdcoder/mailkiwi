@@ -533,7 +533,7 @@ describe('@contacts update', () => {
 })
 
 describe('@contacts imports', () => {
-  test.todo('can import contacts into an audience as a csv file', async ({ expect }) => {
+  test('can import contacts into an audience as a csv file', async ({ expect }) => {
     const { response, imports } = await setupImport('contacts.csv')
 
     expect(response.status).toBe(200)
@@ -558,7 +558,7 @@ describe('@contacts imports', () => {
     })
   })
 
-  test.todo(
+  test(
     'can begin processing by updating processing settings and status',
     async ({ expect }) => {
       const { imports, user, audience } = await setupImport('contacts.csv')
@@ -640,8 +640,6 @@ describe('@contacts imports', () => {
       expect(jobs[0].data).toEqual({ contactImportId: contactImport?.id })
     },
   )
-
-  test('can only import valid csv files', async ({}) => {})
 })
 
 describe('@contacts exports', () => {

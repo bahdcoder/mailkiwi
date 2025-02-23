@@ -21,11 +21,13 @@ type ObjectWithNullable<T> = { [K in keyof T]: T[K] | null | undefined }
 
 export class BaseRepository {
   protected database: DrizzleClient
+  protected isATransactionRepository = false
 
   protected cache = container.make(Cache)
 
   transaction(transaction: DrizzleClient) {
     this.database = transaction
+    this.isATransactionRepository = true
 
     return this
   }

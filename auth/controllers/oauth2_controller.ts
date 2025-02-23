@@ -132,7 +132,7 @@ export class Oauth2Controller extends VikeController {
 
       return this.response(ctx).redirect(route('auth_register_profile')).send()
     } catch (error) {
-      d({ error })
+      d('GOOOOOOOOGLE', { error })
       this.flash(ctx, {
         title: `Failed to authenticate with ${params.provider}.`,
         description: 'Please try again or use another authentication method.',

@@ -183,7 +183,7 @@ export class UserRepository extends ScryptTokenRepository {
     return user
   }
 
-  async findByOauth2AccountProviderId(id: string) {}
+  async findByOauth2AccountProviderId(id: string) { }
 
   async findByIdWithChannelMemberships(id: string) {
     const [user] = await this.hasManyChannelMemberships((query) =>
