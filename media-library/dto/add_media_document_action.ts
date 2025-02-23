@@ -1,4 +1,3 @@
-import { makeMinioClient } from '@/minio/minio_client.js'
 import { makeS3Client } from '@/minio/s3_client.js'
 import mime from 'mime-types'
 import { Readable } from 'stream'

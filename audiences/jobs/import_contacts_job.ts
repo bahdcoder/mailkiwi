@@ -1,4 +1,4 @@
-import { makeMinioClient } from '@/minio/minio_client.js'
+
 import { makeS3Client } from '@/minio/s3_client.js'
 import CsvParser from 'csv-parser'
 import { sql } from 'drizzle-orm'
@@ -150,10 +150,10 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
           .bulkCreate(values, {
             set: contactImport.updateExistingContacts
               ? {
-                  firstName: sql`values(${contacts.firstName})`,
-                  lastName: sql`values(${contacts.lastName})`,
-                  email: sql`${contacts.email}`, // no change
-                }
+                firstName: sql`values(${contacts.firstName})`,
+                lastName: sql`values(${contacts.lastName})`,
+                email: sql`${contacts.email}`, // no change
+              }
               : {},
           })
 
