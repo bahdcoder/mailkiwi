@@ -351,12 +351,10 @@ export const websitePages = mysqlTable(
 
 export const contactImports = mysqlTable("contactImports", {
   id,
-  fileIdentifier: varchar("fileIdentifier", { length: 64 }).unique().notNull(),
   name: varchar("name", { length: 50 }),
   audienceId: primaryKeyCuid("audienceId")
     .references(() => audiences.id)
     .notNull(),
-  uploadUrl: varchar("url", { length: 100 }).notNull(),
   status: mysqlEnum("status", ["PENDING", "PROCESSING", "FAILED", "SUCCESS"]),
   subscribeAllContacts: boolean("subscribeAllContacts").default(true),
   updateExistingContacts: boolean("updateExistingContacts").default(true),
@@ -661,6 +659,7 @@ export const broadcasts = mysqlTable("broadcasts", {
   emailContentId: primaryKeyCuid("emailContentId").references(() => emailContents.id, {
     onDelete: "cascade",
   }),
+  sendingDomainId: primaryKeyCuid("sendingDomainId").references(() => sendingDomains.id),
   winningAbTestVariantId: primaryKeyCuid("winningAbTestVariantId").references(
     (): AnyMySqlColumn => abTestVariants.id,
     {

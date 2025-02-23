@@ -19,9 +19,10 @@ import {
   pipeAsync,
   record,
   string,
+  uuid,
 } from "valibot"
 
-import { abTestVariants, audiences, segments } from "@/database/schema.js"
+import { abTestVariants, audiences, segments, sendingDomains } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
@@ -81,8 +82,23 @@ export const UpdateBroadcastDto = pipeAsync(
       }),
     ),
 
+    sendingDomainId: pipeAsync(
+      optional(pipe(string(), uuid())),
+      checkAsync(async (value) => {
+        if (!value) return true
+
+        const database = makeDatabase()
+
+        const sendingDomain = await database.query.sendingDomains.findFirst({
+          where: eq(sendingDomains.id, value),
+        })
+
+        return sendingDomain !== undefined
+      }),
+    ),
+
     segmentId: pipeAsync(
-      optional(nullable(string())),
+      optional(nullable(pipe(string(), uuid()))),
       checkAsync(async (value) => {
         if (!value) return true
 

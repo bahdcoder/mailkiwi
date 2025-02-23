@@ -207,6 +207,8 @@ export class BaseController extends FlashController {
     if (team.id !== entity.teamId) {
       throw E_UNAUTHORIZED(`This entity does not belong to your selected team. `)
     }
+
+    return team
   }
 
   protected ensureTeam(ctx: HonoContext) {

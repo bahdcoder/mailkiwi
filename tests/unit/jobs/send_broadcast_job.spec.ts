@@ -20,11 +20,12 @@ describe("@broadcasts send job", () => {
   }) => {
     const database = makeDatabase()
 
-    const { user, audience, broadcastGroupId } = await createUser()
+    const { user, audience, broadcastGroupId, team } = await createUser()
     const { audience: otherAudience } = await createUser()
 
     const broadcastId = await createBroadcastForUser(
       user,
+      team.id,
       audience.id,
       broadcastGroupId,
       {
@@ -90,11 +91,12 @@ describe("@broadcasts send job", () => {
     async ({ expect }) => {
       const database = makeDatabase()
 
-      const { user, audience, broadcastGroupId } = await createUser()
+      const { user, audience, broadcastGroupId, team } = await createUser()
       const { audience: otherAudience } = await createUser()
 
       const broadcastId = await createBroadcastForUser(
         user,
+        team.id,
         audience.id,
         broadcastGroupId,
         {

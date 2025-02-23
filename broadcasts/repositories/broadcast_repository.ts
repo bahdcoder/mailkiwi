@@ -29,7 +29,7 @@ export class BroadcastRepository extends BaseRepository {
     return this.crud(broadcasts)
   }
 
-  async create(data: CreateBroadcastDto, teamId: string) {
+  async create(data: CreateBroadcastDto & { sendingDomainId?: string }, teamId: string) {
     const id = this.cuid()
     const emailContentId = this.cuid()
 

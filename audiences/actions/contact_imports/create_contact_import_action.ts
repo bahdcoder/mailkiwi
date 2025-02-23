@@ -1,4 +1,5 @@
 import { makeMinioClient } from "@/minio/minio_client.js"
+import { makeS3Client } from "@/minio/s3_client.js"
 import mime from "mime-types"
 import { Readable } from "stream"
 
@@ -26,19 +27,25 @@ export class CreateContactImportAction {
     private contactImportRepository = container.make(ContactImportRepository),
   ) {}
 
-  handle = async (file: File, audienceId: string) => {
+  handle = async (file: File, audienceId: string, teamId: string) => {
     const fileIdentifier = cuid()
 
-    const extension = mime.extension(file.type) ?? "csv"
+    const extension = mime.extension(file.type) || "csv"
 
-    const minio = makeMinioClient()
-      .bucket("contacts")
-      .name(`${fileIdentifier}.${extension}`)
+    const fileKey = ContactImportRepository.getUploadedFileKey(
+      fileIdentifier,
+      extension,
+      teamId,
+    )
 
-    // @ts-ignore
-    const { url } = await minio.write(Readable.from(file.stream()))
+    const storage = makeS3Client()
 
-    const stream = await minio.read()
+    await storage.putObject(fileKey, Readable.from(file.stream() as any), {
+      ACL: "private",
+      ContentType: `${mime.contentType(file.type)}`,
+    })
+
+    const stream = await storage.getObjectStream(fileKey)
 
     const { headers, headerCounts, headerSamples } =
       await this.readHeadersAndFirstNRows(stream)
@@ -46,10 +53,9 @@ export class CreateContactImportAction {
     const { customProperties, ...propertiesMap } = this.mapCsvHeaders(headers)
 
     const { id } = await this.contactImportRepository.create({
-      uploadUrl: url,
       audienceId,
       status: "PENDING",
-      fileIdentifier,
+      id: fileIdentifier,
       propertiesMap: { ...propertiesMap, customPropertiesHeaders: customProperties },
     })
 

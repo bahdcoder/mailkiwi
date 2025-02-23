@@ -101,9 +101,10 @@ describe("@broadcasts create", () => {
 
 describe("@broadcasts update", () => {
   test("can update a broadcast with valid data", async ({ expect }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
+    const { user, audience, broadcastGroupId, team } = await createUser()
     const broadcastId = await createBroadcastForUser(
       user,
+      team.id,
       audience.id,
       broadcastGroupId,
       {
@@ -147,8 +148,13 @@ describe("@broadcasts update", () => {
   })
 
   test("cannot update a broadcast with an invalid audience ID", async ({ expect }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
-    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
+    const { user, audience, broadcastGroupId, team } = await createUser()
+    const broadcastId = await createBroadcastForUser(
+      user,
+      team.id,
+      audience.id,
+      broadcastGroupId,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "PUT",
@@ -171,8 +177,13 @@ describe("@broadcasts update", () => {
   })
 
   test("cannot update a broadcast with invalid email addresses", async ({ expect }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
-    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
+    const { user, audience, broadcastGroupId, team } = await createUser()
+    const broadcastId = await createBroadcastForUser(
+      user,
+      team.id,
+      audience.id,
+      broadcastGroupId,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "PUT",
@@ -198,8 +209,13 @@ describe("@broadcasts update", () => {
   })
 
   test("can update individual fields of a broadcast", async ({ expect }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
-    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
+    const { user, audience, broadcastGroupId, team } = await createUser()
+    const broadcastId = await createBroadcastForUser(
+      user,
+      team.id,
+      audience.id,
+      broadcastGroupId,
+    )
 
     const updateData = {
       emailContent: {
@@ -243,9 +259,14 @@ describe("@broadcasts update", () => {
   })
 
   test("can update sendAt to a valid timestamp", async ({ expect }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
+    const { user, audience, broadcastGroupId, team } = await createUser()
     const database = makeDatabase()
-    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
+    const broadcastId = await createBroadcastForUser(
+      user,
+      team.id,
+      audience.id,
+      broadcastGroupId,
+    )
 
     const sendAt = new Date(Date.now() + 86400000) // 24 hours from now
 
@@ -267,8 +288,13 @@ describe("@broadcasts update", () => {
   })
 
   test("cannot update sendAt to a past timestamp", async ({ expect }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
-    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
+    const { user, audience, broadcastGroupId, team } = await createUser()
+    const broadcastId = await createBroadcastForUser(
+      user,
+      team.id,
+      audience.id,
+      broadcastGroupId,
+    )
 
     const sendAt = new Date(Date.now() - 86400000) // 24 hours ago
 
@@ -296,11 +322,17 @@ describe("@broadcasts update", () => {
 
 describe("@broadcasts delete", () => {
   test("cannot delete a broadcast from another team", async ({ expect }) => {
-    const { user: user1, audience: audience1, broadcastGroupId } = await createUser()
+    const {
+      user: user1,
+      audience: audience1,
+      broadcastGroupId,
+      team,
+    } = await createUser()
     const { user: user2 } = await createUser()
 
     const broadcastId = await createBroadcastForUser(
       user1,
+      team.id,
       audience1.id,
       broadcastGroupId,
     )
@@ -317,9 +349,14 @@ describe("@broadcasts delete", () => {
   })
 
   test("can delete a broadcast", async ({ expect }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
+    const { user, audience, broadcastGroupId, team } = await createUser()
 
-    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
+    const broadcastId = await createBroadcastForUser(
+      user,
+      team.id,
+      audience.id,
+      broadcastGroupId,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "DELETE",
@@ -338,10 +375,11 @@ describe("@broadcasts delete", () => {
 
 describe("@broadcasts send", () => {
   test("can queue a broadcast for sending", async ({ expect }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
+    const { user, audience, broadcastGroupId, team } = await createUser()
 
     const broadcastId = await createBroadcastForUser(
       user,
+      team.id,
       audience.id,
       broadcastGroupId,
       {
@@ -368,9 +406,14 @@ describe("@broadcasts send", () => {
   test("cannot queue a broadcast if all required information is not provided", async ({
     expect,
   }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
+    const { user, audience, broadcastGroupId, team } = await createUser()
 
-    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
+    const broadcastId = await createBroadcastForUser(
+      user,
+      team.id,
+      audience.id,
+      broadcastGroupId,
+    )
 
     const response = await makeRequestAsUser(user, {
       method: "POST",
@@ -383,6 +426,10 @@ describe("@broadcasts send", () => {
     expect(json.payload).toMatchObject({
       message: "Validation failed.",
       errors: [
+        {
+          field: "sendingDomainId",
+          message: "Invalid type: Expected string but received null",
+        },
         {
           message: "Please provide a valid subject",
           field: "emailContent",
@@ -415,12 +462,13 @@ describe("@broadcasts send", () => {
   test("cannot queue a broadcast if the account has sending disabled", async ({
     expect,
   }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
+    const { user, audience, broadcastGroupId, team } = await createUser()
 
     const database = makeDatabase()
 
     const broadcastId = await createBroadcastForUser(
       user,
+      team.id,
       audience.id,
       broadcastGroupId,
       {
@@ -457,10 +505,11 @@ describe("@broadcasts send", () => {
   test("cannot send a broadcast with invalid or incomplete a/b variants information", async ({
     expect,
   }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
+    const { user, audience, broadcastGroupId, team } = await createUser()
 
     const broadcastId = await createBroadcastForUser(
       user,
+      team.id,
       audience.id,
       broadcastGroupId,
       {

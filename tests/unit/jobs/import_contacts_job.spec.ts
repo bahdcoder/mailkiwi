@@ -101,6 +101,8 @@ describe("@contacts import job", () => {
       .from(tagsOnContacts)
 
     expect(contactsTags).toBeGreaterThanOrEqual(1080) // 360 contacts * 3 new tags
+
+    container.restoreAll()
   })
 
   test(

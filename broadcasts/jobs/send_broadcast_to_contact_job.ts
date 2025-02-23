@@ -51,6 +51,9 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       .findAllForTeam(broadcast.teamId)
 
     let sendingDomain =
+      teamSendingDomains.find(
+        (sendingDomain) => broadcast.sendingDomainId === sendingDomain.id,
+      ) ||
       teamSendingDomains.find((sendingDomain) => sendingDomain.product === "engage") ||
       teamSendingDomains?.[0]
 
@@ -68,7 +71,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     const injectEmailPayload: InjectEmailSchemaDto = {
       from: {
         name: emailContent.fromName,
-        email: emailContent.fromEmail,
+        email: emailContent.fromEmail + "@" + sendingDomain.name,
       },
       replyTo: {
         name: emailContent.replyToName,

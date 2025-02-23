@@ -128,7 +128,7 @@ describe("@report-builder", () => {
 
   test("can get reports for a campaign", { timeout: 20000 }, async ({ expect }) => {
     const TOTAL_SENDS = 100
-    const { user, audience, sendingDomainId, broadcastGroupId } =
+    const { user, audience, sendingDomainId, broadcastGroupId, team } =
       await setupDomainForDnsChecks()
     const database = makeDatabase()
     // 1. create 10,000 contacts
@@ -141,9 +141,9 @@ describe("@report-builder", () => {
       )
 
     const [broadcastId, secondBroadcastId, thirdBroadcastId] = await Promise.all([
-      createBroadcastForUser(user, audience.id, broadcastGroupId),
-      createBroadcastForUser(user, audience.id, broadcastGroupId),
-      createBroadcastForUser(user, audience.id, broadcastGroupId),
+      createBroadcastForUser(user, team.id, audience.id, broadcastGroupId),
+      createBroadcastForUser(user, team.id, audience.id, broadcastGroupId),
+      createBroadcastForUser(user, team.id, audience.id, broadcastGroupId),
     ])
 
     const [source] = await database.select().from(sendingSources).limit(1)

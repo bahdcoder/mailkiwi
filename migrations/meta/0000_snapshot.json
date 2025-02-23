@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "2b0e184a-013e-4955-8b5a-b012ec72ba86",
+  "id": "ae23f6dd-b6d6-4bad-b6a1-d6fe2bce5a4a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -551,6 +551,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "sendingDomainId": {
+          "name": "sendingDomainId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "winningAbTestVariantId": {
           "name": "winningAbTestVariantId",
           "type": "binary(16)",
@@ -649,6 +656,15 @@
           "columnsFrom": ["emailContentId"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "broadcasts_sendingDomainId_sendingDomains_id_fk": {
+          "name": "broadcasts_sendingDomainId_sendingDomains_id_fk",
+          "tableFrom": "broadcasts",
+          "tableTo": "sendingDomains",
+          "columnsFrom": ["sendingDomainId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
           "onUpdate": "no action"
         },
         "broadcasts_winningAbTestVariantId_abTestVariants_id_fk": {
@@ -891,13 +907,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "fileIdentifier": {
-          "name": "fileIdentifier",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "name": {
           "name": "name",
           "type": "varchar(50)",
@@ -908,13 +917,6 @@
         "audienceId": {
           "name": "audienceId",
           "type": "binary(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "url": {
-          "name": "url",
-          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -976,12 +978,7 @@
           "columns": ["id"]
         }
       },
-      "uniqueConstraints": {
-        "contactImports_fileIdentifier_unique": {
-          "name": "contactImports_fileIdentifier_unique",
-          "columns": ["fileIdentifier"]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "contactProperties": {
       "name": "contactProperties",
@@ -2139,6 +2136,65 @@
       "compositePrimaryKeys": {
         "forms_id": {
           "name": "forms_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "mediaDocuments": {
+      "name": "mediaDocuments",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "altText": {
+          "name": "altText",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "teamId": {
+          "name": "teamId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "mediaDocuments_teamId_teams_id_fk": {
+          "name": "mediaDocuments_teamId_teams_id_fk",
+          "tableFrom": "mediaDocuments",
+          "tableTo": "teams",
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "mediaDocuments_id": {
+          "name": "mediaDocuments_id",
           "columns": ["id"]
         }
       },

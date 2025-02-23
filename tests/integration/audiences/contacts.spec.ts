@@ -1,9 +1,12 @@
 import { appEnv } from "@/app/env/app_env.js"
+import { S3Disk } from "@/minio/s3_client.js"
+import { S3Client } from "@aws-sdk/client-s3"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { readFile } from "fs/promises"
 import { resolve } from "path"
-import { describe, test } from "vitest"
+import { Readable } from "stream"
+import { describe, test, vi } from "vitest"
 
 import { CreateTagAction } from "@/audiences/actions/tags/create_tag_action.js"
 import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
@@ -36,6 +39,13 @@ export const setupImport = async (fileName: string, updateSettings = false) => {
   const form = new FormData()
 
   const contactsCsv = await readFile(resolve(__dirname, "mocks", fileName), "utf-8")
+
+  const FakeS3Client = {
+    putObject: vi.fn(async () => ({})),
+    getObjectStream: vi.fn(async () => Readable.from(contactsCsv)),
+  }
+
+  container.fake(S3Disk, FakeS3Client as any)
 
   const contactsCsvBlob = new Blob([contactsCsv], {
     type: "text/csv",

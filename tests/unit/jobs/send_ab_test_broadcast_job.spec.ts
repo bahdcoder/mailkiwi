@@ -22,7 +22,7 @@ describe("Send broadcast job", () => {
     const database = makeDatabase()
     const redis = makeRedis()
 
-    const { user, audience, broadcastGroupId } = await createUser()
+    const { user, audience, team, broadcastGroupId } = await createUser()
 
     const contactsForAudience = faker.number.int({
       min: 277,
@@ -44,6 +44,7 @@ describe("Send broadcast job", () => {
 
     const broadcastId = await createBroadcastForUser(
       user,
+      team.id,
       audience.id,
       broadcastGroupId,
       {

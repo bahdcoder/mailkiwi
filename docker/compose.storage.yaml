@@ -4,7 +4,7 @@ services:
     container_name: minio
     restart: on-failure
     entrypoint: sh
-    command: -c ' mkdir -p /data/attachments && mkdir -p /data/emails && mkdir -p /data/contacts && minio  server /data --console-address ":9001"'
+    command: -c ' mkdir -p /data/attachments && mkdir -p /data/emails && mkdir -p /data/contacts && minio server /data --console-address ":9001"'
     environment:
       - MINIO_ROOT_USER=c7p5jgfcze6qxpidordkdkjzw3cjnq
       - MINIO_ROOT_PASSWORD=35jids3f4ze6qxpidordkd7owed7gzk6dgsca
@@ -14,3 +14,18 @@ services:
     networks:
       default:
         ipv4_address: 172.20.0.9
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c " mc alias set myminio http://minio:9000 c7p5jgfcze6qxpidordkdkjzw3cjnq 35jids3f4ze6qxpidordkd7owed7gzk6dgsca; mc mb myminio/kibamail-dev --ignore-existing; mc mb myminio/emails --ignore-existing; mc mb myminio/contacts --ignore-existing; exit 0; "
+    networks:
+      - default

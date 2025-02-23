@@ -95,6 +95,7 @@
     "esbuild": "^0.23.1",
     "form-data": "^4.0.0",
     "globals": "^15.8.0",
+    "jsdom": "^26.0.0",
     "postcss": "^8.4.39",
     "prettier": "^3.3.2",
     "puppeteer": "^23.2.1",

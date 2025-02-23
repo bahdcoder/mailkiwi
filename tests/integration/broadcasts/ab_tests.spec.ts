@@ -17,8 +17,13 @@ import { container } from "@/utils/typi.js"
 
 describe("@broadcasts update broadcasts", () => {
   test("can update a broadcast with ab test variants", async ({ expect }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
-    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
+    const { user, audience, broadcastGroupId, team } = await createUser()
+    const broadcastId = await createBroadcastForUser(
+      user,
+      team.id,
+      audience.id,
+      broadcastGroupId,
+    )
 
     const abTestVariantsMock = [
       createFakeAbTestEmailContent({ weight: 10 }),
@@ -86,9 +91,14 @@ describe("@broadcasts update broadcasts", () => {
   test("cannot update ab test variants if weights sum up to more than 100", async ({
     expect,
   }) => {
-    const { user, audience, broadcastGroupId } = await createUser()
+    const { user, audience, broadcastGroupId, team } = await createUser()
     const database = makeDatabase()
-    const broadcastId = await createBroadcastForUser(user, audience.id, broadcastGroupId)
+    const broadcastId = await createBroadcastForUser(
+      user,
+      team.id,
+      audience.id,
+      broadcastGroupId,
+    )
 
     const abTestVariantsMock = [
       createFakeAbTestEmailContent({ weight: 10 }),

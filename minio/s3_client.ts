@@ -1,6 +1,7 @@
 import { appEnv } from "@/app/env/app_env.js"
-import { PutObjectCommandInput, S3Client } from "@aws-sdk/client-s3"
+import { GetObjectCommand, PutObjectCommandInput, S3Client } from "@aws-sdk/client-s3"
 import { Upload } from "@aws-sdk/lib-storage"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import { Readable } from "stream"
 
 import { container } from "@/utils/typi.js"
@@ -14,6 +15,28 @@ export class S3Disk {
     region: appEnv.FILE_UPLOADS_REGION,
     endpoint: `https://${appEnv.FILE_UPLOADS_ENDPOINT}`,
   })
+
+  async getSignedUrl(Key: string, expiresIn?: number) {
+    const command = new GetObjectCommand({
+      Bucket: appEnv.FILE_UPLOADS_BUCKET,
+      Key,
+    })
+
+    return getSignedUrl(this.client, command, {
+      expiresIn,
+    })
+  }
+
+  async getObjectStream(Key: string) {
+    const command = new GetObjectCommand({
+      Bucket: appEnv.FILE_UPLOADS_BUCKET,
+      Key,
+    })
+
+    const result = await this.client.send(command)
+
+    return result.Body as Readable
+  }
 
   async putObject(
     Key: string,

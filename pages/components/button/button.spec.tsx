@@ -1,6 +1,5 @@
 import { Button } from "./button.jsx"
-import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { render } from "@testing-library/react"
 import React from "react"
 import { describe, test } from "vitest"
 

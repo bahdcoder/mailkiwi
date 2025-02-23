@@ -15,8 +15,12 @@ export class ContactImportRepository extends BaseRepository {
     super()
   }
 
+  static getUploadedFileKey(id: string, extension: string, teamId: string) {
+    return `${teamId}/contact-imports/${id}.${extension}`
+  }
+
   async create(payload: InsertContactImport) {
-    const id = this.cuid()
+    const id = payload.id || this.cuid()
     await this.database.insert(contactImports).values({ id, ...payload })
 
     return { id }

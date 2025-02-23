@@ -1,11 +1,15 @@
 import { makeMinioClient } from "@/minio/minio_client.js"
+import { makeS3Client } from "@/minio/s3_client.js"
 import CsvParser from "csv-parser"
 import { sql } from "drizzle-orm"
 import { DateTime } from "luxon"
 
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 import { TagRepository } from "@/audiences/repositories/tag_repository.js"
+
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
 import { ContactImport, ContactProperty } from "@/database/database_schema_types.js"
 import {
@@ -44,10 +48,19 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
       return this.done()
     }
 
-    const csvStream = await makeMinioClient()
-      .bucket("contacts")
-      .name(`${contactImport.fileIdentifier}.csv`)
-      .read()
+    const audience = await container
+      .make(AudienceRepository)
+      .findById(contactImport?.audienceId)
+
+    if (!audience) {
+      return this.done()
+    }
+
+    const team = await container.make(TeamRepository).findById(audience?.teamId)
+
+    const csvStream = await makeS3Client().getObjectStream(
+      ContactImportRepository.getUploadedFileKey(contactImport.id, "csv", team.id),
+    )
 
     const parser = csvStream.pipe(CsvParser())
 

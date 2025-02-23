@@ -18,6 +18,9 @@ import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
 import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.js"
 
+import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+
 import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
 import { makeRequestAsUser } from "@/tests/utils/http.js"
 
@@ -37,18 +40,24 @@ import { container } from "@/utils/typi.js"
 
 export async function createBroadcastForUser(
   user: User,
+  teamId: string,
   audienceId: string,
   broadcastGroupId: string,
   options?: {
     updateWithValidContent?: boolean
     updateWithABTestsContent?: boolean
     weights?: number[]
+    sendingDomainId?: string
     emailContent?: {
       fromEmail?: string
       fromName?: string
     }
   },
 ) {
+  if (!options) {
+    options = {}
+  }
+
   const response = await makeRequestAsUser(user, {
     method: "POST",
     path: "/broadcasts",
@@ -60,6 +69,10 @@ export async function createBroadcastForUser(
   })
 
   const json = await response.json()
+
+  if (!options?.sendingDomainId) {
+    options.sendingDomainId = await setupSendingDomainForTeam(teamId)
+  }
 
   if (!json.payload.id) {
     throw new Error("No id in response to create a broadcast")
@@ -137,6 +150,7 @@ export async function createBroadcastForUser(
           contentText: faker.lorem.paragraph(),
           ...options?.emailContent,
         },
+        sendingDomainId: options?.sendingDomainId,
         ...(options?.updateWithABTestsContent
           ? {
               emailContentVariants: options?.weights?.map((weight) => ({
@@ -154,8 +168,6 @@ export async function createBroadcastForUser(
           : {}),
       },
     })
-
-    d(await updateBroadcastResponse.json())
   }
 
   return id as string
@@ -302,6 +314,7 @@ export const createUser = async ({
   if (createBroadcast) {
     broadcastId = await createBroadcastForUser(
       freshUser,
+      team.id,
       audienceId as string,
       broadcastGroupId,
       {
@@ -400,4 +413,22 @@ export const createUser = async ({
     broadcastGroupId,
     website: (await findWebsiteWithPages()) as WebsiteWithPages,
   }
+}
+
+export async function setupSendingDomainForTeam(teamId: string) {
+  const TEST_DOMAIN = faker.internet.domainName()
+
+  const { id: sendingDomainId } = await container
+    .make(CreateSendingDomainAction)
+    .handle({ name: TEST_DOMAIN }, teamId)
+
+  await container.make(SendingDomainRepository).update(sendingDomainId, {
+    trackingDomainVerifiedAt: DateTime.now().toJSDate(),
+    trackingDomainSslVerifiedAt: DateTime.now().toJSDate(),
+    returnPathDomainVerifiedAt: DateTime.now().toJSDate(),
+    openTrackingEnabled: true,
+    clickTrackingEnabled: true,
+  })
+
+  return sendingDomainId
 }

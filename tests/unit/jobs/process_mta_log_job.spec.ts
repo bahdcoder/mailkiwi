@@ -80,6 +80,7 @@ describe("@process-mta-log", () => {
 
     const broadcastId = await createBroadcastForUser(
       user,
+      team.id,
       audience.id,
       broadcastGroupId,
       {

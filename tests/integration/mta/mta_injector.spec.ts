@@ -561,15 +561,16 @@ describe.sequential("@mta", () => {
 
     const TEST_DOMAIN = "localgmail.net"
 
-    await setupDomainForDnsChecks(TEST_DOMAIN, {
+    const { sendingDomainId } = await setupDomainForDnsChecks(TEST_DOMAIN, {
       product: "engage",
       teamId: team.id,
     })
 
-    const fromEmail = "jonathan@" + TEST_DOMAIN
+    const fromEmail = "jonathan"
 
     const broadcastId = await createBroadcastForUser(
       user,
+      team.id,
       audience.id,
       broadcastGroupId,
       {
@@ -577,6 +578,7 @@ describe.sequential("@mta", () => {
         emailContent: {
           fromEmail,
         },
+        sendingDomainId,
       },
     )
 
@@ -592,6 +594,10 @@ describe.sequential("@mta", () => {
       database: makeDatabase(),
       redis: makeRedis(),
     })
+
+    expect(output?.[0]?.ok, "The output from the MTA inject job was unsuccessful.").toBe(
+      true,
+    )
 
     const [message] = output
 

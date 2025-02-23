@@ -36,13 +36,13 @@ export class ContactImportController extends BaseController {
 
     const audience = await this.ensureExists<Audience>(ctx, "audienceId")
 
-    this.ensureBelongsToTeam(ctx, audience)
+    const team = this.ensureBelongsToTeam(ctx, audience)
 
     const file = form.get("file") as File
 
     const { id, propertiesMap, headerCounts, headerSamples } = await container
       .make(CreateContactImportAction)
-      .handle(file, audience.id)
+      .handle(file, audience.id, team.id)
 
     return this.response(ctx)
       .json({ id, propertiesMap, headerCounts, headerSamples }, 200, true)

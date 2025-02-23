@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { DateTime } from "luxon"
 import {
   type InferInput,
@@ -6,13 +6,11 @@ import {
   boolean,
   check,
   checkAsync,
-  date,
   email,
   maxLength,
   minLength,
   nonEmpty,
   nullable,
-  number,
   object,
   objectAsync,
   optional,
@@ -20,9 +18,10 @@ import {
   pipeAsync,
   record,
   string,
+  uuid,
 } from "valibot"
 
-import { audiences } from "@/database/schema.js"
+import { audiences, sendingDomains } from "@/database/schema.js"
 
 import { makeDatabase } from "@/shared/container/index.js"
 
@@ -60,6 +59,21 @@ export const SendBroadcastSchema = objectAsync({
 
       return audience !== undefined
     }),
+  ),
+
+  sendingDomainId: pipeAsync(
+    pipe(string(), uuid()),
+    checkAsync(async (value) => {
+      if (!value) return true
+
+      const database = makeDatabase()
+
+      const sendingDomain = await database.query.sendingDomains.findFirst({
+        where: and(eq(sendingDomains.id, value), eq(sendingDomains.product, "engage")),
+      })
+
+      return sendingDomain !== undefined
+    }, "The sending domain must be an engage domain"),
   ),
 
   trackClicks: optional(nullable(boolean())),
