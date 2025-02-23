@@ -1,6 +1,6 @@
-import { type Page, test as base } from "@playwright/test"
-import { readFile } from "fs/promises"
-import { resolve } from "path"
+import { type Page, test as base } from '@playwright/test'
+import { readFile } from 'fs/promises'
+import { resolve } from 'path'
 
 import {
   administrator,
@@ -9,14 +9,14 @@ import {
   guest,
   manager,
   owner,
-} from "@/tests/e2e/helpers/storage_state_paths.js"
-import { AdministratorPage } from "@/tests/e2e/pages/roles/administrator_page.js"
-import { AuthorPage } from "@/tests/e2e/pages/roles/author_page.js"
-import { GuestPage } from "@/tests/e2e/pages/roles/guest_page.js"
-import { ManagerPage } from "@/tests/e2e/pages/roles/manager_page.js"
-import { OwnerPage } from "@/tests/e2e/pages/roles/owner_page.js"
+} from '@/tests/e2e/helpers/storage_state_paths.js'
+import { AdministratorPage } from '@/tests/e2e/pages/roles/administrator_page.js'
+import { AuthorPage } from '@/tests/e2e/pages/roles/author_page.js'
+import { GuestPage } from '@/tests/e2e/pages/roles/guest_page.js'
+import { ManagerPage } from '@/tests/e2e/pages/roles/manager_page.js'
+import { OwnerPage } from '@/tests/e2e/pages/roles/owner_page.js'
 
-import { User } from "@/database/database_schema_types.js"
+import type { User } from '@/database/database_schema_types.js'
 
 type UserRolesFixtures = {
   administratorPage: AdministratorPage
@@ -25,12 +25,12 @@ type UserRolesFixtures = {
   ownerPage: OwnerPage
   guestPage: GuestPage
   seed: Record<
-    "owner" | "guest" | "author" | "manager" | "administrator",
+    'owner' | 'guest' | 'author' | 'manager' | 'administrator',
     { team: { id: string; name: string }; user: User }
   >
 }
 
-export * from "@playwright/test"
+export * from '@playwright/test'
 
 export const test = base.extend<UserRolesFixtures>({
   async administratorPage({ browser }, use) {
@@ -77,9 +77,9 @@ export const test = base.extend<UserRolesFixtures>({
     await context.close()
   },
   async seed({ context }, use) {
-    const seedFilePath = resolve(basePath, "seed.users.json")
+    const seedFilePath = resolve(basePath, 'seed.users.json')
 
-    const users = await readFile(seedFilePath, "utf-8")
+    const users = await readFile(seedFilePath, 'utf-8')
 
     await use(JSON.parse(users))
 

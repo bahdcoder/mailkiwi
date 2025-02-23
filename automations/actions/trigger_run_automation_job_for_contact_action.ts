@@ -1,4 +1,4 @@
-import { automationStepSubtypesTrigger } from "@/database/schema.js"
+import type { automationStepSubtypesTrigger } from '@/database/schema.js'
 
 export class TriggerRunAutomationJobForContactAction {
   async handle(

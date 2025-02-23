@@ -1,20 +1,20 @@
-import { AddTagAutomationStepRunner } from "./actions/action_add_tag_runner.js"
-import { RemoveTagAutomationStepRunner } from "./actions/action_remove_tag_runner.js"
-import { SendEmailAutomationStepRunner } from "./actions/action_send_email_runner.js"
+import { AddTagAutomationStepRunner } from './actions/action_add_tag_runner.js'
+import { RemoveTagAutomationStepRunner } from './actions/action_remove_tag_runner.js'
+import { SendEmailAutomationStepRunner } from './actions/action_send_email_runner.js'
 import type {
   AutomationStepRunnerContext,
   AutomationStepRunnerContractConstructor,
-} from "./automation_runner_contract.js"
+} from './automation_runner_contract.js'
 
-import type { AutomationStep, Contact } from "@/database/database_schema_types.js"
-import { contactAutomationSteps } from "@/database/schema.js"
+import type { AutomationStep, Contact } from '@/database/database_schema_types.js'
+import { contactAutomationSteps } from '@/database/schema.js'
 
-import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 
 export class AutomationStepRunner {
   private contact: Contact
   protected runners: Partial<
-    Record<AutomationStep["subtype"], AutomationStepRunnerContractConstructor>
+    Record<AutomationStep['subtype'], AutomationStepRunnerContractConstructor>
   > = {
     ACTION_ADD_TAG: AddTagAutomationStepRunner,
     ACTION_SEND_EMAIL: SendEmailAutomationStepRunner,
@@ -31,7 +31,7 @@ export class AutomationStepRunner {
 
   async run({ database, redis }: AutomationStepRunnerContext) {
     if (!this.contact) {
-      throw E_OPERATION_FAILED("Contact not set for automation step runner.")
+      throw E_OPERATION_FAILED('Contact not set for automation step runner.')
     }
 
     const Runner = this.runners[this.automationStep.subtype]
@@ -50,7 +50,7 @@ export class AutomationStepRunner {
     await database.insert(contactAutomationSteps).values({
       contactId: this.contact.id,
       automationStepId: this.automationStep.id,
-      status: "COMPLETED",
+      status: 'COMPLETED',
       completedAt: new Date(),
     })
   }

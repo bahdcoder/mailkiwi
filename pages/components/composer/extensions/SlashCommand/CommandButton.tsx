@@ -1,7 +1,7 @@
-import { Icon } from "@/pages/components/tiptap/ui/Icon.js"
-import { cn } from "@/pages/components/tiptap/utils/index.js"
-import { icons } from "lucide-react"
-import { forwardRef } from "react"
+import { Icon } from '@/pages/components/tiptap/ui/Icon.js'
+import { cn } from '@/pages/components/tiptap/utils/index.js'
+import type { icons } from 'lucide-react'
+import { forwardRef } from 'react'
 
 export type CommandButtonProps = {
   active?: boolean
@@ -14,9 +14,9 @@ export type CommandButtonProps = {
 export const CommandButton = forwardRef<HTMLButtonElement, CommandButtonProps>(
   ({ active, icon, onClick, title }, ref) => {
     const wrapperClass = cn(
-      "flex text-neutral-500 items-center text-xs font-semibold justify-start p-1.5 gap-2 rounded",
-      !active && "bg-transparent hover:bg-neutral-50 hover:text-black",
-      active && "bg-neutral-100 text-black hover:bg-neutral-100",
+      'flex text-neutral-500 items-center text-xs font-semibold justify-start p-1.5 gap-2 rounded',
+      !active && 'bg-transparent hover:bg-neutral-50 hover:text-black',
+      active && 'bg-neutral-100 text-black hover:bg-neutral-100',
     )
 
     return (
@@ -30,4 +30,4 @@ export const CommandButton = forwardRef<HTMLButtonElement, CommandButtonProps>(
   },
 )
 
-CommandButton.displayName = "CommandButton"
+CommandButton.displayName = 'CommandButton'

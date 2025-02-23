@@ -1,27 +1,27 @@
-import { DisplayedFilterCondition } from "@/pages/components/filters/displayed-filter-conditions.jsx"
-import { useComposeBroadcastContext } from "@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx"
-import { MinusIcon } from "@/pages/components/icons/minus.svg.jsx"
-import { WarningTriangleSolidIcon } from "@/pages/components/icons/warning-triangle-solid.svg.jsx"
-import { EngagePageProps } from "@/pages/w/engage/+Page.jsx"
-import { EngageBroadcastsComposerPageProps } from "@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx"
-import { FilterCondition } from "@/pages/w/engage/contacts/components/filters.jsx"
-import * as Alert from "@kibamail/owly/alert"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Progress } from "@kibamail/owly/progress"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+import { DisplayedFilterCondition } from '@/pages/components/filters/displayed-filter-conditions.jsx'
+import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { MinusIcon } from '@/pages/components/icons/minus.svg.jsx'
+import { WarningTriangleSolidIcon } from '@/pages/components/icons/warning-triangle-solid.svg.jsx'
+import { EngagePageProps } from '@/pages/w/engage/+Page.jsx'
+import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
+import { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
+import * as Alert from '@kibamail/owly/alert'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Progress } from '@kibamail/owly/progress'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
 export function StepThreeConfigure() {
   const ctx = usePageContext()
 
-  const { formState, setFormState } = useComposeBroadcastContext("StepThreeConfigure")
+  const { formState, setFormState } = useComposeBroadcastContext('StepThreeConfigure')
   const pageProps = ctx.pageProps as EngageBroadcastsComposerPageProps
 
   const engageSendingDomain = ctx.sendingDomains.find(
-    (domain) => domain.product === "engage",
+    (domain) => domain.product === 'engage',
   )
 
   return (
@@ -36,7 +36,10 @@ export function StepThreeConfigure() {
         <TextField.Root
           value={formState.subject}
           onChange={(event) =>
-            setFormState((current) => ({ ...current, subject: event.target.value }))
+            setFormState((current) => ({
+              ...current,
+              subject: event.target.value,
+            }))
           }
         >
           <TextField.Label>Subject</TextField.Label>
@@ -45,7 +48,10 @@ export function StepThreeConfigure() {
         <TextField.Root
           value={formState.previewText}
           onChange={(event) =>
-            setFormState((current) => ({ ...current, previewText: event.target.value }))
+            setFormState((current) => ({
+              ...current,
+              previewText: event.target.value,
+            }))
           }
         >
           <TextField.Label>Preview text</TextField.Label>
@@ -74,7 +80,10 @@ export function StepThreeConfigure() {
           <TextField.Root
             value={formState.fromEmail}
             onChange={(event) =>
-              setFormState((current) => ({ ...current, fromEmail: event.target.value }))
+              setFormState((current) => ({
+                ...current,
+                fromEmail: event.target.value,
+              }))
             }
           >
             <TextField.Label>From email</TextField.Label>
@@ -86,7 +95,10 @@ export function StepThreeConfigure() {
           <TextField.Root
             value={formState.fromName}
             onChange={(event) =>
-              setFormState((current) => ({ ...current, fromName: event.target.value }))
+              setFormState((current) => ({
+                ...current,
+                fromName: event.target.value,
+              }))
             }
           >
             <TextField.Label>From name</TextField.Label>

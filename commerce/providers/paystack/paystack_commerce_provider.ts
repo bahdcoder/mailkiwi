@@ -1,25 +1,25 @@
-import { appEnv } from "@/app/env/app_env.js"
-import {
+import { appEnv } from '@/app/env/app_env.js'
+import type {
   AccountInformation,
   CommerceProviderContract,
   ConfirmOneTimePaymentPayload,
   InitializeOneTimePaymentPayload,
-} from "@/commerce/contracts/commerce_provider_contract.js"
-import { DateTime } from "luxon"
+} from '@/commerce/contracts/commerce_provider_contract.js'
+import { DateTime } from 'luxon'
 
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
-import { makeHttpClient } from "@/shared/http/http_client.js"
-import { commercePath, rootPath } from "@/shared/utils/routes/root_path.js"
+import { makeHttpClient } from '@/shared/http/http_client.js'
+import { commercePath, rootPath } from '@/shared/utils/routes/root_path.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class PaystackCommerceProvider implements CommerceProviderContract {
   requiresExternalOnboarding = false
 
   constructor(
     protected httpClient = makeHttpClient()
-      .baseURL("https://api.paystack.co")
+      .baseURL('https://api.paystack.co')
       .headers({
         Authorization: `Bearer ${appEnv.COMMERCE_PROVIDER_PAYSTACK_SECRET_KEY}`,
       }),
@@ -27,7 +27,7 @@ export class PaystackCommerceProvider implements CommerceProviderContract {
 
   async createAccount(account: AccountInformation) {
     const { data, error } = await this.httpClient
-      .url("/subaccount")
+      .url('/subaccount')
       .payload({
         business_name: account?.name,
         bank_code: account?.payoutInformation?.bankCode,
@@ -41,7 +41,7 @@ export class PaystackCommerceProvider implements CommerceProviderContract {
     if (error) throw error
 
     await container.make(TeamRepository).teams().update(account.teamId, {
-      commerceProvider: "paystack",
+      commerceProvider: 'paystack',
       commerceProviderAccountId: data?.data?.subaccount_code,
       commerceProviderConfirmedAt: DateTime.now().toJSDate(),
     })
@@ -50,7 +50,7 @@ export class PaystackCommerceProvider implements CommerceProviderContract {
   }
 
   async createOnboardingLink(accountId: string) {
-    return { onboardingLink: "" }
+    return { onboardingLink: '' }
   }
 
   async initialiseOneTimePayment({
@@ -59,12 +59,12 @@ export class PaystackCommerceProvider implements CommerceProviderContract {
     email,
   }: InitializeOneTimePaymentPayload) {
     const { data } = await this.httpClient
-      .url("/transaction/initialize")
+      .url('/transaction/initialize')
       .payload({
         email,
         amount: product.price,
         subaccount: accountId,
-        bearer: "subaccount",
+        bearer: 'subaccount',
         metadata: JSON.stringify({
           productId: product.id,
         }),
@@ -101,6 +101,6 @@ export class PaystackCommerceProvider implements CommerceProviderContract {
         message: string
       }>()
 
-    return { success: data?.data?.status === "success" }
+    return { success: data?.data?.status === 'success' }
   }
 }

@@ -1,1 +1,1 @@
-export * from "./ImageUpload.js"
+export * from './ImageUpload.js'

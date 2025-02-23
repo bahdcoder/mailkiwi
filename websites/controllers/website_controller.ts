@@ -1,34 +1,38 @@
-import { WEBSITES_DOMAIN, appEnv } from "@/app/env/app_env.js"
-import { InjectEmailAction } from "@/injector/actions/inject_email_action.js"
-import { InjectEmailSchemaDto } from "@/injector/dto/inject_email_dto.js"
-import { CreateContactSessionAction } from "@/websites/actions/create_contact_session_action.js"
-import { AddCustomWebsiteDomainSchema } from "@/websites/dto/add_custom_website_domain_dto.js"
-import { CreateContactSessionSchema } from "@/websites/dto/create_contact_session_dto.js"
-import { CreateWebsitePageSchema } from "@/websites/dto/create_website_page_dto.js"
-import { UpdateWebsiteSchema } from "@/websites/dto/update_website_dto.js"
-import { UpdateWebsitePageSchema } from "@/websites/dto/update_website_page_dto.js"
-import { CheckWebsiteDomainDnsConfiguration } from "@/websites/jobs/check_website_domain_dns_configuration_job.js"
-import { WebsitePageRepository } from "@/websites/repositories/website_page_repository.js"
-import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
-import { DateTime } from "luxon"
+import { WEBSITES_DOMAIN, appEnv } from '@/app/env/app_env.js'
+import { InjectEmailAction } from '@/injector/actions/inject_email_action.js'
+import { InjectEmailSchemaDto } from '@/injector/dto/inject_email_dto.js'
+import { CreateContactSessionAction } from '@/websites/actions/create_contact_session_action.js'
+import { AddCustomWebsiteDomainSchema } from '@/websites/dto/add_custom_website_domain_dto.js'
+import { CreateContactSessionSchema } from '@/websites/dto/create_contact_session_dto.js'
+import { CreateWebsitePageSchema } from '@/websites/dto/create_website_page_dto.js'
+import { UpdateWebsiteSchema } from '@/websites/dto/update_website_dto.js'
+import { UpdateWebsitePageSchema } from '@/websites/dto/update_website_page_dto.js'
+import { CheckWebsiteDomainDnsConfiguration } from '@/websites/jobs/check_website_domain_dns_configuration_job.js'
+import { WebsitePageRepository } from '@/websites/repositories/website_page_repository.js'
+import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { DateTime } from 'luxon'
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { GenerateWebsiteFromJsonTool } from "@/tools/website/generate_website_from_json_tool.js"
+import { GenerateWebsiteFromJsonTool } from '@/tools/website/generate_website_from_json_tool.js'
 
-import { Audience, Website, WebsitePage } from "@/database/database_schema_types.js"
+import {
+  Audience,
+  type Website,
+  type WebsitePage,
+} from '@/database/database_schema_types.js'
 
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { ContainerKey, makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import { Queue } from "@/shared/queue/queue.js"
-import { HonoContext } from "@/shared/server/types.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
-import { Encryption } from "@/shared/utils/encryption/encryption.js"
-import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
+import { ContainerKey, makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import { Queue } from '@/shared/queue/queue.js'
+import type { HonoContext } from '@/shared/server/types.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { Encryption } from '@/shared/utils/encryption/encryption.js'
+import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class WebsiteController extends BaseController {
   constructor(
@@ -39,48 +43,48 @@ export class WebsiteController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["PUT", "/custom_domains", this.addCustomDomain.bind(this)],
-        ["PUT", "/", this.update.bind(this)],
+        ['PUT', '/custom_domains', this.addCustomDomain.bind(this)],
+        ['PUT', '/', this.update.bind(this)],
       ],
       {
-        prefix: "/websites/:websiteId",
+        prefix: '/websites/:websiteId',
       },
     )
 
     this.app.defineRoutes(
       [
-        ["PUT", "/website_pages/:websitePageId", this.updateWebsitePage.bind(this)],
+        ['PUT', '/website_pages/:websitePageId', this.updateWebsitePage.bind(this)],
         [
-          "PUT",
-          "/website_pages/:websitePageId/publish",
+          'PUT',
+          '/website_pages/:websitePageId/publish',
           this.publishWebsitePage.bind(this),
         ],
         [
-          "PUT",
-          "/website_pages/:websitePageId/unpublish",
+          'PUT',
+          '/website_pages/:websitePageId/unpublish',
           this.unpublishWebsitePage.bind(this),
         ],
-        ["POST", "/website_pages/", this.createWebsitePage.bind(this)],
+        ['POST', '/website_pages/', this.createWebsitePage.bind(this)],
       ],
       {
-        prefix: "/websites/:websiteId/",
+        prefix: '/websites/:websiteId/',
       },
     )
 
     this.app.defineRoutes(
       [
-        ["GET", "/.well-known/acme-challenge/:token", this.acmeChallenge.bind(this)],
-        ["GET", "/:websitePageSlug?", this.index.bind(this)],
+        ['GET', '/.well-known/acme-challenge/:token', this.acmeChallenge.bind(this)],
+        ['GET', '/:websitePageSlug?', this.index.bind(this)],
 
         // Contact sessions
-        ["GET", "/sessions/:signature", this.confirmContactSession.bind(this)],
-        ["POST", "/sessions/", this.createContactSession.bind(this)],
+        ['GET', '/sessions/:signature', this.confirmContactSession.bind(this)],
+        ['POST', '/sessions/', this.createContactSession.bind(this)],
       ],
       {
         // TODO: wire this up to work with the reverse proxy.
         // Example: website request comes in: fastmedia.kibasites.com/commerce-letter
         // Reverse proxy proxies this request to: http://localhost:5000/__websites/fastmedia/commerce-letter
-        prefix: "/__websites/:websiteSlug",
+        prefix: '/__websites/:websiteSlug',
         middleware: [],
       },
     )
@@ -91,9 +95,9 @@ export class WebsiteController extends BaseController {
     this.ensureCanAdministrate(ctx)
 
     const entityChecks = [
-      this.ensureExists<Website>(ctx, "websiteId"),
-      ...(ctx.req.param("websitePageId")
-        ? [this.ensureExists<WebsitePage>(ctx, "websitePageId")]
+      this.ensureExists<Website>(ctx, 'websiteId'),
+      ...(ctx.req.param('websitePageId')
+        ? [this.ensureExists<WebsitePage>(ctx, 'websitePageId')]
         : []),
     ] as const
 
@@ -174,8 +178,8 @@ export class WebsiteController extends BaseController {
 
   async acmeChallenge(ctx: HonoContext) {
     const website = await this.websiteRepository.findBySlugAndToken(
-      ctx.req.param("websiteSlug"),
-      ctx.req.param("token"),
+      ctx.req.param('websiteSlug'),
+      ctx.req.param('token'),
     )
 
     if (!website) {
@@ -187,19 +191,19 @@ export class WebsiteController extends BaseController {
 
   async index(ctx: HonoContext) {
     const website = await this.websiteRepository.findBySlugWithPages(
-      ctx.req.param("websiteSlug"),
+      ctx.req.param('websiteSlug'),
     )
 
     if (!website) {
-      return ctx.html("<h1>We could not find this page. </h1>", 404)
+      return ctx.html('<h1>We could not find this page. </h1>', 404)
     }
 
-    const websitePageSlug = ctx.req.param("websitePageSlug") ?? "/"
+    const websitePageSlug = ctx.req.param('websitePageSlug') ?? '/'
 
     const page = website.pages.find((page) => page.path === websitePageSlug)
 
     if (!page || page.publishedAt === null) {
-      return ctx.html("<h1>We could not find this page. </h1>", 404)
+      return ctx.html('<h1>We could not find this page. </h1>', 404)
     }
 
     const html = await new GenerateWebsiteFromJsonTool(page.websiteContent).toHtml()
@@ -236,15 +240,15 @@ export class WebsiteController extends BaseController {
             </body>
           </html>
             `
-        .split("\n")
+        .split('\n')
         .map((line) => line.trim())
-        .join(""),
+        .join(''),
     )
   }
 
   async createContactSession(ctx: HonoContext) {
     const website = await this.websiteRepository.findBySlugWithPages(
-      ctx.req.param("websiteSlug"),
+      ctx.req.param('websiteSlug'),
     )
 
     if (!website) {
@@ -260,8 +264,8 @@ export class WebsiteController extends BaseController {
     if (!contact) {
       throw E_VALIDATION_FAILED([
         {
-          message: "You do not seem to be subscribed. Please subscribe before you login.",
-          field: "email",
+          message: 'You do not seem to be subscribed. Please subscribe before you login.',
+          field: 'email',
         },
       ])
     }
@@ -273,7 +277,7 @@ export class WebsiteController extends BaseController {
 
   async confirmContactSession(ctx: HonoContext) {
     const website = await this.websiteRepository.findBySlugWithPages(
-      ctx.req.param("websiteSlug"),
+      ctx.req.param('websiteSlug'),
     )
 
     if (!website) {
@@ -281,7 +285,7 @@ export class WebsiteController extends BaseController {
     }
 
     const decodedSignature = new SignedUrlManager(appEnv.APP_KEY).decode(
-      ctx.req.param("signature"),
+      ctx.req.param('signature'),
     )
 
     if (!decodedSignature) {

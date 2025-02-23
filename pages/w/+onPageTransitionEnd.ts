@@ -1,4 +1,4 @@
-import type { OnPageTransitionEndAsync } from "vike/types"
+import type { OnPageTransitionEndAsync } from 'vike/types'
 
 export { onPageTransitionEnd }
 
@@ -11,6 +11,6 @@ const onPageTransitionEnd: OnPageTransitionEndAsync = async (
     return
   }
 
-  document.body.classList.remove("vike-router-transition-out")
-  document.body.classList.add("vike-router-transition-in")
+  document.body.classList.remove('vike-router-transition-out')
+  document.body.classList.add('vike-router-transition-in')
 }

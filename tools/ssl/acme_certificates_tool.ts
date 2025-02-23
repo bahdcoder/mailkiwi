@@ -1,14 +1,14 @@
-import { appEnv } from "@/app/env/app_env.js"
-import acme from "acme-client"
-import { readFile } from "fs/promises"
-import https from "https"
-import { resolve } from "path"
+import { appEnv } from '@/app/env/app_env.js'
+import acme from 'acme-client'
+import { readFile } from 'fs/promises'
+import https from 'https'
+import { resolve } from 'path'
 
 export class AcmeCertificatesTool {
   private accountKey: Buffer | string
   private domain: string
 
-  CERTIFICATES_CONTACT_EMAIL = "certificates@kibamail.com"
+  CERTIFICATES_CONTACT_EMAIL = 'certificates@kibamail.com'
 
   CERTIFICATES_CONTACT = [`mailto:${this.CERTIFICATES_CONTACT_EMAIL}`]
 
@@ -48,7 +48,7 @@ export class AcmeCertificatesTool {
 
     if (appEnv.isDev || appEnv.isTest) {
       acme.axios.defaults.httpsAgent = new https.Agent({
-        ca: await readFile(resolve("certs", "pebble.minica.pem")),
+        ca: await readFile(resolve('certs', 'pebble.minica.pem')),
       })
     }
 

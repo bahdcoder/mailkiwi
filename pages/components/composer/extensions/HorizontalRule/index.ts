@@ -1,1 +1,1 @@
-export * from "./HorizontalRule.js"
+export * from './HorizontalRule.js'

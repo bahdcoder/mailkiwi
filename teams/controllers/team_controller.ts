@@ -1,20 +1,20 @@
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import { route } from "@/shared/routes/route_aliases.js"
-import type { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import { route } from '@/shared/routes/route_aliases.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
 export class TeamController extends BaseController {
   constructor(private app = makeApp()) {
     super()
     this.app.defineRoutes(
       [
-        ["GET", "/:teamId", this.show.bind(this)],
-        ["GET", "/:teamId/switch", this.switch.bind(this)],
+        ['GET', '/:teamId', this.show.bind(this)],
+        ['GET', '/:teamId/switch', this.switch.bind(this)],
       ],
       {
-        prefix: "teams",
+        prefix: 'teams',
       },
     )
   }
@@ -25,8 +25,8 @@ export class TeamController extends BaseController {
     if (!team)
       throw E_VALIDATION_FAILED([
         {
-          message: "Unknown team ID provided.",
-          field: "teamId",
+          message: 'Unknown team ID provided.',
+          field: 'teamId',
         },
       ])
 
@@ -36,10 +36,10 @@ export class TeamController extends BaseController {
   }
 
   async switch(ctx: HonoContext) {
-    const memberships = ctx.get("memberships")
+    const memberships = ctx.get('memberships')
 
-    const teamId = ctx.req.param("teamId")
-    const user = ctx.get("user")
+    const teamId = ctx.req.param('teamId')
+    const user = ctx.get('user')
 
     const isAnActiveMemberOfTeam = memberships.some(
       (membership) => membership.teamId === teamId,
@@ -51,6 +51,6 @@ export class TeamController extends BaseController {
       await this.session.updateCurrentSessionTeamId(ctx, teamId)
     }
 
-    return this.response(ctx).redirect(route("dashboard")).send()
+    return this.response(ctx).redirect(route('dashboard')).send()
   }
 }

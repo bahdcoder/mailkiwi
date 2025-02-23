@@ -1,10 +1,10 @@
-import { cn } from "@/pages/components/tiptap/utils/index.js"
-import { HTMLProps, forwardRef } from "react"
+import { cn } from '@/pages/components/tiptap/utils/index.js'
+import { type HTMLProps, forwardRef } from 'react'
 
 export const Spinner = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
   ({ className, ...rest }, ref) => {
     const spinnerClass = cn(
-      "animate-spin rounded-full border-2 border-current border-t-transparent h-4 w-4",
+      'animate-spin rounded-full border-2 border-current border-t-transparent h-4 w-4',
       className,
     )
 
@@ -12,4 +12,4 @@ export const Spinner = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
   },
 )
 
-Spinner.displayName = "Spinner"
+Spinner.displayName = 'Spinner'

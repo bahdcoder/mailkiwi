@@ -1,12 +1,12 @@
-import { createContext } from "@radix-ui/react-context"
+import { createContext } from '@radix-ui/react-context'
 
-import { type UpdateContactImportSettingsDto } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
+import type { UpdateContactImportSettingsDto } from '@/audiences/dto/contact_imports/update_contact_import_settings_dto.js'
 
 export type FormState = {
   contactImportId: string
   propertiesMap: Omit<
-    UpdateContactImportSettingsDto["propertiesMap"],
-    "customProperties"
+    UpdateContactImportSettingsDto['propertiesMap'],
+    'customProperties'
   > & {
     headers: string[]
     customPropertiesHeaders: string[]
@@ -15,7 +15,7 @@ export type FormState = {
   headerCounts: Record<string, number>
   headerSamples: Record<string, string[]>
 
-  contactProperties: UpdateContactImportSettingsDto["propertiesMap"]
+  contactProperties: UpdateContactImportSettingsDto['propertiesMap']
 }
 
 export const [ImportContactsProvider, useImportcontactsContext] = createContext<{
@@ -25,4 +25,4 @@ export const [ImportContactsProvider, useImportcontactsContext] = createContext<
 
   step: number
   setStep: React.Dispatch<React.SetStateAction<number>>
-}>("ImportContacts")
+}>('ImportContacts')

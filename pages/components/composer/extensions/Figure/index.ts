@@ -1,1 +1,1 @@
-export * from "./Figure.js"
+export * from './Figure.js'

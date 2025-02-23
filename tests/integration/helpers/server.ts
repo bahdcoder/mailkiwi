@@ -1,9 +1,9 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { ServerType, serve } from "@hono/node-server"
+import { appEnv } from '@/app/env/app_env.js'
+import { type ServerType, serve } from '@hono/node-server'
 
-import { makeApp } from "@/shared/container/index.js"
+import { makeApp } from '@/shared/container/index.js'
 
-import { sleep } from "@/utils/sleep.js"
+import { sleep } from '@/utils/sleep.js'
 
 export async function createTestServer() {
   const app = makeApp()
@@ -18,12 +18,12 @@ export async function createTestServer() {
     },
   )
 
-  await new Promise(function (resolve, reject) {
-    server.on("listening", () => {
-      resolve("Port listening.")
+  await new Promise((resolve, reject) => {
+    server.on('listening', () => {
+      resolve('Port listening.')
     })
 
-    server.on("timeout", reject)
+    server.on('timeout', reject)
   })
 
   await sleep(1000)
@@ -32,8 +32,8 @@ export async function createTestServer() {
 }
 
 export async function shutdownTestServer(server: ServerType) {
-  await new Promise(function (resolve, reject) {
-    server.close(function (error) {
+  await new Promise((resolve, reject) => {
+    server.close((error) => {
       if (error) return reject(error)
 
       console.log(`@inject-tests: monolith api closed.`)

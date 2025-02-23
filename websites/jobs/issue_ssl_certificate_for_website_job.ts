@@ -1,14 +1,14 @@
-import { SettingRepository } from "@/settings/repositories/setting_repository.js"
-import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
-import { DateTime } from "luxon"
+import { SettingRepository } from '@/settings/repositories/setting_repository.js'
+import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { DateTime } from 'luxon'
 
-import { AcmeCertificatesTool } from "@/tools/ssl/acme_certificates_tool.js"
+import { AcmeCertificatesTool } from '@/tools/ssl/acme_certificates_tool.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { Encryption } from "@/shared/utils/encryption/encryption.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { Encryption } from '@/shared/utils/encryption/encryption.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface IssueSSLCertificateForWebsiteJobPayload {
   websiteId: string
@@ -16,7 +16,7 @@ export interface IssueSSLCertificateForWebsiteJobPayload {
 
 export class IssueSSLCertificateForWebsiteJob extends BaseJob<IssueSSLCertificateForWebsiteJobPayload> {
   static get id() {
-    return "WEBSITES::ISSUE_SSL_CERTIFICATES_FOR_WEBSITE"
+    return 'WEBSITES::ISSUE_SSL_CERTIFICATES_FOR_WEBSITE'
   }
 
   static get queue() {
@@ -29,13 +29,13 @@ export class IssueSSLCertificateForWebsiteJob extends BaseJob<IssueSSLCertificat
 
     if (!website) {
       return this.done(
-        "The newsletter website was not found. Might have been deleted by the user before the job was run.",
+        'The newsletter website was not found. Might have been deleted by the user before the job was run.',
       )
     }
 
     if (!website.websiteDomain || !website.websiteDomainCnameValue) {
       return this.done(
-        "Custom website domain not configured. Might have been deleted by the user before the job was run.",
+        'Custom website domain not configured. Might have been deleted by the user before the job was run.',
       )
     }
 
@@ -75,7 +75,7 @@ export class IssueSSLCertificateForWebsiteJob extends BaseJob<IssueSSLCertificat
 
     await websiteRepository.updateById(website.id, {
       websiteSslCertKey: certificatePublicKey,
-      websiteSslCertSecret: certificatePrivateKey.toString("utf-8"),
+      websiteSslCertSecret: certificatePrivateKey.toString('utf-8'),
       websiteDomainSslVerifiedAt: DateTime.now().toJSDate(),
     })
 

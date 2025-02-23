@@ -1,13 +1,13 @@
-import { ContainerNodeView } from "@/pages/components/composer/extensions/Container/container-node-view.jsx"
+import { ContainerNodeView } from '@/pages/components/composer/extensions/Container/container-node-view.jsx'
 import {
   getStyleAttributeDefaultCommands,
   getStyleAttributeDefinition,
-} from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
-import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
-import { Node, mergeAttributes } from "@tiptap/core"
-import { ReactNodeViewRenderer } from "@tiptap/react"
+} from '@/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
+import { getDefaultStylesForNode } from '@/pages/components/composer/themes/default-theme.js'
+import { Node, mergeAttributes } from '@tiptap/core'
+import { ReactNodeViewRenderer } from '@tiptap/react'
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     container: {
       setContainer: () => ReturnType
@@ -18,11 +18,11 @@ declare module "@tiptap/core" {
 }
 
 export const Container = Node.create({
-  name: "container",
+  name: 'container',
 
-  group: "block",
+  group: 'block',
 
-  content: "block+", // Only allow block nodes inside
+  content: 'block+', // Only allow block nodes inside
 
   isolating: true, // Prevents text selection from crossing container boundaries
 
@@ -38,12 +38,12 @@ export const Container = Node.create({
 
   addAttributes() {
     return {
-      styles: getStyleAttributeDefinition(getDefaultStylesForNode("container").styles),
+      styles: getStyleAttributeDefinition(getDefaultStylesForNode('container').styles),
     }
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["div", mergeAttributes({ "data-type": "container" }, HTMLAttributes), 0]
+    return ['div', mergeAttributes({ 'data-type': 'container' }, HTMLAttributes), 0]
   },
 
   addCommands() {
@@ -54,18 +54,18 @@ export const Container = Node.create({
           const insertPos = state.selection.$from.pos
           const containerNode = {
             type: this.name,
-            attrs: getDefaultStylesForNode("container"),
+            attrs: getDefaultStylesForNode('container'),
             content: [
               {
-                type: "paragraph",
-                attrs: getDefaultStylesForNode("paragraph"),
+                type: 'paragraph',
+                attrs: getDefaultStylesForNode('paragraph'),
               },
             ],
           }
 
           const paragraphNode = {
-            type: "paragraph",
-            attrs: getDefaultStylesForNode("paragraph"),
+            type: 'paragraph',
+            attrs: getDefaultStylesForNode('paragraph'),
           }
 
           return chain()

@@ -1,5 +1,5 @@
-import { Secret } from "@poppinss/utils"
-import crypto from "node:crypto"
+import type { Secret } from '@poppinss/utils'
+import crypto from 'node:crypto'
 
 export interface UrlMetadata {
   [key: string]: string | undefined
@@ -21,12 +21,12 @@ export class SignedUrlManager {
     })
 
     const hash = crypto
-      .createHmac("sha256", this.appKey.release())
+      .createHmac('sha256', this.appKey.release())
       .update(data)
-      .digest("base64url")
+      .digest('base64url')
       .slice(0, this.HASH_LENGTH)
 
-    const encoded = Buffer.from(data).toString("base64url")
+    const encoded = Buffer.from(data).toString('base64url')
 
     return `${hash}.${encoded}`
   }
@@ -35,18 +35,18 @@ export class SignedUrlManager {
     original: string
     metadata?: UrlMetadata
   } | null {
-    const [hash, data] = encoded.split(".")
+    const [hash, data] = encoded.split('.')
 
     if (!hash || !data) {
       return null
     }
 
-    const decodedData = Buffer.from(data, "base64url").toString()
+    const decodedData = Buffer.from(data, 'base64url').toString()
 
     const computedHash = crypto
-      .createHmac("sha256", this.appKey.release())
+      .createHmac('sha256', this.appKey.release())
       .update(decodedData)
-      .digest("base64url")
+      .digest('base64url')
       .slice(0, this.HASH_LENGTH)
 
     if (computedHash !== hash) {

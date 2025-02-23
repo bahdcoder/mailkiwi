@@ -1,24 +1,24 @@
-import { and, eq } from "drizzle-orm"
+import { and, eq } from 'drizzle-orm'
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { RunAutomationForContactJob } from "@/automations/jobs/run_automation_for_contact_job.js"
+import { RunAutomationForContactJob } from '@/automations/jobs/run_automation_for_contact_job.js'
 
-import { TagOnContact } from "@/database/database_schema_types.js"
+import type { TagOnContact } from '@/database/database_schema_types.js'
 import {
-  AUTOMATION_STEP_SUB_TYPES_TRIGGER,
-  TRIGGER_CONFIGURATION,
+  type AUTOMATION_STEP_SUB_TYPES_TRIGGER,
+  type TRIGGER_CONFIGURATION,
   automationSteps,
   automations,
   contactAutomationSteps,
   tagsOnContacts,
-} from "@/database/schema.js"
+} from '@/database/schema.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { Queue } from "@/shared/queue/queue.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { Queue } from '@/shared/queue/queue.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface TriggerAutomationsForContactJobPayload {
   contactId: string
@@ -27,7 +27,7 @@ export interface TriggerAutomationsForContactJobPayload {
 
 export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsForContactJobPayload> {
   static get id() {
-    return "AUTOMATIONS::TRIGGER_AUTOMATIONS_FOR_CONTACT"
+    return 'AUTOMATIONS::TRIGGER_AUTOMATIONS_FOR_CONTACT'
   }
 
   static get queue() {
@@ -51,7 +51,7 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
       .where(
         and(
           eq(automationSteps.subtype, payload.trigger),
-          eq(automationSteps.status, "ACTIVE"),
+          eq(automationSteps.status, 'ACTIVE'),
           eq(automations.audienceId, contact.audienceId),
         ),
       )
@@ -59,8 +59,8 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
     let contactTags: TagOnContact[] = []
 
     if (
-      payload.trigger === "TRIGGER_CONTACT_TAG_ADDED" ||
-      payload.trigger === "TRIGGER_CONTACT_TAG_REMOVED"
+      payload.trigger === 'TRIGGER_CONTACT_TAG_ADDED' ||
+      payload.trigger === 'TRIGGER_CONTACT_TAG_REMOVED'
     ) {
       contactTags = await database
         .select()
@@ -89,7 +89,7 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
       }
 
       switch (trigger.automationSteps.subtype) {
-        case "TRIGGER_CONTACT_TAG_ADDED":
+        case 'TRIGGER_CONTACT_TAG_ADDED':
           const tagAdded = contactTagIds.some((tagId) =>
             (
               trigger.automationSteps.configuration as TRIGGER_CONFIGURATION
@@ -101,7 +101,7 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
           }
 
           break
-        case "TRIGGER_CONTACT_TAG_REMOVED":
+        case 'TRIGGER_CONTACT_TAG_REMOVED':
           const tagRemoved = contactTagIds.some(
             (tagId) =>
               !(

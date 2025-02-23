@@ -1,21 +1,21 @@
-import { LinkEditorPanel } from "@/pages/components/composer/components/link-menu/link-editor-panel.jsx"
-import { ContentTypeSelector } from "@/pages/components/composer/components/text-menu/content-type-selector.jsx"
-import { FontSizePanel } from "@/pages/components/composer/components/text-menu/font-size-panel.jsx"
-import { TextColorPanel } from "@/pages/components/composer/components/text-menu/text-color-panel.jsx"
+import { LinkEditorPanel } from '@/pages/components/composer/components/link-menu/link-editor-panel.jsx'
+import { ContentTypeSelector } from '@/pages/components/composer/components/text-menu/content-type-selector.jsx'
+import { FontSizePanel } from '@/pages/components/composer/components/text-menu/font-size-panel.jsx'
+import { TextColorPanel } from '@/pages/components/composer/components/text-menu/text-color-panel.jsx'
 import {
   ToolbarButton,
   ToolbarContainer,
   ToolbarSection,
-} from "@/pages/components/composer/components/toolbar/toolbar.jsx"
-import { BoldIcon } from "@/pages/components/icons/bold.svg.jsx"
-import { CodeBlockIcon } from "@/pages/components/icons/codeblock.svg.jsx"
-import { ItalicIcon } from "@/pages/components/icons/italic.svg.jsx"
-import { LinkIcon } from "@/pages/components/icons/link.svg.jsx"
-import { UnderlineIcon } from "@/pages/components/icons/underline.svg.jsx"
-import { ShouldShowProps } from "@/pages/components/tiptap/menus/types.js"
-import { BubbleMenu, Editor } from "@tiptap/react"
-import React from "react"
-import { Props as TippyProps } from "tippy.js"
+} from '@/pages/components/composer/components/toolbar/toolbar.jsx'
+import { BoldIcon } from '@/pages/components/icons/bold.svg.jsx'
+import { CodeBlockIcon } from '@/pages/components/icons/codeblock.svg.jsx'
+import { ItalicIcon } from '@/pages/components/icons/italic.svg.jsx'
+import { LinkIcon } from '@/pages/components/icons/link.svg.jsx'
+import { UnderlineIcon } from '@/pages/components/icons/underline.svg.jsx'
+import type { ShouldShowProps } from '@/pages/components/tiptap/menus/types.js'
+import { BubbleMenu, type Editor } from '@tiptap/react'
+import type React from 'react'
+import type { Props as TippyProps } from 'tippy.js'
 
 export interface TextMenuProps {
   editor: Editor
@@ -35,69 +35,69 @@ type TextMenuAction = {
 
 export const textMenuActions: TextMenuAction[] = [
   {
-    id: "bold",
-    name: "Bold",
+    id: 'bold',
+    name: 'Bold',
     icon: <BoldIcon className="w-4 h-4" />,
     command(editor) {
       return editor.chain().focus().toggleBold().run()
     },
     isActive(editor) {
-      return editor.isActive("bold")
+      return editor.isActive('bold')
     },
   },
   {
-    id: "italic",
-    name: "Italic",
+    id: 'italic',
+    name: 'Italic',
     icon: <ItalicIcon className="w-4 h-4" />,
     isActive(editor) {
-      return editor.isActive("italic")
+      return editor.isActive('italic')
     },
     command(editor) {
       return editor.chain().focus().toggleItalic().run()
     },
   },
   {
-    id: "underline",
-    name: "Underline",
+    id: 'underline',
+    name: 'Underline',
     icon: <UnderlineIcon className="w-[17px] h-[17px]" />,
     command(editor) {
       return editor.chain().focus().toggleUnderline().run()
     },
     isActive(editor) {
-      return editor.isActive("underline")
+      return editor.isActive('underline')
     },
   },
   {
-    id: "code",
-    name: "Code",
+    id: 'code',
+    name: 'Code',
     icon: <CodeBlockIcon className="w-4 h-4" />,
     command(editor) {
       editor
         .chain()
         .focus()
         .toggleCode()
-        .updateAttributes("code", {
+        .updateAttributes('code', {
           styles: {
-            "background-color": "var(--black-5)",
-            color: "var(--content-primary)",
-            "border-radius": "4px",
-            padding: "2px 4px",
-            "font-family": "monospace",
+            'background-color': 'var(--black-5)',
+            color: 'var(--content-primary)',
+            'border-radius': '4px',
+            padding: '2px 4px',
+            'font-family': 'monospace',
           },
         })
         .run()
     },
     hidden(editor) {
-      return editor.isActive("button")
+      return editor.isActive('button')
     },
     isActive(editor) {
-      return editor.isActive("code")
+      return editor.isActive('code')
     },
   },
 ]
 
 export function TextMenu({ editor, pluginKey, tippyProps, shouldShow }: TextMenuProps) {
-  const isInsideButton = editor.isActive("button")
+  const isInsideButton = editor.isActive('button')
 
   if (!editor) {
     return null

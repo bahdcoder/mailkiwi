@@ -11,16 +11,16 @@ type GlobalConfig = {
 }
 
 type ElementType =
-  | "row"
-  | "column"
-  | "image"
-  | "heading"
-  | "button"
-  | "spacer"
-  | "paragraph"
-  | "text"
-  | "menu"
-  | "menu-item"
+  | 'row'
+  | 'column'
+  | 'image'
+  | 'heading'
+  | 'button'
+  | 'spacer'
+  | 'paragraph'
+  | 'text'
+  | 'menu'
+  | 'menu-item'
 
 type ElementProperties = {
   [key: string]: string | number | boolean
@@ -64,7 +64,7 @@ export class FoundationEmailBuilderTool {
     const webFonts = this.generateWebFonts()
     const sections = this.schema.sections
       .map((section) => this.convertSection(section))
-      .join("\n\n")
+      .join('\n\n')
 
     return {
       globalStyles,
@@ -78,9 +78,9 @@ export class FoundationEmailBuilderTool {
     let styles = this.styleObjectToCss(style)
 
     if (largeStyle) {
-      styles += "@media only screen and (min-width: 600px) {\n"
-      styles += this.styleObjectToCss(largeStyle, "  ")
-      styles += "}\n"
+      styles += '@media only screen and (min-width: 600px) {\n'
+      styles += this.styleObjectToCss(largeStyle, '  ')
+      styles += '}\n'
     }
 
     return styles
@@ -88,17 +88,17 @@ export class FoundationEmailBuilderTool {
 
   private generateWebFonts(): string {
     const { webFonts } = this.schema.global
-    if (!webFonts || webFonts.length === 0) return ""
+    if (!webFonts || webFonts.length === 0) return ''
 
-    return webFonts.map((font) => `<link rel="stylesheet" href="${font}">`).join("\n")
+    return webFonts.map((font) => `<link rel="stylesheet" href="${font}">`).join('\n')
   }
 
-  private styleObjectToCss(style: GlobalStyle, indent: string = ""): string {
-    let css = ""
+  private styleObjectToCss(style: GlobalStyle, indent = ''): string {
+    let css = ''
 
     for (let [key, value] of Object.entries(style)) {
-      if (key === "font-family") {
-        value = `${value ? `${value}, ` : ""}${this.schema.global.style["font-family"]}`
+      if (key === 'font-family') {
+        value = `${value ? `${value}, ` : ''}${this.schema.global.style['font-family']}`
       }
       css += `${indent}${key}: ${value};\n`
     }
@@ -116,28 +116,28 @@ export class FoundationEmailBuilderTool {
 
   private getConvertedElement(element: Element): string {
     switch (element.type) {
-      case "row":
+      case 'row':
         return this.convertRow(element)
-      case "column":
+      case 'column':
         return this.convertColumn(element)
-      case "image":
+      case 'image':
         return this.convertImage(element)
-      case "heading":
+      case 'heading':
         return this.convertHeading(element)
-      case "button":
+      case 'button':
         return this.convertButton(element)
-      case "spacer":
+      case 'spacer':
         return this.convertSpacer(element)
-      case "paragraph":
+      case 'paragraph':
         return this.convertParagraph(element)
-      case "text":
+      case 'text':
         return this.convertText(element)
-      case "menu":
+      case 'menu':
         return this.convertMenu(element)
-      case "menu-item":
+      case 'menu-item':
         return this.convertMenuItem(element)
       default:
-        return ""
+        return ''
     }
   }
 
@@ -145,47 +145,47 @@ export class FoundationEmailBuilderTool {
     const { style } = elementData
     if (!style) return element
 
-    style["font-family"] =
-      `${style?.["font-family"] ? `${style?.["font-family"]}, ` : ""}${this.schema.global.style["font-family"]}`
+    style['font-family'] =
+      `${style?.['font-family'] ? `${style?.['font-family']}, ` : ''}${this.schema.global.style['font-family']}`
 
     const styleString = Object.entries(style)
       .map(([key, value]) => `${key}:${value}`)
-      .join(";")
+      .join(';')
 
-    const firstSpaceIndex = element.indexOf(" ")
-    const firstCloseTagIndex = element.indexOf(">")
+    const firstSpaceIndex = element.indexOf(' ')
+    const firstCloseTagIndex = element.indexOf('>')
 
     if (firstSpaceIndex === -1 || firstSpaceIndex > firstCloseTagIndex) {
       // No attributes, insert style right before closing bracket
-      return element.replace(">", ` style="${styleString}">`)
+      return element.replace('>', ` style="${styleString}">`)
     } else {
       // There are other attributes, append style
-      return element.replace(" ", ` style="${styleString}" `)
+      return element.replace(' ', ` style="${styleString}" `)
     }
   }
 
   private convertRow(element: Element): string {
-    const className = element.properties?.collapsed ? ' class="collapsed"' : ""
+    const className = element.properties?.collapsed ? ' class="collapsed"' : ''
     const children =
-      element.elements?.map((child) => this.convertElement(child)).join("\n") || ""
+      element.elements?.map((child) => this.convertElement(child)).join('\n') || ''
     return `<row${className}>\n${children}\n</row>`
   }
 
   private convertColumn(element: Element): string {
     const large = element.largeProperties?.width
       ? ` large="${element.largeProperties.width}"`
-      : ""
-    const small = element.properties?.width ? ` small="${element.properties.width}"` : ""
+      : ''
+    const small = element.properties?.width ? ` small="${element.properties.width}"` : ''
     const children =
-      element.elements?.map((child) => this.convertElement(child)).join("\n") || ""
+      element.elements?.map((child) => this.convertElement(child)).join('\n') || ''
     return `<columns${small}${large}>\n${children}\n</columns>`
   }
 
   private convertImage(element: Element): string {
-    const src = element.properties?.src || ""
-    const alt = element.properties?.alt ? ` alt="${element.properties.alt}"` : ""
-    const align = element.properties?.align === "center" ? "<center>\n  " : ""
-    const alignEnd = element.properties?.align === "center" ? "\n</center>" : ""
+    const src = element.properties?.src || ''
+    const alt = element.properties?.alt ? ` alt="${element.properties.alt}"` : ''
+    const align = element.properties?.align === 'center' ? '<center>\n  ' : ''
+    const alignEnd = element.properties?.align === 'center' ? '\n</center>' : ''
     return `${align}<img src="${src}"${alt}>${alignEnd}`
   }
 
@@ -193,18 +193,18 @@ export class FoundationEmailBuilderTool {
     const size = element.properties?.size || 1
     const align = element.properties?.align
       ? ` class="text-${element.properties.align}"`
-      : ""
+      : ''
     const content =
-      element.elements?.map((child) => this.convertElement(child)).join("") || ""
+      element.elements?.map((child) => this.convertElement(child)).join('') || ''
     return `<h${size}${align}>${content}</h${size}>`
   }
 
   private convertButton(element: Element): string {
-    const href = element.properties?.href ? ` href="${element.properties.href}"` : ""
+    const href = element.properties?.href ? ` href="${element.properties.href}"` : ''
     const className =
       element.properties?.width === 12 ? ' class="large expand"' : ' class="large"'
     const content =
-      element.elements?.map((child) => this.convertElement(child)).join("") || "Click me"
+      element.elements?.map((child) => this.convertElement(child)).join('') || 'Click me'
     return `<button${className}${href}>${content}</button>`
   }
 
@@ -216,28 +216,28 @@ export class FoundationEmailBuilderTool {
   private convertParagraph(element: Element): string {
     const align = element.properties?.align
       ? ` class="text-${element.properties.align}"`
-      : ""
+      : ''
     const content =
-      element.elements?.map((child) => this.convertElement(child)).join("") || ""
+      element.elements?.map((child) => this.convertElement(child)).join('') || ''
     return `<p${align}>${content}</p>`
   }
 
   private convertText(element: Element): string {
     // Wrap the text in a span to allow for inline styling
-    return `<span>${element.value || ""}</span>`
+    return `<span>${element.value || ''}</span>`
   }
 
   private convertMenu(element: Element): string {
-    const align = element.properties?.align === "center" ? "<center>\n  " : ""
-    const alignEnd = element.properties?.align === "center" ? "\n</center>" : ""
+    const align = element.properties?.align === 'center' ? '<center>\n  ' : ''
+    const alignEnd = element.properties?.align === 'center' ? '\n</center>' : ''
     const items =
-      element.elements?.map((child) => this.convertElement(child)).join("\n") || ""
+      element.elements?.map((child) => this.convertElement(child)).join('\n') || ''
     return `${align}<menu>\n${items}\n</menu>${alignEnd}`
   }
 
   private convertMenuItem(element: Element): string {
     const content =
-      element.elements?.map((child) => this.convertElement(child)).join("") || ""
+      element.elements?.map((child) => this.convertElement(child)).join('') || ''
     return `  <item>${content}</item>`
   }
 }

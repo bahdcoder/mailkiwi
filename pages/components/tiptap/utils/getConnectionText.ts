@@ -1,3 +1,3 @@
 export const getConnectionText = (collabState: any) => {
-  return "Disconnected"
+  return 'Disconnected'
 }

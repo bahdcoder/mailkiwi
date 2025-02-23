@@ -1,7 +1,7 @@
-import { getCellsInRow, isColumnSelected, selectColumn } from "./utils.js"
-import TiptapTableHeader from "@tiptap/extension-table-header"
-import { Plugin } from "@tiptap/pm/state"
-import { Decoration, DecorationSet } from "@tiptap/pm/view"
+import { getCellsInRow, isColumnSelected, selectColumn } from './utils.js'
+import TiptapTableHeader from '@tiptap/extension-table-header'
+import { Plugin } from '@tiptap/pm/state'
+import { Decoration, DecorationSet } from '@tiptap/pm/view'
 
 export const TableHeader = TiptapTableHeader.extend({
   addAttributes() {
@@ -15,9 +15,9 @@ export const TableHeader = TiptapTableHeader.extend({
       colwidth: {
         default: null,
         parseHTML: (element) => {
-          const colwidth = element.getAttribute("colwidth")
+          const colwidth = element.getAttribute('colwidth')
           const value = colwidth
-            ? colwidth.split(",").map((item) => parseInt(item, 10))
+            ? colwidth.split(',').map((item) => Number.parseInt(item, 10))
             : null
 
           return value
@@ -49,24 +49,24 @@ export const TableHeader = TiptapTableHeader.extend({
                 decorations.push(
                   Decoration.widget(pos + 1, () => {
                     const colSelected = isColumnSelected(index)(selection)
-                    let className = "grip-column"
+                    let className = 'grip-column'
 
                     if (colSelected) {
-                      className += " selected"
+                      className += ' selected'
                     }
 
                     if (index === 0) {
-                      className += " first"
+                      className += ' first'
                     }
 
                     if (index === cells.length - 1) {
-                      className += " last"
+                      className += ' last'
                     }
 
-                    const grip = document.createElement("a")
+                    const grip = document.createElement('a')
 
                     grip.className = className
-                    grip.addEventListener("mousedown", (event) => {
+                    grip.addEventListener('mousedown', (event) => {
                       event.preventDefault()
                       event.stopImmediatePropagation()
 

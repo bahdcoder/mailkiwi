@@ -1,7 +1,7 @@
-import { findParentNode } from "@tiptap/core"
-import { Node, ResolvedPos } from "@tiptap/pm/model"
-import { Selection, Transaction } from "@tiptap/pm/state"
-import { CellSelection, Rect, TableMap } from "@tiptap/pm/tables"
+import { findParentNode } from '@tiptap/core'
+import type { Node, ResolvedPos } from '@tiptap/pm/model'
+import type { Selection, Transaction } from '@tiptap/pm/state'
+import { CellSelection, type Rect, TableMap } from '@tiptap/pm/tables'
 
 export const isRectSelected = (rect: Rect) => (selection: CellSelection) => {
   const map = TableMap.get(selection.$anchorCell.node(-1))
@@ -22,7 +22,7 @@ export const isRectSelected = (rect: Rect) => (selection: CellSelection) => {
 
 export const findTable = (selection: Selection) =>
   findParentNode(
-    (node) => node.type.spec.tableRole && node.type.spec.tableRole === "table",
+    (node) => node.type.spec.tableRole && node.type.spec.tableRole === 'table',
   )(selection)
 
 export const isCellSelection = (selection: Selection): selection is CellSelection =>
@@ -193,9 +193,9 @@ export const findCellClosestToPos = ($pos: ResolvedPos) => {
   return findParentNodeClosestToPos($pos, predicate)
 }
 
-const select = (type: "row" | "column") => (index: number) => (tr: Transaction) => {
+const select = (type: 'row' | 'column') => (index: number) => (tr: Transaction) => {
   const table = findTable(tr.selection)
-  const isRowSelection = type === "row"
+  const isRowSelection = type === 'row'
 
   if (table) {
     const map = TableMap.get(table.node)
@@ -235,9 +235,9 @@ const select = (type: "row" | "column") => (index: number) => (tr: Transaction) 
   return tr
 }
 
-export const selectColumn = select("column")
+export const selectColumn = select('column')
 
-export const selectRow = select("row")
+export const selectRow = select('row')
 
 export const selectTable = (tr: Transaction) => {
   const table = findTable(tr.selection)

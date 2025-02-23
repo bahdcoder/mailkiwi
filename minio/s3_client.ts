@@ -1,10 +1,14 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { GetObjectCommand, PutObjectCommandInput, S3Client } from "@aws-sdk/client-s3"
-import { Upload } from "@aws-sdk/lib-storage"
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import { Readable } from "stream"
+import { appEnv } from '@/app/env/app_env.js'
+import {
+  GetObjectCommand,
+  type PutObjectCommandInput,
+  S3Client,
+} from '@aws-sdk/client-s3'
+import { Upload } from '@aws-sdk/lib-storage'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import type { Readable } from 'stream'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class S3Disk {
   protected client = new S3Client({

@@ -1,8 +1,8 @@
-import { Button } from "@/pages/components/tiptap/ui/Button/Button.jsx"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.jsx"
-import { Surface } from "@/pages/components/tiptap/ui/Surface.jsx"
-import { Toggle } from "@/pages/components/tiptap/ui/Toggle/Toggle.jsx"
-import { useCallback, useMemo, useState } from "react"
+import { Button } from '@/pages/components/tiptap/ui/Button/Button.jsx'
+import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
+import { Surface } from '@/pages/components/tiptap/ui/Surface.jsx'
+import { Toggle } from '@/pages/components/tiptap/ui/Toggle/Toggle.jsx'
+import { useCallback, useMemo, useState } from 'react'
 
 export type LinkEditorPanelProps = {
   initialUrl?: string
@@ -15,7 +15,7 @@ export const useLinkEditorState = ({
   initialOpenInNewTab,
   onSetLink,
 }: LinkEditorPanelProps) => {
-  const [url, setUrl] = useState(initialUrl || "")
+  const [url, setUrl] = useState(initialUrl || '')
   const [openInNewTab, setOpenInNewTab] = useState(initialOpenInNewTab || false)
 
   const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +50,11 @@ export const LinkEditorPanel = ({
   initialOpenInNewTab,
   initialUrl,
 }: LinkEditorPanelProps) => {
-  const state = useLinkEditorState({ onSetLink, initialOpenInNewTab, initialUrl })
+  const state = useLinkEditorState({
+    onSetLink,
+    initialOpenInNewTab,
+    initialUrl,
+  })
 
   return (
     <Surface className="p-2">

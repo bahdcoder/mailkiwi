@@ -1,14 +1,14 @@
-import { HorizontalRuleNodeView } from "@/pages/components/composer/extensions/HorizontalRule/horizontal-rule-node-view.jsx"
+import { HorizontalRuleNodeView } from '@/pages/components/composer/extensions/HorizontalRule/horizontal-rule-node-view.jsx'
 import {
   getStyleAttributeDefaultCommands,
   getStyleAttributeDefinition,
-} from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
-import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
-import { mergeAttributes } from "@tiptap/core"
-import TiptapHorizontalRule from "@tiptap/extension-horizontal-rule"
-import { ReactNodeViewRenderer } from "@tiptap/react"
+} from '@/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
+import { getDefaultStylesForNode } from '@/pages/components/composer/themes/default-theme.js'
+import { mergeAttributes } from '@tiptap/core'
+import TiptapHorizontalRule from '@tiptap/extension-horizontal-rule'
+import { ReactNodeViewRenderer } from '@tiptap/react'
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     styledHorizontalRule: {
       setHorizontalRuleStyles: (key: string, value: string) => ReturnType
@@ -20,9 +20,9 @@ declare module "@tiptap/core" {
 export const HorizontalRule = TiptapHorizontalRule.extend({
   renderHTML() {
     return [
-      "div",
-      mergeAttributes(this.options.HTMLAttributes, { "data-type": this.name }),
-      ["hr"],
+      'div',
+      mergeAttributes(this.options.HTMLAttributes, { 'data-type': this.name }),
+      ['hr'],
     ]
   },
 
@@ -33,7 +33,7 @@ export const HorizontalRule = TiptapHorizontalRule.extend({
   addAttributes() {
     return {
       styles: getStyleAttributeDefinition(
-        getDefaultStylesForNode("horizontalRule").styles,
+        getDefaultStylesForNode('horizontalRule').styles,
       ),
     }
   },

@@ -1,18 +1,18 @@
-import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js"
-import { type SQLWrapper, and, eq } from "drizzle-orm"
+import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
+import { type SQLWrapper, and, eq } from 'drizzle-orm'
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
 
-import { broadcasts, contacts } from "@/database/schema.js"
+import { broadcasts, contacts } from '@/database/schema.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { Queue } from "@/shared/queue/queue.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { Queue } from '@/shared/queue/queue.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface SendBroadcastJobPayload {
   broadcastId: string
@@ -20,7 +20,7 @@ export interface SendBroadcastJobPayload {
 
 export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
   static get id() {
-    return "BROADCASTS::SEND_BROADCAST"
+    return 'BROADCASTS::SEND_BROADCAST'
   }
 
   static get queue() {
@@ -33,7 +33,7 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
       .findByIdWithAbTestVariants(payload.broadcastId)
 
     if (!broadcast || !broadcast.audienceId) {
-      return this.fail("Broadcast or audience or team not properly provided.")
+      return this.fail('Broadcast or audience or team not properly provided.')
     }
 
     const audience = await container

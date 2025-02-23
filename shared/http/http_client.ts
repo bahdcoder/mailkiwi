@@ -1,4 +1,4 @@
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 
 interface HttpResponse<TData> {
   data: TData
@@ -12,16 +12,16 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
     method: HttpMethod
     headers: Record<string, string>
     payload: TPayload
-    as: "json" | "text"
+    as: 'json' | 'text'
   } = {
-    url: "",
-    baseURL: "",
-    method: "GET",
+    url: '',
+    baseURL: '',
+    method: 'GET',
     payload: {} as TPayload,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
-    as: "json",
+    as: 'json',
   }
 
   baseURL(url: string) {
@@ -36,12 +36,12 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
   }
 
   asJson() {
-    this.config.as = "json"
+    this.config.as = 'json'
     return this
   }
 
   asText() {
-    this.config.as = "text"
+    this.config.as = 'text'
     return this
   }
 
@@ -51,27 +51,27 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
   }
 
   post() {
-    this.config.method = "POST"
+    this.config.method = 'POST'
     return this
   }
 
   get() {
-    this.config.method = "GET"
+    this.config.method = 'GET'
     return this
   }
 
   put() {
-    this.config.method = "PUT"
+    this.config.method = 'PUT'
     return this
   }
 
   delete() {
-    this.config.method = "DELETE"
+    this.config.method = 'DELETE'
     return this
   }
 
   patch() {
-    this.config.method = "PATCH"
+    this.config.method = 'PATCH'
     return this
   }
 
@@ -96,21 +96,21 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
         headers: {
           ...this.config.headers,
         },
-        body: this.config.method !== "GET" ? JSON.stringify(this.config.payload) : null,
+        body: this.config.method !== 'GET' ? JSON.stringify(this.config.payload) : null,
       })
 
       let data: any
 
-      if (this.config.as === "json") {
+      if (this.config.as === 'json') {
         data = await response.json()
       }
 
-      if (this.config.as === "text") {
+      if (this.config.as === 'text') {
         data = await response.text()
       }
 
       if (!response.ok) {
-        throw new Error((data as any)?.message || "Request failed")
+        throw new Error((data as any)?.message || 'Request failed')
       }
 
       return { data, error: null }

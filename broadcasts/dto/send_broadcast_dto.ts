@@ -1,5 +1,5 @@
-import { and, eq } from "drizzle-orm"
-import { DateTime } from "luxon"
+import { and, eq } from 'drizzle-orm'
+import { DateTime } from 'luxon'
 import {
   type InferInput,
   any,
@@ -19,15 +19,15 @@ import {
   record,
   string,
   uuid,
-} from "valibot"
+} from 'valibot'
 
-import { audiences, sendingDomains } from "@/database/schema.js"
+import { audiences, sendingDomains } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 export const SendBroadcastEmailContentSchema = object({
   subject: pipe(
-    string("Please provide a valid subject"),
+    string('Please provide a valid subject'),
     nonEmpty(),
     minLength(8),
     maxLength(120),
@@ -42,7 +42,7 @@ export const SendBroadcastEmailContentSchema = object({
 
   contentJson: record(string(), any()),
 
-  previewText: pipe(string("Please provide a valid preview text"), nonEmpty()),
+  previewText: pipe(string('Please provide a valid preview text'), nonEmpty()),
 })
 
 export const SendBroadcastSchema = objectAsync({
@@ -69,11 +69,11 @@ export const SendBroadcastSchema = objectAsync({
       const database = makeDatabase()
 
       const sendingDomain = await database.query.sendingDomains.findFirst({
-        where: and(eq(sendingDomains.id, value), eq(sendingDomains.product, "engage")),
+        where: and(eq(sendingDomains.id, value), eq(sendingDomains.product, 'engage')),
       })
 
       return sendingDomain !== undefined
-    }, "The sending domain must be an engage domain"),
+    }, 'The sending domain must be an engage domain'),
   ),
 
   trackClicks: optional(nullable(boolean())),
@@ -92,10 +92,10 @@ export const SendBroadcastSchema = objectAsync({
         return false
       }
 
-      const dateTime = DateTime.fromJSDate(date).diffNow("hours")
+      const dateTime = DateTime.fromJSDate(date).diffNow('hours')
 
       return dateTime.hours > 1
-    }, "You may schedule to send this broadcast at least on hour in the future."),
+    }, 'You may schedule to send this broadcast at least on hour in the future.'),
   ),
 })
 

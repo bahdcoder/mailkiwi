@@ -1,25 +1,25 @@
-import { and, eq } from "drizzle-orm"
-import { describe, test, vi } from "vitest"
+import { and, eq } from 'drizzle-orm'
+import { describe, test, vi } from 'vitest'
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.js"
+import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.js'
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
+import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
 
-import { contactAutomationSteps, contacts, tagsOnContacts } from "@/database/schema.js"
+import { contactAutomationSteps, contacts, tagsOnContacts } from '@/database/schema.js'
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { MailBuilder, Mailer } from "@/shared/mailers/mailer.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
-import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { MailBuilder, Mailer } from '@/shared/mailers/mailer.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { fromQueryResultToPrimaryKey } from '@/shared/utils/database/primary_keys.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("Run automation step for contact job", () => {
-  test("automation step action: send email for a contact", async ({ expect }) => {
+describe('Run automation step for contact job', () => {
+  test('automation step action: send email for a contact', async ({ expect }) => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -37,7 +37,7 @@ describe("Run automation step for contact job", () => {
       send = fakeSendFn
     }
 
-    vi.spyOn(Mailer, "from").mockImplementation(() => {
+    vi.spyOn(Mailer, 'from').mockImplementation(() => {
       return new FakeMailer({} as any) as any
     })
 
@@ -67,7 +67,7 @@ describe("Run automation step for contact job", () => {
             contactAutomationSteps.automationStepId,
             receiveWelcomeEmailautomationStepId as string,
           ),
-          eq(contactAutomationSteps.status, "COMPLETED"),
+          eq(contactAutomationSteps.status, 'COMPLETED'),
         ),
       )
 
@@ -80,7 +80,7 @@ describe("Run automation step for contact job", () => {
     expect(send).toEqual(`AUTOMATION_STEP:${completed?.automationStepId}:${contactId}`)
   })
 
-  test("automation step action: attach tags for a contact", async ({ expect }) => {
+  test('automation step action: attach tags for a contact', async ({ expect }) => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -113,7 +113,7 @@ describe("Run automation step for contact job", () => {
           contactAutomationSteps.automationStepId,
           attachesTagsAutomationStepId as string,
         ),
-        eq(contactAutomationSteps.status, "COMPLETED"),
+        eq(contactAutomationSteps.status, 'COMPLETED'),
       ),
     })
 
@@ -126,7 +126,7 @@ describe("Run automation step for contact job", () => {
     expect(completed).toBeDefined()
   })
 
-  test("automation step action: detach tags from a contact", async ({ expect }) => {
+  test('automation step action: detach tags from a contact', async ({ expect }) => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -159,7 +159,7 @@ describe("Run automation step for contact job", () => {
           contactAutomationSteps.automationStepId,
           detachesTagsAutomationStepId as string,
         ),
-        eq(contactAutomationSteps.status, "COMPLETED"),
+        eq(contactAutomationSteps.status, 'COMPLETED'),
       ),
     })
 

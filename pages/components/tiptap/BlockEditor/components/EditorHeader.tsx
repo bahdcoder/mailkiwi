@@ -1,9 +1,9 @@
-import { EditorUser } from "../types.jsx"
-import { EditorInfo } from "./EditorInfo.jsx"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.jsx"
-import { Toolbar } from "@/pages/components/tiptap/ui/Toolbar.jsx"
-import { Editor } from "@tiptap/core"
-import { useEditorState } from "@tiptap/react"
+import type { EditorUser } from '../types.jsx'
+import { EditorInfo } from './EditorInfo.jsx'
+import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
+import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
+import type { Editor } from '@tiptap/core'
+import { useEditorState } from '@tiptap/react'
 
 export type EditorHeaderProps = {
   isSidebarOpen?: boolean
@@ -34,12 +34,12 @@ export const EditorHeader = ({
       <div className="flex flex-row gap-x-1.5 items-center">
         <div className="flex items-center gap-x-1.5">
           <Toolbar.Button
-            tooltip={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+            tooltip={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
             onClick={toggleSidebar}
             active={isSidebarOpen}
-            className={isSidebarOpen ? "bg-transparent" : ""}
+            className={isSidebarOpen ? 'bg-transparent' : ''}
           >
-            <Icon name={isSidebarOpen ? "PanelLeftClose" : "PanelLeft"} />
+            <Icon name={isSidebarOpen ? 'PanelLeftClose' : 'PanelLeft'} />
           </Toolbar.Button>
         </div>
       </div>

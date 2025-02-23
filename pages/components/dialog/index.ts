@@ -1,1 +1,1 @@
-export * from "./dialog.jsx"
+export * from './dialog.jsx'

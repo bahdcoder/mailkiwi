@@ -1,23 +1,23 @@
-import { TagContactBasedOnResponseJob } from "@/forms/jobs/tag_contact_based_on_response_job.js"
-import { FormRepository } from "@/forms/repositories/form_repository.js"
-import { FormResponseRepository } from "@/forms/repositories/form_response_repository.js"
-import { faker } from "@faker-js/faker"
-import { eq } from "drizzle-orm"
-import { describe, test } from "vitest"
+import { TagContactBasedOnResponseJob } from '@/forms/jobs/tag_contact_based_on_response_job.js'
+import { FormRepository } from '@/forms/repositories/form_repository.js'
+import { FormResponseRepository } from '@/forms/repositories/form_response_repository.js'
+import { faker } from '@faker-js/faker'
+import { eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { survey } from "@/tests/integration/forms/forms.spec.js"
-import { createContactsForAudience, createUser } from "@/tests/mocks/auth/users.js"
+import { survey } from '@/tests/integration/forms/forms.spec.js'
+import { createContactsForAudience, createUser } from '@/tests/mocks/auth/users.js'
 
-import { tags, tagsOnContacts } from "@/database/schema.js"
+import { tags, tagsOnContacts } from '@/database/schema.js'
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@tag-contact", () => {
+describe('@tag-contact', () => {
   const setup = async () => {
     const { audience } = await createUser({
       createWebsite: true,
@@ -56,7 +56,7 @@ describe("@tag-contact", () => {
     return { formId, tagIds, audience, contactId: contactIds?.[0] }
   }
 
-  test("correctly tags a contact based on the form response", async ({ expect }) => {
+  test('correctly tags a contact based on the form response', async ({ expect }) => {
     const { formId, contactId, tagIds } = await setup()
 
     const submitContent: Record<string, string[]> = {}

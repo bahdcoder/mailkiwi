@@ -1,16 +1,16 @@
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { navigate } from "@/pages/utils/navigate.js"
-import { Button } from "@kibamail/owly/button"
-import * as Dialog from "@kibamail/owly/dialog"
-import { Text } from "@kibamail/owly/text"
-import React from "react"
-import { toast } from "sonner"
-import { usePageContext } from "vike-react/usePageContext"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { navigate } from '@/pages/utils/navigate.js'
+import { Button } from '@kibamail/owly/button'
+import * as Dialog from '@kibamail/owly/dialog'
+import { Text } from '@kibamail/owly/text'
+import React from 'react'
+import { toast } from 'sonner'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 interface CancelScheduledBroadcastProps {
   sendAt: string
@@ -20,11 +20,11 @@ export function CancelScheduledBroadcast({ sendAt }: CancelScheduledBroadcastPro
   const ctx = usePageContext()
 
   const { serverFormProps, isPending, isSuccess } = useServerFormMutation({
-    action: route("unsend_broadcast", { uuid: ctx?.routeParams?.uuid }),
+    action: route('unsend_broadcast', { uuid: ctx?.routeParams?.uuid }),
     onSuccess() {
-      toast.success("Broadcast is no longer queued for publish.")
+      toast.success('Broadcast is no longer queued for publish.')
 
-      navigate(route("broadcasts"))
+      navigate(route('broadcasts'))
     },
   })
 

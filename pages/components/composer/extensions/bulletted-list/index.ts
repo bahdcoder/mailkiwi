@@ -1,1 +1,1 @@
-export * from "./bulletted-list.js"
+export * from './bulletted-list.js'

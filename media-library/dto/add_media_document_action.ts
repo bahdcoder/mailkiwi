@@ -1,9 +1,9 @@
-import { makeMinioClient } from "@/minio/minio_client.js"
-import { makeS3Client } from "@/minio/s3_client.js"
-import mime from "mime-types"
-import { Readable } from "stream"
+import { makeMinioClient } from '@/minio/minio_client.js'
+import { makeS3Client } from '@/minio/s3_client.js'
+import mime from 'mime-types'
+import { Readable } from 'stream'
 
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
 export class AddMediaDocumentAction {
   handle = async (file: File, teamId: string) => {
@@ -16,7 +16,7 @@ export class AddMediaDocumentAction {
       fileKey,
       Readable.from(file.stream() as any),
       {
-        ACL: "public-read",
+        ACL: 'public-read',
         ContentType: `${mime.contentType(file.type)}`,
       },
     )

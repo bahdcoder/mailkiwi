@@ -1,10 +1,10 @@
-import type { JSONContent } from "@tiptap/core"
+import type { JSONContent } from '@tiptap/core'
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
-import { BroadcastWithEmailContent } from "@/database/database_schema_types.js"
+import type { BroadcastWithEmailContent } from '@/database/database_schema_types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 interface ValidationResult {
   url: string
@@ -28,9 +28,9 @@ export class ValidateBroadcastEmailContentAction {
 
     try {
       const response = await fetch(url, {
-        method: "GET",
+        method: 'GET',
         signal: controller.signal,
-        redirect: "follow",
+        redirect: 'follow',
       })
 
       return {
@@ -42,7 +42,7 @@ export class ValidateBroadcastEmailContentAction {
       return {
         url,
         isValid: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : 'Unknown error',
       }
     } finally {
       clearTimeout(timeout)
@@ -55,9 +55,9 @@ export class ValidateBroadcastEmailContentAction {
 
     try {
       const response = await fetch(imageUrl, {
-        method: "HEAD",
+        method: 'HEAD',
         signal: controller.signal,
-        redirect: "follow",
+        redirect: 'follow',
       })
 
       if (!response.ok) {
@@ -68,19 +68,19 @@ export class ValidateBroadcastEmailContentAction {
         }
       }
 
-      const contentType = response.headers.get("content-type")
-      const isImage = contentType?.startsWith("image/")
+      const contentType = response.headers.get('content-type')
+      const isImage = contentType?.startsWith('image/')
 
       return {
         url: imageUrl,
         isValid: isImage === true,
-        error: isImage ? undefined : "Not an image",
+        error: isImage ? undefined : 'Not an image',
       }
     } catch (error) {
       return {
         url: imageUrl,
         isValid: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : 'Unknown error',
       }
     } finally {
       clearTimeout(timeout)
@@ -106,22 +106,22 @@ export class ValidateBroadcastEmailContentAction {
   async handle(broadcast: BroadcastWithEmailContent) {
     const emailContent = broadcast.emailContent?.contentJson as JSONContent
 
-    let links: string[] = []
-    let images: string[] = []
+    const links: string[] = []
+    const images: string[] = []
 
     const findLinksAndImages = (content: JSONContent) => {
       content.content?.forEach((child) => {
-        if (child.type === "imageBlock") {
+        if (child.type === 'imageBlock') {
           images.push(child.attrs?.src)
         }
 
-        if (child.type === "button") {
+        if (child.type === 'button') {
           links.push(child.attrs?.href)
         }
 
         if (child.marks) {
           child.marks.forEach((mark) => {
-            if (mark.type === "link") {
+            if (mark.type === 'link') {
               links.push(mark.attrs?.href as string)
             }
           })
@@ -136,7 +136,7 @@ export class ValidateBroadcastEmailContentAction {
     findLinksAndImages(emailContent)
 
     const nonInternalLinks = links.filter(
-      (link) => !(link.includes("{{") && link.includes("}}")),
+      (link) => !(link.includes('{{') && link.includes('}}')),
     )
 
     // Validate links and images concurrently

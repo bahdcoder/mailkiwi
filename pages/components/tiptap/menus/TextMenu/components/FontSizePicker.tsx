@@ -1,19 +1,19 @@
 import {
   DropdownButton,
   DropdownCategoryTitle,
-} from "@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.jsx"
-import { Surface } from "@/pages/components/tiptap/ui/Surface.jsx"
-import { Toolbar } from "@/pages/components/tiptap/ui/Toolbar.jsx"
-import * as Dropdown from "@radix-ui/react-dropdown-menu"
-import { useCallback } from "react"
+} from '@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx'
+import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
+import { Surface } from '@/pages/components/tiptap/ui/Surface.jsx'
+import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
+import * as Dropdown from '@radix-ui/react-dropdown-menu'
+import { useCallback } from 'react'
 
 const FONT_SIZES = [
-  { label: "Smaller", value: "12px" },
-  { label: "Small", value: "14px" },
-  { label: "Medium", value: "" },
-  { label: "Large", value: "18px" },
-  { label: "Extra Large", value: "24px" },
+  { label: 'Smaller', value: '12px' },
+  { label: 'Small', value: '14px' },
+  { label: 'Medium', value: '' },
+  { label: 'Large', value: '18px' },
+  { label: 'Extra Large', value: '24px' },
 ]
 
 export type FontSizePickerProps = {
@@ -23,7 +23,7 @@ export type FontSizePickerProps = {
 
 export const FontSizePicker = ({ onChange, value }: FontSizePickerProps) => {
   const currentValue = FONT_SIZES.find((size) => size.value === value)
-  const currentSizeLabel = currentValue?.label.split(" ")[0] || "Medium"
+  const currentSizeLabel = currentValue?.label.split(' ')[0] || 'Medium'
 
   const selectSize = useCallback((size: string) => () => onChange(size), [onChange])
 

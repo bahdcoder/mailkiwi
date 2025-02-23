@@ -1,16 +1,16 @@
-import { CreateAutomationAction } from "@/automations/actions/create_automation_action.js"
-import { CreateAutomationStepAction } from "@/automations/actions/create_automation_step_action.js"
-import { CreateAutomationSchema } from "@/automations/dto/create_automation_dto.js"
-import { CreateAutomationStepDto } from "@/automations/dto/create_automation_step_dto.js"
+import { CreateAutomationAction } from '@/automations/actions/create_automation_action.js'
+import { CreateAutomationStepAction } from '@/automations/actions/create_automation_step_action.js'
+import { CreateAutomationSchema } from '@/automations/dto/create_automation_dto.js'
+import { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
 
-import { Audience } from "@/database/database_schema_types.js"
+import type { Audience } from '@/database/database_schema_types.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import type { HonoInstance } from "@/shared/server/hono.js"
-import type { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import type { HonoInstance } from '@/shared/server/hono.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class AutomationController extends BaseController {
   constructor(private app: HonoInstance = makeApp()) {
@@ -18,12 +18,12 @@ export class AutomationController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["GET", "/", this.index.bind(this)],
-        ["POST", "/", this.store.bind(this)],
-        ["POST", "/:automationId/steps", this.createStep.bind(this)],
+        ['GET', '/', this.index.bind(this)],
+        ['POST', '/', this.store.bind(this)],
+        ['POST', '/:automationId/steps', this.createStep.bind(this)],
       ],
       {
-        prefix: "audiences/:audienceId/automations",
+        prefix: 'audiences/:audienceId/automations',
       },
     )
   }
@@ -37,17 +37,17 @@ export class AutomationController extends BaseController {
 
     const action = container.make(CreateAutomationAction)
 
-    const automation = await action.handle(data, ctx.req.param("audienceId"))
+    const automation = await action.handle(data, ctx.req.param('audienceId'))
 
     return ctx.json(automation)
   }
 
   async createStep(ctx: HonoContext) {
-    await this.ensureExists<Audience>(ctx, "audienceId")
+    await this.ensureExists<Audience>(ctx, 'audienceId')
 
     this.ensureCanAuthor(ctx)
 
-    const automationId = ctx.req.param("automationId")
+    const automationId = ctx.req.param('automationId')
 
     const data = await this.validate(ctx, CreateAutomationStepDto)
 

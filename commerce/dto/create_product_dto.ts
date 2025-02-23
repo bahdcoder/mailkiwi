@@ -12,16 +12,16 @@ import {
   pipe,
   pipeAsync,
   string,
-} from "valibot"
+} from 'valibot'
 
-import { audiences } from "@/database/schema.js"
+import { audiences } from '@/database/schema.js'
 
-import { entityIdValidator } from "@/shared/utils/validators/entity_id_validator.js"
+import { entityIdValidator } from '@/shared/utils/validators/entity_id_validator.js'
 
 export const CreateProductSchema = pipeAsync(
   objectAsync({
     name: pipe(string(), nonEmpty()),
-    billingCycle: picklist(["monthly", "yearly", "once"]),
+    billingCycle: picklist(['monthly', 'yearly', 'once']),
     price: optional(pipe(number(), integer())),
     priceMonthly: optional(pipe(number(), integer())),
     priceYearly: optional(pipe(number(), integer())),
@@ -41,21 +41,21 @@ export const CreateProductSchema = pipeAsync(
     return true
   }, 'You can only provide either "price" or "priceMonthly" and "priceYearly"'),
   checkAsync(async (input) => {
-    if (input.billingCycle === "monthly" && !input.priceMonthly) {
+    if (input.billingCycle === 'monthly' && !input.priceMonthly) {
       return false
     }
 
     return true
   }, 'You must provide "priceMonthly" when "billingCycle" is "monthly"'),
   checkAsync(async (input) => {
-    if (input.billingCycle === "yearly" && !input.priceYearly) {
+    if (input.billingCycle === 'yearly' && !input.priceYearly) {
       return false
     }
 
     return true
   }, 'You must provide "priceYearly" when "billingCycle" is "yearly"'),
   checkAsync(async (input) => {
-    if (input.billingCycle === "once" && !input.price) {
+    if (input.billingCycle === 'once' && !input.price) {
       return false
     }
 

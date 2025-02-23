@@ -1,4 +1,4 @@
-import { Text } from "@kibamail/owly/text"
+import { Text } from '@kibamail/owly/text'
 
 export function AgreeToTermsAndPolicy() {
   return (

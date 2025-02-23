@@ -1,20 +1,20 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
-import { InjectEmailSchemaDto } from "@/injector/dto/inject_email_dto.js"
-import { InjectTrackingLinksIntoEmailAction } from "@/kumomta/actions/inject_tracking_links_into_email_action.js"
+import { appEnv } from '@/app/env/app_env.js'
+import { EmailSendRepository } from '@/email_sends/repositories/email_send_repository.js'
+import type { InjectEmailSchemaDto } from '@/injector/dto/inject_email_dto.js'
+import { InjectTrackingLinksIntoEmailAction } from '@/kumomta/actions/inject_tracking_links_into_email_action.js'
 
-import { InsertEmailSend, SendingDomain } from "@/database/database_schema_types.js"
+import type { InsertEmailSend, SendingDomain } from '@/database/database_schema_types.js'
 
-import { makeHttpClient } from "@/shared/http/http_client.js"
-import { generateMessageIdForDomain } from "@/shared/utils/string.js"
+import { makeHttpClient } from '@/shared/http/http_client.js'
+import { generateMessageIdForDomain } from '@/shared/utils/string.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class InjectEmailAction {
   async handle(payload: InjectEmailSchemaDto, sendingDomain: SendingDomain) {
     type Injection = {
       messageId: string
-      recipient: InjectEmailSchemaDto["recipients"][number]
+      recipient: InjectEmailSchemaDto['recipients'][number]
       handle: () => Promise<{
         data: {
           success_count: number
@@ -34,7 +34,7 @@ export class InjectEmailAction {
 
       let htmlMessage = payload.html
 
-      let links: string[] = []
+      const links: string[] = []
 
       let clickTrackingEnabled = sendingDomain.clickTrackingEnabled
       let openTrackingEnabled = sendingDomain.openTrackingEnabled
@@ -92,7 +92,7 @@ export class InjectEmailAction {
           attachments: payload.attachments,
           headers: {
             ...payload.headers,
-            "Message-ID": messageId,
+            'Message-ID': messageId,
             [appEnv.emailHeaders.emailSendId]: id,
             [appEnv.emailHeaders.messageId]: messageId,
             [appEnv.emailHeaders.sendingDomainId]: sendingDomain.id,
@@ -106,7 +106,7 @@ export class InjectEmailAction {
         handle() {
           return makeHttpClient<
             object,
-            Awaited<ReturnType<Injection["handle"]>>["data"]
+            Awaited<ReturnType<Injection['handle']>>['data']
           >()
             .url(`${appEnv.MTA_INJECTOR_URL}/api/inject/v1`)
             .post()
@@ -121,7 +121,7 @@ export class InjectEmailAction {
         id,
         payload: {
           links,
-          product: payload.headers?.[appEnv.emailHeaders.broadcastId] ? "engage" : "send",
+          product: payload.headers?.[appEnv.emailHeaders.broadcastId] ? 'engage' : 'send',
           clickTrackingEnabled,
           openTrackingEnabled,
           contactId: payload.headers?.[appEnv.emailHeaders.contactId],
@@ -133,7 +133,7 @@ export class InjectEmailAction {
     await container.make(EmailSendRepository).bulkCreate(sends)
 
     const results = await Promise.allSettled(
-      injections.map(async function (injection) {
+      injections.map(async (injection) => {
         async function attemptInjection() {
           try {
             const response = await injection.handle()
@@ -165,7 +165,7 @@ export class InjectEmailAction {
 
     return {
       messages: results
-        .filter((result) => result.status === "fulfilled")
+        .filter((result) => result.status === 'fulfilled')
         .map((result) => {
           const ok = result.value?.data?.success_count === 1
 

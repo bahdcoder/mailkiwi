@@ -1,31 +1,31 @@
-import "./styles.css"
-import { MailOpenIcon } from "@/pages/components/icons/mail-open.svg.jsx"
-import { MailOutIcon } from "@/pages/components/icons/mail-out.svg.jsx"
-import { MoreVertIcon } from "@/pages/components/icons/more-vert.svg.jsx"
-import { OneFingerSelectHandGestureIcon } from "@/pages/components/icons/one-finger-select-hand-gesture.svg.jsx"
-import { SearchIcon } from "@/pages/components/icons/search.svg.jsx"
-import { Badge } from "@kibamail/owly/badge"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import * as Tabs from "@kibamail/owly/tabs"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import * as React from "react"
-import { toast } from "sonner"
-import { usePageContext } from "vike-react/usePageContext"
+import './styles.css'
+import { MailOpenIcon } from '@/pages/components/icons/mail-open.svg.jsx'
+import { MailOutIcon } from '@/pages/components/icons/mail-out.svg.jsx'
+import { MoreVertIcon } from '@/pages/components/icons/more-vert.svg.jsx'
+import { OneFingerSelectHandGestureIcon } from '@/pages/components/icons/one-finger-select-hand-gesture.svg.jsx'
+import { SearchIcon } from '@/pages/components/icons/search.svg.jsx'
+import { Badge } from '@kibamail/owly/badge'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import * as Tabs from '@kibamail/owly/tabs'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import * as React from 'react'
+import { toast } from 'sonner'
+import { usePageContext } from 'vike-react/usePageContext'
 
 import {
   BroadcastGroup,
-  BroadcastGroupWithBroadcasts,
-} from "@/database/database_schema_types.js"
+  type BroadcastGroupWithBroadcasts,
+} from '@/database/database_schema_types.js'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 enum BroadcastStatus {
-  DRAFT = "draft",
-  SENT = "sent",
-  SCHEDULED = "scheduled",
-  ALL = "all",
+  DRAFT = 'draft',
+  SENT = 'sent',
+  SCHEDULED = 'scheduled',
+  ALL = 'all',
 }
 
 export type EngagePageProps = {
@@ -41,7 +41,7 @@ function EngagePage() {
 
   return (
     <Tabs.Content value="broadcasts" className="pt-6">
-      <Tabs.Root variant="primary" defaultValue={defaultTabValue} width={"full"}>
+      <Tabs.Root variant="primary" defaultValue={defaultTabValue} width={'full'}>
         <div className="w-full flex flex-col gap-y-2 lg:gap-y-0 lg:flex-row items-center lg:justify-between">
           <div className="w-full lg:max-w-72">
             <TextField.Root
@@ -58,16 +58,16 @@ function EngagePage() {
           <div className="w-full lg:w-auto">
             <Tabs.List className="lg:w-[fit-content]">
               <Tabs.Trigger value={BroadcastStatus.ALL} asChild>
-                <a href={route("engage")}>All</a>
+                <a href={route('engage')}>All</a>
               </Tabs.Trigger>
               <Tabs.Trigger value={BroadcastStatus.SENT} asChild>
-                <a href={route("engage", {}, { status: "sent" })}>Sent</a>
+                <a href={route('engage', {}, { status: 'sent' })}>Sent</a>
               </Tabs.Trigger>
               <Tabs.Trigger value={BroadcastStatus.SCHEDULED} asChild>
-                <a href={route("engage", {}, { status: "scheduled" })}>Scheduled</a>
+                <a href={route('engage', {}, { status: 'scheduled' })}>Scheduled</a>
               </Tabs.Trigger>
               <Tabs.Trigger value={BroadcastStatus.DRAFT} asChild>
-                <a href={route("engage", {}, { status: "draft" })}>Drafts</a>
+                <a href={route('engage', {}, { status: 'draft' })}>Drafts</a>
               </Tabs.Trigger>
               <Tabs.Indicator />
             </Tabs.List>
@@ -92,9 +92,9 @@ function EngagePage() {
                   <a
                     key={broadcast.id}
                     href={
-                      broadcast?.status === "SENT"
-                        ? route("engage_overview", { uuid: broadcast.id })
-                        : route("broadcasts_composer", { uuid: broadcast.id })
+                      broadcast?.status === 'SENT'
+                        ? route('engage_overview', { uuid: broadcast.id })
+                        : route('broadcasts_composer', { uuid: broadcast.id })
                     }
                     className="h-[4.5rem] hidden lg:flex w-full py-4 px-2 box-border border-b border-[var(--black-5)] ease-in-out duration-300 transition-[background-color] hover:bg-[var(--background-hover)] cursor-pointer"
                   >

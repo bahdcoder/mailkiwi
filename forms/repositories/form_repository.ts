@@ -1,10 +1,10 @@
-import { UpdateFormDto } from "@/forms/dto/update_form_dto.js"
-import { DateTime } from "luxon"
+import type { UpdateFormDto } from '@/forms/dto/update_form_dto.js'
+import { DateTime } from 'luxon'
 
-import { Form } from "@/database/database_schema_types.js"
-import { forms } from "@/database/schema.js"
+import type { Form } from '@/database/database_schema_types.js'
+import { forms } from '@/database/schema.js'
 
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
 export class FormRepository extends BaseRepository {
   forms() {
@@ -12,7 +12,7 @@ export class FormRepository extends BaseRepository {
   }
 
   async update(form: Form, payload: UpdateFormDto) {
-    const fields: Form["fields"] = []
+    const fields: Form['fields'] = []
 
     if (payload.fields) {
       for (const field of payload.fields) {

@@ -1,4 +1,4 @@
-import { Secret } from "@poppinss/utils"
+import { Secret } from '@poppinss/utils'
 
 export function makeEnvSecrets<
   T extends {

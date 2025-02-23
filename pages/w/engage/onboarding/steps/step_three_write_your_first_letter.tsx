@@ -1,13 +1,13 @@
-import { useOnboardingContext } from "./context_provider.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
-import React from "react"
+import { useOnboardingContext } from './context_provider.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
+import React from 'react'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export function WriteYourFirstLetterStep() {
-  const { step } = useOnboardingContext("CreatePublicationStep")
+  const { step } = useOnboardingContext('CreatePublicationStep')
 
   if (step !== 2) {
     return null
@@ -22,10 +22,10 @@ export function WriteYourFirstLetterStep() {
 
       <div className="flex items-center justify-between">
         <Button className="mt-6" asChild>
-          <a href={route("engage")}>Compose a broadcast</a>
+          <a href={route('engage')}>Compose a broadcast</a>
         </Button>
         <Button variant="tertiary" className="mt-6" asChild>
-          <a href={route("engage")}>Skip for now</a>
+          <a href={route('engage')}>Skip for now</a>
         </Button>
       </div>
     </div>

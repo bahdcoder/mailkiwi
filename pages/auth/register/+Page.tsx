@@ -3,16 +3,16 @@ import {
   Oauth2Methods,
   PageContainer,
   PageTitle,
-} from "@/pages/components/auth/auth.jsx"
-import { FlashMessage } from "@/pages/components/flash/flash_message.jsx"
+} from '@/pages/components/auth/auth.jsx'
+import { FlashMessage } from '@/pages/components/flash/flash_message.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import React from "react"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import React from 'react'
 
 interface RegisterPageProps {
   teamInviteToken?: string
@@ -22,12 +22,12 @@ function RegisterPage({ teamInviteToken }: RegisterPageProps) {
   const isAnInvitedUser = teamInviteToken !== undefined
 
   const { serverFormProps, isPending, error } = useServerFormMutation({
-    action: "/auth/register",
+    action: '/auth/register',
   })
 
   const linkToLoginPage = isAnInvitedUser
     ? `/auth/invites/${teamInviteToken}/login`
-    : "/auth/login"
+    : '/auth/login'
 
   return (
     <PageContainer>
@@ -35,17 +35,17 @@ function RegisterPage({ teamInviteToken }: RegisterPageProps) {
         title={
           isAnInvitedUser ? (
             <span className="kb-content-disabled">
-              You{"'"}ve been invited to join{" "}
+              You{"'"}ve been invited to join{' '}
               <span className="kb-content-brand">Zibaletter</span>.
             </span>
           ) : (
-            "Welcome to a new world of Emailing."
+            'Welcome to a new world of Emailing.'
           )
         }
         description={
           isAnInvitedUser
-            ? "Sign up or login to join the Zibaletter workspace."
-            : "Choose your preferred method to access powerful emailing tools."
+            ? 'Sign up or login to join the Zibaletter workspace.'
+            : 'Choose your preferred method to access powerful emailing tools.'
         }
       />
 
@@ -65,8 +65,8 @@ function RegisterPage({ teamInviteToken }: RegisterPageProps) {
             placeholder="Enter your work email address"
           >
             <TextField.Label htmlFor="email">Email address</TextField.Label>
-            {error?.errorsMap?.["email"] ? (
-              <TextField.Error>{error?.errorsMap?.["email"]}</TextField.Error>
+            {error?.errorsMap?.['email'] ? (
+              <TextField.Error>{error?.errorsMap?.['email']}</TextField.Error>
             ) : null}
           </TextField.Root>
         </div>

@@ -11,7 +11,7 @@ import {
   string,
   union,
   url,
-} from "valibot"
+} from 'valibot'
 
 export const UpdateContactDto = objectAsync({
   firstName: optional(string()),

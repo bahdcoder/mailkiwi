@@ -1,18 +1,18 @@
 import {
   DropdownButton,
   DropdownCategoryTitle,
-} from "@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.jsx"
-import { Surface } from "@/pages/components/tiptap/ui/Surface.jsx"
-import { Toolbar } from "@/pages/components/tiptap/ui/Toolbar.jsx"
-import * as Dropdown from "@radix-ui/react-dropdown-menu"
-import { icons } from "lucide-react"
-import { useMemo } from "react"
+} from '@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx'
+import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
+import { Surface } from '@/pages/components/tiptap/ui/Surface.jsx'
+import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
+import * as Dropdown from '@radix-ui/react-dropdown-menu'
+import type { icons } from 'lucide-react'
+import { useMemo } from 'react'
 
 export type ContentTypePickerOption = {
   label: string
   id: string
-  type: "option"
+  type: 'option'
   disabled: () => boolean
   isActive: () => boolean
   onClick: () => void
@@ -22,7 +22,7 @@ export type ContentTypePickerOption = {
 export type ContentTypePickerCategory = {
   label: string
   id: string
-  type: "category"
+  type: 'category'
 }
 
 export type ContentPickerOptions = Array<
@@ -35,22 +35,22 @@ export type ContentTypePickerProps = {
 
 const isOption = (
   option: ContentTypePickerOption | ContentTypePickerCategory,
-): option is ContentTypePickerOption => option.type === "option"
+): option is ContentTypePickerOption => option.type === 'option'
 const isCategory = (
   option: ContentTypePickerOption | ContentTypePickerCategory,
-): option is ContentTypePickerCategory => option.type === "category"
+): option is ContentTypePickerCategory => option.type === 'category'
 
 export const ContentTypePicker = ({ options }: ContentTypePickerProps) => {
   const activeItem = useMemo(
-    () => options.find((option) => option.type === "option" && option.isActive()),
+    () => options.find((option) => option.type === 'option' && option.isActive()),
     [options],
   )
 
   return (
     <Dropdown.Root>
       <Dropdown.Trigger asChild>
-        <Toolbar.Button active={activeItem?.id !== "paragraph" && !!activeItem?.type}>
-          <Icon name={(activeItem?.type === "option" && activeItem.icon) || "Pilcrow"} />
+        <Toolbar.Button active={activeItem?.id !== 'paragraph' && !!activeItem?.type}>
+          <Icon name={(activeItem?.type === 'option' && activeItem.icon) || 'Pilcrow'} />
           <Icon name="ChevronDown" className="w-2 h-2" />
         </Toolbar.Button>
       </Dropdown.Trigger>

@@ -1,9 +1,9 @@
-import { Figure } from "../Figure/Figure.js"
-import { Quote } from "./Quote/Quote.js"
-import { QuoteCaption } from "./QuoteCaption/QuoteCaption.js"
-import { mergeAttributes } from "@tiptap/core"
+import { Figure } from '../Figure/Figure.js'
+import { Quote } from './Quote/Quote.js'
+import { QuoteCaption } from './QuoteCaption/QuoteCaption.js'
+import { mergeAttributes } from '@tiptap/core'
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   // eslint-disable-next-line no-unused-vars
   interface Commands<ReturnType> {
     blockquoteFigure: {
@@ -13,11 +13,11 @@ declare module "@tiptap/core" {
 }
 
 export const BlockquoteFigure = Figure.extend({
-  name: "blockquoteFigure",
+  name: 'blockquoteFigure',
 
-  group: "block",
+  group: 'block',
 
-  content: "quote quoteCaption",
+  content: 'quote quoteCaption',
 
   isolating: true,
 
@@ -27,9 +27,9 @@ export const BlockquoteFigure = Figure.extend({
 
   renderHTML({ HTMLAttributes }) {
     return [
-      "figure",
-      mergeAttributes(HTMLAttributes, { "data-type": this.name }),
-      ["div", {}, 0],
+      'figure',
+      mergeAttributes(HTMLAttributes, { 'data-type': this.name }),
+      ['div', {}, 0],
     ]
   },
 
@@ -59,18 +59,18 @@ export const BlockquoteFigure = Figure.extend({
               type: this.name,
               content: [
                 {
-                  type: "quote",
+                  type: 'quote',
                   content: selectionContent.content.toJSON() || [
                     {
-                      type: "paragraph",
+                      type: 'paragraph',
                       attrs: {
-                        textAlign: "left",
+                        textAlign: 'left',
                       },
                     },
                   ],
                 },
                 {
-                  type: "quoteCaption",
+                  type: 'quoteCaption',
                 },
               ],
             })

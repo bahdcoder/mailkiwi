@@ -1,15 +1,15 @@
-import { AssignSendingSourceToSendingDomainAction } from "@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js"
-import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+import { AssignSendingSourceToSendingDomainAction } from '@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js'
+import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
-import { DnsResolverTool } from "@/tools/dns/dns_resolver_tool.js"
+import { DnsResolverTool } from '@/tools/dns/dns_resolver_tool.js'
 
-import { sendingDomains } from "@/database/schema.js"
+import { sendingDomains } from '@/database/schema.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { Queue } from "@/shared/queue/queue.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { Queue } from '@/shared/queue/queue.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface CheckSendingDomainDnsConfigurationJobPayload {
   sendingDomainId: string
@@ -17,7 +17,7 @@ export interface CheckSendingDomainDnsConfigurationJobPayload {
 
 export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingDomainDnsConfigurationJobPayload> {
   static get id() {
-    return "SENDING_DOMAINS::CHECK_SENDING_DOMAIN_DNS_CONFIGURATION"
+    return 'SENDING_DOMAINS::CHECK_SENDING_DOMAIN_DNS_CONFIGURATION'
   }
 
   static get queue() {
@@ -34,7 +34,7 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
 
     if (!sendingDomain) {
       return this.done(
-        "The sending domain was not found. Might have been deleted by the user before the job was run.",
+        'The sending domain was not found. Might have been deleted by the user before the job was run.',
       )
     }
 

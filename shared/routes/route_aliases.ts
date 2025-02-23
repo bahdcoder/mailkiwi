@@ -1,5 +1,5 @@
 function trimLastSlash(path: string) {
-  return path.endsWith("/") ? path.slice(0, -1) : path
+  return path.endsWith('/') ? path.slice(0, -1) : path
 }
 
 function w(path: string) {
@@ -12,79 +12,79 @@ function engage(path: string) {
 
 export const aliases = {
   // email/password registration
-  auth_register: "/auth/register",
-  auth_register_password: "/auth/register/password",
-  auth_register_profile: "/auth/register/profile",
-  auth_register_email_confirm: "/auth/register/email/confirm",
-  auth_passwords_forgot: "/auth/passwords/forgot",
-  auth_passwords_reset: "/auth/passwords/reset/:token",
+  auth_register: '/auth/register',
+  auth_register_password: '/auth/register/password',
+  auth_register_profile: '/auth/register/profile',
+  auth_register_email_confirm: '/auth/register/email/confirm',
+  auth_passwords_forgot: '/auth/passwords/forgot',
+  auth_passwords_reset: '/auth/passwords/reset/:token',
 
-  auth_oauth2_provider: "/auth/:action/oauth2/:provider/authorize",
+  auth_oauth2_provider: '/auth/:action/oauth2/:provider/authorize',
 
   // login
-  auth_login: "/auth/login",
+  auth_login: '/auth/login',
 
   // logout
-  auth_logout: "/auth/logout",
+  auth_logout: '/auth/logout',
 
   // dashboard
-  welcome: w("welcome"),
-  dashboard: w("dashboard"),
+  welcome: w('welcome'),
+  dashboard: w('dashboard'),
 
   // community
-  community: "community",
+  community: 'community',
 
   // products
-  send: w("send"),
-  optimise: w("optimise"),
-  engage: w("engage"),
-  insights: w("insights"),
+  send: w('send'),
+  optimise: w('optimise'),
+  engage: w('engage'),
+  insights: w('insights'),
 
   // teams
-  teams_switch: "/teams/:teamId/switch",
+  teams_switch: '/teams/:teamId/switch',
 
   // error pages
-  error_404: "/e/404",
-  error_500: "/e/500",
+  error_404: '/e/404',
+  error_500: '/e/500',
 
-  engage_welcome: w("engage/welcome"),
-  engage_onboarding: w("engage/onboarding"),
-  engage_contacts: w("engage/contacts"),
-  engage_automations: w("engage/automations"),
+  engage_welcome: w('engage/welcome'),
+  engage_onboarding: w('engage/onboarding'),
+  engage_contacts: w('engage/contacts'),
+  engage_automations: w('engage/automations'),
 
   // single letter pages
-  engage_overview: w("engage/broadcasts/:uuid/"),
-  engage_performance: w("engage/broadcasts/:uuid/performance"),
+  engage_overview: w('engage/broadcasts/:uuid/'),
+  engage_performance: w('engage/broadcasts/:uuid/performance'),
 
   // audiences
-  audience_create: "/audiences",
-  audiences_update: "/audiences/:audienceId",
+  audience_create: '/audiences',
+  audiences_update: '/audiences/:audienceId',
 
   // imports
-  contacts_import: "/audiences/:audienceId/imports",
-  update_contacts_import: "/audiences/:audienceId/imports/:importId",
+  contacts_import: '/audiences/:audienceId/imports',
+  update_contacts_import: '/audiences/:audienceId/imports/:importId',
 
   // contacts
-  get_contacts: "/audiences/:audienceId/contacts",
-  contacts_search: "/audiences/:audienceId/contacts/search",
+  get_contacts: '/audiences/:audienceId/contacts',
+  contacts_search: '/audiences/:audienceId/contacts/search',
 
   // segments
-  create_segment: "/audiences/:audienceId/segments",
+  create_segment: '/audiences/:audienceId/segments',
 
   // broadcasts
-  broadcasts: engage("/"),
-  broadcasts_composer: engage("broadcasts/:uuid/composer"),
-  create_broadcast: "/broadcasts",
-  update_broadcast: "/broadcasts/:uuid/",
-  validate_broadcast: "/broadcasts/:uuid/validate",
-  send_broadcast: "/broadcasts/:uuid/send",
-  unsend_broadcast: "/broadcasts/:uuid/unsend",
+  broadcasts: engage('/'),
+  broadcasts_composer: engage('broadcasts/:uuid/composer'),
+  create_broadcast: '/broadcasts',
+  update_broadcast: '/broadcasts/:uuid/',
+  validate_broadcast: '/broadcasts/:uuid/validate',
+  send_broadcast: '/broadcasts/:uuid/send',
+  unsend_broadcast: '/broadcasts/:uuid/unsend',
 
   // broadcast groups
-  create_broadcast_group: "/broadcasts_groups",
+  create_broadcast_group: '/broadcasts_groups',
 
   // media
-  add_media_documents: "/media-documents",
+  add_media_documents: '/media-documents',
 } as const
 
 export function route(
@@ -100,13 +100,13 @@ export function route(
     }
   }
 
-  let queryString = ""
+  let queryString = ''
 
   if (queryParams) {
     queryString = new URLSearchParams(queryParams).toString()
   }
 
-  return `${path}${queryString ? `?${queryString}` : ""}`
+  return `${path}${queryString ? `?${queryString}` : ''}`
 }
 
 export function wRoute() {}

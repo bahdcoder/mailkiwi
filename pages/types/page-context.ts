@@ -1,4 +1,4 @@
-import { type UAParser } from "ua-parser-js"
+import type { UAParser } from 'ua-parser-js'
 
 import type {
   Audience,
@@ -8,7 +8,7 @@ import type {
   TeamMembership,
   TeamWithMemberships,
   UserWithTeams,
-} from "@/database/database_schema_types.js"
+} from '@/database/database_schema_types.js'
 
 export interface DefaultPageProps {
   user: UserWithTeams
@@ -30,18 +30,18 @@ export interface DefaultPageProps {
 declare global {
   namespace Vike {
     interface PageContext {
-      user: DefaultPageProps["user"]
-      team: DefaultPageProps["team"]
-      userAgent: DefaultPageProps["userAgent"]
+      user: DefaultPageProps['user']
+      team: DefaultPageProps['team']
+      userAgent: DefaultPageProps['userAgent']
       isMobile: boolean
       flash: string
-      memberships: DefaultPageProps["memberships"]
-      audience: DefaultPageProps["audience"]
-      tags: DefaultPageProps["tags"]
-      pageProps: DefaultPageProps["pageProps"]
-      engage: DefaultPageProps["engage"]
-      send: DefaultPageProps["send"]
-      sendingDomains: DefaultPageProps["sendingDomains"]
+      memberships: DefaultPageProps['memberships']
+      audience: DefaultPageProps['audience']
+      tags: DefaultPageProps['tags']
+      pageProps: DefaultPageProps['pageProps']
+      engage: DefaultPageProps['engage']
+      send: DefaultPageProps['send']
+      sendingDomains: DefaultPageProps['sendingDomains']
     }
   }
 }

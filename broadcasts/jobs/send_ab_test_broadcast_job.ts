@@ -1,23 +1,23 @@
-import { ContactsConcern } from "../concerns/broadcast_contacts_concern.js"
-import { PickAbTestWinnerJob } from "./pick_ab_test_winner_job.js"
-import { SendBroadcastToContact } from "./send_broadcast_to_contact_job.js"
-import { asc, count } from "drizzle-orm"
+import { ContactsConcern } from '../concerns/broadcast_contacts_concern.js'
+import { PickAbTestWinnerJob } from './pick_ab_test_winner_job.js'
+import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
+import { asc, count } from 'drizzle-orm'
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
-import type { DrizzleClient } from "@/database/client.js"
+import type { DrizzleClient } from '@/database/client.js'
 import type {
   AbTestVariant,
   BroadcastWithSegmentAndAbTestVariants,
-} from "@/database/database_schema_types.js"
-import { contacts } from "@/database/schema.js"
+} from '@/database/database_schema_types.js'
+import { contacts } from '@/database/schema.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { Queue } from "@/shared/queue/queue.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { Queue } from '@/shared/queue/queue.js'
 
-import { hoursToSeconds } from "@/utils/dates.js"
-import { container } from "@/utils/typi.js"
+import { hoursToSeconds } from '@/utils/dates.js'
+import { container } from '@/utils/typi.js'
 
 export interface SendAbTestBroadcastJobPayload {
   broadcastId: string
@@ -25,7 +25,7 @@ export interface SendAbTestBroadcastJobPayload {
 
 export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayload> {
   static get id() {
-    return "BROADCASTS::SEND_AB_TEST_BROADCAST"
+    return 'BROADCASTS::SEND_AB_TEST_BROADCAST'
   }
 
   static get queue() {
@@ -95,7 +95,7 @@ export class SendAbTestBroadcastJob extends BaseJob<SendAbTestBroadcastJobPayloa
     this.contactsConcern.database = database
 
     if (!this.broadcast || !this.broadcast.audience) {
-      return this.fail("Broadcast or audience or team not properly provided.")
+      return this.fail('Broadcast or audience or team not properly provided.')
     }
 
     const totalContacts = await this.getTotalContacts()

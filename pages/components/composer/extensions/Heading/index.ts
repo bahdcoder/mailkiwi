@@ -1,1 +1,1 @@
-export * from "./Heading.js"
+export * from './Heading.js'

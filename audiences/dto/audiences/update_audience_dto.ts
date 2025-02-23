@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 import {
   type InferInput,
   array,
@@ -9,15 +9,15 @@ import {
   optional,
   pipe,
   string,
-} from "valibot"
+} from 'valibot'
 
 enum PropertyType {
-  boolean = "boolean",
-  float = "float",
-  date = "date",
-  text = "text",
-  enum = "enum",
-  list = "list",
+  boolean = 'boolean',
+  float = 'float',
+  date = 'date',
+  text = 'text',
+  enum = 'enum',
+  list = 'list',
 }
 
 export const UpdateAudienceSchema = pipe(
@@ -43,7 +43,7 @@ export const UpdateAudienceSchema = pipe(
       return true
     }
 
-    const enumProperties = input.properties.filter((property) => property.type === "enum")
+    const enumProperties = input.properties.filter((property) => property.type === 'enum')
 
     if (enumProperties.length === 0) {
       return true
@@ -52,7 +52,7 @@ export const UpdateAudienceSchema = pipe(
     return enumProperties.every(
       (property) => property.options && property.options.length > 0,
     )
-  }, "Custom contact properties of type enum must have a list of options."),
+  }, 'Custom contact properties of type enum must have a list of options.'),
 )
 
 export type UpdateAudienceDto = InferInput<typeof UpdateAudienceSchema>

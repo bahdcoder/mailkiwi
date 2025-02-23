@@ -1,15 +1,15 @@
-import { appEnv } from "@/app/env/app_env.js"
-import {
+import { appEnv } from '@/app/env/app_env.js'
+import type {
   AccountInformation,
   CommerceProviderContract,
-} from "@/commerce/contracts/commerce_provider_contract.js"
-import Stripe from "stripe"
+} from '@/commerce/contracts/commerce_provider_contract.js'
+import Stripe from 'stripe'
 
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
-import { rootPath } from "@/shared/utils/routes/root_path.js"
+import { rootPath } from '@/shared/utils/routes/root_path.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class StripeCommerceProvider implements CommerceProviderContract {
   constructor(
@@ -20,7 +20,7 @@ export class StripeCommerceProvider implements CommerceProviderContract {
 
   async createAccount(accountInformation: AccountInformation) {
     const account = await this.stripe.accounts.create({
-      type: "express",
+      type: 'express',
       email: accountInformation.email,
       country: accountInformation.country,
 
@@ -37,7 +37,7 @@ export class StripeCommerceProvider implements CommerceProviderContract {
     const accountLink = await this.createOnboardingLink(account.id)
 
     await container.make(TeamRepository).teams().update(accountInformation.teamId, {
-      commerceProvider: "stripe",
+      commerceProvider: 'stripe',
       commerceProviderAccountId: account.id,
     })
 
@@ -47,16 +47,16 @@ export class StripeCommerceProvider implements CommerceProviderContract {
   async createOnboardingLink(account: string) {
     const accountLink = await this.stripe.accountLinks.create({
       account,
-      type: "account_onboarding",
-      return_url: rootPath("settings/commerce"),
-      refresh_url: rootPath("settings/commerce/refresh"),
+      type: 'account_onboarding',
+      return_url: rootPath('settings/commerce'),
+      refresh_url: rootPath('settings/commerce/refresh'),
     })
 
     return { onboardingLink: accountLink.url }
   }
 
   async initialiseOneTimePayment() {
-    return { paymentUrl: "" }
+    return { paymentUrl: '' }
   }
 
   async confirmOneTimePayment() {

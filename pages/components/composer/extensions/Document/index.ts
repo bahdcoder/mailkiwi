@@ -1,1 +1,1 @@
-export * from "./Document.js"
+export * from './Document.js'

@@ -1,4 +1,4 @@
-import dns from "node:dns/promises"
+import dns from 'node:dns/promises'
 
 export class DnsWebsiteResolverTool {
   private domain: string

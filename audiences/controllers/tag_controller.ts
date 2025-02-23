@@ -1,15 +1,15 @@
-import { CreateTagAction } from "@/audiences/actions/tags/create_tag_action.js"
-import { DeleteTagAction } from "@/audiences/actions/tags/delete_tag_action.js"
-import { CreateTagSchema } from "@/audiences/dto/tags/create_tag_dto.js"
+import { CreateTagAction } from '@/audiences/actions/tags/create_tag_action.js'
+import { DeleteTagAction } from '@/audiences/actions/tags/delete_tag_action.js'
+import { CreateTagSchema } from '@/audiences/dto/tags/create_tag_dto.js'
 
-import { Audience, Tag } from "@/database/database_schema_types.js"
+import type { Audience, Tag } from '@/database/database_schema_types.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import type { HonoInstance } from "@/shared/server/hono.js"
-import type { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import type { HonoInstance } from '@/shared/server/hono.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class TagController extends BaseController {
   constructor(private app: HonoInstance = makeApp()) {
@@ -17,22 +17,22 @@ export class TagController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["POST", "/", this.create.bind(this)],
-        ["DELETE", "/:tagId", this.delete.bind(this)],
+        ['POST', '/', this.create.bind(this)],
+        ['DELETE', '/:tagId', this.delete.bind(this)],
       ],
       {
-        prefix: "audiences/:audienceId/tags",
+        prefix: 'audiences/:audienceId/tags',
       },
     )
   }
 
   async create(ctx: HonoContext) {
-    await this.ensureExists<Audience>(ctx, "audienceId")
+    await this.ensureExists<Audience>(ctx, 'audienceId')
 
     this.ensureCanAuthor(ctx)
 
     const data = await this.validate(ctx, CreateTagSchema)
-    const audienceId = ctx.req.param("audienceId")
+    const audienceId = ctx.req.param('audienceId')
 
     const action = container.resolve<CreateTagAction>(CreateTagAction)
 
@@ -43,8 +43,8 @@ export class TagController extends BaseController {
 
   async delete(ctx: HonoContext) {
     const [, tag] = await Promise.all([
-      this.ensureExists<Audience>(ctx, "audienceId"),
-      this.ensureExists<Tag>(ctx, "tagId"),
+      this.ensureExists<Audience>(ctx, 'audienceId'),
+      this.ensureExists<Tag>(ctx, 'tagId'),
     ])
 
     this.ensureCanAuthor(ctx)

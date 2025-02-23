@@ -1,20 +1,20 @@
 import {
   ToolbarButton,
   getToolbarClassNames,
-} from "@/pages/components/composer/components/toolbar/toolbar.jsx"
-import { EditPencilIcon } from "@/pages/components/icons/edit-pencil.svg.jsx"
-import * as Popover from "@/pages/components/popover/popover.jsx"
-import * as TextField from "@kibamail/owly/text-field"
-import { Editor } from "@tiptap/core"
-import React from "react"
+} from '@/pages/components/composer/components/toolbar/toolbar.jsx'
+import { EditPencilIcon } from '@/pages/components/icons/edit-pencil.svg.jsx'
+import * as Popover from '@/pages/components/popover/popover.jsx'
+import * as TextField from '@kibamail/owly/text-field'
+import type { Editor } from '@tiptap/core'
+import React from 'react'
 
 export interface EditImageInformationPanelProps {
   editor: Editor
 }
 
 export function EditImageInformationPanel({ editor }: EditImageInformationPanelProps) {
-  const imageAttributes = editor.getAttributes("imageBlock")
-  const [altText, setAltText] = React.useState(imageAttributes?.alt ?? "")
+  const imageAttributes = editor.getAttributes('imageBlock')
+  const [altText, setAltText] = React.useState(imageAttributes?.alt ?? '')
 
   function onAltTextChange(event: React.ChangeEvent<HTMLInputElement>) {
     setAltText(event.target.value)
@@ -22,7 +22,7 @@ export function EditImageInformationPanel({ editor }: EditImageInformationPanelP
 
   function onFormSubmitted(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const alt = new FormData(event.target as HTMLFormElement).get("alt") as string
+    const alt = new FormData(event.target as HTMLFormElement).get('alt') as string
 
     editor.chain().focus().setImageBlockAlt(alt).run()
   }

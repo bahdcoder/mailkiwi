@@ -1,15 +1,15 @@
-import { Job } from "bullmq"
+import type { Job } from 'bullmq'
 
-import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.js"
-import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.js"
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import { SendAbTestBroadcastJob } from '@/broadcasts/jobs/send_ab_test_broadcast_job.js'
+import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
-import type { BroadcastWithoutContent } from "@/database/database_schema_types.js"
+import type { BroadcastWithoutContent } from '@/database/database_schema_types.js'
 
-import { BroadcastsQueue, Queue } from "@/shared/queue/queue.js"
+import { BroadcastsQueue, Queue } from '@/shared/queue/queue.js'
 
-import { differenceInSeconds } from "@/utils/dates.js"
-import { container } from "@/utils/typi.js"
+import { differenceInSeconds } from '@/utils/dates.js'
+import { container } from '@/utils/typi.js'
 
 export class SendBroadcastAction {
   constructor(private broadcastRepository = container.make(BroadcastRepository)) {}
@@ -44,7 +44,7 @@ export class SendBroadcastAction {
     }
 
     await this.broadcastRepository.update(broadcast.id, {
-      status: "QUEUED_FOR_SENDING",
+      status: 'QUEUED_FOR_SENDING',
     })
   }
 }

@@ -1,5 +1,5 @@
-import { Secret } from "@poppinss/utils"
-import { Redis } from "ioredis"
+import type { Secret } from '@poppinss/utils'
+import { Redis } from 'ioredis'
 
 export const REDIS_KNOWN_KEYS = {
   SESSION(sessionId: string) {

@@ -1,7 +1,7 @@
-import { AnyColumn, InferSelectModel, eq, getTableName } from "drizzle-orm"
-import { AnyMySqlTable, MySqlSelect } from "drizzle-orm/mysql-core"
+import { type AnyColumn, type InferSelectModel, eq, getTableName } from 'drizzle-orm'
+import type { AnyMySqlTable, MySqlSelect } from 'drizzle-orm/mysql-core'
 
-import type { DrizzleClient } from "@/database/client.js"
+import type { DrizzleClient } from '@/database/client.js'
 
 type RelationshipConfig<
   T extends AnyMySqlTable,
@@ -22,12 +22,12 @@ export function hasMany<
 >(db: DrizzleClient, config: RelationshipConfig<T, R, RName>) {
   return async (
     $modifyQuery?: (
-      query: MySqlSelect<T["_"]["name"], Record<string, any>>,
-    ) => MySqlSelect<T["_"]["name"], Record<string, any>>,
+      query: MySqlSelect<T['_']['name'], Record<string, any>>,
+    ) => MySqlSelect<T['_']['name'], Record<string, any>>,
     $modifyRelationshipResults?: (row: any, results: any) => any,
   ): Promise<
-    (T["$inferSelect"] & {
-      [K in RName]: R["$inferSelect"][]
+    (T['$inferSelect'] & {
+      [K in RName]: R['$inferSelect'][]
     })[]
   > => {
     const { from, to, foreignKey, primaryKey, relationName } = config
@@ -44,8 +44,8 @@ export function hasMany<
     const results = await query
 
     const groupedResults: {
-      [key: string]: T["$inferSelect"] & {
-        [key: string]: R["$inferSelect"][]
+      [key: string]: T['$inferSelect'] & {
+        [key: string]: R['$inferSelect'][]
       }
     } = {}
 
@@ -79,9 +79,9 @@ export function hasOne<
   const toTableName = getTableName(config.to)
   return async (
     $modifyQuery?: (
-      query: MySqlSelect<T["_"]["name"], Record<string, any>>,
-    ) => MySqlSelect<T["_"]["name"], Record<string, any>>,
-  ): Promise<(T["$inferSelect"] & { [K in RName]: R["$inferSelect"] | null })[]> => {
+      query: MySqlSelect<T['_']['name'], Record<string, any>>,
+    ) => MySqlSelect<T['_']['name'], Record<string, any>>,
+  ): Promise<(T['$inferSelect'] & { [K in RName]: R['$inferSelect'] | null })[]> => {
     const { from, to, foreignKey, primaryKey, relationName } = config
     let query = db.select().from(from).leftJoin(to, eq(foreignKey, primaryKey)).$dynamic()
 
@@ -119,8 +119,8 @@ export function belongsTo<
   const toTableName = getTableName(config.to)
   return async (
     $modifyQuery?: (
-      query: MySqlSelect<T["_"]["name"], Record<string, any>>,
-    ) => MySqlSelect<T["_"]["name"], Record<string, any>>,
+      query: MySqlSelect<T['_']['name'], Record<string, any>>,
+    ) => MySqlSelect<T['_']['name'], Record<string, any>>,
   ): Promise<(InferSelectModel<T> & { [K in RName]: InferSelectModel<R> | null })[]> => {
     const { from, to, foreignKey, primaryKey, relationName } = config
     let query = db.select().from(from).leftJoin(to, eq(foreignKey, primaryKey)).$dynamic()

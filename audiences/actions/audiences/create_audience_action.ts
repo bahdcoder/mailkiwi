@@ -1,9 +1,9 @@
-import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import type { CreateAudienceDto } from '@/audiences/dto/audiences/create_audience_dto.js'
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class CreateAudienceAction {
   constructor(private audienceRepository = container.make(AudienceRepository)) {}
@@ -16,8 +16,8 @@ export class CreateAudienceAction {
     if (audienceForTeam) {
       throw E_VALIDATION_FAILED([
         {
-          message: "You may only have one audience per team.",
-          field: "slug",
+          message: 'You may only have one audience per team.',
+          field: 'slug',
         },
       ])
     }

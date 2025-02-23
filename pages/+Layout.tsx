@@ -1,6 +1,6 @@
-import "./styles.css"
-import React from "react"
-import { Toaster } from "sonner"
+import './styles.css'
+import type React from 'react'
+import { Toaster } from 'sonner'
 
 function RootLayout({ children }: React.PropsWithChildren) {
   return (

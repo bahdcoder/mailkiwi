@@ -1,22 +1,22 @@
-import { faker } from "@faker-js/faker"
-import { eq } from "drizzle-orm"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { makeRequestAsUser } from "@/tests/utils/http.js"
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '@/tests/utils/http.js'
 
-import { tags, tagsOnContacts } from "@/database/schema.js"
+import { tags, tagsOnContacts } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-describe("@tags create", () => {
-  test("can create a tag into the database", async ({ expect }) => {
+describe('@tags create', () => {
+  test('can create a tag into the database', async ({ expect }) => {
     const { user, audience } = await createUser()
     const payload = { name: faker.string.uuid() + faker.lorem.word() }
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/tags`,
       body: payload,
     })
@@ -30,28 +30,28 @@ describe("@tags create", () => {
     expect(savedTag?.audienceId).toBe(audience.id)
   })
 
-  test("cannot create a tag without a valid name", async ({ expect }) => {
+  test('cannot create a tag without a valid name', async ({ expect }) => {
     const { user, audience } = await createUser()
-    const payload = { name: "" }
+    const payload = { name: '' }
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/tags`,
       body: payload,
     })
     const json = await response.json()
 
     expect(response.status).toBe(422)
-    expect(json.payload.errors).toContainEqual(expect.objectContaining({ field: "name" }))
+    expect(json.payload.errors).toContainEqual(expect.objectContaining({ field: 'name' }))
   })
 
-  test("cannot create a tag without the right team permissions", async ({ expect }) => {
+  test('cannot create a tag without the right team permissions', async ({ expect }) => {
     const { audience } = await createUser()
     const { user: otherUser, team } = await createUser()
     const payload = { name: faker.string.uuid() + faker.lorem.word() }
 
     const response = await makeRequestAsUser(otherUser, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/tags`,
       body: payload,
     })
@@ -64,7 +64,7 @@ describe("@tags create", () => {
     )
   })
 
-  test("cannot create a tag if the audience ID is invalid or does not exist", async ({
+  test('cannot create a tag if the audience ID is invalid or does not exist', async ({
     expect,
   }) => {
     const { user } = await createUser()
@@ -72,7 +72,7 @@ describe("@tags create", () => {
     const invalidAudienceId = faker.string.uuid()
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${invalidAudienceId}/tags`,
       body: payload,
     })
@@ -80,11 +80,11 @@ describe("@tags create", () => {
     expect(response.status).toBe(422)
     const json = await response.json()
     expect(json.payload.errors).toContainEqual(
-      expect.objectContaining({ field: "audienceId" }),
+      expect.objectContaining({ field: 'audienceId' }),
     )
   })
 
-  test("cannot create a tag in which the name already exists", async ({ expect }) => {
+  test('cannot create a tag in which the name already exists', async ({ expect }) => {
     const { user, audience } = await createUser()
     const tagName = faker.string.uuid() + faker.lorem.word()
     const database = makeDatabase()
@@ -95,31 +95,31 @@ describe("@tags create", () => {
     })
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/tags`,
       body: { name: tagName },
     })
 
     expect(response.status).toBe(422)
     const json = await response.json()
-    expect(json.payload.errors).toContainEqual(expect.objectContaining({ field: "name" }))
+    expect(json.payload.errors).toContainEqual(expect.objectContaining({ field: 'name' }))
   })
 })
 
-describe("@tags delete", () => {
-  test("can delete a tag that exists", async ({ expect }) => {
+describe('@tags delete', () => {
+  test('can delete a tag that exists', async ({ expect }) => {
     const { user, audience } = await createUser()
     const tagName = faker.string.uuid() + faker.lorem.word()
 
     const createResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/tags`,
       body: { name: tagName },
     })
     const { id: tagId } = await createResponse.json()
 
     const deleteResponse = await makeRequestAsUser(user, {
-      method: "DELETE",
+      method: 'DELETE',
       path: `/audiences/${audience.id}/tags/${tagId}`,
     })
 
@@ -133,14 +133,14 @@ describe("@tags delete", () => {
     expect(deletedTag).toBeUndefined()
   })
 
-  test("cannot delete a tag without the proper authorization", async ({ expect }) => {
+  test('cannot delete a tag without the proper authorization', async ({ expect }) => {
     const { user, audience } = await createUser()
     const { user: otherUser } = await createUser()
 
     const tagName = faker.string.uuid() + faker.lorem.word()
 
     const createResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/tags`,
       body: { name: tagName },
     })
@@ -150,7 +150,7 @@ describe("@tags delete", () => {
     const database = makeDatabase()
 
     const deleteResponse = await makeRequestAsUser(otherUser, {
-      method: "DELETE",
+      method: 'DELETE',
       path: `/audiences/${audience.id}/tags/${tagId}`,
     })
 
@@ -164,13 +164,13 @@ describe("@tags delete", () => {
   })
 })
 
-describe("@tags attach to contacts", () => {
-  test("can attach 5 tags to a contact in an audience", async ({ expect }) => {
+describe('@tags attach to contacts', () => {
+  test('can attach 5 tags to a contact in an audience', async ({ expect }) => {
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
@@ -179,7 +179,7 @@ describe("@tags attach to contacts", () => {
     const tagIds = []
     for (let i = 0; i < 5; i++) {
       const createTagResponse = await makeRequestAsUser(user, {
-        method: "POST",
+        method: 'POST',
         path: `/audiences/${audience.id}/tags`,
         body: { name: faker.string.uuid() + faker.lorem.word() },
       })
@@ -188,7 +188,7 @@ describe("@tags attach to contacts", () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/attach`,
       body: { tags: tagIds },
     })
@@ -201,12 +201,12 @@ describe("@tags attach to contacts", () => {
     expect(attachedTags.map((t) => t.tagId)).toEqual(expect.arrayContaining(tagIds))
   })
 
-  test("can only attach valid tags", async ({ expect }) => {
+  test('can only attach valid tags', async ({ expect }) => {
     const { user, audience } = await createUser()
     const database = makeDatabase()
 
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
@@ -215,7 +215,7 @@ describe("@tags attach to contacts", () => {
     const validTagIds = []
     for (let i = 0; i < 2; i++) {
       const createTagResponse = await makeRequestAsUser(user, {
-        method: "POST",
+        method: 'POST',
         path: `/audiences/${audience.id}/tags`,
         body: { name: faker.string.uuid() + faker.lorem.word() },
       })
@@ -227,7 +227,7 @@ describe("@tags attach to contacts", () => {
     const tagIds = [...validTagIds, invalidTagId]
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/attach`,
       body: { tags: tagIds },
     })
@@ -239,7 +239,7 @@ describe("@tags attach to contacts", () => {
     expect(json.payload.errors).toContainEqual(
       expect.objectContaining({
         message: expect.stringContaining(
-          "One or more of the provided tag IDs is invalid.",
+          'One or more of the provided tag IDs is invalid.',
         ),
       }),
     )
@@ -250,12 +250,12 @@ describe("@tags attach to contacts", () => {
     expect(attachedTags).toHaveLength(0)
   })
 
-  test("only authorized users can attach tags to a contact", async ({ expect }) => {
+  test('only authorized users can attach tags to a contact', async ({ expect }) => {
     const { user, audience } = await createUser()
     const { user: unauthorizedUser } = await createUser()
 
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
@@ -263,7 +263,7 @@ describe("@tags attach to contacts", () => {
 
     // Create a tag
     const createTagResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/tags`,
       body: { name: faker.string.uuid() + faker.lorem.word() },
     })
@@ -271,7 +271,7 @@ describe("@tags attach to contacts", () => {
 
     // Attempt to attach tag as unauthorized user
     const attachResponse = await makeRequestAsUser(unauthorizedUser, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/attach`,
       body: { tagIds: [tagId] },
     })
@@ -280,15 +280,15 @@ describe("@tags attach to contacts", () => {
   })
 })
 
-describe("@tags detach from contacts", () => {
-  test("can detach a list of tags from a contact", async ({ expect }) => {
+describe('@tags detach from contacts', () => {
+  test('can detach a list of tags from a contact', async ({ expect }) => {
     const { user, audience } = await createUser()
 
     const database = makeDatabase()
 
     // Create a contact
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
@@ -298,7 +298,7 @@ describe("@tags detach from contacts", () => {
     const tagIds = []
     for (let i = 0; i < 5; i++) {
       const createTagResponse = await makeRequestAsUser(user, {
-        method: "POST",
+        method: 'POST',
         path: `/audiences/${audience.id}/tags`,
         body: { name: faker.string.uuid() + faker.lorem.word() },
       })
@@ -306,7 +306,7 @@ describe("@tags detach from contacts", () => {
       tagIds.push(id)
     }
     await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/attach`,
       body: { tags: tagIds },
     })
@@ -314,7 +314,7 @@ describe("@tags detach from contacts", () => {
     // Detach 2 tags
     const tagsToDetach = tagIds.slice(0, 2)
     const detachResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/detach`,
       body: { tagIds: tagsToDetach },
     })
@@ -330,7 +330,7 @@ describe("@tags detach from contacts", () => {
     )
   })
 
-  test("can detach only tags that are already attached to a contact", async ({
+  test('can detach only tags that are already attached to a contact', async ({
     expect,
   }) => {
     const { user, audience } = await createUser()
@@ -338,7 +338,7 @@ describe("@tags detach from contacts", () => {
 
     // Create a contact
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
@@ -348,7 +348,7 @@ describe("@tags detach from contacts", () => {
     const attachedTagIds = []
     for (let i = 0; i < 3; i++) {
       const createTagResponse = await makeRequestAsUser(user, {
-        method: "POST",
+        method: 'POST',
         path: `/audiences/${audience.id}/tags`,
         body: { name: faker.string.uuid() + faker.lorem.word() },
       })
@@ -356,7 +356,7 @@ describe("@tags detach from contacts", () => {
       attachedTagIds.push(id)
     }
     await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/attach`,
       body: { tagIds: attachedTagIds },
     })
@@ -365,7 +365,7 @@ describe("@tags detach from contacts", () => {
     const unattachedTagIds = []
     for (let i = 0; i < 2; i++) {
       const createTagResponse = await makeRequestAsUser(user, {
-        method: "POST",
+        method: 'POST',
         path: `/audiences/${audience.id}/tags`,
         body: { name: faker.string.uuid() + faker.lorem.word() },
       })
@@ -375,7 +375,7 @@ describe("@tags detach from contacts", () => {
 
     // Try to detach all tags (attached and unattached)
     const detachResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/detach`,
       body: {
         tagIds: [...attachedTagIds, ...unattachedTagIds],
@@ -390,11 +390,11 @@ describe("@tags detach from contacts", () => {
     expect(remainingTags).toHaveLength(0)
   })
 
-  test("can only pass valid tags to this endpoint", async ({ expect }) => {
+  test('can only pass valid tags to this endpoint', async ({ expect }) => {
     const { user, audience } = await createUser()
 
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
@@ -403,7 +403,7 @@ describe("@tags detach from contacts", () => {
     const invalidTagIds = [cuid(), cuid()]
 
     const detachResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/detach`,
       body: { tagIds: invalidTagIds },
     })
@@ -414,19 +414,19 @@ describe("@tags detach from contacts", () => {
     expect(json.payload.errors).toContainEqual(
       expect.objectContaining({
         message: expect.stringContaining(
-          "One or more of the provided tag IDs is invalid.",
+          'One or more of the provided tag IDs is invalid.',
         ),
       }),
     )
   })
 
-  test("only authorized users can detach tags from a contact", async ({ expect }) => {
+  test('only authorized users can detach tags from a contact', async ({ expect }) => {
     const { user, audience } = await createUser()
     const { user: unauthorizedUser } = await createUser()
 
     // Create a contact
     const createContactResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
@@ -434,20 +434,20 @@ describe("@tags detach from contacts", () => {
 
     // Create and attach a tag
     const createTagResponse = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/tags`,
       body: { name: faker.string.uuid() + faker.lorem.word() },
     })
     const { id: tagId } = await createTagResponse.json()
     await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/attach`,
       body: { tagIds: [tagId] },
     })
 
     // Attempt to detach tag as unauthorized user
     const detachResponse = await makeRequestAsUser(unauthorizedUser, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/contacts/${contactId}/tags/detach`,
       body: { tagIds: [tagId] },
     })

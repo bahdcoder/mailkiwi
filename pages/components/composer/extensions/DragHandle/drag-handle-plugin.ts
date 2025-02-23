@@ -9,20 +9,20 @@
  * for better usability and compatibility for me.
  * Until then, I will be using this modified version.
  */
-import { Editor } from "@tiptap/core"
-import { NodeRange } from "@tiptap/pm/model"
-import { ResolvedPos, Node as TNode } from "@tiptap/pm/model"
+import type { Editor } from '@tiptap/core'
+import { NodeRange } from '@tiptap/pm/model'
+import type { ResolvedPos, Node as TNode } from '@tiptap/pm/model'
 import {
-  EditorState,
+  type EditorState,
   Plugin,
   PluginKey,
   Selection,
   SelectionRange,
-} from "@tiptap/pm/state"
-import { Mapping } from "@tiptap/pm/transform"
-import tippy, { Instance, Tippy } from "tippy.js"
-import { Props as TippyProps } from "tippy.js"
-import { absolutePositionToRelativePosition, ySyncPluginKey } from "y-prosemirror"
+} from '@tiptap/pm/state'
+import type { Mapping } from '@tiptap/pm/transform'
+import tippy, { type Instance, Tippy } from 'tippy.js'
+import type { Props as TippyProps } from 'tippy.js'
+import { absolutePositionToRelativePosition, ySyncPluginKey } from 'y-prosemirror'
 
 function getSelectionRanges(
   state: ResolvedPos,
@@ -32,7 +32,7 @@ function getSelectionRanges(
   const ranges: SelectionRange[] = []
   const root = state.node(0)
   depth =
-    typeof depth === "number" && depth >= 0
+    typeof depth === 'number' && depth >= 0
       ? depth
       : state.sameParent(range)
         ? Math.max(0, state.sharedDepth(range.pos) - 1)
@@ -70,7 +70,7 @@ class NodeRangeBookmark {
 class NodeRangeSelection extends Selection {
   depth: number | undefined
 
-  constructor(t: ResolvedPos, e: ResolvedPos, o?: number, s: number = 1) {
+  constructor(t: ResolvedPos, e: ResolvedPos, o?: number, s = 1) {
     const { doc: r } = t
     const n = t === e
     const i = t.pos === r.content.size && e.pos === r.content.size
@@ -101,7 +101,7 @@ class NodeRangeSelection extends Selection {
     return new NodeRangeSelection(o, s)
   }
   toJSON() {
-    return { type: "nodeRange", anchor: this.anchor, head: this.head }
+    return { type: 'nodeRange', anchor: this.anchor, head: this.head }
   }
   get isForwards() {
     return this.head >= this.anchor
@@ -136,13 +136,7 @@ class NodeRangeSelection extends Selection {
   static fromJSON(doc: TNode, json: any) {
     return new NodeRangeSelection(doc.resolve(json.anchor), doc.resolve(json.head))
   }
-  static create(
-    doc: TNode,
-    anchor: number,
-    head: number,
-    depth?: number,
-    bias: number = 1,
-  ) {
+  static create(doc: TNode, anchor: number, head: number, depth?: number, bias = 1) {
     return new this(doc.resolve(anchor), doc.resolve(head), depth, bias)
   }
   // @ts-ignore
@@ -153,15 +147,15 @@ class NodeRangeSelection extends Selection {
 
 function cloneElement(node: HTMLElement) {
   const clonedNode = node.cloneNode(true) as HTMLElement
-  const originalElements = [node, ...Array.from(node.getElementsByTagName("*"))]
-  const clonedElements = [clonedNode, ...Array.from(clonedNode.getElementsByTagName("*"))]
+  const originalElements = [node, ...Array.from(node.getElementsByTagName('*'))]
+  const clonedElements = [clonedNode, ...Array.from(clonedNode.getElementsByTagName('*'))]
 
   originalElements.forEach((element, index) => {
     const clonedElement = clonedElements[index]
 
     if (clonedElement instanceof HTMLElement && element instanceof HTMLElement) {
-      clonedElement.style.cssText = (function (element: HTMLElement) {
-        let styles = ""
+      clonedElement.style.cssText = ((element: HTMLElement) => {
+        let styles = ''
         const computedStyles = getComputedStyle(element)
         for (let i = 0; i < computedStyles.length; i += 1) {
           styles += `${computedStyles[i]}:${computedStyles.getPropertyValue(computedStyles[i])};`
@@ -189,7 +183,7 @@ function removeNode(node: HTMLElement) {
 export type FindElementNextToCoords = {
   x: number
   y: number
-  direction?: "left" | "right"
+  direction?: 'left' | 'right'
   editor: Editor
 }
 
@@ -199,9 +193,9 @@ const findElementNextToCoords = (options: FindElementNextToCoords) => {
   let resultNode = null
   let d = null
   let l = x
-  for (; null === resultNode && l < window.innerWidth && l > 0; ) {
+  while (null === resultNode && l < window.innerWidth && l > 0) {
     const elements = document.elementsFromPoint(l, y)
-    const index = elements.findIndex((el) => el.classList.contains("ProseMirror"))
+    const index = elements.findIndex((el) => el.classList.contains('ProseMirror'))
     const filteredElements = elements.slice(0, index)
     if (filteredElements.length > 0) {
       const element = filteredElements[0]
@@ -218,7 +212,7 @@ const findElementNextToCoords = (options: FindElementNextToCoords) => {
         break
       }
     }
-    if (direction === "left") {
+    if (direction === 'left') {
       l -= 1
     } else {
       l += 1
@@ -233,15 +227,15 @@ function getSelectionRangesNearCursor(e: MouseEvent, t: Editor) {
       editor: t,
       x: e.clientX,
       y: e.clientY,
-      direction: "right",
+      direction: 'right',
     })
   if (!o.resultNode || null === o.pos) return []
   const r = e.clientX,
-    i = (function (e, t, n) {
-      const o = parseInt(getComputedStyles(e.dom, "paddingLeft"), 10),
-        r = parseInt(getComputedStyles(e.dom, "paddingRight"), 10),
-        i = parseInt(getComputedStyles(e.dom, "borderLeftWidth"), 10),
-        s = parseInt(getComputedStyles(e.dom, "borderLeftWidth"), 10),
+    i = ((e, t, n) => {
+      const o = Number.parseInt(getComputedStyles(e.dom, 'paddingLeft'), 10),
+        r = Number.parseInt(getComputedStyles(e.dom, 'paddingRight'), 10),
+        i = Number.parseInt(getComputedStyles(e.dom, 'borderLeftWidth'), 10),
+        s = Number.parseInt(getComputedStyles(e.dom, 'borderLeftWidth'), 10),
         d = e.dom.getBoundingClientRect()
       return { left: minMax(t, d.left + o + i, d.right - r - s), top: n }
     })(t.view, r, e.clientY),
@@ -264,7 +258,7 @@ const getAncestorNodeAtDepth = (e: TNode, t: number) => {
     o = e.resolve(t)
   let { depth: r } = o,
     i = n
-  for (; r > 0; ) {
+  while (r > 0) {
     const e = o.node(r)
     ;(r -= 1), 0 === r && (i = e)
   }
@@ -278,7 +272,7 @@ const getOuterNode = (doc: EditorState, pos: number) => {
 // @ts-ignore
 const getOuterNodePos = (e, t) => {
   let n = t
-  for (; n && n.parentNode && n.parentNode !== e.dom; ) n = n.parentNode
+  while (n && n.parentNode && n.parentNode !== e.dom) n = n.parentNode
   return n
 }
 
@@ -287,10 +281,14 @@ type DragHandlePluginOptions = {
   element: HTMLElement
   editor: Editor
   tippyOptions?: Partial<TippyProps>
-  onNodeChange?: (data: { editor: Editor; node: TNode | null; pos: number }) => void
+  onNodeChange?: (data: {
+    editor: Editor
+    node: TNode | null
+    pos: number
+  }) => void
 }
 
-export const dragHandlePluginDefaultKey = new PluginKey("dragHandle")
+export const dragHandlePluginDefaultKey = new PluginKey('dragHandle')
 export function DragHandlePlugin(
   options: DragHandlePluginOptions,
 ): Plugin<{ locked: boolean }> {
@@ -302,12 +300,12 @@ export function DragHandlePlugin(
     onNodeChange,
   } = options
 
-  const container = document.createElement("div")
+  const container = document.createElement('div')
   let tippyInstance: Instance | null = null
   let x = false
   let currentNode: TNode | null = null
   let lastNodePos = -1
-  element.addEventListener("dragstart", (e) => {
+  element.addEventListener('dragstart', (e) => {
     const { view } = editor
     if (!e.dataTransfer) return
     const { empty, $from, $to } = view.state.selection
@@ -317,7 +315,7 @@ export function DragHandlePlugin(
     const u = empty || !c ? s : d
     if (!u.length) return
     const { tr: g } = view.state
-    const h = document.createElement("div")
+    const h = document.createElement('div')
     const y = u[0].$from.pos
     const v = u[u.length - 1].$to.pos
     const C = NodeRangeSelection.create(view.state.doc, y, v)
@@ -326,30 +324,30 @@ export function DragHandlePlugin(
       const t = cloneElement(view?.nodeDOM(e.$from.pos) as HTMLElement)
       h.append(t)
     })
-    h.style.position = "absolute"
-    h.style.top = "-10000px"
+    h.style.position = 'absolute'
+    h.style.top = '-10000px'
     document.body.append(h)
     e.dataTransfer.clearData()
     e.dataTransfer.setDragImage(h, 0, 0)
     view.dragging = { slice: E, move: true }
     g.setSelection(C as unknown as Selection)
     view.dispatch(g)
-    document.addEventListener("drop", () => removeNode(h), { once: true })
+    document.addEventListener('drop', () => removeNode(h), { once: true })
     setTimeout(() => {
-      element && (element.style.pointerEvents = "none")
+      element && (element.style.pointerEvents = 'none')
     }, 0)
   })
-  element.addEventListener("dragend", () => {
-    element && (element.style.pointerEvents = "auto")
+  element.addEventListener('dragend', () => {
+    element && (element.style.pointerEvents = 'auto')
   })
 
   return new Plugin({
-    key: typeof e === "string" ? new PluginKey(e) : e,
+    key: typeof e === 'string' ? new PluginKey(e) : e,
     state: {
       init: () => ({ locked: false }) as { locked: boolean },
       apply(e, t, n, o) {
-        const l = e.getMeta("lockDragHandle")
-        const a = e.getMeta("hideDragHandle")
+        const l = e.getMeta('lockDragHandle')
+        const a = e.getMeta('hideDragHandle')
         if ((undefined !== l && (x = l), a && tippyInstance)) {
           return (
             tippyInstance?.hide(),
@@ -371,29 +369,29 @@ export function DragHandlePlugin(
       var t
       return (
         (element.draggable = true),
-        (element.style.pointerEvents = "auto"),
+        (element.style.pointerEvents = 'auto'),
         null === (t = editor.view.dom.parentElement) ||
           undefined === t ||
           t.appendChild(container),
         container.appendChild(element),
-        (container.style.pointerEvents = "none"),
-        (container.style.position = "absolute"),
-        (container.style.top = "0"),
-        (container.style.left = "0"),
+        (container.style.pointerEvents = 'none'),
+        (container.style.position = 'absolute'),
+        (container.style.top = '0'),
+        (container.style.left = '0'),
         (tippyInstance = tippy(e.dom, {
           getReferenceClientRect: null,
           interactive: true,
-          trigger: "manual",
-          placement: "left-start",
+          trigger: 'manual',
+          placement: 'left-start',
           hideOnClick: false,
           duration: 100,
           zIndex: 10,
           popperOptions: {
             modifiers: [
-              { name: "flip", enabled: false },
+              { name: 'flip', enabled: false },
               {
-                name: "preventOverflow",
-                options: { rootBoundary: "document", mainAxis: false },
+                name: 'preventOverflow',
+                options: { rootBoundary: 'document', mainAxis: false },
               },
             ],
           },
@@ -453,7 +451,7 @@ export function DragHandlePlugin(
           const n = findElementNextToCoords({
             x: t.clientX,
             y: t.clientY,
-            direction: "right",
+            direction: 'right',
             editor: editor,
           })
           if (!n.resultElement) return false

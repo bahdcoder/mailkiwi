@@ -1,1 +1,1 @@
-export * from "./BlockquoteFigure.js"
+export * from './BlockquoteFigure.js'

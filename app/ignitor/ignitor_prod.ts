@@ -1,12 +1,12 @@
-import { IgnitorDev } from "@/app/ignitor/ignitor_dev.js"
-import { serve } from "@hono/node-server"
-import { serveStatic } from "@hono/node-server/serve-static"
-import { compress } from "hono/compress"
+import { IgnitorDev } from '@/app/ignitor/ignitor_dev.js'
+import { serve } from '@hono/node-server'
+import { serveStatic } from '@hono/node-server/serve-static'
+import { compress } from 'hono/compress'
 
 export class IgnitorProd extends IgnitorDev {
   async startSinglePageApplication() {
     this.app.use(compress())
-    this.app.get("/assets/*", serveStatic({ root: "build/client" }))
+    this.app.get('/assets/*', serveStatic({ root: 'build/client' }))
 
     this.registerCatchAllServerRoute()
   }

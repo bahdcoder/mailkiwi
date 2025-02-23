@@ -1,43 +1,43 @@
-import "./compose_broadcast_top_bar_actions.styles.css"
-import { CancelScheduledBroadcast } from "@/pages/components/flows/compose_broadcast/components/compose_broadcast_cancel_scheduled_broadcast.jsx"
-import { ComposeBroadcastSteps } from "@/pages/components/flows/compose_broadcast/compose_broadcast_types.js"
-import { useComposeBroadcastContext } from "@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx"
+import './compose_broadcast_top_bar_actions.styles.css'
+import { CancelScheduledBroadcast } from '@/pages/components/flows/compose_broadcast/components/compose_broadcast_cancel_scheduled_broadcast.jsx'
+import { ComposeBroadcastSteps } from '@/pages/components/flows/compose_broadcast/compose_broadcast_types.js'
+import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
 import {
   SCHEDULED_DATE_READABLE_FORMAT,
-  ScheduleDateTime,
+  type ScheduleDateTime,
   scheduledDateTimeToDayJsInstance,
-} from "@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js"
-import { ArrowRightIcon } from "@/pages/components/icons/arrow-right.svg.jsx"
-import { CalendarIcon } from "@/pages/components/icons/calendar.jsx"
-import { InfoCircleIcon } from "@/pages/components/icons/info-circle.svg.jsx"
-import * as Popover from "@/pages/components/popover/popover.jsx"
-import { RadioGroupCardItem } from "@/pages/components/radio-group/radio-group-card-item.jsx"
+} from '@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
+import { ArrowRightIcon } from '@/pages/components/icons/arrow-right.svg.jsx'
+import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
+import { InfoCircleIcon } from '@/pages/components/icons/info-circle.svg.jsx'
+import * as Popover from '@/pages/components/popover/popover.jsx'
+import { RadioGroupCardItem } from '@/pages/components/radio-group/radio-group-card-item.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { navigate } from "@/pages/utils/navigate.js"
-import { EngageBroadcastsComposerPageProps } from "@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx"
-import * as Alert from "@kibamail/owly/alert"
-import { Button } from "@kibamail/owly/button"
-import { Calendar } from "@kibamail/owly/calendar"
-import * as Dialog from "@kibamail/owly/dialog"
-import * as SelectField from "@kibamail/owly/select-field"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import dayjs from "dayjs"
-import advancedFormat from "dayjs/plugin/advancedFormat"
-import React from "react"
-import { toast } from "sonner"
-import { usePageContext } from "vike-react/usePageContext"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { navigate } from '@/pages/utils/navigate.js'
+import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
+import * as Alert from '@kibamail/owly/alert'
+import { Button } from '@kibamail/owly/button'
+import { Calendar } from '@kibamail/owly/calendar'
+import * as Dialog from '@kibamail/owly/dialog'
+import * as SelectField from '@kibamail/owly/select-field'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import dayjs from 'dayjs'
+import advancedFormat from 'dayjs/plugin/advancedFormat'
+import React from 'react'
+import { toast } from 'sonner'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 dayjs.extend(advancedFormat)
 
 export function ComposeBroadcastTopBarActions() {
   const { step, syncContentToServerMutation, setStep } = useComposeBroadcastContext(
-    "ComposeBroadcastTopBarActions",
+    'ComposeBroadcastTopBarActions',
   )
 
   switch (step) {
@@ -58,7 +58,7 @@ export function ComposeBroadcastTopBarActions() {
 
 export function ComposeStepActions() {
   const { syncContentToServerMutation, setStep } =
-    useComposeBroadcastContext("ComposeStepActions")
+    useComposeBroadcastContext('ComposeStepActions')
 
   return (
     <div className="flex items-center gap-4">
@@ -77,11 +77,11 @@ export function ComposeStepActions() {
 
 export function ContactsStepActions() {
   const { syncContentToServerMutation, formState } =
-    useComposeBroadcastContext("ContactsStepActions")
+    useComposeBroadcastContext('ContactsStepActions')
 
   async function onNextClicked() {
     await syncContentToServerMutation.mutateAsync({
-      segmentId: formState.segmentId === "all" ? null : formState.segmentId,
+      segmentId: formState.segmentId === 'all' ? null : formState.segmentId,
     })
   }
 
@@ -96,7 +96,7 @@ export function ContactsStepActions() {
 
 export function ConfigureStepActions() {
   const { syncContentToServerMutation, formState } =
-    useComposeBroadcastContext("ContactsStepActions")
+    useComposeBroadcastContext('ContactsStepActions')
 
   async function onNextClicked() {
     await syncContentToServerMutation.mutateAsync({
@@ -121,7 +121,7 @@ export function ConfigureStepActions() {
 
 export function TrackingStepActions() {
   const { syncContentToServerMutation, formState } =
-    useComposeBroadcastContext("TrackingStepActions")
+    useComposeBroadcastContext('TrackingStepActions')
 
   async function onNextClicked() {
     await syncContentToServerMutation.mutateAsync({
@@ -142,7 +142,7 @@ export function TrackingStepActions() {
 export function PreviewStepActions() {
   const ctx = usePageContext()
   const { getBroadcastRecipientsCount, formState, setFormState } =
-    useComposeBroadcastContext("PreviewStepActions")
+    useComposeBroadcastContext('PreviewStepActions')
 
   const { broadcast } = ctx.pageProps as EngageBroadcastsComposerPageProps
 
@@ -150,10 +150,10 @@ export function PreviewStepActions() {
     setFormState((current) => ({ ...current, scheduledAt }))
   }
 
-  const [schedule, setSchedule] = React.useState<"now" | "later">("later")
+  const [schedule, setSchedule] = React.useState<'now' | 'later'>('later')
 
   const minutes = React.useMemo(() => {
-    const minutes = ["00", "15", "30", "45"]
+    const minutes = ['00', '15', '30', '45']
 
     return minutes
   }, [])
@@ -161,13 +161,13 @@ export function PreviewStepActions() {
   const hours = React.useMemo(() => {
     const hours = []
     for (let i = 1; i <= 12; i++) {
-      const hour = i.toString().padStart(2, "0")
+      const hour = i.toString().padStart(2, '0')
       hours.push(hour)
     }
     return hours
   }, [])
 
-  const selectedDate = dayjs(formState.scheduledAt.value).format("MMM Do, YYYY")
+  const selectedDate = dayjs(formState.scheduledAt.value).format('MMM Do, YYYY')
 
   const scheduledDate = scheduledDateTimeToDayJsInstance(formState.scheduledAt)
 
@@ -178,11 +178,11 @@ export function PreviewStepActions() {
   const minimumDate = dayjs().toDate()
 
   const { serverFormProps, isPending, ServerErrorsList } = useServerFormMutation({
-    action: route("send_broadcast", { uuid: ctx.routeParams.uuid }),
+    action: route('send_broadcast', { uuid: ctx.routeParams.uuid }),
     onSuccess() {
-      toast.success("Broadcast has been scheduled for publish.")
+      toast.success('Broadcast has been scheduled for publish.')
 
-      navigate(route("broadcasts"))
+      navigate(route('broadcasts'))
     },
     transform() {
       return {
@@ -190,7 +190,7 @@ export function PreviewStepActions() {
       }
     },
   })
-  const isQueuedForSending = broadcast.status === "QUEUED_FOR_SENDING"
+  const isQueuedForSending = broadcast.status === 'QUEUED_FOR_SENDING'
 
   return (
     <div className="flex items-center gap-4">
@@ -200,7 +200,7 @@ export function PreviewStepActions() {
       <Dialog.Root>
         <Dialog.Trigger asChild>
           <Button>
-            {isQueuedForSending ? "Update schedule" : "Schedule"} <ArrowRightIcon />
+            {isQueuedForSending ? 'Update schedule' : 'Schedule'} <ArrowRightIcon />
           </Button>
         </Dialog.Trigger>
 
@@ -218,14 +218,14 @@ export function PreviewStepActions() {
                 disabled
                 title="Send now"
                 description={`Immediately send this broadcasts to ${getBroadcastRecipientsCount?.data?.total} contacts`}
-                onClick={() => setSchedule("now")}
-                checked={schedule === "now"}
+                onClick={() => setSchedule('now')}
+                checked={schedule === 'now'}
               ></RadioGroupCardItem>
               <RadioGroupCardItem
-                checked={schedule === "later"}
+                checked={schedule === 'later'}
                 title="Schedule for later"
                 description={`Send this broadcast to ${getBroadcastRecipientsCount?.data?.total} contacts at a later date.`}
-                onClick={() => setSchedule("later")}
+                onClick={() => setSchedule('later')}
               >
                 <div className="w-[calc(100%+1.5rem)] flex flex-col lg:flex-row lg:items-center mt-4 gap-4 -ml-6 cursor-default">
                   <div className="w-full lg:w-5/12">
@@ -253,7 +253,10 @@ export function PreviewStepActions() {
                           onDatesChange={(dates) =>
                             setFormState((current) => ({
                               ...current,
-                              scheduledAt: { ...current.scheduledAt, value: dates?.[0] },
+                              scheduledAt: {
+                                ...current.scheduledAt,
+                                value: dates?.[0],
+                              },
                             }))
                           }
                         />
@@ -282,7 +285,10 @@ export function PreviewStepActions() {
                       className="w-16"
                       value={formState.scheduledAt.minute}
                       onValueChange={(value) =>
-                        setScheduleAt({ ...formState.scheduledAt, minute: value })
+                        setScheduleAt({
+                          ...formState.scheduledAt,
+                          minute: value,
+                        })
                       }
                     >
                       <SelectField.Trigger />
@@ -304,11 +310,11 @@ export function PreviewStepActions() {
                     >
                       <SelectField.Trigger />
                       <SelectField.Content className="z-[50] relative">
-                        <SelectField.Item value={"AM"}>
-                          <span className="pr-3">{"AM"}</span>
+                        <SelectField.Item value={'AM'}>
+                          <span className="pr-3">{'AM'}</span>
                         </SelectField.Item>
-                        <SelectField.Item value={"PM"}>
-                          <span className="pr-3">{"PM"}</span>
+                        <SelectField.Item value={'PM'}>
+                          <span className="pr-3">{'PM'}</span>
                         </SelectField.Item>
                       </SelectField.Content>
                     </SelectField.Root>
@@ -340,7 +346,7 @@ export function PreviewStepActions() {
 
           <Dialog.Footer className="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <Text>
-              {schedule === "later" ? `Scheduled for ${formattedScheduledDate}` : ""}
+              {schedule === 'later' ? `Scheduled for ${formattedScheduledDate}` : ''}
             </Text>
             <div className="flex items-center gap-4">
               <Dialog.Close asChild>
@@ -349,11 +355,11 @@ export function PreviewStepActions() {
 
               <ServerForm {...serverFormProps}>
                 <Button type="submit" loading={isPending}>
-                  {schedule === "later"
+                  {schedule === 'later'
                     ? isQueuedForSending
-                      ? "Update schedule"
-                      : "Schedule broadcast"
-                    : "Send now"}
+                      ? 'Update schedule'
+                      : 'Schedule broadcast'
+                    : 'Send now'}
                 </Button>
               </ServerForm>
             </div>

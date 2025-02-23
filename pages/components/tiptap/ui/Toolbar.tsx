@@ -1,8 +1,8 @@
-import { Button, ButtonProps } from "./Button/Button.jsx"
-import { Surface } from "./Surface.jsx"
-import Tooltip from "./Tooltip/index.jsx"
-import { cn } from "@/pages/components/tiptap/utils/index.js"
-import React, { ButtonHTMLAttributes, HTMLProps, forwardRef } from "react"
+import { Button, type ButtonProps } from './Button/Button.jsx'
+import { Surface } from './Surface.jsx'
+import Tooltip from './Tooltip/index.jsx'
+import { cn } from '@/pages/components/tiptap/utils/index.js'
+import React, { type ButtonHTMLAttributes, type HTMLProps, forwardRef } from 'react'
 
 export type ToolbarWrapperProps = {
   shouldShowContent?: boolean
@@ -15,8 +15,8 @@ const ToolbarWrapper = forwardRef<HTMLDivElement, ToolbarWrapperProps>(
     ref,
   ) => {
     const toolbarClassName = cn(
-      "text-black inline-flex h-full leading-none gap-0.5",
-      isVertical ? "flex-col p-2" : "flex-row p-1 items-center",
+      'text-black inline-flex h-full leading-none gap-0.5',
+      isVertical ? 'flex-col p-2' : 'flex-row p-1 items-center',
       className,
     )
 
@@ -35,7 +35,7 @@ const ToolbarWrapper = forwardRef<HTMLDivElement, ToolbarWrapperProps>(
   },
 )
 
-ToolbarWrapper.displayName = "Toolbar"
+ToolbarWrapper.displayName = 'Toolbar'
 
 export type ToolbarDividerProps = {
   horizontal?: boolean
@@ -44,10 +44,10 @@ export type ToolbarDividerProps = {
 const ToolbarDivider = forwardRef<HTMLDivElement, ToolbarDividerProps>(
   ({ horizontal, className, ...rest }, ref) => {
     const dividerClassName = cn(
-      "bg-neutral-200 dark:bg-neutral-800",
+      'bg-neutral-200 dark:bg-neutral-800',
       horizontal
-        ? "w-full min-w-[1.5rem] h-[1px] my-1 first:mt-0 last:mt-0"
-        : "h-full min-h-[1.5rem] w-[1px] mx-1 first:ml-0 last:mr-0",
+        ? 'w-full min-w-[1.5rem] h-[1px] my-1 first:mt-0 last:mt-0'
+        : 'h-full min-h-[1.5rem] w-[1px] mx-1 first:ml-0 last:mr-0',
       className,
     )
 
@@ -55,23 +55,23 @@ const ToolbarDivider = forwardRef<HTMLDivElement, ToolbarDividerProps>(
   },
 )
 
-ToolbarDivider.displayName = "Toolbar.Divider"
+ToolbarDivider.displayName = 'Toolbar.Divider'
 
 export type ToolbarButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   active?: boolean
   activeClassname?: string
   tooltip?: string
   tooltipShortcut?: string[]
-  buttonSize?: ButtonProps["buttonSize"]
-  variant?: ButtonProps["variant"]
+  buttonSize?: ButtonProps['buttonSize']
+  variant?: ButtonProps['variant']
 }
 
 const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(
   (
     {
       children,
-      buttonSize = "icon",
-      variant = "ghost",
+      buttonSize = 'icon',
+      variant = 'ghost',
       className,
       tooltip,
       tooltipShortcut,
@@ -80,7 +80,7 @@ const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(
     },
     ref,
   ) => {
-    const buttonClass = cn("gap-1 min-w-[2rem] px-2 w-auto", className)
+    const buttonClass = cn('gap-1 min-w-[2rem] px-2 w-auto', className)
 
     const content = (
       <Button
@@ -107,7 +107,7 @@ const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(
   },
 )
 
-ToolbarButton.displayName = "ToolbarButton"
+ToolbarButton.displayName = 'ToolbarButton'
 
 export const Toolbar = {
   Wrapper: ToolbarWrapper,

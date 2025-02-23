@@ -1,12 +1,12 @@
-import { FormRepository } from "@/forms/repositories/form_repository.js"
-import { FormResponseRepository } from "@/forms/repositories/form_response_repository.js"
+import { FormRepository } from '@/forms/repositories/form_repository.js'
+import { FormResponseRepository } from '@/forms/repositories/form_response_repository.js'
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface TagContactBasedOnResponseJobPayload {
   formResponseId: string
@@ -14,7 +14,7 @@ export interface TagContactBasedOnResponseJobPayload {
 
 export class TagContactBasedOnResponseJob extends BaseJob<TagContactBasedOnResponseJobPayload> {
   static get id() {
-    return "CONTACTS::TAG_CONTACT_BASED_ON_RESPONSE"
+    return 'CONTACTS::TAG_CONTACT_BASED_ON_RESPONSE'
   }
 
   static get queue() {
@@ -29,7 +29,7 @@ export class TagContactBasedOnResponseJob extends BaseJob<TagContactBasedOnRespo
 
     if (!formResponse) {
       return this.done(
-        "Form response not found. Might have been deleted before this job ran.",
+        'Form response not found. Might have been deleted before this job ran.',
       )
     }
 

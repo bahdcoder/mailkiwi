@@ -1,22 +1,22 @@
-import { useComposeBroadcastContext } from "@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx"
-import { formatContactsCount } from "@/pages/components/flows/compose_broadcast/utils/format_contacts_count.js"
+import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { formatContactsCount } from '@/pages/components/flows/compose_broadcast/utils/format_contacts_count.js'
 import {
   SCHEDULED_DATE_READABLE_FORMAT,
   formatScheduleDateTime,
   scheduledDateTimeToDayJsInstance,
-} from "@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js"
-import { CalendarIcon } from "@/pages/components/icons/calendar.svg.jsx"
-import { EditPencilIcon } from "@/pages/components/icons/edit-pencil.svg.jsx"
-import { GroupIcon } from "@/pages/components/icons/group.svg.jsx"
-import { NotesIcon } from "@/pages/components/icons/notes.svg.jsx"
-import { usePageProps } from "@/pages/hooks/use_page_props.js"
-import { EngageBroadcastsComposerPageProps } from "@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx"
-import { Text } from "@kibamail/owly/text"
-import { usePageContext } from "vike-react/usePageContext"
+} from '@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
+import { CalendarIcon } from '@/pages/components/icons/calendar.svg.jsx'
+import { EditPencilIcon } from '@/pages/components/icons/edit-pencil.svg.jsx'
+import { GroupIcon } from '@/pages/components/icons/group.svg.jsx'
+import { NotesIcon } from '@/pages/components/icons/notes.svg.jsx'
+import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
+import { Text } from '@kibamail/owly/text'
+import { usePageContext } from 'vike-react/usePageContext'
 
 export function BroadcastDetails() {
   const { formState, getBroadcastRecipientsCount } =
-    useComposeBroadcastContext("BroadcastDetails")
+    useComposeBroadcastContext('BroadcastDetails')
 
   const scheduledAt = scheduledDateTimeToDayJsInstance(formState.scheduledAt).format(
     SCHEDULED_DATE_READABLE_FORMAT,
@@ -62,7 +62,7 @@ export function BroadcastDetails() {
           <Text className="kb-content-tertiary">Scheduled date</Text>
         </dt>
         <dd className="w-full flex-grow">
-          <Text className="kb-content-secondary">{scheduledAt ?? "---"}</Text>
+          <Text className="kb-content-secondary">{scheduledAt ?? '---'}</Text>
         </dd>
       </dl>
     </div>

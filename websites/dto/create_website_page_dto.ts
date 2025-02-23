@@ -1,4 +1,4 @@
-import { BlockContentSchema } from "@/websites/dto/update_website_page_dto.js"
+import { BlockContentSchema } from '@/websites/dto/update_website_page_dto.js'
 import {
   type InferInput,
   maxLength,
@@ -9,11 +9,11 @@ import {
   picklist,
   pipe,
   string,
-} from "valibot"
+} from 'valibot'
 
 export const CreateWebsitePageSchema = objectAsync({
   draftWebsiteContent: object({
-    type: picklist(["doc"]),
+    type: picklist(['doc']),
     content: BlockContentSchema,
   }),
   path: pipe(string(), minLength(2), maxLength(24)),

@@ -1,1 +1,1 @@
-export * from "./TableOfContentsNode.jsx"
+export * from './TableOfContentsNode.jsx'

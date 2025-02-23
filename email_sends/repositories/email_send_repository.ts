@@ -1,15 +1,15 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 
-import {
+import type {
   EmailSend,
   InsertEmailSend,
   UpdateEmailSend,
-} from "@/database/database_schema_types.js"
-import { emailSendEvents, emailSends } from "@/database/schema.js"
-import { hasMany } from "@/database/utils/relationships.js"
+} from '@/database/database_schema_types.js'
+import { emailSendEvents, emailSends } from '@/database/schema.js'
+import { hasMany } from '@/database/utils/relationships.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
 export class EmailSendRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {
@@ -21,7 +21,7 @@ export class EmailSendRepository extends BaseRepository {
     to: emailSendEvents,
     foreignKey: emailSendEvents.emailSendId,
     primaryKey: emailSends.id,
-    relationName: "events",
+    relationName: 'events',
   })
 
   async findBySendingId(sendingId: string) {

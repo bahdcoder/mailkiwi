@@ -1,14 +1,14 @@
-import { type SQLWrapper, and, eq, gte, like, lte, not } from "drizzle-orm"
-import type { AnyMySqlColumn } from "drizzle-orm/mysql-core"
+import { type SQLWrapper, and, eq, gte, like, lte, not } from 'drizzle-orm'
+import type { AnyMySqlColumn } from 'drizzle-orm/mysql-core'
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
+import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
 
 export class FieldSegmentBuilder {
   protected field: AnyMySqlColumn
 
   constructor(
-    protected operation: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number]["operation"],
-    protected value: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number]["value"],
+    protected operation: CreateSegmentDto['filterGroups']['groups'][number]['conditions'][number]['operation'],
+    protected value: CreateSegmentDto['filterGroups']['groups'][number]['conditions'][number]['value'],
   ) {}
 
   forField(field: AnyMySqlColumn) {
@@ -21,25 +21,25 @@ export class FieldSegmentBuilder {
     const queryConditions: SQLWrapper[] = []
 
     switch (this.operation) {
-      case "eq":
+      case 'eq':
         queryConditions.push(this.buildEqualOperation())
         break
-      case "startsWith":
+      case 'startsWith':
         queryConditions.push(this.buildStartsWithOperation())
         break
-      case "endsWith":
+      case 'endsWith':
         queryConditions.push(this.buildEndsWithOperation())
         break
-      case "gte":
+      case 'gte':
         queryConditions.push(this.buildGteOperation())
         break
-      case "lte":
+      case 'lte':
         queryConditions.push(this.buildLteOperation())
         break
-      case "contains":
+      case 'contains':
         queryConditions.push(this.buildContainsOperation())
         break
-      case "notContains":
+      case 'notContains':
         queryConditions.push(this.buildNotContainsOperation())
         break
       default:

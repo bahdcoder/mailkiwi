@@ -1,11 +1,11 @@
-import { getToolbarClassNames } from "@/pages/components/composer/components/toolbar/toolbar.jsx"
-import { TextSizeIcon } from "@/pages/components/icons/text-size.svg.jsx"
-import * as Popover from "@/pages/components/popover/popover.jsx"
-import { Slider } from "@/pages/components/slider/slider.jsx"
-import { Text } from "@kibamail/owly/text"
-import { Label } from "@kibamail/owly/text-field"
-import { Editor } from "@tiptap/core"
-import React from "react"
+import { getToolbarClassNames } from '@/pages/components/composer/components/toolbar/toolbar.jsx'
+import { TextSizeIcon } from '@/pages/components/icons/text-size.svg.jsx'
+import * as Popover from '@/pages/components/popover/popover.jsx'
+import { Slider } from '@/pages/components/slider/slider.jsx'
+import { Text } from '@kibamail/owly/text'
+import { Label } from '@kibamail/owly/text-field'
+import type { Editor } from '@tiptap/core'
+import React from 'react'
 
 export interface FontSizePanelProps {
   editor: Editor
@@ -15,7 +15,7 @@ export function FontSizePanel({ editor }: FontSizePanelProps) {
   const [isOpen, setIsOpen] = React.useState(false)
 
   const fontSize =
-    editor.getAttributes("textStyle")?.["fontSize"]?.split("px")?.[0] ?? "16"
+    editor.getAttributes('textStyle')?.['fontSize']?.split('px')?.[0] ?? '16'
 
   function onFontSizeChange(value: number[]) {
     editor.commands.setFontSize(`${value?.[0]}px`)

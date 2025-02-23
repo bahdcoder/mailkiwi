@@ -1,9 +1,9 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { command } from "@drizzle-team/brocli"
+import { appEnv } from '@/app/env/app_env.js'
+import { command } from '@drizzle-team/brocli'
 
-import { fonts as fontsTable } from "@/database/schema.js"
+import { fonts as fontsTable } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 type GoogleFont = {
   family: string
@@ -15,8 +15,8 @@ type GoogleFont = {
 }
 
 export const syncGoogleFontsCommand = command({
-  name: "sync_google_fonts",
-  desc: "Sync google fonts to the database.",
+  name: 'sync_google_fonts',
+  desc: 'Sync google fonts to the database.',
   async transform(opts) {
     return opts
   },
@@ -44,11 +44,11 @@ export const syncGoogleFontsCommand = command({
         family: font.family,
         category: font.category,
         files: font.files,
-        subsets: font.subsets.join("___"),
-        variants: font.variants.join("___"),
+        subsets: font.subsets.join('___'),
+        variants: font.variants.join('___'),
       })),
     )
 
-    console.log("👍 Google fonts synced successfully.")
+    console.log('👍 Google fonts synced successfully.')
   },
 })

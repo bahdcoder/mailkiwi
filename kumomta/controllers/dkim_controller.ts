@@ -1,21 +1,21 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { AuthorizeMtaCallsMiddleware } from "@/kumomta/middleware/authorize_mta_calls_middleware.js"
+import { appEnv } from '@/app/env/app_env.js'
+import { AuthorizeMtaCallsMiddleware } from '@/kumomta/middleware/authorize_mta_calls_middleware.js'
 
-import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
-import { makeApp, makeRedis } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import { HonoContext } from "@/shared/server/types.js"
-import { Encryption } from "@/shared/utils/encryption/encryption.js"
+import { makeApp, makeRedis } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
+import { Encryption } from '@/shared/utils/encryption/encryption.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class DkimController extends BaseController {
   constructor(private app = makeApp()) {
     super()
 
-    this.app.defineRoutes([["POST", "/mta/dkim/", this.index.bind(this)]], {
-      prefix: "/",
+    this.app.defineRoutes([['POST', '/mta/dkim/', this.index.bind(this)]], {
+      prefix: '/',
       middleware: [container.make(AuthorizeMtaCallsMiddleware).handle],
     })
   }
@@ -27,7 +27,7 @@ export class DkimController extends BaseController {
       .make(SendingDomainRepository)
       .getDomainWithDkim(domain)
 
-    if (!sendingSource) return ctx.json({ status: "failed" })
+    if (!sendingSource) return ctx.json({ status: 'failed' })
 
     const { domain: domainDkim, send, engage } = sendingSource
 
@@ -36,7 +36,7 @@ export class DkimController extends BaseController {
     const { returnPathSubDomain, dkimSubDomain } = domainDkim
 
     return ctx.json({
-      status: "success",
+      status: 'success',
       returnPathSubDomain,
       dkimSubDomain,
       privateKey: privateKey?.release(),

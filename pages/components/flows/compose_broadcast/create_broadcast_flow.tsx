@@ -1,18 +1,18 @@
-import { NavArrowRightIcon } from "@/pages/components/icons/nav-arrow-right.svg.jsx"
+import { NavArrowRightIcon } from '@/pages/components/icons/nav-arrow-right.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { navigate } from "@/pages/utils/navigate.js"
-import { EngagePageProps } from "@/pages/w/engage/+Page.jsx"
-import { Button } from "@kibamail/owly/button"
-import * as Dialog from "@kibamail/owly/dialog"
-import * as SelectField from "@kibamail/owly/select-field"
-import * as TextField from "@kibamail/owly/text-field"
-import React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { navigate } from '@/pages/utils/navigate.js'
+import type { EngagePageProps } from '@/pages/w/engage/+Page.jsx'
+import { Button } from '@kibamail/owly/button'
+import * as Dialog from '@kibamail/owly/dialog'
+import * as SelectField from '@kibamail/owly/select-field'
+import * as TextField from '@kibamail/owly/text-field'
+import type React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export interface CreateBroadcastFlowProps extends React.PropsWithChildren {}
 
@@ -22,13 +22,13 @@ export function CreateBroadcastFlow({ children }: CreateBroadcastFlowProps) {
   const { serverFormProps, isPending, error, ServerErrorsList } = useServerFormMutation<{
     id: string
   }>({
-    action: route("create_broadcast"),
+    action: route('create_broadcast'),
     transform(form) {
-      form["audienceId"] = ctx.audience?.id
+      form['audienceId'] = ctx.audience?.id
       return form
     },
     async onSuccess(response) {
-      await navigate(route("broadcasts_composer", { uuid: response.payload.id }))
+      await navigate(route('broadcasts_composer', { uuid: response.payload.id }))
     },
   })
 

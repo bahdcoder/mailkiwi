@@ -1,13 +1,13 @@
-import { useServerFormMutation } from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { DragEvent, useCallback, useEffect, useRef, useState } from "react"
+import { useServerFormMutation } from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { type DragEvent, useCallback, useEffect, useRef, useState } from 'react'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
   const [loading, setLoading] = useState(false)
 
   useServerFormMutation({
-    action: route("add_media_documents"),
+    action: route('add_media_documents'),
   })
 
   const uploadFile = useCallback(
@@ -23,7 +23,7 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
       // }
       setTimeout(() => {
         setLoading(false)
-        onUpload("https://templates.tiptap.dev/placeholder-image.jpg")
+        onUpload('https://templates.tiptap.dev/placeholder-image.jpg')
       }, 3000)
     },
     [onUpload],
@@ -55,12 +55,12 @@ export const useDropZone = ({ uploader }: { uploader: (file: File) => void }) =>
       setIsDragging(false)
     }
 
-    document.body.addEventListener("dragstart", dragStartHandler)
-    document.body.addEventListener("dragend", dragEndHandler)
+    document.body.addEventListener('dragstart', dragStartHandler)
+    document.body.addEventListener('dragend', dragEndHandler)
 
     return () => {
-      document.body.removeEventListener("dragstart", dragStartHandler)
-      document.body.removeEventListener("dragend", dragEndHandler)
+      document.body.removeEventListener('dragstart', dragStartHandler)
+      document.body.removeEventListener('dragend', dragEndHandler)
     }
   }, [])
 
@@ -82,13 +82,13 @@ export const useDropZone = ({ uploader }: { uploader: (file: File) => void }) =>
         }
       }
 
-      if (files.some((file) => file.type.indexOf("image") === -1)) {
+      if (files.some((file) => file.type.indexOf('image') === -1)) {
         return
       }
 
       e.preventDefault()
 
-      const filteredFiles = files.filter((f) => f.type.indexOf("image") !== -1)
+      const filteredFiles = files.filter((f) => f.type.indexOf('image') !== -1)
 
       const file = filteredFiles.length > 0 ? filteredFiles[0] : undefined
 

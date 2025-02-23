@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 import {
   type InferInput,
   checkAsync,
@@ -8,11 +8,11 @@ import {
   pipeAsync,
   regex,
   string,
-} from "valibot"
+} from 'valibot'
 
-import { sendingDomains } from "@/database/schema.js"
+import { sendingDomains } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 export const CreateSendingDomainSchema = objectAsync({
   name: pipeAsync(
@@ -26,9 +26,9 @@ export const CreateSendingDomainSchema = objectAsync({
       })
 
       return sendingDomainExists === undefined
-    }, "This sending domain is already registered."),
+    }, 'This sending domain is already registered.'),
   ),
-  product: optional(picklist(["engage", "send"])),
+  product: optional(picklist(['engage', 'send'])),
 })
 
 export type CreateSendingDomainDto = InferInput<typeof CreateSendingDomainSchema>

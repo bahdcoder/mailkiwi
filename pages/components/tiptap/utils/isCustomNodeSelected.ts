@@ -1,4 +1,4 @@
-import { TableOfContentsNode } from "@/pages/components/composer/extensions/TableOfContentsNode/TableOfContentsNode.jsx"
+import { TableOfContentsNode } from '@/pages/components/composer/extensions/TableOfContentsNode/TableOfContentsNode.jsx'
 import {
   CodeBlock,
   Figcaption,
@@ -6,22 +6,22 @@ import {
   ImageBlock,
   ImageUpload,
   Link,
-} from "@/pages/components/composer/extensions/index.js"
-import { Editor } from "@tiptap/react"
+} from '@/pages/components/composer/extensions/index.js'
+import type { Editor } from '@tiptap/react'
 
 export const isTableGripSelected = (node: HTMLElement) => {
   let container = node
 
-  while (container && !["TD", "TH"].includes(container.tagName)) {
+  while (container && !['TD', 'TH'].includes(container.tagName)) {
     container = container.parentElement!
   }
 
   const gripColumn =
     container &&
     container.querySelector &&
-    container.querySelector("a.grip-column.selected")
+    container.querySelector('a.grip-column.selected')
   const gripRow =
-    container && container.querySelector && container.querySelector("a.grip-row.selected")
+    container && container.querySelector && container.querySelector('a.grip-row.selected')
 
   if (gripColumn || gripRow) {
     return true

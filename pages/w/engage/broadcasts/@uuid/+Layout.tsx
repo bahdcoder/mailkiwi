@@ -1,36 +1,36 @@
-import { SlashIcon } from "@/pages/components/icons/slash.svg.jsx"
-import { PageLayout } from "@/pages/components/page/page-layout.jsx"
-import { ProductPageHeading } from "@/pages/components/page/product-page-heading.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import * as Tabs from "@kibamail/owly/tabs"
-import { usePageContext } from "vike-react/usePageContext"
+import { SlashIcon } from '@/pages/components/icons/slash.svg.jsx'
+import { PageLayout } from '@/pages/components/page/page-layout.jsx'
+import { ProductPageHeading } from '@/pages/components/page/product-page-heading.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import * as Tabs from '@kibamail/owly/tabs'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 function SingleLetterLayout({ children }: React.PropsWithChildren) {
   const ctx = usePageContext()
 
   function getDefaultTabValue() {
-    if (ctx.urlPathname.includes("performance")) return "performance"
+    if (ctx.urlPathname.includes('performance')) return 'performance'
 
-    return "overview"
+    return 'overview'
   }
 
-  if (ctx.urlPathname.includes("composer")) {
+  if (ctx.urlPathname.includes('composer')) {
     return <>{children}</>
   }
 
   return (
     <PageLayout>
-      <Tabs.Root variant="secondary" defaultValue={getDefaultTabValue()} width={"full"}>
+      <Tabs.Root variant="secondary" defaultValue={getDefaultTabValue()} width={'full'}>
         <ProductPageHeading
           header={
             <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between">
               <div className="flex flex-col">
                 <div className="flex items-center text-sm mb-1">
                   <a
-                    href={route("engage")}
+                    href={route('engage')}
                     className="kb-content-tertiary hover:text-[var(--kb-content-secondary)]"
                   >
                     Broadcasts
@@ -53,12 +53,20 @@ function SingleLetterLayout({ children }: React.PropsWithChildren) {
             <div className="w-full lg:w-auto">
               <Tabs.List className="lg:w-[fit-content] gap-x-4">
                 <Tabs.Trigger asChild value="overview" className="px-0">
-                  <a href={route("engage_overview", { uuid: ctx.routeParams.uuid })}>
+                  <a
+                    href={route('engage_overview', {
+                      uuid: ctx.routeParams.uuid,
+                    })}
+                  >
                     Overview
                   </a>
                 </Tabs.Trigger>
                 <Tabs.Trigger asChild value="performance" className="px-0">
-                  <a href={route("engage_performance", { uuid: ctx.routeParams.uuid })}>
+                  <a
+                    href={route('engage_performance', {
+                      uuid: ctx.routeParams.uuid,
+                    })}
+                  >
                     Performance
                   </a>
                 </Tabs.Trigger>

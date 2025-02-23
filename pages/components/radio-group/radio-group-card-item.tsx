@@ -1,9 +1,9 @@
-import { Checkbox } from "@kibamail/owly/checkbox"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
-import * as RadioGroup from "@radix-ui/react-radio-group"
-import cn from "classnames"
-import React from "react"
+import { Checkbox } from '@kibamail/owly/checkbox'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
+import * as RadioGroup from '@radix-ui/react-radio-group'
+import cn from 'classnames'
+import type React from 'react'
 
 export interface RadioGroupCardItemProps
   extends React.HtmlHTMLAttributes<HTMLDivElement> {
@@ -25,10 +25,10 @@ export function RadioGroupCardItem({
   return (
     <div
       className={cn(
-        "w-full flex items-start gap-2 p-4 rounded-xl border",
+        'w-full flex items-start gap-2 p-4 rounded-xl border',
         {
-          "kb-border-info kb-background-secondary": checked,
-          "kb-border-tertiary": !checked,
+          'kb-border-info kb-background-secondary': checked,
+          'kb-border-tertiary': !checked,
         },
         className,
       )}
@@ -38,16 +38,16 @@ export function RadioGroupCardItem({
       <div className="flex flex-col gap-1 -mt-1 flex-grow">
         <Heading
           size="xs"
-          className={cn("text-left", {
-            "kb-content-disabled": disabled,
+          className={cn('text-left', {
+            'kb-content-disabled': disabled,
           })}
         >
           {title}
         </Heading>
         <Text
-          className={cn("text-left", {
-            "kb-content-disabled": disabled,
-            "kb-content-tertiary": !disabled,
+          className={cn('text-left', {
+            'kb-content-disabled': disabled,
+            'kb-content-tertiary': !disabled,
           })}
         >
           {description}

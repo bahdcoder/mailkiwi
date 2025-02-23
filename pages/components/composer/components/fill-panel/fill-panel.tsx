@@ -1,12 +1,12 @@
-import "./fill-panel.styles.css"
-import * as Tabs from "@kibamail/owly/tabs"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import * as Popover from "@radix-ui/react-popover"
-import React from "react"
-import { HexColorPicker } from "react-colorful"
+import './fill-panel.styles.css'
+import * as Tabs from '@kibamail/owly/tabs'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import * as Popover from '@radix-ui/react-popover'
+import React from 'react'
+import { HexColorPicker } from 'react-colorful'
 
-export type FillValue = { type: "image" | "color"; value: string | undefined }
+export type FillValue = { type: 'image' | 'color'; value: string | undefined }
 export interface FillPanelProps extends React.PropsWithChildren {
   allowImageFills?: boolean
   value?: string
@@ -32,14 +32,14 @@ export function FillPanel({
     <>
       <HexColorPicker
         color={value}
-        onChange={(color) => onChange?.({ type: "color", value: color })}
+        onChange={(color) => onChange?.({ type: 'color', value: color })}
         className="w-composer-color-picker"
       />
 
       <div className="mt-4 flex gap-1 w-full items-center ">
         <TextField.Root
           className="flex-shrink-0 w-2/5"
-          value={value ?? ""}
+          value={value ?? ''}
           onChange={(event) => onHexColorManuallyChanged(event.target.value)}
         >
           <TextField.Slot side="left">
@@ -47,7 +47,7 @@ export function FillPanel({
           </TextField.Slot>
         </TextField.Root>
         <div className="flex items-center gap-1 w-3/5">
-          {["R", "G", "B"].map((codeLetter) => (
+          {['R', 'G', 'B'].map((codeLetter) => (
             <TextField.Root
               readOnly
               key={codeLetter}
@@ -64,7 +64,7 @@ export function FillPanel({
       <div className="mt-4">
         <button
           className="rounded-lg border-[var(--black-10)] flex items-center gap-1.5 relative"
-          onClick={() => onChange?.({ type: "color", value: undefined })}
+          onClick={() => onChange?.({ type: 'color', value: undefined })}
         >
           <img
             src="https://s3-alpha-sig.figma.com/img/7f12/ea13/00756f144a0fb5daaf68dbfc01103a46?Expires=1739145600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=eSntLVzp9xgCrbNiMhbOw-uvrLOfEhr7fteuDAtygCnCbgktGQSq9EM7oF4VvkPCHYiJaHve1u7WWX5RpjkRai0g6ilCo5deAERqoFbpX1tG8GtBYxcifoXCoENVhtmdol39PrL1DGbtopznoW6EyZ5dtheN8vtPmSDyI5S8kzeZmlzMkN27W4CssVTMnc8pVL3CjMv~d3ksvP-wHViLIPiUt0FyE1Dm-dwSp1NMrPFs1fRALcx9200VfkSDHQ3L54vNGOBrzPe-484p2dL1YGGUoTpCQlmwXzV~LNPcZ97PpRA0LSFAWpBcDNHi6EtMt6~00Ukbg7QGr4sHylT9zg__"

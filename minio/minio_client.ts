@@ -1,10 +1,10 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { Client } from "minio"
-import { Readable } from "stream"
+import { appEnv } from '@/app/env/app_env.js'
+import { Client } from 'minio'
+import type { Readable } from 'stream'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-type BucketName = "contacts" | "attachments" | "emails" | "media"
+type BucketName = 'contacts' | 'attachments' | 'emails' | 'media'
 
 export class MinioClient {
   private client = new Client({

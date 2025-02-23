@@ -1,19 +1,19 @@
-import { DateTime } from "luxon"
+import { DateTime } from 'luxon'
 
 export function guessValueType(value: any) {
   if (isValueABoolean(value)) {
-    return "boolean"
+    return 'boolean'
   }
 
   if (isValueADateType(value)) {
-    return "date"
+    return 'date'
   }
 
   if (isValueANumber(value)) {
-    return "float"
+    return 'float'
   }
 
-  return "text"
+  return 'text'
 }
 
 export function isValueABoolean(value: any) {
@@ -21,8 +21,8 @@ export function isValueABoolean(value: any) {
 }
 
 export function isValueANumber(value: any) {
-  if (!isNaN(value) && value !== "" && typeof value !== "boolean") {
-    const parsedValue = parseFloat(value)
+  if (!isNaN(value) && value !== '' && typeof value !== 'boolean') {
+    const parsedValue = Number.parseFloat(value)
     if (!isNaN(parsedValue)) {
       const MYSQL_FLOAT_MIN = -3.402823466e38
       const MYSQL_FLOAT_MAX = 3.402823466e38
@@ -35,7 +35,7 @@ export function isValueANumber(value: any) {
 }
 
 export function isValueADateType(value: any) {
-  if (typeof value !== "string") {
+  if (typeof value !== 'string') {
     return false
   }
 

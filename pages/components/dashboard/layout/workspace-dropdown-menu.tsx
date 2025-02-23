@@ -1,19 +1,19 @@
-import { useApplicationLayoutContext } from "@/pages/components/dashboard/layout/application-layout-context.jsx"
-import { DEFAULT_SIDEBAR_WIDTH } from "@/pages/components/dashboard/layout/sidebar/left-sidebar.jsx"
-import { SignoutForm } from "@/pages/components/dashboard/layout/signout-form.jsx"
-import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
-import { NavArrowDownIcon } from "@/pages/components/icons/nav-arrow-down.svg.jsx"
-import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
-import { SettingsIcon } from "@/pages/components/icons/settings.svg.jsx"
-import { UserPlusIcon } from "@/pages/components/icons/user-plus.svg.jsx"
-import { UserIcon } from "@/pages/components/icons/user.svg.jsx"
-import { Text } from "@kibamail/owly/text"
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
-import cn from "classnames"
-import React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+import { useApplicationLayoutContext } from '@/pages/components/dashboard/layout/application-layout-context.jsx'
+import { DEFAULT_SIDEBAR_WIDTH } from '@/pages/components/dashboard/layout/sidebar/left-sidebar.jsx'
+import { SignoutForm } from '@/pages/components/dashboard/layout/signout-form.jsx'
+import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
+import { NavArrowDownIcon } from '@/pages/components/icons/nav-arrow-down.svg.jsx'
+import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
+import { SettingsIcon } from '@/pages/components/icons/settings.svg.jsx'
+import { UserPlusIcon } from '@/pages/components/icons/user-plus.svg.jsx'
+import { UserIcon } from '@/pages/components/icons/user.svg.jsx'
+import { Text } from '@kibamail/owly/text'
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import cn from 'classnames'
+import React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 interface WorkspacesDropdownMenuProps {
   rootId: string
@@ -61,7 +61,7 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
             <DropdownMenu.RadioItem key={team?.id} value={team?.id} asChild>
               <a
                 data-testid={`${rootId}-switch-team-id-${team?.id}`}
-                href={route("teams_switch", { teamId: team?.id })}
+                href={route('teams_switch', { teamId: team?.id })}
                 className="p-2 flex items-center hover:bg-[var(--background-secondary)] rounded-lg cursor-pointer"
               >
                 <TeamAvatar name={team?.name} size="sm" />
@@ -108,7 +108,7 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
 }
 
 interface TeamAvatarProps {
-  size: "sm" | "md"
+  size: 'sm' | 'md'
   name?: string
 }
 
@@ -116,12 +116,12 @@ function TeamAvatar({ size, name }: TeamAvatarProps) {
   return (
     <span
       className={cn(
-        "mr-1.5 text-sm shadow-[0px_0px_0px_1px_rgba(0,0,0,0.10)_inset] kb-background-info rounded-lg flex items-center justify-center kb-content-primary-inverse uppercase",
+        'mr-1.5 text-sm shadow-[0px_0px_0px_1px_rgba(0,0,0,0.10)_inset] kb-background-info rounded-lg flex items-center justify-center kb-content-primary-inverse uppercase',
         {
-          "w-5 h-5": size === "sm",
-          "w-6 h-6": size === "md",
+          'w-5 h-5': size === 'sm',
+          'w-6 h-6': size === 'md',
         },
-        getTeamAvatarBackgroundColor(name?.[0] ?? ""),
+        getTeamAvatarBackgroundColor(name?.[0] ?? ''),
       )}
     >
       {name?.[0]}
@@ -131,11 +131,11 @@ function TeamAvatar({ size, name }: TeamAvatarProps) {
 
 function getTeamAvatarBackgroundColor(firstCharacter: string) {
   const colors = [
-    "kb-background-info",
-    "kb-background-positive",
-    "kb-background-negative",
-    "kb-background-warning",
-    "kb-background-highlight",
+    'kb-background-info',
+    'kb-background-positive',
+    'kb-background-negative',
+    'kb-background-warning',
+    'kb-background-highlight',
   ]
 
   const asciiValue = firstCharacter.charCodeAt(0)

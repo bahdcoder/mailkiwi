@@ -1,4 +1,4 @@
-import { Heading } from "@kibamail/owly/heading"
+import { Heading } from '@kibamail/owly/heading'
 
 function DashboardPage() {
   return (

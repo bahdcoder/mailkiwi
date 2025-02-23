@@ -1,12 +1,12 @@
-import { CalendarIcon } from "@/pages/components/icons/calendar.jsx"
-import { CheckSquareIcon } from "@/pages/components/icons/check-square.svg.jsx"
-import { HashTagIcon } from "@/pages/components/icons/hashtag.svg.jsx"
-import { TextIcon } from "@/pages/components/icons/text.svg.jsx"
-import { Button } from "@kibamail/owly/button"
-import * as Dialog from "@kibamail/owly/dialog"
-import * as Select from "@kibamail/owly/select-field"
-import * as TextField from "@kibamail/owly/text-field"
-import * as React from "react"
+import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
+import { CheckSquareIcon } from '@/pages/components/icons/check-square.svg.jsx'
+import { HashTagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
+import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
+import { Button } from '@kibamail/owly/button'
+import * as Dialog from '@kibamail/owly/dialog'
+import * as Select from '@kibamail/owly/select-field'
+import * as TextField from '@kibamail/owly/text-field'
+import type * as React from 'react'
 
 export interface CreateCustomContactPropertyProps extends React.PropsWithChildren {
   open: boolean
@@ -45,7 +45,7 @@ export function CreateCustomContactProperty({
               autoFocus
               name="name"
               id="custom-property-name"
-              placeholder={form?.defaultValue ?? "Job title, Interests, Company, etc."}
+              placeholder={form?.defaultValue ?? 'Job title, Interests, Company, etc.'}
             >
               <TextField.Label htmlFor="custom-property-name">Name</TextField.Label>
             </TextField.Root>
@@ -81,7 +81,7 @@ export function CreateCustomContactProperty({
 
           <Dialog.Footer className="flex justify-between gap-2">
             <Dialog.Close asChild type="button">
-              <Button variant="tertiary" width={"full"} type="button">
+              <Button variant="tertiary" width={'full'} type="button">
                 Close
               </Button>
             </Dialog.Close>

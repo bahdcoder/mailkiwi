@@ -1,19 +1,19 @@
-import { AcceptTeamMemberInviteAction } from "@/teams/actions/accept_team_member_invite_action.js"
-import { InviteTeamMemberAction } from "@/teams/actions/invite_team_member_action.js"
-import { RejectTeamMemberInviteAction } from "@/teams/actions/reject_team_member_invite_action.js"
-import { RevokeTeamMemberAccessAction } from "@/teams/actions/revoke_team_member_access_action.js"
-import { InviteTeamMember } from "@/teams/dto/invite_team_member_dto.js"
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
+import { AcceptTeamMemberInviteAction } from '@/teams/actions/accept_team_member_invite_action.js'
+import { InviteTeamMemberAction } from '@/teams/actions/invite_team_member_action.js'
+import { RejectTeamMemberInviteAction } from '@/teams/actions/reject_team_member_invite_action.js'
+import { RevokeTeamMemberAccessAction } from '@/teams/actions/revoke_team_member_access_action.js'
+import { InviteTeamMember } from '@/teams/dto/invite_team_member_dto.js'
+import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
 
-import { TeamMembership } from "@/database/database_schema_types.js"
+import type { TeamMembership } from '@/database/database_schema_types.js'
 
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import type { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class TeamMembershipController extends BaseController {
   constructor(
@@ -23,13 +23,13 @@ export class TeamMembershipController extends BaseController {
     super()
     this.app.defineRoutes(
       [
-        ["POST", "/", this.invite.bind(this)],
-        ["PUT", "/:token", this.acceptInvite.bind(this)],
-        ["DELETE", "/:token", this.rejectInvite.bind(this)],
-        ["DELETE", "/:membershipId/access", this.revokeAccess.bind(this)],
+        ['POST', '/', this.invite.bind(this)],
+        ['PUT', '/:token', this.acceptInvite.bind(this)],
+        ['DELETE', '/:token', this.rejectInvite.bind(this)],
+        ['DELETE', '/:membershipId/access', this.revokeAccess.bind(this)],
       ],
       {
-        prefix: "/memberships",
+        prefix: '/memberships',
       },
     )
   }
@@ -47,7 +47,7 @@ export class TeamMembershipController extends BaseController {
     if (membershipExists) {
       throw E_VALIDATION_FAILED([
         {
-          message: "This user is already a member of your team.",
+          message: 'This user is already a member of your team.',
         },
       ])
     }
@@ -63,7 +63,7 @@ export class TeamMembershipController extends BaseController {
     const authenticatedUser = this.user(ctx)
 
     if (invite.email !== authenticatedUser?.email) {
-      throw E_UNAUTHORIZED("You are not authorized to perform this action.")
+      throw E_UNAUTHORIZED('You are not authorized to perform this action.')
     }
 
     if (!invite.userId) {
@@ -85,7 +85,7 @@ export class TeamMembershipController extends BaseController {
     const authenticatedUser = this.user(ctx)
 
     if (invite.email !== authenticatedUser?.email) {
-      throw E_UNAUTHORIZED("You are not authorized to perform this action.")
+      throw E_UNAUTHORIZED('You are not authorized to perform this action.')
     }
 
     const { id } = await container.make(RejectTeamMemberInviteAction).handle(invite)
@@ -94,7 +94,7 @@ export class TeamMembershipController extends BaseController {
   }
 
   async revokeAccess(ctx: HonoContext) {
-    const invite = await this.ensureExists<TeamMembership>(ctx, "membershipId")
+    const invite = await this.ensureExists<TeamMembership>(ctx, 'membershipId')
 
     if (this.user(ctx).id !== invite.userId) {
       this.ensureCanAdministrate(ctx)
@@ -107,12 +107,12 @@ export class TeamMembershipController extends BaseController {
 
   async ensureValidInvite(ctx: HonoContext) {
     const invite = await this.teamMembershipRepository.findBySignedUrlToken(
-      ctx.req.param("token"),
+      ctx.req.param('token'),
     )
 
     if (!invite) {
       throw E_VALIDATION_FAILED([
-        { message: "Invite token provided is invalid", field: "token" },
+        { message: 'Invite token provided is invalid', field: 'token' },
       ])
     }
 
@@ -125,14 +125,14 @@ export class TeamMembershipController extends BaseController {
 
   async ensureValidInviteId(ctx: HonoContext) {
     const invite = await this.teamMembershipRepository.findById(
-      ctx.req.param("membershipId"),
+      ctx.req.param('membershipId'),
     )
 
     if (!invite) {
       throw E_VALIDATION_FAILED([
         {
-          message: "Invite id provided is invalid",
-          field: "token",
+          message: 'Invite id provided is invalid',
+          field: 'token',
         },
       ])
     }

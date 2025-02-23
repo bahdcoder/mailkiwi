@@ -1,5 +1,5 @@
-import { Text } from "@kibamail/owly/text"
-import React from "react"
+import { Text } from '@kibamail/owly/text'
+import React from 'react'
 
 export interface MetricCardProps {
   rate: {

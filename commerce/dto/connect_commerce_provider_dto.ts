@@ -1,4 +1,4 @@
-import { banks } from "@/commerce/providers/paystack/helpers/get_banks.js"
+import { banks } from '@/commerce/providers/paystack/helpers/get_banks.js'
 import {
   type InferInput,
   maxLength,
@@ -10,10 +10,10 @@ import {
   pipe,
   regex,
   string,
-} from "valibot"
+} from 'valibot'
 
 export const ConnectCommerceProviderSchema = object({
-  provider: pipe(picklist(["stripe", "paystack", "flutterwave"]), nonEmpty()),
+  provider: pipe(picklist(['stripe', 'paystack', 'flutterwave']), nonEmpty()),
   country: optional(string()),
   payoutInformation: optional(
     object({

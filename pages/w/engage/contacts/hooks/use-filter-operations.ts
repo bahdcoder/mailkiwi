@@ -1,8 +1,8 @@
-import { FilterCondition } from "@/pages/w/engage/contacts/components/filters.jsx"
-import { Table } from "@tanstack/react-table"
-import React from "react"
+import type { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
+import type { Table } from '@tanstack/react-table'
+import type React from 'react'
 
-import { ContactWithTagsAndProperties } from "@/database/database_schema_types.js"
+import type { ContactWithTagsAndProperties } from '@/database/database_schema_types.js'
 
 export function useFilterOperations({
   setFilters,
@@ -33,14 +33,14 @@ export function useFilterOperations({
 
   function updateFilterOperation(
     filter: FilterCondition,
-    operation: FilterCondition["operation"],
+    operation: FilterCondition['operation'],
   ) {
     setFilters((current) =>
       current.map((f) => (f.id === filter.id ? { ...f, operation } : f)),
     )
   }
 
-  function updateFilterValue(filter: FilterCondition, value: FilterCondition["value"]) {
+  function updateFilterValue(filter: FilterCondition, value: FilterCondition['value']) {
     setFilters((current) =>
       current.map((f) => (f.id === filter.id ? { ...f, value } : f)),
     )

@@ -1,21 +1,21 @@
-import { PasswordField } from "@/pages/components/input/password-field.jsx"
+import { PasswordField } from '@/pages/components/input/password-field.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import { usePageContext } from "vike-react/usePageContext"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 function ResetPasswordPage() {
   const { routeParams } = usePageContext()
 
   const { serverFormProps, error, isPending, isSuccess } = useServerFormMutation({
-    action: route("auth_passwords_reset", routeParams),
+    action: route('auth_passwords_reset', routeParams),
   })
 
   if (isSuccess) {
@@ -28,8 +28,8 @@ function ResetPasswordPage() {
           You're all set. You may login with your new password now.
         </Text>
 
-        <Button className="mt-10" width={"full"} variant="secondary" asChild>
-          <a href={route("auth_login")}>Back to login</a>
+        <Button className="mt-10" width={'full'} variant="secondary" asChild>
+          <a href={route('auth_login')}>Back to login</a>
         </Button>
       </div>
     )
@@ -71,8 +71,8 @@ function ResetPasswordPage() {
 
               {error?.errorsMap?.password ? (
                 <TextField.Error className="mt-6">
-                  {" "}
-                  {error?.errorsMap?.password}{" "}
+                  {' '}
+                  {error?.errorsMap?.password}{' '}
                 </TextField.Error>
               ) : null}
             </PasswordField>
@@ -92,7 +92,7 @@ function ResetPasswordPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-2 w-full mt-6">
-          <Button loading={isPending} type="submit" width={"full"}>
+          <Button loading={isPending} type="submit" width={'full'}>
             Continue
           </Button>
         </div>

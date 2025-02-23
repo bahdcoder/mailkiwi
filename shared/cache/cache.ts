@@ -1,6 +1,6 @@
-import { makeRedis } from "@/shared/container/index.js"
+import { makeRedis } from '@/shared/container/index.js'
 
-type CacheNamespace = "domains" | "teams" | "access_tokens" | "websites" | "audiences"
+type CacheNamespace = 'domains' | 'teams' | 'access_tokens' | 'websites' | 'audiences'
 
 export class Cache {
   constructor(protected redis = makeRedis()) {}
@@ -20,7 +20,7 @@ export class Cache {
   async get<T extends object>(key: string, $defaultFn: () => T): Promise<T> {
     const cacheKey = this.cacheKey(key)
 
-    let cachedValue = await this.redis.get(cacheKey)
+    const cachedValue = await this.redis.get(cacheKey)
 
     if (!cachedValue) {
       const value = await $defaultFn()

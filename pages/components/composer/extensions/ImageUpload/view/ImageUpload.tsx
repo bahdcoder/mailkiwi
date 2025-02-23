@@ -1,13 +1,13 @@
-import { ImageUploader } from "./ImageUploader.jsx"
-import { FileUploadDropbox } from "@/pages/components/file-upload/file-upload-dropbox.jsx"
+import { ImageUploader } from './ImageUploader.jsx'
+import { FileUploadDropbox } from '@/pages/components/file-upload/file-upload-dropbox.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { Editor, NodeViewWrapper } from "@tiptap/react"
-import React, { useCallback, useRef } from "react"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { type Editor, NodeViewWrapper } from '@tiptap/react'
+import React, { useCallback, useRef } from 'react'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export const ImageUpload = ({
   getPos,
@@ -36,7 +36,7 @@ export const ImageUpload = ({
   const { serverFormProps, isPending, ServerErrorsList } = useServerFormMutation<{
     url: string
   }>({
-    action: route("add_media_documents"),
+    action: route('add_media_documents'),
     onSuccess({ payload }) {
       onUpload(payload.url)
       setUploadProgress(0)
@@ -49,7 +49,7 @@ export const ImageUpload = ({
   function onFileAccepted() {
     const form = formRef.current
 
-    form?.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }))
+    form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
   }
 
   return (
@@ -60,7 +60,7 @@ export const ImageUpload = ({
             isFileUploadingToServer={isPending}
             fileUploadProgress={uploadProgress}
             onFileAccept={onFileAccepted}
-            accept={[".png", ".jpg", ".gif", ".jpeg"]}
+            accept={['.png', '.jpg', '.gif', '.jpeg']}
           />
           {ServerErrorsList ? <div className="my-4">{ServerErrorsList}</div> : null}
         </ServerForm>

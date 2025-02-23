@@ -1,27 +1,27 @@
-import { CreateContactAction } from "@/audiences/actions/contacts/create_contact_action.js"
-import { GetContactsAction } from "@/audiences/actions/contacts/get_contacts_action.js"
-import { UpdateContactAction } from "@/audiences/actions/contacts/update_contact_action.js"
-import { AttachTagsToContactAction } from "@/audiences/actions/tags/attach_tags_to_contact_action.js"
-import { DetachTagsFromContactAction } from "@/audiences/actions/tags/detach_tags_from_contact_action.js"
-import { CreateContactSchema } from "@/audiences/dto/contacts/create_contact_dto.js"
-import { SearchContactsSchema } from "@/audiences/dto/contacts/search_contacts_dto.js"
-import { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js"
-import { AttachTagsToContactDto } from "@/audiences/dto/tags/attach_tags_to_contact_dto.js"
-import { DetachTagsFromContactDto } from "@/audiences/dto/tags/detach_tags_from_contact_dto.js"
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { CreateContactAction } from '@/audiences/actions/contacts/create_contact_action.js'
+import { GetContactsAction } from '@/audiences/actions/contacts/get_contacts_action.js'
+import { UpdateContactAction } from '@/audiences/actions/contacts/update_contact_action.js'
+import { AttachTagsToContactAction } from '@/audiences/actions/tags/attach_tags_to_contact_action.js'
+import { DetachTagsFromContactAction } from '@/audiences/actions/tags/detach_tags_from_contact_action.js'
+import { CreateContactSchema } from '@/audiences/dto/contacts/create_contact_dto.js'
+import { SearchContactsSchema } from '@/audiences/dto/contacts/search_contacts_dto.js'
+import { UpdateContactDto } from '@/audiences/dto/contacts/update_contact_dto.js'
+import { AttachTagsToContactDto } from '@/audiences/dto/tags/attach_tags_to_contact_dto.js'
+import { DetachTagsFromContactDto } from '@/audiences/dto/tags/detach_tags_from_contact_dto.js'
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import {
+import type {
   Audience,
   Contact,
   ContactWithProperties,
-} from "@/database/database_schema_types.js"
+} from '@/database/database_schema_types.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { VikeController } from "@/shared/controllers/vike_controller.js"
-import type { HonoInstance } from "@/shared/server/hono.js"
-import type { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { VikeController } from '@/shared/controllers/vike_controller.js'
+import type { HonoInstance } from '@/shared/server/hono.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class ContactController extends VikeController {
   constructor(private app: HonoInstance = makeApp()) {
@@ -29,17 +29,17 @@ export class ContactController extends VikeController {
 
     this.app.defineRoutes(
       [
-        ["GET", "/", this.index.bind(this)],
-        ["POST", "/search", this.search.bind(this)],
-        ["POST", "/", this.store.bind(this)],
-        ["GET", "/:contactId", this.get.bind(this)],
-        ["PATCH", "/:contactId", this.update.bind(this)],
-        ["GET", "/:contactId/activity", this.getActivity.bind(this)],
-        ["POST", "/:contactId/tags/attach", this.attachTags.bind(this)],
-        ["POST", "/:contactId/tags/detach", this.detachTags.bind(this)],
+        ['GET', '/', this.index.bind(this)],
+        ['POST', '/search', this.search.bind(this)],
+        ['POST', '/', this.store.bind(this)],
+        ['GET', '/:contactId', this.get.bind(this)],
+        ['PATCH', '/:contactId', this.update.bind(this)],
+        ['GET', '/:contactId/activity', this.getActivity.bind(this)],
+        ['POST', '/:contactId/tags/attach', this.attachTags.bind(this)],
+        ['POST', '/:contactId/tags/detach', this.detachTags.bind(this)],
       ],
       {
-        prefix: "audiences/:audienceId/contacts",
+        prefix: 'audiences/:audienceId/contacts',
       },
     )
   }
@@ -49,9 +49,9 @@ export class ContactController extends VikeController {
       .make(GetContactsAction)
       .handle(
         audienceId,
-        ctx.req.query("segmentId") as string,
-        Number.parseInt(ctx.req.query("page") ?? "1"),
-        Number.parseInt(ctx.req.query("perPage") ?? "10"),
+        ctx.req.query('segmentId') as string,
+        Number.parseInt(ctx.req.query('page') ?? '1'),
+        Number.parseInt(ctx.req.query('perPage') ?? '10'),
       )
 
   async search(ctx: HonoContext) {
@@ -61,23 +61,23 @@ export class ContactController extends VikeController {
       await container
         .make(GetContactsAction)
         .handle(
-          ctx.req.param("audienceId"),
-          ctx.req.query("segmentId") as string,
-          Number.parseInt(ctx.req.query("page") ?? "1"),
-          Number.parseInt(ctx.req.query("perPage") ?? "10"),
+          ctx.req.param('audienceId'),
+          ctx.req.query('segmentId') as string,
+          Number.parseInt(ctx.req.query('page') ?? '1'),
+          Number.parseInt(ctx.req.query('perPage') ?? '10'),
           payload.filters,
         ),
     )
   }
 
   async index(ctx: HonoContext) {
-    return ctx.json(await this.paginatedContacts(ctx, ctx.req.param("audienceId")))
+    return ctx.json(await this.paginatedContacts(ctx, ctx.req.param('audienceId')))
   }
 
   async get(ctx: HonoContext) {
     const [audience, contact] = await Promise.all([
-      this.ensureExists<Audience>(ctx, "audienceId"),
-      this.ensureExists<ContactWithProperties>(ctx, "contactId"),
+      this.ensureExists<Audience>(ctx, 'audienceId'),
+      this.ensureExists<ContactWithProperties>(ctx, 'contactId'),
     ])
 
     return ctx.json(contact)
@@ -85,15 +85,15 @@ export class ContactController extends VikeController {
 
   async getActivity(ctx: HonoContext) {
     const [audience, contact] = await Promise.all([
-      this.ensureExists<Audience>(ctx, "audienceId"),
-      this.ensureExists<ContactWithProperties>(ctx, "contactId"),
+      this.ensureExists<Audience>(ctx, 'audienceId'),
+      this.ensureExists<ContactWithProperties>(ctx, 'contactId'),
     ])
 
     return ctx.json(await container.make(ContactRepository).getActivity(contact.id))
   }
 
   async store(ctx: HonoContext) {
-    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
+    const audience = await this.ensureExists<Audience>(ctx, 'audienceId')
 
     this.ensureCanAuthor(ctx)
 
@@ -106,8 +106,8 @@ export class ContactController extends VikeController {
 
   async update(ctx: HonoContext) {
     const [audience, contact] = await Promise.all([
-      this.ensureExists<Audience>(ctx, "audienceId"),
-      this.ensureExists<ContactWithProperties>(ctx, "contactId"),
+      this.ensureExists<Audience>(ctx, 'audienceId'),
+      this.ensureExists<ContactWithProperties>(ctx, 'contactId'),
     ])
 
     this.ensureCanAuthor(ctx)
@@ -123,8 +123,8 @@ export class ContactController extends VikeController {
 
   async attachTags(ctx: HonoContext) {
     const [, contact] = await Promise.all([
-      this.ensureExists<Audience>(ctx, "audienceId"),
-      this.ensureExists<Contact>(ctx, "contactId"),
+      this.ensureExists<Audience>(ctx, 'audienceId'),
+      this.ensureExists<Contact>(ctx, 'contactId'),
     ])
 
     this.ensureCanAuthor(ctx)
@@ -138,8 +138,8 @@ export class ContactController extends VikeController {
 
   async detachTags(ctx: HonoContext) {
     const [, contact] = await Promise.all([
-      this.ensureExists<Audience>(ctx, "audienceId"),
-      this.ensureExists<Contact>(ctx, "contactId"),
+      this.ensureExists<Audience>(ctx, 'audienceId'),
+      this.ensureExists<Contact>(ctx, 'contactId'),
     ])
 
     this.ensureCanAuthor(ctx)

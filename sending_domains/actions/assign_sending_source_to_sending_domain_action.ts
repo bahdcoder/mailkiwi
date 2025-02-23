@@ -1,10 +1,10 @@
-import { SendingSourceRepository } from "@/settings/repositories/sending_source_repository.js"
+import { SendingSourceRepository } from '@/settings/repositories/sending_source_repository.js'
 
-import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
-import { SendingSource } from "@/database/database_schema_types.js"
+import { SendingSource } from '@/database/database_schema_types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class AssignSendingSourceToSendingDomainAction {
   constructor(
@@ -18,11 +18,11 @@ export class AssignSendingSourceToSendingDomainAction {
     type Source = (typeof sources)[number]
 
     const sendPool: Source[] = sources
-      .filter((source) => source.pool === "engage")
+      .filter((source) => source.pool === 'engage')
       .sort((a, b) => b.emailSendsCount - a.emailSendsCount)
 
     const engagePool: Source[] = sources
-      .filter((source) => source.pool === "send")
+      .filter((source) => source.pool === 'send')
       .sort((a, b) => b.emailSendsCount - a.emailSendsCount)
 
     await this.sendingDomainRepository.update(sendingDomainId, {

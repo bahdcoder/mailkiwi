@@ -1,1 +1,1 @@
-export * from "./Figcaption.js"
+export * from './Figcaption.js'

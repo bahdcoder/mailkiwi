@@ -1,5 +1,5 @@
-import { cn } from "@/pages/components/tiptap/utils/index.js"
-import { HTMLProps, forwardRef } from "react"
+import { cn } from '@/pages/components/tiptap/utils/index.js'
+import { type HTMLProps, forwardRef } from 'react'
 
 export type SurfaceProps = HTMLProps<HTMLDivElement> & {
   withShadow?: boolean
@@ -10,9 +10,9 @@ export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(
   ({ children, className, withShadow = true, withBorder = true, ...props }, ref) => {
     const surfaceClass = cn(
       className,
-      "bg-white rounded-lg dark:bg-black",
-      withShadow ? "shadow-sm" : "",
-      withBorder ? "border border-neutral-200 dark:border-neutral-800" : "",
+      'bg-white rounded-lg dark:bg-black',
+      withShadow ? 'shadow-sm' : '',
+      withBorder ? 'border border-neutral-200 dark:border-neutral-800' : '',
     )
 
     return (
@@ -23,4 +23,4 @@ export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(
   },
 )
 
-Surface.displayName = "Surface"
+Surface.displayName = 'Surface'

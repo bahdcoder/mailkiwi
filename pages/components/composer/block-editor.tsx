@@ -1,10 +1,10 @@
-import { TextSizeIcon } from "@/pages/components/icons/text-size.svg.jsx"
-import * as SelectField from "@kibamail/owly/select-field"
-import * as Tabs from "@kibamail/owly/tabs"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import { Editor, findParentNode } from "@tiptap/core"
-import { useEditorState } from "@tiptap/react"
+import { TextSizeIcon } from '@/pages/components/icons/text-size.svg.jsx'
+import * as SelectField from '@kibamail/owly/select-field'
+import * as Tabs from '@kibamail/owly/tabs'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import { type Editor, findParentNode } from '@tiptap/core'
+import { useEditorState } from '@tiptap/react'
 
 export interface BlockEditorProps {
   editor: Editor
@@ -60,9 +60,9 @@ export function BlockEditor({ editor }: BlockEditorProps) {
         <div className="py-4">
           <TextField.Root
             type="text"
-            value={nodeStyles.padding || ""}
+            value={nodeStyles.padding || ''}
             onChange={(event) => {
-              applyStyle("padding", event.target.value)
+              applyStyle('padding', event.target.value)
             }}
           >
             <TextField.Label>Padding</TextField.Label>
@@ -72,14 +72,14 @@ export function BlockEditor({ editor }: BlockEditorProps) {
         <div className="py-4">
           <SelectField.Root
             onValueChange={(value) => {
-              applyStyle("text-align", value)
+              applyStyle('text-align', value)
             }}
-            value={nodeStyles["text-align"]}
+            value={nodeStyles['text-align']}
           >
             <SelectField.Label>Text Align</SelectField.Label>
             <SelectField.Trigger placeholder="Select alignment" />
             <SelectField.Content className="z-[3]">
-              {["left", "center", "right", "justify"].map((align) => (
+              {['left', 'center', 'right', 'justify'].map((align) => (
                 <SelectField.Item key={align} value={align}>
                   {align}
                 </SelectField.Item>
@@ -93,7 +93,7 @@ export function BlockEditor({ editor }: BlockEditorProps) {
             onChange={(event) => {
               const value = event.target.value
 
-              applyStyle("font-size", `${value}px`)
+              applyStyle('font-size', `${value}px`)
             }}
           >
             <TextField.Label>Font size</TextField.Label>

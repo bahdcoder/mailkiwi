@@ -1,13 +1,13 @@
-import useContentItemActions from "./hooks/useContentItemActions.jsx"
-import { useData } from "./hooks/useData.jsx"
-import { DragHandle } from "@/pages/components/composer/extensions/DragHandle/drag-handle.jsx"
-import { DropdownButton } from "@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.jsx"
-import { Surface } from "@/pages/components/tiptap/ui/Surface.jsx"
-import { Toolbar } from "@/pages/components/tiptap/ui/Toolbar.jsx"
-import * as Popover from "@radix-ui/react-popover"
-import { Editor } from "@tiptap/react"
-import { useEffect, useState } from "react"
+import useContentItemActions from './hooks/useContentItemActions.jsx'
+import { useData } from './hooks/useData.jsx'
+import { DragHandle } from '@/pages/components/composer/extensions/DragHandle/drag-handle.jsx'
+import { DropdownButton } from '@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx'
+import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
+import { Surface } from '@/pages/components/tiptap/ui/Surface.jsx'
+import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
+import * as Popover from '@radix-ui/react-popover'
+import type { Editor } from '@tiptap/react'
+import { useEffect, useState } from 'react'
 
 export type ContentItemMenuProps = {
   editor: Editor
@@ -20,9 +20,9 @@ export const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
 
   useEffect(() => {
     if (menuOpen) {
-      editor.commands.setMeta("lockDragHandle", true)
+      editor.commands.setMeta('lockDragHandle', true)
     } else {
-      editor.commands.setMeta("lockDragHandle", false)
+      editor.commands.setMeta('lockDragHandle', false)
     }
   }, [editor, menuOpen])
 

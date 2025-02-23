@@ -1,9 +1,9 @@
-import { PageLayout } from "@/pages/components/page/page-layout.jsx"
-import { ProductPageHeading } from "@/pages/components/page/product-page-heading.jsx"
-import * as Tabs from "@kibamail/owly/tabs"
-import { usePageContext } from "vike-react/usePageContext"
+import { PageLayout } from '@/pages/components/page/page-layout.jsx'
+import { ProductPageHeading } from '@/pages/components/page/product-page-heading.jsx'
+import * as Tabs from '@kibamail/owly/tabs'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 function EngageLayout({ children }: React.PropsWithChildren) {
   const ctx = usePageContext()
@@ -11,11 +11,11 @@ function EngageLayout({ children }: React.PropsWithChildren) {
   function getDefaultTabValue() {
     const pathname = ctx.urlPathname
 
-    if (pathname.includes("contacts")) return "contacts"
+    if (pathname.includes('contacts')) return 'contacts'
 
-    if (pathname.includes("automations")) return "automations"
+    if (pathname.includes('automations')) return 'automations'
 
-    return "broadcasts"
+    return 'broadcasts'
   }
 
   if (ctx.routeParams.uuid) {
@@ -26,7 +26,7 @@ function EngageLayout({ children }: React.PropsWithChildren) {
     return <>{children}</>
   }
 
-  if (ctx.urlPathname.includes("composer")) {
+  if (ctx.urlPathname.includes('composer')) {
     return <>{children}</>
   }
 
@@ -35,7 +35,7 @@ function EngageLayout({ children }: React.PropsWithChildren) {
       <Tabs.Root
         variant="secondary"
         defaultValue={getDefaultTabValue()}
-        width={"full"}
+        width={'full'}
         className="relative"
       >
         <ProductPageHeading>
@@ -43,13 +43,13 @@ function EngageLayout({ children }: React.PropsWithChildren) {
             <div className="w-full lg:w-auto">
               <Tabs.List className="lg:w-[fit-content] gap-x-4">
                 <Tabs.Trigger asChild value="broadcasts" className="px-0">
-                  <a href={route("engage")}>Broadcasts</a>
+                  <a href={route('engage')}>Broadcasts</a>
                 </Tabs.Trigger>
                 <Tabs.Trigger asChild value="contacts" className="px-0">
-                  <a href={route("engage_contacts")}>Contacts</a>
+                  <a href={route('engage_contacts')}>Contacts</a>
                 </Tabs.Trigger>
                 <Tabs.Trigger asChild value="automations" className="px-0">
-                  <a href={route("engage_automations")}>Automations</a>
+                  <a href={route('engage_automations')}>Automations</a>
                 </Tabs.Trigger>
                 <Tabs.Indicator />
               </Tabs.List>

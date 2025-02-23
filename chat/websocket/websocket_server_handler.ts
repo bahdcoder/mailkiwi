@@ -1,6 +1,6 @@
-import { WebSocket } from "ws"
+import type { WebSocket } from 'ws'
 
-import { UserWithChannelMemberships } from "@/database/database_schema_types.js"
+import type { UserWithChannelMemberships } from '@/database/database_schema_types.js'
 
 export type MapOfConnections = Map<
   string,
@@ -10,7 +10,7 @@ export type MapOfConnections = Map<
 export type MapOfChannelConnections = Map<string, Set<string>>
 
 export type WebsocketMessage<T> = {
-  name: "message" | "join_channel"
+  name: 'message' | 'join_channel'
   payload: T
   user: UserWithChannelMemberships
 }

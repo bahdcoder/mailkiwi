@@ -1,11 +1,11 @@
 import {
   getStyleAttributeDefaultCommands,
   getStyleAttributeDefinition,
-} from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
-import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
-import { OrderedList as BaseNumberedList } from "@tiptap/extension-ordered-list"
+} from '@/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
+import { getDefaultStylesForNode } from '@/pages/components/composer/themes/default-theme.js'
+import { OrderedList as BaseNumberedList } from '@tiptap/extension-ordered-list'
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     numberedList: {
       setButton: (attributes: { href: string }) => ReturnType
@@ -19,7 +19,7 @@ export const NumberedList = BaseNumberedList.extend({
   // name: "numberedListWithStyles",
   addAttributes() {
     return {
-      styles: getStyleAttributeDefinition(getDefaultStylesForNode("orderedList").styles),
+      styles: getStyleAttributeDefinition(getDefaultStylesForNode('orderedList').styles),
     }
   },
 

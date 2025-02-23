@@ -1,13 +1,13 @@
-import { ProcessMtaLogJob } from "@/kumologs/jobs/process_mta_log_job.js"
+import { ProcessMtaLogJob } from '@/kumologs/jobs/process_mta_log_job.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.js"
-import { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { Queue } from '@/shared/queue/queue.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
 export class MtaLogsController {
   constructor(private app = makeApp()) {
-    this.app.defineRoutes([["POST", "/mta/logs", this.index.bind(this)]], {
-      prefix: "/",
+    this.app.defineRoutes([['POST', '/mta/logs', this.index.bind(this)]], {
+      prefix: '/',
       middleware: [],
     })
   }

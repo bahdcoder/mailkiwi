@@ -1,18 +1,18 @@
-import { EditPencilIcon } from "@/pages/components/icons/edit-pencil.svg.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Label } from "@kibamail/owly/text-field"
-import cn from "classnames"
-import React from "react"
+import { EditPencilIcon } from '@/pages/components/icons/edit-pencil.svg.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Label } from '@kibamail/owly/text-field'
+import cn from 'classnames'
+import React from 'react'
 
 export function DefaultStylesEditor() {
   const [editingDefaultStyles, setEditingDefaultStyles] = React.useState(false)
 
   return (
     <div
-      className={cn("w-[16.25rem] h-full border-l transition-[border-color]", {
-        "kb-border-tertiary": editingDefaultStyles,
-        "border-transparent": !editingDefaultStyles,
+      className={cn('w-[16.25rem] h-full border-l transition-[border-color]', {
+        'kb-border-tertiary': editingDefaultStyles,
+        'border-transparent': !editingDefaultStyles,
       })}
     >
       <div className="w-full flex justify-center py-2">
@@ -21,7 +21,7 @@ export function DefaultStylesEditor() {
           onClick={() => setEditingDefaultStyles((current) => !current)}
         >
           <EditPencilIcon />
-          {editingDefaultStyles ? "Hide default styles" : "Edit default styles"}
+          {editingDefaultStyles ? 'Hide default styles' : 'Edit default styles'}
         </Button>
       </div>
 

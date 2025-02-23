@@ -1,27 +1,28 @@
 import {
   FillPanel,
-  FillValue,
-} from "@/pages/components/composer/components/fill-panel/fill-panel.jsx"
-import { LinkEditorPanel } from "@/pages/components/composer/components/link-menu/link-editor-panel.jsx"
+  type FillValue,
+} from '@/pages/components/composer/components/fill-panel/fill-panel.jsx'
+import { LinkEditorPanel } from '@/pages/components/composer/components/link-menu/link-editor-panel.jsx'
 import {
   ToolbarButton,
   ToolbarContainer,
   ToolbarSection,
   getToolbarClassNames,
-} from "@/pages/components/composer/components/toolbar/toolbar.jsx"
-import { CompAlignCenterIcon } from "@/pages/components/icons/comp-align-center.svg.jsx"
-import { CompAlignLeftIcon } from "@/pages/components/icons/comp-align-left.svg.jsx"
-import { CompAlignRightIcon } from "@/pages/components/icons/comp-align-right.svg.jsx"
-import { FillColorIcon } from "@/pages/components/icons/fill-color.svg.jsx"
-import { FullWidthIcon } from "@/pages/components/icons/full-width.svg.jsx"
-import { LinkIcon } from "@/pages/components/icons/link.svg.jsx"
-import { OpenNewWindowIcon } from "@/pages/components/icons/open-new-window.svg.jsx"
-import { TrashIcon } from "@/pages/components/icons/trash.svg.jsx"
-import getRenderContainer from "@/pages/components/tiptap/utils/getRenderContainer.js"
-import { BubbleMenu, Editor } from "@tiptap/react"
-import React, { useCallback } from "react"
-import { sticky } from "tippy.js"
-import "tippy.js/animations/scale.css"
+} from '@/pages/components/composer/components/toolbar/toolbar.jsx'
+import { CompAlignCenterIcon } from '@/pages/components/icons/comp-align-center.svg.jsx'
+import { CompAlignLeftIcon } from '@/pages/components/icons/comp-align-left.svg.jsx'
+import { CompAlignRightIcon } from '@/pages/components/icons/comp-align-right.svg.jsx'
+import { FillColorIcon } from '@/pages/components/icons/fill-color.svg.jsx'
+import { FullWidthIcon } from '@/pages/components/icons/full-width.svg.jsx'
+import { LinkIcon } from '@/pages/components/icons/link.svg.jsx'
+import { OpenNewWindowIcon } from '@/pages/components/icons/open-new-window.svg.jsx'
+import { TrashIcon } from '@/pages/components/icons/trash.svg.jsx'
+import getRenderContainer from '@/pages/components/tiptap/utils/getRenderContainer.js'
+import { BubbleMenu, type Editor } from '@tiptap/react'
+import type React from 'react'
+import { useCallback } from 'react'
+import { sticky } from 'tippy.js'
+import 'tippy.js/animations/scale.css'
 
 export interface ContainerMenuProps {
   editor: Editor
@@ -38,28 +39,28 @@ type ContainerMenuAction = {
 
 const ContainerMenuActions: ContainerMenuAction[] = [
   {
-    id: "left-align",
-    name: "Left align",
+    id: 'left-align',
+    name: 'Left align',
     icon: <CompAlignLeftIcon className="w-4 h-4" />,
     command(editor) {
       // todo: align left
-      editor.chain().focus().setContainerStyles("text-align", "left").run()
+      editor.chain().focus().setContainerStyles('text-align', 'left').run()
     },
   },
   {
-    id: "center-align",
-    name: "Center align",
+    id: 'center-align',
+    name: 'Center align',
     icon: <CompAlignCenterIcon className="w-4 h-4" />,
     command(editor) {
-      editor.chain().focus().setContainerStyles("text-align", "center").run()
+      editor.chain().focus().setContainerStyles('text-align', 'center').run()
     },
   },
   {
-    id: "right-align",
-    name: "Right align",
+    id: 'right-align',
+    name: 'Right align',
     icon: <CompAlignRightIcon className="w-4 h-4" />,
     command(editor) {
-      editor.chain().focus().setContainerStyles("text-align", "right").run()
+      editor.chain().focus().setContainerStyles('text-align', 'right').run()
     },
   },
 ]
@@ -69,7 +70,7 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
     useContainerMenuStates(editor)
 
   const getReferenceClientRect = useCallback(() => {
-    const renderContainer = getRenderContainer(editor, "node-container")
+    const renderContainer = getRenderContainer(editor, 'node-container')
     const rect =
       renderContainer?.getBoundingClientRect() || new DOMRect(-1000, -1000, 0, 0)
 
@@ -77,7 +78,7 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
   }, [editor])
 
   const shouldShow = useCallback(() => {
-    return editor?.isActive("container")
+    return editor?.isActive('container')
   }, [editor])
 
   if (!editor) {
@@ -90,7 +91,7 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
     editor
       .chain()
       .focus()
-      .updateAttributes("Container", {
+      .updateAttributes('Container', {
         href: href,
       })
       .run()
@@ -107,7 +108,7 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
       .focus()
       .command(({ tr }) => {
         const node = tr.selection.$anchor.node()
-        if (node.type.name === "Container") {
+        if (node.type.name === 'Container') {
           tr.delete(tr.selection.$anchor.before(), tr.selection.$anchor.after())
           return true
         }
@@ -117,10 +118,10 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
   }
 
   function onBackgroundUpdated(fill: FillValue) {
-    if (fill.type === "color") {
+    if (fill.type === 'color') {
       editor
         .chain()
-        .setContainerStyles("background-color", fill.value ?? "transparent")
+        .setContainerStyles('background-color', fill.value ?? 'transparent')
         .run()
     }
   }
@@ -134,26 +135,26 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
         },
         getReferenceClientRect,
         popperOptions: {
-          placement: "top",
+          placement: 'top',
           modifiers: [
             {
-              name: "preventOverflow",
+              name: 'preventOverflow',
               options: {
-                boundary: "viewport",
+                boundary: 'viewport',
                 padding: 8,
               },
             },
             {
-              name: "flip",
+              name: 'flip',
               options: {
-                fallbackPlacements: ["bottom-start", "top-end", "bottom-end"],
+                fallbackPlacements: ['bottom-start', 'top-end', 'bottom-end'],
               },
             },
           ],
         },
-        maxWidth: "calc(100vw - 16px)",
+        maxWidth: 'calc(100vw - 16px)',
         plugins: [sticky],
-        sticky: "popper",
+        sticky: 'popper',
       }}
       pluginKey="containerMenu"
       shouldShow={shouldShow}
@@ -165,8 +166,8 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
             isActive={isFullWidth}
             onClick={() =>
               isFullWidth
-                ? editor.chain().focus().setContainerStyles("width", "fit-content").run()
-                : editor.chain().focus().setContainerStyles("width", "100%").run()
+                ? editor.chain().focus().setContainerStyles('width', 'fit-content').run()
+                : editor.chain().focus().setContainerStyles('width', '100%').run()
             }
           >
             <FullWidthIcon className="w-4 h-4" />
@@ -176,7 +177,7 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
         <ToolbarSection divider="right">
           <FillPanel
             onChange={onBackgroundUpdated}
-            value={Container.attrs.styles?.["background-color"]}
+            value={Container.attrs.styles?.['background-color']}
           >
             <button className={getToolbarClassNames(isFilled)}>
               <FillColorIcon className="w-4 h-4" />
@@ -214,16 +215,16 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
 }
 
 export function useContainerMenuStates(editor: Editor) {
-  const isInsideContainer = editor.isActive("container")
+  const isInsideContainer = editor.isActive('container')
   const Container = editor.state.selection.$anchor.node()
   const styles = Container.attrs.styles
 
   return {
     isInsideContainer,
-    isFilled: styles?.["background-color"] !== undefined,
-    isFullWidth: styles?.["width"] === "100%",
-    isLeftAlign: styles?.["text-align"] === "left",
-    isRightAlign: styles?.["text-align"] === "right",
-    isCenterAlign: styles?.["text-align"] === "center",
+    isFilled: styles?.['background-color'] !== undefined,
+    isFullWidth: styles?.['width'] === '100%',
+    isLeftAlign: styles?.['text-align'] === 'left',
+    isRightAlign: styles?.['text-align'] === 'right',
+    isCenterAlign: styles?.['text-align'] === 'center',
   }
 }

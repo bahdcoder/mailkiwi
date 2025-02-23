@@ -1,9 +1,9 @@
-import { Readable, Stream } from "stream"
-import { vi } from "vitest"
+import { Readable, Stream } from 'stream'
+import { vi } from 'vitest'
 
 export class FakeMinioClient {
-  public bucketName: string = ""
-  public objectName: string = ""
+  public bucketName = ''
+  public objectName = ''
   public itemMetadata: Record<string, string> = {}
 
   public stream: Readable
@@ -13,9 +13,9 @@ export class FakeMinioClient {
 
   public bucketExists = vi.fn().mockResolvedValue(true)
   public makeBucket = vi.fn().mockResolvedValue(undefined)
-  public putObject = vi.fn().mockResolvedValue({ etag: "fake-etag" })
-  public getObject = vi.fn().mockResolvedValue(Readable.from("fake data"))
-  public presignedGetObject = vi.fn().mockResolvedValue("http://fake-presigned-url.com")
+  public putObject = vi.fn().mockResolvedValue({ etag: 'fake-etag' })
+  public getObject = vi.fn().mockResolvedValue(Readable.from('fake data'))
+  public presignedGetObject = vi.fn().mockResolvedValue('http://fake-presigned-url.com')
 
   bucket(name: string) {
     this.bucketName = name

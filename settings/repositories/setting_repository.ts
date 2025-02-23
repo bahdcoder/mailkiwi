@@ -1,11 +1,11 @@
-import { appEnv } from "@/app/env/app_env.js"
+import { appEnv } from '@/app/env/app_env.js'
 
-import { InsertSetting } from "@/database/database_schema_types.js"
-import { settings } from "@/database/schema.js"
+import type { InsertSetting } from '@/database/database_schema_types.js'
+import { settings } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
-import { Encryption } from "@/shared/utils/encryption/encryption.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { Encryption } from '@/shared/utils/encryption/encryption.js'
 
 export class SettingRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {

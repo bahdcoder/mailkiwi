@@ -1,12 +1,12 @@
-import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
+import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
 
-import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+import { UserRepository } from '@/auth/users/repositories/user_repository.js'
 
-import { InsertUser } from "@/database/database_schema_types.js"
+import type { InsertUser } from '@/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class RegisterUserAction {
   constructor(
@@ -15,22 +15,25 @@ export class RegisterUserAction {
   ) {}
 
   handle = async (payload: InsertUser) => {
-    let userExists = await this.userRepository.findByEmail(payload.email)
+    const userExists = await this.userRepository.findByEmail(payload.email)
 
     if (!userExists) {
       const { id, emailVerificationCode } = await this.userRepository.create({
         ...payload,
       })
 
-      return { user: { id }, plainEmailVerificationCode: emailVerificationCode }
+      return {
+        user: { id },
+        plainEmailVerificationCode: emailVerificationCode,
+      }
     }
 
     if (userExists && userExists.emailVerifiedAt) {
       throw E_VALIDATION_FAILED([
         {
           message:
-            "A user with this email already exists. Are you trying to login instead?",
-          field: "email",
+            'A user with this email already exists. Are you trying to login instead?',
+          field: 'email',
         },
       ])
     }

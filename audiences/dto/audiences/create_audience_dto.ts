@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 import {
   type InferInput,
   checkAsync,
@@ -7,18 +7,18 @@ import {
   pipeAsync,
   regex,
   string,
-} from "valibot"
+} from 'valibot'
 
-import { websites } from "@/database/schema.js"
+import { websites } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 export const CreateAudienceSchema = objectAsync({
   name: optional(string()),
   slug: pipeAsync(
     string(),
     regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
-    checkAsync(async function (slug) {
+    checkAsync(async (slug) => {
       if (!slug) {
         return true
       }
@@ -32,7 +32,7 @@ export const CreateAudienceSchema = objectAsync({
         .limit(1)
 
       return exists.length === 0
-    }, "A website with this slug already exists. Please choose another subdomain for your website."),
+    }, 'A website with this slug already exists. Please choose another subdomain for your website.'),
   ),
 })
 

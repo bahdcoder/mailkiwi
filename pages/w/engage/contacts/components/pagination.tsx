@@ -1,14 +1,14 @@
-import { FastArrowLeftIcon } from "@/pages/components/icons/fast-arrow-left.svg.jsx"
-import { FastArrowRightIcon } from "@/pages/components/icons/fast-arrow-right.svg.jsx"
-import { NavArrowLeftIcon } from "@/pages/components/icons/nav-arrow-left.svg.jsx"
-import { NavArrowRightIcon } from "@/pages/components/icons/nav-arrow-right.svg.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Text } from "@kibamail/owly/text"
-import { Table } from "@tanstack/react-table"
+import { FastArrowLeftIcon } from '@/pages/components/icons/fast-arrow-left.svg.jsx'
+import { FastArrowRightIcon } from '@/pages/components/icons/fast-arrow-right.svg.jsx'
+import { NavArrowLeftIcon } from '@/pages/components/icons/nav-arrow-left.svg.jsx'
+import { NavArrowRightIcon } from '@/pages/components/icons/nav-arrow-right.svg.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Text } from '@kibamail/owly/text'
+import type { Table } from '@tanstack/react-table'
 
-import { ContactWithTagsAndProperties } from "@/database/database_schema_types.js"
+import type { ContactWithTagsAndProperties } from '@/database/database_schema_types.js'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export interface PaginationProps {
   table: Table<ContactWithTagsAndProperties>

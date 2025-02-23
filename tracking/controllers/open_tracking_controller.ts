@@ -1,15 +1,15 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { ClickTrackingController } from "@/tracking/controllers/click_tracking_controller.js"
+import { appEnv } from '@/app/env/app_env.js'
+import { ClickTrackingController } from '@/tracking/controllers/click_tracking_controller.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
 export class OpenTrackingController extends ClickTrackingController {
   constructor(protected app = makeApp()) {
     super()
 
-    this.app.defineRoutes([["GET", "/o/:signature", this.index.bind(this)]], {
-      prefix: "",
+    this.app.defineRoutes([['GET', '/o/:signature', this.index.bind(this)]], {
+      prefix: '',
       middleware: [],
     })
   }
@@ -25,8 +25,8 @@ export class OpenTrackingController extends ClickTrackingController {
   protected respondWithTrackingImage() {
     const headers = new Headers()
 
-    headers.set("Content-Type", "image/png")
-    headers.set("Content-Length", this.oneByOnePngPx.length.toString())
+    headers.set('Content-Type', 'image/png')
+    headers.set('Content-Length', this.oneByOnePngPx.length.toString())
 
     return new Response(this.oneByOnePngPx, {
       headers,
@@ -41,7 +41,7 @@ export class OpenTrackingController extends ClickTrackingController {
     }
 
     await this.queueLog(ctx, unsigned, {
-      type: "Open",
+      type: 'Open',
       headers: {
         [appEnv.emailHeaders.emailSendId]: unsigned.original,
       },

@@ -1,25 +1,25 @@
-import { type SQLWrapper, and, eq, inArray } from "drizzle-orm"
+import { type SQLWrapper, and, eq, inArray } from 'drizzle-orm'
 
-import { SearchContactsDto } from "@/audiences/dto/contacts/search_contacts_dto.js"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
-import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
+import type { SearchContactsDto } from '@/audiences/dto/contacts/search_contacts_dto.js'
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
+import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
 
-import type { Audience, Contact, Segment } from "@/database/database_schema_types.js"
+import type { Audience, Contact, Segment } from '@/database/database_schema_types.js'
 import {
   ContactFilterGroup,
   contactProperties,
   contacts,
   tags,
   tagsOnContacts,
-} from "@/database/schema.js"
+} from '@/database/schema.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { Paginator } from "@/shared/utils/pagination/paginator.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { Paginator } from '@/shared/utils/pagination/paginator.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class GetContactsAction {
   constructor(
@@ -33,13 +33,13 @@ export class GetContactsAction {
     segmentId?: string,
     page?: number,
     perPage?: number,
-    filters?: SearchContactsDto["filters"],
+    filters?: SearchContactsDto['filters'],
   ) => {
     let segment: Segment | undefined
     let audience: Audience | undefined
 
     if (!audienceId) {
-      throw E_VALIDATION_FAILED([{ message: "Audience id is required." }])
+      throw E_VALIDATION_FAILED([{ message: 'Audience id is required.' }])
     }
 
     const queryConditions: SQLWrapper[] = []

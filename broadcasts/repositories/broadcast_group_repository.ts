@@ -1,13 +1,13 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 
 import {
   broadcastGroups as broadcastGroupsTable,
   broadcasts as broadcastsTable,
-} from "@/database/schema.js"
-import { hasMany } from "@/database/utils/relationships.js"
+} from '@/database/schema.js'
+import { hasMany } from '@/database/utils/relationships.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
 export class BroadcastGroupRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {
@@ -19,7 +19,7 @@ export class BroadcastGroupRepository extends BaseRepository {
     to: broadcastsTable,
     primaryKey: broadcastGroupsTable.id,
     foreignKey: broadcastsTable.broadcastGroupId,
-    relationName: "broadcasts",
+    relationName: 'broadcasts',
   })
 
   groups() {

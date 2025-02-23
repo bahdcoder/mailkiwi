@@ -1,51 +1,51 @@
-"use client"
+'use client'
 
-export { StarterKit } from "@tiptap/starter-kit"
-export { Highlight } from "@tiptap/extension-highlight"
-export { CharacterCount } from "@tiptap/extension-character-count"
-export { Underline } from "@tiptap/extension-underline"
-export { Placeholder } from "@tiptap/extension-placeholder"
-export { Emoji, gitHubEmojis } from "@tiptap-pro/extension-emoji"
-export { TextAlign } from "@tiptap/extension-text-align"
-export { TextStyle } from "@tiptap/extension-text-style"
-export { FontFamily } from "@tiptap/extension-font-family"
-export { Typography } from "@tiptap/extension-typography"
-export { Color } from "@tiptap/extension-color"
-export { FocusClasses as Focus } from "@tiptap/extension-focus"
-export { Dropcursor } from "@tiptap/extension-dropcursor"
-export { CollaborationCursor } from "@tiptap/extension-collaboration-cursor"
-export { Subscript } from "@tiptap/extension-subscript"
-export { TableOfContents } from "@tiptap-pro/extension-table-of-contents"
-export { Superscript } from "@tiptap/extension-superscript"
-export { Paragraph } from "./Paragraph/index.js"
-export { BullettedList } from "./bulletted-list/index.js"
-export { NumberedList } from "./numbered-list/index.js"
-export { OrderedList } from "@tiptap/extension-ordered-list"
-export { Collaboration } from "@tiptap/extension-collaboration"
-export { TaskItem } from "@tiptap/extension-task-item"
-export { TaskList } from "@tiptap/extension-task-list"
-export { FileHandler } from "@tiptap-pro/extension-file-handler"
-export { Details } from "@tiptap-pro/extension-details"
-export { DetailsContent } from "@tiptap-pro/extension-details-content"
-export { DetailsSummary } from "@tiptap-pro/extension-details-summary"
-export { UniqueID } from "@tiptap-pro/extension-unique-id"
+export { StarterKit } from '@tiptap/starter-kit'
+export { Highlight } from '@tiptap/extension-highlight'
+export { CharacterCount } from '@tiptap/extension-character-count'
+export { Underline } from '@tiptap/extension-underline'
+export { Placeholder } from '@tiptap/extension-placeholder'
+export { Emoji, gitHubEmojis } from '@tiptap-pro/extension-emoji'
+export { TextAlign } from '@tiptap/extension-text-align'
+export { TextStyle } from '@tiptap/extension-text-style'
+export { FontFamily } from '@tiptap/extension-font-family'
+export { Typography } from '@tiptap/extension-typography'
+export { Color } from '@tiptap/extension-color'
+export { FocusClasses as Focus } from '@tiptap/extension-focus'
+export { Dropcursor } from '@tiptap/extension-dropcursor'
+export { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
+export { Subscript } from '@tiptap/extension-subscript'
+export { TableOfContents } from '@tiptap-pro/extension-table-of-contents'
+export { Superscript } from '@tiptap/extension-superscript'
+export { Paragraph } from './Paragraph/index.js'
+export { BullettedList } from './bulletted-list/index.js'
+export { NumberedList } from './numbered-list/index.js'
+export { OrderedList } from '@tiptap/extension-ordered-list'
+export { Collaboration } from '@tiptap/extension-collaboration'
+export { TaskItem } from '@tiptap/extension-task-item'
+export { TaskList } from '@tiptap/extension-task-list'
+export { FileHandler } from '@tiptap-pro/extension-file-handler'
+export { Details } from '@tiptap-pro/extension-details'
+export { DetailsContent } from '@tiptap-pro/extension-details-content'
+export { DetailsSummary } from '@tiptap-pro/extension-details-summary'
+export { UniqueID } from '@tiptap-pro/extension-unique-id'
 
-export { Selection } from "./Selection/index.js"
-export { Table, TableCell, TableHeader, TableRow } from "./Table/index.js"
-export { HorizontalRule } from "./HorizontalRule/index.js"
-export { Heading } from "./Heading/index.js"
-export { CodeBlock } from "./CodeBlock/index.js"
-export { Document } from "./Document/index.js"
-export { TrailingNode } from "./TrailingNode/index.js"
-export { SlashCommand } from "./SlashCommand/index.js"
-export { FontSize } from "./FontSize/index.js"
-export { Figure } from "./Figure/index.js"
-export { Figcaption } from "./Figcaption/index.js"
-export { BlockquoteFigure } from "./BlockquoteFigure/index.js"
-export { Quote } from "./BlockquoteFigure/Quote/index.js"
-export { QuoteCaption } from "./BlockquoteFigure/QuoteCaption/index.js"
-export { Link } from "./Link/index.js"
-export { ImageUpload } from "./ImageUpload/index.js"
-export { ImageBlock } from "./ImageBlock/index.js"
-export { Columns, Column } from "./MultiColumn/index.js"
-export { emojiSuggestion } from "./EmojiSuggestion/index.js"
+export { Selection } from './Selection/index.js'
+export { Table, TableCell, TableHeader, TableRow } from './Table/index.js'
+export { HorizontalRule } from './HorizontalRule/index.js'
+export { Heading } from './Heading/index.js'
+export { CodeBlock } from './CodeBlock/index.js'
+export { Document } from './Document/index.js'
+export { TrailingNode } from './TrailingNode/index.js'
+export { SlashCommand } from './SlashCommand/index.js'
+export { FontSize } from './FontSize/index.js'
+export { Figure } from './Figure/index.js'
+export { Figcaption } from './Figcaption/index.js'
+export { BlockquoteFigure } from './BlockquoteFigure/index.js'
+export { Quote } from './BlockquoteFigure/Quote/index.js'
+export { QuoteCaption } from './BlockquoteFigure/QuoteCaption/index.js'
+export { Link } from './Link/index.js'
+export { ImageUpload } from './ImageUpload/index.js'
+export { ImageBlock } from './ImageBlock/index.js'
+export { Columns, Column } from './MultiColumn/index.js'
+export { emojiSuggestion } from './EmojiSuggestion/index.js'

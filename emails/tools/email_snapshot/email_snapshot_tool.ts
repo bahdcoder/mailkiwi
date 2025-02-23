@@ -1,27 +1,27 @@
-import mjml from "mjml"
-import { writeFile } from "node:fs/promises"
-import path from "node:path"
-import puppeteer, { KnownDevices } from "puppeteer"
+import mjml from 'mjml'
+import { writeFile } from 'node:fs/promises'
+import path from 'node:path'
+import puppeteer, { KnownDevices } from 'puppeteer'
 
-import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 
-import { sleep } from "@/utils/sleep.js"
+import { sleep } from '@/utils/sleep.js'
 
 export class EmailSnapshotTool {
-  private name: string = ""
+  private name = ''
   private toDirectory: string = path.resolve(
     process.cwd(),
-    "src",
-    "tests",
-    "snapshots",
-    "emails",
+    'src',
+    'tests',
+    'snapshots',
+    'emails',
   )
 
   constructor(private content: string) {}
 
   private devices = [
-    { name: "desktop", viewport: { width: 1280, height: 920 } },
-    { name: "Pixel 5", device: KnownDevices["Pixel 5"] },
+    { name: 'desktop', viewport: { width: 1280, height: 920 } },
+    { name: 'Pixel 5', device: KnownDevices['Pixel 5'] },
     // {
     //   name: "iPhone 13 Pro Max",
     //   device: KnownDevices["iPhone 13 Pro Max"],
@@ -41,7 +41,7 @@ export class EmailSnapshotTool {
   }
 
   private getSnapshotName(deviceName: string) {
-    return this.name + "-" + deviceName.toLowerCase().replace(" ", "-")
+    return this.name + '-' + deviceName.toLowerCase().replace(' ', '-')
   }
 
   async snapshot() {

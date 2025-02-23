@@ -1,9 +1,9 @@
-import { MiddlewareHandler } from "hono"
+import type { MiddlewareHandler } from 'hono'
 
-import { MustBeAuthenticatedMiddleware } from "@/auth/middleware/must_be_authenticated_middleware.js"
-import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
+import { MustBeAuthenticatedMiddleware } from '@/auth/middleware/must_be_authenticated_middleware.js'
+import { UserSessionMiddleware } from '@/auth/middleware/user_session_middleware.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 const aliases = () =>
   ({

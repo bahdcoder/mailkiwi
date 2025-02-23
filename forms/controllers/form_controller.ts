@@ -1,17 +1,17 @@
-import { CreateFormSchema } from "@/forms/dto/create_form_dto.js"
-import { UpdateFormSchema } from "@/forms/dto/update_form_dto.js"
-import { FormRepository } from "@/forms/repositories/form_repository.js"
+import { CreateFormSchema } from '@/forms/dto/create_form_dto.js'
+import { UpdateFormSchema } from '@/forms/dto/update_form_dto.js'
+import { FormRepository } from '@/forms/repositories/form_repository.js'
 
-import { Audience } from "@/database/database_schema_types.js"
+import type { Audience } from '@/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import { HonoContext } from "@/shared/server/types.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class FormController extends BaseController {
   constructor(
@@ -22,13 +22,13 @@ export class FormController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["POST", "/", this.create.bind(this)],
-        ["GET", "/", this.index.bind(this)],
-        ["PUT", "/:formId", this.update.bind(this)],
-        ["DELETE", "/:formId", this.delete.bind(this)],
+        ['POST', '/', this.create.bind(this)],
+        ['GET', '/', this.index.bind(this)],
+        ['PUT', '/:formId', this.update.bind(this)],
+        ['DELETE', '/:formId', this.delete.bind(this)],
       ],
       {
-        prefix: "audiences/:audienceId/forms",
+        prefix: 'audiences/:audienceId/forms',
       },
     )
 
@@ -38,7 +38,7 @@ export class FormController extends BaseController {
   }
 
   async create(ctx: HonoContext) {
-    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
+    const audience = await this.ensureExists<Audience>(ctx, 'audienceId')
     const payload = await this.validate(ctx, CreateFormSchema, {
       audienceId: audience.id,
     })
@@ -56,22 +56,22 @@ export class FormController extends BaseController {
   }
 
   async ensureFormExists(ctx: HonoContext) {
-    const form = await this.formRepository.forms().findById(ctx.req.param("formId"))
+    const form = await this.formRepository.forms().findById(ctx.req.param('formId'))
 
     if (!form) {
       throw E_VALIDATION_FAILED([
         {
-          message: "Form not found.",
-          field: "formId",
+          message: 'Form not found.',
+          field: 'formId',
         },
       ])
     }
 
-    if (form.audienceId !== ctx.req.param("audienceId")) {
+    if (form.audienceId !== ctx.req.param('audienceId')) {
       throw E_VALIDATION_FAILED([
         {
-          message: "Form not found in audience.",
-          field: "formId",
+          message: 'Form not found in audience.',
+          field: 'formId',
         },
       ])
     }
@@ -81,7 +81,7 @@ export class FormController extends BaseController {
 
   async update(ctx: HonoContext) {
     this.ensureCanManage(ctx)
-    await this.ensureExists<Audience>(ctx, "audienceId")
+    await this.ensureExists<Audience>(ctx, 'audienceId')
 
     const payload = await this.validate(ctx, UpdateFormSchema)
 
@@ -94,7 +94,7 @@ export class FormController extends BaseController {
 
   async delete(ctx: HonoContext) {
     this.ensureCanManage(ctx)
-    await this.ensureExists<Audience>(ctx, "audienceId")
+    await this.ensureExists<Audience>(ctx, 'audienceId')
     const form = await this.ensureFormExists(ctx)
 
     await this.formRepository.delete(form)

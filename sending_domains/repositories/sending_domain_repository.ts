@@ -1,16 +1,16 @@
-import { aliasedTable, and, eq } from "drizzle-orm"
+import { aliasedTable, and, eq } from 'drizzle-orm'
 
 import type {
   InsertSendingDomain,
   SendingDomain,
   SendingSource,
   UpdateSendingDomain,
-} from "@/database/database_schema_types.js"
-import { sendingDomains, sendingSources } from "@/database/schema.js"
-import { belongsTo } from "@/database/utils/relationships.js"
+} from '@/database/database_schema_types.js'
+import { sendingDomains, sendingSources } from '@/database/schema.js'
+import { belongsTo } from '@/database/utils/relationships.js'
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
 export class SendingDomainRepository extends BaseRepository {
   constructor(
@@ -29,7 +29,7 @@ export class SendingDomainRepository extends BaseRepository {
     to: sendingSources,
     primaryKey: sendingSources.id,
     foreignKey: sendingDomains.sendingSourceId,
-    relationName: "sendingSource",
+    relationName: 'sendingSource',
   })
 
   async create(payload: InsertSendingDomain) {
@@ -68,9 +68,7 @@ export class SendingDomainRepository extends BaseRepository {
   }
 
   async getDomainWithDkim(domain: string, refreshCache?: boolean) {
-    const self = this
-
-    const cache = self.cache.namespace("domains")
+    const cache = this.cache.namespace('domains')
 
     if (refreshCache) {
       await cache.clear(domain)
@@ -78,22 +76,22 @@ export class SendingDomainRepository extends BaseRepository {
 
     await cache.clear(domain)
 
-    const primarySendingSource = aliasedTable(sendingSources, "primarySendingSource")
+    const primarySendingSource = aliasedTable(sendingSources, 'primarySendingSource')
 
-    const secondarySendingSource = aliasedTable(sendingSources, "secondarySendingSource")
+    const secondarySendingSource = aliasedTable(sendingSources, 'secondarySendingSource')
 
     const primaryEngageSendingSource = aliasedTable(
       sendingSources,
-      "primaryEngageSendingSource",
+      'primaryEngageSendingSource',
     )
 
     const secondaryEngageSendingSource = aliasedTable(
       sendingSources,
-      "secondaryEngageSendingSource",
+      'secondaryEngageSendingSource',
     )
 
     // get the primary and secondary domains
-    const [sendingSource] = await self.database
+    const [sendingSource] = await this.database
       .select()
       .from(sendingDomains)
       .leftJoin(
@@ -146,9 +144,8 @@ export class SendingDomainRepository extends BaseRepository {
   }
 
   async findByDomain(domain: string) {
-    const self = this
-    return this.cache.namespace("domains").get(domain, async function () {
-      const [sendingDomain] = await self.database
+    return this.cache.namespace('domains').get(domain, async () => {
+      const [sendingDomain] = await this.database
         .select()
         .from(sendingDomains)
         .where(eq(sendingDomains.name, domain))
@@ -158,7 +155,7 @@ export class SendingDomainRepository extends BaseRepository {
     })
   }
 
-  async getSendingDomainForTeam(teamId: string, product: "engage" | "send" = "engage") {
+  async getSendingDomainForTeam(teamId: string, product: 'engage' | 'send' = 'engage') {
     const [sendingDomain] = await this.database
       .select()
       .from(sendingDomains)

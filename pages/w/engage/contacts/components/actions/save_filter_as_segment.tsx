@@ -1,27 +1,27 @@
-import { ArrowUpRightIcon } from "@/pages/components/icons/arrow-up-right.svg.jsx"
-import { InfoCircleIcon } from "@/pages/components/icons/info-circle.svg.jsx"
+import { ArrowUpRightIcon } from '@/pages/components/icons/arrow-up-right.svg.jsx'
+import { InfoCircleIcon } from '@/pages/components/icons/info-circle.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { FilterCondition } from "@/pages/w/engage/contacts/components/filters.jsx"
-import * as Alert from "@kibamail/owly/alert"
-import { Button } from "@kibamail/owly/button"
-import * as Dialog from "@kibamail/owly/dialog"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import * as React from "react"
-import { usePageContext } from "vike-react/usePageContext"
-import { reload } from "vike/client/router"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
+import * as Alert from '@kibamail/owly/alert'
+import { Button } from '@kibamail/owly/button'
+import * as Dialog from '@kibamail/owly/dialog'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import * as React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
+import { reload } from 'vike/client/router'
 
-import { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
+import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
 
-import { Audience } from "@/database/database_schema_types.js"
+import type { Audience } from '@/database/database_schema_types.js'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export interface SaveFilterAsSegmentFormProps extends React.PropsWithChildren {
-  filterGroups: CreateSegmentDto["filterGroups"]
+  filterGroups: CreateSegmentDto['filterGroups']
   onSuccess?: () => void
 }
 
@@ -35,8 +35,8 @@ export function SaveFilterAsSegmentForm({
 
   const { isPending, serverFormProps, ServerErrorsList } =
     useServerFormMutation<Audience>({
-      method: "POST",
-      action: route("create_segment", { audienceId: ctx.audience?.id }),
+      method: 'POST',
+      action: route('create_segment', { audienceId: ctx.audience?.id }),
       onSuccess() {
         ;(reload as any)?.()
         onSuccess?.()
@@ -69,7 +69,7 @@ export function SaveFilterAsSegmentForm({
               name="name"
               id="save-filters-as-segment-name"
               data-testid="save-filters-as-segment-name"
-              placeholder={"Digital marketers, 5 - 10+ years of experience, etc."}
+              placeholder={'Digital marketers, 5 - 10+ years of experience, etc.'}
             >
               <TextField.Label htmlFor="save-filters-as-segment-name">
                 Name
@@ -101,7 +101,7 @@ export function SaveFilterAsSegmentForm({
 
           <Dialog.Footer className="flex justify-between gap-2">
             <Dialog.Close asChild type="button">
-              <Button variant="tertiary" width={"full"} type="button">
+              <Button variant="tertiary" width={'full'} type="button">
                 Close
               </Button>
             </Dialog.Close>

@@ -1,11 +1,11 @@
 import {
   getStyleAttributeDefaultCommands,
   getStyleAttributeDefinition,
-} from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
-import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
-import { BulletList as BaseBulletList } from "@tiptap/extension-bullet-list"
+} from '@/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
+import { getDefaultStylesForNode } from '@/pages/components/composer/themes/default-theme.js'
+import { BulletList as BaseBulletList } from '@tiptap/extension-bullet-list'
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     bullettedList: {
       setButton: (attributes: { href: string }) => ReturnType
@@ -20,7 +20,7 @@ export const BullettedList = BaseBulletList.extend({
   addAttributes() {
     return {
       styles: getStyleAttributeDefinition(
-        getDefaultStylesForNode("unorderedList").styles,
+        getDefaultStylesForNode('unorderedList').styles,
       ),
     }
   },

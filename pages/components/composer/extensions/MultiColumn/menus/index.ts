@@ -1,1 +1,1 @@
-export * from "./ColumnsMenu.js"
+export * from './ColumnsMenu.js'

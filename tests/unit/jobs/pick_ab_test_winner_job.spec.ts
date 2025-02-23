@@ -1,24 +1,24 @@
-import { faker } from "@faker-js/faker"
-import { eq } from "drizzle-orm"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
-import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.js"
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import { SendAbTestBroadcastJob } from '@/broadcasts/jobs/send_ab_test_broadcast_job.js'
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
-import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
+import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
+import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
 
-import { abTestVariants, contacts } from "@/database/schema.js"
+import { abTestVariants, contacts } from '@/database/schema.js'
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { Queue } from '@/shared/queue/queue.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { hoursToSeconds } from "@/utils/dates.js"
-import { container } from "@/utils/typi.js"
+import { hoursToSeconds } from '@/utils/dates.js'
+import { container } from '@/utils/typi.js'
 
-describe("@abtests Pick Test winner", () => {
-  test("picks A/B test winner for click rate winning criteria", async ({ expect }) => {
+describe('@abtests Pick Test winner', () => {
+  test('picks A/B test winner for click rate winning criteria', async ({ expect }) => {
     const database = makeDatabase()
     const redis = makeRedis()
 
@@ -130,12 +130,12 @@ describe("@abtests Pick Test winner", () => {
   })
 
   test.todo(
-    "picks A/B test winner for open rate winning criteria",
+    'picks A/B test winner for open rate winning criteria',
     async ({ expect }) => {},
   )
 
   test.todo(
-    "picks A/B test winner for open rate winning criteria",
+    'picks A/B test winner for open rate winning criteria',
     async ({ expect }) => {},
   )
 })

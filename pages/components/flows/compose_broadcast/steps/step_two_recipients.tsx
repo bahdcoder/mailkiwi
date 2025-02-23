@@ -1,24 +1,24 @@
-import { DisplayedFilterCondition } from "@/pages/components/filters/displayed-filter-conditions.jsx"
-import { useComposeBroadcastContext } from "@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx"
-import { MinusIcon } from "@/pages/components/icons/minus.svg.jsx"
-import { WarningTriangleSolidIcon } from "@/pages/components/icons/warning-triangle-solid.svg.jsx"
-import { EngageBroadcastsComposerPageProps } from "@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx"
-import { FilterCondition } from "@/pages/w/engage/contacts/components/filters.jsx"
-import * as Alert from "@kibamail/owly/alert"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Progress } from "@kibamail/owly/progress"
-import * as SelectField from "@kibamail/owly/select-field"
-import { Spinner } from "@kibamail/owly/spinner"
-import { Text } from "@kibamail/owly/text"
-import React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+import { DisplayedFilterCondition } from '@/pages/components/filters/displayed-filter-conditions.jsx'
+import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { MinusIcon } from '@/pages/components/icons/minus.svg.jsx'
+import { WarningTriangleSolidIcon } from '@/pages/components/icons/warning-triangle-solid.svg.jsx'
+import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
+import type { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
+import * as Alert from '@kibamail/owly/alert'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Progress } from '@kibamail/owly/progress'
+import * as SelectField from '@kibamail/owly/select-field'
+import { Spinner } from '@kibamail/owly/spinner'
+import { Text } from '@kibamail/owly/text'
+import React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
 export function StepTwoRecipients() {
   const ctx = usePageContext()
 
   const { formState, setFormState, getBroadcastRecipientsCount } =
-    useComposeBroadcastContext("StepTwoRecipients")
+    useComposeBroadcastContext('StepTwoRecipients')
 
   const pageProps = ctx.pageProps as EngageBroadcastsComposerPageProps
 
@@ -86,7 +86,7 @@ export function StepTwoRecipients() {
         <Progress value={73} />
         <div className="w-full flex items-center justify-between mt-2">
           <Text size="md" className="kb-content-tertiary flex items-center">
-            Using {getBroadcastRecipientsCount?.data?.total} email credits{" "}
+            Using {getBroadcastRecipientsCount?.data?.total} email credits{' '}
             {getBroadcastRecipientsCount.isLoading ? <Spinner className="ml-1" /> : null}
           </Text>
           <Text size="md" className="kb-content-tertiary">

@@ -1,17 +1,17 @@
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 function ForgotPasswordPage() {
   const { serverFormProps, error, isSuccess } = useServerFormMutation({
-    action: route("auth_passwords_forgot"),
+    action: route('auth_passwords_forgot'),
   })
 
   return (
@@ -22,10 +22,10 @@ function ForgotPasswordPage() {
       {isSuccess ? (
         <Text className="kb-content-tertiary mt-2">
           We received your request to reset your email. If an account exists with the
-          email{" "}
+          email{' '}
           <span className="kb-content-secondary font-semibold">
-            {"bahdcoder@gmail.com"}
-          </span>{" "}
+            {'bahdcoder@gmail.com'}
+          </span>{' '}
           you
           {"'"}ll receive an email with a password reset link soon.
         </Text>
@@ -37,8 +37,8 @@ function ForgotPasswordPage() {
       )}
 
       {isSuccess ? (
-        <Button className="mt-10" width={"full"} variant="secondary" asChild>
-          <a href={route("auth_login")}>Back to login</a>
+        <Button className="mt-10" width={'full'} variant="secondary" asChild>
+          <a href={route('auth_login')}>Back to login</a>
         </Button>
       ) : null}
 
@@ -59,12 +59,12 @@ function ForgotPasswordPage() {
           </TextField.Root>
 
           <div className="grid grid-cols-1 gap-2 w-full mt-6">
-            <Button type="submit" width={"full"}>
+            <Button type="submit" width={'full'}>
               Continue
             </Button>
 
             <Button variant="tertiary" width="full" asChild>
-              <a href={route("auth_login")}>Back to login</a>
+              <a href={route('auth_login')}>Back to login</a>
             </Button>
           </div>
         </ServerForm>

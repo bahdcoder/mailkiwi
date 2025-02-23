@@ -1,6 +1,6 @@
 export const cssVar = (name: string, value?: string) => {
   let currentName = name
-  if (name.substring(0, 2) !== "--") {
+  if (name.substring(0, 2) !== '--') {
     currentName = `--${currentName}`
   }
 

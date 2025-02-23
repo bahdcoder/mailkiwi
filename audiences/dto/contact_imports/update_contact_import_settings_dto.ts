@@ -1,4 +1,4 @@
-import { inArray } from "drizzle-orm"
+import { inArray } from 'drizzle-orm'
 import {
   type InferInput,
   array,
@@ -15,20 +15,20 @@ import {
   pipeAsync,
   record,
   string,
-} from "valibot"
+} from 'valibot'
 
-import { tags } from "@/database/schema.js"
+import { tags } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 const PropertiesObjectSchema = record(
   string(),
   object({
     id: string(),
     label: string(),
-    type: picklist(["boolean", "float", "text", "date"]),
+    type: picklist(['boolean', 'float', 'text', 'date']),
   }),
-  "Please provide a valid object of custom properties.",
+  'Please provide a valid object of custom properties.',
 )
 
 export const UpdateContactImportSettingsSchema = objectAsync({
@@ -49,12 +49,12 @@ export const UpdateContactImportSettingsSchema = objectAsync({
       })
 
       return existingTags.length === input.length
-    }, "One or more of the provided tag Ids is invalid."),
+    }, 'One or more of the provided tag Ids is invalid.'),
   ), // existing tags in the database
   propertiesMap: objectAsync({
     firstName: optional(string()),
     lastName: optional(string()),
-    email: pipe(string("Please match the email property."), nonEmpty()),
+    email: pipe(string('Please match the email property.'), nonEmpty()),
     customProperties: optional(PropertiesObjectSchema),
   }),
 })

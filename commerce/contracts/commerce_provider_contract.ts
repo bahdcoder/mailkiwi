@@ -1,4 +1,4 @@
-import { Product } from "@/database/database_schema_types.js"
+import type { Product } from '@/database/database_schema_types.js'
 
 export interface PayoutInformation {
   bankCode: string

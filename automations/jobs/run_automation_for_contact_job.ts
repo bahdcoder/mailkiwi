@@ -1,23 +1,23 @@
-import { RunAutomationStepForContactJob } from "./run_automation_step_for_contact_job.js"
-import { and, eq } from "drizzle-orm"
+import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.js'
+import { and, eq } from 'drizzle-orm'
 
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
 
-import { AutomationRepository } from "@/automations/repositories/automation_repository.js"
+import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
 
 import {
   type TRIGGER_CONFIGURATION,
   automationSteps,
   contactAutomationSteps,
   contacts,
-} from "@/database/schema.js"
+} from '@/database/schema.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { Queue } from "@/shared/queue/queue.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { Queue } from '@/shared/queue/queue.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface RunAutomationForContactJobPayload {
   automationId: string
@@ -26,7 +26,7 @@ export interface RunAutomationForContactJobPayload {
 
 export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJobPayload> {
   static get id() {
-    return "AUTOMATIONS::RUN_AUTOMATION_FOR_CONTACT"
+    return 'AUTOMATIONS::RUN_AUTOMATION_FOR_CONTACT'
   }
 
   static get queue() {
@@ -42,7 +42,7 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
 
     const trigger = await database.query.automationSteps.findFirst({
       where: and(
-        eq(automationSteps.type, "TRIGGER"),
+        eq(automationSteps.type, 'TRIGGER'),
         eq(automationSteps.automationId, payload.automationId),
       ),
     })
@@ -88,7 +88,7 @@ export class RunAutomationForContactJob extends BaseJob<RunAutomationForContactJ
       await trx.insert(contactAutomationSteps).values({
         contactId: payload.contactId,
         automationStepId: nextAutomationStep.id,
-        status: "COMPLETED",
+        status: 'COMPLETED',
       })
 
       await Queue.automations().add(RunAutomationStepForContactJob.id, {

@@ -1,25 +1,25 @@
-import { faker } from "@faker-js/faker"
-import { randomBytes } from "crypto"
-import { eq } from "drizzle-orm"
-import { describe, expect, it } from "vitest"
+import { faker } from '@faker-js/faker'
+import { randomBytes } from 'crypto'
+import { eq } from 'drizzle-orm'
+import { describe, expect, it } from 'vitest'
 
-import { PasswordResetRepository } from "@/auth/password_resets/repositories/password_reset_repository.js"
+import { PasswordResetRepository } from '@/auth/password_resets/repositories/password_reset_repository.js'
 
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { makeRequest } from "@/tests/utils/http.js"
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { makeRequest } from '@/tests/utils/http.js'
 
-import { passwordResets } from "@/database/schema.js"
+import { passwordResets } from '@/database/schema.js'
 
-import { route } from "@/shared/routes/route_aliases.js"
-import { TokenGenerator } from "@/shared/tokens/token_generator.js"
+import { route } from '@/shared/routes/route_aliases.js'
+import { TokenGenerator } from '@/shared/tokens/token_generator.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@auth password resets", () => {
-  it("a user can request and reset their password", async ({ expect }) => {
+describe('@auth password resets', () => {
+  it('a user can request and reset their password', async ({ expect }) => {
     const { user } = await createUser()
 
-    const passwordResetToken = randomBytes(32).toString("hex")
+    const passwordResetToken = randomBytes(32).toString('hex')
 
     container.fake(TokenGenerator, {
       generate() {
@@ -27,8 +27,8 @@ describe("@auth password resets", () => {
       },
     })
 
-    const response = await makeRequest("/auth/passwords/forgot", {
-      method: "POST",
+    const response = await makeRequest('/auth/passwords/forgot', {
+      method: 'POST',
       body: {
         email: user.email,
       },
@@ -51,7 +51,7 @@ describe("@auth password resets", () => {
     const resetResponse = await makeRequest(
       `/auth/passwords/reset/${passwordResetToken}`,
       {
-        method: "POST",
+        method: 'POST',
         body: {
           email: user.email,
           password: newPassword,
@@ -66,8 +66,8 @@ describe("@auth password resets", () => {
 
     expect(updatedUserPasswordResets).toHaveLength(0)
 
-    const loginResponse = await makeRequest("/auth/login/", {
-      method: "POST",
+    const loginResponse = await makeRequest('/auth/login/', {
+      method: 'POST',
       body: {
         email: user.email,
         password: newPassword,
@@ -77,8 +77,8 @@ describe("@auth password resets", () => {
 
     const json = await loginResponse.json()
 
-    expect(json.type).toEqual("redirect")
-    expect(json.payload.path).toEqual(route("dashboard"))
+    expect(json.type).toEqual('redirect')
+    expect(json.payload.path).toEqual(route('dashboard'))
     expect(json.payload.status).toEqual(302)
   })
 })

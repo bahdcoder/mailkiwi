@@ -1,9 +1,9 @@
-import { Page } from "@playwright/test"
+import type { Page } from '@playwright/test'
 
 export class BaseRolePage {
   // offscreen-sidebar-dropdown-menu-trigger
   public readonly teamSwitchDropdownMenuTrigger = this.page.getByTestId(
-    "offscreen-sidebar-dropdown-menu-trigger",
+    'offscreen-sidebar-dropdown-menu-trigger',
   )
 
   public getTeamLink(teamId: string) {

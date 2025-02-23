@@ -1,18 +1,16 @@
-import { useApplicationLayoutContext } from "@/pages/components/dashboard/layout/application-layout-context.jsx"
-import { FooterMenuItems } from "@/pages/components/dashboard/layout/footer-menu-items.jsx"
-import { SearchBoxTrigger } from "@/pages/components/dashboard/layout/sidebar/search-box-trigger.jsx"
-import { WorkspacesDropdownMenu } from "@/pages/components/dashboard/layout/workspace-dropdown-menu.jsx"
-import { SidebarExpandIcon } from "@/pages/components/icons/sidebar-expand.svg.jsx"
-import React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+import { useApplicationLayoutContext } from '@/pages/components/dashboard/layout/application-layout-context.jsx'
+import { FooterMenuItems } from '@/pages/components/dashboard/layout/footer-menu-items.jsx'
+import { SearchBoxTrigger } from '@/pages/components/dashboard/layout/sidebar/search-box-trigger.jsx'
+import { WorkspacesDropdownMenu } from '@/pages/components/dashboard/layout/workspace-dropdown-menu.jsx'
+import { SidebarExpandIcon } from '@/pages/components/icons/sidebar-expand.svg.jsx'
+import React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
 export function Topbar() {
   const ctx = usePageContext()
 
-  const [topbarVisible, setTopbarVisible] = React.useState(function () {
-    return ctx.isMobile
-  })
-  const { sidebar, setSidebar } = useApplicationLayoutContext("Topbar")
+  const [topbarVisible, setTopbarVisible] = React.useState(() => ctx.isMobile)
+  const { sidebar, setSidebar } = useApplicationLayoutContext('Topbar')
 
   function setSidebarOnScreen() {
     if (ctx.isMobile) {
@@ -24,23 +22,20 @@ export function Topbar() {
     setSidebar((current) => ({ ...current, offscreen: false }))
   }
 
-  React.useEffect(
-    function () {
-      const timer = setTimeout(() => {
-        setTopbarVisible(sidebar.offscreen)
-      }, 200)
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setTopbarVisible(sidebar.offscreen)
+    }, 200)
 
-      return () => clearTimeout(timer)
-    },
-    [sidebar.offscreen],
-  )
+    return () => clearTimeout(timer)
+  }, [sidebar.offscreen])
 
   return (
     <nav
       className="w-full lg:h-16 box-border px-2 py-4 flex items-center relative"
       style={{
-        transition: "margin-top 300ms cubic-bezier(0.4, 0, 0.2, 1)",
-        marginTop: topbarVisible ? `0px` : "-64px",
+        transition: 'margin-top 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        marginTop: topbarVisible ? `0px` : '-64px',
       }}
     >
       <button

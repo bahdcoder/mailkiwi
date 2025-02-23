@@ -1,4 +1,4 @@
-import { HonoContext } from "@/shared/server/types.js"
+import type { HonoContext } from '@/shared/server/types.js'
 
 export class GetPagePropsAction {
   async handle(ctx: HonoContext) {
@@ -7,13 +7,13 @@ export class GetPagePropsAction {
     const routePath = ctx.req.routePath
 
     const defaultPageProps = {
-      user: ctx.get("user"),
-      team: ctx.get("team"),
+      user: ctx.get('user'),
+      team: ctx.get('team'),
     }
 
     switch (path) {
-      case "/about":
-      case "/about/index.pageContext.json":
+      case '/about':
+      case '/about/index.pageContext.json':
         return {
           ...defaultPageProps,
           defaultCount: 102,

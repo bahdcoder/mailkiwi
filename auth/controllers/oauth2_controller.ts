@@ -1,23 +1,23 @@
-import { and, eq } from "drizzle-orm"
-import { setCookie } from "hono/cookie"
+import { and, eq } from 'drizzle-orm'
+import { setCookie } from 'hono/cookie'
 
-import { GithubDriver } from "@/auth/oauth2_drivers/github_driver.js"
-import { GoogleDriver } from "@/auth/oauth2_drivers/google_driver.js"
-import { Oauth2AccountsRepository } from "@/auth/users/repositories/oauth2_accounts_repository.js"
-import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+import { GithubDriver } from '@/auth/oauth2_drivers/github_driver.js'
+import { GoogleDriver } from '@/auth/oauth2_drivers/google_driver.js'
+import { Oauth2AccountsRepository } from '@/auth/users/repositories/oauth2_accounts_repository.js'
+import { UserRepository } from '@/auth/users/repositories/user_repository.js'
 
-import { oauth2Accounts } from "@/database/schema.js"
+import { oauth2Accounts } from '@/database/schema.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { VikeController } from "@/shared/controllers/vike_controller.js"
-import { route } from "@/shared/routes/route_aliases.js"
-import { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { VikeController } from '@/shared/controllers/vike_controller.js'
+import { route } from '@/shared/routes/route_aliases.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 type Oauth2Params = {
-  action: "login" | "register"
-  provider: "github" | "google"
+  action: 'login' | 'register'
+  provider: 'github' | 'google'
 }
 
 export class Oauth2Controller extends VikeController {
@@ -30,13 +30,13 @@ export class Oauth2Controller extends VikeController {
 
     this.app.defineRoutes(
       [
-        ["GET", "/:action/oauth2/:provider/authorize", this.authorize],
+        ['GET', '/:action/oauth2/:provider/authorize', this.authorize],
 
         // callback
-        ["GET", "/oauth2/:provider/callback", this.callback],
+        ['GET', '/oauth2/:provider/callback', this.callback],
       ],
       {
-        prefix: "auth",
+        prefix: 'auth',
         middleware: [],
       },
     )
@@ -49,7 +49,7 @@ export class Oauth2Controller extends VikeController {
     } as const
   }
 
-  protected OAUTH_2_ACTION_COOKIE_NAME = "oauth2_action"
+  protected OAUTH_2_ACTION_COOKIE_NAME = 'oauth2_action'
 
   callback = async (ctx: HonoContext) => {
     const params = ctx.req.param() as Oauth2Params
@@ -63,10 +63,10 @@ export class Oauth2Controller extends VikeController {
         this.flash(ctx, {
           title: `We coudn't find a verified email on your ${params.provider} account.`,
           description: `Please try again or use another authentication method.`,
-          variant: "error",
+          variant: 'error',
         })
         return this.response(ctx)
-          .redirect(route(params.action === "login" ? "auth_login" : "auth_register"))
+          .redirect(route(params.action === 'login' ? 'auth_login' : 'auth_register'))
           .send()
       }
 
@@ -82,15 +82,15 @@ export class Oauth2Controller extends VikeController {
         this.userRepository.findByEmail(response.user.email),
       ])
 
-      if (response.action === "login") {
+      if (response.action === 'login') {
         if (!accountExists || !userExists) {
           this.flash(ctx, {
             title: `We could not find a user with this ${params.provider} account.`,
             description: `Please register a new account if you haven't done so before.`,
-            variant: "error",
+            variant: 'error',
           })
 
-          return this.response(ctx).redirect(route("auth_login")).send()
+          return this.response(ctx).redirect(route('auth_login')).send()
         }
 
         // TODO: Allow account linking here by creating a unique session, and asking user to confirm linking by providing their password. Here's now it will work:
@@ -104,24 +104,24 @@ export class Oauth2Controller extends VikeController {
         if (userExists && !accountExists) {
           this.flash(ctx, {
             title: `We found your account, but you previously logged in using ${userExists?.lastLoggedInProvider}. Please login with ${userExists?.lastLoggedInProvider} instead.`,
-            variant: "error",
+            variant: 'error',
           })
-          return this.response(ctx).redirect(route("auth_login")).send()
+          return this.response(ctx).redirect(route('auth_login')).send()
         }
 
         await this.session.createForUser(ctx, {
           userId: userExists?.id,
         })
 
-        return this.response(ctx).redirect(route("dashboard")).send()
+        return this.response(ctx).redirect(route('dashboard')).send()
       }
 
       if (accountExists || userExists) {
         this.flash(ctx, {
           title: `A user with this account already exists. Are you trying to login instead ?`,
-          variant: "error",
+          variant: 'error',
         })
-        return this.response(ctx).redirect(route("auth_register")).send()
+        return this.response(ctx).redirect(route('auth_register')).send()
       }
 
       const user = await this.userRepository.createWithOauth2Account(response)
@@ -130,16 +130,16 @@ export class Oauth2Controller extends VikeController {
         userId: user.id,
       })
 
-      return this.response(ctx).redirect(route("auth_register_profile")).send()
+      return this.response(ctx).redirect(route('auth_register_profile')).send()
     } catch (error) {
       d({ error })
       this.flash(ctx, {
         title: `Failed to authenticate with ${params.provider}.`,
-        description: "Please try again or use another authentication method.",
-        variant: "error",
+        description: 'Please try again or use another authentication method.',
+        variant: 'error',
       })
       return this.response(ctx)
-        .redirect(route(params.action === "login" ? "auth_login" : "auth_register"))
+        .redirect(route(params.action === 'login' ? 'auth_login' : 'auth_register'))
         .send()
     }
   }
@@ -152,9 +152,11 @@ export class Oauth2Controller extends VikeController {
     const redirectUrl = await client.getRedirectUrl()
 
     setCookie(ctx, client.OAUTH2_STATE_COOKIE_NAME, client.state, {
-      sameSite: "lax",
+      sameSite: 'lax',
     })
-    setCookie(ctx, client.OAUTH_2_ACTION_COOKIE_NAME, params.action, { sameSite: "lax" })
+    setCookie(ctx, client.OAUTH_2_ACTION_COOKIE_NAME, params.action, {
+      sameSite: 'lax',
+    })
 
     return ctx.redirect(redirectUrl)
   }

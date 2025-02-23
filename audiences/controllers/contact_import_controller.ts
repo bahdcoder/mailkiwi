@@ -1,17 +1,17 @@
-import { CreateContactImportAction } from "@/audiences/actions/contact_imports/create_contact_import_action.js"
-import { UpdateContactImportSettingsAction } from "@/audiences/actions/contact_imports/update_contact_import_settings_action.js"
-import { UpdateContactImportSettingsSchema } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
+import { CreateContactImportAction } from '@/audiences/actions/contact_imports/create_contact_import_action.js'
+import { UpdateContactImportSettingsAction } from '@/audiences/actions/contact_imports/update_contact_import_settings_action.js'
+import { UpdateContactImportSettingsSchema } from '@/audiences/dto/contact_imports/update_contact_import_settings_dto.js'
+import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
 
-import { Audience } from "@/database/database_schema_types.js"
+import type { Audience } from '@/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import type { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class ContactImportController extends BaseController {
   constructor(
@@ -22,11 +22,11 @@ export class ContactImportController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["POST", "/", this.create.bind(this)],
-        ["PUT", "/:importId", this.update.bind(this)],
+        ['POST', '/', this.create.bind(this)],
+        ['PUT', '/:importId', this.update.bind(this)],
       ],
       {
-        prefix: "audiences/:audienceId/imports",
+        prefix: 'audiences/:audienceId/imports',
       },
     )
   }
@@ -34,11 +34,11 @@ export class ContactImportController extends BaseController {
   async create(ctx: HonoContext) {
     const form = await ctx.req.formData()
 
-    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
+    const audience = await this.ensureExists<Audience>(ctx, 'audienceId')
 
     const team = this.ensureBelongsToTeam(ctx, audience)
 
-    const file = form.get("file") as File
+    const file = form.get('file') as File
 
     const { id, propertiesMap, headerCounts, headerSamples } = await container
       .make(CreateContactImportAction)
@@ -50,7 +50,7 @@ export class ContactImportController extends BaseController {
   }
 
   async update(ctx: HonoContext) {
-    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
+    const audience = await this.ensureExists<Audience>(ctx, 'audienceId')
 
     this.ensureBelongsToTeam(ctx, audience)
     const contactImport = await this.ensureContactImportExists(ctx)
@@ -63,7 +63,7 @@ export class ContactImportController extends BaseController {
   }
 
   private async ensureContactImportExists(ctx: HonoContext) {
-    const importId = ctx.req.param("importId")
+    const importId = ctx.req.param('importId')
     const contactImport = await this.contactImportRepository.findById(importId)
 
     if (!contactImport)

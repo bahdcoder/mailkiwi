@@ -1,14 +1,14 @@
-import { redirect } from "vike/abort"
-import { PageContext } from "vike/types"
+import { redirect } from 'vike/abort'
+import type { PageContext } from 'vike/types'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export function guard(ctx: PageContext) {
   if (!ctx.user) {
-    throw redirect(route("auth_login"))
+    throw redirect(route('auth_login'))
   }
 
   if (!ctx.team) {
-    throw redirect(route("auth_register_profile"))
+    throw redirect(route('auth_register_profile'))
   }
 }

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 import {
   type InferInput,
   array,
@@ -14,21 +14,21 @@ import {
   pipeAsync,
   string,
   uuid,
-} from "valibot"
+} from 'valibot'
 
-import { audiences } from "@/database/schema.js"
+import { audiences } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 export const QuestionEnabledConditionSchema = object({
   questionId: pipe(string(), uuid()),
   answer: string(),
-  operator: picklist(["equal", "includes"]),
+  operator: picklist(['equal', 'includes']),
 })
 
-export const FieldType = picklist(["email", "text", "number", "date", "select"])
+export const FieldType = picklist(['email', 'text', 'number', 'date', 'select'])
 
-export const Appearance = picklist(["popover", "inline", "floating", "fullscreen"])
+export const Appearance = picklist(['popover', 'inline', 'floating', 'fullscreen'])
 
 export const AutoTaggingAutomationSchema = object({
   option: string(),
@@ -47,7 +47,7 @@ export const FieldSchema = object({
 
 export const CreateFormObjectSchema = object({
   name: string(),
-  type: picklist(["signup", "survey"]),
+  type: picklist(['signup', 'survey']),
   fields: pipe(array(FieldSchema), minLength(1), maxLength(10)),
   appearance: Appearance,
   audienceId: pipe(string(), uuid()),
@@ -56,9 +56,9 @@ export const CreateFormObjectSchema = object({
 export function checkIfSurveyHasOnlySelectTypes(
   form: InferInput<typeof CreateFormObjectSchema>,
 ) {
-  if (form.type === "survey") {
+  if (form.type === 'survey') {
     for (const question of form.fields) {
-      if (question.type !== "select") {
+      if (question.type !== 'select') {
         return false
       }
     }
@@ -83,11 +83,11 @@ export function checkIfFormSignupHasEmailField(
     return true
   }
 
-  if (form.type === "survey") {
+  if (form.type === 'survey') {
     return true
   }
 
-  const emailField = form.fields.find((field) => field.type === "email")
+  const emailField = form.fields.find((field) => field.type === 'email')
 
   return emailField !== undefined
 }
@@ -99,7 +99,7 @@ export const surveyHasOneSelectTypesCheck = check(
 
 export const firstQuestionHasNoConditionsCheck = check(
   checkIfFirstQuestionsHasAnyConditions,
-  "The first question cannot have any conditions.",
+  'The first question cannot have any conditions.',
 )
 
 export const signupFormMustHaveAnEmailFieldCheck = check(
@@ -107,39 +107,40 @@ export const signupFormMustHaveAnEmailFieldCheck = check(
   'The form must have an "email" field if the type is "signup".',
 )
 
-export const signUpFormMustHaveKnownFieldsCheck = checkAsync(async function (
-  form: InferInput<typeof CreateFormObjectSchema>,
-) {
-  if (form.type !== "signup") {
-    return true
-  }
+export const signUpFormMustHaveKnownFieldsCheck = checkAsync(
+  async (form: InferInput<typeof CreateFormObjectSchema>) => {
+    if (form.type !== 'signup') {
+      return true
+    }
 
-  const database = makeDatabase()
+    const database = makeDatabase()
 
-  const [audience] = await database
-    .select({ knownProperties: audiences.knownProperties })
-    .from(audiences)
-    .where(eq(audiences.id, form.audienceId))
+    const [audience] = await database
+      .select({ knownProperties: audiences.knownProperties })
+      .from(audiences)
+      .where(eq(audiences.id, form.audienceId))
 
-  if (!audience) {
-    return false
-  }
+    if (!audience) {
+      return false
+    }
 
-  const formFields = form.fields
+    const formFields = form.fields
 
-  const allowedFields = [
-    "email",
-    "firstname",
-    "lastname",
-    ...(audience.knownProperties?.map((property) => property.id) ?? []),
-  ]
+    const allowedFields = [
+      'email',
+      'firstname',
+      'lastname',
+      ...(audience.knownProperties?.map((property) => property.id) ?? []),
+    ]
 
-  const hasUnknownFields = formFields.some(
-    (field) => !allowedFields.includes(field.id as string),
-  )
+    const hasUnknownFields = formFields.some(
+      (field) => !allowedFields.includes(field.id as string),
+    )
 
-  return !hasUnknownFields
-}, 'The sign up form can only have "email", "firstname", "lastname", and any of your known custom fields')
+    return !hasUnknownFields
+  },
+  'The sign up form can only have "email", "firstname", "lastname", and any of your known custom fields',
+)
 
 // export const autoTaggingTagsAreAllValidCheck = check()
 

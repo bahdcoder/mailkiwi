@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 import {
   type InferInput,
   checkAsync,
@@ -8,17 +8,17 @@ import {
   pipeAsync,
   regex,
   string,
-} from "valibot"
+} from 'valibot'
 
-import { websites } from "@/database/schema.js"
+import { websites } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 export const AddCustomWebsiteDomainSchema = objectAsync({
   domain: pipeAsync(
     string(),
     regex(/^(?!:\/\/)([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/),
-    checkAsync(async function (domain) {
+    checkAsync(async (domain) => {
       const database = makeDatabase()
 
       const exists = await database
@@ -28,7 +28,7 @@ export const AddCustomWebsiteDomainSchema = objectAsync({
         .limit(1)
 
       return exists.length === 0
-    }, "A website with this domain already exists. Please choose another domain for your newsletter website."),
+    }, 'A website with this domain already exists. Please choose another domain for your newsletter website.'),
   ),
 })
 

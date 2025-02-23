@@ -1,13 +1,13 @@
-import { IssueSSLCertificateForWebsiteJob } from "@/websites/jobs/issue_ssl_certificate_for_website_job.js"
-import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
+import { IssueSSLCertificateForWebsiteJob } from '@/websites/jobs/issue_ssl_certificate_for_website_job.js'
+import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
 
-import { DnsWebsiteResolverTool } from "@/tools/dns/dns_website_resolver_tool.js"
+import { DnsWebsiteResolverTool } from '@/tools/dns/dns_website_resolver_tool.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { Queue } from "@/shared/queue/queue.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { Queue } from '@/shared/queue/queue.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface CheckWebsiteDomainDnsConfigurationPayload {
   websiteId: string
@@ -15,7 +15,7 @@ export interface CheckWebsiteDomainDnsConfigurationPayload {
 
 export class CheckWebsiteDomainDnsConfiguration extends BaseJob<CheckWebsiteDomainDnsConfigurationPayload> {
   static get id() {
-    return "WEBSITES::CHECK_WEBSITE_DOMAIN_DNS_CONFIGURATION"
+    return 'WEBSITES::CHECK_WEBSITE_DOMAIN_DNS_CONFIGURATION'
   }
 
   static get queue() {
@@ -28,13 +28,13 @@ export class CheckWebsiteDomainDnsConfiguration extends BaseJob<CheckWebsiteDoma
 
     if (!website) {
       return this.done(
-        "The website was not found. Might have been deleted by the user before the job was run.",
+        'The website was not found. Might have been deleted by the user before the job was run.',
       )
     }
 
     if (!website.websiteDomain || !website.websiteDomainCnameValue) {
       return this.done(
-        "Custom website domain not configured. Might have been deleted by the user before the job was run.",
+        'Custom website domain not configured. Might have been deleted by the user before the job was run.',
       )
     }
 
@@ -57,7 +57,7 @@ export class CheckWebsiteDomainDnsConfiguration extends BaseJob<CheckWebsiteDoma
 
     await Queue.websites().add(IssueSSLCertificateForWebsiteJob.id, payload)
 
-    return this.done("Cname found, and SSL certificate issuing job scheduled.")
+    return this.done('Cname found, and SSL certificate issuing job scheduled.')
   }
 
   async failed() {}

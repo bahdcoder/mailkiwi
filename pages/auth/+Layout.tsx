@@ -1,14 +1,14 @@
-import { AgreeToTermsAndPolicy } from "@/pages/components/auth/agree-to-terms-and-policy.jsx"
-import { CheckCircleSolidIcon } from "@/pages/components/icons/check-circle-solid.svg.jsx"
-import { Text } from "@kibamail/owly/text"
-import React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+import { AgreeToTermsAndPolicy } from '@/pages/components/auth/agree-to-terms-and-policy.jsx'
+import { CheckCircleSolidIcon } from '@/pages/components/icons/check-circle-solid.svg.jsx'
+import { Text } from '@kibamail/owly/text'
+import type React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
-interface AuthLayoutProps {}
+type AuthLayoutProps = {}
 
-const PASSWORD_RESET_PATHS = "/passwords"
+const PASSWORD_RESET_PATHS = '/passwords'
 
-const WELCOME_PATHS = "register/profile"
+const WELCOME_PATHS = 'register/profile'
 
 function PasswordResetsFlowLayout({
   children,

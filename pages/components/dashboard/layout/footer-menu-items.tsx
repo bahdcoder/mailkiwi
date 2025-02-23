@@ -1,5 +1,5 @@
-import { SettingsIcon } from "@/pages/components/icons/settings.svg.jsx"
-import { Text } from "@kibamail/owly/text"
+import { SettingsIcon } from '@/pages/components/icons/settings.svg.jsx'
+import { Text } from '@kibamail/owly/text'
 
 export function FooterMenuItems() {
   return (

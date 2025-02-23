@@ -1,9 +1,9 @@
-import { Icon } from "../../ui/Icon.jsx"
-import { Toolbar } from "../../ui/Toolbar.jsx"
-import { ColorButton } from "./ColorButton.jsx"
-import { themeColors } from "@/pages/components/tiptap/constants.js"
-import { useCallback, useState } from "react"
-import { HexColorPicker } from "react-colorful"
+import { Icon } from '../../ui/Icon.jsx'
+import { Toolbar } from '../../ui/Toolbar.jsx'
+import { ColorButton } from './ColorButton.jsx'
+import { themeColors } from '@/pages/components/tiptap/constants.js'
+import { useCallback, useState } from 'react'
+import { HexColorPicker } from 'react-colorful'
 
 export type ColorPickerProps = {
   color?: string
@@ -12,7 +12,7 @@ export type ColorPickerProps = {
 }
 
 export const ColorPicker = ({ color, onChange, onClear }: ColorPickerProps) => {
-  const [colorInputValue, setColorInputValue] = useState(color || "")
+  const [colorInputValue, setColorInputValue] = useState(color || '')
 
   const handleColorUpdate = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setColorInputValue(event.target.value)
@@ -23,7 +23,7 @@ export const ColorPicker = ({ color, onChange, onClear }: ColorPickerProps) => {
 
     if (!isCorrectColor) {
       if (onChange) {
-        onChange("")
+        onChange('')
       }
 
       return
@@ -36,7 +36,7 @@ export const ColorPicker = ({ color, onChange, onClear }: ColorPickerProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <HexColorPicker className="w-full" color={color || ""} onChange={onChange} />
+      <HexColorPicker className="w-full" color={color || ''} onChange={onChange} />
       <input
         type="text"
         className="w-full p-2 text-black bg-white border rounded dark:bg-black dark:text-white border-neutral-200 dark:border-neutral-800 focus:outline-1 focus:ring-0 focus:outline-neutral-300 dark:focus:outline-neutral-700"

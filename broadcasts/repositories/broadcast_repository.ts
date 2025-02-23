@@ -1,24 +1,24 @@
-import { eq, sql } from "drizzle-orm"
-import { alias } from "drizzle-orm/mysql-core"
+import { eq, sql } from 'drizzle-orm'
+import { alias } from 'drizzle-orm/mysql-core'
 
-import type { CreateBroadcastDto } from "@/broadcasts/dto/create_broadcast_dto.js"
+import type { CreateBroadcastDto } from '@/broadcasts/dto/create_broadcast_dto.js'
 
-import type { DrizzleClient } from "@/database/client.js"
+import type { DrizzleClient } from '@/database/client.js'
 import type {
   BroadcastWithEmailContent,
   EmailContent,
   UpdateSetBroadcastInput,
-} from "@/database/database_schema_types.js"
+} from '@/database/database_schema_types.js'
 import {
   abTestVariants,
   audiences,
   broadcasts,
   emailContents,
   segments,
-} from "@/database/schema.js"
+} from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
 export class BroadcastRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -60,7 +60,7 @@ export class BroadcastRepository extends BaseRepository {
   }
 
   async findByIdWithAbTestVariants(id: string) {
-    const broadcastEmailContents = alias(emailContents, "broadcastEmailContents")
+    const broadcastEmailContents = alias(emailContents, 'broadcastEmailContents')
     const results = await this.database
       .select({
         broadcast: broadcasts,

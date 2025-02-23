@@ -2,9 +2,7 @@
 
 .w-composer-inter {
   font-family: Inter, sans-serif;
-  font-feature-settings:
-    "liga" 1,
-    "calt" 1;
+  font-feature-settings: "liga" 1, "calt" 1;
 }
 
 .w-composer-content {

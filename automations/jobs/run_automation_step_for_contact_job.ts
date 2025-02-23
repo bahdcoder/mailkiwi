@@ -1,16 +1,16 @@
-import { AutomationStepRunner } from "../utils/automation_step_runners/automation_step_runner.js"
-import { and, eq } from "drizzle-orm"
+import { AutomationStepRunner } from '../utils/automation_step_runners/automation_step_runner.js'
+import { and, eq } from 'drizzle-orm'
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.js"
+import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
 
-import { contactAutomationSteps } from "@/database/schema.js"
+import { contactAutomationSteps } from '@/database/schema.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface RunAutomationStepForContactJobPayload {
   automationStepId: string
@@ -19,7 +19,7 @@ export interface RunAutomationStepForContactJobPayload {
 
 export class RunAutomationStepForContactJob extends BaseJob<RunAutomationStepForContactJobPayload> {
   static get id() {
-    return "AUTOMATIONS::RUN_AUTOMATION_STEP_FOR_CONTACT"
+    return 'AUTOMATIONS::RUN_AUTOMATION_STEP_FOR_CONTACT'
   }
 
   static get queue() {

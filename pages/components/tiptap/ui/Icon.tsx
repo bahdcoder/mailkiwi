@@ -1,6 +1,6 @@
-import { cn } from "@/pages/components/tiptap/utils/index.js"
-import { icons } from "lucide-react"
-import { memo } from "react"
+import { cn } from '@/pages/components/tiptap/utils/index.js'
+import { icons } from 'lucide-react'
+import { memo } from 'react'
 
 export type IconProps = {
   name: keyof typeof icons
@@ -17,10 +17,10 @@ export const Icon = memo(({ name, className, strokeWidth }: IconProps) => {
 
   return (
     <IconComponent
-      className={cn("w-4 h-4", className)}
+      className={cn('w-4 h-4', className)}
       strokeWidth={strokeWidth || 2.5}
     />
   )
 })
 
-Icon.displayName = "Icon"
+Icon.displayName = 'Icon'

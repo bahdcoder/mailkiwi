@@ -1,28 +1,32 @@
-import { and, eq, gte, inArray } from "drizzle-orm"
+import { and, eq, gte, inArray } from 'drizzle-orm'
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
+import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
 
-import { Audience } from "@/database/database_schema_types.js"
-import { KnownAudienceProperty, contactProperties, contacts } from "@/database/schema.js"
+import type { Audience } from '@/database/database_schema_types.js'
+import {
+  type KnownAudienceProperty,
+  contactProperties,
+  contacts,
+} from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 export class PropertiesSegmentBuilder {
   constructor(
-    protected condition: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number],
+    protected condition: CreateSegmentDto['filterGroups']['groups'][number]['conditions'][number],
     protected audience: Audience,
   ) {}
 
-  getColumnFromPropertyType(type: KnownAudienceProperty["type"]) {
-    if (type === "boolean") {
+  getColumnFromPropertyType(type: KnownAudienceProperty['type']) {
+    if (type === 'boolean') {
       return contactProperties.boolean
     }
 
-    if (type === "date") {
+    if (type === 'date') {
       return contactProperties.date
     }
 
-    if (type === "float") {
+    if (type === 'float') {
       return contactProperties.float
     }
 
@@ -30,7 +34,7 @@ export class PropertiesSegmentBuilder {
   }
 
   private queryContactProperties = () => {
-    const [, name] = this.condition.field?.split("properties.")
+    const [, name] = this.condition.field?.split('properties.')
 
     const property = this.audience.knownProperties?.find(
       (property) => property.id === name,
@@ -45,7 +49,7 @@ export class PropertiesSegmentBuilder {
           eq(contactProperties.contactId, contacts.id),
           eq(contactProperties.name, name),
           gte(
-            this.getColumnFromPropertyType(property?.type ?? "text"),
+            this.getColumnFromPropertyType(property?.type ?? 'text'),
             this.condition.value as any,
           ),
         ),

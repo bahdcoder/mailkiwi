@@ -1,34 +1,34 @@
-import { eq } from "drizzle-orm"
-import { DateTime } from "luxon"
+import { eq } from 'drizzle-orm'
+import { DateTime } from 'luxon'
 
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
+import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
 
 import {
   Oauth2Driver,
-  Oauth2Response,
+  type Oauth2Response,
   Oauth2UserResponse,
-} from "@/auth/oauth2_drivers/base_driver.js"
+} from '@/auth/oauth2_drivers/base_driver.js'
 
-import type { DrizzleClient } from "@/database/client.js"
-import {
+import type { DrizzleClient } from '@/database/client.js'
+import type {
   InsertUser,
   UpdateUser,
   UserWithTeams,
-} from "@/database/database_schema_types.js"
+} from '@/database/database_schema_types.js'
 import {
   channelMemberships,
   oauth2Accounts,
   teamMemberships,
   teams,
   users,
-} from "@/database/schema.js"
-import { hasMany } from "@/database/utils/relationships.js"
+} from '@/database/schema.js'
+import { hasMany } from '@/database/utils/relationships.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { ScryptTokenRepository } from "@/shared/repositories/scrypt_token_repository.js"
-import { OtpGenerator } from "@/shared/tokens/otp_generator.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { ScryptTokenRepository } from '@/shared/repositories/scrypt_token_repository.js'
+import { OtpGenerator } from '@/shared/tokens/otp_generator.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class UserRepository extends ScryptTokenRepository {
   protected EMAIL_VERIFICATION_CODE_EXPIRATION_MINUTES = 10
@@ -41,7 +41,7 @@ export class UserRepository extends ScryptTokenRepository {
     to: teams,
     primaryKey: users.id,
     foreignKey: teams.userId,
-    relationName: "teams",
+    relationName: 'teams',
   })
 
   private hasManyTeamMemberships = hasMany(this.database, {
@@ -49,7 +49,7 @@ export class UserRepository extends ScryptTokenRepository {
     to: teamMemberships,
     primaryKey: users.id,
     foreignKey: teamMemberships.userId,
-    relationName: "memberships",
+    relationName: 'memberships',
   })
 
   private hasManyChannelMemberships = hasMany(this.database, {
@@ -57,7 +57,7 @@ export class UserRepository extends ScryptTokenRepository {
     to: channelMemberships,
     primaryKey: users.id,
     foreignKey: channelMemberships.userId,
-    relationName: "channels",
+    relationName: 'channels',
   })
 
   private hasManyOauth2Accounts = hasMany(this.database, {
@@ -65,7 +65,7 @@ export class UserRepository extends ScryptTokenRepository {
     to: oauth2Accounts,
     primaryKey: users.id,
     foreignKey: oauth2Accounts.userId,
-    relationName: "accounts",
+    relationName: 'accounts',
   })
 
   async createUserEmailVerificationCode() {
@@ -85,8 +85,6 @@ export class UserRepository extends ScryptTokenRepository {
 
     const accountId = this.cuid()
 
-    const self = this
-
     await this.database.transaction(async (trx) => {
       await trx.insert(users).values({
         id,
@@ -103,7 +101,7 @@ export class UserRepository extends ScryptTokenRepository {
         userId: id,
         provider: oauth2Response.provider,
         providerId: oauth2Response.user.providerId,
-        accessToken: self.encrypt(oauth2Response.accessToken.token).release(),
+        accessToken: this.encrypt(oauth2Response.accessToken.token).release(),
       })
     })
 

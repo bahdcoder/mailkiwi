@@ -1,4 +1,4 @@
-export interface PageLayoutProps {}
+export type PageLayoutProps = {}
 
 export function PageLayout({ children }: React.PropsWithChildren<PageLayoutProps>) {
   return (

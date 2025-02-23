@@ -1,17 +1,17 @@
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
-import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
-import { LoginUserSchema } from "@/auth/users/dto/login_user_dto.js"
-import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.js'
+import { LoginUserSchema } from '@/auth/users/dto/login_user_dto.js'
+import { UserRepository } from '@/auth/users/repositories/user_repository.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { VikeController } from "@/shared/controllers/vike_controller.js"
-import { route } from "@/shared/routes/route_aliases.js"
-import type { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { VikeController } from '@/shared/controllers/vike_controller.js'
+import { route } from '@/shared/routes/route_aliases.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class AuthController extends VikeController {
   constructor(
@@ -23,25 +23,25 @@ export class AuthController extends VikeController {
 
     this.app.defineRoutes(
       [
-        ...this.vikePath("/login", this.redirectToWelcomeIfAuthenticatedPage),
-        ["POST", "/login", this.login],
-        ["POST", "/logout", this.logout],
+        ...this.vikePath('/login', this.redirectToWelcomeIfAuthenticatedPage),
+        ['POST', '/login', this.login],
+        ['POST', '/logout', this.logout],
       ],
       {
-        prefix: "auth",
+        prefix: 'auth',
         middleware: [],
       },
     )
 
-    this.app.defineRoutes([["POST", "/api-keys", this.createApiKey.bind(this)]], {
-      prefix: "auth",
+    this.app.defineRoutes([['POST', '/api-keys', this.createApiKey.bind(this)]], {
+      prefix: 'auth',
     })
   }
 
   async createApiKey(ctx: HonoContext) {
     const { apiKey } = await container
       .make(CreateTeamAccessTokenAction)
-      .handle(ctx.get("team").id)
+      .handle(ctx.get('team').id)
 
     return ctx.json({ apiKey })
   }
@@ -53,8 +53,8 @@ export class AuthController extends VikeController {
 
     const invalidCredentials = [
       {
-        message: "These credentials do not match our records.",
-        field: "email",
+        message: 'These credentials do not match our records.',
+        field: 'email',
       },
     ]
 
@@ -66,7 +66,7 @@ export class AuthController extends VikeController {
       throw E_VALIDATION_FAILED([
         {
           message: `You recently signed in using ${user.lastLoggedInProvider}. Please sign in using the same method.`,
-          field: "email",
+          field: 'email',
         },
       ])
     }
@@ -87,12 +87,12 @@ export class AuthController extends VikeController {
       currentTeamId: team.id,
     })
 
-    return this.response(ctx).redirect(route("dashboard")).send()
+    return this.response(ctx).redirect(route('dashboard')).send()
   }
 
   logout = async (ctx: HonoContext) => {
     await this.session.clearForUser(ctx)
 
-    return this.response(ctx).redirect(route("auth_login")).send()
+    return this.response(ctx).redirect(route('auth_login')).send()
   }
 }

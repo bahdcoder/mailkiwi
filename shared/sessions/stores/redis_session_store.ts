@@ -1,8 +1,8 @@
-import { DateTime } from "luxon"
+import { DateTime } from 'luxon'
 
-import { makeRedis } from "@/shared/container/index.js"
+import { makeRedis } from '@/shared/container/index.js'
 
-import { REDIS_KNOWN_KEYS } from "@/redis/redis_client.js"
+import { REDIS_KNOWN_KEYS } from '@/redis/redis_client.js'
 
 export interface RedisSessionData {
   userId: string
@@ -46,7 +46,7 @@ export class RedisSessionStore {
 
   async update(
     sessionId: string,
-    key: keyof Omit<RedisSessionData, "userId">,
+    key: keyof Omit<RedisSessionData, 'userId'>,
     value: string,
   ) {
     await this.redis.multi().hset(REDIS_KNOWN_KEYS.SESSION(sessionId), key, value).exec()
@@ -91,9 +91,7 @@ export class RedisSessionStore {
   async list(userId: string) {
     const sessionIds = await this.redis.smembers(REDIS_KNOWN_KEYS.USER_SESSIONS(userId))
 
-    const self = this
-
-    const sessions = await Promise.all(sessionIds.map((sessionId) => self.get(sessionId)))
+    const sessions = await Promise.all(sessionIds.map((sessionId) => this.get(sessionId)))
 
     return sessions.filter((session) => session !== null) as RedisSessionData[]
   }

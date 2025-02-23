@@ -1,16 +1,16 @@
-import { EmojiListProps } from "../types.js"
-import { Button } from "@/pages/components/tiptap/ui/Button/Button.jsx"
-import { Panel } from "@/pages/components/tiptap/ui/Panel/index.jsx"
-import { EmojiItem } from "@tiptap-pro/extension-emoji"
-import { SuggestionKeyDownProps } from "@tiptap/suggestion"
+import type { EmojiListProps } from '../types.js'
+import { Button } from '@/pages/components/tiptap/ui/Button/Button.jsx'
+import { Panel } from '@/pages/components/tiptap/ui/Panel/index.jsx'
+import type { EmojiItem } from '@tiptap-pro/extension-emoji'
+import type { SuggestionKeyDownProps } from '@tiptap/suggestion'
 import React, {
-  ForwardedRef,
+  type ForwardedRef,
   forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
   useState,
-} from "react"
+} from 'react'
 
 const EmojiList = forwardRef(
   (
@@ -32,56 +32,60 @@ const EmojiList = forwardRef(
       [props],
     )
 
-    useImperativeHandle(ref, () => {
-      const scrollIntoView = (index: number) => {
-        const item = props.items[index]
+    useImperativeHandle(
+      ref,
+      () => {
+        const scrollIntoView = (index: number) => {
+          const item = props.items[index]
 
-        if (item) {
-          const node = document.querySelector(`[data-emoji-name="${item.name}"]`)
+          if (item) {
+            const node = document.querySelector(`[data-emoji-name="${item.name}"]`)
 
-          if (node) {
-            node.scrollIntoView({ block: "nearest" })
+            if (node) {
+              node.scrollIntoView({ block: 'nearest' })
+            }
           }
         }
-      }
 
-      const upHandler = () => {
-        const newIndex = (selectedIndex + props.items.length - 1) % props.items.length
-        setSelectedIndex(newIndex)
-        scrollIntoView(newIndex)
-      }
+        const upHandler = () => {
+          const newIndex = (selectedIndex + props.items.length - 1) % props.items.length
+          setSelectedIndex(newIndex)
+          scrollIntoView(newIndex)
+        }
 
-      const downHandler = () => {
-        const newIndex = (selectedIndex + 1) % props.items.length
-        setSelectedIndex(newIndex)
-        scrollIntoView(newIndex)
-      }
+        const downHandler = () => {
+          const newIndex = (selectedIndex + 1) % props.items.length
+          setSelectedIndex(newIndex)
+          scrollIntoView(newIndex)
+        }
 
-      const enterHandler = () => {
-        selectItem(selectedIndex)
-      }
+        const enterHandler = () => {
+          selectItem(selectedIndex)
+        }
 
-      return {
-        onKeyDown: ({ event }) => {
-          if (event.key === "ArrowUp") {
-            upHandler()
-            return true
-          }
+        return {
+          onKeyDown: ({ event }) => {
+            if (event.key === 'ArrowUp') {
+              upHandler()
+              return true
+            }
 
-          if (event.key === "ArrowDown") {
-            downHandler()
-            return true
-          }
+            if (event.key === 'ArrowDown') {
+              downHandler()
+              return true
+            }
 
-          if (event.key === "Enter") {
-            enterHandler()
-            return true
-          }
+            if (event.key === 'Enter') {
+              enterHandler()
+              return true
+            }
 
-          return false
-        },
-      }
-    }, [props, selectedIndex, selectItem])
+            return false
+          },
+        }
+      },
+      [props, selectedIndex, selectItem],
+    )
 
     const createClickHandler = useCallback(
       (index: number) => () => selectItem(index),
@@ -108,7 +112,7 @@ const EmojiList = forwardRef(
               <img src={item.fallbackImage} className="w-5 h-5" alt="emoji" />
             ) : (
               item.emoji
-            )}{" "}
+            )}{' '}
             <span className="truncate text-ellipsis">:{item.name}:</span>
           </Button>
         ))}
@@ -117,6 +121,6 @@ const EmojiList = forwardRef(
   },
 )
 
-EmojiList.displayName = "EmojiList"
+EmojiList.displayName = 'EmojiList'
 
 export default EmojiList

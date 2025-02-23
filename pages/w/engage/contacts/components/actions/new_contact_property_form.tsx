@@ -1,34 +1,34 @@
-import { ArrowUpRightIcon } from "@/pages/components/icons/arrow-up-right.svg.jsx"
-import { CalendarIcon } from "@/pages/components/icons/calendar.jsx"
-import { CheckSquareIcon } from "@/pages/components/icons/check-square.svg.jsx"
-import { HashTagIcon } from "@/pages/components/icons/hashtag.svg.jsx"
-import { InfoCircleIcon } from "@/pages/components/icons/info-circle.svg.jsx"
-import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
-import { TextIcon } from "@/pages/components/icons/text.svg.jsx"
+import { ArrowUpRightIcon } from '@/pages/components/icons/arrow-up-right.svg.jsx'
+import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
+import { CheckSquareIcon } from '@/pages/components/icons/check-square.svg.jsx'
+import { HashTagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
+import { InfoCircleIcon } from '@/pages/components/icons/info-circle.svg.jsx'
+import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
+import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { slugify } from "@/pages/utils/slugify.js"
-import * as Alert from "@kibamail/owly/alert"
-import { Button } from "@kibamail/owly/button"
-import * as Dialog from "@kibamail/owly/dialog"
-import * as Select from "@kibamail/owly/select-field"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import * as React from "react"
-import { clientOnly } from "vike-react/clientOnly"
-import { usePageContext } from "vike-react/usePageContext"
-import { reload } from "vike/client/router"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { slugify } from '@/pages/utils/slugify.js'
+import * as Alert from '@kibamail/owly/alert'
+import { Button } from '@kibamail/owly/button'
+import * as Dialog from '@kibamail/owly/dialog'
+import * as Select from '@kibamail/owly/select-field'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import type * as React from 'react'
+import { clientOnly } from 'vike-react/clientOnly'
+import { usePageContext } from 'vike-react/usePageContext'
+import { reload } from 'vike/client/router'
 
-import { Audience } from "@/database/database_schema_types.js"
-import { KnownAudienceProperty } from "@/database/schema.js"
+import type { Audience } from '@/database/database_schema_types.js'
+import type { KnownAudienceProperty } from '@/database/schema.js'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 const CreateCustomContactProperty = clientOnly(() =>
   import(
-    "@/pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx"
+    '@/pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx'
   ).then(({ CreateCustomContactProperty }) => CreateCustomContactProperty),
 )
 
@@ -47,8 +47,8 @@ export function NewContactPropertyForm({
 
   const { isPending, serverFormProps, ServerErrorsList } =
     useServerFormMutation<Audience>({
-      method: "PUT",
-      action: route("audiences_update", { audienceId: ctx.audience?.id }),
+      method: 'PUT',
+      action: route('audiences_update', { audienceId: ctx.audience?.id }),
       onSuccess(response) {
         ;(reload as any)?.()
         setOpen(false)
@@ -90,7 +90,7 @@ export function NewContactPropertyForm({
               autoFocus
               name="name"
               id="custom-property-name"
-              placeholder={"Job title, Interests, Company, etc."}
+              placeholder={'Job title, Interests, Company, etc.'}
               defaultValue={property?.label}
             >
               <TextField.Label htmlFor="custom-property-name">Name</TextField.Label>
@@ -131,7 +131,7 @@ export function NewContactPropertyForm({
 
                 <Text as="p" className="kb-content-secondary mt-1">
                   With custom properties, you may store as much meta data as you want
-                  about your contacts.{" "}
+                  about your contacts.{' '}
                   <a
                     href="/docs/custom-properties"
                     className="underline underline-offset-4 inline-flex items-center gap-1 mt-1"
@@ -148,12 +148,12 @@ export function NewContactPropertyForm({
 
           <Dialog.Footer className="flex justify-between gap-2">
             <Dialog.Close asChild type="button">
-              <Button variant="tertiary" width={"full"} type="button">
+              <Button variant="tertiary" width={'full'} type="button">
                 Close
               </Button>
             </Dialog.Close>
             <Button width="full" type="submit" loading={isPending}>
-              {property ? "Update custom property" : "Create custom property"}
+              {property ? 'Update custom property' : 'Create custom property'}
             </Button>
           </Dialog.Footer>
         </ServerForm>

@@ -1,32 +1,32 @@
-import { FieldSegmentBuilder } from "./base_field_segment_builder.js"
-import { type SQLWrapper, and, eq, gte, like, lte } from "drizzle-orm"
-import { AnyMySqlColumn } from "drizzle-orm/mysql-core"
-import { DateTime } from "luxon"
+import { FieldSegmentBuilder } from './base_field_segment_builder.js'
+import { type SQLWrapper, and, eq, gte, like, lte } from 'drizzle-orm'
+import type { AnyMySqlColumn } from 'drizzle-orm/mysql-core'
+import { DateTime } from 'luxon'
 
-import type { CreateSegmentDto } from "@/audiences/dto/segments/create_segment_dto.js"
+import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
 
-import { contacts } from "@/database/schema.js"
+import { contacts } from '@/database/schema.js'
 
-import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 
 export class ActivitySegmentBuilder {
   constructor(
-    protected condition: CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number],
+    protected condition: CreateSegmentDto['filterGroups']['groups'][number]['conditions'][number],
   ) {}
 
   forField(): AnyMySqlColumn {
     switch (this.condition.field) {
-      case "lastClickedAutomationEmailLinkAt":
+      case 'lastClickedAutomationEmailLinkAt':
         return contacts.lastClickedAutomationEmailLinkAt
-      case "lastClickedBroadcastEmailLinkAt":
+      case 'lastClickedBroadcastEmailLinkAt':
         return contacts.lastClickedBroadcastEmailLinkAt
-      case "lastOpenedAutomationEmailAt":
+      case 'lastOpenedAutomationEmailAt':
         return contacts.lastOpenedAutomationEmailAt
-      case "lastOpenedBroadcastEmailAt":
+      case 'lastOpenedBroadcastEmailAt':
         return contacts.lastOpenedBroadcastEmailAt
-      case "lastSentAutomationEmailAt":
+      case 'lastSentAutomationEmailAt':
         return contacts.lastSentAutomationEmailAt
-      case "lastSentBroadcastEmailAt":
+      case 'lastSentBroadcastEmailAt':
         return contacts.lastSentBroadcastEmailAt
     }
 
@@ -34,16 +34,16 @@ export class ActivitySegmentBuilder {
   }
 
   timeWindowToDate() {
-    const [, time] = (this.condition.value as string).split("_")
+    const [, time] = (this.condition.value as string).split('_')
 
     return DateTime.now()
-      .minus({ days: parseInt(time) })
+      .minus({ days: Number.parseInt(time) })
       .toJSDate()
   }
 
   build() {
     switch (this.condition.operation) {
-      case "inTimeWindow":
+      case 'inTimeWindow':
         return [
           and(
             gte(this.forField(), this.timeWindowToDate()),

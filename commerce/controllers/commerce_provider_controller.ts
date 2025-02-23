@@ -1,17 +1,17 @@
 import {
   ConnectCommerceProviderDto,
   ConnectCommerceProviderSchema,
-} from "@/commerce/dto/connect_commerce_provider_dto.js"
-import { StripeWebhookController } from "@/commerce/providers/stripe/controllers/stripe_webhook_controller.js"
-import { CommerceProviderTool } from "@/commerce/tools/commerce_provider_tool.js"
+} from '@/commerce/dto/connect_commerce_provider_dto.js'
+import { StripeWebhookController } from '@/commerce/providers/stripe/controllers/stripe_webhook_controller.js'
+import { CommerceProviderTool } from '@/commerce/tools/commerce_provider_tool.js'
 
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class CommerceProviderController extends BaseController {
   constructor(
@@ -20,7 +20,7 @@ export class CommerceProviderController extends BaseController {
   ) {
     super()
 
-    this.app.defineRoutes([["POST", "/commerce/connect", this.connect.bind(this)]])
+    this.app.defineRoutes([['POST', '/commerce/connect', this.connect.bind(this)]])
 
     container.resolve(StripeWebhookController)
   }

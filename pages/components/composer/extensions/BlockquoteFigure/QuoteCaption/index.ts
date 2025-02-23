@@ -1,1 +1,1 @@
-export * from "./QuoteCaption.js"
+export * from './QuoteCaption.js'

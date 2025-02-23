@@ -1,22 +1,22 @@
-import { describe, test } from "vitest"
+import { describe, test } from 'vitest'
 
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { makeRequestAsUser } from "@/tests/utils/http.js"
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '@/tests/utils/http.js'
 
-import { teamMemberships } from "@/database/schema.js"
+import { teamMemberships } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { route } from "@/shared/routes/route_aliases.js"
-import { RedisSessionStore } from "@/shared/sessions/stores/redis_session_store.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { route } from '@/shared/routes/route_aliases.js'
+import { RedisSessionStore } from '@/shared/sessions/stores/redis_session_store.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@teams", () => {
-  test("can fetch a single team", async ({ expect }) => {
+describe('@teams', () => {
+  test('can fetch a single team', async ({ expect }) => {
     const { user, team } = await createUser()
 
     const showTeamResponse = await makeRequestAsUser(user, {
-      method: "GET",
+      method: 'GET',
       path: `/teams/${team.id}`,
     })
 
@@ -26,7 +26,7 @@ describe("@teams", () => {
     expect(showTeamResponse.status).toBe(200)
   })
 
-  test("a user with multiple teams can switch between teams", async ({ expect }) => {
+  test('a user with multiple teams can switch between teams', async ({ expect }) => {
     const { user } = await createUser()
     const { team: secondTeam } = await createUser()
 
@@ -35,19 +35,19 @@ describe("@teams", () => {
       teamId: secondTeam.id,
       invitedAt: new Date(),
       expiresAt: new Date(),
-      status: "ACTIVE",
-      role: "MANAGER",
+      status: 'ACTIVE',
+      role: 'MANAGER',
       email: user.email,
     })
     const response = await makeRequestAsUser(user, {
-      method: "GET",
+      method: 'GET',
       path: `/teams/${secondTeam.id}/switch`,
     })
 
     const json = await response.json()
 
-    expect(json.type).toBe("redirect")
-    expect(json.payload.path).toBe(route("dashboard"))
+    expect(json.type).toBe('redirect')
+    expect(json.payload.path).toBe(route('dashboard'))
 
     const userActiveSessions = await container.make(RedisSessionStore).list(user.id)
 

@@ -1,32 +1,35 @@
-import { FormState, ImportContactsProvider } from "./state/import_contacts_context.jsx"
-import { StepsRenderer } from "@/pages/components/flows/steps_renderer.jsx"
-import { CancelIcon } from "@/pages/components/icons/cancel.svg.jsx"
-import * as Dialog from "@radix-ui/react-dialog"
-import { FocusScope } from "@radix-ui/react-focus-scope"
-import React, { PropsWithChildren } from "react"
-import { clientOnly } from "vike-react/clientOnly"
+import {
+  type FormState,
+  ImportContactsProvider,
+} from './state/import_contacts_context.jsx'
+import { StepsRenderer } from '@/pages/components/flows/steps_renderer.jsx'
+import { CancelIcon } from '@/pages/components/icons/cancel.svg.jsx'
+import * as Dialog from '@radix-ui/react-dialog'
+import { FocusScope } from '@radix-ui/react-focus-scope'
+import React, { type PropsWithChildren } from 'react'
+import { clientOnly } from 'vike-react/clientOnly'
 
 const StepOneUploadACsv = clientOnly(() =>
-  import("./steps/step_one_upload_a_csv.jsx").then(
+  import('./steps/step_one_upload_a_csv.jsx').then(
     ({ StepOneUploadACsv }) => StepOneUploadACsv,
   ),
 )
 
 const StepFourImportProcessing = clientOnly(() =>
-  import("./steps/step_four_import_processing.jsx").then(
+  import('./steps/step_four_import_processing.jsx').then(
     ({ StepFourImportProcessing }) => StepFourImportProcessing,
   ),
 )
 
 const StepTwoMatchCsvHeadersToContactProperties = clientOnly(() =>
-  import("./steps/step_two_match_csv_headers_to_contact_properties.jsx").then(
+  import('./steps/step_two_match_csv_headers_to_contact_properties.jsx').then(
     ({ StepTwoMatchCsvHeadersToContactProperties }) =>
       StepTwoMatchCsvHeadersToContactProperties,
   ),
 )
 
 const StepThreeImportSettings = clientOnly(() =>
-  import("./steps/step_three_import_settings.jsx").then(
+  import('./steps/step_three_import_settings.jsx').then(
     ({ StepThreeImportSettings }) => StepThreeImportSettings,
   ),
 )
@@ -43,18 +46,18 @@ export function ImportContactsDialog({
 }: PropsWithChildren<ImportContactsDialogProps>) {
   const [step, setStep] = React.useState(0)
   const [formState, setFormState] = React.useState<FormState>({
-    contactImportId: "",
+    contactImportId: '',
     propertiesMap: {
-      email: "",
-      firstName: "",
-      lastName: "",
+      email: '',
+      firstName: '',
+      lastName: '',
       headers: [],
       customPropertiesHeaders: [],
     },
     headerCounts: {},
     headerSamples: {},
     contactProperties: {
-      email: "",
+      email: '',
     },
   })
 

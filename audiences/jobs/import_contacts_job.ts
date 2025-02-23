@@ -1,30 +1,30 @@
-import { makeMinioClient } from "@/minio/minio_client.js"
-import { makeS3Client } from "@/minio/s3_client.js"
-import CsvParser from "csv-parser"
-import { sql } from "drizzle-orm"
-import { DateTime } from "luxon"
+import { makeMinioClient } from '@/minio/minio_client.js'
+import { makeS3Client } from '@/minio/s3_client.js'
+import CsvParser from 'csv-parser'
+import { sql } from 'drizzle-orm'
+import { DateTime } from 'luxon'
 
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
-import { TagRepository } from "@/audiences/repositories/tag_repository.js"
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { TagRepository } from '@/audiences/repositories/tag_repository.js'
 
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
-import { ContactImport, ContactProperty } from "@/database/database_schema_types.js"
+import { ContactImport, type ContactProperty } from '@/database/database_schema_types.js'
 import {
   KnownAudienceProperty,
   contactProperties,
   contacts,
   tagsOnContacts,
-} from "@/database/schema.js"
+} from '@/database/schema.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
-import { guessValueType } from "@/shared/utils/helpers/guess_value_type.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { guessValueType } from '@/shared/utils/helpers/guess_value_type.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface ImportContactsJobPayload {
   contactImportId: string
@@ -32,7 +32,7 @@ export interface ImportContactsJobPayload {
 
 export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
   static get id() {
-    return "ACCOUNTS::CONTACTS"
+    return 'ACCOUNTS::CONTACTS'
   }
 
   static get queue() {
@@ -59,24 +59,20 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
     const team = await container.make(TeamRepository).findById(audience?.teamId)
 
     const csvStream = await makeS3Client().getObjectStream(
-      ContactImportRepository.getUploadedFileKey(contactImport.id, "csv", team.id),
+      ContactImportRepository.getUploadedFileKey(contactImport.id, 'csv', team.id),
     )
 
     const parser = csvStream.pipe(CsvParser())
 
-    const rows: any[] = await new Promise(function (resolve, reject) {
+    const rows: any[] = await new Promise((resolve, reject) => {
       const rows: any[] = []
 
       parser
-        .on("data", async function (row) {
+        .on('data', async (row) => {
           rows.push(row)
         })
-        .on("end", function () {
-          return resolve(rows)
-        })
-        .on("error", function (error) {
-          return reject(error)
-        })
+        .on('end', () => resolve(rows))
+        .on('error', (error) => reject(error))
     })
 
     const contactRepository = container.make(ContactRepository)
@@ -110,7 +106,7 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
           const contactId = cuid()
 
           Object.keys(contactImport.propertiesMap.customProperties ?? {}).forEach(
-            function (csvColumnHeaderName) {
+            (csvColumnHeaderName) => {
               const property =
                 contactImport.propertiesMap.customProperties?.[csvColumnHeaderName]
 
@@ -123,10 +119,10 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
                   name: property.id,
                   audienceId: contactImport.audienceId,
                   boolean: null,
-                  float: property.type === "float" ? parseFloat(value) : null,
+                  float: property.type === 'float' ? Number.parseFloat(value) : null,
                   date:
-                    property.type === "date" ? DateTime.fromISO(value).toJSDate() : null,
-                  text: property.type === "text" ? value : null,
+                    property.type === 'date' ? DateTime.fromISO(value).toJSDate() : null,
+                  text: property.type === 'text' ? value : null,
                 })
               }
             },
@@ -181,15 +177,13 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
 
         const contactIds = createdContacts.map((value) => value.id)
 
-        const attachTagsToContacts = tagIdsToAttachToContacts
-          .map((tagId) =>
-            contactIds.map((contactId) => ({
-              contactId,
-              tagId,
-              assignedAt: new Date(),
-            })),
-          )
-          .flat()
+        const attachTagsToContacts = tagIdsToAttachToContacts.flatMap((tagId) =>
+          contactIds.map((contactId) => ({
+            contactId,
+            tagId,
+            assignedAt: new Date(),
+          })),
+        )
 
         // batch insert tags.
         if (attachTagsToContacts.length > 0) {
@@ -205,7 +199,7 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
         .make(ContactImportRepository)
         .transaction(tx)
         .update(contactImport.id, {
-          status: "SUCCESS",
+          status: 'SUCCESS',
         })
     })
 
@@ -215,7 +209,7 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
   async failed({ payload }: JobContext<ImportContactsJobPayload>) {
     await container
       .make(ContactImportRepository)
-      .update(payload.contactImportId, { status: "FAILED" })
+      .update(payload.contactImportId, { status: 'FAILED' })
 
     // await Mailer.from(env.SMTP_MAIL_FROM)
     //   .to(invite.email)

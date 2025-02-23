@@ -12,7 +12,7 @@ import {
   picklist,
   pipe,
   string,
-} from "valibot"
+} from 'valibot'
 
 // Create something flexible enough to work as a landing page builder.
 
@@ -27,19 +27,19 @@ type Element = {
   name?: string
   value?: string
   type:
-    | "container"
-    | "section"
-    | "paragraph"
-    | "heading"
-    | "text" // this is a reserved type, that can only be used as children of other types. cannot have children of its own and cannot stand on its own. it is usually the child of a paragraph or heading or button.
+    | 'container'
+    | 'section'
+    | 'paragraph'
+    | 'heading'
+    | 'text' // this is a reserved type, that can only be used as children of other types. cannot have children of its own and cannot stand on its own. it is usually the child of a paragraph or heading or button.
     // when nested into one of these elements, there's usually many "text" in one element. that way, each segment of the text can have it's own style. Example, user highlights the first 4 characters of a string in a button on the frontend and makes it red, while the rest of the strong is blue. this will lead to creation of 2 "text" elements. the first part is red, the second part is blue.
-    | "image"
-    | "video"
-    | "grid"
-    | "grid-item"
-    | "button"
-    | "anchor" // an href
-    | "divider"
+    | 'image'
+    | 'video'
+    | 'grid'
+    | 'grid-item'
+    | 'button'
+    | 'anchor' // an href
+    | 'divider'
   styles: {
     width?: string
     margin?: CorneredStyle
@@ -56,7 +56,7 @@ type Element = {
     textDecoration?: string
   }
   elements?: Element[]
-  mobileStyles?: Element["styles"]
+  mobileStyles?: Element['styles']
   properties?: {
     href?: {
       url: string
@@ -98,7 +98,7 @@ export const StyleSchema = object({
   ),
   backgroundColor: optional(string()),
   color: optional(string()),
-  "min-height": optional(number()),
+  'min-height': optional(number()),
 })
 
 export const PropertiesSchema = object({
@@ -114,14 +114,14 @@ export const EmailSectionSchema = object({
   name: pipe(string(), nonEmpty(), minLength(3), maxLength(30)),
   value: optional(string()),
   type: picklist([
-    "text",
-    "image",
-    "video",
-    "grid",
-    "grid-item",
-    "button",
-    "anchor", // an href
-    "divider",
+    'text',
+    'image',
+    'video',
+    'grid',
+    'grid-item',
+    'button',
+    'anchor', // an href
+    'divider',
   ]),
   elements: lazy(() => EmailSectionSchema), // beyond this level, we cannot add any more grid or grid item elements. we can add any of the others.
   styles: StyleSchema,

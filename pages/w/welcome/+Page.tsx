@@ -1,13 +1,13 @@
-import { EngageIcon } from "@/pages/components/icons/products/engage.svg.jsx"
-import { InsightsIcon } from "@/pages/components/icons/products/insights.svg.jsx"
-import { LettersIcon } from "@/pages/components/icons/products/letters.svg.jsx"
-import { OptimiseIcon } from "@/pages/components/icons/products/optimise.svg.jsx"
-import { SendIcon } from "@/pages/components/icons/products/send.svg.jsx"
-import * as ProductCard from "@/pages/components/products/product-card.jsx"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
+import { EngageIcon } from '@/pages/components/icons/products/engage.svg.jsx'
+import { InsightsIcon } from '@/pages/components/icons/products/insights.svg.jsx'
+import { LettersIcon } from '@/pages/components/icons/products/letters.svg.jsx'
+import { OptimiseIcon } from '@/pages/components/icons/products/optimise.svg.jsx'
+import { SendIcon } from '@/pages/components/icons/products/send.svg.jsx'
+import * as ProductCard from '@/pages/components/products/product-card.jsx'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 function WelcomePage() {
   return (

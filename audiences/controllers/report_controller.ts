@@ -1,13 +1,13 @@
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
 export class ReportController extends BaseController {
   constructor(protected app = makeApp()) {
     super()
 
-    this.app.defineRoutes([["GET", "/report", this.index.bind(this)]], {
-      prefix: "audiences/:audienceId",
+    this.app.defineRoutes([['GET', '/report', this.index.bind(this)]], {
+      prefix: 'audiences/:audienceId',
     })
   }
 

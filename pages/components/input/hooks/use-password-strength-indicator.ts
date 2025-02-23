@@ -1,22 +1,22 @@
-import { ProgressProps } from "@kibamail/owly/progress"
-import React from "react"
+import type { ProgressProps } from '@kibamail/owly/progress'
+import React from 'react'
 
 const rules = [
   {
     regex: /(?=.*[A-Z])/,
-    message: "Must contain at least one uppercase letter",
+    message: 'Must contain at least one uppercase letter',
   },
   {
     regex: /(?=.*[0-9])/,
-    message: "Must contain at least one number",
+    message: 'Must contain at least one number',
   },
   {
     regex: /(?=.*[!@#$%^&*])/,
-    message: "Must contain at least one special character",
+    message: 'Must contain at least one special character',
   },
   {
     regex: /(?=.{8,})/,
-    message: "Must be at least 8 characters long",
+    message: 'Must be at least 8 characters long',
   },
 ]
 
@@ -48,19 +48,24 @@ export function usePasswordStrengthIndicator(enabled?: boolean) {
     return (passedRules / rules.length) * 100
   }, [validationRulesResults])
 
-  const variant: ProgressProps["variant"] = React.useMemo(() => {
+  const variant: ProgressProps['variant'] = React.useMemo(() => {
     if (percentage < 50) {
-      return "error"
+      return 'error'
     }
 
     if (percentage < 75) {
-      return "warning"
+      return 'warning'
     }
 
     if (percentage >= 50) {
-      return "success"
+      return 'success'
     }
   }, [percentage])
 
-  return { onChange, validationRulesResults, rules, indicator: { percentage, variant } }
+  return {
+    onChange,
+    validationRulesResults,
+    rules,
+    indicator: { percentage, variant },
+  }
 }

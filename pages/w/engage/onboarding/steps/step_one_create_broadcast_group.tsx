@@ -1,30 +1,35 @@
-import { useOnboardingContext } from "./context_provider.js"
-import { ArrowLeftIcon } from "@/pages/components/icons/arrow-left.svg.jsx"
+import { useOnboardingContext } from './context_provider.js'
+import { ArrowLeftIcon } from '@/pages/components/icons/arrow-left.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { slugify } from "@/pages/utils/slugify.js"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Progress } from "@kibamail/owly/progress"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import { createContext } from "@radix-ui/react-context"
-import React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { slugify } from '@/pages/utils/slugify.js'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Progress } from '@kibamail/owly/progress'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import { createContext } from '@radix-ui/react-context'
+import React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export function CreateBroadcastGroupStep() {
   const ctx = usePageContext()
-  const { step, setStep, setFormState } = useOnboardingContext("CreateBroadcastGroupStep")
+  const { step, setStep, setFormState } = useOnboardingContext('CreateBroadcastGroupStep')
 
-  const { serverFormProps, isPending, error } = useServerFormMutation<{ id: string }>({
-    action: route("create_broadcast_group"),
+  const { serverFormProps, isPending, error } = useServerFormMutation<{
+    id: string
+  }>({
+    action: route('create_broadcast_group'),
     onSuccess(response) {
       setStep((current) => current + 1)
-      setFormState((current) => ({ ...current, audienceId: response.payload.id }))
+      setFormState((current) => ({
+        ...current,
+        audienceId: response.payload.id,
+      }))
     },
   })
 
@@ -39,8 +44,8 @@ export function CreateBroadcastGroupStep() {
       </Heading>
       <Text className="kb-content-tertiary" as="label" htmlFor="slug">
         A broadcast group is a great way to organise all your marketing emails. Examples
-        would be <strong className="kb-content-brand">Newsletters</strong>,{" "}
-        <strong className="kb-content-brand">Promotions</strong>, or{" "}
+        would be <strong className="kb-content-brand">Newsletters</strong>,{' '}
+        <strong className="kb-content-brand">Promotions</strong>, or{' '}
         <strong className="kb-content-brand">Weekly changelogs</strong>.
       </Text>
 

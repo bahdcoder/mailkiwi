@@ -1,18 +1,18 @@
-import type { Next } from "hono"
+import type { Next } from 'hono'
 
-import { AccessTokenRepository } from "@/auth/acess_tokens/repositories/access_token_repository.js"
+import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
 
-import type { HonoContext } from "@/shared/server/types.js"
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class ApiKeyMiddleware {
   constructor(private accessTokenRepository = container.make(AccessTokenRepository)) {}
 
   handle = async (ctx: HonoContext, next: Next) => {
-    const authorization = ctx.req.header("Authorization")
+    const authorization = ctx.req.header('Authorization')
 
-    const [apiKey] = authorization?.split("Bearer ") ?? []
+    const [apiKey] = authorization?.split('Bearer ') ?? []
 
     if (!apiKey) {
       return next()
@@ -24,7 +24,7 @@ export class ApiKeyMiddleware {
       return next()
     }
 
-    ctx.set("accessToken", accessToken)
+    ctx.set('accessToken', accessToken)
 
     await next()
   }

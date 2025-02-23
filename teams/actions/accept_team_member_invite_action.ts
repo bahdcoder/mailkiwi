@@ -1,12 +1,12 @@
-import { DateTime } from "luxon"
+import { DateTime } from 'luxon'
 
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
+import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
 
-import { TeamMembership } from "@/database/database_schema_types.js"
+import type { TeamMembership } from '@/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class AcceptTeamMemberInviteAction {
   constructor(
@@ -17,8 +17,8 @@ export class AcceptTeamMemberInviteAction {
     if (DateTime.fromJSDate(invite.expiresAt) < DateTime.now()) {
       throw E_VALIDATION_FAILED([
         {
-          message: "Invitation has expired. Please ask for the invitation to be resent.",
-          field: "token",
+          message: 'Invitation has expired. Please ask for the invitation to be resent.',
+          field: 'token',
         },
       ])
     }
@@ -30,7 +30,7 @@ export class AcceptTeamMemberInviteAction {
     this.validateInviteExpiry(invite)
 
     await this.teamMembershipRepository.update(invite.id, {
-      status: "ACTIVE",
+      status: 'ACTIVE',
     })
 
     return { id: invite.id }

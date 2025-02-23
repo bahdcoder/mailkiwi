@@ -1,5 +1,5 @@
-import cn from "classnames"
-import React from "react"
+import cn from 'classnames'
+import type React from 'react'
 
 export interface ToolbarContainerProps extends React.PropsWithChildren {}
 
@@ -13,14 +13,14 @@ export function ToolbarContainer({ children }: ToolbarContainerProps) {
 
 export function ToolbarSection({
   children,
-  divider = "left",
-}: React.PropsWithChildren<{ divider?: "left" | "right" | "both" | "none" }>) {
+  divider = 'left',
+}: React.PropsWithChildren<{ divider?: 'left' | 'right' | 'both' | 'none' }>) {
   return (
     <div
-      className={cn("flex box-border border-[var(--white-10)] px-1", {
-        "border-l": divider === "left",
-        "border-r": divider === "right",
-        "border-l border-r": divider === "both",
+      className={cn('flex box-border border-[var(--white-10)] px-1', {
+        'border-l': divider === 'left',
+        'border-r': divider === 'right',
+        'border-l border-r': divider === 'both',
       })}
     >
       {children}
@@ -31,15 +31,15 @@ export function ToolbarSection({
 export interface ToolbarButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isActive?: boolean
-  as?: "button" | "span"
+  as?: 'button' | 'span'
 }
 
 export function getToolbarClassNames(isActive: boolean) {
   return cn(
-    "w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md hover:text-white",
+    'w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md hover:text-white',
     {
-      "bg-white bg-opacity-[0.08] text-white": isActive,
-      "hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]":
+      'bg-white bg-opacity-[0.08] text-white': isActive,
+      'hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]':
         !isActive,
     },
   )
@@ -47,7 +47,7 @@ export function getToolbarClassNames(isActive: boolean) {
 
 export function ToolbarButton({
   isActive,
-  as = "button",
+  as = 'button',
   className,
   ...buttonProps
 }: ToolbarButtonProps) {
@@ -56,10 +56,10 @@ export function ToolbarButton({
   return (
     <Component
       className={cn(
-        "w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md hover:text-white",
+        'w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md hover:text-white',
         {
-          "bg-white bg-opacity-[0.08] text-white": isActive,
-          "hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]":
+          'bg-white bg-opacity-[0.08] text-white': isActive,
+          'hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]':
             !isActive,
         },
         className,

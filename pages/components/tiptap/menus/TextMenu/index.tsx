@@ -1,1 +1,1 @@
-export * from "./TextMenu.jsx"
+export * from './TextMenu.jsx'

@@ -1,7 +1,7 @@
-import { MenuListProps } from "./types.js"
-import { Text } from "@kibamail/owly/text"
-import cn from "classnames"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import type { MenuListProps } from './types.js'
+import { Text } from '@kibamail/owly/text'
+import cn from 'classnames'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
   const scrollContainer = useRef<HTMLDivElement>(null)
@@ -26,7 +26,7 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
 
   React.useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: React.KeyboardEvent }) => {
-      if (event.key === "ArrowDown") {
+      if (event.key === 'ArrowDown') {
         if (!props.items.length) {
           return false
         }
@@ -51,7 +51,7 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
         return true
       }
 
-      if (event.key === "ArrowUp") {
+      if (event.key === 'ArrowUp') {
         if (!props.items.length) {
           return false
         }
@@ -75,7 +75,7 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
         return true
       }
 
-      if (event.key === "Enter") {
+      if (event.key === 'Enter') {
         if (
           !props.items.length ||
           selectedGroupIndex === -1 ||
@@ -121,7 +121,7 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
         <div
           key={group.title}
           className={cn({
-            "border-b kb-border-tertiary": groupIndex !== props.items.length - 1,
+            'border-b kb-border-tertiary': groupIndex !== props.items.length - 1,
           })}
         >
           <div className="grid grid-cols-1 gap-1">
@@ -136,9 +136,9 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
                 key={command.name}
                 onClick={createCommandClickHandler(groupIndex, commandIndex)}
                 className={cn(
-                  "flex items-center w-full h-8 box-border p-2 gap-1 hover:bg-[var(--background-secondary)] cursor-pointer rounded-lg kb-reset transition ease-in-out duration-100",
+                  'flex items-center w-full h-8 box-border p-2 gap-1 hover:bg-[var(--background-secondary)] cursor-pointer rounded-lg kb-reset transition ease-in-out duration-100',
                   {
-                    "bg-[var(--background-secondary)]":
+                    'bg-[var(--background-secondary)]':
                       selectedGroupIndex === groupIndex &&
                       selectedCommandIndex === commandIndex,
                   },
@@ -155,6 +155,6 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
   )
 })
 
-MenuList.displayName = "MenuList"
+MenuList.displayName = 'MenuList'
 
 export default MenuList

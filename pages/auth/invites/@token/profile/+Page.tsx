@@ -1,7 +1,7 @@
-import { PageContainer, PageTitle } from "@/pages/components/auth/auth.jsx"
-import { Button } from "@kibamail/owly/button"
-import * as TextField from "@kibamail/owly/text-field"
-import React from "react"
+import { PageContainer, PageTitle } from '@/pages/components/auth/auth.jsx'
+import { Button } from '@kibamail/owly/button'
+import * as TextField from '@kibamail/owly/text-field'
+import React from 'react'
 
 function AcceptInviteCreateProfile() {
   return (
@@ -9,11 +9,11 @@ function AcceptInviteCreateProfile() {
       <PageTitle
         title={
           <span className="kb-content-disabled">
-            You{"'"}ve been invited to join{" "}
+            You{"'"}ve been invited to join{' '}
             <span className="kb-content-brand">Zibaletter</span>.
           </span>
         }
-        description={"Complete your profile to join the Zibaletter workspace."}
+        description={'Complete your profile to join the Zibaletter workspace.'}
       />
 
       <form action="" className="mt-8 flex flex-col gap-y-6">

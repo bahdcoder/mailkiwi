@@ -1,6 +1,6 @@
-import { count, eq } from "drizzle-orm"
+import { count, eq } from 'drizzle-orm'
 
-import type { CreateTeamDto } from "@/teams/dto/create_team_dto.js"
+import type { CreateTeamDto } from '@/teams/dto/create_team_dto.js'
 
 import {
   broadcastGroups,
@@ -8,11 +8,11 @@ import {
   teamMemberships,
   teams,
   users,
-} from "@/database/schema.js"
-import { hasMany } from "@/database/utils/relationships.js"
+} from '@/database/schema.js'
+import { hasMany } from '@/database/utils/relationships.js'
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
 export class TeamRepository extends BaseRepository {
   constructor(
@@ -27,7 +27,7 @@ export class TeamRepository extends BaseRepository {
     to: teamMemberships,
     primaryKey: teams.id,
     foreignKey: teamMemberships.teamId,
-    relationName: "members",
+    relationName: 'members',
   })
 
   private hasManySendingDomains = hasMany(this.database, {
@@ -35,7 +35,7 @@ export class TeamRepository extends BaseRepository {
     to: sendingDomains,
     primaryKey: teams.id,
     foreignKey: sendingDomains.teamId,
-    relationName: "sendingDomains",
+    relationName: 'sendingDomains',
   })
 
   async createFirstTeam(payload: CreateTeamDto, userId: string) {
@@ -86,8 +86,8 @@ export class TeamRepository extends BaseRepository {
           .leftJoin(users, eq(users.id, teamMemberships.userId))
           .where(eq(teams.id, teamId)),
       (row) => ({
-        ...row["teamMemberships"],
-        user: row?.["users"],
+        ...row['teamMemberships'],
+        user: row?.['users'],
       }),
     )
 
@@ -118,12 +118,10 @@ export class TeamRepository extends BaseRepository {
   }
 
   async findByIdWithDomains(teamId: string) {
-    const self = this
-
     return this.cache
-      .namespace("teams")
-      .get(`team_with_sending_domains:${teamId}`, async function () {
-        const [team] = await self.hasManySendingDomains((query) =>
+      .namespace('teams')
+      .get(`team_with_sending_domains:${teamId}`, async () => {
+        const [team] = await this.hasManySendingDomains((query) =>
           query.where(eq(teams.id, teamId)),
         )
 

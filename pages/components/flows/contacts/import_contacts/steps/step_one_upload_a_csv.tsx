@@ -1,33 +1,36 @@
-import { FormState, useImportcontactsContext } from "../state/import_contacts_context.jsx"
-import { FileUploadDropbox } from "@/pages/components/file-upload/file-upload-dropbox.jsx"
+import {
+  type FormState,
+  useImportcontactsContext,
+} from '../state/import_contacts_context.jsx'
+import { FileUploadDropbox } from '@/pages/components/file-upload/file-upload-dropbox.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { InputError } from "@kibamail/owly/input-hint"
-import { Text } from "@kibamail/owly/text"
-import * as Dialog from "@radix-ui/react-dialog"
-import React, { useRef } from "react"
-import { usePageContext } from "vike-react/usePageContext"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { InputError } from '@kibamail/owly/input-hint'
+import { Text } from '@kibamail/owly/text'
+import * as Dialog from '@radix-ui/react-dialog'
+import React, { useRef } from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export function StepOneUploadACsv() {
   const [uploadProgress, setUploadProgress] = React.useState(0)
   const formRef = useRef<HTMLFormElement | null>(null)
 
   const ctx = usePageContext()
-  const { setFormState, setStep } = useImportcontactsContext("UploadACsv")
+  const { setFormState, setStep } = useImportcontactsContext('UploadACsv')
 
   const { serverFormProps, isPending, error } = useServerFormMutation<{
     id: string
-    headerCounts: FormState["headerCounts"]
-    headerSamples: FormState["headerSamples"]
-    propertiesMap: FormState["propertiesMap"]
+    headerCounts: FormState['headerCounts']
+    headerSamples: FormState['headerSamples']
+    propertiesMap: FormState['propertiesMap']
   }>({
-    action: route("contacts_import", { audienceId: ctx.audience.id }),
+    action: route('contacts_import', { audienceId: ctx.audience.id }),
     onSuccess({ payload }) {
       setFormState((current) => ({
         ...current,
@@ -48,7 +51,7 @@ export function StepOneUploadACsv() {
   function onCsvFileAccepted() {
     const form = formRef.current
 
-    form?.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }))
+    form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
   }
 
   function onContinue() {
@@ -77,12 +80,12 @@ export function StepOneUploadACsv() {
             isFileUploadingToServer={isPending}
             fileUploadProgress={uploadProgress}
             onFileAccept={onCsvFileAccepted}
-            accept={[".csv"]}
+            accept={['.csv']}
           />
           {error?.errorsList && error?.errorsList.length > 0 ? (
             <div className="mt-2">
               {error?.errorsList.map((error, idx) => (
-                <InputError baseId={"csv-file-upload"} key={idx}>
+                <InputError baseId={'csv-file-upload'} key={idx}>
                   {error}
                 </InputError>
               ))}

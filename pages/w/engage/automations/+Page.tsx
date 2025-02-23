@@ -1,5 +1,5 @@
-import * as Tabs from "@kibamail/owly/tabs"
-import { usePageContext } from "vike-react/usePageContext"
+import * as Tabs from '@kibamail/owly/tabs'
+import { usePageContext } from 'vike-react/usePageContext'
 
 function LettersAutomationsPage() {
   const ctx = usePageContext()

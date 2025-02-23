@@ -1,8 +1,8 @@
-import React from "react"
+import React from 'react'
 
 export const InfoCircleIcon = React.forwardRef<
-  React.ElementRef<"svg">,
-  React.ComponentPropsWithoutRef<"svg">
+  React.ElementRef<'svg'>,
+  React.ComponentPropsWithoutRef<'svg'>
 >((props, forwardedRef) => {
   return (
     <svg

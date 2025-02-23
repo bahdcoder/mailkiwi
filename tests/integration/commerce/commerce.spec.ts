@@ -1,37 +1,42 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { AccountInformation } from "@/commerce/contracts/commerce_provider_contract.js"
-import { ProductRepository } from "@/commerce/repositories/product_repository.js"
-import { CommerceProviderTool } from "@/commerce/tools/commerce_provider_tool.js"
-import { faker } from "@faker-js/faker"
-import { eq } from "drizzle-orm"
-import { DateTime } from "luxon"
-import { describe, test, vi } from "vitest"
+import { appEnv } from '@/app/env/app_env.js'
+import type { AccountInformation } from '@/commerce/contracts/commerce_provider_contract.js'
+import { ProductRepository } from '@/commerce/repositories/product_repository.js'
+import { CommerceProviderTool } from '@/commerce/tools/commerce_provider_tool.js'
+import { faker } from '@faker-js/faker'
+import { eq } from 'drizzle-orm'
+import { DateTime } from 'luxon'
+import { describe, test, vi } from 'vitest'
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { makeRequestAsUser } from "@/tests/utils/http.js"
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '@/tests/utils/http.js'
 
-import { Audience, InsertProduct, Team, User } from "@/database/database_schema_types.js"
-import { products } from "@/database/schema.js"
+import type {
+  Audience,
+  InsertProduct,
+  Team,
+  User,
+} from '@/database/database_schema_types.js'
+import { products } from '@/database/schema.js'
 
-import { makeApp, makeDatabase } from "@/shared/container/index.js"
+import { makeApp, makeDatabase } from '@/shared/container/index.js'
 
-import { sleep } from "@/utils/sleep.js"
-import { container } from "@/utils/typi.js"
+import { sleep } from '@/utils/sleep.js'
+import { container } from '@/utils/typi.js'
 
-describe("@commerce", () => {
+describe('@commerce', () => {
   const connectCommerceProvider = async (user: User, team: Team) => {
     return makeRequestAsUser(user, {
-      method: "POST",
-      path: "/commerce/connect",
+      method: 'POST',
+      path: '/commerce/connect',
       body: {
-        provider: "paystack",
+        provider: 'paystack',
         payoutInformation: {
-          bankCode: "058",
-          accountNumber: "0424218293",
+          bankCode: '058',
+          accountNumber: '0424218293',
         },
       },
       headers: {
@@ -41,7 +46,7 @@ describe("@commerce", () => {
   }
 
   const createFakeCommerceProvider = () => {
-    const createAccountFn = vi.fn(async function (_account: AccountInformation) {
+    const createAccountFn = vi.fn(async (_account: AccountInformation) => {
       const accountId = `acct_${faker.string.uuid()}`
       return {
         id: accountId,
@@ -49,17 +54,15 @@ describe("@commerce", () => {
       }
     })
 
-    const createProviderFn = vi.fn(function (name: string) {
-      return {
-        createAccount: createAccountFn,
-        requiresExternalOnboarding: true,
-        createOnboardingLink: vi.fn(),
-        initialiseOneTimePayment: vi.fn(async () => ({
-          paymentUrl: "https://checkout.paystack.com/7j8",
-        })),
-        confirmOneTimePayment: vi.fn(async () => ({ success: true })),
-      }
-    })
+    const createProviderFn = vi.fn((name: string) => ({
+      createAccount: createAccountFn,
+      requiresExternalOnboarding: true,
+      createOnboardingLink: vi.fn(),
+      initialiseOneTimePayment: vi.fn(async () => ({
+        paymentUrl: 'https://checkout.paystack.com/7j8',
+      })),
+      confirmOneTimePayment: vi.fn(async () => ({ success: true })),
+    }))
 
     container.fake(CommerceProviderTool, {
       createProvider: createProviderFn,
@@ -68,7 +71,7 @@ describe("@commerce", () => {
     return { createAccountFn, createProviderFn }
   }
 
-  test("can connect commerce account to stripe provider", async ({ expect }) => {
+  test('can connect commerce account to stripe provider', async ({ expect }) => {
     const { user, team } = await createUser({
       enableCommerceOnTeam: false,
     })
@@ -76,11 +79,11 @@ describe("@commerce", () => {
     const { createProviderFn } = createFakeCommerceProvider()
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/commerce/connect",
+      method: 'POST',
+      path: '/commerce/connect',
       body: {
-        provider: "stripe",
-        country: "US",
+        provider: 'stripe',
+        country: 'US',
       },
       headers: {
         [appEnv.software.teamHeader]: team.id.toString(),
@@ -88,16 +91,16 @@ describe("@commerce", () => {
     })
 
     expect(response.status).toBe(302)
-    expect(response.headers.get("location")).toMatch(
-      "https://connect.stripe.com/setup/e/acct_",
+    expect(response.headers.get('location')).toMatch(
+      'https://connect.stripe.com/setup/e/acct_',
     )
 
-    expect(createProviderFn).toHaveBeenCalledWith("stripe")
+    expect(createProviderFn).toHaveBeenCalledWith('stripe')
 
     container.restoreAll()
   })
 
-  test("can connect commerce account to paystack provider", async ({ expect }) => {
+  test('can connect commerce account to paystack provider', async ({ expect }) => {
     const { user, team } = await createUser({
       enableCommerceOnTeam: false,
     })
@@ -110,24 +113,24 @@ describe("@commerce", () => {
 
     await connectCommerceProvider(user, team)
 
-    expect(createProviderFn).toHaveBeenCalledWith("paystack")
+    expect(createProviderFn).toHaveBeenCalledWith('paystack')
 
     container.restoreAll()
   })
 
-  test("can create a commerce product", async ({ expect }) => {
+  test('can create a commerce product', async ({ expect }) => {
     const { user, audience } = await createUser({
       enableCommerceOnTeam: true,
     })
 
     const payload = {
       name: faker.string.uuid(),
-      billingCycle: "once",
+      billingCycle: 'once',
       price: 1000,
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/audiences/${audience.id}/products`,
       body: payload,
     })
@@ -146,19 +149,19 @@ describe("@commerce", () => {
     expect(product.billingCycle).toBe(payload.billingCycle)
   })
 
-  test("a contact can purchase a commerce product", async ({ expect }) => {
+  test('a contact can purchase a commerce product', async ({ expect }) => {
     const { audience, team } = await createUser({
       enableCommerceOnTeam: false,
     })
 
     await container.make(TeamRepository).teams().update(team.id, {
-      commerceProvider: "paystack",
-      commerceProviderAccountId: "ACCT_v5h38z9ciytbnq3",
+      commerceProvider: 'paystack',
+      commerceProviderAccountId: 'ACCT_v5h38z9ciytbnq3',
       commerceProviderConfirmedAt: DateTime.now().toJSDate(),
     })
 
     const productPayload: InsertProduct = {
-      billingCycle: "once",
+      billingCycle: 'once',
       name: faker.lorem.sentence(4),
       price: 100000,
       audienceId: audience.id,
@@ -184,7 +187,7 @@ describe("@commerce", () => {
 
     // const response = await connectCommerceProvider(user, team)
     const response = await app.request(`/products/${productId}/payments/initialize`, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
         email,
       }),
@@ -193,6 +196,6 @@ describe("@commerce", () => {
     const json = await response.json()
 
     expect(response.status).toBe(200)
-    expect(json.paymentUrl).toContain("https://checkout.paystack.com/")
+    expect(json.paymentUrl).toContain('https://checkout.paystack.com/')
   })
 })

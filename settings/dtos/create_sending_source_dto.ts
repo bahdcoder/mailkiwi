@@ -8,7 +8,7 @@ import {
   pipe,
   regex,
   string,
-} from "valibot"
+} from 'valibot'
 
 export const CreateSendingSourceSchema = object({
   address: pipe(string(), ipv4()),
@@ -21,7 +21,7 @@ export const CreateSendingSourceSchema = object({
     ),
   ),
   addressIpv6: optional(pipe(string(), ipv6())),
-  pool: picklist(["engage", "send"]),
+  pool: picklist(['engage', 'send']),
 })
 
 export type CreateSendingSourceDto = InferInput<typeof CreateSendingSourceSchema>

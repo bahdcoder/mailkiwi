@@ -1,16 +1,16 @@
-import { UpdateContactImportSettingsDto } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
-import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.js"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
+import type { UpdateContactImportSettingsDto } from '@/audiences/dto/contact_imports/update_contact_import_settings_dto.js'
+import { ImportContactsJob } from '@/audiences/jobs/import_contacts_job.js'
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
 
-import { ContactImport } from "@/database/database_schema_types.js"
+import type { ContactImport } from '@/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { Queue } from '@/shared/queue/queue.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class UpdateContactImportSettingsAction {
   constructor(
@@ -29,7 +29,7 @@ export class UpdateContactImportSettingsAction {
 
     await this.database.transaction(async (trx) => {
       await this.contactImportRepository.transaction(trx).update(contactImport.id, {
-        status: "PROCESSING",
+        status: 'PROCESSING',
         subscribeAllContacts:
           payload.subscribeAllContacts === undefined
             ? true
@@ -77,8 +77,8 @@ export class UpdateContactImportSettingsAction {
       throw E_VALIDATION_FAILED([
         {
           message:
-            "Invalid headers were provided. Please make sure the headers match the values in the uploaded CSV.",
-          field: "propertiesMap",
+            'Invalid headers were provided. Please make sure the headers match the values in the uploaded CSV.',
+          field: 'propertiesMap',
         },
       ])
     }

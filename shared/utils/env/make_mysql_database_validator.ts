@@ -1,4 +1,4 @@
-import { makeValidator } from "envalid"
+import { makeValidator } from 'envalid'
 
 export const mysqlDatabaseUrl = makeValidator((value) => {
   const regex = new RegExp(
@@ -7,5 +7,5 @@ export const mysqlDatabaseUrl = makeValidator((value) => {
 
   if (regex.test(value)) return value
 
-  throw new Error("Invalid Mysql database host provided.")
+  throw new Error('Invalid Mysql database host provided.')
 })

@@ -1,5 +1,5 @@
-import { Editor } from "@tiptap/react"
-import { useCallback } from "react"
+import type { Editor } from '@tiptap/react'
+import { useCallback } from 'react'
 
 export const useTextmenuCommands = (editor: Editor) => {
   const onBold = useCallback(() => editor.chain().focus().toggleBold().run(), [editor])
@@ -30,19 +30,19 @@ export const useTextmenuCommands = (editor: Editor) => {
     [editor],
   )
   const onAlignLeft = useCallback(
-    () => editor.chain().focus().setTextAlign("left").run(),
+    () => editor.chain().focus().setTextAlign('left').run(),
     [editor],
   )
   const onAlignCenter = useCallback(
-    () => editor.chain().focus().setTextAlign("center").run(),
+    () => editor.chain().focus().setTextAlign('center').run(),
     [editor],
   )
   const onAlignRight = useCallback(
-    () => editor.chain().focus().setTextAlign("right").run(),
+    () => editor.chain().focus().setTextAlign('right').run(),
     [editor],
   )
   const onAlignJustify = useCallback(
-    () => editor.chain().focus().setTextAlign("justify").run(),
+    () => editor.chain().focus().setTextAlign('justify').run(),
     [editor],
   )
 
@@ -59,7 +59,7 @@ export const useTextmenuCommands = (editor: Editor) => {
       editor
         .chain()
         .focus()
-        .setLink({ href: url, target: inNewTab ? "_blank" : "" })
+        .setLink({ href: url, target: inNewTab ? '_blank' : '' })
         .run(),
     [editor],
   )

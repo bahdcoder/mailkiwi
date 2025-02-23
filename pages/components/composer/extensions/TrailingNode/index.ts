@@ -1,1 +1,1 @@
-export * from "./trailing-node.js"
+export * from './trailing-node.js'

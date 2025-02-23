@@ -1,16 +1,16 @@
-import { PageContainer, PageTitle } from "@/pages/components/auth/auth.jsx"
-import { PasswordField } from "@/pages/components/input/password-field.jsx"
+import { PageContainer, PageTitle } from '@/pages/components/auth/auth.jsx'
+import { PasswordField } from '@/pages/components/input/password-field.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { Button } from "@kibamail/owly/button"
-import * as TextField from "@kibamail/owly/text-field"
-import React from "react"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { Button } from '@kibamail/owly/button'
+import * as TextField from '@kibamail/owly/text-field'
+import React from 'react'
 
 function RegisterPasswordPage() {
   const { serverFormProps, isPending, error } = useServerFormMutation({
-    action: "/auth/register/password",
+    action: '/auth/register/password',
   })
 
   return (

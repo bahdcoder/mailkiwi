@@ -1,8 +1,8 @@
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
-import * as Dialog from "@radix-ui/react-dialog"
-import * as React from "react"
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
+import * as Dialog from '@radix-ui/react-dialog'
+import * as React from 'react'
 
 export function StepFourImportProcessing() {
   return (

@@ -32,11 +32,11 @@ import type {
   users,
   websitePages,
   websites,
-} from "./schema.js"
-import type { InferSelectModel } from "drizzle-orm"
-import type { MySqlUpdateSetSource } from "drizzle-orm/mysql-core"
+} from './schema.js'
+import type { InferSelectModel } from 'drizzle-orm'
+import type { MySqlUpdateSetSource } from 'drizzle-orm/mysql-core'
 
-import type { makeDatabase } from "@/shared/container/index.js"
+import type { makeDatabase } from '@/shared/container/index.js'
 
 export type Audience = InferSelectModel<typeof audiences>
 export type Website = InferSelectModel<typeof websites>
@@ -57,7 +57,7 @@ export type MessageReaction = InferSelectModel<typeof messageReactions>
 
 export type BroadcastWithoutContent = Omit<
   Broadcast,
-  "contentHtml" | "contentText" | "contentJson"
+  'contentHtml' | 'contentText' | 'contentJson'
 >
 export type AccessToken = InferSelectModel<typeof accessTokens>
 export type Team = InferSelectModel<typeof teams>
@@ -67,18 +67,18 @@ export type TeamMembership = InferSelectModel<typeof teamMemberships>
 export type Oauth2Account = InferSelectModel<typeof oauth2Accounts>
 export type TagOnContact = InferSelectModel<typeof tagsOnContacts>
 export type FindUserByIdArgs = Parameters<
-  ReturnType<typeof makeDatabase>["query"]["users"]["findFirst"]
+  ReturnType<typeof makeDatabase>['query']['users']['findFirst']
 >[0]
 
 export type FindAutomationByIdArgs = Parameters<
-  ReturnType<typeof makeDatabase>["query"]["automations"]["findFirst"]
+  ReturnType<typeof makeDatabase>['query']['automations']['findFirst']
 >[0]
 
 export type UpdateSetContactInput = MySqlUpdateSetSource<typeof contacts>
 export type UpdateSetAudienceInput = MySqlUpdateSetSource<typeof audiences>
 export type UpdateSetBroadcastInput = Omit<
   MySqlUpdateSetSource<typeof broadcasts>,
-  "sendAt"
+  'sendAt'
 > & {
   sendAt: string | undefined
 }

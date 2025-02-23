@@ -1,19 +1,19 @@
-import "./page.css"
-import { PageContainer, PageTitle } from "@/pages/components/auth/auth.jsx"
+import './page.css'
+import { PageContainer, PageTitle } from '@/pages/components/auth/auth.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { Button } from "@kibamail/owly/button"
-import * as CodeInput from "@kibamail/owly/code-input"
-import { Text } from "@kibamail/owly/text"
-import React from "react"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { Button } from '@kibamail/owly/button'
+import * as CodeInput from '@kibamail/owly/code-input'
+import { Text } from '@kibamail/owly/text'
+import React from 'react'
 
 function EmailConfirmPage() {
   const formRef = React.useRef<HTMLFormElement>(null)
 
   const { serverFormProps, isPending, error } = useServerFormMutation({
-    action: "/auth/register/email/confirm",
+    action: '/auth/register/email/confirm',
   })
 
   return (
@@ -28,8 +28,8 @@ function EmailConfirmPage() {
             <span className="kb-content-tertiary">
               We have sent a code to your email address. Please enter the code below to
               confirm your email address
-            </span>{" "}
-            <span className="kb-content-primary">{"frantz@kibamail.com"}</span>.
+            </span>{' '}
+            <span className="kb-content-primary">{'frantz@kibamail.com'}</span>.
           </Text>
         }
       />

@@ -1,12 +1,12 @@
-import { useOnboardingContext } from "./context_provider.js"
-import { ButtonCard } from "@/pages/components/button/button-card.jsx"
-import { ImportContactsDialog } from "@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
+import { useOnboardingContext } from './context_provider.js'
+import { ButtonCard } from '@/pages/components/button/button-card.jsx'
+import { ImportContactsDialog } from '@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
 
 export function AddContactsStep() {
-  const { step, setStep, formState } = useOnboardingContext("CreatePublicationStep")
+  const { step, setStep, formState } = useOnboardingContext('CreatePublicationStep')
 
   function goToNextStep() {
     setStep((current) => current + 1)

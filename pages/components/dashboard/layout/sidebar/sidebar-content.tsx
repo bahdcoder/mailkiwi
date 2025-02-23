@@ -1,23 +1,23 @@
-import { useApplicationLayoutContext } from "@/pages/components/dashboard/layout/application-layout-context.jsx"
-import { FooterMenuItems } from "@/pages/components/dashboard/layout/footer-menu-items.jsx"
-import { SearchBoxTrigger } from "@/pages/components/dashboard/layout/sidebar/search-box-trigger.jsx"
-import { SubmenuItemLink } from "@/pages/components/dashboard/layout/submenu-item-link.jsx"
-import { WorkspacesDropdownMenu } from "@/pages/components/dashboard/layout/workspace-dropdown-menu.jsx"
-import { BookStackIcon } from "@/pages/components/icons/book-stack.svg.jsx"
-import { ChatBubbleEmptyIcon } from "@/pages/components/icons/chat-bubble-empty.svg.jsx"
-import { HelpCircleIcon } from "@/pages/components/icons/help-circle.svg.jsx"
-import { HomeAltSlimHorizIcon } from "@/pages/components/icons/home-alt-slim-horiz.jsx"
-import { EngageIcon } from "@/pages/components/icons/products/engage.svg.jsx"
-import { InsightsIcon } from "@/pages/components/icons/products/insights.svg.jsx"
-import { OptimiseIcon } from "@/pages/components/icons/products/optimise.svg.jsx"
-import { SendIcon } from "@/pages/components/icons/products/send.svg.jsx"
-import { SidebarCollapseIcon } from "@/pages/components/icons/sidebar-collapse.svg.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Progress } from "@kibamail/owly/progress"
-import { Text } from "@kibamail/owly/text"
-import { usePageContext } from "vike-react/usePageContext"
+import { useApplicationLayoutContext } from '@/pages/components/dashboard/layout/application-layout-context.jsx'
+import { FooterMenuItems } from '@/pages/components/dashboard/layout/footer-menu-items.jsx'
+import { SearchBoxTrigger } from '@/pages/components/dashboard/layout/sidebar/search-box-trigger.jsx'
+import { SubmenuItemLink } from '@/pages/components/dashboard/layout/submenu-item-link.jsx'
+import { WorkspacesDropdownMenu } from '@/pages/components/dashboard/layout/workspace-dropdown-menu.jsx'
+import { BookStackIcon } from '@/pages/components/icons/book-stack.svg.jsx'
+import { ChatBubbleEmptyIcon } from '@/pages/components/icons/chat-bubble-empty.svg.jsx'
+import { HelpCircleIcon } from '@/pages/components/icons/help-circle.svg.jsx'
+import { HomeAltSlimHorizIcon } from '@/pages/components/icons/home-alt-slim-horiz.jsx'
+import { EngageIcon } from '@/pages/components/icons/products/engage.svg.jsx'
+import { InsightsIcon } from '@/pages/components/icons/products/insights.svg.jsx'
+import { OptimiseIcon } from '@/pages/components/icons/products/optimise.svg.jsx'
+import { SendIcon } from '@/pages/components/icons/products/send.svg.jsx'
+import { SidebarCollapseIcon } from '@/pages/components/icons/sidebar-collapse.svg.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Progress } from '@kibamail/owly/progress'
+import { Text } from '@kibamail/owly/text'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 interface SidebarContentProps {
   rootId: string
@@ -25,7 +25,7 @@ interface SidebarContentProps {
 
 export function SidebarContent({ rootId }: SidebarContentProps) {
   const ctx = usePageContext()
-  const { setSidebar } = useApplicationLayoutContext("Sidebar")
+  const { setSidebar } = useApplicationLayoutContext('Sidebar')
 
   function setSidebarOffscreen() {
     if (ctx.isMobile) {
@@ -57,17 +57,17 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
         </div>
 
         <div className="flex flex-col">
-          <SubmenuItemLink href={route("welcome")}>
+          <SubmenuItemLink href={route('welcome')}>
             <BookStackIcon className="w-5 h-5" />
             <Text className="kb-content-secondary font-medium">Get Started</Text>
           </SubmenuItemLink>
 
-          <SubmenuItemLink href={route("dashboard")}>
+          <SubmenuItemLink href={route('dashboard')}>
             <HomeAltSlimHorizIcon className="w-5 h-5" />
             <Text className="kb-content-secondary font-medium">Dashboard</Text>
           </SubmenuItemLink>
 
-          <SubmenuItemLink href={route("community")}>
+          <SubmenuItemLink href={route('community')}>
             <ChatBubbleEmptyIcon className="w-5 h-5" />
             <Text className="kb-content-secondary font-medium">Chat</Text>
 
@@ -91,22 +91,22 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
         </div>
 
         <div className="flex flex-col">
-          <SubmenuItemLink href={route("engage")}>
+          <SubmenuItemLink href={route('engage')}>
             <EngageIcon className="w-5 h-5" />
             <Text className="kb-content-secondary font-medium">Engage</Text>
           </SubmenuItemLink>
 
-          <SubmenuItemLink href={route("send")}>
+          <SubmenuItemLink href={route('send')}>
             <SendIcon className="w-5 h-5" />
             <Text className="kb-content-secondary font-medium">Send</Text>
           </SubmenuItemLink>
 
-          <SubmenuItemLink href={route("optimise")}>
+          <SubmenuItemLink href={route('optimise')}>
             <OptimiseIcon className="w-5 h-5" />
             <Text className="kb-content-secondary font-medium">Optimise</Text>
           </SubmenuItemLink>
 
-          <SubmenuItemLink href={route("insights")}>
+          <SubmenuItemLink href={route('insights')}>
             <InsightsIcon className="w-5 h-5" />
             <Text className="kb-content-secondary font-medium">Insights</Text>
           </SubmenuItemLink>

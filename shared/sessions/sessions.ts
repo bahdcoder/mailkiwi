@@ -1,18 +1,18 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { deleteCookie, getSignedCookie, setSignedCookie } from "hono/cookie"
-import { randomBytes } from "node:crypto"
+import { appEnv } from '@/app/env/app_env.js'
+import { deleteCookie, getSignedCookie, setSignedCookie } from 'hono/cookie'
+import { randomBytes } from 'node:crypto'
 
-import { HonoContext } from "@/shared/server/types.js"
+import type { HonoContext } from '@/shared/server/types.js'
 import {
-  RedisSessionData,
+  type RedisSessionData,
   RedisSessionStore,
-} from "@/shared/sessions/stores/redis_session_store.js"
+} from '@/shared/sessions/stores/redis_session_store.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class Session {
-  protected SESSION_COOKIE_NAME = "session"
-  protected CONTACT_SESSION_COOKIE_NAME = "contact_session"
+  protected SESSION_COOKIE_NAME = 'session'
+  protected CONTACT_SESSION_COOKIE_NAME = 'contact_session'
 
   constructor(
     protected encryptionKey = appEnv.APP_KEY.release(),
@@ -20,15 +20,15 @@ export class Session {
   ) {}
 
   async getContact(ctx: HonoContext) {
-    return this.getUser(ctx, "contact")
+    return this.getUser(ctx, 'contact')
   }
 
-  async getCurrentSessionId(ctx: HonoContext, type: "contact" | "user" = "user") {
+  async getCurrentSessionId(ctx: HonoContext, type: 'contact' | 'user' = 'user') {
     const sessionId = await getSignedCookie(
       ctx,
       this.encryptionKey,
-      "__Secure-" +
-        (type === "contact"
+      '__Secure-' +
+        (type === 'contact'
           ? this.CONTACT_SESSION_COOKIE_NAME
           : this.SESSION_COOKIE_NAME),
     )
@@ -36,7 +36,7 @@ export class Session {
     return sessionId
   }
 
-  async getUser(ctx: HonoContext, type: "contact" | "user" = "user") {
+  async getUser(ctx: HonoContext, type: 'contact' | 'user' = 'user') {
     const sessionId = await this.getCurrentSessionId(ctx, type)
 
     if (!sessionId) {
@@ -52,7 +52,7 @@ export class Session {
     return session
   }
 
-  async clearForUser(ctx: HonoContext, type: "contact" | "user" = "user") {
+  async clearForUser(ctx: HonoContext, type: 'contact' | 'user' = 'user') {
     const sessionId = await this.getCurrentSessionId(ctx, type)
 
     if (!sessionId) {
@@ -61,50 +61,50 @@ export class Session {
 
     deleteCookie(
       ctx,
-      type === "contact" ? this.CONTACT_SESSION_COOKIE_NAME : this.SESSION_COOKIE_NAME,
+      type === 'contact' ? this.CONTACT_SESSION_COOKIE_NAME : this.SESSION_COOKIE_NAME,
     )
 
     await this.sessionStore.remove(sessionId)
   }
 
   async createForContact(ctx: HonoContext, contactId: string) {
-    return this.createForUser(ctx, { userId: contactId }, "contact")
+    return this.createForUser(ctx, { userId: contactId }, 'contact')
   }
 
   async updateCurrentSessionTeamId(ctx: HonoContext, teamId: string) {
-    const sessionId = await this.getCurrentSessionId(ctx, "user")
+    const sessionId = await this.getCurrentSessionId(ctx, 'user')
 
     if (!sessionId) {
       return
     }
 
-    await this.sessionStore.update(sessionId, "currentTeamId", teamId)
+    await this.sessionStore.update(sessionId, 'currentTeamId', teamId)
   }
 
   async createForUser(
     ctx: HonoContext,
-    data: Pick<RedisSessionData, "userId" | "currentTeamId" | "userAgent">,
-    type: "user" | "contact" = "user",
+    data: Pick<RedisSessionData, 'userId' | 'currentTeamId' | 'userAgent'>,
+    type: 'user' | 'contact' = 'user',
   ) {
-    const sessionId = randomBytes(32).toString("hex")
+    const sessionId = randomBytes(32).toString('hex')
 
     await this.sessionStore.create(data.userId, sessionId, {
-      ip: ctx.req.header("x-forwarded-for") || ctx.req.header("x-real-ip"),
-      userAgent: ctx.req.header("user-agent"),
+      ip: ctx.req.header('x-forwarded-for') || ctx.req.header('x-real-ip'),
+      userAgent: ctx.req.header('user-agent'),
       ...data,
     })
 
     await setSignedCookie(
       ctx,
-      type === "contact" ? this.CONTACT_SESSION_COOKIE_NAME : this.SESSION_COOKIE_NAME,
+      type === 'contact' ? this.CONTACT_SESSION_COOKIE_NAME : this.SESSION_COOKIE_NAME,
       sessionId,
       this.encryptionKey,
       {
-        sameSite: "Lax",
-        prefix: "secure",
+        sameSite: 'Lax',
+        prefix: 'secure',
         secure: appEnv.isProd,
         httpOnly: true,
-        path: "/",
+        path: '/',
         maxAge: 3600 * 24 * 30, // 30 days
       },
     )

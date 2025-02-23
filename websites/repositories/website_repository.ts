@@ -1,13 +1,13 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { and, eq } from "drizzle-orm"
+import { appEnv } from '@/app/env/app_env.js'
+import { and, eq } from 'drizzle-orm'
 
-import { InsertWebsite, UpdateWebsite } from "@/database/database_schema_types.js"
-import { websitePages, websites } from "@/database/schema.js"
-import { hasMany } from "@/database/utils/relationships.js"
+import type { InsertWebsite, UpdateWebsite } from '@/database/database_schema_types.js'
+import { websitePages, websites } from '@/database/schema.js'
+import { hasMany } from '@/database/utils/relationships.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
-import { Encryption } from "@/shared/utils/encryption/encryption.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { Encryption } from '@/shared/utils/encryption/encryption.js'
 
 export class WebsiteRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {
@@ -15,7 +15,7 @@ export class WebsiteRepository extends BaseRepository {
   }
 
   protected hasManyPages = hasMany(this.database, {
-    relationName: "pages",
+    relationName: 'pages',
     from: websites,
     to: websitePages,
     primaryKey: websites.id,
@@ -28,12 +28,12 @@ export class WebsiteRepository extends BaseRepository {
 
     await this.database.insert(websites).values({ ...payload, id })
     await this.database.insert(websitePages).values({
-      path: "/",
+      path: '/',
       id: homePageId,
       websiteId: id,
       publishedAt: new Date(),
-      websiteContent: { type: "doc", content: [] }, // TODO: Replace with correct website content once we have a website builder.
-      draftWebsiteContent: { type: "doc", content: [] }, // TODO: Replace with correct website content once we have a website builder.
+      websiteContent: { type: 'doc', content: [] }, // TODO: Replace with correct website content once we have a website builder.
+      draftWebsiteContent: { type: 'doc', content: [] }, // TODO: Replace with correct website content once we have a website builder.
     })
 
     return { id, homePageId }

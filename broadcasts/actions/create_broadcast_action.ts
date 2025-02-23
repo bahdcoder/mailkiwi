@@ -1,13 +1,13 @@
-import { and, eq } from "drizzle-orm"
+import { and, eq } from 'drizzle-orm'
 
-import type { CreateBroadcastDto } from "@/broadcasts/dto/create_broadcast_dto.js"
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import type { CreateBroadcastDto } from '@/broadcasts/dto/create_broadcast_dto.js'
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
-import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
-import { sendingDomains } from "@/database/schema.js"
+import { sendingDomains } from '@/database/schema.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class CreateBroadcastAction {
   constructor(
@@ -21,7 +21,7 @@ export class CreateBroadcastAction {
       .make(SendingDomainRepository)
       .domains()
       .findOne(
-        and(eq(sendingDomains.teamId, teamId), eq(sendingDomains.product, "engage")),
+        and(eq(sendingDomains.teamId, teamId), eq(sendingDomains.product, 'engage')),
       )
 
     return this.broadcastRepository.create(

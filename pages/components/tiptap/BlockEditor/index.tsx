@@ -1,1 +1,1 @@
-export * from "./BlockEditor.jsx"
+export * from './BlockEditor.jsx'

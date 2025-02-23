@@ -1,67 +1,67 @@
-import { AppEnvVariables, appEnv } from "@/app/env/app_env.js"
-import { ChannelController } from "@/chat/controllers/channel_controller.js"
-import { ChatController } from "@/chat/controllers/chat_controller.js"
-import { CommerceProviderController } from "@/commerce/controllers/commerce_provider_controller.js"
-import { ProductController } from "@/commerce/controllers/product_controller.js"
-import { FormController } from "@/forms/controllers/form_controller.js"
-import { FormResponsesController } from "@/forms/controllers/form_responses_controller.js"
-import { InjectEmailController } from "@/injector/controllers/inject_email_controller.js"
-import { MtaLogsController } from "@/kumologs/controllers/mta_logs_controller.js"
-import { DkimController } from "@/kumomta/controllers/dkim_controller.js"
-import { SmtpAuthController } from "@/kumomta/controllers/smtp_auth_controller.js"
-import { TrackingController } from "@/kumomta/controllers/tracking_controller.js"
-import { MediaDocumentController } from "@/media-library/controllers/media_library_controller.js"
-import { ClickTrackingController } from "@/tracking/controllers/click_tracking_controller.js"
-import { OpenTrackingController } from "@/tracking/controllers/open_tracking_controller.js"
-import { MailerWebhooksContorller } from "@/webhooks/controllers/mailer_webhooks_controller.js"
-import { WebsiteController } from "@/websites/controllers/website_controller.js"
-import { readFile } from "fs/promises"
-import type { Redis } from "ioredis"
-import { resolve } from "path"
-import { type Logger, pino } from "pino"
+import { type AppEnvVariables, appEnv } from '@/app/env/app_env.js'
+import { ChannelController } from '@/chat/controllers/channel_controller.js'
+import { ChatController } from '@/chat/controllers/chat_controller.js'
+import { CommerceProviderController } from '@/commerce/controllers/commerce_provider_controller.js'
+import { ProductController } from '@/commerce/controllers/product_controller.js'
+import { FormController } from '@/forms/controllers/form_controller.js'
+import { FormResponsesController } from '@/forms/controllers/form_responses_controller.js'
+import { InjectEmailController } from '@/injector/controllers/inject_email_controller.js'
+import { MtaLogsController } from '@/kumologs/controllers/mta_logs_controller.js'
+import { DkimController } from '@/kumomta/controllers/dkim_controller.js'
+import { SmtpAuthController } from '@/kumomta/controllers/smtp_auth_controller.js'
+import { TrackingController } from '@/kumomta/controllers/tracking_controller.js'
+import { MediaDocumentController } from '@/media-library/controllers/media_library_controller.js'
+import { ClickTrackingController } from '@/tracking/controllers/click_tracking_controller.js'
+import { OpenTrackingController } from '@/tracking/controllers/open_tracking_controller.js'
+import { MailerWebhooksContorller } from '@/webhooks/controllers/mailer_webhooks_controller.js'
+import { WebsiteController } from '@/websites/controllers/website_controller.js'
+import { readFile } from 'fs/promises'
+import type { Redis } from 'ioredis'
+import { resolve } from 'path'
+import { type Logger, pino } from 'pino'
 
-import { BroadcastController } from "@/broadcasts/controllers/broadcast_controller.js"
-import { BroadcastGroupController } from "@/broadcasts/controllers/broadcast_group_controller.js"
+import { BroadcastController } from '@/broadcasts/controllers/broadcast_controller.js'
+import { BroadcastGroupController } from '@/broadcasts/controllers/broadcast_group_controller.js'
 
-import { AudienceController } from "@/audiences/controllers/audience_controller.js"
-import { ContactController } from "@/audiences/controllers/contact_controller.js"
-import { ContactExportController } from "@/audiences/controllers/contact_export_controller.js"
-import { ContactImportController } from "@/audiences/controllers/contact_import_controller.js"
-import { SegmentController } from "@/audiences/controllers/segment_controller.js"
-import { TagController } from "@/audiences/controllers/tag_controller.js"
+import { AudienceController } from '@/audiences/controllers/audience_controller.js'
+import { ContactController } from '@/audiences/controllers/contact_controller.js'
+import { ContactExportController } from '@/audiences/controllers/contact_export_controller.js'
+import { ContactImportController } from '@/audiences/controllers/contact_import_controller.js'
+import { SegmentController } from '@/audiences/controllers/segment_controller.js'
+import { TagController } from '@/audiences/controllers/tag_controller.js'
 
-import { TeamController } from "@/teams/controllers/team_controller.js"
-import { TeamMembershipController } from "@/teams/controllers/team_membership_controller.js"
+import { TeamController } from '@/teams/controllers/team_controller.js'
+import { TeamMembershipController } from '@/teams/controllers/team_membership_controller.js'
 
-import { AuthController } from "@/auth/controllers/auth_controller.js"
-import { Oauth2Controller } from "@/auth/controllers/oauth2_controller.js"
-import { RegisterController } from "@/auth/controllers/register_controller.js"
-import { UserController } from "@/auth/controllers/user_controller.js"
-import { PasswordResetsController } from "@/auth/password_resets/controllers/password_resets_controller.js"
+import { AuthController } from '@/auth/controllers/auth_controller.js'
+import { Oauth2Controller } from '@/auth/controllers/oauth2_controller.js'
+import { RegisterController } from '@/auth/controllers/register_controller.js'
+import { UserController } from '@/auth/controllers/user_controller.js'
+import { PasswordResetsController } from '@/auth/password_resets/controllers/password_resets_controller.js'
 
-import { AutomationController } from "@/automations/controllers/automation_controller.js"
+import { AutomationController } from '@/automations/controllers/automation_controller.js'
 
-import { SendingDomainController } from "@/sending_domains/controllers/sending_domain_controller.js"
+import { SendingDomainController } from '@/sending_domains/controllers/sending_domain_controller.js'
 
 import {
   type DrizzleClient,
   createDatabaseClient,
   createDrizzleDatabase,
-} from "@/database/client.js"
+} from '@/database/client.js'
 
 import {
   ContainerKey,
   makeDatabaseConnection,
   makeRedis,
-} from "@/shared/container/index.js"
-import { VikeController } from "@/shared/controllers/vike_controller.js"
-import { middleware } from "@/shared/middleware/middleware_aliases.js"
-import { Hono, type HonoInstance } from "@/shared/server/hono.js"
-import "@/shared/utils/log/dump.js"
+} from '@/shared/container/index.js'
+import { VikeController } from '@/shared/controllers/vike_controller.js'
+import { middleware } from '@/shared/middleware/middleware_aliases.js'
+import { Hono, type HonoInstance } from '@/shared/server/hono.js'
+import '@/shared/utils/log/dump.js'
 
-import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
+import { createRedisDatabaseInstance } from '@/redis/redis_client.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class Ignitor {
   protected env: AppEnvVariables
@@ -78,7 +78,7 @@ export class Ignitor {
       level: appEnv.LOG_LEVEL,
       transport: appEnv.isDev
         ? {
-            target: "pino-pretty",
+            target: 'pino-pretty',
             options: {
               colorize: true,
             },
@@ -97,7 +97,7 @@ export class Ignitor {
   }
 
   async start() {
-    const packageJsonFile = await readFile(resolve("package.json"), "utf-8")
+    const packageJsonFile = await readFile(resolve('package.json'), 'utf-8')
 
     const { version } = JSON.parse(packageJsonFile)
 
@@ -105,7 +105,7 @@ export class Ignitor {
 
     await this.startDatabaseConnector()
 
-    this.app.use(middleware("user_session"))
+    this.app.use(middleware('user_session'))
 
     container.register(ContainerKey.vikeRenderPage, new VikeController().renderVikePage)
 

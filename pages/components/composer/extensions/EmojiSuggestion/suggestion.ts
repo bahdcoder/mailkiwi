@@ -1,10 +1,10 @@
-import EmojiList from "./components/EmojiList.jsx"
-import { EmojiListProps } from "./types.js"
-import { Editor } from "@tiptap/core"
-import { ReactRenderer } from "@tiptap/react"
-import { SuggestionKeyDownProps, SuggestionProps } from "@tiptap/suggestion"
-import { KeyboardEvent, RefAttributes } from "react"
-import tippy, { Instance } from "tippy.js"
+import EmojiList from './components/EmojiList.jsx'
+import type { EmojiListProps } from './types.js'
+import type { Editor } from '@tiptap/core'
+import { ReactRenderer } from '@tiptap/react'
+import type { SuggestionKeyDownProps, SuggestionProps } from '@tiptap/suggestion'
+import { KeyboardEvent, type RefAttributes } from 'react'
+import tippy, { Instance } from 'tippy.js'
 
 export const emojiSuggestion = {
   items: ({ editor, query }: { editor: Editor; query: string }) =>
@@ -34,14 +34,14 @@ export const emojiSuggestion = {
         })
 
         // @ts-ignore
-        popup = tippy("body", {
+        popup = tippy('body', {
           getReferenceClientRect: props.clientRect as () => DOMRect,
           appendTo: () => document.body,
           content: component.element,
           showOnCreate: true,
           interactive: true,
-          trigger: "manual",
-          placement: "bottom-start",
+          trigger: 'manual',
+          placement: 'bottom-start',
         })
       },
 
@@ -54,7 +54,7 @@ export const emojiSuggestion = {
       },
 
       onKeyDown(props: SuggestionKeyDownProps) {
-        if (props.event.key === "Escape") {
+        if (props.event.key === 'Escape') {
           popup[0].hide()
           component.destroy()
 

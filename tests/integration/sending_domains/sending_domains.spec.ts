@@ -1,33 +1,33 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { eq } from "drizzle-orm"
-import { createSign, createVerify } from "node:crypto"
-import { describe, test } from "vitest"
+import { appEnv } from '@/app/env/app_env.js'
+import { eq } from 'drizzle-orm'
+import { createSign, createVerify } from 'node:crypto'
+import { describe, test } from 'vitest'
 
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
-import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { makeRequestAsUser } from "@/tests/utils/http.js"
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '@/tests/utils/http.js'
 
-import { sendingDomains } from "@/database/schema.js"
+import { sendingDomains } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
-import { Encryption } from "@/shared/utils/encryption/encryption.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { Queue } from '@/shared/queue/queue.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { Encryption } from '@/shared/utils/encryption/encryption.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@domains", () => {
-  test("can create unique sending domains for a team", async ({ expect }) => {
+describe('@domains', () => {
+  test('can create unique sending domains for a team', async ({ expect }) => {
     const { team, user } = await createUser()
 
-    const name = cuid() + "newsletter.kibamail.com"
+    const name = cuid() + 'newsletter.kibamail.com'
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/sending_domains",
+      method: 'POST',
+      path: '/sending_domains',
       body: {
         name,
       },
@@ -63,15 +63,15 @@ describe("@domains", () => {
      */
     const dkimPublicKey = domains[0]?.dkimPublicKey
 
-    const THIS_IS_A_TEST_MESSAGE = "THIS_IS_A_TEST_MESSAGE"
+    const THIS_IS_A_TEST_MESSAGE = 'THIS_IS_A_TEST_MESSAGE'
 
-    const signedMessage = createSign("sha256")
+    const signedMessage = createSign('sha256')
       .update(THIS_IS_A_TEST_MESSAGE)
-      .sign(dkimPrivateKey, "hex")
+      .sign(dkimPrivateKey, 'hex')
 
-    const verifiedMessage = createVerify("sha256")
+    const verifiedMessage = createVerify('sha256')
       .update(THIS_IS_A_TEST_MESSAGE)
-      .verify(dkimPublicKey, signedMessage, "hex")
+      .verify(dkimPublicKey, signedMessage, 'hex')
 
     expect(verifiedMessage).toBe(true)
   })

@@ -1,10 +1,13 @@
-import { aliasedTableColumn, and, count, eq, sql } from "drizzle-orm"
+import { aliasedTableColumn, and, count, eq, sql } from 'drizzle-orm'
 
-import { InsertSendingSource, SendingSource } from "@/database/database_schema_types.js"
-import { emailSends, sendingSources } from "@/database/schema.js"
+import {
+  type InsertSendingSource,
+  SendingSource,
+} from '@/database/database_schema_types.js'
+import { emailSends, sendingSources } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
 export class SendingSourceRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {
@@ -39,7 +42,7 @@ export class SendingSourceRepository extends BaseRepository {
       })
       .from(sendingSources)
       .leftJoin(emailSends, eq(emailSends.sendingSourceId, sendingSources.id))
-      .where(eq(sendingSources.status, "active"))
+      .where(eq(sendingSources.status, 'active'))
       .groupBy(sendingSources.id)
 
     return sendingSourcesWithVolume

@@ -1,19 +1,19 @@
-import { CancelIcon } from "@/pages/components/icons/cancel.svg.jsx"
-import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
-import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
-import { Checkbox } from "@kibamail/owly/checkbox"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import cn from "classnames"
-import { useCombobox, useMultipleSelection } from "downshift"
-import React, { useEffect } from "react"
+import { CancelIcon } from '@/pages/components/icons/cancel.svg.jsx'
+import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
+import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
+import { Checkbox } from '@kibamail/owly/checkbox'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import cn from 'classnames'
+import { useCombobox, useMultipleSelection } from 'downshift'
+import React, { useEffect } from 'react'
 
 export type ComboboxItem = { id: string; label: string; new?: boolean }
 
 interface TagsComboboxProps {
-  defaultValue?: Omit<ComboboxItem, "new">[]
+  defaultValue?: Omit<ComboboxItem, 'new'>[]
   name?: string
-  items: Omit<ComboboxItem, "new">[]
+  items: Omit<ComboboxItem, 'new'>[]
   maxWidth?: number
   onChange?: (value: ComboboxItem[]) => void
 }
@@ -24,7 +24,7 @@ export function TagsCombobox({
   onChange,
   maxWidth,
 }: TagsComboboxProps) {
-  const [inputValue, setInputValue] = React.useState("")
+  const [inputValue, setInputValue] = React.useState('')
   const [selectedItems, setSelectedItems] = React.useState<ComboboxItem[]>(
     defaultValue ?? [],
   )
@@ -39,12 +39,9 @@ export function TagsCombobox({
     })
   }
 
-  useEffect(
-    function () {
-      onChange?.(selectedItems)
-    },
-    [selectedItems],
-  )
+  useEffect(() => {
+    onChange?.(selectedItems)
+  }, [selectedItems])
 
   const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =
     useMultipleSelection({
@@ -73,7 +70,7 @@ export function TagsCombobox({
   } = useCombobox({
     items,
     itemToString(item) {
-      return item ? item.label : ""
+      return item ? item.label : ''
     },
     defaultHighlightedIndex: 0,
     selectedItem: null,
@@ -105,12 +102,12 @@ export function TagsCombobox({
               setSelectedItems([...selectedItems, newSelectedItem])
             }
 
-            setInputValue("")
+            setInputValue('')
           }
           break
 
         case useCombobox.stateChangeTypes.InputChange:
-          setInputValue(newInputValue ?? "")
+          setInputValue(newInputValue ?? '')
 
           break
         default:
@@ -123,7 +120,7 @@ export function TagsCombobox({
     const item = { id: inputValue, label: inputValue, new: true }
     setAllItems((current) => [...current, item])
 
-    setInputValue("")
+    setInputValue('')
     setSelectedItems((current) => [...current, item])
   }
 
@@ -138,11 +135,11 @@ export function TagsCombobox({
       </TextField.Root>
       <ul
         className={cn(
-          "kb-combobox-popover-content absolute p-1 w-[inherit] bg-[var(--background-primary)] mt-1 rounded-xl border kb-border-tertiary shadow-[0px_16px_24px_-8px_var(--black-10)] max-h-60 overflow-scroll z-10",
+          'kb-combobox-popover-content absolute p-1 w-[inherit] bg-[var(--background-primary)] mt-1 rounded-xl border kb-border-tertiary shadow-[0px_16px_24px_-8px_var(--black-10)] max-h-60 overflow-scroll z-10',
           { hidden: !isOpen },
         )}
         style={{ maxWidth }}
-        data-state={isOpen ? "open" : "closed"}
+        data-state={isOpen ? 'open' : 'closed'}
         {...getMenuProps()}
       >
         {isOpen ? (
@@ -151,9 +148,9 @@ export function TagsCombobox({
               return (
                 <li
                   className={cn(
-                    "h-9 box-border rounded-lg flex items-center cursor-pointer px-2 transition-[background] ease-in-out",
-                    highlightedIndex === index && "kb-background-secondary",
-                    selectedItem === item && "font-bold",
+                    'h-9 box-border rounded-lg flex items-center cursor-pointer px-2 transition-[background] ease-in-out',
+                    highlightedIndex === index && 'kb-background-secondary',
+                    selectedItem === item && 'font-bold',
                   )}
                   key={item.id}
                   {...getItemProps({ item, index })}

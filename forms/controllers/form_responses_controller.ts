@@ -1,23 +1,23 @@
-import { WEBSITES_PATH } from "@/app/env/app_env.js"
-import { TagContactBasedOnResponseJob } from "@/forms/jobs/tag_contact_based_on_response_job.js"
-import { FormRepository } from "@/forms/repositories/form_repository.js"
-import { FormResponseRepository } from "@/forms/repositories/form_response_repository.js"
-import { FormResponseValidatorTool } from "@/forms/tools/form_response_validator_tool.js"
-import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
+import { WEBSITES_PATH } from '@/app/env/app_env.js'
+import { TagContactBasedOnResponseJob } from '@/forms/jobs/tag_contact_based_on_response_job.js'
+import { FormRepository } from '@/forms/repositories/form_repository.js'
+import { FormResponseRepository } from '@/forms/repositories/form_response_repository.js'
+import { FormResponseValidatorTool } from '@/forms/tools/form_response_validator_tool.js'
+import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
 
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { UserSessionMiddleware } from "@/auth/middleware/user_session_middleware.js"
+import { UserSessionMiddleware } from '@/auth/middleware/user_session_middleware.js'
 
-import { Audience, Form } from "@/database/database_schema_types.js"
+import type { Audience, Form } from '@/database/database_schema_types.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import { Queue } from "@/shared/queue/queue.js"
-import { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import { Queue } from '@/shared/queue/queue.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class FormResponsesController extends BaseController {
   constructor(
@@ -26,7 +26,7 @@ export class FormResponsesController extends BaseController {
   ) {
     super()
 
-    this.app.defineRoutes([["POST", "/responses", this.submit.bind(this)]], {
+    this.app.defineRoutes([['POST', '/responses', this.submit.bind(this)]], {
       prefix: `${WEBSITES_PATH}/:websiteSlug/forms/:formId`,
       middleware: [container.make(UserSessionMiddleware).handle],
     })
@@ -34,8 +34,8 @@ export class FormResponsesController extends BaseController {
 
   async submit(ctx: HonoContext) {
     const [website, form] = await Promise.all([
-      container.make(WebsiteRepository).findBySlug(ctx.req.param("websiteSlug")),
-      container.make(FormRepository).forms().findById(ctx.req.param("formId")),
+      container.make(WebsiteRepository).findBySlug(ctx.req.param('websiteSlug')),
+      container.make(FormRepository).forms().findById(ctx.req.param('formId')),
     ])
 
     const payload = await ctx.req.json()
@@ -57,11 +57,11 @@ export class FormResponsesController extends BaseController {
     }
 
     switch (form.type) {
-      case "signup":
+      case 'signup':
         await this.submitSignup(audience, payload)
         break
-      case "survey":
-        await this.submitSurvey(form, payload, ctx.get("contact")?.id)
+      case 'survey':
+        await this.submitSurvey(form, payload, ctx.get('contact')?.id)
         break
       default:
         break

@@ -1,11 +1,11 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { Next } from "hono"
-import { deleteCookie, getCookie, setCookie, setSignedCookie } from "hono/cookie"
+import { appEnv } from '@/app/env/app_env.js'
+import type { Next } from 'hono'
+import { deleteCookie, getCookie, setCookie, setSignedCookie } from 'hono/cookie'
 
-import { HonoContext } from "@/shared/server/types.js"
+import type { HonoContext } from '@/shared/server/types.js'
 
 export class FlashMiddleware {
-  static FLASH_COOKIE_NAME = "__FLASH_MESSAGE"
+  static FLASH_COOKIE_NAME = '__FLASH_MESSAGE'
 
   handle = async (ctx: HonoContext, next: Next) => {
     const flash = getCookie(ctx, FlashMiddleware.FLASH_COOKIE_NAME)
@@ -14,7 +14,7 @@ export class FlashMiddleware {
       const message = deleteCookie(ctx, FlashMiddleware.FLASH_COOKIE_NAME)
 
       if (message) {
-        ctx.set("flash", message)
+        ctx.set('flash', message)
       }
     }
 

@@ -1,1 +1,1 @@
-export * from "./LinkEditorPanel.jsx"
+export * from './LinkEditorPanel.jsx'

@@ -1,18 +1,18 @@
-import { appEnv } from "@/app/env/app_env.js"
-import type { Next } from "hono"
+import { appEnv } from '@/app/env/app_env.js'
+import type { Next } from 'hono'
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
-import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+import { UserRepository } from '@/auth/users/repositories/user_repository.js'
 
-import { UserWithTeams } from "@/database/database_schema_types.js"
+import type { UserWithTeams } from '@/database/database_schema_types.js'
 
-import type { HonoContext } from "@/shared/server/types.js"
-import { Session } from "@/shared/sessions/sessions.js"
+import type { HonoContext } from '@/shared/server/types.js'
+import { Session } from '@/shared/sessions/sessions.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class UserSessionMiddleware {
   constructor(
@@ -24,7 +24,7 @@ export class UserSessionMiddleware {
   handle = async (ctx: HonoContext, next: Next) => {
     const [userSession, contactSession] = await Promise.all([
       new Session().getUser(ctx),
-      new Session().getUser(ctx, "contact"),
+      new Session().getUser(ctx, 'contact'),
     ])
 
     let authenticatedUser: UserWithTeams | null = null
@@ -37,8 +37,8 @@ export class UserSessionMiddleware {
       authenticatedUser = user
 
       if (user) {
-        ctx.set("user", user)
-        ctx.set("memberships", memberships)
+        ctx.set('user', user)
+        ctx.set('memberships', memberships)
       }
     }
 
@@ -46,7 +46,7 @@ export class UserSessionMiddleware {
       const contact = await this.contactRepository.findById(contactSession.userId)
 
       if (contact) {
-        ctx.set("contact", contact)
+        ctx.set('contact', contact)
       }
     }
 
@@ -54,16 +54,16 @@ export class UserSessionMiddleware {
       return next()
     }
 
-    let teamHeader =
+    const teamHeader =
       userSession?.currentTeamId ??
       ctx.req.header(appEnv.software.teamHeader) ??
       authenticatedUser?.teams?.[0]?.id
 
-    if (teamHeader && teamHeader !== "undefined") {
+    if (teamHeader && teamHeader !== 'undefined') {
       const team = await this.teamRepository.findById(teamHeader)
 
       if (team) {
-        ctx.set("team", team)
+        ctx.set('team', team)
       }
     }
 

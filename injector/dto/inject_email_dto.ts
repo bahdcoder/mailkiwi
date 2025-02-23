@@ -11,14 +11,14 @@ import {
   pipe,
   record,
   string,
-} from "valibot"
+} from 'valibot'
 
 const EnvelopeSchema = object(
   {
-    email: pipe(string(), nonEmpty(), email("Please provide a valid email.")),
+    email: pipe(string(), nonEmpty(), email('Please provide a valid email.')),
     name: optional(string()),
   },
-  "A valid email and/or name is required.",
+  'A valid email and/or name is required.',
 )
 
 const AttachmentSchema = object({
@@ -31,16 +31,16 @@ const AttachmentSchema = object({
 
 export const InjectEmailSchema = object({
   from: EnvelopeSchema,
-  subject: string("A valid email subject is required."),
+  subject: string('A valid email subject is required.'),
   recipients: pipe(
-    array(EnvelopeSchema, "At least one recipient is required."),
-    minLength(1, "At least one recipient is required."),
-    maxLength(50, "At most 50 recipients are allowed."),
+    array(EnvelopeSchema, 'At least one recipient is required.'),
+    minLength(1, 'At least one recipient is required.'),
+    maxLength(50, 'At most 50 recipients are allowed.'),
   ),
   html: optional(
-    pipe(string("A valid html body is required."), nonEmpty(), maxLength(256_000)),
+    pipe(string('A valid html body is required.'), nonEmpty(), maxLength(256_000)),
   ),
-  text: pipe(string("A valid text body is required.."), nonEmpty(), maxLength(256_000)),
+  text: pipe(string('A valid text body is required..'), nonEmpty(), maxLength(256_000)),
   replyTo: optional(EnvelopeSchema),
   headers: optional(record(string(), string())),
   attachments: optional(array(AttachmentSchema)),

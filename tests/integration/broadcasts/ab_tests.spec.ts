@@ -1,22 +1,22 @@
-import { faker } from "@faker-js/faker"
-import { asc, eq } from "drizzle-orm"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { asc, eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
 import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
-} from "@/tests/mocks/audiences/email_content.js"
-import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
-import { makeRequestAsUser } from "@/tests/utils/http.js"
+} from '@/tests/mocks/audiences/email_content.js'
+import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '@/tests/utils/http.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@broadcasts update broadcasts", () => {
-  test("can update a broadcast with ab test variants", async ({ expect }) => {
+describe('@broadcasts update broadcasts', () => {
+  test('can update a broadcast with ab test variants', async ({ expect }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
     const broadcastId = await createBroadcastForUser(
       user,
@@ -38,7 +38,7 @@ describe("@broadcasts update broadcasts", () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: updateData,
     })
@@ -82,13 +82,19 @@ describe("@broadcasts update broadcasts", () => {
     )
 
     expect(
-      orderedEmailContent?.map((email) => ({ name: email.name, weight: email.weight })),
+      orderedEmailContent?.map((email) => ({
+        name: email.name,
+        weight: email.weight,
+      })),
     ).toStrictEqual(
-      abTestVariantsMock.map((email) => ({ name: email.name, weight: email.weight })),
+      abTestVariantsMock.map((email) => ({
+        name: email.name,
+        weight: email.weight,
+      })),
     )
   })
 
-  test("cannot update ab test variants if weights sum up to more than 100", async ({
+  test('cannot update ab test variants if weights sum up to more than 100', async ({
     expect,
   }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
@@ -113,7 +119,7 @@ describe("@broadcasts update broadcasts", () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: updateData,
     })
@@ -122,10 +128,10 @@ describe("@broadcasts update broadcasts", () => {
 
     expect(response.status).toBe(422)
     expect(json.payload).toMatchObject({
-      message: "Validation failed.",
+      message: 'Validation failed.',
       errors: [
         {
-          message: "The sum of all ab test variant weights must be less than 100.",
+          message: 'The sum of all ab test variant weights must be less than 100.',
         },
       ],
     })

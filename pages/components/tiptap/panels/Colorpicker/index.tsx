@@ -1,1 +1,1 @@
-export * from "./Colorpicker.jsx"
+export * from './Colorpicker.jsx'

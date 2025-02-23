@@ -1,4 +1,4 @@
-import * as ReactContext from "@radix-ui/react-context"
+import * as ReactContext from '@radix-ui/react-context'
 
 export type SidebarState = {
   width: number
@@ -10,4 +10,4 @@ export const [ApplicationLayoutProvider, useApplicationLayoutContext] =
   ReactContext.createContext<{
     sidebar: SidebarState
     setSidebar: React.Dispatch<React.SetStateAction<SidebarState>>
-  }>("ApplicationLayout")
+  }>('ApplicationLayout')

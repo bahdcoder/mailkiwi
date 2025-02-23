@@ -1,1 +1,1 @@
-export * from "./Image.js"
+export * from './Image.js'

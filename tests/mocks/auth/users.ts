@@ -1,28 +1,28 @@
-import { createFakeAbTestEmailContent } from "../audiences/email_content.js"
-import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
-import { defaultChannels } from "@/cli/commands/chat/add_default_channels_comand.js"
-import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
-import { faker } from "@faker-js/faker"
-import { eq } from "drizzle-orm"
-import { DateTime } from "luxon"
-import { update } from "tar"
+import { createFakeAbTestEmailContent } from '../audiences/email_content.js'
+import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
+import { defaultChannels } from '@/cli/commands/chat/add_default_channels_comand.js'
+import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { faker } from '@faker-js/faker'
+import { eq } from 'drizzle-orm'
+import { DateTime } from 'luxon'
+import { update } from 'tar'
 
-import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import { CreateAudienceAction } from '@/audiences/actions/audiences/create_audience_action.js'
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
+import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
-import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
-import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
+import { UserRepository } from '@/auth/users/repositories/user_repository.js'
 
-import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.js"
+import { EmailContentSchemaDto } from '@/content/dto/create_email_content_dto.js'
 
-import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
-import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
+import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
-import { makeRequestAsUser } from "@/tests/utils/http.js"
+import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
+import { makeRequestAsUser } from '@/tests/utils/http.js'
 
 import type {
   Team,
@@ -30,13 +30,13 @@ import type {
   User,
   Website,
   WebsiteWithPages,
-} from "@/database/database_schema_types.js"
-import { audiences, broadcastGroups, contacts } from "@/database/schema.js"
+} from '@/database/database_schema_types.js'
+import { audiences, broadcastGroups, contacts } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export async function createBroadcastForUser(
   user: User,
@@ -59,8 +59,8 @@ export async function createBroadcastForUser(
   }
 
   const response = await makeRequestAsUser(user, {
-    method: "POST",
-    path: "/broadcasts",
+    method: 'POST',
+    path: '/broadcasts',
     body: {
       name: faker.lorem.words(3),
       audienceId,
@@ -75,14 +75,14 @@ export async function createBroadcastForUser(
   }
 
   if (!json.payload.id) {
-    throw new Error("No id in response to create a broadcast")
+    throw new Error('No id in response to create a broadcast')
   }
 
   const { id } = json.payload
 
   if (options?.updateWithValidContent) {
     const updateBroadcastResponse = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${id}`,
       body: {
         waitingTimeToPickWinner: faker.number.int({
@@ -97,14 +97,14 @@ export async function createBroadcastForUser(
           subject: faker.lorem.words(4),
           previewText: faker.lorem.sentence(),
           contentJson: {
-            type: "doc",
+            type: 'doc',
             content: [
               {
-                type: "paragraph",
+                type: 'paragraph',
                 content: [
                   {
-                    type: "text",
-                    content: "Hello world",
+                    type: 'text',
+                    content: 'Hello world',
                   },
                 ],
               },
@@ -247,7 +247,7 @@ export const createUser = async ({
       })),
     )
 
-  await container.make(UserRepository).update(user.id, { password: "password" })
+  await container.make(UserRepository).update(user.id, { password: 'password' })
 
   const teamRepository = container.resolve(TeamRepository)
   const team = await teamRepository.create(
@@ -270,7 +270,7 @@ export const createUser = async ({
 
   if (enableCommerceOnTeam) {
     await teamRepository.teams().update(team.id, {
-      commerceProvider: "paystack",
+      commerceProvider: 'paystack',
       commerceProviderAccountId: `acct_${faker.string.uuid()}`,
       commerceProviderConfirmedAt: DateTime.now().toJSDate(),
     })
@@ -281,8 +281,8 @@ export const createUser = async ({
   if (createAudience) {
     const audience = await audienceRepository.create(
       {
-        name: "Newsletter",
-        slug: faker.number.int({ min: 10, max: 100 }) + "-" + faker.lorem.slug(),
+        name: 'Newsletter',
+        slug: faker.number.int({ min: 10, max: 100 }) + '-' + faker.lorem.slug(),
       },
       team.id,
     )
@@ -295,12 +295,12 @@ export const createUser = async ({
       .update(audiences)
       .set({
         knownProperties: [
-          { id: "age", label: "Age", type: "float" },
+          { id: 'age', label: 'Age', type: 'float' },
           {
-            id: "profession",
-            label: "Your profession",
-            type: "enum",
-            options: ["frontend engineer", "backend engineer", "fullstack engineer"],
+            id: 'profession',
+            label: 'Your profession',
+            type: 'enum',
+            options: ['frontend engineer', 'backend engineer', 'fullstack engineer'],
           },
         ],
       })
@@ -329,42 +329,42 @@ export const createUser = async ({
   let guestUser: User = undefined as unknown as User
 
   if (createEntireTeam) {
-    let [administrator, manager, author, guest] = await Promise.all([
+    const [administrator, manager, author, guest] = await Promise.all([
       registerUserAction.handle({
         firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
-        password: "password",
+        password: 'password',
       }),
       registerUserAction.handle({
         firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
-        password: "password",
+        password: 'password',
       }),
       registerUserAction.handle({
         firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
-        password: "password",
+        password: 'password',
       }),
       registerUserAction.handle({
         firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
-        password: "password",
+        password: 'password',
       }),
     ])
 
     const teamMembershipRepository = container.make(TeamMembershipRepository)
 
     for (const [member, role] of [
-      [administrator, "ADMINISTRATOR"],
-      [manager, "MANAGER"],
-      [author, "AUTHOR"],
-      [guest, "GUEST"],
+      [administrator, 'ADMINISTRATOR'],
+      [manager, 'MANAGER'],
+      [author, 'AUTHOR'],
+      [guest, 'GUEST'],
     ] as const) {
       await teamMembershipRepository.create({
-        status: "ACTIVE",
+        status: 'ACTIVE',
         expiresAt: new Date(),
-        role: role as TeamMembership["role"],
-        email: "",
+        role: role as TeamMembership['role'],
+        email: '',
         userId: member?.user?.id,
         teamId: team.id,
       })
@@ -384,7 +384,7 @@ export const createUser = async ({
     await container.make(WebsiteRepository).create({
       slug: faker.lorem.slug(),
       teamId: team.id,
-      websiteDomain: "news-" + faker.lorem.slug() + ".fastmedia.com",
+      websiteDomain: 'news-' + faker.lorem.slug() + '.fastmedia.com',
       websiteDomainVerifiedAt: DateTime.now().toJSDate(),
       websiteDomainCnameValue: `${faker.lorem.slug()}.fastmedia.com`,
       audienceId: audienceId as string,

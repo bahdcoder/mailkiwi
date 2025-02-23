@@ -1,19 +1,19 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { InjectEmailAction } from "@/injector/actions/inject_email_action.js"
-import { InjectEmailSchemaDto } from "@/injector/dto/inject_email_dto.js"
+import { appEnv } from '@/app/env/app_env.js'
+import { InjectEmailAction } from '@/injector/actions/inject_email_action.js'
+import type { InjectEmailSchemaDto } from '@/injector/dto/inject_email_dto.js'
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
+import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
-import type { BroadcastWithEmailContent } from "@/database/database_schema_types.js"
+import type { BroadcastWithEmailContent } from '@/database/database_schema_types.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface SendBroadcastToContactPayload {
   broadcastId: string
@@ -22,7 +22,7 @@ export interface SendBroadcastToContactPayload {
 
 export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayload> {
   static get id() {
-    return "BROADCASTS::SEND_BROADCAST_TO_CONTACTS"
+    return 'BROADCASTS::SEND_BROADCAST_TO_CONTACTS'
   }
 
   static get queue() {
@@ -39,7 +39,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     ])
 
     if (!broadcast || !contact) {
-      return this.fail("Broadcast or contact not found.")
+      return this.fail('Broadcast or contact not found.')
     }
 
     const broadcastWithContent = broadcast as unknown as BroadcastWithEmailContent
@@ -50,11 +50,11 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       .make(SendingDomainRepository)
       .findAllForTeam(broadcast.teamId)
 
-    let sendingDomain =
+    const sendingDomain =
       teamSendingDomains.find(
         (sendingDomain) => broadcast.sendingDomainId === sendingDomain.id,
       ) ||
-      teamSendingDomains.find((sendingDomain) => sendingDomain.product === "engage") ||
+      teamSendingDomains.find((sendingDomain) => sendingDomain.product === 'engage') ||
       teamSendingDomains?.[0]
 
     let openTrackingEnabled = sendingDomain.openTrackingEnabled ?? false
@@ -71,7 +71,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     const injectEmailPayload: InjectEmailSchemaDto = {
       from: {
         name: emailContent.fromName,
-        email: emailContent.fromEmail + "@" + sendingDomain.name,
+        email: emailContent.fromEmail + '@' + sendingDomain.name,
       },
       replyTo: {
         name: emailContent.replyToName,
@@ -79,7 +79,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       },
       recipients: [
         {
-          name: contact.firstName + " " + contact.lastName,
+          name: contact.firstName + ' ' + contact.lastName,
           email: contact.email,
         },
       ],

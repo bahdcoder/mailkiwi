@@ -1,14 +1,14 @@
-import { describe, test, vi } from "vitest"
+import { describe, test, vi } from 'vitest'
 
-import { SendTeamMemberInviteJob } from "@/teams/jobs/send_team_member_invite_job.js"
+import { SendTeamMemberInviteJob } from '@/teams/jobs/send_team_member_invite_job.js'
 
-import { setup as teamMembershipSetup } from "@/tests/integration/teams/team_membership.spec.js"
+import { setup as teamMembershipSetup } from '@/tests/integration/teams/team_membership.spec.js'
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { Mailer } from "@/shared/mailers/mailer.js"
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { Mailer } from '@/shared/mailers/mailer.js'
 
-describe("Send team member invite", () => {
-  test("sends an email with a unique hashed link for joining the team", async ({
+describe('Send team member invite', () => {
+  test('sends an email with a unique hashed link for joining the team', async ({
     expect,
   }) => {
     const database = makeDatabase()
@@ -19,15 +19,15 @@ describe("Send team member invite", () => {
     const { invite } = await getInvite()
 
     const mockSendMail = vi
-      .spyOn(Mailer.transport, "sendMail")
+      .spyOn(Mailer.transport, 'sendMail')
       .mockImplementation(async () => ({
-        messageId: "",
+        messageId: '',
         accepted: [],
         rejected: [],
         pending: [],
-        response: "OK",
+        response: 'OK',
         envelope: {
-          from: "",
+          from: '',
           to: [],
         },
       }))

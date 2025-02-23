@@ -1,11 +1,14 @@
-import { Checkbox as CheckboxPrimitive, CheckboxProps } from "@kibamail/owly/checkbox"
-import { Text, TextProps } from "@kibamail/owly/text"
-import { createContext } from "@radix-ui/react-context"
-import React from "react"
+import {
+  Checkbox as CheckboxPrimitive,
+  type CheckboxProps,
+} from '@kibamail/owly/checkbox'
+import { Text, type TextProps } from '@kibamail/owly/text'
+import { createContext } from '@radix-ui/react-context'
+import React from 'react'
 
 const [CheckboxFieldProvider, useCheckboxFieldContext] = createContext<{
   baseId: string
-}>("CheckboxField")
+}>('CheckboxField')
 
 function CheckboxFieldRoot({ children, ...checkboxProps }: CheckboxProps) {
   const baseId = React.useId()
@@ -26,8 +29,8 @@ function CheckboxFieldRoot({ children, ...checkboxProps }: CheckboxProps) {
 function CheckboxFieldLabel({
   children,
   ...labelProps
-}: React.PropsWithChildren<React.ComponentPropsWithoutRef<"label">>) {
-  const { baseId } = useCheckboxFieldContext("CheckboxFieldLabel")
+}: React.PropsWithChildren<React.ComponentPropsWithoutRef<'label'>>) {
+  const { baseId } = useCheckboxFieldContext('CheckboxFieldLabel')
 
   return (
     <Text {...labelProps} as="label" className="kb-content-secondary font-medium">
@@ -37,7 +40,7 @@ function CheckboxFieldLabel({
 }
 
 function CheckboxFieldDescription({ children }: React.PropsWithChildren<TextProps>) {
-  const { baseId, ...textProps } = useCheckboxFieldContext("CheckboxFieldLabel")
+  const { baseId, ...textProps } = useCheckboxFieldContext('CheckboxFieldLabel')
 
   return (
     <Text

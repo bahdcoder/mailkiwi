@@ -1,45 +1,45 @@
-import { useQuery } from "@tanstack/react-query"
-import { usePageContext } from "vike-react/usePageContext"
+import { useQuery } from '@tanstack/react-query'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export function useGetBroadcastRecipientsCount(segmentId: string) {
   const ctx = usePageContext()
 
   return useQuery<{ total: number }>({
-    queryKey: ["broadcasts-recipients-count", segmentId],
+    queryKey: ['broadcasts-recipients-count', segmentId],
     async queryFn() {
       const response = await fetch(
         route(
-          "contacts_search",
+          'contacts_search',
           { audienceId: ctx.audience?.id },
           {
-            perPage: "1",
+            perPage: '1',
           },
         ),
         {
-          method: "post",
+          method: 'post',
           body: JSON.stringify({
             filters:
-              segmentId !== "all"
+              segmentId !== 'all'
                 ? {
-                    type: "AND",
+                    type: 'AND',
                     groups: [
                       {
-                        type: "AND",
+                        type: 'AND',
                         conditions: [
                           {
-                            field: "segmentId",
-                            operation: "eq",
+                            field: 'segmentId',
+                            operation: 'eq',
                             value: segmentId,
                           },
                         ],
                       },
                     ],
                   }
-                : { type: "AND", groups: [] },
+                : { type: 'AND', groups: [] },
           }),
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         },
       )
       const json = await response.json()

@@ -1,44 +1,44 @@
-import { getCommonPinningStyles } from "./components/columns.js"
-import * as Table from "./components/table.js"
-import "./styles.css"
-import * as Dropdown from "@/pages/components/dropdown/dropdown.jsx"
-import { DisplayedFilterCondition } from "@/pages/components/filters/displayed-filter-conditions.jsx"
-import { CancelIcon } from "@/pages/components/icons/cancel.svg.jsx"
-import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
-import { SearchIcon } from "@/pages/components/icons/search.svg.jsx"
-import { NewContactProperty } from "@/pages/w/engage/contacts/components/actions/new_contact_property.jsx"
-import { SaveFilterAsSegmentForm } from "@/pages/w/engage/contacts/components/actions/save_filter_as_segment.jsx"
-import { UpdateContactProperty } from "@/pages/w/engage/contacts/components/actions/update_contact_property.jsx"
+import { getCommonPinningStyles } from './components/columns.js'
+import * as Table from './components/table.js'
+import './styles.css'
+import * as Dropdown from '@/pages/components/dropdown/dropdown.jsx'
+import { DisplayedFilterCondition } from '@/pages/components/filters/displayed-filter-conditions.jsx'
+import { CancelIcon } from '@/pages/components/icons/cancel.svg.jsx'
+import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
+import { SearchIcon } from '@/pages/components/icons/search.svg.jsx'
+import { NewContactProperty } from '@/pages/w/engage/contacts/components/actions/new_contact_property.jsx'
+import { SaveFilterAsSegmentForm } from '@/pages/w/engage/contacts/components/actions/save_filter_as_segment.jsx'
+import { UpdateContactProperty } from '@/pages/w/engage/contacts/components/actions/update_contact_property.jsx'
 import {
-  FilterCondition,
+  type FilterCondition,
   FiltersBuilder,
   TextFilterInputForm,
-} from "@/pages/w/engage/contacts/components/filters.jsx"
-import { Pagination } from "@/pages/w/engage/contacts/components/pagination.jsx"
-import { useContacts } from "@/pages/w/engage/contacts/hooks/use-contacts.js"
-import { useFilterOperations } from "@/pages/w/engage/contacts/hooks/use-filter-operations.js"
-import { Button } from "@kibamail/owly/button"
-import { Checkbox } from "@kibamail/owly/checkbox"
-import * as Tabs from "@kibamail/owly/tabs"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import { flexRender } from "@tanstack/react-table"
-import cn from "classnames"
-import * as React from "react"
-import { usePageContext } from "vike-react/usePageContext"
-import { PageContext } from "vike/types"
+} from '@/pages/w/engage/contacts/components/filters.jsx'
+import { Pagination } from '@/pages/w/engage/contacts/components/pagination.jsx'
+import { useContacts } from '@/pages/w/engage/contacts/hooks/use-contacts.js'
+import { useFilterOperations } from '@/pages/w/engage/contacts/hooks/use-filter-operations.js'
+import { Button } from '@kibamail/owly/button'
+import { Checkbox } from '@kibamail/owly/checkbox'
+import * as Tabs from '@kibamail/owly/tabs'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import { flexRender } from '@tanstack/react-table'
+import cn from 'classnames'
+import * as React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
+import type { PageContext } from 'vike/types'
 
 import {
   ContactWithTagsAndProperties,
-  Segment,
-  Tag,
-} from "@/database/database_schema_types.js"
+  type Segment,
+  type Tag,
+} from '@/database/database_schema_types.js'
 
 const filterOperationLabels: Record<string, string> = {
-  eq: "Is",
-  ne: "Is not",
-  contains: "Contains",
-  notContains: "Does not contain",
+  eq: 'Is',
+  ne: 'Is not',
+  contains: 'Contains',
+  notContains: 'Does not contain',
 }
 
 type FilterOperationOptions = Record<
@@ -46,16 +46,16 @@ type FilterOperationOptions = Record<
   {
     name: string
     operationLabels?: Record<string, string>
-    operations: { label: string; value: FilterCondition["operation"] }[]
+    operations: { label: string; value: FilterCondition['operation'] }[]
     options?: React.FC<{
       pageCtx: PageContext
       children: React.ReactNode
       filter: FilterCondition
-      onChange: (value: FilterCondition["value"]) => void
+      onChange: (value: FilterCondition['value']) => void
     }>
   }
 >
-const TextFilterOptions: FilterOperationOptions["string"]["options"] = ({
+const TextFilterOptions: FilterOperationOptions['string']['options'] = ({
   children,
   onChange,
   filter,
@@ -90,40 +90,40 @@ const TextFilterOptions: FilterOperationOptions["string"]["options"] = ({
 
 const filterOperationOptions: FilterOperationOptions = {
   email: {
-    name: "Email address",
+    name: 'Email address',
     operations: [
-      { label: filterOperationLabels["eq"], value: "eq" },
-      { label: filterOperationLabels["ne"], value: "ne" },
-      { label: filterOperationLabels["contains"], value: "contains" },
-      { label: filterOperationLabels["notContains"], value: "notContains" },
+      { label: filterOperationLabels['eq'], value: 'eq' },
+      { label: filterOperationLabels['ne'], value: 'ne' },
+      { label: filterOperationLabels['contains'], value: 'contains' },
+      { label: filterOperationLabels['notContains'], value: 'notContains' },
     ],
     options: TextFilterOptions,
   },
   firstName: {
-    name: "First name",
+    name: 'First name',
     operations: [
-      { label: filterOperationLabels["eq"], value: "eq" },
-      { label: filterOperationLabels["ne"], value: "ne" },
-      { label: filterOperationLabels["contains"], value: "contains" },
-      { label: filterOperationLabels["notContains"], value: "notContains" },
+      { label: filterOperationLabels['eq'], value: 'eq' },
+      { label: filterOperationLabels['ne'], value: 'ne' },
+      { label: filterOperationLabels['contains'], value: 'contains' },
+      { label: filterOperationLabels['notContains'], value: 'notContains' },
     ],
     options: TextFilterOptions,
   },
   lastName: {
-    name: "Last name",
+    name: 'Last name',
     operations: [
-      { label: filterOperationLabels["eq"], value: "eq" },
-      { label: filterOperationLabels["ne"], value: "ne" },
-      { label: filterOperationLabels["contains"], value: "contains" },
-      { label: filterOperationLabels["notContains"], value: "notContains" },
+      { label: filterOperationLabels['eq'], value: 'eq' },
+      { label: filterOperationLabels['ne'], value: 'ne' },
+      { label: filterOperationLabels['contains'], value: 'contains' },
+      { label: filterOperationLabels['notContains'], value: 'notContains' },
     ],
     options: TextFilterOptions,
   },
   segmentId: {
-    name: "Segment",
+    name: 'Segment',
     operations: [
-      { label: "Is in", value: "eq" },
-      { label: "Is not in", value: "ne" },
+      { label: 'Is in', value: 'eq' },
+      { label: 'Is not in', value: 'ne' },
     ],
     options({ pageCtx, children, onChange, filter }) {
       const segments = pageCtx.pageProps?.segments as Segment[]
@@ -156,17 +156,17 @@ const filterOperationOptions: FilterOperationOptions = {
     },
   },
   tags: {
-    name: "Tags",
+    name: 'Tags',
     operations: [
-      { label: "Has", value: "contains" },
-      { label: "Does not have", value: "notContains" },
+      { label: 'Has', value: 'contains' },
+      { label: 'Does not have', value: 'notContains' },
     ],
     operationLabels: {
-      contains: "Has",
-      notContains: "Does not have",
+      contains: 'Has',
+      notContains: 'Does not have',
     },
     options({ children, pageCtx, onChange, filter }) {
-      function onTagCheckedStatusChanged(state: boolean | "indeterminate", tag: Tag) {
+      function onTagCheckedStatusChanged(state: boolean | 'indeterminate', tag: Tag) {
         const newValue =
           state === true
             ? [...(filter.value as string[]), tag.id]

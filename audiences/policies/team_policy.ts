@@ -1,4 +1,4 @@
-import type { TeamWithMembers } from "@/shared/types/team.js"
+import type { TeamWithMembers } from '@/shared/types/team.js'
 
 export class TeamPolicy {
   canAdministrate(team: TeamWithMembers, userId: string | null) {
@@ -8,8 +8,8 @@ export class TeamPolicy {
       team?.members.find(
         (member) =>
           member.userId === userId &&
-          member.role === "ADMINISTRATOR" &&
-          member.status === "ACTIVE",
+          member.role === 'ADMINISTRATOR' &&
+          member.status === 'ACTIVE',
       ) !== undefined
 
     return isOwner || isAdministrator
@@ -20,7 +20,7 @@ export class TeamPolicy {
 
     const isManager = team?.members?.find(
       (member) =>
-        member.userId && member.role === "MANAGER" && member.status === "ACTIVE",
+        member.userId && member.role === 'MANAGER' && member.status === 'ACTIVE',
     )
 
     return isManager || canAdministrate
@@ -30,7 +30,7 @@ export class TeamPolicy {
     const canManage = this.canManage(team, userId)
 
     const isAuthor = team?.members?.find(
-      (member) => member.userId && member.role === "AUTHOR" && member.status === "ACTIVE",
+      (member) => member.userId && member.role === 'AUTHOR' && member.status === 'ACTIVE',
     )
 
     return isAuthor || canManage

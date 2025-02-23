@@ -1,19 +1,19 @@
-import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
-import { MessageRepository } from "@/chat/repositories/message_repository.js"
-import { eq } from "drizzle-orm"
-import { Next } from "hono"
-import { NonOptional } from "valibot"
+import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
+import { MessageRepository } from '@/chat/repositories/message_repository.js'
+import { eq } from 'drizzle-orm'
+import type { Next } from 'hono'
+import type { NonOptional } from 'valibot'
 
-import { Message } from "@/database/database_schema_types.js"
-import { channels } from "@/database/schema.js"
+import type { Message } from '@/database/database_schema_types.js'
+import { channels } from '@/database/schema.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeApp, makeDatabase } from "@/shared/container/index.js"
-import { VikeController } from "@/shared/controllers/vike_controller.js"
-import { HonoContext } from "@/shared/server/types.js"
+import { makeApp, makeDatabase } from '@/shared/container/index.js'
+import { VikeController } from '@/shared/controllers/vike_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class ChatController extends VikeController {
   constructor(
@@ -24,36 +24,36 @@ export class ChatController extends VikeController {
   ) {
     super()
 
-    this.app.defineRoutes([...this.vikePath("/community", this.index)], {
-      prefix: "",
+    this.app.defineRoutes([...this.vikePath('/community', this.index)], {
+      prefix: '',
       middleware: [],
     })
 
     this.app.defineRoutes(
       [
-        ...this.vikePath("/m/:messageId/replies/:replyId", this.reply),
-        ...this.vikePath("/m/:messageId/replies", this.replies),
-        ...this.vikePath("/m/:messageId", this.message),
-        ...this.vikePath("/", this.channel),
+        ...this.vikePath('/m/:messageId/replies/:replyId', this.reply),
+        ...this.vikePath('/m/:messageId/replies', this.replies),
+        ...this.vikePath('/m/:messageId', this.message),
+        ...this.vikePath('/', this.channel),
       ],
       {
-        prefix: "/community/:slug",
+        prefix: '/community/:slug',
         middleware: [],
       },
     )
   }
 
   protected getChannel = async (ctx: HonoContext) => {
-    const slug = ctx.req.param("slug")
+    const slug = ctx.req.param('slug')
 
     const [channel] = await this.channelRepository
       .channels()
-      .findAll(eq(channels.name, ctx.req.param("slug")))
+      .findAll(eq(channels.name, ctx.req.param('slug')))
 
     if (!channel) {
       throw E_VALIDATION_FAILED([
         {
-          field: "slug",
+          field: 'slug',
           message: `Could not find a channel with name ${slug}`,
         },
       ])
@@ -65,7 +65,7 @@ export class ChatController extends VikeController {
   protected getMessage = async (ctx: HonoContext) => {
     const channel = await this.getChannel(ctx)
 
-    const messageId = ctx.req.param("messageId")
+    const messageId = ctx.req.param('messageId')
 
     const { next: cursor } = await this.messageRepository.findMessagePositionInChannel(
       messageId,
@@ -75,7 +75,7 @@ export class ChatController extends VikeController {
     const messages = await this.channelRepository.channelMessages(
       channel,
       cursor,
-      "older",
+      'older',
     )
 
     const message = messages.data.find((message) => message.id === messageId)
@@ -109,8 +109,8 @@ export class ChatController extends VikeController {
     const channel = await this.getChannel(ctx)
     const publicChannels = await this.getChannels()
 
-    const cursor = ctx.req.query("cursor") as string
-    const direction = (ctx.req.query("direction") as "older" | "newer") || "older"
+    const cursor = ctx.req.query('cursor') as string
+    const direction = (ctx.req.query('direction') as 'older' | 'newer') || 'older'
 
     const messages = await this.channelRepository.channelMessages(
       channel,
@@ -134,7 +134,7 @@ export class ChatController extends VikeController {
   getReplies = async (
     ctx: HonoContext,
     cursor: string | undefined,
-    direction: "older" | "newer" = "older",
+    direction: 'older' | 'newer' = 'older',
   ) => {
     const { messages, channel, messageId } = await this.getMessage(ctx)
 
@@ -155,9 +155,9 @@ export class ChatController extends VikeController {
   }
 
   getRepliesQueryParameters = (ctx: HonoContext) => {
-    const cursor = ctx.req.query("replies_cursor") as string
+    const cursor = ctx.req.query('replies_cursor') as string
 
-    const direction = (ctx.req.query("replies_direction") as "older" | "newer") || "older"
+    const direction = (ctx.req.query('replies_direction') as 'older' | 'newer') || 'older'
 
     return { cursor, direction }
   }
@@ -174,7 +174,7 @@ export class ChatController extends VikeController {
     let { cursor, direction } = this.getRepliesQueryParameters(ctx)
     const { messages, channel, message } = await this.getMessage(ctx)
 
-    const replyId = ctx.req.param("replyId")
+    const replyId = ctx.req.param('replyId')
 
     if (!cursor) {
       const replyPosition = await this.messageRepository.findMessagePositionInChannel(

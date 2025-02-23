@@ -1,9 +1,9 @@
-import { Divider } from "@/pages/components/divider/divider.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
+import { Divider } from '@/pages/components/divider/divider.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 function LettersWelcomePage() {
   return (
@@ -19,8 +19,8 @@ function LettersWelcomePage() {
         dicta repudiandae possimus expedita exercitationem quis odit minima dolore illo.
       </Text>
 
-      <Button className="mt-2" size={"lg"} asChild>
-        <a href={route("engage_onboarding")}>Get started</a>
+      <Button className="mt-2" size={'lg'} asChild>
+        <a href={route('engage_onboarding')}>Get started</a>
       </Button>
 
       <Divider />

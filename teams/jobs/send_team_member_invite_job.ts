@@ -1,13 +1,13 @@
-import { appEnv } from "@/app/env/app_env.js"
+import { appEnv } from '@/app/env/app_env.js'
 
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
+import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
 
-import { Mailer } from "@/shared/mailers/mailer.js"
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
+import { Mailer } from '@/shared/mailers/mailer.js'
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface SendTeamMemberInviteJobPayload {
   inviteId: string
@@ -15,7 +15,7 @@ export interface SendTeamMemberInviteJobPayload {
 
 export class SendTeamMemberInviteJob extends BaseJob<SendTeamMemberInviteJobPayload> {
   static get id() {
-    return "ACCOUNTS::SEND_TEAM_MEMBER_INVITE"
+    return 'ACCOUNTS::SEND_TEAM_MEMBER_INVITE'
   }
 
   static get queue() {
@@ -41,7 +41,7 @@ export class SendTeamMemberInviteJob extends BaseJob<SendTeamMemberInviteJobPayl
       .subject("You've been invited to join a team on Kibamail.")
       .content(
         JSON.stringify({
-          transactionalEmailId: "transactionalEmailId",
+          transactionalEmailId: 'transactionalEmailId',
           variables: {
             token,
           },

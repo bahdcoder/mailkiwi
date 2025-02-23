@@ -1,6 +1,6 @@
-import { faker } from "@faker-js/faker"
+import { faker } from '@faker-js/faker'
 
-import type { EmailContent } from "@/database/database_schema_types.js"
+import type { EmailContent } from '@/database/database_schema_types.js'
 
 export function createFakeEmailContent(overrides?: Partial<EmailContent>) {
   return {
@@ -13,14 +13,14 @@ export function createFakeEmailContent(overrides?: Partial<EmailContent>) {
     contentText: faker.lorem.paragraph(),
     previewText: faker.lorem.sentence(),
     contentJson: {
-      type: "doc",
+      type: 'doc',
       content: [
         {
-          type: "paragraph",
+          type: 'paragraph',
           content: [
             {
-              type: "text",
-              content: "Hello world",
+              type: 'text',
+              content: 'Hello world',
             },
           ],
         },

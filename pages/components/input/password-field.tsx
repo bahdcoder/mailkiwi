@@ -1,13 +1,13 @@
-import { CheckCircleIcon } from "@/pages/components/icons/check-circle.svg.jsx"
-import { EyeClosedIcon } from "@/pages/components/icons/eye-closed.svg.jsx"
-import { EyeIcon } from "@/pages/components/icons/eye.svg.jsx"
-import { XMarkCircle } from "@/pages/components/icons/x-mark-circle.svg.jsx"
-import { usePasswordStrengthIndicator } from "@/pages/components/input/hooks/use-password-strength-indicator.js"
-import { Progress } from "@kibamail/owly/progress"
-import * as TextField from "@kibamail/owly/text-field"
-import { composeRefs } from "@radix-ui/react-compose-refs"
-import cn from "classnames"
-import React, { useEffect } from "react"
+import { CheckCircleIcon } from '@/pages/components/icons/check-circle.svg.jsx'
+import { EyeClosedIcon } from '@/pages/components/icons/eye-closed.svg.jsx'
+import { EyeIcon } from '@/pages/components/icons/eye.svg.jsx'
+import { XMarkCircle } from '@/pages/components/icons/x-mark-circle.svg.jsx'
+import { usePasswordStrengthIndicator } from '@/pages/components/input/hooks/use-password-strength-indicator.js'
+import { Progress } from '@kibamail/owly/progress'
+import * as TextField from '@kibamail/owly/text-field'
+import { composeRefs } from '@radix-ui/react-compose-refs'
+import cn from 'classnames'
+import React, { useEffect } from 'react'
 
 export interface PasswordFieldProps
   extends React.ComponentPropsWithoutRef<typeof TextField.Root> {
@@ -32,7 +32,7 @@ export const PasswordField = React.forwardRef<
       return
     }
 
-    requestAnimationFrame(function () {
+    requestAnimationFrame(() => {
       try {
         field.setSelectionRange(field.value.length, field.value.length)
       } catch (error) {}
@@ -47,7 +47,7 @@ export const PasswordField = React.forwardRef<
       return
     }
 
-    const password = passwordFieldRef.current?.value ?? ""
+    const password = passwordFieldRef.current?.value ?? ''
     onChange(password)
   }
 
@@ -73,7 +73,7 @@ export const PasswordField = React.forwardRef<
         placeholder="Enter password"
         {...textFieldProps}
         onInput={onInput}
-        type={visible ? "text" : "password"}
+        type={visible ? 'text' : 'password'}
       >
         {Label ? Label : <TextField.Label htmlFor="password">Password</TextField.Label>}
 
@@ -81,7 +81,7 @@ export const PasswordField = React.forwardRef<
           <button
             type="button"
             className="kb-reset focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-[var(--border-focus)] rounded-sm"
-            aria-label={`${visible ? "Hide" : "Show"} password`}
+            aria-label={`${visible ? 'Hide' : 'Show'} password`}
             onClick={onTogglePasswordVisibilityClick}
           >
             {visible ? <EyeClosedIcon aria-hidden /> : <EyeIcon aria-hidden />}
@@ -96,8 +96,8 @@ export const PasswordField = React.forwardRef<
                 <TextField.Hint
                   key={idx}
                   className={cn({
-                    "mt-8": idx === 0 && !hasError,
-                    "kb-content-positive": passed,
+                    'mt-8': idx === 0 && !hasError,
+                    'kb-content-positive': passed,
                   })}
                 >
                   <TextField.HintIcon>

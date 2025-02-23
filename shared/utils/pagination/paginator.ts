@@ -1,9 +1,16 @@
-import { SQL, type SQLWrapper, type SelectedFields, and, count, gt } from "drizzle-orm"
-import type { AnyMySqlColumn, AnyMySqlTable, MySqlSelect } from "drizzle-orm/mysql-core"
+import {
+  type SQL,
+  type SQLWrapper,
+  type SelectedFields,
+  and,
+  count,
+  gt,
+} from 'drizzle-orm'
+import type { AnyMySqlColumn, AnyMySqlTable, MySqlSelect } from 'drizzle-orm/mysql-core'
 
-import { E_OPERATION_FAILED } from "@/http/responses/errors.js"
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 export type QueryModifierFn = (
   query: MySqlSelect<any, any, any>,
@@ -134,7 +141,7 @@ export class Paginator<RowType extends object = any> {
     )
 
     if (!this.cursorPagination.field)
-      throw E_OPERATION_FAILED("Field is required for cursor pagination")
+      throw E_OPERATION_FAILED('Field is required for cursor pagination')
 
     const cursorCondition = this.$cursorCondition
       ? this.$cursorCondition
@@ -155,8 +162,6 @@ export class Paginator<RowType extends object = any> {
     const result = await selectQuery.execute()
 
     const finished = result.length <= this.cursorPagination.size
-
-    const self = this
 
     const cursorResults = {
       next: result[this.cursorPagination.size - 1]?.[this.cursorPagination.field.name],

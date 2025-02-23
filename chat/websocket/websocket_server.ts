@@ -1,21 +1,21 @@
 import {
-  MapOfChannelConnections,
-  MapOfConnections,
+  type MapOfChannelConnections,
+  type MapOfConnections,
   WebsocketServerHandler,
-} from "./websocket_server_handler.js"
-import { ServerType } from "@hono/node-server"
-import { IncomingMessage, Server } from "http"
-import { WebSocket, WebSocketServer } from "ws"
+} from './websocket_server_handler.js'
+import type { ServerType } from '@hono/node-server'
+import type { IncomingMessage, Server } from 'http'
+import { type WebSocket, WebSocketServer } from 'ws'
 
-import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+import { UserRepository } from '@/auth/users/repositories/user_repository.js'
 
-import { UserWithChannelMemberships } from "@/database/database_schema_types.js"
+import type { UserWithChannelMemberships } from '@/database/database_schema_types.js'
 
-import { makeLogger } from "@/shared/container/index.js"
-import { HonoContext } from "@/shared/server/types.js"
-import { Session } from "@/shared/sessions/sessions.js"
+import { makeLogger } from '@/shared/container/index.js'
+import type { HonoContext } from '@/shared/server/types.js'
+import { Session } from '@/shared/sessions/sessions.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class WebsocketServer {
   protected logger = makeLogger()
@@ -37,14 +37,14 @@ export class WebsocketServer {
   }
 
   registerEventListeners() {
-    this.$wss.on("connection", this.onConnection)
-    this.$wss.on("error", this.onSocketError)
-    this.$wss.on("close", this.onClose)
+    this.$wss.on('connection', this.onConnection)
+    this.$wss.on('error', this.onSocketError)
+    this.$wss.on('close', this.onClose)
   }
 
   protected getAuthenticatedUserFromRequest = async (request: IncomingMessage) => {
     const headers = new Headers()
-    headers.set("cookie", request.headers["cookie"] ?? "")
+    headers.set('cookie', request.headers['cookie'] ?? '')
 
     const auth = await new Session().getUser({
       req: {
@@ -84,11 +84,11 @@ export class WebsocketServer {
 
     self.subscribeUserToChannels(user, websocket)
 
-    websocket.on("close", () => {
+    websocket.on('close', () => {
       self.unsubscribeUserFromChannels(user)
     })
 
-    websocket.on("message", (data) => {
+    websocket.on('message', (data) => {
       new WebsocketServerHandler(user, data)
     })
   }

@@ -1,21 +1,21 @@
-import { EmailRepository } from "@/emails/repositories/email_repository.js"
-import { eq } from "drizzle-orm"
+import { EmailRepository } from '@/emails/repositories/email_repository.js'
+import { eq } from 'drizzle-orm'
 
 import type {
   AutomationStepRunnerContext,
   AutomationStepRunnerContract,
-} from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
+} from '@/automations/utils/automation_step_runners/automation_runner_contract.js'
 
 import type {
   AutomationStep,
   Contact,
   ValidatedEmailContent,
-} from "@/database/database_schema_types.js"
-import { type ACTION_SEND_EMAIL_CONFIGURATION, emails } from "@/database/schema.js"
+} from '@/database/database_schema_types.js'
+import { type ACTION_SEND_EMAIL_CONFIGURATION, emails } from '@/database/schema.js'
 
-import { Mailer } from "@/shared/mailers/mailer.js"
+import { Mailer } from '@/shared/mailers/mailer.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class SendEmailAutomationStepRunner implements AutomationStepRunnerContract {
   constructor(

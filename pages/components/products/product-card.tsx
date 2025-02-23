@@ -1,8 +1,8 @@
-import React from "react"
+import type React from 'react'
 
 interface ProductCardProps
   extends React.PropsWithChildren,
-    React.ComponentPropsWithoutRef<"a"> {}
+    React.ComponentPropsWithoutRef<'a'> {}
 
 function ProductCard({ ...linkProps }: ProductCardProps) {
   return (

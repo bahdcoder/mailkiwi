@@ -1,29 +1,29 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { faker } from "@faker-js/faker"
-import { and, eq } from "drizzle-orm"
-import { describe, test } from "vitest"
+import { appEnv } from '@/app/env/app_env.js'
+import { faker } from '@faker-js/faker'
+import { and, eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { makeRequest, makeRequestAsUser } from "@/tests/utils/http.js"
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { makeRequest, makeRequestAsUser } from '@/tests/utils/http.js'
 
-import { audiences, websites } from "@/database/schema.js"
+import { audiences, websites } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@audiences", () => {
-  test("can create an audience only if authenticated", async ({ expect }) => {
-    const response = await makeRequest("audiences", {
-      method: "POST",
+describe('@audiences', () => {
+  test('can create an audience only if authenticated', async ({ expect }) => {
+    const response = await makeRequest('audiences', {
+      method: 'POST',
     })
 
     expect(response.status).toBe(401)
   })
 
-  test("can fetch all created audiences and filter by product", async ({ expect }) => {
+  test('can fetch all created audiences and filter by product', async ({ expect }) => {
     const { team, user } = await createUser()
     const database = makeDatabase()
 
@@ -31,7 +31,7 @@ describe("@audiences", () => {
       () => ({
         name: faker.lorem.words(3),
         slug: faker.lorem.words(5),
-        product: "engage" as const,
+        product: 'engage' as const,
         teamId: team.id,
       }),
       { count: 50 },
@@ -42,8 +42,8 @@ describe("@audiences", () => {
     const response = await makeRequestAsUser(
       user,
       {
-        method: "GET",
-        path: "/audiences",
+        method: 'GET',
+        path: '/audiences',
       },
       team.id,
     )
@@ -56,7 +56,7 @@ describe("@audiences", () => {
     expect(json.payload.next).toBeDefined()
   })
 
-  test("cannot create an audience if not a member of the team or project", async ({
+  test('cannot create an audience if not a member of the team or project', async ({
     expect,
   }) => {
     const { team } = await createUser()
@@ -65,11 +65,11 @@ describe("@audiences", () => {
     const response = await makeRequestAsUser(
       unauthorisedUser,
       {
-        method: "POST",
-        path: "/audiences",
+        method: 'POST',
+        path: '/audiences',
         body: {
           name: faker.commerce.productName(),
-          product: "letters",
+          product: 'letters',
           slug: faker.lorem.slug(),
         },
       },
@@ -79,7 +79,7 @@ describe("@audiences", () => {
     expect(response.status).toBe(401)
   })
 
-  test("managers on a team can create audiences", async ({ expect }) => {
+  test('managers on a team can create audiences', async ({ expect }) => {
     const { team, managerUser } = await createUser({
       createEntireTeam: true,
       createWebsite: false,
@@ -92,8 +92,8 @@ describe("@audiences", () => {
     const response = await makeRequestAsUser(
       managerUser,
       {
-        method: "POST",
-        path: "/audiences",
+        method: 'POST',
+        path: '/audiences',
         body: {
           name: faker.commerce.productName(),
           slug: websiteSlug,
@@ -115,7 +115,7 @@ describe("@audiences", () => {
     expect(website.audienceId).toEqual(json.payload.id)
   })
 
-  test("can create an audience when properly authenticated and authorized", async ({
+  test('can create an audience when properly authenticated and authorized', async ({
     expect,
   }) => {
     const { user } = await createUser({
@@ -126,13 +126,13 @@ describe("@audiences", () => {
 
     const payload = {
       name: faker.commerce.productName(),
-      product: "letters",
+      product: 'letters',
       slug: faker.lorem.slug(),
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/audiences",
+      method: 'POST',
+      path: '/audiences',
       body: payload,
     })
 
@@ -149,17 +149,17 @@ describe("@audiences", () => {
     expect(audience?.name).toEqual(payload.name)
   })
 
-  test("can only create an audience when properly authorized", async ({ expect }) => {
+  test('can only create an audience when properly authorized', async ({ expect }) => {
     const { user } = await createUser()
 
     const { user: unauthorizedUser } = await createUser()
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/audiences",
+      method: 'POST',
+      path: '/audiences',
       body: {
-        name: "Newsletter",
-        product: "letters",
+        name: 'Newsletter',
+        product: 'letters',
         slug: faker.lorem.slug(),
       },
       headers: {

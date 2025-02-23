@@ -1,27 +1,27 @@
-import { faker } from "@faker-js/faker"
-import { and, count, eq } from "drizzle-orm"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { and, count, eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
-import { ReportBuilder } from "@/audiences/utils/report_builder/report_builder.js"
+import { ReportBuilder } from '@/audiences/utils/report_builder/report_builder.js'
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
-import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
-import { setupDomainForDnsChecks } from "@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js"
+import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
+import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
+import { setupDomainForDnsChecks } from '@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js'
 
-import { Audience, InsertEmailSendEvent } from "@/database/database_schema_types.js"
+import { Audience, type InsertEmailSendEvent } from '@/database/database_schema_types.js'
 import {
   contacts,
   emailSendEvents,
   emailSends,
   sendingSources,
-} from "@/database/schema.js"
+} from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@report-builder", () => {
+describe('@report-builder', () => {
   async function prepareBatchOfContactsForReport({
     audience,
     source,
@@ -55,7 +55,7 @@ describe("@report-builder", () => {
         contactId: contact.id,
         audienceId: audience.id,
         broadcastId,
-        product: "engage" as InsertEmailSendEvent["product"],
+        product: 'engage' as InsertEmailSendEvent['product'],
         sendingDomainId,
       })),
     )
@@ -71,14 +71,14 @@ describe("@report-builder", () => {
 
     const eventPayload = (
       contact: { id: string; emailSendId?: string },
-      type: InsertEmailSendEvent["type"],
+      type: InsertEmailSendEvent['type'],
     ) => ({
       type,
       broadcastId,
       contactId: contact.id,
       audienceId: audience.id,
       emailSendId: contact.emailSendId as string,
-      product: "engage" as InsertEmailSendEvent["product"],
+      product: 'engage' as InsertEmailSendEvent['product'],
     })
 
     const createEventsForContacts = (
@@ -86,7 +86,7 @@ describe("@report-builder", () => {
         id: string
         emailSendId?: string
       }[],
-      event: InsertEmailSendEvent["type"],
+      event: InsertEmailSendEvent['type'],
     ) => {
       return database
         .insert(emailSendEvents)
@@ -94,26 +94,26 @@ describe("@report-builder", () => {
     }
 
     // 4. create 9,565 delivery events for 9,565 contacts
-    await createEventsForContacts(deliveredContactIds, "Delivery")
+    await createEventsForContacts(deliveredContactIds, 'Delivery')
 
     // 5. create 7,250 open events for 7,250 contacts
     const openContactIds = deliveredContactIds.slice(0, TOTAL_OPENS)
 
-    await createEventsForContacts(openContactIds, "Open")
+    await createEventsForContacts(openContactIds, 'Open')
 
     // 6. create another 1,250 open events for 1,250 contacts (of the 7,250 contacts) (double open)
 
     const doubleOpensContactIds = openContactIds.slice(0, TOTAL_DOUBLE_OPENS)
 
-    await createEventsForContacts(doubleOpensContactIds, "Open")
+    await createEventsForContacts(doubleOpensContactIds, 'Open')
 
     // 7. create 3,500 link clicks for 3,500 contacts
     const clickContactIds = openContactIds.slice(0, TOTAL_CLICKS)
 
-    await createEventsForContacts(clickContactIds, "Click")
+    await createEventsForContacts(clickContactIds, 'Click')
 
     // 8. create 435 bounce events for 435 contacts (bounce)
-    await createEventsForContacts(bouncedContactIds, "Bounce")
+    await createEventsForContacts(bouncedContactIds, 'Bounce')
 
     return {
       contactIds,
@@ -126,7 +126,7 @@ describe("@report-builder", () => {
     }
   }
 
-  test("can get reports for a campaign", { timeout: 20000 }, async ({ expect }) => {
+  test('can get reports for a campaign', { timeout: 20000 }, async ({ expect }) => {
     const TOTAL_SENDS = 100
     const { user, audience, sendingDomainId, broadcastGroupId, team } =
       await setupDomainForDnsChecks()
@@ -191,21 +191,21 @@ describe("@report-builder", () => {
     expect(uniqueClicks).toBe(TOTAL_CLICKS)
     expect(bounces).toBe(TOTAL_SENDS - TOTAL_DELIVERED)
 
-    expect(rates.deliveries).toEqual("95.00")
-    expect(rates.opens).toEqual("90.53")
-    expect(rates.clicks).toEqual("36.84")
-    expect(rates.bounces).toEqual("5.26")
-    expect(rates.uniqueOpens).toEqual("76.84")
-    expect(rates.uniqueClicks).toEqual("36.84")
+    expect(rates.deliveries).toEqual('95.00')
+    expect(rates.opens).toEqual('90.53')
+    expect(rates.clicks).toEqual('36.84')
+    expect(rates.bounces).toEqual('5.26')
+    expect(rates.uniqueOpens).toEqual('76.84')
+    expect(rates.uniqueClicks).toEqual('36.84')
 
     const audienceReport = await new ReportBuilder().audience(audience.id).build()
 
-    expect(audienceReport.rates.deliveries).toEqual("95.00")
-    expect(audienceReport.rates.opens).toEqual("90.53")
-    expect(audienceReport.rates.clicks).toEqual("36.84")
-    expect(audienceReport.rates.bounces).toEqual("5.26")
-    expect(audienceReport.rates.uniqueOpens).toEqual("76.84")
-    expect(audienceReport.rates.uniqueClicks).toEqual("36.84")
+    expect(audienceReport.rates.deliveries).toEqual('95.00')
+    expect(audienceReport.rates.opens).toEqual('90.53')
+    expect(audienceReport.rates.clicks).toEqual('36.84')
+    expect(audienceReport.rates.bounces).toEqual('5.26')
+    expect(audienceReport.rates.uniqueOpens).toEqual('76.84')
+    expect(audienceReport.rates.uniqueClicks).toEqual('36.84')
 
     expect(audienceReport.sends).toEqual(TOTAL_SENDS * 3)
     expect(audienceReport.deliveries).toEqual(TOTAL_DELIVERED * 3)

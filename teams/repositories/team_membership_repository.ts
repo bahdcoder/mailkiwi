@@ -1,19 +1,19 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { and, eq, or, sql } from "drizzle-orm"
-import { DateTime } from "luxon"
+import { appEnv } from '@/app/env/app_env.js'
+import { and, eq, or, sql } from 'drizzle-orm'
+import { DateTime } from 'luxon'
 
-import {
+import type {
   InsertTeamMembership,
   UpdateSetTeamMembershipInput,
-} from "@/database/database_schema_types.js"
-import { teamMemberships, teams, users } from "@/database/schema.js"
-import { belongsTo, hasOne } from "@/database/utils/relationships.js"
+} from '@/database/database_schema_types.js'
+import { teamMemberships, teams, users } from '@/database/schema.js'
+import { belongsTo, hasOne } from '@/database/utils/relationships.js'
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
-import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class TeamMembershipRepository extends BaseRepository {
   constructor(
@@ -32,7 +32,7 @@ export class TeamMembershipRepository extends BaseRepository {
     to: users,
     primaryKey: users.id,
     foreignKey: teamMemberships.userId,
-    relationName: "user",
+    relationName: 'user',
   })
 
   private belongsToTeam = belongsTo(this.database, {
@@ -40,14 +40,14 @@ export class TeamMembershipRepository extends BaseRepository {
     to: teams,
     primaryKey: teams.id,
     foreignKey: teamMemberships.teamId,
-    relationName: "team",
+    relationName: 'team',
   })
 
   async create(payload: InsertTeamMembership) {
     const id = this.cuid()
     await this.database.insert(teamMemberships).values({
       id,
-      status: "PENDING",
+      status: 'PENDING',
       ...payload,
       invitedAt: DateTime.now().toJSDate(),
       expiresAt: DateTime.now().plus({ days: 7 }).toJSDate(),
@@ -90,7 +90,7 @@ export class TeamMembershipRepository extends BaseRepository {
   async findAllForUser(userId: string) {
     return this.belongsToTeam((query) =>
       query.where(
-        and(eq(teamMemberships.userId, userId), eq(teamMemberships.status, "ACTIVE")),
+        and(eq(teamMemberships.userId, userId), eq(teamMemberships.status, 'ACTIVE')),
       ),
     )
   }

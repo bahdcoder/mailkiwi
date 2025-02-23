@@ -18,7 +18,7 @@ export class Container {
       return this.fakes.get(key)
     }
 
-    if (typeof key === "string") {
+    if (typeof key === 'string') {
       if (!this.instances.has(key)) {
         throw new Error(`No instance registered for key: ${key}`)
       }
@@ -52,7 +52,7 @@ export class Container {
     let instance: T
     if (value) {
       instance = value
-    } else if (typeof key === "string") {
+    } else if (typeof key === 'string') {
       instance = this.make(key)
     } else {
       instance = new key()

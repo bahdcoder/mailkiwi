@@ -1,19 +1,19 @@
-import { PageContainer, PageTitle } from "@/pages/components/auth/auth.jsx"
+import { PageContainer, PageTitle } from '@/pages/components/auth/auth.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { Button } from "@kibamail/owly/button"
-import * as TextField from "@kibamail/owly/text-field"
-import { usePageContext } from "vike-react/usePageContext"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { Button } from '@kibamail/owly/button'
+import * as TextField from '@kibamail/owly/text-field'
+import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 function RegisterProfile() {
   const { user } = usePageContext()
 
   const { serverFormProps, error, isPending } = useServerFormMutation({
-    action: route("auth_register_profile"),
+    action: route('auth_register_profile'),
   })
 
   return (

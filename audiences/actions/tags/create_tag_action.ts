@@ -1,13 +1,13 @@
-import { and, eq } from "drizzle-orm"
+import { and, eq } from 'drizzle-orm'
 
-import type { CreateTagDto } from "@/audiences/dto/tags/create_tag_dto.js"
-import { TagRepository } from "@/audiences/repositories/tag_repository.js"
+import type { CreateTagDto } from '@/audiences/dto/tags/create_tag_dto.js'
+import { TagRepository } from '@/audiences/repositories/tag_repository.js'
 
-import { tags } from "@/database/schema.js"
+import { tags } from '@/database/schema.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class CreateTagAction {
   constructor(private tagRepository = container.make(TagRepository)) {}
@@ -20,8 +20,8 @@ export class CreateTagAction {
     if (existingTag) {
       throw E_VALIDATION_FAILED([
         {
-          message: "A tag with this name already exists for this audience.",
-          field: "name",
+          message: 'A tag with this name already exists for this audience.',
+          field: 'name',
         },
       ])
     }

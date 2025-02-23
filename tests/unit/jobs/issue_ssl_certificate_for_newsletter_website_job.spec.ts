@@ -1,23 +1,23 @@
-import { WEBSITES_DOMAIN, appEnv } from "@/app/env/app_env.js"
-import { generateAcmeAccountIdentityCommand } from "@/cli/commands/generate_acme_account_identity.js"
-import { IssueSSLCertificateForWebsiteJob } from "@/websites/jobs/issue_ssl_certificate_for_website_job.js"
-import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
-import { faker } from "@faker-js/faker"
-import { DateTime } from "luxon"
-import { describe, test } from "vitest"
+import { WEBSITES_DOMAIN, appEnv } from '@/app/env/app_env.js'
+import { generateAcmeAccountIdentityCommand } from '@/cli/commands/generate_acme_account_identity.js'
+import { IssueSSLCertificateForWebsiteJob } from '@/websites/jobs/issue_ssl_certificate_for_website_job.js'
+import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { faker } from '@faker-js/faker'
+import { DateTime } from 'luxon'
+import { describe, test } from 'vitest'
 
-import { createUser } from "@/tests/mocks/auth/users.js"
+import { createUser } from '@/tests/mocks/auth/users.js'
 
-import { settings } from "@/database/schema.js"
+import { settings } from '@/database/schema.js'
 
-import { makeApp, makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { Encryption } from "@/shared/utils/encryption/encryption.js"
+import { makeApp, makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { Encryption } from '@/shared/utils/encryption/encryption.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@website-ssl", () => {
+describe('@website-ssl', () => {
   test.todo(
-    "issues website ssl certs, encrypts and stores the certs to the database",
+    'issues website ssl certs, encrypts and stores the certs to the database',
     async ({ expect }) => {
       await makeDatabase().delete(settings)
 
@@ -27,8 +27,8 @@ describe("@website-ssl", () => {
         createAudienceForNewsletter: true,
       })
 
-      const customerSlug = "fastmedia" + "-" + faker.lorem.slug()
-      const customerDomain = "news" + "-" + faker.lorem.slug() + ".fastmedia.com"
+      const customerSlug = 'fastmedia' + '-' + faker.lorem.slug()
+      const customerDomain = 'news' + '-' + faker.lorem.slug() + '.fastmedia.com'
 
       await container.make(WebsiteRepository).updateById(website.id, {
         slug: customerSlug,
@@ -64,10 +64,10 @@ describe("@website-ssl", () => {
         .decrypt(updatedWebsite?.websiteSslCertSecret as string)
         ?.release()
 
-      expect(certificatePublicKey).toContain("-----BEGIN CERTIFICATE-----\n")
-      expect(certificatePublicKey).toContain("-----END CERTIFICATE-----\n")
-      expect(certificatePrivateKey).toContain("-----BEGIN RSA PRIVATE KEY-----\r\n")
-      expect(certificatePrivateKey).toContain("-----END RSA PRIVATE KEY-----\r\n")
+      expect(certificatePublicKey).toContain('-----BEGIN CERTIFICATE-----\n')
+      expect(certificatePublicKey).toContain('-----END CERTIFICATE-----\n')
+      expect(certificatePrivateKey).toContain('-----BEGIN RSA PRIVATE KEY-----\r\n')
+      expect(certificatePrivateKey).toContain('-----END RSA PRIVATE KEY-----\r\n')
       expect(updatedWebsite.websiteDomainSslVerifiedAt).toBeDefined()
 
       const app = makeApp()

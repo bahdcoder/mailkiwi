@@ -1,5 +1,5 @@
 import {
-  GenericSchema,
+  type GenericSchema,
   type InferInput,
   array,
   lazy,
@@ -14,16 +14,16 @@ import {
   record,
   string,
   union,
-} from "valibot"
+} from 'valibot'
 
 const htmlJsonTypes = [
-  "doc",
-  "container",
-  "columns",
-  "column",
-  "paragraph",
-  "heading",
-  "text",
+  'doc',
+  'container',
+  'columns',
+  'column',
+  'paragraph',
+  'heading',
+  'text',
 ] as const
 const htmlJsonContentType = picklist(htmlJsonTypes)
 
@@ -46,7 +46,7 @@ export const BlockContentSchema = array(
 export const UpdateWebsitePageSchema = objectAsync({
   draftWebsiteContent: optional(
     object({
-      type: picklist(["doc"]),
+      type: picklist(['doc']),
       content: BlockContentSchema,
     }),
   ),

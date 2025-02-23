@@ -1,6 +1,6 @@
-import { TableOfContents } from "@/pages/components/tiptap/TableOfContents/TableOfContents.jsx"
-import { Node, NodeViewRendererProps } from "@tiptap/core"
-import { NodeViewWrapper, ReactNodeViewRenderer } from "@tiptap/react"
+import { TableOfContents } from '@/pages/components/tiptap/TableOfContents/TableOfContents.jsx'
+import { Node, type NodeViewRendererProps } from '@tiptap/core'
+import { NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react'
 
 const TableOfNodeContent = (props: NodeViewRendererProps) => {
   const { editor } = props
@@ -14,7 +14,7 @@ const TableOfNodeContent = (props: NodeViewRendererProps) => {
   )
 }
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     tableOfContentsNode: {
       insertTableOfContents: () => ReturnType
@@ -23,8 +23,8 @@ declare module "@tiptap/core" {
 }
 
 export const TableOfContentsNode = Node.create({
-  name: "tableOfContentsNode",
-  group: "block",
+  name: 'tableOfContentsNode',
+  group: 'block',
   atom: true,
   selectable: true,
   draggable: true,
@@ -39,7 +39,7 @@ export const TableOfContentsNode = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["div", { ...HTMLAttributes, "data-type": "table-of-content" }]
+    return ['div', { ...HTMLAttributes, 'data-type': 'table-of-content' }]
   },
 
   addNodeView() {

@@ -1,10 +1,10 @@
-import { ComposeBroadcastFlow } from "@/pages/components/flows/compose_broadcast/compose_broadcast_flow.jsx"
-import { CreateBroadcastFlow } from "@/pages/components/flows/compose_broadcast/create_broadcast_flow.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import React from "react"
+import { ComposeBroadcastFlow } from '@/pages/components/flows/compose_broadcast/compose_broadcast_flow.jsx'
+import { CreateBroadcastFlow } from '@/pages/components/flows/compose_broadcast/create_broadcast_flow.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import type React from 'react'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export interface ProductPageHeadingProps extends React.PropsWithChildren {
   header?: React.ReactNode

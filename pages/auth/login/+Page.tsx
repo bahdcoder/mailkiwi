@@ -3,19 +3,19 @@ import {
   Oauth2Methods,
   PageContainer,
   PageTitle,
-} from "@/pages/components/auth/auth.jsx"
-import { FlashMessage } from "@/pages/components/flash/flash_message.jsx"
-import { PasswordField } from "@/pages/components/input/password-field.jsx"
+} from '@/pages/components/auth/auth.jsx'
+import { FlashMessage } from '@/pages/components/flash/flash_message.jsx'
+import { PasswordField } from '@/pages/components/input/password-field.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import React from "react"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import React from 'react'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 interface LoginPageProps {
   teamInviteToken?: string
@@ -26,10 +26,10 @@ function LoginPage({ teamInviteToken }: LoginPageProps) {
 
   const linkToRegisterPage = isAnInvitedUser
     ? `/auth/invites/${teamInviteToken}/`
-    : "/auth/register"
+    : '/auth/register'
 
   const { serverFormProps, error, isPending } = useServerFormMutation({
-    action: "/auth/login",
+    action: '/auth/login',
   })
 
   return (
@@ -38,17 +38,17 @@ function LoginPage({ teamInviteToken }: LoginPageProps) {
         title={
           isAnInvitedUser ? (
             <span className="kb-content-disabled">
-              You{"'"}ve been invited to join{" "}
+              You{"'"}ve been invited to join{' '}
               <span className="kb-content-brand">Zibaletter</span>.
             </span>
           ) : (
-            "Welcome to a new world of Emailing."
+            'Welcome to a new world of Emailing.'
           )
         }
         description={
           isAnInvitedUser
-            ? "Sign up or login to join the Zibaletter workspace."
-            : "Choose your preferred method to access powerful emailing tools."
+            ? 'Sign up or login to join the Zibaletter workspace.'
+            : 'Choose your preferred method to access powerful emailing tools.'
         }
       />
 
@@ -81,7 +81,7 @@ function LoginPage({ teamInviteToken }: LoginPageProps) {
 
         <div className="flex justify-end">
           <Button asChild variant="tertiary" className="underline">
-            <a href={route("auth_passwords_forgot")}>Forgot your password ?</a>
+            <a href={route('auth_passwords_forgot')}>Forgot your password ?</a>
           </Button>
         </div>
 

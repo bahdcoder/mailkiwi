@@ -1,16 +1,16 @@
-import { ColumnLayout } from "../Columns.js"
-import { MenuProps } from "@/pages/components/tiptap/menus/types.js"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.js"
-import { Toolbar } from "@/pages/components/tiptap/ui/Toolbar.js"
-import { getRenderContainer } from "@/pages/components/tiptap/utils/index.js"
-import { BubbleMenu as BaseBubbleMenu, useEditorState } from "@tiptap/react"
-import { useCallback } from "react"
-import { sticky } from "tippy.js"
-import { v4 as uuid } from "uuid"
+import { ColumnLayout } from '../Columns.js'
+import type { MenuProps } from '@/pages/components/tiptap/menus/types.js'
+import { Icon } from '@/pages/components/tiptap/ui/Icon.js'
+import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.js'
+import { getRenderContainer } from '@/pages/components/tiptap/utils/index.js'
+import { BubbleMenu as BaseBubbleMenu, useEditorState } from '@tiptap/react'
+import { useCallback } from 'react'
+import { sticky } from 'tippy.js'
+import { v4 as uuid } from 'uuid'
 
 export const ColumnsMenu = ({ editor, appendTo }: MenuProps) => {
   const getReferenceClientRect = useCallback(() => {
-    const renderContainer = getRenderContainer(editor, "columns")
+    const renderContainer = getRenderContainer(editor, 'columns')
     const rect =
       renderContainer?.getBoundingClientRect() || new DOMRect(-1000, -1000, 0, 0)
 
@@ -18,7 +18,7 @@ export const ColumnsMenu = ({ editor, appendTo }: MenuProps) => {
   }, [editor])
 
   const shouldShow = useCallback(() => {
-    const isColumns = editor.isActive("columns")
+    const isColumns = editor.isActive('columns')
     return isColumns
   }, [editor])
 
@@ -37,13 +37,15 @@ export const ColumnsMenu = ({ editor, appendTo }: MenuProps) => {
     editor,
     selector: (ctx) => {
       return {
-        isColumnLeft: ctx.editor.isActive("columns", {
+        isColumnLeft: ctx.editor.isActive('columns', {
           layout: ColumnLayout.SidebarLeft,
         }),
-        isColumnRight: ctx.editor.isActive("columns", {
+        isColumnRight: ctx.editor.isActive('columns', {
           layout: ColumnLayout.SidebarRight,
         }),
-        isColumnTwo: ctx.editor.isActive("columns", { layout: ColumnLayout.TwoColumn }),
+        isColumnTwo: ctx.editor.isActive('columns', {
+          layout: ColumnLayout.TwoColumn,
+        }),
       }
     },
   })
@@ -57,12 +59,12 @@ export const ColumnsMenu = ({ editor, appendTo }: MenuProps) => {
       tippyOptions={{
         offset: [0, 8],
         popperOptions: {
-          modifiers: [{ name: "flip", enabled: false }],
+          modifiers: [{ name: 'flip', enabled: false }],
         },
         getReferenceClientRect,
         appendTo: () => appendTo?.current,
         plugins: [sticky],
-        sticky: "popper",
+        sticky: 'popper',
       }}
     >
       <Toolbar.Wrapper>

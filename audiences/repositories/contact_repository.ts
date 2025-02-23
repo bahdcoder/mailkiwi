@@ -1,13 +1,13 @@
-import { SQL, and, eq, inArray } from "drizzle-orm"
-import { MySqlInsertOnDuplicateKeyUpdateConfig } from "drizzle-orm/mysql-core"
-import { DateTime } from "luxon"
+import { type SQL, and, eq, inArray } from 'drizzle-orm'
+import type { MySqlInsertOnDuplicateKeyUpdateConfig } from 'drizzle-orm/mysql-core'
+import { DateTime } from 'luxon'
 
-import type { CreateContactDto } from "@/audiences/dto/contacts/create_contact_dto.js"
-import { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js"
+import type { CreateContactDto } from '@/audiences/dto/contacts/create_contact_dto.js'
+import type { UpdateContactDto } from '@/audiences/dto/contacts/update_contact_dto.js'
 
-import { TriggerAutomationsForContactJob } from "@/automations/jobs/trigger_automation_for_contact_job.js"
+import { TriggerAutomationsForContactJob } from '@/automations/jobs/trigger_automation_for_contact_job.js'
 
-import type { DrizzleClient } from "@/database/client.js"
+import type { DrizzleClient } from '@/database/client.js'
 import type {
   Audience,
   Contact,
@@ -18,7 +18,7 @@ import type {
   InsertContact,
   UpdateSetAudienceInput,
   UpdateSetContactInput,
-} from "@/database/database_schema_types.js"
+} from '@/database/database_schema_types.js'
 import {
   audiences,
   automationStepSubtypesTriggerMap,
@@ -27,16 +27,16 @@ import {
   emailSendEvents,
   tags,
   tagsOnContacts,
-} from "@/database/schema.js"
-import { hasMany } from "@/database/utils/relationships.js"
+} from '@/database/schema.js'
+import { hasMany } from '@/database/utils/relationships.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
-import { guessValueType } from "@/shared/utils/helpers/guess_value_type.js"
-import { Paginator } from "@/shared/utils/pagination/paginator.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { Queue } from '@/shared/queue/queue.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { guessValueType } from '@/shared/utils/helpers/guess_value_type.js'
+import { Paginator } from '@/shared/utils/pagination/paginator.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class ContactRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -48,7 +48,7 @@ export class ContactRepository extends BaseRepository {
     to: contactProperties,
     foreignKey: contactProperties.contactId,
     primaryKey: contacts.id,
-    relationName: "properties",
+    relationName: 'properties',
   })
 
   async findByEmailForTeam(email: string, teamId: string) {
@@ -98,14 +98,15 @@ export class ContactRepository extends BaseRepository {
           audienceId: audience.id,
           contactId,
           name: knownProperty.id,
-          float: knownProperty.type === "float" ? parseFloat(value as string) : null,
-          boolean: knownProperty.type === "boolean" ? Boolean(value) : null,
+          float:
+            knownProperty.type === 'float' ? Number.parseFloat(value as string) : null,
+          boolean: knownProperty.type === 'boolean' ? Boolean(value) : null,
           date:
-            knownProperty.type === "date"
+            knownProperty.type === 'date'
               ? DateTime.fromISO(value as string).toJSDate()
               : null,
           text:
-            knownProperty.type === "text" || knownProperty.type === "enum"
+            knownProperty.type === 'text' || knownProperty.type === 'enum'
               ? (value as string)
               : null,
         })

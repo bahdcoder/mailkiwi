@@ -1,29 +1,29 @@
-import * as CheckboxField from "@/pages/components/checkbox-field/checkbox-field.jsx"
-import { useImportcontactsContext } from "@/pages/components/flows/contacts/import_contacts/state/import_contacts_context.jsx"
-import { NavArrowLeftIcon } from "@/pages/components/icons/nav-arrow-left.svg.jsx"
+import * as CheckboxField from '@/pages/components/checkbox-field/checkbox-field.jsx'
+import { useImportcontactsContext } from '@/pages/components/flows/contacts/import_contacts/state/import_contacts_context.jsx'
+import { NavArrowLeftIcon } from '@/pages/components/icons/nav-arrow-left.svg.jsx'
 import {
-  FormPayload,
+  type FormPayload,
   ServerForm,
   useServerFormMutation,
-} from "@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx"
+} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
 import {
   type ComboboxItem,
   TagsCombobox,
-} from "@/pages/components/tags/tags_combobox.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
-import * as Dialog from "@radix-ui/react-dialog"
-import * as React from "react"
+} from '@/pages/components/tags/tags_combobox.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
+import * as Dialog from '@radix-ui/react-dialog'
+import * as React from 'react'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export function StepThreeImportSettings() {
   const selectedTagsRef = React.useRef<ComboboxItem[]>([])
-  const { setStep, formState, audienceId } = useImportcontactsContext("ImportSettings")
+  const { setStep, formState, audienceId } = useImportcontactsContext('ImportSettings')
   const { serverFormProps, isPending, ServerErrorsList } = useServerFormMutation({
-    method: "PUT",
-    action: route("update_contacts_import", {
+    method: 'PUT',
+    action: route('update_contacts_import', {
       importId: formState.contactImportId,
       audienceId,
     }),
@@ -31,8 +31,8 @@ export function StepThreeImportSettings() {
       setStep((current) => current + 1)
     },
     transform(form) {
-      let tags: string[] = []
-      let tagIds: string[] = []
+      const tags: string[] = []
+      const tagIds: string[] = []
 
       for (const item of selectedTagsRef.current) {
         if (item.new) {
@@ -44,8 +44,8 @@ export function StepThreeImportSettings() {
 
       form.tags = tags
       form.tagIds = tagIds
-      form.subscribeAllContacts = form.subscribeAllContacts === "on"
-      form.updateExistingContacts = form.updateExistingContacts === "on"
+      form.subscribeAllContacts = form.subscribeAllContacts === 'on'
+      form.updateExistingContacts = form.updateExistingContacts === 'on'
 
       form.propertiesMap = formState.contactProperties as unknown as FormPayload[string]
 

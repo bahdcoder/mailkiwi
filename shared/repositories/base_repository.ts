@@ -1,21 +1,21 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { SQLWrapper, and, eq } from "drizzle-orm"
-import { MySqlRawQueryResult } from "drizzle-orm/mysql2"
-import {
+import { appEnv } from '@/app/env/app_env.js'
+import { type SQLWrapper, and, eq } from 'drizzle-orm'
+import type { MySqlRawQueryResult } from 'drizzle-orm/mysql2'
+import type {
   AnyMySqlColumn,
   AnyMySqlTable,
   MySqlUpdateSetSource,
-} from "drizzle-orm/mysql-core"
+} from 'drizzle-orm/mysql-core'
 
-import type { DrizzleClient } from "@/database/client.js"
-import { products } from "@/database/schema.js"
+import type { DrizzleClient } from '@/database/client.js'
+import { products } from '@/database/schema.js'
 
-import { Cache } from "@/shared/cache/cache.js"
-import { makeDatabase } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
-import { Encryption } from "@/shared/utils/encryption/encryption.js"
+import { Cache } from '@/shared/cache/cache.js'
+import { makeDatabase } from '@/shared/container/index.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { Encryption } from '@/shared/utils/encryption/encryption.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 type ObjectWithNullable<T> = { [K in keyof T]: T[K] | null | undefined }
 
@@ -61,7 +61,7 @@ export class BaseRepository {
     const self = this
 
     return {
-      async create(payload: Table["$inferInsert"] & { id?: string }) {
+      async create(payload: Table['$inferInsert'] & { id?: string }) {
         const id = payload.id || self.cuid()
 
         await database.insert(table).values({ id, ...payload })
@@ -76,7 +76,7 @@ export class BaseRepository {
       async findAll(conditions?: SQLWrapper) {
         return database.select().from(table).where(and(conditions))
       },
-      async bulkCreate(payload: Table["$inferInsert"][]) {
+      async bulkCreate(payload: Table['$inferInsert'][]) {
         const values = payload.map((value) => ({
           id: self.cuid(),
           ...value,

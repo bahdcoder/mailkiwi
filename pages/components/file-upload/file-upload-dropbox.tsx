@@ -1,13 +1,13 @@
 import {
-  UseFileUploadProps,
+  type UseFileUploadProps,
   useFileUpload,
-} from "@/pages/components/file-upload/hooks/use_file_upload.js"
-import { CloudUploadIcon } from "@/pages/components/icons/cloud-upload.svg.jsx"
-import { Button } from "@kibamail/owly/button"
-import { InputError } from "@kibamail/owly/input-hint"
-import { Progress } from "@kibamail/owly/progress"
-import { Text } from "@kibamail/owly/text"
-import React from "react"
+} from '@/pages/components/file-upload/hooks/use_file_upload.js'
+import { CloudUploadIcon } from '@/pages/components/icons/cloud-upload.svg.jsx'
+import { Button } from '@kibamail/owly/button'
+import { InputError } from '@kibamail/owly/input-hint'
+import { Progress } from '@kibamail/owly/progress'
+import { Text } from '@kibamail/owly/text'
+import React from 'react'
 
 type FileUploadDropboxProps = UseFileUploadProps & {
   isFileUploadingToServer?: boolean
@@ -38,7 +38,7 @@ export function FileUploadDropbox({
         <CloudUploadIcon />
 
         <Text size="lg" className="font-semibold">
-          {isFileUploadingToServer ? "Uploading..." : "Drag and drop your file here"}
+          {isFileUploadingToServer ? 'Uploading...' : 'Drag and drop your file here'}
         </Text>
         {isFileUploadingToServer ? (
           <div className="w-full max-w-xs flex mt-2 flex-col items-center">
@@ -64,7 +64,7 @@ export function FileUploadDropbox({
       {state.rejectedFiles.length > 0 ? (
         <InputError baseId="file-upload-error" className="mt-2">
           You seem to have uploaded an invalid file. Please upload only a file with
-          extension ${accept?.join(",")}.
+          extension ${accept?.join(',')}.
         </InputError>
       ) : null}
 

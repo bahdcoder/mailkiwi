@@ -1,14 +1,14 @@
-import { command } from "@drizzle-team/brocli"
-import { inArray, sql } from "drizzle-orm"
+import { command } from '@drizzle-team/brocli'
+import { inArray, sql } from 'drizzle-orm'
 
-import { InsertSendingSource } from "@/database/database_schema_types.js"
-import { sendingSources } from "@/database/schema.js"
+import type { InsertSendingSource } from '@/database/database_schema_types.js'
+import { sendingSources } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 export const seedDevSendingSourcesCommand = command({
-  name: "seed_dev_sending_sources",
-  desc: "Seed 3 sending sources for development (are all bound to socks5 proxy in docker containers).",
+  name: 'seed_dev_sending_sources',
+  desc: 'Seed 3 sending sources for development (are all bound to socks5 proxy in docker containers).',
   async transform(opts) {
     return opts
   },
@@ -17,46 +17,46 @@ export const seedDevSendingSourcesCommand = command({
 
     const sendingSourcesValues: InsertSendingSource[] = [
       {
-        address: "172.20.0.45",
-        ehloDomain: "sv1.localkbmta.net",
-        pool: "send",
-        proxyServer: "172.20.0.45:8000",
-        status: "active",
+        address: '172.20.0.45',
+        ehloDomain: 'sv1.localkbmta.net',
+        pool: 'send',
+        proxyServer: '172.20.0.45:8000',
+        status: 'active',
       },
       {
-        address: "172.20.0.55",
-        ehloDomain: "sv2.localkbmta.net",
-        pool: "send",
-        proxyServer: "172.20.0.55:8000",
-        status: "active",
+        address: '172.20.0.55',
+        ehloDomain: 'sv2.localkbmta.net',
+        pool: 'send',
+        proxyServer: '172.20.0.55:8000',
+        status: 'active',
       },
       {
-        address: "172.20.0.65",
-        ehloDomain: "sv3.localkbmta.net",
-        pool: "send",
-        proxyServer: "172.20.0.65:8000",
-        status: "active",
+        address: '172.20.0.65',
+        ehloDomain: 'sv3.localkbmta.net',
+        pool: 'send',
+        proxyServer: '172.20.0.65:8000',
+        status: 'active',
       },
       {
-        address: "172.20.0.75",
-        ehloDomain: "sv4.localkbmta.net",
-        pool: "engage",
-        proxyServer: "172.20.0.75:8000",
-        status: "active",
+        address: '172.20.0.75',
+        ehloDomain: 'sv4.localkbmta.net',
+        pool: 'engage',
+        proxyServer: '172.20.0.75:8000',
+        status: 'active',
       },
       {
-        address: "172.20.0.85",
-        ehloDomain: "sv5.localkbmta.net",
-        pool: "engage",
-        proxyServer: "172.20.0.85:8000",
-        status: "active",
+        address: '172.20.0.85',
+        ehloDomain: 'sv5.localkbmta.net',
+        pool: 'engage',
+        proxyServer: '172.20.0.85:8000',
+        status: 'active',
       },
       {
-        address: "172.20.0.95",
-        ehloDomain: "sv6.localkbmta.net",
-        pool: "engage",
-        proxyServer: "172.20.0.95:8000",
-        status: "active",
+        address: '172.20.0.95',
+        ehloDomain: 'sv6.localkbmta.net',
+        pool: 'engage',
+        proxyServer: '172.20.0.95:8000',
+        status: 'active',
       },
     ]
 

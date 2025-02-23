@@ -1,12 +1,15 @@
-import { MenuList } from "./MenuList.jsx"
-import { GROUPS } from "./groups.js"
-import { Editor, Extension } from "@tiptap/core"
-import { PluginKey } from "@tiptap/pm/state"
-import { ReactRenderer } from "@tiptap/react"
-import Suggestion, { SuggestionKeyDownProps, SuggestionProps } from "@tiptap/suggestion"
-import tippy from "tippy.js"
+import { MenuList } from './MenuList.jsx'
+import { GROUPS } from './groups.js'
+import { type Editor, Extension } from '@tiptap/core'
+import { PluginKey } from '@tiptap/pm/state'
+import { ReactRenderer } from '@tiptap/react'
+import Suggestion, {
+  type SuggestionKeyDownProps,
+  type SuggestionProps,
+} from '@tiptap/suggestion'
+import tippy from 'tippy.js'
 
-const extensionName = "slashCommand"
+const extensionName = 'slashCommand'
 
 let popup: any
 
@@ -16,18 +19,18 @@ export const SlashCommand = Extension.create({
   priority: 200,
 
   onCreate() {
-    popup = tippy("body", {
+    popup = tippy('body', {
       interactive: true,
-      trigger: "manual",
-      placement: "bottom-start",
-      theme: "slash-command",
-      maxWidth: "16rem",
+      trigger: 'manual',
+      placement: 'bottom-start',
+      theme: 'slash-command',
+      maxWidth: '16rem',
       offset: [16, 8],
       popperOptions: {
-        strategy: "fixed",
+        strategy: 'fixed',
         modifiers: [
           {
-            name: "flip",
+            name: 'flip',
             enabled: false,
           },
         ],
@@ -39,24 +42,24 @@ export const SlashCommand = Extension.create({
     return [
       Suggestion({
         editor: this.editor,
-        char: "/",
+        char: '/',
         allowSpaces: true,
         startOfLine: true,
         pluginKey: new PluginKey(extensionName),
         allow: ({ state, range }) => {
           const $from = state.doc.resolve(range.from)
-          const isParagraph = $from.parent.type.name === "paragraph"
-          const isStartOfNode = $from.parent.textContent?.charAt(0) === "/"
+          const isParagraph = $from.parent.type.name === 'paragraph'
+          const isStartOfNode = $from.parent.textContent?.charAt(0) === '/'
           const isInContainer =
-            $from.parent.type.name === "paragraph" &&
-            $from.node(-1)?.type.name === "container"
+            $from.parent.type.name === 'paragraph' &&
+            $from.node(-1)?.type.name === 'container'
           const isRootDepth = $from.depth === 1
-          const isInColumn = this.editor.isActive("column")
+          const isInColumn = this.editor.isActive('column')
 
           const afterContent = $from.parent.textContent?.substring(
-            $from.parent.textContent?.indexOf("/"),
+            $from.parent.textContent?.indexOf('/'),
           )
-          const isValidAfterContent = !afterContent?.endsWith("  ")
+          const isValidAfterContent = !afterContent?.endsWith('  ')
 
           return (
             ((isRootDepth && isParagraph && isStartOfNode) ||
@@ -72,7 +75,7 @@ export const SlashCommand = Extension.create({
           const end = $from.pos
           const from = $head?.nodeBefore
             ? end -
-              ($head.nodeBefore.text?.substring($head.nodeBefore.text?.indexOf("/"))
+              ($head.nodeBefore.text?.substring($head.nodeBefore.text?.indexOf('/'))
                 .length ?? 0)
             : $from.start()
 
@@ -168,7 +171,7 @@ export const SlashCommand = Extension.create({
                 })
               }
 
-              view.dom.parentElement?.addEventListener("scroll", scrollHandler)
+              view.dom.parentElement?.addEventListener('scroll', scrollHandler)
 
               popup?.[0].setProps({
                 getReferenceClientRect,
@@ -208,13 +211,13 @@ export const SlashCommand = Extension.create({
                 return new DOMRect(rect.x, yPos, rect.width, rect.height)
               }
 
-              let scrollHandler = () => {
+              const scrollHandler = () => {
                 popup?.[0].setProps({
                   getReferenceClientRect,
                 })
               }
 
-              view.dom.parentElement?.addEventListener("scroll", scrollHandler)
+              view.dom.parentElement?.addEventListener('scroll', scrollHandler)
 
               // eslint-disable-next-line no-param-reassign
               props.editor.storage[extensionName].rect = props.clientRect
@@ -233,7 +236,7 @@ export const SlashCommand = Extension.create({
             },
 
             onKeyDown(props: SuggestionKeyDownProps) {
-              if (props.event.key === "Escape") {
+              if (props.event.key === 'Escape') {
                 popup?.[0].hide()
 
                 return true
@@ -250,7 +253,7 @@ export const SlashCommand = Extension.create({
               popup?.[0].hide()
               if (scrollHandler) {
                 const { view } = props.editor
-                view.dom.parentElement?.removeEventListener("scroll", scrollHandler)
+                view.dom.parentElement?.removeEventListener('scroll', scrollHandler)
               }
               component.destroy()
             },

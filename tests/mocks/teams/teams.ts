@@ -1,10 +1,10 @@
-import { createFakeEmailContent } from "../audiences/email_content.js"
-import { faker } from "@faker-js/faker"
-import { sql } from "drizzle-orm"
+import { createFakeEmailContent } from '../audiences/email_content.js'
+import { faker } from '@faker-js/faker'
+import { sql } from 'drizzle-orm'
 
 import {
-  AUTOMATION_STEP_SUB_TYPES_TRIGGER,
-  AutomationStepConfiguration,
+  type AUTOMATION_STEP_SUB_TYPES_TRIGGER,
+  type AutomationStepConfiguration,
   type ContactFilterCondition,
   accessTokens,
   audiences,
@@ -35,10 +35,10 @@ import {
   users,
   websitePages,
   websites,
-} from "@/database/schema.js"
+} from '@/database/schema.js'
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
 export const refreshRedisDatabase = async () => {
   const redis = makeRedis()
@@ -99,9 +99,9 @@ export const seedAutomation = async (
 
   await database.insert(automations).values({
     id: automationId,
-    name: automation.name ?? "Book launch",
+    name: automation.name ?? 'Book launch',
     audienceId: automation.audienceId,
-    description: automation.description ?? "Book launch",
+    description: automation.description ?? 'Book launch',
   })
 
   if (!createSteps) {
@@ -119,7 +119,7 @@ export const seedAutomation = async (
   await database.insert(emails).values({
     id: emailId,
     title: faker.lorem.words(2),
-    type: "AUTOMATION",
+    type: 'AUTOMATION',
     audienceId: automation.audienceId,
     emailContentId,
   })
@@ -133,15 +133,15 @@ export const seedAutomation = async (
     .values({
       id: startingTriggerAutomationStepId,
       automationId,
-      type: "TRIGGER",
-      status: "ACTIVE",
-      subtype: automation?.trigger ?? "TRIGGER_CONTACT_SUBSCRIBED",
+      type: 'TRIGGER',
+      status: 'ACTIVE',
+      subtype: automation?.trigger ?? 'TRIGGER_CONTACT_SUBSCRIBED',
       configuration: automation?.triggerConfiguration ?? {
         filterGroups: {
-          type: "AND",
+          type: 'AND',
           groups: [
             {
-              type: "AND",
+              type: 'AND',
               conditions: automation.triggerConditions ?? [],
             },
           ],
@@ -158,13 +158,13 @@ export const seedAutomation = async (
       id: receiveWelcomeEmailautomationStepId,
       automationId,
       parentId: startingTriggerAutomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_SEND_EMAIL",
+      type: 'ACTION',
+      subtype: 'ACTION_SEND_EMAIL',
       configuration: { emailId },
     })
     .execute()
 
-  let attachTagIds = [cuid(), cuid()]
+  const attachTagIds = [cuid(), cuid()]
 
   for (const [idx] of attachTagIds.entries()) {
     await database
@@ -184,8 +184,8 @@ export const seedAutomation = async (
       id: attachesTagsAutomationStepId,
       automationId,
       parentId: receiveWelcomeEmailautomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_ADD_TAG",
+      type: 'ACTION',
+      subtype: 'ACTION_ADD_TAG',
       configuration: { tagIds: attachTagIds },
     })
     .execute()
@@ -198,13 +198,13 @@ export const seedAutomation = async (
       id: waitsTwoDaysAutomationStepId,
       automationId,
       parentId: attachesTagsAutomationStepId,
-      type: "RULE",
-      subtype: "RULE_WAIT_FOR_DURATION",
+      type: 'RULE',
+      subtype: 'RULE_WAIT_FOR_DURATION',
       configuration: { delay: 2880 },
     })
     .execute()
 
-  let detachTagIds = [cuid(), cuid()]
+  const detachTagIds = [cuid(), cuid()]
 
   for (const [idx] of detachTagIds.entries()) {
     await database
@@ -225,8 +225,8 @@ export const seedAutomation = async (
       id: detachesTagsAutomationStepId,
       automationId,
       parentId: waitsTwoDaysAutomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_REMOVE_TAG",
+      type: 'ACTION',
+      subtype: 'ACTION_REMOVE_TAG',
       configuration: { tagIds: detachTagIds },
     })
     .execute()
@@ -239,8 +239,8 @@ export const seedAutomation = async (
       id: receiveSecondEmailEmailautomationStepId,
       automationId,
       parentId: detachesTagsAutomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_SEND_EMAIL",
+      type: 'ACTION',
+      subtype: 'ACTION_SEND_EMAIL',
       configuration: { emailId },
     })
     .execute()
@@ -252,8 +252,8 @@ export const seedAutomation = async (
       id: waitsOneDayAutomationStepId,
       automationId,
       parentId: receiveSecondEmailEmailautomationStepId,
-      type: "RULE",
-      subtype: "RULE_WAIT_FOR_DURATION",
+      type: 'RULE',
+      subtype: 'RULE_WAIT_FOR_DURATION',
       configuration: { delay: 1440 }, // delay is in minutes
     })
     .execute()
@@ -266,19 +266,19 @@ export const seedAutomation = async (
       id: ifElseBranchautomationStepId,
       automationId,
       parentId: waitsOneDayAutomationStepId,
-      type: "RULE",
-      subtype: "RULE_IF_ELSE",
+      type: 'RULE',
+      subtype: 'RULE_IF_ELSE',
       configuration: {
         filterGroups: {
-          type: "AND",
+          type: 'AND',
           groups: [
             {
-              type: "AND",
+              type: 'AND',
               conditions: [
                 {
-                  field: "tags",
-                  operation: "contains",
-                  value: ["gjdbbgfyz6e9m3tk99ezp084"],
+                  field: 'tags',
+                  operation: 'contains',
+                  value: ['gjdbbgfyz6e9m3tk99ezp084'],
                 },
               ],
             },
@@ -295,8 +295,8 @@ export const seedAutomation = async (
       id: hasTagReceivesThankYouautomationStepId,
       automationId,
       parentId: ifElseBranchautomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_SEND_EMAIL",
+      type: 'ACTION',
+      subtype: 'ACTION_SEND_EMAIL',
       configuration: {
         emailId,
       },
@@ -311,8 +311,8 @@ export const seedAutomation = async (
       id: hasTagWait4DaysautomationStepId,
       automationId,
       parentId: hasTagReceivesThankYouautomationStepId,
-      type: "RULE",
-      subtype: "RULE_WAIT_FOR_DURATION",
+      type: 'RULE',
+      subtype: 'RULE_WAIT_FOR_DURATION',
       configuration: { delay: 5760 },
     })
     .execute()
@@ -325,8 +325,8 @@ export const seedAutomation = async (
       id: hasTagAddToAudienceautomationId,
       automationId,
       parentId: hasTagWait4DaysautomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
+      type: 'ACTION',
+      subtype: 'ACTION_SUBSCRIBE_TO_AUDIENCE',
       configuration: {
         audienceId: cuid(),
       },
@@ -341,8 +341,8 @@ export const seedAutomation = async (
       id: hasTagWait1DayautomationStepId,
       automationId,
       parentId: hasTagAddToAudienceautomationId,
-      type: "RULE",
-      subtype: "RULE_WAIT_FOR_DURATION",
+      type: 'RULE',
+      subtype: 'RULE_WAIT_FOR_DURATION',
       configuration: { delay: 1440 },
     })
     .execute()
@@ -355,8 +355,8 @@ export const seedAutomation = async (
       id: hasTagSendDiscountautomationStepId,
       automationId,
       parentId: hasTagWait1DayautomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_SEND_EMAIL",
+      type: 'ACTION',
+      subtype: 'ACTION_SEND_EMAIL',
       configuration: { emailId },
     })
     .execute()
@@ -368,9 +368,9 @@ export const seedAutomation = async (
       id: hasTagEndautomationStepId,
       automationId,
       parentId: hasTagSendDiscountautomationStepId,
-      type: "END",
-      subtype: "END",
-      configuration: { type: "END" },
+      type: 'END',
+      subtype: 'END',
+      configuration: { type: 'END' },
     })
     .execute()
 
@@ -382,8 +382,8 @@ export const seedAutomation = async (
       id: notHasTagReceives80PercentDiscountEmailautomationStepId,
       automationId,
       parentId: ifElseBranchautomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_SEND_EMAIL",
+      type: 'ACTION',
+      subtype: 'ACTION_SEND_EMAIL',
       configuration: {
         emailId,
       },
@@ -398,8 +398,8 @@ export const seedAutomation = async (
       id: notHasTagWait3DaysautomationStepId,
       automationId,
       parentId: notHasTagReceives80PercentDiscountEmailautomationStepId,
-      type: "RULE",
-      subtype: "RULE_WAIT_FOR_DURATION",
+      type: 'RULE',
+      subtype: 'RULE_WAIT_FOR_DURATION',
       configuration: {
         emailId,
       },
@@ -415,19 +415,19 @@ export const seedAutomation = async (
       id: secondIfElseBranchautomationStepId,
       automationId,
       parentId: notHasTagWait3DaysautomationStepId,
-      type: "RULE",
-      subtype: "RULE_IF_ELSE",
+      type: 'RULE',
+      subtype: 'RULE_IF_ELSE',
       configuration: {
         filterGroups: {
-          type: "AND",
+          type: 'AND',
           groups: [
             {
-              type: "AND",
+              type: 'AND',
               conditions: [
                 {
-                  field: "email",
-                  operation: "endsWith",
-                  value: ["@gmail.com"],
+                  field: 'email',
+                  operation: 'endsWith',
+                  value: ['@gmail.com'],
                 },
               ],
             },
@@ -445,9 +445,9 @@ export const seedAutomation = async (
       id: isGmailautomationStepId,
       automationId,
       parentId: secondIfElseBranchautomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
-      configuration: { type: "END" },
+      type: 'ACTION',
+      subtype: 'ACTION_UNSUBSCRIBE_FROM_AUDIENCE',
+      configuration: { type: 'END' },
       branchIndex: 0,
     })
     .execute()
@@ -460,8 +460,8 @@ export const seedAutomation = async (
       id: isNotGmailGetDiscountautomationStepId,
       automationId,
       parentId: secondIfElseBranchautomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_SEND_EMAIL",
+      type: 'ACTION',
+      subtype: 'ACTION_SEND_EMAIL',
       configuration: {
         emailId,
       },
@@ -477,9 +477,9 @@ export const seedAutomation = async (
       id: isNotGmailWait5DaysautomationStepId,
       automationId,
       parentId: isNotGmailGetDiscountautomationStepId,
-      type: "RULE",
-      subtype: "RULE_WAIT_FOR_DURATION",
-      configuration: { type: "END" },
+      type: 'RULE',
+      subtype: 'RULE_WAIT_FOR_DURATION',
+      configuration: { type: 'END' },
       branchIndex: 1,
     })
     .execute()
@@ -492,18 +492,18 @@ export const seedAutomation = async (
       id: thirdIfElseBranchautomationStepId,
       automationId,
       parentId: isNotGmailWait5DaysautomationStepId,
-      type: "RULE",
-      subtype: "RULE_IF_ELSE",
+      type: 'RULE',
+      subtype: 'RULE_IF_ELSE',
       configuration: {
         filterGroups: {
-          type: "AND",
+          type: 'AND',
           groups: [
             {
-              type: "AND",
+              type: 'AND',
               conditions: [
                 {
-                  field: "tags",
-                  operation: "contains",
+                  field: 'tags',
+                  operation: 'contains',
                   value: [0],
                 },
               ],
@@ -521,8 +521,8 @@ export const seedAutomation = async (
       id: purchasedBookautomationStepId,
       automationId,
       parentId: thirdIfElseBranchautomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
+      type: 'ACTION',
+      subtype: 'ACTION_SUBSCRIBE_TO_AUDIENCE',
       configuration: {
         audienceId: cuid(),
       },
@@ -537,8 +537,8 @@ export const seedAutomation = async (
       id: notPurchasedBookautomationStepId,
       automationId,
       parentId: thirdIfElseBranchautomationStepId,
-      type: "ACTION",
-      subtype: "ACTION_UNSUBSCRIBE_FROM_AUDIENCE",
+      type: 'ACTION',
+      subtype: 'ACTION_UNSUBSCRIBE_FROM_AUDIENCE',
       configuration: {
         audienceId: cuid(),
       },

@@ -1,14 +1,17 @@
-import { Image } from "../Image/Image.js"
-import { ImageBlockView } from "./components/ImageBlockView.jsx"
-import { Range, mergeAttributes } from "@tiptap/core"
-import { ReactNodeViewRenderer } from "@tiptap/react"
+import { Image } from '../Image/Image.js'
+import { ImageBlockView } from './components/ImageBlockView.jsx'
+import { type Range, mergeAttributes } from '@tiptap/core'
+import { ReactNodeViewRenderer } from '@tiptap/react'
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     imageBlock: {
       setImageBlock: (attributes: { src: string }) => ReturnType
-      setImageBlockAt: (attributes: { src: string; pos: number | Range }) => ReturnType
-      setImageBlockAlign: (align: "left" | "center" | "right") => ReturnType
+      setImageBlockAt: (attributes: {
+        src: string
+        pos: number | Range
+      }) => ReturnType
+      setImageBlockAlign: (align: 'left' | 'center' | 'right') => ReturnType
       setImageBlockAlt: (alt: string) => ReturnType
       setImageBlockTitle: (title: string) => ReturnType
       setImageBlockWidth: (width: number) => ReturnType
@@ -17,9 +20,9 @@ declare module "@tiptap/core" {
 }
 
 export const ImageBlock = Image.extend({
-  name: "imageBlock",
+  name: 'imageBlock',
 
-  group: "block",
+  group: 'block',
 
   defining: true,
 
@@ -30,29 +33,29 @@ export const ImageBlock = Image.extend({
   addAttributes() {
     return {
       src: {
-        default: "",
-        parseHTML: (element) => element.getAttribute("src"),
+        default: '',
+        parseHTML: (element) => element.getAttribute('src'),
         renderHTML: (attributes) => ({
           src: attributes.src,
         }),
       },
       width: {
-        default: "100%",
-        parseHTML: (element) => element.getAttribute("data-width"),
+        default: '100%',
+        parseHTML: (element) => element.getAttribute('data-width'),
         renderHTML: (attributes) => ({
-          "data-width": attributes.width,
+          'data-width': attributes.width,
         }),
       },
       align: {
-        default: "center",
-        parseHTML: (element) => element.getAttribute("data-align"),
+        default: 'center',
+        parseHTML: (element) => element.getAttribute('data-align'),
         renderHTML: (attributes) => ({
-          "data-align": attributes.align,
+          'data-align': attributes.align,
         }),
       },
       alt: {
         default: undefined,
-        parseHTML: (element) => element.getAttribute("alt"),
+        parseHTML: (element) => element.getAttribute('alt'),
         renderHTML: (attributes) => ({
           alt: attributes.alt,
         }),
@@ -69,7 +72,7 @@ export const ImageBlock = Image.extend({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["img", mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
+    return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
   },
 
   addCommands() {
@@ -77,14 +80,17 @@ export const ImageBlock = Image.extend({
       setImageBlock:
         (attrs) =>
         ({ commands }) => {
-          return commands.insertContent({ type: "imageBlock", attrs: { src: attrs.src } })
+          return commands.insertContent({
+            type: 'imageBlock',
+            attrs: { src: attrs.src },
+          })
         },
 
       setImageBlockAt:
         (attrs) =>
         ({ commands }) => {
           return commands.insertContentAt(attrs.pos, {
-            type: "imageBlock",
+            type: 'imageBlock',
             attrs: { src: attrs.src },
           })
         },
@@ -92,22 +98,22 @@ export const ImageBlock = Image.extend({
       setImageBlockAlign:
         (align) =>
         ({ commands }) =>
-          commands.updateAttributes("imageBlock", { align }),
+          commands.updateAttributes('imageBlock', { align }),
 
       setImageBlockAlt:
         (alt) =>
         ({ commands }) =>
-          commands.updateAttributes("imageBlock", { alt }),
+          commands.updateAttributes('imageBlock', { alt }),
 
       setImageBlockTitle:
         (title) =>
         ({ commands }) =>
-          commands.updateAttributes("imageBlock", { title }),
+          commands.updateAttributes('imageBlock', { title }),
 
       setImageBlockWidth:
         (width) =>
         ({ commands }) =>
-          commands.updateAttributes("imageBlock", {
+          commands.updateAttributes('imageBlock', {
             width: `${Math.max(0, Math.min(100, width))}%`,
           }),
     }

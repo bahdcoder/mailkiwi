@@ -16,7 +16,7 @@
     "build:client": "vite build",
     "test:coverage": "pnpm mysql:migrate:test && env-cmd -f .env.test vitest --run --coverage",
     "build": "pnpm test && pnpm types:check && pnpm build:quick",
-    "format": "pnpm prettier . --write",
+    "format": "pnpm biome format --write .",
     "start": "env-cmd node build/core/app/start/prod.js",
     "build:app": "tsc",
     "build:quick": "pnpm build:clean && pnpm build:app && pnpm build:client && pnpm cli fix_typescript_imports",
@@ -41,6 +41,7 @@
   "license": "ISC",
   "description": "Kibamail: The developer friendly email platform for modern businesses. Kibamail: The Complete Email Platform For your Entire Business.",
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@drizzle-team/brocli": "^0.9.2",
     "@faker-js/faker": "^8.4.1",
     "@fastify/vite": "^6.0.6",

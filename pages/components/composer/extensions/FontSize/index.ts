@@ -1,1 +1,1 @@
-export * from "./FontSize.js"
+export * from './FontSize.js'

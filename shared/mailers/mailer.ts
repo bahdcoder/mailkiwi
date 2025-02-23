@@ -1,9 +1,9 @@
-import type { MailObject, MailerDriverResponse } from "./mailer_types.js"
-import { appEnv } from "@/app/env/app_env.js"
-import { type SentMessageInfo, type Transporter, createTransport } from "nodemailer"
-import { v4 as uuidV4 } from "uuid"
+import type { MailObject, MailerDriverResponse } from './mailer_types.js'
+import { appEnv } from '@/app/env/app_env.js'
+import { type SentMessageInfo, type Transporter, createTransport } from 'nodemailer'
+import { v4 as uuidV4 } from 'uuid'
 
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
 export class MailerClass {
   // a transport must be created for the team making this mail send call.
@@ -75,7 +75,7 @@ export class MailBuilder {
 
   async send(): Promise<[MailerDriverResponse, Error | null]> {
     if (!this.mail.from || !this.mail.to || !this.mail.content || !this.mail.subject) {
-      return [null, new Error("Incomplete mail object")] as unknown as [
+      return [null, new Error('Incomplete mail object')] as unknown as [
         MailerDriverResponse,
         null,
       ]
@@ -87,8 +87,8 @@ export class MailBuilder {
 
     try {
       await this.transport.sendMail({
-        from: `${this.mail.from.name ?? ""}<${this.mail.from.email}>`,
-        to: `${this.mail.to.name ?? ""}<${this.mail.to.email}>`,
+        from: `${this.mail.from.name ?? ''}<${this.mail.from.email}>`,
+        to: `${this.mail.to.name ?? ''}<${this.mail.to.email}>`,
         subject: this.mail.subject,
         text: this.mail.content?.text as string,
         html: this.mail.content?.html,

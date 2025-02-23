@@ -1,14 +1,14 @@
-import { makeMinioClient } from "@/minio/minio_client.js"
-import { makeS3Client } from "@/minio/s3_client.js"
-import mime from "mime-types"
-import { Readable } from "stream"
+import { makeMinioClient } from '@/minio/minio_client.js'
+import { makeS3Client } from '@/minio/s3_client.js'
+import mime from 'mime-types'
+import { Readable } from 'stream'
 
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
+import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
 
-import { readHeadersAndRowsFromCsvStream } from "@/shared/utils/csv/read_headers_and_rows_from_csv_stream.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { readHeadersAndRowsFromCsvStream } from '@/shared/utils/csv/read_headers_and_rows_from_csv_stream.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 type HeaderMap = {
   email: string
@@ -20,7 +20,7 @@ type HeaderMap = {
   tagIds: string[]
 }
 
-type FieldType = keyof Omit<HeaderMap, "customProperties" | "headers" | "tags" | "tagIds">
+type FieldType = keyof Omit<HeaderMap, 'customProperties' | 'headers' | 'tags' | 'tagIds'>
 
 export class CreateContactImportAction {
   constructor(
@@ -30,7 +30,7 @@ export class CreateContactImportAction {
   handle = async (file: File, audienceId: string, teamId: string) => {
     const fileIdentifier = cuid()
 
-    const extension = mime.extension(file.type) || "csv"
+    const extension = mime.extension(file.type) || 'csv'
 
     const fileKey = ContactImportRepository.getUploadedFileKey(
       fileIdentifier,
@@ -41,7 +41,7 @@ export class CreateContactImportAction {
     const storage = makeS3Client()
 
     await storage.putObject(fileKey, Readable.from(file.stream() as any), {
-      ACL: "private",
+      ACL: 'private',
       ContentType: `${mime.contentType(file.type)}`,
     })
 
@@ -54,9 +54,12 @@ export class CreateContactImportAction {
 
     const { id } = await this.contactImportRepository.create({
       audienceId,
-      status: "PENDING",
+      status: 'PENDING',
       id: fileIdentifier,
-      propertiesMap: { ...propertiesMap, customPropertiesHeaders: customProperties },
+      propertiesMap: {
+        ...propertiesMap,
+        customPropertiesHeaders: customProperties,
+      },
     })
 
     return {
@@ -64,7 +67,10 @@ export class CreateContactImportAction {
       extension,
       headerCounts,
       headerSamples,
-      propertiesMap: { ...propertiesMap, customPropertiesHeaders: customProperties },
+      propertiesMap: {
+        ...propertiesMap,
+        customPropertiesHeaders: customProperties,
+      },
     }
   }
 
@@ -101,9 +107,9 @@ export class CreateContactImportAction {
 
   private mapCsvHeaders(headers: string[]): HeaderMap {
     const csvToContactAttributes: HeaderMap = {
-      email: "",
-      firstName: "",
-      lastName: "",
+      email: '',
+      firstName: '',
+      lastName: '',
       customProperties: [],
       tags: [],
       tagIds: [],

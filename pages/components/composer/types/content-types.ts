@@ -1,7 +1,7 @@
 export type ContentTypePickerOption = {
   label: string
   id: string
-  type: "option"
+  type: 'option'
   disabled: () => boolean
   isActive: () => boolean
   onClick: () => void
@@ -11,7 +11,7 @@ export type ContentTypePickerOption = {
 export type ContentTypePickerCategory = {
   id: string
   label: string
-  type: "category"
+  type: 'category'
 }
 
 export type ContentPickerOptions = Array<

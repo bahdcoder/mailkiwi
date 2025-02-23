@@ -1,10 +1,10 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 
-import { emailContents, emails } from "@/database/schema.js"
-import { belongsTo } from "@/database/utils/relationships.js"
+import { emailContents, emails } from '@/database/schema.js'
+import { belongsTo } from '@/database/utils/relationships.js'
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
 export class EmailRepository extends BaseRepository {
   constructor(
@@ -19,7 +19,7 @@ export class EmailRepository extends BaseRepository {
     to: emailContents,
     primaryKey: emailContents.id,
     foreignKey: emails.emailContentId,
-    relationName: "emailContent",
+    relationName: 'emailContent',
   })
 
   async findById(emailId: string) {

@@ -1,16 +1,16 @@
-import { useApplicationLayoutContext } from "@/pages/components/dashboard/layout/application-layout-context.jsx"
-import cn from "classnames"
-import React from "react"
+import { useApplicationLayoutContext } from '@/pages/components/dashboard/layout/application-layout-context.jsx'
+import cn from 'classnames'
+import React from 'react'
 
 const DRAGGABLE_SIDEBAR_MIN_WIDTH = 240
 const DRAGGABLE_SIDEBAR_MAX_WIDTH = 340
-const DRAGGABLE_SIDEBAR_CLASS_NAME = "sidebar-draggable-resizer-active"
+const DRAGGABLE_SIDEBAR_CLASS_NAME = 'sidebar-draggable-resizer-active'
 
 export function DraggableSidebarResizer() {
   const {
     setSidebar,
     sidebar: { width, offscreen },
-  } = useApplicationLayoutContext("DraggableSidebarResizer")
+  } = useApplicationLayoutContext('DraggableSidebarResizer')
 
   const isDragging = React.useRef(false)
 
@@ -35,7 +35,7 @@ export function DraggableSidebarResizer() {
 
         const nextWidth = startDragWidthRef.current + delta
 
-        let width = Math.max(
+        const width = Math.max(
           Math.min(nextWidth, DRAGGABLE_SIDEBAR_MAX_WIDTH),
           DRAGGABLE_SIDEBAR_MIN_WIDTH,
         )
@@ -68,12 +68,12 @@ export function DraggableSidebarResizer() {
   }, [offscreen])
 
   React.useEffect(() => {
-    window.addEventListener("mousemove", onMouseMove)
-    window.addEventListener("mouseup", onMouseUp)
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mouseup', onMouseUp)
 
     return () => {
-      window.removeEventListener("mousemove", onMouseMove)
-      window.removeEventListener("mouseup", onMouseUp)
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('mouseup', onMouseUp)
     }
   }, [onMouseMove, onMouseUp])
 
@@ -85,10 +85,10 @@ export function DraggableSidebarResizer() {
     <div
       onMouseDown={onMouseDown}
       className={cn(
-        "draggable-sidebar-resizer cursor-col-resize rounded-t-xl rounded-b-xl my-auto ease-in-out transition-[background] w-1 hover:bg-[var(--border-focus)]",
+        'draggable-sidebar-resizer cursor-col-resize rounded-t-xl rounded-b-xl my-auto ease-in-out transition-[background] w-1 hover:bg-[var(--border-focus)]',
         {
-          "h-[calc(100vh-2.5rem)]": !offscreen,
-          "h-[calc(100vh-6.5rem)]": offscreen,
+          'h-[calc(100vh-2.5rem)]': !offscreen,
+          'h-[calc(100vh-6.5rem)]': offscreen,
         },
       )}
     />

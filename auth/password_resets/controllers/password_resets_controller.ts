@@ -1,17 +1,17 @@
-import { appEnv } from "@/app/env/app_env.js"
+import { appEnv } from '@/app/env/app_env.js'
 
-import { RequestPasswordResetSchema } from "@/auth/password_resets/dto/request_password_reset_dto.js"
-import { ResetPasswordSchema } from "@/auth/password_resets/dto/reset_password_dto.js"
-import { PasswordResetRepository } from "@/auth/password_resets/repositories/password_reset_repository.js"
-import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+import { RequestPasswordResetSchema } from '@/auth/password_resets/dto/request_password_reset_dto.js'
+import { ResetPasswordSchema } from '@/auth/password_resets/dto/reset_password_dto.js'
+import { PasswordResetRepository } from '@/auth/password_resets/repositories/password_reset_repository.js'
+import { UserRepository } from '@/auth/users/repositories/user_repository.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { VikeController } from "@/shared/controllers/vike_controller.js"
-import { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { VikeController } from '@/shared/controllers/vike_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class PasswordResetsController extends VikeController {
   constructor(
@@ -26,13 +26,13 @@ export class PasswordResetsController extends VikeController {
     // reset password (with reset token) and redirect user to login page.
     this.app.defineRoutes(
       [
-        ...this.vikePath("forgot", this.redirectToWelcomeIfAuthenticatedPage),
-        ...this.vikePath("/reset/:token", this.redirectToWelcomeIfAuthenticatedPage),
-        ["POST", "forgot", this.request],
-        ["POST", "reset/:token", this.reset],
+        ...this.vikePath('forgot', this.redirectToWelcomeIfAuthenticatedPage),
+        ...this.vikePath('/reset/:token', this.redirectToWelcomeIfAuthenticatedPage),
+        ['POST', 'forgot', this.request],
+        ['POST', 'reset/:token', this.reset],
       ],
       {
-        prefix: "auth/passwords",
+        prefix: 'auth/passwords',
         middleware: [],
       },
     )
@@ -61,21 +61,21 @@ export class PasswordResetsController extends VikeController {
     if (payload.password !== payload.passwordConfirm) {
       throw E_VALIDATION_FAILED([
         {
-          message: "Please make sure your confirm password matches your chosen password.",
-          field: "passwordConfirm",
+          message: 'Please make sure your confirm password matches your chosen password.',
+          field: 'passwordConfirm',
         },
       ])
     }
 
     const { valid: isValidResetToken, user } =
-      await this.passwordResetsRepository.confirm(payload.email, ctx.req.param("token"))
+      await this.passwordResetsRepository.confirm(payload.email, ctx.req.param('token'))
 
     if (!isValidResetToken) {
       throw E_VALIDATION_FAILED([
         {
           message:
-            "Failed to validate this password reset and email. Please check your email address, and make sure you clicked the correct link sent to your email.",
-          field: "email",
+            'Failed to validate this password reset and email. Please check your email address, and make sure you clicked the correct link sent to your email.',
+          field: 'email',
         },
       ])
     }

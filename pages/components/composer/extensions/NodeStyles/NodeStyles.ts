@@ -1,6 +1,6 @@
-import { CommandProps, Editor, Extension } from "@tiptap/core"
+import { type CommandProps, Editor, Extension } from '@tiptap/core'
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     nodeStyles: {
       setNodeStyle: (property: string, value: string) => ReturnType
@@ -13,14 +13,14 @@ declare module "@tiptap/core" {
 const stylesToString = (styles: Record<string, string>) => {
   return Object.entries(styles)
     .map(([property, value]) => `${property}: ${value}`)
-    .join("; ")
+    .join('; ')
 }
 
 export function getStyleAttributeDefinition(defaultAttributes?: Record<string, any>) {
   return {
     default: defaultAttributes ?? {},
     parseHTML(element: HTMLElement) {
-      const styleString = element.getAttribute("style")
+      const styleString = element.getAttribute('style')
       return styleString ? parseStyleString(styleString) : {}
     },
     renderHTML(attributes: Record<string, any>) {
@@ -78,11 +78,11 @@ export function getStyleAttributeDefaultCommands() {
 const parseStyleString = (styleString: string) => {
   if (!styleString) return {}
   return styleString
-    .split(";")
+    .split(';')
     .filter((style) => style.trim())
     .reduce(
       (acc, style) => {
-        const [property, value] = style.split(":").map((str) => str.trim())
+        const [property, value] = style.split(':').map((str) => str.trim())
         acc[property] = value
         return acc
       },
@@ -91,26 +91,26 @@ const parseStyleString = (styleString: string) => {
 }
 
 export const NodeStyles = Extension.create({
-  name: "nodeStyles",
+  name: 'nodeStyles',
 
   addGlobalAttributes() {
     return [
       {
         types: [
-          "paragraph",
-          "heading",
-          "blockquote",
-          "bulletList",
-          "orderedList",
-          "listItem",
-          "code",
-          "container",
+          'paragraph',
+          'heading',
+          'blockquote',
+          'bulletList',
+          'orderedList',
+          'listItem',
+          'code',
+          'container',
         ],
         attributes: {
           styles: {
             default: {},
             parseHTML: (element) => {
-              const styleString = element.getAttribute("style")
+              const styleString = element.getAttribute('style')
               return styleString ? parseStyleString(styleString) : {}
             },
             renderHTML: (attributes) => {

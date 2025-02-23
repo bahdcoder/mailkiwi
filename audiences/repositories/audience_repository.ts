@@ -1,16 +1,19 @@
-import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
-import { and, eq } from "drizzle-orm"
+import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { and, eq } from 'drizzle-orm'
 
-import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
+import type { CreateAudienceDto } from '@/audiences/dto/audiences/create_audience_dto.js'
 
-import type { DrizzleClient } from "@/database/client.js"
-import { Audience, UpdateSetAudienceInput } from "@/database/database_schema_types.js"
-import { KnownAudienceProperty, audiences } from "@/database/schema.js"
+import type { DrizzleClient } from '@/database/client.js'
+import {
+  Audience,
+  type UpdateSetAudienceInput,
+} from '@/database/database_schema_types.js'
+import { type KnownAudienceProperty, audiences } from '@/database/schema.js'
 
-import { ContainerKey } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { ContainerKey } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class AudienceRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = container.make(ContainerKey.database)) {
@@ -36,9 +39,7 @@ export class AudienceRepository extends BaseRepository {
   }
 
   async getAudienceForTeam(teamId: string) {
-    const self = this
-
-    const [audience] = await self.database
+    const [audience] = await this.database
       .select()
       .from(audiences)
       .where(and(eq(audiences.teamId, teamId)))

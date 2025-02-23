@@ -1,4 +1,4 @@
-import { InferInput, array, object, record, string } from "valibot"
+import { type InferInput, array, object, record, string } from 'valibot'
 
 export const CreateMessageSchema = object({
   content: record(string(), array(string())),

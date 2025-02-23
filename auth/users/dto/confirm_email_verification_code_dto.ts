@@ -1,4 +1,4 @@
-import { type InferInput, objectAsync, pipe, regex, string } from "valibot"
+import { type InferInput, objectAsync, pipe, regex, string } from 'valibot'
 
 export const ConfirmEmailVerificationCodeSchema = objectAsync({
   code: pipe(string(), regex(/^\d{6}$/)),

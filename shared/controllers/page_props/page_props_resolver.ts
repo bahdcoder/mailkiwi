@@ -1,33 +1,33 @@
-import { type DefaultPageProps } from "@/pages/types/page-context.js"
-import { eq } from "drizzle-orm"
+import type { DefaultPageProps } from '@/pages/types/page-context.js'
+import { eq } from 'drizzle-orm'
 
-import { BroadcastGroupRepository } from "@/broadcasts/repositories/broadcast_group_repository.js"
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import { BroadcastGroupRepository } from '@/broadcasts/repositories/broadcast_group_repository.js'
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
-import { GetContactsAction } from "@/audiences/actions/contacts/get_contacts_action.js"
-import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
+import { GetContactsAction } from '@/audiences/actions/contacts/get_contacts_action.js'
+import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
 
-import { segments as segmentsTable } from "@/database/schema.js"
+import { segments as segmentsTable } from '@/database/schema.js'
 
-import { route } from "@/shared/routes/route_aliases.js"
-import { HonoContext } from "@/shared/server/types.js"
+import { route } from '@/shared/routes/route_aliases.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class PagePropsResolver {
   protected DEFAULT_PROPS_FETCHERS: Record<
     string,
     (ctx: HonoContext, defaultPageProps: DefaultPageProps) => Promise<Record<string, any>>
   > = {
-    async [route("engage_contacts")](ctx, { audience }) {
+    async [route('engage_contacts')](ctx, { audience }) {
       const [contacts, segments] = await Promise.all([
         container
           .make(GetContactsAction)
           .handle(
             audience.id,
-            ctx.req.query("segmentId") as string,
-            Number.parseInt(ctx.req.query("page") ?? "1"),
-            Number.parseInt(ctx.req.query("perPage") ?? "100"),
+            ctx.req.query('segmentId') as string,
+            Number.parseInt(ctx.req.query('page') ?? '1'),
+            Number.parseInt(ctx.req.query('perPage') ?? '100'),
           ),
         container
           .make(SegmentRepository)
@@ -38,7 +38,7 @@ export class PagePropsResolver {
       return { contacts, segments }
     },
 
-    async [route("engage")](_ctx, { team }) {
+    async [route('engage')](_ctx, { team }) {
       const groups = await container
         .make(BroadcastGroupRepository)
         .findWithBroadcastsForTeam(team.id)
@@ -56,10 +56,10 @@ export class PagePropsResolver {
   }
 
   protected async dynamicPropFetchers(pathname: string, { audience }: DefaultPageProps) {
-    if (pathname.includes("/w/engage/broadcasts")) {
+    if (pathname.includes('/w/engage/broadcasts')) {
       const broadcastId = pathname
-        .split("/w/engage/broadcasts/")?.[1]
-        ?.split("/composer")?.[0]
+        .split('/w/engage/broadcasts/')?.[1]
+        ?.split('/composer')?.[0]
 
       const broadcast = await container
         .make(BroadcastRepository)
@@ -84,7 +84,7 @@ export class PagePropsResolver {
   handle = async (ctx: HonoContext, defaultPageProps: DefaultPageProps) => {
     let pathname = new URL(ctx.req.url)?.pathname
 
-    pathname = pathname.split("/index.pageContext.json")?.[0]
+    pathname = pathname.split('/index.pageContext.json')?.[0]
 
     const pagePropsLoader = this.DEFAULT_PROPS_FETCHERS[pathname]
 

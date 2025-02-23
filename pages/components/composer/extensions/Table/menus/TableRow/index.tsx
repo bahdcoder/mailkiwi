@@ -1,10 +1,10 @@
-import { isRowGripSelected } from "./utils.js"
-import { MenuProps, ShouldShowProps } from "@/pages/components/tiptap/menus/types.js"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.jsx"
-import * as PopoverMenu from "@/pages/components/tiptap/ui/PopoverMenu.jsx"
-import { Toolbar } from "@/pages/components/tiptap/ui/Toolbar.jsx"
-import { BubbleMenu as BaseBubbleMenu } from "@tiptap/react"
-import React, { useCallback } from "react"
+import { isRowGripSelected } from './utils.js'
+import type { MenuProps, ShouldShowProps } from '@/pages/components/tiptap/menus/types.js'
+import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
+import * as PopoverMenu from '@/pages/components/tiptap/ui/PopoverMenu.jsx'
+import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
+import { BubbleMenu as BaseBubbleMenu } from '@tiptap/react'
+import React, { useCallback } from 'react'
 
 export const TableRowMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.Element => {
   const shouldShow = useCallback(
@@ -39,10 +39,10 @@ export const TableRowMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.El
         appendTo: () => {
           return appendTo?.current
         },
-        placement: "left",
+        placement: 'left',
         offset: [0, 15],
         popperOptions: {
-          modifiers: [{ name: "flip", enabled: false }],
+          modifiers: [{ name: 'flip', enabled: false }],
         },
       }}
       shouldShow={shouldShow}
@@ -71,6 +71,6 @@ export const TableRowMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.El
   )
 })
 
-TableRowMenu.displayName = "TableRowMenu"
+TableRowMenu.displayName = 'TableRowMenu'
 
 export default TableRowMenu

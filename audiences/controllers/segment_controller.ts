@@ -1,13 +1,13 @@
-import { CreateSegmentSchema } from "@/audiences/dto/segments/create_segment_dto.js"
-import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
+import { CreateSegmentSchema } from '@/audiences/dto/segments/create_segment_dto.js'
+import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
 
-import { Audience } from "@/database/database_schema_types.js"
+import type { Audience } from '@/database/database_schema_types.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import type { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class SegmentController extends BaseController {
   constructor(
@@ -18,17 +18,17 @@ export class SegmentController extends BaseController {
 
     this.app.defineRoutes(
       [
-        ["POST", "/", this.create.bind(this)],
-        ["DELETE", "/:segmentId", this.delete.bind(this)],
+        ['POST', '/', this.create.bind(this)],
+        ['DELETE', '/:segmentId', this.delete.bind(this)],
       ],
       {
-        prefix: "audiences/:audienceId/segments",
+        prefix: 'audiences/:audienceId/segments',
       },
     )
   }
 
   async create(ctx: HonoContext) {
-    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
+    const audience = await this.ensureExists<Audience>(ctx, 'audienceId')
 
     this.ensureCanAuthor(ctx)
 
@@ -43,11 +43,11 @@ export class SegmentController extends BaseController {
   }
 
   async delete(ctx: HonoContext) {
-    await this.ensureExists<Audience>(ctx, "audienceId")
+    await this.ensureExists<Audience>(ctx, 'audienceId')
 
     this.ensureCanAuthor(ctx)
 
-    const segmentId = ctx.req.param("segmentId")
+    const segmentId = ctx.req.param('segmentId')
 
     await this.segmentRepository.delete(segmentId)
 

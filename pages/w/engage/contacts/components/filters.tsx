@@ -1,25 +1,25 @@
-import * as Dropdown from "@/pages/components/dropdown/dropdown.jsx"
-import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
-import { FilterListIcon } from "@/pages/components/icons/filter-list.svg.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Checkbox } from "@kibamail/owly/checkbox"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import { createContext } from "@radix-ui/react-context"
-import cn from "classnames"
-import * as React from "react"
-import { usePageContext } from "vike-react/usePageContext"
-import { PageContext } from "vike/types"
+import * as Dropdown from '@/pages/components/dropdown/dropdown.jsx'
+import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
+import { FilterListIcon } from '@/pages/components/icons/filter-list.svg.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Checkbox } from '@kibamail/owly/checkbox'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import { createContext } from '@radix-ui/react-context'
+import cn from 'classnames'
+import * as React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
+import type { PageContext } from 'vike/types'
 
 import type {
   AllowedFilterField,
   CreateSegmentDto,
-} from "@/audiences/dto/segments/create_segment_dto.js"
+} from '@/audiences/dto/segments/create_segment_dto.js'
 
-import { Segment, Tag } from "@/database/database_schema_types.js"
+import type { Segment, Tag } from '@/database/database_schema_types.js'
 
 export type FilterCondition =
-  CreateSegmentDto["filterGroups"]["groups"][number]["conditions"][number] & {
+  CreateSegmentDto['filterGroups']['groups'][number]['conditions'][number] & {
     id: string
   }
 
@@ -30,7 +30,7 @@ type FiltersBuilderCtx = {
   setFilterConditions: React.Dispatch<React.SetStateAction<FilterCondition[]>>
 }
 const [FiltersBuilderProvider, useFiltersBuilder] = createContext<FiltersBuilderCtx>(
-  "ContactsFiltersBuilder",
+  'ContactsFiltersBuilder',
 )
 
 type FilterDefinition = {
@@ -42,15 +42,15 @@ type FilterDefinition = {
 
 const fields: FilterDefinition[] = [
   {
-    id: "tags",
-    name: "Tags",
+    id: 'tags',
+    name: 'Tags',
     options: ({ pageCtx: { tags } }) => {
       const { setFilterBuilderOpen, setFilterConditions, filterBuilderOpen } =
-        useFiltersBuilder("ContactsFiltersBuilderTags")
+        useFiltersBuilder('ContactsFiltersBuilderTags')
 
       const [id] = React.useState(() => Math.random().toString(36).slice(2))
 
-      function onTagCheckedStatusChanged(state: boolean | "indeterminate", tag: Tag) {
+      function onTagCheckedStatusChanged(state: boolean | 'indeterminate', tag: Tag) {
         setFilterConditions((conditions) => {
           const existingCondition = conditions.find((condition) => condition.id === id)
 
@@ -59,8 +59,8 @@ const fields: FilterDefinition[] = [
               ...conditions,
               {
                 id,
-                field: "tags",
-                operation: "contains",
+                field: 'tags',
+                operation: 'contains',
                 value: [tag.id],
               } as FilterCondition,
             ]
@@ -107,11 +107,11 @@ const fields: FilterDefinition[] = [
     },
   },
   {
-    id: "segmentId",
-    name: "Segments",
+    id: 'segmentId',
+    name: 'Segments',
     options({ pageCtx }) {
       const { setFilterBuilderOpen, setFilterConditions } = useFiltersBuilder(
-        "ContactsFiltersBuilderTags",
+        'ContactsFiltersBuilderTags',
       )
 
       const { segments } = pageCtx?.pageProps as { segments: Segment[] }
@@ -120,12 +120,12 @@ const fields: FilterDefinition[] = [
         setFilterBuilderOpen(false)
         setFilterConditions((conditions) => {
           const existingCondition = conditions.find(
-            (condition) => condition.field === "segmentId",
+            (condition) => condition.field === 'segmentId',
           )
 
           if (existingCondition) {
             return conditions.map((condition) => {
-              if (condition.field !== "segmentId") {
+              if (condition.field !== 'segmentId') {
                 return condition
               }
 
@@ -139,9 +139,9 @@ const fields: FilterDefinition[] = [
           return [
             ...conditions,
             {
-              id: "segmentId",
-              operation: "eq",
-              field: "segmentId",
+              id: 'segmentId',
+              operation: 'eq',
+              field: 'segmentId',
               value: segment.id,
             } satisfies FilterCondition,
           ]
@@ -169,20 +169,20 @@ const fields: FilterDefinition[] = [
     },
   },
   {
-    name: "Status",
-    id: "status",
+    name: 'Status',
+    id: 'status',
     options: () => <div>Status</div>,
     disabled: true,
   },
   {
-    name: "Source",
-    id: "source",
+    name: 'Source',
+    id: 'source',
     options: () => <div>Source</div>,
     disabled: true,
   },
   {
-    name: "Date subscribed",
-    id: "subscribedAt",
+    name: 'Date subscribed',
+    id: 'subscribedAt',
     options: () => <div>Date subscribed</div>,
     disabled: true,
   },
@@ -190,8 +190,8 @@ const fields: FilterDefinition[] = [
 
 const activity: FilterDefinition[] = [
   {
-    name: "Contact activity",
-    id: "lastTrackedActivityUsingDevice",
+    name: 'Contact activity',
+    id: 'lastTrackedActivityUsingDevice',
     options: () => <div>Contact activity</div>,
     disabled: true,
   },
@@ -206,7 +206,7 @@ function TextFilterInput({ id, label }: TextFilterInputProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   const { setFilterBuilderOpen, setFilterConditions } =
-    useFiltersBuilder("TextFilterInput")
+    useFiltersBuilder('TextFilterInput')
 
   function onFormSubmit(value: string) {
     setFilterBuilderOpen(false)
@@ -218,7 +218,7 @@ function TextFilterInput({ id, label }: TextFilterInputProps) {
           id: Math.random().toString(36).slice(2),
           value,
           field: id,
-          operation: "contains",
+          operation: 'contains',
         } satisfies FilterCondition,
       ]
     })
@@ -285,7 +285,7 @@ export function TextFilterInputForm({
           className="h-9"
           data-testid={`w-contacts-filters-builder-input-add-${id}`}
         >
-          <Text>{defaultValue ? "Update" : "Add"}</Text>
+          <Text>{defaultValue ? 'Update' : 'Add'}</Text>
         </Button>
       </div>
     </form>
@@ -294,22 +294,22 @@ export function TextFilterInputForm({
 
 const properties: FilterDefinition[] = [
   {
-    name: "Email address",
-    id: "email",
+    name: 'Email address',
+    id: 'email',
     options() {
       return <TextFilterInput id="email" label="Email address" />
     },
   },
   {
-    name: "First name",
-    id: "firstName",
+    name: 'First name',
+    id: 'firstName',
     options() {
       return <TextFilterInput id="firstName" label="First name" />
     },
   },
   {
-    name: "Last name",
-    id: "lastName",
+    name: 'Last name',
+    id: 'lastName',
     options() {
       return <TextFilterInput id="lastName" label="Last name" />
     },
@@ -338,7 +338,7 @@ function FiltersBuilder() {
     setFilterConditions,
     filterBuilderOpen,
     setFilterBuilderOpen,
-  } = useFiltersBuilder("ContactsFiltersBuilder")
+  } = useFiltersBuilder('ContactsFiltersBuilder')
 
   function onFilterSelected(event: Event, filter: FilterDefinition) {
     event.preventDefault()
@@ -347,19 +347,16 @@ function FiltersBuilder() {
   }
 
   function clearDropdownContent() {
-    setTimeout(function () {
+    setTimeout(() => {
       setSelectedFilter(undefined)
     }, 250)
   }
 
-  React.useEffect(
-    function () {
-      if (!filterBuilderOpen) {
-        clearDropdownContent()
-      }
-    },
-    [filterBuilderOpen],
-  )
+  React.useEffect(() => {
+    if (!filterBuilderOpen) {
+      clearDropdownContent()
+    }
+  }, [filterBuilderOpen])
 
   function onOpenChange(open: boolean) {
     if (!open) {
@@ -396,7 +393,7 @@ function FiltersBuilder() {
                     <Dropdown.Item
                       key={field.name}
                       className={cn(
-                        "w-full bg-transparent rounded-lg px-2 cursor-pointer hover:bg-[var(--background-secondary)] h-8 flex items-center justify-start",
+                        'w-full bg-transparent rounded-lg px-2 cursor-pointer hover:bg-[var(--background-secondary)] h-8 flex items-center justify-start',
                       )}
                       asChild
                       onSelect={(event) => onFilterSelected(event, field)}
@@ -432,20 +429,16 @@ function FiltersBuilderContainer({ onFiltersChange }: FiltersBuilderContainerPro
   const [filterConditions, setFilterConditions] = React.useState<FilterCondition[]>([])
 
   const validConditions = React.useMemo(
-    function () {
-      return filterConditions.filter(
+    () =>
+      filterConditions.filter(
         (condition) => condition.field && condition.operation && condition.value,
-      )
-    },
+      ),
     [filterConditions],
   )
 
-  React.useEffect(
-    function () {
-      onFiltersChange?.(validConditions)
-    },
-    [validConditions],
-  )
+  React.useEffect(() => {
+    onFiltersChange?.(validConditions)
+  }, [validConditions])
 
   return (
     <FiltersBuilderProvider

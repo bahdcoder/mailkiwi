@@ -1,27 +1,30 @@
-import { FormState, useImportcontactsContext } from "../state/import_contacts_context.jsx"
-import { CreateCustomContactProperty } from "@/pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx"
-import { CalendarIcon } from "@/pages/components/icons/calendar.jsx"
-import { CheckCircleSolidIcon } from "@/pages/components/icons/check-circle-solid.svg.jsx"
-import { CheckSquareIcon } from "@/pages/components/icons/check-square.svg.jsx"
-import { HashTagIcon } from "@/pages/components/icons/hashtag.svg.jsx"
-import { InfoCircleSolidIcon } from "@/pages/components/icons/info-circle-solid.svg.jsx"
-import { MailIcon } from "@/pages/components/icons/mail.svg.jsx"
-import { NavArrowRightIcon } from "@/pages/components/icons/nav-arrow-right.svg.jsx"
-import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
-import { TextIcon } from "@/pages/components/icons/text.svg.jsx"
-import { slugify } from "@/pages/utils/slugify.js"
-import * as Alert from "@kibamail/owly/alert"
-import { Button } from "@kibamail/owly/button"
-import * as Dialog from "@kibamail/owly/dialog"
-import { Heading } from "@kibamail/owly/heading"
-import * as Select from "@kibamail/owly/select-field"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import * as DialogPrimitive from "@radix-ui/react-dialog"
-import cn from "classnames"
-import * as React from "react"
+import {
+  type FormState,
+  useImportcontactsContext,
+} from '../state/import_contacts_context.jsx'
+import { CreateCustomContactProperty } from '@/pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx'
+import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
+import { CheckCircleSolidIcon } from '@/pages/components/icons/check-circle-solid.svg.jsx'
+import { CheckSquareIcon } from '@/pages/components/icons/check-square.svg.jsx'
+import { HashTagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
+import { InfoCircleSolidIcon } from '@/pages/components/icons/info-circle-solid.svg.jsx'
+import { MailIcon } from '@/pages/components/icons/mail.svg.jsx'
+import { NavArrowRightIcon } from '@/pages/components/icons/nav-arrow-right.svg.jsx'
+import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
+import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
+import { slugify } from '@/pages/utils/slugify.js'
+import * as Alert from '@kibamail/owly/alert'
+import { Button } from '@kibamail/owly/button'
+import * as Dialog from '@kibamail/owly/dialog'
+import { Heading } from '@kibamail/owly/heading'
+import * as Select from '@kibamail/owly/select-field'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import * as DialogPrimitive from '@radix-ui/react-dialog'
+import cn from 'classnames'
+import * as React from 'react'
 
-type PropertyType = "date" | "float" | "text" | "boolean" | "standard" | "skip"
+type PropertyType = 'date' | 'float' | 'text' | 'boolean' | 'standard' | 'skip'
 type SelectFieldPropertyState = Record<
   string,
   {
@@ -34,21 +37,21 @@ type SelectFieldPropertyState = Record<
   }
 >
 
-const standardProperties = ["email", "firstName", "lastName"] as const
-const standardPropertyNames = ["Email address", "First name", "Last name"] as const
+const standardProperties = ['email', 'firstName', 'lastName'] as const
+const standardPropertyNames = ['Email address', 'First name', 'Last name'] as const
 
 export function StepTwoMatchCsvHeadersToContactProperties() {
   const { setStep, formState, setFormState } = useImportcontactsContext(
-    "MatchCsvHeadersToContactProperties",
+    'MatchCsvHeadersToContactProperties',
   )
   const matchingErrorAlertRef = React.useRef<HTMLDivElement | null>(null)
 
   const [addingCustomPropertyForColumn, setAddingCustomPropertyForColumn] =
-    React.useState("")
+    React.useState('')
 
   const [selectFieldPropertyStates, setSelectFieldPropertyStates] =
-    React.useState<SelectFieldPropertyState>(function () {
-      let defaultFieldPropertyStates: SelectFieldPropertyState = {}
+    React.useState<SelectFieldPropertyState>(() => {
+      const defaultFieldPropertyStates: SelectFieldPropertyState = {}
 
       if (
         formState.contactProperties &&
@@ -64,7 +67,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                   name: standardPropertyNames[
                     standardProperties.indexOf(standardProperty)
                   ],
-                  type: "standard",
+                  type: 'standard',
                 },
               }
           }
@@ -93,9 +96,9 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
             defaultFieldPropertyStates[column] = {
               open: false,
               property: {
-                id: "skip",
-                name: "None - Skip this column",
-                type: "skip",
+                id: 'skip',
+                name: 'None - Skip this column',
+                type: 'skip',
               },
             }
           }
@@ -111,7 +114,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
             property: {
               id: propertyId,
               name: standardPropertyNames[standardProperties.indexOf(propertyId)],
-              type: "standard",
+              type: 'standard',
             },
           }
         }
@@ -124,8 +127,8 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
     .filter(
       (column) =>
         selectFieldPropertyStates[column]?.property &&
-        selectFieldPropertyStates[column]?.property?.type !== "standard" &&
-        selectFieldPropertyStates[column]?.property?.type !== "skip",
+        selectFieldPropertyStates[column]?.property?.type !== 'standard' &&
+        selectFieldPropertyStates[column]?.property?.type !== 'skip',
     )
     .map((column) => {
       const { property } = selectFieldPropertyStates[column]
@@ -151,56 +154,56 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
   const properties = [
     {
-      name: "Email address",
-      id: "email",
-      type: "standard",
+      name: 'Email address',
+      id: 'email',
+      type: 'standard',
       icon: MailIcon,
     },
     {
-      name: "First name",
-      id: "firstName",
-      type: "standard",
+      name: 'First name',
+      id: 'firstName',
+      type: 'standard',
       icon: TextIcon,
     },
     {
-      name: "Last name",
-      id: "lastName",
-      type: "standard",
+      name: 'Last name',
+      id: 'lastName',
+      type: 'standard',
       icon: TextIcon,
     },
     ...uniqueNewProperties,
   ]
 
   const matches = [
-    ...(formState.propertiesMap?.["email"]
+    ...(formState.propertiesMap?.['email']
       ? [
           {
             column: {
-              name: formState.propertiesMap?.["email"],
-              count: formState.headerCounts?.[formState.propertiesMap?.["email"]],
-              samples: formState.headerSamples?.[formState.propertiesMap?.["email"]],
+              name: formState.propertiesMap?.['email'],
+              count: formState.headerCounts?.[formState.propertiesMap?.['email']],
+              samples: formState.headerSamples?.[formState.propertiesMap?.['email']],
             },
           },
         ]
       : []),
-    ...(formState.propertiesMap?.["firstName"]
+    ...(formState.propertiesMap?.['firstName']
       ? [
           {
             column: {
-              name: formState.propertiesMap?.["firstName"],
-              count: formState.headerCounts?.[formState.propertiesMap?.["firstName"]],
-              samples: formState.headerSamples?.[formState.propertiesMap?.["firstName"]],
+              name: formState.propertiesMap?.['firstName'],
+              count: formState.headerCounts?.[formState.propertiesMap?.['firstName']],
+              samples: formState.headerSamples?.[formState.propertiesMap?.['firstName']],
             },
           },
         ]
       : []),
-    ...(formState.propertiesMap?.["lastName"]
+    ...(formState.propertiesMap?.['lastName']
       ? [
           {
             column: {
-              name: formState.propertiesMap?.["lastName"],
-              count: formState.headerCounts?.[formState.propertiesMap?.["lastName"]],
-              samples: formState.headerSamples?.[formState.propertiesMap?.["lastName"]],
+              name: formState.propertiesMap?.['lastName'],
+              count: formState.headerCounts?.[formState.propertiesMap?.['lastName']],
+              samples: formState.headerSamples?.[formState.propertiesMap?.['lastName']],
             },
           },
         ]
@@ -233,10 +236,10 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
     console.log(selectFieldPropertyStates, properties)
 
-    let contactProperties: FormState["contactProperties"] = {
-      email: "",
-      firstName: "",
-      lastName: "",
+    const contactProperties: FormState['contactProperties'] = {
+      email: '',
+      firstName: '',
+      lastName: '',
     }
 
     for (const standardProperty of standardProperties) {
@@ -256,7 +259,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
         return
       }
 
-      if (property.type === "skip" || property.type === "standard") {
+      if (property.type === 'skip' || property.type === 'standard') {
         return
       }
 
@@ -275,14 +278,14 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
     setStep((current) => current + 1)
   }
 
-  const isAddingCustomPropertyForColumn = addingCustomPropertyForColumn !== ""
+  const isAddingCustomPropertyForColumn = addingCustomPropertyForColumn !== ''
 
   function onAddingCustomPropertyDialogOpenChange(open: boolean) {
     if (open) {
       return
     }
 
-    setAddingCustomPropertyForColumn("")
+    setAddingCustomPropertyForColumn('')
   }
 
   function onSelectPropertyOpenChange(name: string, open: boolean) {
@@ -299,27 +302,27 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
       return
     }
 
-    alert.classList.toggle("animation-shake")
+    alert.classList.toggle('animation-shake')
 
     alert.addEventListener(
-      "animationend",
-      function () {
-        alert.classList.remove("animation-shake")
+      'animationend',
+      () => {
+        alert.classList.remove('animation-shake')
       },
       { once: true },
     )
   }
 
   function onSelectPropertyValueChange(column: string, value: string) {
-    if (value === "skip") {
+    if (value === 'skip') {
       setSelectFieldPropertyStates((state) => ({
         ...state,
         [column]: {
           open: false,
           property: {
-            id: "skip",
-            type: "skip",
-            name: "None - Skip this column",
+            id: 'skip',
+            type: 'skip',
+            name: 'None - Skip this column',
           },
         },
       }))
@@ -355,8 +358,8 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
     const formData = new FormData(form)
 
-    const name = formData.get("name") as string
-    const type = formData.get("type") as "text" | "float" | "date" | "boolean"
+    const name = formData.get('name') as string
+    const type = formData.get('type') as 'text' | 'float' | 'date' | 'boolean'
 
     setSelectFieldPropertyStates((state) => ({
       ...state,
@@ -368,7 +371,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
     form.reset()
 
-    setAddingCustomPropertyForColumn("")
+    setAddingCustomPropertyForColumn('')
   }
 
   function hasPropertyAlreadyBeenMatchedToAColumn(propertyId?: string) {
@@ -376,7 +379,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
       return false
     }
 
-    if (propertyId === "skip") {
+    if (propertyId === 'skip') {
       return false
     }
 
@@ -398,7 +401,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
   function hasMatchedAnEmailColumnProperty() {
     const matchedToEmailProperty = Object.values(selectFieldPropertyStates).some(
-      (value) => value?.property?.id === "email",
+      (value) => value?.property?.id === 'email',
     )
 
     return matchedToEmailProperty
@@ -408,28 +411,28 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
     | {
         title: string
         description: React.ReactNode
-        variant?: Alert.AlertRootProps["variant"]
+        variant?: Alert.AlertRootProps['variant']
       }
     | undefined {
     if (!hasMatchedAnEmailColumnProperty()) {
       return {
-        title: "An email address is required in your csv complete the import.",
+        title: 'An email address is required in your csv complete the import.',
         description:
           "Please make sure you've matched an email address column to the email address property.",
-        variant: "error",
+        variant: 'error',
       }
     }
 
     if (!hasMatchedAllColumns()) {
       return {
-        title: "You need to match all columns in your csv to a contact property.",
+        title: 'You need to match all columns in your csv to a contact property.',
         description: (
           <>
-            For the columns you don't want to match, please select{" "}
+            For the columns you don't want to match, please select{' '}
             <strong>None - Skip this column.</strong>
           </>
         ),
-        variant: "warning",
+        variant: 'warning',
       }
     }
 
@@ -460,7 +463,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
               <Text as="p" className="kb-content-secondary">
                 Please select a type that correctly represents the data in your csv. For
-                example, only select the <strong>Date</strong> type if the data in the{" "}
+                example, only select the <strong>Date</strong> type if the data in the{' '}
                 <strong>{`${addingCustomPropertyForColumn} `}</strong>
                 column of your csv is in a correct date format.
               </Text>
@@ -517,9 +520,9 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                     </Text>
 
                     <CheckCircleSolidIcon
-                      className={cn("w-4 h-4", {
-                        "kb-content-disabled": !hasSelectedProperty,
-                        "kb-content-positive": hasSelectedProperty,
+                      className={cn('w-4 h-4', {
+                        'kb-content-disabled': !hasSelectedProperty,
+                        'kb-content-positive': hasSelectedProperty,
                       })}
                     />
                   </div>
@@ -550,7 +553,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                     <button
                       value="create-new-property"
                       className="kb-select-item kb-reset sticky bottom-0 bg-[var(--background-primary)]"
-                      onClick={function () {
+                      onClick={() => {
                         onCreateNewProperty(match.column.name)
                       }}
                     >
@@ -567,8 +570,8 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                     selectFieldPropertyStates[match.column.name]?.property?.id,
                   ) ? (
                     <Select.Error>
-                      You have already matched the{" "}
-                      {selectFieldPropertyStates[match.column.name]?.property?.name}{" "}
+                      You have already matched the{' '}
+                      {selectFieldPropertyStates[match.column.name]?.property?.name}{' '}
                       property to a column. All properties must be uniquely matched.
                     </Select.Error>
                   ) : null}

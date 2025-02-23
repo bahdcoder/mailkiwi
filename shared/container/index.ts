@@ -1,36 +1,36 @@
-import type { Redis } from "ioredis"
-import type { Connection } from "mysql2"
-import type { Logger, pino } from "pino"
+import type { Redis } from 'ioredis'
+import type { Connection } from 'mysql2'
+import type { Logger, pino } from 'pino'
 
-import type { DrizzleClient } from "@/database/client.js"
+import type { DrizzleClient } from '@/database/client.js'
 
-import type { HonoInstance } from "@/shared/server/hono.js"
+import type { HonoInstance } from '@/shared/server/hono.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export enum ContainerKey {
-  app = "app",
+  app = 'app',
 
-  logger = "logger",
+  logger = 'logger',
 
   // Configs
-  env = "env",
-  config = "config",
+  env = 'env',
+  config = 'config',
 
   // version
-  version = "version",
+  version = 'version',
 
   // databases
 
-  redis = "redis",
-  database = "database",
-  databaseConnection = "databaseConnection",
+  redis = 'redis',
+  database = 'database',
+  databaseConnection = 'databaseConnection',
 
   // Frontend assets
-  viteManifestFile = "viteManifestFile",
+  viteManifestFile = 'viteManifestFile',
 
   // functions
-  vikeRenderPage = "vikeRenderPage",
+  vikeRenderPage = 'vikeRenderPage',
 }
 
 export const makeApp = () => container.singleton<HonoInstance>(ContainerKey.app)

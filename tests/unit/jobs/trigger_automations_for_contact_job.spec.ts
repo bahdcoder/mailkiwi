@@ -1,22 +1,22 @@
-import { faker } from "@faker-js/faker"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { describe, test } from 'vitest'
 
-import { RunAutomationForContactJob } from "@/automations/jobs/run_automation_for_contact_job.js"
-import { TriggerAutomationsForContactJob } from "@/automations/jobs/trigger_automation_for_contact_job.js"
+import { RunAutomationForContactJob } from '@/automations/jobs/run_automation_for_contact_job.js'
+import { TriggerAutomationsForContactJob } from '@/automations/jobs/trigger_automation_for_contact_job.js'
 
-import { createContactsForAudience, createUser } from "@/tests/mocks/auth/users.js"
-import { seedAutomation } from "@/tests/mocks/teams/teams.js"
+import { createContactsForAudience, createUser } from '@/tests/mocks/auth/users.js'
+import { seedAutomation } from '@/tests/mocks/teams/teams.js'
 
-import { tags, tagsOnContacts } from "@/database/schema.js"
+import { tags, tagsOnContacts } from '@/database/schema.js'
 
-import { makeDatabase, makeRedis } from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { Queue } from '@/shared/queue/queue.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@automations-trigger", () => {
-  test("can trigger automations for a contact", async ({ expect }) => {
+describe('@automations-trigger', () => {
+  test('can trigger automations for a contact', async ({ expect }) => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -43,7 +43,7 @@ describe("@automations-trigger", () => {
 
     const { automationId } = await seedAutomation({
       audienceId: audience.id,
-      trigger: "TRIGGER_CONTACT_TAG_ADDED",
+      trigger: 'TRIGGER_CONTACT_TAG_ADDED',
       triggerConfiguration: {
         tagIds,
       },
@@ -51,7 +51,7 @@ describe("@automations-trigger", () => {
 
     await container.make(TriggerAutomationsForContactJob).handle({
       payload: {
-        trigger: "TRIGGER_CONTACT_TAG_ADDED",
+        trigger: 'TRIGGER_CONTACT_TAG_ADDED',
         contactId: contactIds[0],
       },
       redis,

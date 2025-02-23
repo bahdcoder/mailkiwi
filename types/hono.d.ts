@@ -1,4 +1,4 @@
-import "hono"
+import 'hono'
 
 import type {
   AccessToken,
@@ -8,11 +8,11 @@ import type {
   TeamWithSendingDomains,
   User,
   UserWithTeams,
-} from "@/database/database_schema_types.ts"
+} from '@/database/database_schema_types.ts'
 
-import type { TeamWithMembers } from "@/shared/types/team.js"
+import type { TeamWithMembers } from '@/shared/types/team.js'
 
-declare module "hono" {
+declare module 'hono' {
   interface ContextVariableMap {
     accessToken: AccessToken
     team: TeamWithMembers

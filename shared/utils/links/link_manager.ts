@@ -1,5 +1,5 @@
-import { appEnv } from "@/app/env/app_env.js"
-import crypto from "crypto"
+import { appEnv } from '@/app/env/app_env.js'
+import crypto from 'crypto'
 
 export interface LinkMetadata {
   broadcastId?: string
@@ -11,7 +11,7 @@ export class EmailLinkManager {
   constructor(private env = appEnv) {}
 
   encodeLink(originalLink: string, metadata: LinkMetadata): string {
-    const nonce = crypto.randomBytes(4).toString("hex")
+    const nonce = crypto.randomBytes(4).toString('hex')
 
     const data = JSON.stringify({
       link: originalLink,
@@ -21,12 +21,12 @@ export class EmailLinkManager {
     })
 
     const hash = crypto
-      .createHmac("sha256", this.env.APP_KEY)
+      .createHmac('sha256', this.env.APP_KEY)
       .update(data)
-      .digest("base64url")
+      .digest('base64url')
       .slice(0, 10)
 
-    const encodedData = Buffer.from(data).toString("base64url")
+    const encodedData = Buffer.from(data).toString('base64url')
 
     return `${hash}.${encodedData}`
   }
@@ -34,18 +34,18 @@ export class EmailLinkManager {
   decodeLink(
     encodedLink: string,
   ): { originalLink: string; metadata: LinkMetadata } | null {
-    const [receivedHash, encodedData] = encodedLink.split(".")
+    const [receivedHash, encodedData] = encodedLink.split('.')
 
     if (!receivedHash || !encodedData) {
       return null
     }
 
-    const decodedData = Buffer.from(encodedData, "base64url").toString()
+    const decodedData = Buffer.from(encodedData, 'base64url').toString()
 
     const computedHash = crypto
-      .createHmac("sha256", this.env.APP_KEY)
+      .createHmac('sha256', this.env.APP_KEY)
       .update(decodedData)
-      .digest("base64url")
+      .digest('base64url')
       .slice(0, 10)
 
     if (computedHash !== receivedHash) {

@@ -1,7 +1,7 @@
-import { BroadcastDetails } from "@/pages/w/engage/broadcasts/@uuid/components/broadcast-details.jsx"
-import { EngageBroadcastsComposerPageProps } from "@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx"
-import { Heading } from "@kibamail/owly/heading"
-import { usePageContext } from "vike-react/usePageContext"
+import { BroadcastDetails } from '@/pages/w/engage/broadcasts/@uuid/components/broadcast-details.jsx'
+import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
+import { Heading } from '@kibamail/owly/heading'
+import { usePageContext } from 'vike-react/usePageContext'
 
 export function StepFivePreview() {
   const ctx = usePageContext()

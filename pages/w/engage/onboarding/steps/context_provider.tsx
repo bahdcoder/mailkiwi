@@ -1,11 +1,11 @@
-import { createContext } from "@radix-ui/react-context"
+import { createContext } from '@radix-ui/react-context'
 
-import { UpdateContactImportSettingsDto } from "@/audiences/dto/contact_imports/update_contact_import_settings_dto.js"
+import type { UpdateContactImportSettingsDto } from '@/audiences/dto/contact_imports/update_contact_import_settings_dto.js'
 
 export type FormState = {
   audienceId: string
   contactImportId: string
-  propertiesMap: UpdateContactImportSettingsDto["propertiesMap"]
+  propertiesMap: UpdateContactImportSettingsDto['propertiesMap']
 }
 
 export const [OnboardingProvider, useOnboardingContext] = createContext<{
@@ -14,4 +14,4 @@ export const [OnboardingProvider, useOnboardingContext] = createContext<{
 
   formState: FormState
   setFormState: React.Dispatch<React.SetStateAction<FormState>>
-}>("LettersOnboarding")
+}>('LettersOnboarding')

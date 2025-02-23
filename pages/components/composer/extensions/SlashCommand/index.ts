@@ -1,1 +1,1 @@
-export * from "./SlashCommand.js"
+export * from './SlashCommand.js'

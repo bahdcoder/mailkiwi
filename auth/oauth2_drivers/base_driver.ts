@@ -1,8 +1,8 @@
-import { Oauth2AccessToken } from "@poppinss/oauth-client/types"
+import type { Oauth2AccessToken } from '@poppinss/oauth-client/types'
 
 export type Oauth2Params = {
-  action: "login" | "register"
-  provider: "github" | "google"
+  action: 'login' | 'register'
+  provider: 'github' | 'google'
 }
 
 export interface Oauth2UserResponse {
@@ -14,8 +14,8 @@ export interface Oauth2UserResponse {
 
 export interface Oauth2Response {
   user: Oauth2UserResponse
-  provider: Oauth2Params["provider"]
-  action: Oauth2Params["action"]
+  provider: Oauth2Params['provider']
+  action: Oauth2Params['action']
   accessToken: Oauth2AccessToken
 }
 
