@@ -54,7 +54,7 @@ function EngageLayout({ children }: React.PropsWithChildren) {
                 <Tabs.Indicator />
               </Tabs.List>
             </div>
-            <div className="flex-grow hidden lg:block h-px bg-[var(--black-5)] w-full self-end"></div>
+            <div className="flex-grow hidden lg:block h-px bg-[var(--black-5)] w-full self-end" />
           </div>
         </ProductPageHeading>
         <div className="w-layout-container">{children}</div>

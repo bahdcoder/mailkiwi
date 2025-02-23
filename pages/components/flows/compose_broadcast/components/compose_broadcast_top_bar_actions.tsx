@@ -220,7 +220,7 @@ export function PreviewStepActions() {
                 description={`Immediately send this broadcasts to ${getBroadcastRecipientsCount?.data?.total} contacts`}
                 onClick={() => setSchedule('now')}
                 checked={schedule === 'now'}
-              ></RadioGroupCardItem>
+              />
               <RadioGroupCardItem
                 checked={schedule === 'later'}
                 title="Schedule for later"

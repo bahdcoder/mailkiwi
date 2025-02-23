@@ -4,7 +4,7 @@ import {
   WebsocketServerHandler,
 } from './websocket_server_handler.js'
 import type { ServerType } from '@hono/node-server'
-import type { IncomingMessage, Server } from 'http'
+import type { IncomingMessage, Server } from 'node:http'
 import { type WebSocket, WebSocketServer } from 'ws'
 
 import { UserRepository } from '@/auth/users/repositories/user_repository.js'
@@ -44,7 +44,7 @@ export class WebsocketServer {
 
   protected getAuthenticatedUserFromRequest = async (request: IncomingMessage) => {
     const headers = new Headers()
-    headers.set('cookie', request.headers['cookie'] ?? '')
+    headers.set('cookie', request.headers.cookie ?? '')
 
     const auth = await new Session().getUser({
       req: {

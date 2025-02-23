@@ -1,4 +1,4 @@
-import { Readable, Stream } from 'stream'
+import { Readable, Stream } from 'node:stream'
 import { vi } from 'vitest'
 
 export class FakeMinioClient {

@@ -1,8 +1,8 @@
 import { appEnv } from '@/app/env/app_env.js'
 import acme from 'acme-client'
-import { readFile } from 'fs/promises'
-import https from 'https'
-import { resolve } from 'path'
+import { readFile } from 'node:fs/promises'
+import https from 'node:https'
+import { resolve } from 'node:path'
 
 export class AcmeCertificatesTool {
   private accountKey: Buffer | string

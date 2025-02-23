@@ -15,9 +15,9 @@ import { ClickTrackingController } from '@/tracking/controllers/click_tracking_c
 import { OpenTrackingController } from '@/tracking/controllers/open_tracking_controller.js'
 import { MailerWebhooksContorller } from '@/webhooks/controllers/mailer_webhooks_controller.js'
 import { WebsiteController } from '@/websites/controllers/website_controller.js'
-import { readFile } from 'fs/promises'
+import { readFile } from 'node:fs/promises'
 import type { Redis } from 'ioredis'
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { type Logger, pino } from 'pino'
 
 import { BroadcastController } from '@/broadcasts/controllers/broadcast_controller.js'

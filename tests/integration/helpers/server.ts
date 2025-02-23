@@ -36,7 +36,7 @@ export async function shutdownTestServer(server: ServerType) {
     server.close((error) => {
       if (error) return reject(error)
 
-      console.log(`@inject-tests: monolith api closed.`)
+      console.log('@inject-tests: monolith api closed.')
 
       resolve({})
     })

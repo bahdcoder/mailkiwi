@@ -3,7 +3,7 @@ import { MessageRepository } from '@/chat/repositories/message_repository.js'
 import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { DateTime } from 'luxon'
-import { setTimeout } from 'timers/promises'
+import { setTimeout } from 'node:timers/promises'
 import { describe, test } from 'vitest'
 
 import { createUser } from '@/tests/mocks/auth/users.js'

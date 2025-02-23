@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 
 export const basePath = resolve('tests', 'e2e', 'state')
 

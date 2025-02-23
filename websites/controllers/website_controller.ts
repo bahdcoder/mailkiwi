@@ -107,7 +107,7 @@ export class WebsiteController extends BaseController {
 
     if (websitePage && websitePage.websiteId !== website.id) {
       throw E_UNAUTHORIZED(
-        `This website page does not belong to your selected newsletter website. `,
+        'This website page does not belong to your selected newsletter website. ',
       )
     }
 

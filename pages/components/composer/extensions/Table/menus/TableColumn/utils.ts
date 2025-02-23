@@ -30,9 +30,7 @@ export const isColumnGripSelected = ({
   }
 
   const gripColumn =
-    container &&
-    container.querySelector &&
-    container.querySelector('a.grip-column.selected')
+    container?.querySelector?.('a.grip-column.selected')
 
   return !!gripColumn
 }

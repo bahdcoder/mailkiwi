@@ -78,7 +78,7 @@ export function formatScheduleDateTime(schedule: ScheduleDateTime) {
     const date = new Date(year, month - 1, day, hour, Number.parseInt(schedule.minute))
 
     // Validate date
-    if (isNaN(date.getTime())) {
+    if (Number.isNaN(date.getTime())) {
       return {
         format: '',
         date: new Date(),

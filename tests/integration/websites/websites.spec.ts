@@ -4,8 +4,8 @@ import { WebsitePageRepository } from '@/websites/repositories/website_page_repo
 import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
 import { faker } from '@faker-js/faker'
 import { load as cheerioLoad } from 'cheerio'
-import { readFile } from 'fs/promises'
-import { resolve } from 'path'
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { describe, test } from 'vitest'
 
 import { createUser } from '@/tests/mocks/auth/users.js'
@@ -27,7 +27,7 @@ describe('@websites', () => {
       {
         method: 'PUT',
         body: {
-          domain: `${faker.lorem.slug() + '-' + faker.number.int({ min: 10, max: 100 })}.fastmedia.com`,
+          domain: `${`${faker.lorem.slug()}-${faker.number.int({ min: 10, max: 100 })}`}.fastmedia.com`,
         },
         path: `/websites/${website.id}/custom_domains`,
       },
@@ -51,7 +51,7 @@ describe('@websites', () => {
       createAudienceForNewsletter: true,
     })
 
-    const customDomain = `${faker.lorem.slug() + '-' + faker.number.int({ min: 10, max: 100 })}.fastmedia.com`
+    const customDomain = `${`${faker.lorem.slug()}-${faker.number.int({ min: 10, max: 100 })}`}.fastmedia.com`
 
     await container
       .make(WebsiteRepository)

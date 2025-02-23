@@ -230,7 +230,7 @@ export function useButtonMenuStates(editor: Editor) {
   return {
     isInsideButton,
     isFilled: styles?.['background-color'] !== undefined,
-    isFullWidth: styles?.['width'] === '100%',
+    isFullWidth: styles?.width === '100%',
     isLeftAlign: styles?.['text-align'] === 'left',
     isRightAlign: styles?.['text-align'] === 'right',
     isCenterAlign: styles?.['text-align'] === 'center',

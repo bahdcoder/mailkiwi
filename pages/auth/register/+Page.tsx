@@ -65,8 +65,8 @@ function RegisterPage({ teamInviteToken }: RegisterPageProps) {
             placeholder="Enter your work email address"
           >
             <TextField.Label htmlFor="email">Email address</TextField.Label>
-            {error?.errorsMap?.['email'] ? (
-              <TextField.Error>{error?.errorsMap?.['email']}</TextField.Error>
+            {error?.errorsMap?.email ? (
+              <TextField.Error>{error?.errorsMap?.email}</TextField.Error>
             ) : null}
           </TextField.Root>
         </div>

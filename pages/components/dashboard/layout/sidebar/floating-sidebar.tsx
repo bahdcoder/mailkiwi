@@ -77,7 +77,7 @@ export function FloatingSidebar() {
         <div
           onClick={hideFloatingSidebar}
           className="absolute lg:hidden w-[calc(100vw-256px)] right-0 h-screen bg-transparent"
-        ></div>
+        />
       </div>
       <div
         ref={menuRef}

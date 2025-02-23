@@ -25,7 +25,7 @@ export const setup = async (email?: string, role?: string) => {
 
   const response = await makeRequestAsUser(user, {
     method: 'POST',
-    path: `/memberships`,
+    path: '/memberships',
     body,
   })
 
@@ -84,7 +84,7 @@ describe('@memberships', () => {
 
       const response = await makeRequestAsUser(user, {
         method: 'POST',
-        path: `/memberships`,
+        path: '/memberships',
         body,
       })
 
@@ -130,7 +130,7 @@ describe('@memberships', () => {
 
       const response = await makeRequestAsUser(user, {
         method: 'POST',
-        path: `/memberships`,
+        path: '/memberships',
         body,
       })
 

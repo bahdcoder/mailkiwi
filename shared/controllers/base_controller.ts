@@ -205,7 +205,7 @@ export class BaseController extends FlashController {
     const team = this.ensureTeam(ctx)
 
     if (team.id !== entity.teamId) {
-      throw E_UNAUTHORIZED(`This entity does not belong to your selected team. `)
+      throw E_UNAUTHORIZED('This entity does not belong to your selected team. ')
     }
 
     return team

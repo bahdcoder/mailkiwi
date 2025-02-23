@@ -23,7 +23,7 @@ describe('@domains', () => {
   test('can create unique sending domains for a team', async ({ expect }) => {
     const { team, user } = await createUser()
 
-    const name = cuid() + 'newsletter.kibamail.com'
+    const name = `${cuid()}newsletter.kibamail.com`
 
     const response = await makeRequestAsUser(user, {
       method: 'POST',

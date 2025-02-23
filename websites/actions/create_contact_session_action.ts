@@ -16,7 +16,6 @@ import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 import { container } from '@/utils/typi.js'
 
 export class CreateContactSessionAction {
-  constructor() {}
 
   async handle(
     contact: Pick<Contact, 'id' | 'email' | 'firstName' | 'lastName'>,
@@ -43,12 +42,12 @@ export class CreateContactSessionAction {
 
     const injectEmailPayload: InjectEmailSchemaDto = {
       from: {
-        name: contact.firstName + ' ' + contact.lastName,
+        name: `${contact.firstName} ${contact.lastName}`,
         email: contact.email,
       },
       recipients: [
         {
-          name: contact.firstName + ' ' + contact.lastName,
+          name: `${contact.firstName} ${contact.lastName}`,
           email: contact.email,
         },
       ],

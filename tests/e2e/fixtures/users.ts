@@ -1,6 +1,6 @@
 import { type Page, test as base } from '@playwright/test'
-import { readFile } from 'fs/promises'
-import { resolve } from 'path'
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 
 import {
   administrator,

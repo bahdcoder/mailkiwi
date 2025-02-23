@@ -4,7 +4,7 @@ import { type EffectCallback, useEffect } from 'react'
 
 export function useThrottleFn<T, U extends any[]>(
   fn: (...args: U) => T,
-  ms = 200,
+  ms,
   args: U,
 ) {
   const [state, setState] = React.useState<T | null>(null)

@@ -175,35 +175,35 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
   ]
 
   const matches = [
-    ...(formState.propertiesMap?.['email']
+    ...(formState.propertiesMap?.email
       ? [
           {
             column: {
-              name: formState.propertiesMap?.['email'],
-              count: formState.headerCounts?.[formState.propertiesMap?.['email']],
-              samples: formState.headerSamples?.[formState.propertiesMap?.['email']],
+              name: formState.propertiesMap?.email,
+              count: formState.headerCounts?.[formState.propertiesMap?.email],
+              samples: formState.headerSamples?.[formState.propertiesMap?.email],
             },
           },
         ]
       : []),
-    ...(formState.propertiesMap?.['firstName']
+    ...(formState.propertiesMap?.firstName
       ? [
           {
             column: {
-              name: formState.propertiesMap?.['firstName'],
-              count: formState.headerCounts?.[formState.propertiesMap?.['firstName']],
-              samples: formState.headerSamples?.[formState.propertiesMap?.['firstName']],
+              name: formState.propertiesMap?.firstName,
+              count: formState.headerCounts?.[formState.propertiesMap?.firstName],
+              samples: formState.headerSamples?.[formState.propertiesMap?.firstName],
             },
           },
         ]
       : []),
-    ...(formState.propertiesMap?.['lastName']
+    ...(formState.propertiesMap?.lastName
       ? [
           {
             column: {
-              name: formState.propertiesMap?.['lastName'],
-              count: formState.headerCounts?.[formState.propertiesMap?.['lastName']],
-              samples: formState.headerSamples?.[formState.propertiesMap?.['lastName']],
+              name: formState.propertiesMap?.lastName,
+              count: formState.headerCounts?.[formState.propertiesMap?.lastName],
+              samples: formState.headerSamples?.[formState.propertiesMap?.lastName],
             },
           },
         ]
@@ -509,7 +509,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                 </div>
 
                 <div className="h-16 kb-background-secondary w-full flex flex-col justify-center relative">
-                  <div className="absolute w-px border-l kb-border-tertiary  h-14 top-1 left-4"></div>
+                  <div className="absolute w-px border-l kb-border-tertiary  h-14 top-1 left-4" />
 
                   <div className="w-full py-1 kb-background-secondary z-[1] flex items-center justify-between">
                     <Text size="sm" className="hidden md:inline kb-content-secondary">

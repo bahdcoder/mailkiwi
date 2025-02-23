@@ -282,7 +282,7 @@ export const createUser = async ({
     const audience = await audienceRepository.create(
       {
         name: 'Newsletter',
-        slug: faker.number.int({ min: 10, max: 100 }) + '-' + faker.lorem.slug(),
+        slug: `${faker.number.int({ min: 10, max: 100 })}-${faker.lorem.slug()}`,
       },
       team.id,
     )
@@ -384,7 +384,7 @@ export const createUser = async ({
     await container.make(WebsiteRepository).create({
       slug: faker.lorem.slug(),
       teamId: team.id,
-      websiteDomain: 'news-' + faker.lorem.slug() + '.fastmedia.com',
+      websiteDomain: `news-${faker.lorem.slug()}.fastmedia.com`,
       websiteDomainVerifiedAt: DateTime.now().toJSDate(),
       websiteDomainCnameValue: `${faker.lorem.slug()}.fastmedia.com`,
       audienceId: audienceId as string,

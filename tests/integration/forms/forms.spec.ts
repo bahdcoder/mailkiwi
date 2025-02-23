@@ -217,7 +217,7 @@ describe('@forms', () => {
         (surveyField) => surveyField.id === field.id,
       )
 
-      if (surveyField && surveyField.options && field.id) {
+      if (surveyField?.options && field.id) {
         submitContent[field.id] = [surveyField.options[0]]
       }
     }

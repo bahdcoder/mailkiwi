@@ -62,7 +62,7 @@ export class Oauth2Controller extends VikeController {
       if (!response.user?.email) {
         this.flash(ctx, {
           title: `We coudn't find a verified email on your ${params.provider} account.`,
-          description: `Please try again or use another authentication method.`,
+          description: 'Please try again or use another authentication method.',
           variant: 'error',
         })
         return this.response(ctx)
@@ -118,7 +118,7 @@ export class Oauth2Controller extends VikeController {
 
       if (accountExists || userExists) {
         this.flash(ctx, {
-          title: `A user with this account already exists. Are you trying to login instead ?`,
+          title: 'A user with this account already exists. Are you trying to login instead ?',
           variant: 'error',
         })
         return this.response(ctx).redirect(route('auth_register')).send()

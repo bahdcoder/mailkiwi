@@ -139,7 +139,7 @@ describe('Run automation for contact job', () => {
     const jobs = await Queue.automations().getJobs()
 
     const automationsQueueJobs = jobs.filter(
-      (job) => job.data.contactId.toString() == contactId.toString(),
+      (job) => job.data.contactId.toString() === contactId.toString(),
     )
 
     expect(automationsQueueJobs.length).toBe(1)

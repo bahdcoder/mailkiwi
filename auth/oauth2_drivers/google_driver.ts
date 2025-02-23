@@ -87,7 +87,7 @@ export class GoogleDriver
       request.param('code', code)
     })
 
-    const { payload: userInfo } = decode(accessToken?.['id_token']) as {
+    const { payload: userInfo } = decode(accessToken?.id_token) as {
       header: JwtHeader
       payload: JWTPayload & {
         email: string

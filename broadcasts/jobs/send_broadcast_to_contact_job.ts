@@ -71,7 +71,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     const injectEmailPayload: InjectEmailSchemaDto = {
       from: {
         name: emailContent.fromName,
-        email: emailContent.fromEmail + '@' + sendingDomain.name,
+        email: `${emailContent.fromEmail}@${sendingDomain.name}`,
       },
       replyTo: {
         name: emailContent.replyToName,
@@ -79,7 +79,7 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       },
       recipients: [
         {
-          name: contact.firstName + ' ' + contact.lastName,
+          name: `${contact.firstName} ${contact.lastName}`,
           email: contact.email,
         },
       ],

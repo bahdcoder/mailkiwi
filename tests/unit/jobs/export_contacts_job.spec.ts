@@ -1,7 +1,7 @@
 import { MinioClient } from '@/minio/minio_client.js'
 import { faker } from '@faker-js/faker'
 import { like } from 'drizzle-orm'
-import type { Readable } from 'stream'
+import type { Readable } from 'node:stream'
 import { describe, test } from 'vitest'
 
 import type { CreateContactExportDto } from '@/audiences/dto/contact_exports/create_contact_export_dto.js'
@@ -98,7 +98,7 @@ describe('@contacts exports job', () => {
         })
         .map(() =>
           createFakeContact(audience.id, {
-            firstName: firstNameContains + ' ' + faker.person.firstName(),
+            firstName: `${firstNameContains} ${faker.person.firstName()}`,
             attributes: {
               Country: faker.location.country(),
               'Country Code': faker.location.countryCode(),

@@ -1,5 +1,5 @@
 export function getAuthenticationHeaders(apiKey: string) {
   return {
-    ['Authorization']: `Bearer ${apiKey}`,
+    'Authorization': `Bearer ${apiKey}`,
   }
 }

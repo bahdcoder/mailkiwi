@@ -4,7 +4,7 @@ import { sentenceCase } from 'change-case'
 import { stringify as csvStringify } from 'csv-stringify'
 import { and, eq } from 'drizzle-orm'
 import { DateTime } from 'luxon'
-import { Readable } from 'stream'
+import { Readable } from 'node:stream'
 
 import type { CreateContactExportDto } from '@/audiences/dto/contact_exports/create_contact_export_dto.js'
 import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
@@ -94,7 +94,7 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
         },
       )
 
-      fields['Tags'] = contact.tags
+      fields.Tags = contact.tags
         ?.map((tag: { tag: { name: string } }) => tag.tag.name)
         .join(',')
 
@@ -119,7 +119,7 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     }
 
     if (!audience) {
-      return this.fail(`The audience could not be found.`)
+      return this.fail('The audience could not be found.')
     }
 
     const readableCsvStream = Readable.from(
@@ -137,7 +137,7 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
           .plus({ hours: this.HOURS_TO_EXPIRATION })
           .toISO(),
       })
-      .name('exports' + '/' + cuid() + '.csv')
+      .name(`exports/${cuid()}.csv`)
 
     await minio.write(readableCsvStream.pipe(fileStream))
 
@@ -146,7 +146,7 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     const user = await container.make(UserRepository).findById(payload.exportCreatedBy)
 
     if (!user) {
-      return this.fail(`Generated report, but could not find user to deliver to.`)
+      return this.fail('Generated report, but could not find user to deliver to.')
     }
 
     await Mailer.from(appEnv.SMTP_MAIL_FROM)

@@ -24,10 +24,9 @@ export class Session {
     const sessionData = await getSignedCookie(
       ctx,
       this.encryptionKey,
-      '__Secure-' +
-        (type === 'contact'
+      `__Secure-${type === 'contact'
           ? this.CONTACT_SESSION_COOKIE_NAME
-          : this.SESSION_COOKIE_NAME),
+          : this.SESSION_COOKIE_NAME}`,
     )
 
     if (!sessionData) {

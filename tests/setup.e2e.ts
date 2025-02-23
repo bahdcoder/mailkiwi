@@ -3,9 +3,9 @@ import { addDefaultChannelsCommand } from '@/cli/commands/chat/add_default_chann
 import { seedDevSendingSourcesCommand } from '@/cli/commands/seed_dev_sending_sources_command.js'
 import { faker } from '@faker-js/faker'
 import { type FullConfig, chromium } from '@playwright/test'
-import { writeFile } from 'fs/promises'
+import { writeFile } from 'node:fs/promises'
 import { DateTime } from 'luxon'
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 
 import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
 import { TeamRepository } from '@/teams/repositories/team_repository.js'
@@ -31,12 +31,10 @@ async function createUser({
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     email:
-      faker.number.bigInt({ min: 101, max: 999 }) +
-      '-' +
-      faker.internet.email({
+      `${faker.number.bigInt({ min: 101, max: 999 })}-${faker.internet.email({
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-      }),
+      })}`,
     password: 'password',
   }
 

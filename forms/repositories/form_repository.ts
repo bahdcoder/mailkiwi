@@ -35,8 +35,6 @@ export class FormRepository extends BaseRepository {
 
           if (!exists) {
             fields.push({ ...field, deleted: true })
-
-            continue
           }
         }
       }

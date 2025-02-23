@@ -3,7 +3,7 @@ import type { VikePageRenderer } from '../types/vike.js'
 import { createReadableStreamFromReadable } from '@remix-run/node'
 import { and, eq } from 'drizzle-orm'
 import type { Handler, MiddlewareHandler, Next } from 'hono'
-import { PassThrough } from 'stream'
+import { PassThrough } from 'node:stream'
 import { UAParser } from 'ua-parser-js'
 import { renderPage } from 'vike/server'
 

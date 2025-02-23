@@ -21,9 +21,9 @@ export function isValueABoolean(value: any) {
 }
 
 export function isValueANumber(value: any) {
-  if (!isNaN(value) && value !== '' && typeof value !== 'boolean') {
+  if (!Number.isNaN(value) && value !== '' && typeof value !== 'boolean') {
     const parsedValue = Number.parseFloat(value)
-    if (!isNaN(parsedValue)) {
+    if (!Number.isNaN(parsedValue)) {
       const MYSQL_FLOAT_MIN = -3.402823466e38
       const MYSQL_FLOAT_MAX = 3.402823466e38
 

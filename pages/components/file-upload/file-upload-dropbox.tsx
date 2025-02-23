@@ -46,7 +46,7 @@ export function FileUploadDropbox({
 
             <Text className="mt-1 kb-content-tertiary">
               {isFileUploadingToServer && fileUploadProgress === 100
-                ? `Finishing upload...`
+                ? 'Finishing upload...'
                 : `${fileUploadProgress}%`}
             </Text>
           </div>

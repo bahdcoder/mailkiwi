@@ -45,7 +45,7 @@ export function ContentTypeSelector({ editor }: ContentTypeSelectorProps) {
       >
         {options.map((option) => {
           if (option.type === 'category') {
-            return <div className="w-full h-px bg-[var(--black-5)]"></div>
+            return <div className="w-full h-px bg-[var(--black-5)]" />
           }
 
           return (

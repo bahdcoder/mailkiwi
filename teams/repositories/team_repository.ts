@@ -86,8 +86,8 @@ export class TeamRepository extends BaseRepository {
           .leftJoin(users, eq(users.id, teamMemberships.userId))
           .where(eq(teams.id, teamId)),
       (row) => ({
-        ...row['teamMemberships'],
-        user: row?.['users'],
+        ...row.teamMemberships,
+        user: row?.users,
       }),
     )
 

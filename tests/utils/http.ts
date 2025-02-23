@@ -1,5 +1,5 @@
 import { appEnv } from '@/app/env/app_env.js'
-import { randomBytes } from 'crypto'
+import { randomBytes } from 'node:crypto'
 import { setSignedCookie } from 'hono/cookie'
 
 import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'

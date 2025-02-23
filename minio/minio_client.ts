@@ -1,6 +1,6 @@
 import { appEnv } from '@/app/env/app_env.js'
 import { Client } from 'minio'
-import type { Readable } from 'stream'
+import type { Readable } from 'node:stream'
 
 import { container } from '@/utils/typi.js'
 

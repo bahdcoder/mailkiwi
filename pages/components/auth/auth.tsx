@@ -44,9 +44,9 @@ export function AuthMethodsDivider({
 }: React.PropsWithChildren<AuthMethodsDividerProps>) {
   return (
     <div className="mt-4 flex items-center">
-      <div className="w-full h-px border-t kb-border-tertiary"></div>
+      <div className="w-full h-px border-t kb-border-tertiary" />
       <Text className="flex-shrink-0 px-4 kb-content-secondary">{children}</Text>
-      <div className="w-full h-px border-t kb-border-tertiary"></div>
+      <div className="w-full h-px border-t kb-border-tertiary" />
     </div>
   )
 }

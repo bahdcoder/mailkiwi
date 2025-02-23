@@ -4,7 +4,7 @@ import { EmailSendRepository } from '@/email_sends/repositories/email_send_repos
 import { SendingSourceRepository } from '@/settings/repositories/sending_source_repository.js'
 import { Reader as MaxMindReader } from '@maxmind/geoip2-node'
 import { DateTime } from 'luxon'
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { UAParser } from 'ua-parser-js'
 
 import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
@@ -76,7 +76,7 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
 
 export class LogTypeHandler {
   constructor(
-    protected emailSendEventRepository = container.make(EmailSendEventRepository),
+    protected emailSendEventRepository,
     protected sendingDomain: SendingDomain,
     protected emailSend: EmailSend,
     protected log: MtaLog,

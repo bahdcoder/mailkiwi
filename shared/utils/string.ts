@@ -9,7 +9,7 @@ export function fromEmailToDomain(email: string) {
 
 export function generateMessageIdForDomain(domain: string) {
   const id = v1()
-  return { id, messageId: `<${id + '@' + domain}>` }
+  return { id, messageId: `<${`${id}@${domain}`}>` }
 }
 
 export function ipv4AdressFromIpAndPort(ipAndPort: string) {

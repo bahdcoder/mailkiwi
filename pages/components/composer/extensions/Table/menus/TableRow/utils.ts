@@ -30,7 +30,7 @@ export const isRowGripSelected = ({
   }
 
   const gripRow =
-    container && container.querySelector && container.querySelector('a.grip-row.selected')
+    container?.querySelector?.('a.grip-row.selected')
 
   return !!gripRow
 }

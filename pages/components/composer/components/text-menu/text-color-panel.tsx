@@ -20,11 +20,11 @@ export interface TextColorPanelProps extends React.PropsWithChildren {
 export function TextColorPanel({ editor }: TextColorPanelProps) {
   function onColorChanged(fill: FillValue) {
     editor.commands.setColor(
-      fill.value ?? getDefaultStylesForNode('paragraph')?.['styles']?.['color'],
+      fill.value ?? getDefaultStylesForNode('paragraph')?.styles?.color,
     )
   }
 
-  const textColor = editor.getAttributes('textStyle')?.['color']
+  const textColor = editor.getAttributes('textStyle')?.color
 
   return (
     <div className="flex items-center">
@@ -38,7 +38,7 @@ export function TextColorPanel({ editor }: TextColorPanelProps) {
             style={{
               background: textColor ?? 'transparent',
             }}
-          ></span>
+          />
           <NavArrowDownIcon className="w-3 h-3 ml-1 text-white" />
         </button>
       </FillPanel>

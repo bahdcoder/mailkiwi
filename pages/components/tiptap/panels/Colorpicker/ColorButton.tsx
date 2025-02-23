@@ -15,8 +15,8 @@ export const ColorButton = memo(({ color, active, onColorChange }: ColorButtonPr
   )
   const bubbleClassName = cn(
     'w-4 h-4 rounded bg-slate-100 shadow-sm ring-offset-2 ring-current',
-    !active && `hover:ring-1`,
-    active && `ring-1`,
+    !active && 'hover:ring-1',
+    active && 'ring-1',
   )
 
   const handleClick = useCallback(() => {
@@ -30,7 +30,7 @@ export const ColorButton = memo(({ color, active, onColorChange }: ColorButtonPr
       <div
         style={{ backgroundColor: color, color: color }}
         className={bubbleClassName}
-      ></div>
+      />
     </button>
   )
 })

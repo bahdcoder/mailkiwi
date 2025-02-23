@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto'
+import { randomBytes } from 'node:crypto'
 
 export class TokenGenerator {
   generate(length = 32) {

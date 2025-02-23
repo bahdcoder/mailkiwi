@@ -183,7 +183,6 @@ export function TagsCombobox({
                   <div aria-hidden className="h-px my-1 kb-background-secondary w-full" />
                 ) : null}
                 <li
-                  role="button"
                   onClick={onCreateNewItem}
                   aria-label={`Create new tag "${inputValue}"`}
                   className="h-9 box-border select-none bg-[var(--background-primary)] rounded-lg hover:bg-[var(--background-secondary)] flex items-center cursor-pointer px-2 transition-[background] ease-in-out"

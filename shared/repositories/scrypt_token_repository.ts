@@ -1,6 +1,6 @@
-import { type BinaryLike, randomBytes, scrypt } from 'crypto'
+import { type BinaryLike, randomBytes, scrypt } from 'node:crypto'
 import { eq } from 'drizzle-orm'
-import { promisify } from 'util'
+import { promisify } from 'node:util'
 
 import { accessTokens } from '@/database/schema.js'
 

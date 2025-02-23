@@ -68,7 +68,7 @@ export const ContentTypePicker = ({ options }: ContentTypePickerProps) => {
                   {option.label}
                 </DropdownButton>
               )
-            } else if (isCategory(option)) {
+            }if (isCategory(option)) {
               return (
                 <div className="mt-2 first:mt-0" key={option.id}>
                   <DropdownCategoryTitle key={option.id}>

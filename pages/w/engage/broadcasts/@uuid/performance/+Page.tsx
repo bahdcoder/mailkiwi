@@ -49,7 +49,7 @@ function LetterPerformancePage() {
               <Text className="kb-content-tertiary flex-shrink-0">Marked as spam</Text>
 
               <div className="w-full flex-grow flex items-center">
-                <div className="h-px w-full bg-[var(--border-tertiary)]"></div>
+                <div className="h-px w-full bg-[var(--border-tertiary)]" />
               </div>
 
               <Text className="kb-content-secondary">2%</Text>
@@ -62,7 +62,7 @@ function LetterPerformancePage() {
               <Text className="kb-content-tertiary flex-shrink-0">Marked as spam</Text>
 
               <div className="w-full flex-grow flex items-center">
-                <div className="h-px w-full bg-[var(--border-tertiary)]"></div>
+                <div className="h-px w-full bg-[var(--border-tertiary)]" />
               </div>
 
               <Text className="kb-content-secondary">2%</Text>

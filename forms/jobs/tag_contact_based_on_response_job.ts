@@ -34,7 +34,7 @@ export class TagContactBasedOnResponseJob extends BaseJob<TagContactBasedOnRespo
     }
 
     if (!formResponse.contactId) {
-      return this.done(`Form response is not associated with a contactId.`)
+      return this.done('Form response is not associated with a contactId.')
     }
 
     const form = await container
@@ -47,7 +47,7 @@ export class TagContactBasedOnResponseJob extends BaseJob<TagContactBasedOnRespo
     )
 
     if (!fields || fields.length === 0) {
-      return this.done(`This form does not have any fields with auto tagging enabled.`)
+      return this.done('This form does not have any fields with auto tagging enabled.')
     }
 
     await database.transaction(async (trx) => {

@@ -24,7 +24,7 @@ export function CreateBroadcastFlow({ children }: CreateBroadcastFlowProps) {
   }>({
     action: route('create_broadcast'),
     transform(form) {
-      form['audienceId'] = ctx.audience?.id
+      form.audienceId = ctx.audience?.id
       return form
     },
     async onSuccess(response) {
@@ -42,7 +42,7 @@ export function CreateBroadcastFlow({ children }: CreateBroadcastFlowProps) {
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>Create a new broadcast</Dialog.Title>
-          <Dialog.Description></Dialog.Description>
+          <Dialog.Description />
         </Dialog.Header>
         <ServerForm {...serverFormProps}>
           <div className="p-5 grid grid-cols-1 gap-4 ">

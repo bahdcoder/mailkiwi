@@ -35,7 +35,7 @@ export function Topbar() {
       className="w-full lg:h-16 box-border px-2 py-4 flex items-center relative"
       style={{
         transition: 'margin-top 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-        marginTop: topbarVisible ? `0px` : '-64px',
+        marginTop: topbarVisible ? '0px' : '-64px',
       }}
     >
       <button

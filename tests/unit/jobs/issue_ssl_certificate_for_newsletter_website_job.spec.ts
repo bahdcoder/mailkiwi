@@ -27,8 +27,8 @@ describe('@website-ssl', () => {
         createAudienceForNewsletter: true,
       })
 
-      const customerSlug = 'fastmedia' + '-' + faker.lorem.slug()
-      const customerDomain = 'news' + '-' + faker.lorem.slug() + '.fastmedia.com'
+      const customerSlug = `fastmedia-${faker.lorem.slug()}`
+      const customerDomain = `news-${faker.lorem.slug()}.fastmedia.com`
 
       await container.make(WebsiteRepository).updateById(website.id, {
         slug: customerSlug,

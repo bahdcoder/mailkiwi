@@ -158,10 +158,9 @@ export class FoundationEmailBuilderTool {
     if (firstSpaceIndex === -1 || firstSpaceIndex > firstCloseTagIndex) {
       // No attributes, insert style right before closing bracket
       return element.replace('>', ` style="${styleString}">`)
-    } else {
+    }
       // There are other attributes, append style
       return element.replace(' ', ` style="${styleString}" `)
-    }
   }
 
   private convertRow(element: Element): string {

@@ -8,7 +8,7 @@ import { route } from '@/shared/routes/route_aliases.js'
 function LettersWelcomePage() {
   return (
     <div className="w-full max-w-2xl mx-auto py-4 lg:py-16 grid grid-cols-1 gap-y-4 p-4">
-      <div className="w-full border kb-border-tertiary h-80 kb-background-primary rounded-2xl"></div>
+      <div className="w-full border kb-border-tertiary h-80 kb-background-primary rounded-2xl" />
 
       <Heading size="xs" variant="display">
         Engage

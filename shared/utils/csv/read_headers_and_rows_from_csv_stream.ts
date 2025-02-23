@@ -1,5 +1,5 @@
 import csvParser from 'csv-parser'
-import type { Readable } from 'stream'
+import type { Readable } from 'node:stream'
 
 export async function readHeadersAndRowsFromCsvStream<T = any>(stream: Readable) {
   const parser = stream.pipe(csvParser())

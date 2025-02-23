@@ -41,7 +41,7 @@ export class EmailSnapshotTool {
   }
 
   private getSnapshotName(deviceName: string) {
-    return this.name + '-' + deviceName.toLowerCase().replace(' ', '-')
+    return `${this.name}-${deviceName.toLowerCase().replace(' ', '-')}`
   }
 
   async snapshot() {

@@ -48,7 +48,7 @@ export class CheckWebsiteDomainDnsConfiguration extends BaseJob<CheckWebsiteDoma
         delay: 30 * 1000, // wait 30 seconds to try again.
       })
 
-      return this.done(`Cname not configured. Queueing to retry in 30 seconds.`)
+      return this.done('Cname not configured. Queueing to retry in 30 seconds.')
     }
 
     await websiteRepository.updateById(website.id, {

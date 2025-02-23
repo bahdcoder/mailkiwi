@@ -76,7 +76,7 @@ describe('@process-mta-log', () => {
       teamId: team.id,
     })
 
-    const fromEmail = 'mary.nathan@' + TEST_DOMAIN
+    const fromEmail = `mary.nathan@${TEST_DOMAIN}`
 
     const broadcastId = await createBroadcastForUser(
       user,
@@ -98,7 +98,7 @@ describe('@process-mta-log', () => {
 
     const { id: contactId } = await container.make(ContactRepository).create(
       {
-        email: v1() + '@' + TEST_DOMAIN,
+        email: `${v1()}@${TEST_DOMAIN}`,
       },
       audience as Audience,
     )

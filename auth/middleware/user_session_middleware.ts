@@ -29,7 +29,7 @@ export class UserSessionMiddleware {
 
     let authenticatedUser: UserWithTeams | null = null
 
-    if (userSession && userSession.userId) {
+    if (userSession?.userId) {
       const { user, memberships } = await container
         .make(UserRepository)
         .findWithTeamsAndMemberships(userSession.userId)
@@ -42,7 +42,7 @@ export class UserSessionMiddleware {
       }
     }
 
-    if (contactSession && contactSession.userId) {
+    if (contactSession?.userId) {
       const contact = await this.contactRepository.findById(contactSession.userId)
 
       if (contact) {

@@ -5,7 +5,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 function AcceptTeamInvitePage() {
   const ctx = usePageContext()
 
-  return <RegisterPage teamInviteToken={ctx.routeParams?.['token']} />
+  return <RegisterPage teamInviteToken={ctx.routeParams?.token} />
 }
 
 export { AcceptTeamInvitePage as Page }

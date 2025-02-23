@@ -584,7 +584,7 @@ describe.sequential('@mta', () => {
 
     const { id: contactId } = await container.make(ContactRepository).create(
       {
-        email: v1() + '@' + TEST_DOMAIN,
+        email: `${v1()}@${TEST_DOMAIN}`,
       },
       audience as Audience,
     )

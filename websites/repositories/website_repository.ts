@@ -64,7 +64,7 @@ export class WebsiteRepository extends BaseRepository {
       )
       .limit(1)
 
-    if (website && website.websiteSslCertChallengeKeyAuthorization) {
+    if (website?.websiteSslCertChallengeKeyAuthorization) {
       website.websiteSslCertChallengeKeyAuthorization = new Encryption(appEnv.APP_KEY)
         .decrypt(website.websiteSslCertChallengeKeyAuthorization as string)
         ?.release() as string

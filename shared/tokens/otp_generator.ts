@@ -1,4 +1,4 @@
-import { randomInt } from 'crypto'
+import { randomInt } from 'node:crypto'
 
 export class OtpGenerator {
   generate() {

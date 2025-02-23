@@ -29,7 +29,7 @@ export class ProductController extends BaseController {
     this.app.defineRoutes(
       [
         ['POST', '/payments/initialize', this.initializePayment.bind(this)],
-        ['GET', `/payments/callback`, this.initializePaymentCallback.bind(this)],
+        ['GET', '/payments/callback', this.initializePaymentCallback.bind(this)],
       ],
       {
         prefix: '/products/:productId/',
@@ -69,7 +69,7 @@ export class ProductController extends BaseController {
     if (!product) {
       throw E_VALIDATION_FAILED([
         {
-          message: `Invalid productId provided.`,
+          message: 'Invalid productId provided.',
           field: 'productId',
         },
       ])

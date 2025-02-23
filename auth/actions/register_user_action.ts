@@ -28,7 +28,7 @@ export class RegisterUserAction {
       }
     }
 
-    if (userExists && userExists.emailVerifiedAt) {
+    if (userExists?.emailVerifiedAt) {
       throw E_VALIDATION_FAILED([
         {
           message:

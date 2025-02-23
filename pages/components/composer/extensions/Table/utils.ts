@@ -245,7 +245,7 @@ export const selectTable = (tr: Transaction) => {
   if (table) {
     const { map } = TableMap.get(table.node)
 
-    if (map && map.length) {
+    if (map?.length) {
       const head = table.start + map[0]
       const anchor = table.start + map[map.length - 1]
       const $head = tr.doc.resolve(head)

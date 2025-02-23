@@ -28,7 +28,7 @@ export const binaryUuid = customType<{
   config: { length?: number }
 }>({
   dataType(config) {
-    return typeof config?.length !== 'undefined' ? `binary(${config.length})` : `binary`
+    return typeof config?.length !== 'undefined' ? `binary(${config.length})` : 'binary'
   },
   fromDriver(buf) {
     return [

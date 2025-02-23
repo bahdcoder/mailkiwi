@@ -89,7 +89,7 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
       }
 
       switch (trigger.automationSteps.subtype) {
-        case 'TRIGGER_CONTACT_TAG_ADDED':
+        case 'TRIGGER_CONTACT_TAG_ADDED': {
           const tagAdded = contactTagIds.some((tagId) =>
             (
               trigger.automationSteps.configuration as TRIGGER_CONFIGURATION
@@ -101,7 +101,8 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
           }
 
           break
-        case 'TRIGGER_CONTACT_TAG_REMOVED':
+        }
+        case 'TRIGGER_CONTACT_TAG_REMOVED': {
           const tagRemoved = contactTagIds.some(
             (tagId) =>
               !(
@@ -114,6 +115,7 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
           }
 
           break
+        }
         default:
           break
       }

@@ -26,18 +26,20 @@ export class GenerateWebsiteFromJsonTool {
 
   async createDomNodeFromContentBlock(block: HTMLJsonBlock) {
     switch (block.type) {
-      case 'container':
+      case 'container': {
         const container = this.$('<section>').addClass('kb-container')
 
         await this.createDomNodesAndAppendToNode(block.content, container)
         return container
-      case 'paragraph':
+      }
+      case 'paragraph': {
         const paragraph = this.$('<p>').addClass('kb-paragraph')
 
         await this.createDomNodesAndAppendToNode(block.content, paragraph)
 
         return paragraph
-      case 'text':
+      }
+      case 'text': {
         const sliceOfText = this.$('<span>').addClass('kb-text-slice')
 
         if (block.text) {
@@ -45,18 +47,21 @@ export class GenerateWebsiteFromJsonTool {
         }
 
         return sliceOfText
-      case 'columns':
+      }
+      case 'columns': {
         const columns = this.$('<div>').addClass('kb-columns')
 
         await this.createDomNodesAndAppendToNode(block.content, columns)
         return columns
-      case 'column':
+      }
+      case 'column': {
         const column = this.$('<div>').addClass('kb-column')
 
         await this.createDomNodesAndAppendToNode(block.content, column)
 
         return column
-      case 'heading':
+      }
+      case 'heading': {
         const level = block.attrs.level || 4
         const classes = `kb-heading kb-heading-level-${level}`
         const heading = this.$(`<h${level}>`).addClass(classes)
@@ -64,6 +69,7 @@ export class GenerateWebsiteFromJsonTool {
         await this.createDomNodesAndAppendToNode(block.content, heading)
 
         return heading
+      }
 
       default:
         return null

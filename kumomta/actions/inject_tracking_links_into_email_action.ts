@@ -2,7 +2,7 @@ import { appEnv } from '@/app/env/app_env.js'
 import { load as cheerioLoad } from 'cheerio'
 import iconv from 'iconv-lite'
 import { Joiner, Rewriter, Splitter } from 'mailsplit'
-import { Readable } from 'stream'
+import { Readable } from 'node:stream'
 
 import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 import { stringFromReadableStream } from '@/shared/utils/string.js'
@@ -59,9 +59,9 @@ export class InjectTrackingLinksIntoEmailAction {
     let trackedHtml: string
 
     if (/<\/body\b/i.test(html)) {
-      trackedHtml = html.replace(/<\/body\b/i, (match) => '\r\n' + pixel + '\r\n' + match)
+      trackedHtml = html.replace(/<\/body\b/i, (match) => `\r\n${pixel}\r\n${match}`)
     } else {
-      trackedHtml = html + '\r\n' + pixel
+      trackedHtml = `${html}\r\n${pixel}`
     }
 
     return { pixel, signature, html: trackedHtml }

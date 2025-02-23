@@ -137,7 +137,7 @@ class NodeRangeSelection extends Selection {
     return new NodeRangeSelection(doc.resolve(json.anchor), doc.resolve(json.head))
   }
   static create(doc: TNode, anchor: number, head: number, depth?: number, bias = 1) {
-    return new this(doc.resolve(anchor), doc.resolve(head), depth, bias)
+    return new NodeRangeSelection(doc.resolve(anchor), doc.resolve(head), depth, bias)
   }
   // @ts-ignore
   getBookmark(): NodeRangeBookmark {
@@ -222,42 +222,42 @@ const findElementNextToCoords = (options: FindElementNextToCoords) => {
 }
 
 function getSelectionRangesNearCursor(e: MouseEvent, t: Editor) {
-  const { doc: n } = t.view.state,
-    o = findElementNextToCoords({
+  const { doc: n } = t.view.state
+  const o = findElementNextToCoords({
       editor: t,
       x: e.clientX,
       y: e.clientY,
       direction: 'right',
     })
   if (!o.resultNode || null === o.pos) return []
-  const r = e.clientX,
-    i = ((e, t, n) => {
-      const o = Number.parseInt(getComputedStyles(e.dom, 'paddingLeft'), 10),
-        r = Number.parseInt(getComputedStyles(e.dom, 'paddingRight'), 10),
-        i = Number.parseInt(getComputedStyles(e.dom, 'borderLeftWidth'), 10),
-        s = Number.parseInt(getComputedStyles(e.dom, 'borderLeftWidth'), 10),
-        d = e.dom.getBoundingClientRect()
+  const r = e.clientX
+  const i = ((e, t, n) => {
+      const o = Number.parseInt(getComputedStyles(e.dom, 'paddingLeft'), 10)
+      const r = Number.parseInt(getComputedStyles(e.dom, 'paddingRight'), 10)
+      const i = Number.parseInt(getComputedStyles(e.dom, 'borderLeftWidth'), 10)
+      const s = Number.parseInt(getComputedStyles(e.dom, 'borderLeftWidth'), 10)
+      const d = e.dom.getBoundingClientRect()
       return { left: minMax(t, d.left + o + i, d.right - r - s), top: n }
-    })(t.view, r, e.clientY),
-    s = t.view.posAtCoords(i)
+    })(t.view, r, e.clientY)
+  const s = t.view.posAtCoords(i)
   if (!s) return []
   const { pos: d } = s
   if (!n.resolve(d).parent) return []
-  const a = n.resolve(o.pos),
-    p = n.resolve(o.pos + 1)
+  const a = n.resolve(o.pos)
+  const p = n.resolve(o.pos + 1)
   return getSelectionRanges(a, p, 0)
 }
 const getPreviousNodeStartPosition = (e: TNode, t: number) => {
-  const n = e.resolve(t),
-    { depth: o } = n
+  const n = e.resolve(t)
+  const { depth: o } = n
   if (0 === o) return t
   return n.pos - n.parentOffset - 1
 }
 const getAncestorNodeAtDepth = (e: TNode, t: number) => {
-  const n = e.nodeAt(t),
-    o = e.resolve(t)
-  let { depth: r } = o,
-    i = n
+  const n = e.nodeAt(t)
+  const o = e.resolve(t)
+  let { depth: r } = o
+  let i = n
   while (r > 0) {
     const e = o.node(r)
     ;(r -= 1), 0 === r && (i = e)
@@ -272,7 +272,7 @@ const getOuterNode = (doc: EditorState, pos: number) => {
 // @ts-ignore
 const getOuterNodePos = (e, t) => {
   let n = t
-  while (n && n.parentNode && n.parentNode !== e.dom) n = n.parentNode
+  while (n?.parentNode && n.parentNode !== e.dom) n = n.parentNode
   return n
 }
 
@@ -366,7 +366,7 @@ export function DragHandlePlugin(
       },
     },
     view: (e) => {
-      var t
+      let t
       return (
         (element.draggable = true),
         (element.style.pointerEvents = 'auto'),
@@ -407,8 +407,8 @@ export function DragHandlePlugin(
             let o = e.nodeDOM(lastNodePos) as HTMLElement
             if (((o = getOuterNodePos(e, o)), o === e.dom)) return
             if (1 !== (null == o ? undefined : o.nodeType)) return
-            const r = e.posAtDOM(o, 0),
-              s = getAncestorNodeAtDepth(editor.state.doc, r)
+            const r = e.posAtDOM(o, 0)
+            const s = getAncestorNodeAtDepth(editor.state.doc, r)
             if (s !== currentNode) {
               const t = getPreviousNodeStartPosition(editor.state.doc, r)
               ;(currentNode = s),
@@ -458,8 +458,8 @@ export function DragHandlePlugin(
           let o = n.resultElement
           if (((o = getOuterNodePos(e, o)), o === e.dom)) return false
           if (1 !== (null == o ? undefined : o.nodeType)) return false
-          const r = e.posAtDOM(o, 0),
-            s = getAncestorNodeAtDepth(editor.state.doc, r)
+          const r = e.posAtDOM(o, 0)
+          const s = getAncestorNodeAtDepth(editor.state.doc, r)
           if (s !== currentNode) {
             const t = getPreviousNodeStartPosition(editor.state.doc, r)
             ;(currentNode = s),

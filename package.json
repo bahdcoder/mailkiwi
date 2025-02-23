@@ -17,6 +17,7 @@
     "test:coverage": "pnpm mysql:migrate:test && env-cmd -f .env.test vitest --run --coverage",
     "build": "pnpm test && pnpm types:check && pnpm build:quick",
     "format": "pnpm biome format --write .",
+    "lint": "pnpm biome lint --write --unsafe .",
     "start": "env-cmd node build/core/app/start/prod.js",
     "build:app": "tsc",
     "build:quick": "pnpm build:clean && pnpm build:app && pnpm build:client && pnpm cli fix_typescript_imports",
