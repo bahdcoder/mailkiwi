@@ -2,22 +2,20 @@ import type { useGetBroadcastRecipientsCount } from '@/pages/components/flows/co
 import type { useValidateBroadcastContentMutation } from '@/pages/components/flows/compose_broadcast/hooks/use_validate_broadcast_content_mutation.js'
 import type { ScheduleDateTime } from '@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
 import { createContext } from '@radix-ui/react-context'
-import type { UseMutationResult } from '@tanstack/react-query'
 import type React from 'react'
 
-import type { UpdateBroadcastDto } from '@/broadcasts/dto/update_broadcast_dto.js'
+import type { useSyncComposerContentToServer } from '@/pages/components/flows/compose_broadcast/hooks/use_sync_composer_content_to_server.js'
+import type { UseQueryResult } from '@tanstack/react-query'
+import type { BroadcastWithEmailContent } from '@/database/database_schema_types.js'
 
 export interface ComposeBroadcastContextInterface {
-  syncContentToServerMutation: UseMutationResult<
-    void,
-    any,
-    Partial<UpdateBroadcastDto>,
-    any
-  >
+  syncContentToServerMutation: ReturnType<typeof useSyncComposerContentToServer>
   validateBroadcastEmailContentMutation: ReturnType<
     typeof useValidateBroadcastContentMutation
   >
+  broadcastQuery: UseQueryResult<BroadcastWithEmailContent, unknown>
   step: number
+
   setStep: React.Dispatch<React.SetStateAction<number>>
   getBroadcastRecipientsCount: ReturnType<typeof useGetBroadcastRecipientsCount>
   formState: {

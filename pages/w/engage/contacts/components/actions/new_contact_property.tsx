@@ -8,7 +8,7 @@ import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+} from '@/pages/hooks/use_server_form_mutation.jsx'
 import { slugify } from '@/pages/utils/slugify.js'
 import { NewContactPropertyForm } from '@/pages/w/engage/contacts/components/actions/new_contact_property_form.jsx'
 import * as Alert from '@kibamail/owly/alert'

@@ -5,8 +5,10 @@ import { type Job, Worker } from 'bullmq'
 import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
 import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.js'
 
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
 import type { BaseJob } from '@/shared/queue/abstract_job.js'
+import { container } from '@/utils/typi.js'
+import { ImportContactsJob } from '@/audiences/jobs/import_contacts_job.js'
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<any, any, string>[] = []
@@ -22,6 +24,7 @@ export class WorkerIgnitor extends Ignitor {
 
   registerJobs() {
     this.registerJob(SendBroadcastJob.id, SendBroadcastJob)
+    this.registerJob(ImportContactsJob.id, ImportContactsJob)
     this.registerJob(SendBroadcastToContact.id, SendBroadcastToContact)
     this.registerJob(SendTransactionalEmailJob.id, SendTransactionalEmailJob)
   }
@@ -41,21 +44,38 @@ export class WorkerIgnitor extends Ignitor {
       return
     }
 
-    await new Executor().handle({
-      payload: job.data,
-      database: makeDatabase(),
-      redis: makeRedis(),
-    })
+    const executor = container.make(Executor)
+
+    const logger = makeLogger()
+    logger.info(`Processing job ${job.name} with ID ${job.id}`)
+
+    try {
+      const result = await executor.handle({
+        payload: job.data,
+        database: makeDatabase(),
+        redis: makeRedis(),
+        logger,
+      })
+
+      logger.info(`Job ${job.name} with ID ${job.id} completed.`)
+      logger.info(`Result: ${JSON.stringify(result)}`)
+
+      return result
+    } catch (error) {
+      logger.error(error)
+
+      throw error
+    }
   }
 
   listen(queueNames: string[]) {
     for (const [idx, queue] of queueNames.entries()) {
-      this.workers[idx] = new Worker(queue, async (job) => this.processJob(job), {
-        connection: { host: 'localhost', port: 6379 },
+      this.workers[idx] = new Worker(queue, this.processJob.bind(this), {
+        connection: this.redis,
       })
     }
 
-    d(`Queue listening for jobs on queues: ${queueNames.join(', ')}`)
+    d(`Worker listening for jobs on queues: ${queueNames.join(', ')}`)
   }
 
   async shutdown() {

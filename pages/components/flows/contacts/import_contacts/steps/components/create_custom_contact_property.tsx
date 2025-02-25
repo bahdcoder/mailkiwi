@@ -16,6 +16,8 @@ export interface CreateCustomContactPropertyProps extends React.PropsWithChildre
     defaultValue?: string
     onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void
   }
+
+  errors?: Record<string, string>
 }
 
 export function CreateCustomContactProperty({
@@ -23,6 +25,7 @@ export function CreateCustomContactProperty({
   onOpenChange,
   children,
   form,
+  errors,
 }: CreateCustomContactPropertyProps) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -48,6 +51,7 @@ export function CreateCustomContactProperty({
               placeholder={form?.defaultValue ?? 'Job title, Interests, Company, etc.'}
             >
               <TextField.Label htmlFor="custom-property-name">Name</TextField.Label>
+              {errors?.name && <TextField.Error>{errors.name}</TextField.Error>}
             </TextField.Root>
 
             <Select.Root name="type">
@@ -74,6 +78,7 @@ export function CreateCustomContactProperty({
                   Boolean
                 </Select.Item>
               </Select.Content>
+              {errors?.type && <Select.Error>{errors.type}</Select.Error>}
             </Select.Root>
 
             {children}

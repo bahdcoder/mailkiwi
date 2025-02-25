@@ -30,11 +30,10 @@ async function createUser({
   const userDetails = {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
-    email:
-      `${faker.number.bigInt({ min: 101, max: 999 })}-${faker.internet.email({
-        firstName: faker.person.firstName(),
-        lastName: faker.person.lastName(),
-      })}`,
+    email: `${faker.number.bigInt({ min: 101, max: 999 })}-${faker.internet.email({
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+    })}`,
     password: 'password',
   }
 

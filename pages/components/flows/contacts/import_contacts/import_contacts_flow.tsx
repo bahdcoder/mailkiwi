@@ -8,6 +8,7 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { FocusScope } from '@radix-ui/react-focus-scope'
 import React, { type PropsWithChildren } from 'react'
 import { clientOnly } from 'vike-react/clientOnly'
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 
 const StepOneUploadACsv = clientOnly(() =>
   import('./steps/step_one_upload_a_csv.jsx').then(
@@ -34,7 +35,8 @@ const StepThreeImportSettings = clientOnly(() =>
   ),
 )
 
-export interface ImportContactsDialogProps {
+export interface ImportContactsDialogProps
+  extends React.ComponentProps<typeof Dialog.Root> {
   audienceId: string
   onImportCompleted?: () => void
 }
@@ -43,6 +45,7 @@ export function ImportContactsDialog({
   audienceId,
   children,
   onImportCompleted,
+  ...dialogRootProps
 }: PropsWithChildren<ImportContactsDialogProps>) {
   const [step, setStep] = React.useState(0)
   const [formState, setFormState] = React.useState<FormState>({
@@ -61,10 +64,13 @@ export function ImportContactsDialog({
     },
   })
 
+  const { onOpenChange: onOpenChangeProp, ...restDialogRootProps } = dialogRootProps
+
   function onOpenChange(open: boolean) {
     if (open === false) {
       onImportCompleted?.()
     }
+    onOpenChangeProp?.(open)
   }
 
   return (
@@ -75,14 +81,21 @@ export function ImportContactsDialog({
       audienceId={audienceId}
       setFormState={setFormState}
     >
-      <Dialog.Root onOpenChange={onOpenChange}>
+      <Dialog.Root onOpenChange={onOpenChange} {...restDialogRootProps}>
         <Dialog.Trigger asChild>{children}</Dialog.Trigger>
         <Dialog.Portal>
           <FocusScope>
-            <Dialog.Content className="DialogContent w-screen h-screen p-6 lg:p-10 kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out [data-state='closed']:transform-[scale(95%)] [data-state='closed']:opacity-0 data-[state=open]:animate-[dialog-content-show_150ms_cubic-bezier(0.16,1,0.3,1)] data-[state=closed]:animate-[dialog-content-hide_100ms_cubic-bezier(0.16,1,0.3,1)]">
+            <VisuallyHidden>
+              <Dialog.Title>Import Contacts</Dialog.Title>
+              <Dialog.Description>
+                Upload a CSV file to import contacts into your audience.
+              </Dialog.Description>
+            </VisuallyHidden>
+            <Dialog.Content className="w-screen h-screen p-6 lg:p-10 kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out [data-state='closed']:transform-[scale(95%)] [data-state='closed']:opacity-0 data-[state=open]:animate-[dialog-content-show_150ms_cubic-bezier(0.16,1,0.3,1)] data-[state=closed]:animate-[dialog-content-hide_100ms_cubic-bezier(0.16,1,0.3,1)] z-[2]">
               <div className="flex justify-end pb-6 lg:pb-10">
                 <Dialog.Close asChild>
                   <button
+                    type="button"
                     aria-label="Close"
                     className="hover:bg-[var(--kb-background-tertiary)]"
                   >

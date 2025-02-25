@@ -7,13 +7,11 @@ import type {
   UpdateSetTeamMembershipInput,
 } from '@/database/database_schema_types.js'
 import { teamMemberships, teams, users } from '@/database/schema.js'
-import { belongsTo, hasOne } from '@/database/utils/relationships.js'
+import { belongsTo } from '@/database/utils/relationships.js'
 
 import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
 import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
-
-import { container } from '@/utils/typi.js'
 
 export class TeamMembershipRepository extends BaseRepository {
   constructor(

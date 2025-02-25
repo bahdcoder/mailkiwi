@@ -2,7 +2,7 @@ import { NavArrowRightIcon } from '@/pages/components/icons/nav-arrow-right.svg.
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+} from '@/pages/hooks/use_server_form_mutation.jsx'
 import { navigate } from '@/pages/utils/navigate.js'
 import type { EngagePageProps } from '@/pages/w/engage/+Page.jsx'
 import { Button } from '@kibamail/owly/button'
@@ -13,6 +13,7 @@ import type React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 
 import { route } from '@/shared/routes/route_aliases.js'
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 
 export interface CreateBroadcastFlowProps extends React.PropsWithChildren {}
 
@@ -42,11 +43,16 @@ export function CreateBroadcastFlow({ children }: CreateBroadcastFlowProps) {
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>Create a new broadcast</Dialog.Title>
-          <Dialog.Description />
+          <VisuallyHidden>
+            <Dialog.Description>Create a broadcast</Dialog.Description>
+          </VisuallyHidden>
         </Dialog.Header>
         <ServerForm {...serverFormProps}>
           <div className="p-5 grid grid-cols-1 gap-4 ">
-            <TextField.Root placeholder="Pick a subject for your broadcast" name="name">
+            <TextField.Root
+              placeholder="Pick a name for your broadcast - for internal use"
+              name="name"
+            >
               <TextField.Label>Broadcast name</TextField.Label>
               {error?.errorsMap?.name ? (
                 <TextField.Error>{error?.errorsMap?.name}</TextField.Error>

@@ -19,17 +19,30 @@ import {
 
 import { makeDatabase } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { DateTime } from 'luxon'
+import { hasOne } from '@/database/utils/relationships.js'
 
 export class BroadcastRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
   }
 
+  protected hasOneEmailContent = hasOne(this.database, {
+    from: broadcasts,
+    to: emailContents,
+    primaryKey: broadcasts.id,
+    foreignKey: emailContents.id,
+    relationName: 'emailContent',
+  })
+
   broadcasts() {
     return this.crud(broadcasts)
   }
 
-  async create(data: CreateBroadcastDto & { sendingDomainId?: string }, teamId: string) {
+  async create(
+    data: CreateBroadcastDto & { sendingDomainId?: string; audienceId: string },
+    teamId: string,
+  ) {
     const id = this.cuid()
     const emailContentId = this.cuid()
 
@@ -37,7 +50,13 @@ export class BroadcastRepository extends BaseRepository {
       id: emailContentId,
     })
 
-    await this.database.insert(broadcasts).values({ ...data, teamId, id, emailContentId })
+    await this.database.insert(broadcasts).values({
+      ...data,
+      teamId,
+      id,
+      emailContentId,
+      createdAt: DateTime.now().toJSDate(),
+    })
 
     return { id }
   }
@@ -48,6 +67,7 @@ export class BroadcastRepository extends BaseRepository {
       .set({
         ...payload,
         ...(sendAt ? { sendAt: new Date(sendAt as string) } : {}),
+        updatedAt: DateTime.now().toJSDate(),
       })
       .where(eq(broadcasts.id, id))
     return { id }
@@ -109,7 +129,12 @@ export class BroadcastRepository extends BaseRepository {
     return this.findByIdWithAbTestVariants(id)
   }
 
-  async findAll() {
-    return this.database.select().from(broadcasts).limit(100)
+  async findAllForTeam(teamId: string) {
+    return this.database.query.broadcasts.findMany({
+      with: {
+        emailContent: true,
+      },
+      where: eq(broadcasts.teamId, teamId),
+    })
   }
 }

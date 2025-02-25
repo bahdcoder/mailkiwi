@@ -146,10 +146,13 @@ export class ContactRepository extends BaseRepository {
     contactsToCreate: InsertContact[],
     onDuplicateKeyUpdate: MySqlInsertOnDuplicateKeyUpdateConfig<any>,
   ) {
-    await this.database
-      .insert(contacts)
-      .values(contactsToCreate)
-      .onDuplicateKeyUpdate(onDuplicateKeyUpdate)
+    const query = () => this.database.insert(contacts).values(contactsToCreate)
+
+    if (Object.keys(onDuplicateKeyUpdate).length > 0) {
+      await query().onDuplicateKeyUpdate(onDuplicateKeyUpdate)
+    } else {
+      await query()
+    }
 
     return contactsToCreate as Contact[]
   }

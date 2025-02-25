@@ -38,9 +38,9 @@ const emailContentFields = {
   contentText: optional(string()),
   contentHtml: optional(string()),
 
-  subject: optional(string()),
+  subject: optional(pipe(string(), minLength(4), maxLength(128))),
 
-  previewText: optional(string()),
+  previewText: optional(pipe(string(), minLength(4), maxLength(128))),
 }
 
 const EmailContent = object({

@@ -80,6 +80,8 @@ CREATE TABLE `broadcasts` (
 	`winningCriteria` enum('OPENS','CLICKS','CONVERSIONS'),
 	`winningWaitTime` int,
 	`sendAt` timestamp,
+	`createdAt` timestamp NOT NULL,
+	`updatedAt` timestamp,
 	CONSTRAINT `broadcasts_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -188,6 +190,7 @@ CREATE TABLE `emailContents` (
 	`contentHtml` text,
 	`subject` varchar(255),
 	`previewText` varchar(255),
+	`updatedAt` timestamp,
 	CONSTRAINT `emailContents_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

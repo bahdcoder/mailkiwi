@@ -10,6 +10,7 @@ import type { Broadcast } from '@/database/database_schema_types.js'
 import { makeDatabase } from '@/shared/container/index.js'
 
 import { container } from '@/utils/typi.js'
+import { DateTime } from 'luxon'
 
 export class UpdateBroadcastAction {
   constructor(
@@ -28,6 +29,7 @@ export class UpdateBroadcastAction {
         await this.broadcastRepository.transaction(trx).update(broadcast.id, {
           ...broadcastPayload,
           isAbTest: hasAbTestVariants || broadcast.isAbTest,
+          updatedAt: DateTime.now().toJSDate(),
         })
       }
 

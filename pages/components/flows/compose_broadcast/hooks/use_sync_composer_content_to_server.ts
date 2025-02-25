@@ -1,12 +1,11 @@
 import { ComposeBroadcastSteps } from '@/pages/components/flows/compose_broadcast/compose_broadcast_types.js'
 import { useDebounceCallback } from '@react-hook/debounce'
-import { type MutationOptions, useMutation } from '@tanstack/react-query'
+import type { MutationOptions } from '@tanstack/react-query'
 import type React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import type { UpdateBroadcastDto } from '@/broadcasts/dto/update_broadcast_dto.js'
-
 import { route } from '@/shared/routes/route_aliases.js'
+import { useServerFormMutation } from '@/pages/hooks/use_server_form_mutation.jsx'
 
 export interface UseSyncComposerContentToServerProps {
   currentStep: number
@@ -21,17 +20,17 @@ export function useSyncComposerContentToServer({
 }: UseSyncComposerContentToServerProps) {
   const ctx = usePageContext()
 
-  const syncContentToServerMutation = useMutation({
-    async mutationFn(broadcastDto: Partial<UpdateBroadcastDto>) {
-      await fetch(route('update_broadcast', { uuid: ctx?.routeParams?.uuid }), {
-        method: 'PUT',
-        body: JSON.stringify(broadcastDto),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+  const { onSuccess, ...restOfMutationOptions } = mutationOptions ?? {}
+
+  const serverFormMutation = useServerFormMutation({
+    action: route('update_broadcast', { uuid: ctx?.routeParams?.uuid }),
+    method: 'PUT',
+    transform(form) {
+      return form
     },
-    onSuccess() {
+    onSuccess(...args) {
+      onSuccess?.(...args)
+
       switch (currentStep) {
         case ComposeBroadcastSteps.COMPOSE:
           break
@@ -48,13 +47,10 @@ export function useSyncComposerContentToServer({
           break
       }
     },
-    ...mutationOptions,
+    ...restOfMutationOptions,
   })
 
-  syncContentToServerMutation.mutate = useDebounceCallback(
-    syncContentToServerMutation.mutate,
-    1500,
-  )
+  serverFormMutation.mutate = useDebounceCallback(serverFormMutation.mutate, 1500)
 
-  return syncContentToServerMutation
+  return serverFormMutation
 }

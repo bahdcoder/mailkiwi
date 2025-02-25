@@ -14,8 +14,7 @@ export interface FontSizePanelProps {
 export function FontSizePanel({ editor }: FontSizePanelProps) {
   const [isOpen, setIsOpen] = React.useState(false)
 
-  const fontSize =
-    editor.getAttributes('textStyle')?.fontSize?.split('px')?.[0] ?? '16'
+  const fontSize = editor.getAttributes('textStyle')?.fontSize?.split('px')?.[0] ?? '16'
 
   function onFontSizeChange(value: number[]) {
     editor.commands.setFontSize(`${value?.[0]}px`)

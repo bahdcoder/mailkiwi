@@ -1,3 +1,4 @@
+import { BroadcastWithEmailContent } from '@/database/database_schema_types.js'
 import {
   type ComposeBroadcastContextInterface,
   ComposeBroadcastProvider,
@@ -12,7 +13,10 @@ import {
 } from '@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
 import { StepsRenderer } from '@/pages/components/flows/steps_renderer.jsx'
 import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { useServerQuery } from '@/pages/hooks/use_server_query.js'
 import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
+import { route } from '@/shared/routes/route_aliases.js'
+import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import React from 'react'
 import { clientOnly } from 'vike-react/clientOnly'
@@ -43,24 +47,24 @@ const StepFourTracking = clientOnly(() =>
   ),
 )
 
-export type ComposeBroadcastFlowProps = {}
-
 export function ComposeBroadcastFlow() {
-  const { broadcast } = usePageProps<EngageBroadcastsComposerPageProps>()
+  const { broadcast: broadcastFromServer } =
+    usePageProps<EngageBroadcastsComposerPageProps>()
+
   const [step, setStep] = React.useState(0)
   const [formState, setFormState] = React.useState<
     ComposeBroadcastContextInterface['formState']
   >({
-    segmentId: broadcast?.segmentId ?? 'all',
-    previewText: broadcast?.emailContent?.previewText ?? '',
-    subject: broadcast?.name ?? '',
-    replyToEmail: broadcast?.emailContent?.replyToEmail ?? '',
-    fromEmail: broadcast?.emailContent?.fromEmail ?? '',
-    fromName: broadcast?.emailContent?.fromName ?? '',
-    trackClicks: broadcast?.trackClicks ?? false,
-    trackOpens: broadcast?.trackOpens ?? false,
-    scheduledAt: broadcast?.sendAt
-      ? parseISODateToFormattedScheduleDate(broadcast?.sendAt)
+    segmentId: broadcastFromServer?.segmentId ?? 'all',
+    previewText: broadcastFromServer?.emailContent?.previewText ?? '',
+    subject: broadcastFromServer?.name ?? '',
+    replyToEmail: broadcastFromServer?.emailContent?.replyToEmail ?? '',
+    fromEmail: broadcastFromServer?.emailContent?.fromEmail ?? '',
+    fromName: broadcastFromServer?.emailContent?.fromName ?? '',
+    trackClicks: broadcastFromServer?.trackClicks ?? false,
+    trackOpens: broadcastFromServer?.trackOpens ?? false,
+    scheduledAt: broadcastFromServer?.sendAt
+      ? parseISODateToFormattedScheduleDate(broadcastFromServer?.sendAt)
       : {
           minute: '00',
           hour: '09',
@@ -69,9 +73,19 @@ export function ComposeBroadcastFlow() {
         },
   })
 
+  const broadcastQuery = useServerQuery({
+    queryKey: route('get_broadcast', { uuid: broadcastFromServer.id }),
+    initialData: broadcastFromServer,
+  })
+
   const syncContentToServerMutation = useSyncComposerContentToServer({
     currentStep: step,
     setStep,
+    mutationOptions: {
+      onSuccess() {
+        broadcastQuery.refetch()
+      },
+    },
   })
   const validateBroadcastContentMutation = useValidateBroadcastContentMutation()
   const getBroadcastRecipientsCount = useGetBroadcastRecipientsCount(formState.segmentId)
@@ -82,11 +96,12 @@ export function ComposeBroadcastFlow() {
       setStep={setStep}
       formState={formState}
       setFormState={setFormState}
+      broadcastQuery={broadcastQuery}
       getBroadcastRecipientsCount={getBroadcastRecipientsCount}
       syncContentToServerMutation={syncContentToServerMutation}
       validateBroadcastEmailContentMutation={validateBroadcastContentMutation}
     >
-      <div className="DialogContent w-screen h-screen px-2 pb-2 box-border kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out">
+      <div className="w-screen h-screen px-2 pb-2 box-border kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out">
         <div className="flex flex-col">
           <ComposeBroadcastTopBar />
           <div className="flex flex-grow w-full h-[calc(100vh-4.25rem)] box-border border kb-border-tertiary rounded-xl kb-background-hover">

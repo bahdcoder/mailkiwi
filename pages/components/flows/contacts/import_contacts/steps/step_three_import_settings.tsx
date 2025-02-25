@@ -5,7 +5,7 @@ import {
   type FormPayload,
   ServerForm,
   useServerFormMutation,
-} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+} from '@/pages/hooks/use_server_form_mutation.jsx'
 import {
   type ComboboxItem,
   TagsCombobox,
@@ -17,10 +17,15 @@ import * as Dialog from '@radix-ui/react-dialog'
 import * as React from 'react'
 
 import { route } from '@/shared/routes/route_aliases.js'
+import { usePageContext } from 'vike-react/usePageContext'
 
 export function StepThreeImportSettings() {
   const selectedTagsRef = React.useRef<ComboboxItem[]>([])
+
+  const ctx = usePageContext()
+
   const { setStep, formState, audienceId } = useImportcontactsContext('ImportSettings')
+
   const { serverFormProps, isPending, ServerErrorsList } = useServerFormMutation({
     method: 'PUT',
     action: route('update_contacts_import', {

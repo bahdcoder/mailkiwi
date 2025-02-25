@@ -8,7 +8,7 @@ import { FlashMessage } from '@/pages/components/flash/flash_message.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+} from '@/pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'

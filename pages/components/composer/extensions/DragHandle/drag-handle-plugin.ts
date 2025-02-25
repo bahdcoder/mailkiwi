@@ -224,21 +224,21 @@ const findElementNextToCoords = (options: FindElementNextToCoords) => {
 function getSelectionRangesNearCursor(e: MouseEvent, t: Editor) {
   const { doc: n } = t.view.state
   const o = findElementNextToCoords({
-      editor: t,
-      x: e.clientX,
-      y: e.clientY,
-      direction: 'right',
-    })
+    editor: t,
+    x: e.clientX,
+    y: e.clientY,
+    direction: 'right',
+  })
   if (!o.resultNode || null === o.pos) return []
   const r = e.clientX
   const i = ((e, t, n) => {
-      const o = Number.parseInt(getComputedStyles(e.dom, 'paddingLeft'), 10)
-      const r = Number.parseInt(getComputedStyles(e.dom, 'paddingRight'), 10)
-      const i = Number.parseInt(getComputedStyles(e.dom, 'borderLeftWidth'), 10)
-      const s = Number.parseInt(getComputedStyles(e.dom, 'borderLeftWidth'), 10)
-      const d = e.dom.getBoundingClientRect()
-      return { left: minMax(t, d.left + o + i, d.right - r - s), top: n }
-    })(t.view, r, e.clientY)
+    const o = Number.parseInt(getComputedStyles(e.dom, 'paddingLeft'), 10)
+    const r = Number.parseInt(getComputedStyles(e.dom, 'paddingRight'), 10)
+    const i = Number.parseInt(getComputedStyles(e.dom, 'borderLeftWidth'), 10)
+    const s = Number.parseInt(getComputedStyles(e.dom, 'borderLeftWidth'), 10)
+    const d = e.dom.getBoundingClientRect()
+    return { left: minMax(t, d.left + o + i, d.right - r - s), top: n }
+  })(t.view, r, e.clientY)
   const s = t.view.posAtCoords(i)
   if (!s) return []
   const { pos: d } = s

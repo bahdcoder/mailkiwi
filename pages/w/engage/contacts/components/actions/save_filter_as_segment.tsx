@@ -3,7 +3,7 @@ import { InfoCircleIcon } from '@/pages/components/icons/info-circle.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+} from '@/pages/hooks/use_server_form_mutation.jsx'
 import { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'

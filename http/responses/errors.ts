@@ -19,10 +19,16 @@ export class E_REQUEST_EXCEPTION extends Error {
     return new E_REQUEST_EXCEPTION(
       'Validation failed.',
       {
-        errors: errors?.map((error) => ({
-          message: error?.message,
-          field: error?.path?.[0]?.key ?? error?.field,
-        })),
+        errors: errors?.map((error: ValibotValidationError) => {
+          let fieldKey = error?.path
+            ? error?.path?.map((path: any) => path.key).join('.')
+            : error?.field
+
+          return {
+            message: error?.message,
+            field: fieldKey,
+          }
+        }),
       },
       422,
     )

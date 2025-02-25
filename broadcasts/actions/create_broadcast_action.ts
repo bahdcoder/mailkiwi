@@ -8,15 +8,22 @@ import { SendingDomainRepository } from '@/sending_domains/repositories/sending_
 import { sendingDomains } from '@/database/schema.js'
 
 import { container } from '@/utils/typi.js'
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 
 export class CreateBroadcastAction {
   constructor(
-    private broadcastRepository: BroadcastRepository = container.make(
-      BroadcastRepository,
-    ),
+    private broadcastRepository = container.make(BroadcastRepository),
+    private audienceRepository = container.make(AudienceRepository),
   ) {}
 
   async handle(data: CreateBroadcastDto, teamId: string) {
+    const audience = await this.audienceRepository.getAudienceForTeam(teamId)
+
+    if (!audience) {
+      throw E_OPERATION_FAILED('No audience found for team.')
+    }
+
     const sendingDomain = await container
       .make(SendingDomainRepository)
       .domains()
@@ -25,7 +32,7 @@ export class CreateBroadcastAction {
       )
 
     return this.broadcastRepository.create(
-      { ...data, sendingDomainId: sendingDomain?.id },
+      { ...data, sendingDomainId: sendingDomain?.id, audienceId: audience.id },
       teamId,
     )
   }

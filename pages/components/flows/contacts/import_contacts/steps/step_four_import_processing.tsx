@@ -19,7 +19,7 @@ export function StepFourImportProcessing() {
       </Dialog.Description>
 
       <div className="mt-6 flex items-center justify-between">
-        <Dialog.Close>
+        <Dialog.Close asChild>
           <Button onClick={console.log}>Finish</Button>
         </Dialog.Close>
       </div>

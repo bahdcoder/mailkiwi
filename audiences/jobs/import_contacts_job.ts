@@ -1,4 +1,3 @@
-
 import { makeS3Client } from '@/minio/s3_client.js'
 import CsvParser from 'csv-parser'
 import { sql } from 'drizzle-orm'
@@ -39,12 +38,13 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
     return AVAILABLE_QUEUES.contacts
   }
 
-  async handle({ database, payload }: JobContext<ImportContactsJobPayload>) {
+  async handle({ database, payload, logger }: JobContext<ImportContactsJobPayload>) {
     const contactImport = await container
       .make(ContactImportRepository)
       .findById(payload.contactImportId)
 
     if (!contactImport) {
+      logger.info(`Contact import with ID ${payload.contactImportId} does not exist.`)
       return this.done()
     }
 
@@ -53,10 +53,13 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
       .findById(contactImport?.audienceId)
 
     if (!audience) {
+      logger.info(`Audience with ID ${contactImport?.audienceId} does not exist.`)
       return this.done()
     }
 
     const team = await container.make(TeamRepository).findById(audience?.teamId)
+
+    logger.info(`Processing import for team ${team?.id}.`)
 
     const csvStream = await makeS3Client().getObjectStream(
       ContactImportRepository.getUploadedFileKey(contactImport.id, 'csv', team.id),
@@ -74,6 +77,8 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
         .on('end', () => resolve(rows))
         .on('error', (error) => reject(error))
     })
+
+    logger.info(`Importing ${rows.length} contacts from csv.`)
 
     const contactRepository = container.make(ContactRepository)
 
@@ -96,9 +101,12 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
         ...contactImport.propertiesMap.tagIds,
       ]
 
-      // const tagsToCreate
+      const totalBatches = Math.ceil(rows.length / chunkSize)
+
       for (let i = 0; i < rows.length; i += chunkSize) {
         const batch = rows.slice(i, i + chunkSize)
+
+        logger.info(`Processing ${chunkSize} contacts in batch ${i} of ${batch.length}.`)
 
         const allContactProperties: ContactProperty[] = []
 
@@ -145,17 +153,21 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
           }
         })
 
+        logger.info(`Created ${values.length} contact values.`)
+
         const createdContacts = await contactRepository
           .transaction(tx)
           .bulkCreate(values, {
             set: contactImport.updateExistingContacts
               ? {
-                firstName: sql`values(${contacts.firstName})`,
-                lastName: sql`values(${contacts.lastName})`,
-                email: sql`${contacts.email}`, // no change
-              }
+                  firstName: sql`values(${contacts.firstName})`,
+                  lastName: sql`values(${contacts.lastName})`,
+                  email: sql`${contacts.email}`, // no change
+                }
               : {},
           })
+
+        logger.info(`Inserted ${createdContacts.length} contacts into database.`)
 
         for (let z = 0; z < allContactProperties.length; z += chunkSize) {
           const contactPropertiesBatch = allContactProperties.slice(z, z + chunkSize)
@@ -185,7 +197,6 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
           })),
         )
 
-        // batch insert tags.
         if (attachTagsToContacts.length > 0) {
           for (let t = 0; t < attachTagsToContacts.length; t += chunkSize) {
             const tagsBatch = attachTagsToContacts.slice(t, t + chunkSize)

@@ -1,6 +1,6 @@
 import type { AVAILABLE_QUEUE_TYPE } from './config.js'
 import type { Redis } from 'ioredis'
-
+import type { Logger } from 'pino'
 import type { DrizzleClient } from '@/database/client.js'
 
 export interface JobHandlerResponse {
@@ -45,6 +45,7 @@ export type AbstractJobType<T extends object = object> = {
 
 export interface JobContext<T> {
   database: DrizzleClient
+  logger: Logger
   redis: Redis
   payload: T
 }

@@ -25,7 +25,8 @@
       "**/node_modules/",
       "**/pnpm-lock.yaml",
       "docker/tidb/data",
-      "docker/data/"
+      "docker/data/",
+      "build/**"
     ]
   },
   "organizeImports": {
@@ -47,7 +48,8 @@
       "bracketSameLine": false,
       "quoteStyle": "single",
       "attributePosition": "auto",
-      "bracketSpacing": true
+      "bracketSpacing": true,
+      "indentWidth": 2
     }
   }
 }

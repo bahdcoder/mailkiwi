@@ -11,6 +11,7 @@ import { broadcasts, emailContents } from '@/database/schema.js'
 
 import { makeDatabase } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { DateTime } from 'luxon'
 
 export class EmailContentRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -54,11 +55,13 @@ export class EmailContentRepository extends BaseRepository {
     if (!emailContentId) {
       emailContentId = this.cuid()
 
-      await this.database.insert(emailContents).values({ ...payload, id: emailContentId })
+      await this.database
+        .insert(emailContents)
+        .values({ ...payload, id: emailContentId, updatedAt: DateTime.now().toJSDate() })
 
       await this.database
         .update(broadcasts)
-        .set({ emailContentId })
+        .set({ emailContentId, updatedAt: DateTime.now().toJSDate() })
         .where(eq(broadcasts.id, broadcast.id))
 
       return { id: emailContentId }
@@ -66,7 +69,7 @@ export class EmailContentRepository extends BaseRepository {
 
     await this.database
       .update(emailContents)
-      .set({ ...payload })
+      .set({ ...payload, updatedAt: DateTime.now().toJSDate() })
       .where(eq(emailContents.id, emailContentId))
 
     return { id: emailContentId }

@@ -370,40 +370,42 @@ describe('@oauth ', () => {
     )
   })
 
-  test('can handle a user registration callback authorization from google', { retry: 3 }, async ({
-    expect,
-  }) => {
-    const { FakeDriver, user } = getFakeOauthProviderDriver('google', 'register')
-    container.fake(GoogleDriver, FakeDriver)
+  test(
+    'can handle a user registration callback authorization from google',
+    { retry: 3 },
+    async ({ expect }) => {
+      const { FakeDriver, user } = getFakeOauthProviderDriver('google', 'register')
+      container.fake(GoogleDriver, FakeDriver)
 
-    const response = await makeRequest('/auth/oauth2/google/callback', {
-      method: 'GET',
-    })
+      const response = await makeRequest('/auth/oauth2/google/callback', {
+        method: 'GET',
+      })
 
-    const cookies = response.headers.getSetCookie()
+      const cookies = response.headers.getSetCookie()
 
-    expect(cookies?.[0]).toContain('__Secure-session=')
+      expect(cookies?.[0]).toContain('__Secure-session=')
 
-    const json = await response.json()
+      const json = await response.json()
 
-    expect(json.type).toBe('redirect')
-    expect(json.payload.path).toBe(route('auth_register_profile'))
+      expect(json.type).toBe('redirect')
+      expect(json.payload.path).toBe(route('auth_register_profile'))
 
-    const [userFromDatabase] = await makeDatabase()
-      .select()
-      .from(users)
-      .where(eq(users.email, user.email))
+      const [userFromDatabase] = await makeDatabase()
+        .select()
+        .from(users)
+        .where(eq(users.email, user.email))
 
-    const [accountFromDatabase] = await makeDatabase()
-      .select()
-      .from(oauth2Accounts)
-      .where(eq(oauth2Accounts.providerId, user.providerId))
+      const [accountFromDatabase] = await makeDatabase()
+        .select()
+        .from(oauth2Accounts)
+        .where(eq(oauth2Accounts.providerId, user.providerId))
 
-    expect(userFromDatabase).toBeDefined()
-    expect(accountFromDatabase?.userId).toEqual(userFromDatabase.id)
+      expect(userFromDatabase).toBeDefined()
+      expect(accountFromDatabase?.userId).toEqual(userFromDatabase.id)
 
-    container.restoreAll()
-  })
+      container.restoreAll()
+    },
+  )
 
   test('user registration with github oauth fails if user is already registered', async ({
     expect,

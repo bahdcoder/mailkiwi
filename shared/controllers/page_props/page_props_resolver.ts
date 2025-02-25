@@ -3,11 +3,11 @@ import { eq } from 'drizzle-orm'
 
 import { BroadcastGroupRepository } from '@/broadcasts/repositories/broadcast_group_repository.js'
 import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
-
-import { GetContactsAction } from '@/audiences/actions/contacts/get_contacts_action.js'
 import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
 
-import { segments as segmentsTable } from '@/database/schema.js'
+import { GetContactsAction } from '@/audiences/actions/contacts/get_contacts_action.js'
+
+import { broadcastGroups, segments as segmentsTable } from '@/database/schema.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
 import type { HonoContext } from '@/shared/server/types.js'
@@ -17,7 +17,10 @@ import { container } from '@/utils/typi.js'
 export class PagePropsResolver {
   protected DEFAULT_PROPS_FETCHERS: Record<
     string,
-    (ctx: HonoContext, defaultPageProps: DefaultPageProps) => Promise<Record<string, any>>
+    (
+      ctx: HonoContext,
+      defaultPageProps: DefaultPageProps,
+    ) => Promise<Record<string, unknown>>
   > = {
     async [route('engage_contacts')](ctx, { audience }) {
       const [contacts, segments] = await Promise.all([
@@ -41,15 +44,16 @@ export class PagePropsResolver {
     async [route('engage')](_ctx, { team }) {
       const groups = await container
         .make(BroadcastGroupRepository)
-        .findWithBroadcastsForTeam(team.id)
+        .groups()
+        .findAll(eq(broadcastGroups.teamId, team.id))
+
+      const broadcasts = await container.make(BroadcastRepository).findAllForTeam(team.id)
 
       return {
-        groups: groups.map((group) => ({
-          ...group,
-          broadcasts: group.broadcasts.map((broadcast) => ({
-            ...broadcast,
-            sendAt: broadcast.sendAt ? broadcast.sendAt.toISOString() : null,
-          })),
+        groups,
+        broadcasts: broadcasts.map((broadcast) => ({
+          ...broadcast,
+          sendAt: broadcast.sendAt ? broadcast.sendAt.toISOString() : null,
         })),
       }
     },

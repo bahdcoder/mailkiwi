@@ -27,10 +27,7 @@ export const ColorButton = memo(({ color, active, onColorChange }: ColorButtonPr
 
   return (
     <button onClick={handleClick} className={wrapperClassName}>
-      <div
-        style={{ backgroundColor: color, color: color }}
-        className={bubbleClassName}
-      />
+      <div style={{ backgroundColor: color, color: color }} className={bubbleClassName} />
     </button>
   )
 })

@@ -3,7 +3,7 @@ import { ArrowLeftIcon } from '@/pages/components/icons/arrow-left.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+} from '@/pages/hooks/use_server_form_mutation.jsx'
 import { slugify } from '@/pages/utils/slugify.js'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'

@@ -1,4 +1,4 @@
-import { WorkerIgnitor } from '@/worker/ignitor/worker_ignitor.js'
+import { WorkerIgnitor } from '@/worker/worker_ignitor.js'
 
 import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
 

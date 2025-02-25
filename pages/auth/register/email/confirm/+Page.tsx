@@ -3,7 +3,7 @@ import { PageContainer, PageTitle } from '@/pages/components/auth/auth.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+} from '@/pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import * as CodeInput from '@kibamail/owly/code-input'
 import { Text } from '@kibamail/owly/text'
@@ -19,7 +19,7 @@ function EmailConfirmPage() {
   return (
     <PageContainer>
       <div className="mb-10">
-        <img src="/icons/email-send.svg" />
+        <img src="/icons/email-send.svg" alt="Email sent" />
       </div>
       <PageTitle
         title="Enter the code sent to your email"
@@ -28,7 +28,7 @@ function EmailConfirmPage() {
             <span className="kb-content-tertiary">
               We have sent a code to your email address. Please enter the code below to
               confirm your email address
-            </span>{' '}
+            </span>
             <span className="kb-content-primary">{'frantz@kibamail.com'}</span>.
           </Text>
         }

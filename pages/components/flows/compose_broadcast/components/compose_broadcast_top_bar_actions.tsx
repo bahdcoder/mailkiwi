@@ -15,7 +15,7 @@ import { RadioGroupCardItem } from '@/pages/components/radio-group/radio-group-c
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+} from '@/pages/hooks/use_server_form_mutation.jsx'
 import { navigate } from '@/pages/utils/navigate.js'
 import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
 import * as Alert from '@kibamail/owly/alert'
@@ -26,7 +26,7 @@ import * as SelectField from '@kibamail/owly/select-field'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 import dayjs from 'dayjs'
-import advancedFormat from 'dayjs/plugin/advancedFormat'
+import advancedFormat from 'dayjs/plugin/advancedFormat.js'
 import React from 'react'
 import { toast } from 'sonner'
 import { usePageContext } from 'vike-react/usePageContext'
@@ -99,14 +99,25 @@ export function ConfigureStepActions() {
     useComposeBroadcastContext('ContactsStepActions')
 
   async function onNextClicked() {
+    const emailContent: Record<string, string> = {
+      subject: formState.subject,
+      previewText: formState.previewText,
+    }
+
+    if (formState.fromEmail) {
+      emailContent.fromEmail = formState.fromEmail
+    }
+
+    if (formState.replyToEmail) {
+      emailContent.replyToEmail = formState.replyToEmail
+    }
+
+    if (formState.fromName) {
+      emailContent.fromName = formState.fromName
+    }
+
     await syncContentToServerMutation.mutateAsync({
-      emailContent: {
-        subject: formState.subject,
-        previewText: formState.previewText,
-        fromName: formState.fromName,
-        fromEmail: formState.fromEmail,
-        replyToEmail: formState.replyToEmail,
-      },
+      emailContent,
     })
   }
 

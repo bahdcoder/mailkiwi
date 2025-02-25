@@ -72,9 +72,9 @@ export function useContacts() {
     setDeletedFilters((current) => {
       const newState = { ...current }
 
-      filters.forEach((filter) => {
+      for (const filter of filters) {
         newState[filter.id] = true
-      })
+      }
 
       return newState
     })
@@ -242,7 +242,7 @@ export function useContacts() {
             },
             meta: {
               style: {
-                minWidth: 160,
+                minWidth: '220px',
               },
             },
           })

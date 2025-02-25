@@ -16,7 +16,7 @@ export const getRenderContainer = (editor: Editor, nodeType: string) => {
   if (
     (element?.getAttribute('data-type') &&
       element.getAttribute('data-type') === nodeType) ||
-    (element?.classList?.contains(nodeType))
+    element?.classList?.contains(nodeType)
   ) {
     return element
   }

@@ -3,7 +3,7 @@ import { FileUploadDropbox } from '@/pages/components/file-upload/file-upload-dr
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+} from '@/pages/hooks/use_server_form_mutation.jsx'
 import { type Editor, NodeViewWrapper } from '@tiptap/react'
 import React, { useCallback, useRef } from 'react'
 

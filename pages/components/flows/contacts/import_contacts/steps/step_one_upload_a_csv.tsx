@@ -6,7 +6,7 @@ import { FileUploadDropbox } from '@/pages/components/file-upload/file-upload-dr
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/components/server-form-mutation/hooks/use-server-form-mutation.jsx'
+} from '@/pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { InputError } from '@kibamail/owly/input-hint'
@@ -70,7 +70,7 @@ export function StepOneUploadACsv() {
         <Text as="p">
           By proceeding, you confirm that everyone on the list has given permission to be
           emailed and is fully signed up. We trust that you've received consent, so no
-          confirmation emails will be sent.
+          confirmation emails will be sent to your imported contacts.
         </Text>
       </Dialog.Description>
 
@@ -85,7 +85,7 @@ export function StepOneUploadACsv() {
           {error?.errorsList && error?.errorsList.length > 0 ? (
             <div className="mt-2">
               {error?.errorsList.map((error, idx) => (
-                <InputError baseId={'csv-file-upload'} key={idx}>
+                <InputError baseId={'csv-file-upload'} key={error}>
                   {error}
                 </InputError>
               ))}
@@ -99,7 +99,9 @@ export function StepOneUploadACsv() {
           <Button variant="tertiary">Skip for now</Button>
         </Dialog.Close>
 
-        <Button onClick={onContinue}>Continue</Button>
+        <Button onClick={onContinue} loading={isPending}>
+          Continue
+        </Button>
       </div>
     </div>
   )

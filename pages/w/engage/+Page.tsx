@@ -1,27 +1,23 @@
 import './styles.css'
-import { MailOpenIcon } from '@/pages/components/icons/mail-open.svg.jsx'
-import { MailOutIcon } from '@/pages/components/icons/mail-out.svg.jsx'
-import { MoreVertIcon } from '@/pages/components/icons/more-vert.svg.jsx'
-import { OneFingerSelectHandGestureIcon } from '@/pages/components/icons/one-finger-select-hand-gesture.svg.jsx'
 import { SearchIcon } from '@/pages/components/icons/search.svg.jsx'
-import { Badge } from '@kibamail/owly/badge'
-import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import * as Tabs from '@kibamail/owly/tabs'
-import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 import * as React from 'react'
-import { toast } from 'sonner'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import {
+import type {
   BroadcastGroup,
-  type BroadcastGroupWithBroadcasts,
+  BroadcastWithEmailContent,
 } from '@/database/database_schema_types.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
+import { BroadcastRow } from '@/pages/w/engage/components/broadcast_row.jsx'
+import { EmptyState } from '@/pages/components/empty-state/empty_state.jsx'
+import { Button } from '@kibamail/owly/button'
+import { CreateBroadcastFlow } from '@/pages/components/flows/compose_broadcast/create_broadcast_flow.jsx'
 
-enum BroadcastStatus {
+enum BroadcastStatusFilters {
   DRAFT = 'draft',
   SENT = 'sent',
   SCHEDULED = 'scheduled',
@@ -29,15 +25,32 @@ enum BroadcastStatus {
 }
 
 export type EngagePageProps = {
-  groups: BroadcastGroupWithBroadcasts[]
+  groups: BroadcastGroup[]
+  broadcasts: BroadcastWithEmailContent[]
 }
 
 function EngagePage() {
   const ctx = usePageContext()
 
-  const defaultTabValue = ctx.urlParsed?.search?.status ?? BroadcastStatus.ALL
+  const defaultTabValue = ctx.urlParsed?.search?.status ?? BroadcastStatusFilters.ALL
 
-  const { groups } = ctx.pageProps as EngagePageProps
+  const { groups, broadcasts } = ctx.pageProps as EngagePageProps
+
+  function getBroadcastsByGroup(group: BroadcastGroup) {
+    return broadcasts.filter((broadcast) => broadcast.broadcastGroupId === group.id)
+  }
+
+  const noBroadcasts = broadcasts.length === 0
+
+  if (noBroadcasts) {
+    return (
+      <EmptyState title="No broadcasts yet" description="Try creating a new broadcast.">
+        <CreateBroadcastFlow>
+          <Button>Compose a broadcast</Button>
+        </CreateBroadcastFlow>
+      </EmptyState>
+    )
+  }
 
   return (
     <Tabs.Content value="broadcasts" className="pt-6">
@@ -57,16 +70,16 @@ function EngagePage() {
 
           <div className="w-full lg:w-auto">
             <Tabs.List className="lg:w-[fit-content]">
-              <Tabs.Trigger value={BroadcastStatus.ALL} asChild>
+              <Tabs.Trigger value={BroadcastStatusFilters.ALL} asChild>
                 <a href={route('engage')}>All</a>
               </Tabs.Trigger>
-              <Tabs.Trigger value={BroadcastStatus.SENT} asChild>
+              <Tabs.Trigger value={BroadcastStatusFilters.SENT} asChild>
                 <a href={route('engage', {}, { status: 'sent' })}>Sent</a>
               </Tabs.Trigger>
-              <Tabs.Trigger value={BroadcastStatus.SCHEDULED} asChild>
+              <Tabs.Trigger value={BroadcastStatusFilters.SCHEDULED} asChild>
                 <a href={route('engage', {}, { status: 'scheduled' })}>Scheduled</a>
               </Tabs.Trigger>
-              <Tabs.Trigger value={BroadcastStatus.DRAFT} asChild>
+              <Tabs.Trigger value={BroadcastStatusFilters.DRAFT} asChild>
                 <a href={route('engage', {}, { status: 'draft' })}>Drafts</a>
               </Tabs.Trigger>
               <Tabs.Indicator />
@@ -88,72 +101,8 @@ function EngagePage() {
                 {group?.name}
               </Heading>
               <div className="flex flex-col">
-                {group?.broadcasts?.map((broadcast) => (
-                  <a
-                    key={broadcast.id}
-                    href={
-                      broadcast?.status === 'SENT'
-                        ? route('engage_overview', { uuid: broadcast.id })
-                        : route('broadcasts_composer', { uuid: broadcast.id })
-                    }
-                    className="h-[4.5rem] hidden lg:flex w-full py-4 px-2 box-border border-b border-[var(--black-5)] ease-in-out duration-300 transition-[background-color] hover:bg-[var(--background-hover)] cursor-pointer"
-                  >
-                    <div className="w-full max-w-[40%] flex flex-col">
-                      <Text className="kb-content-secondary font-medium">
-                        {broadcast.name}
-                      </Text>
-                      <Text className="kb-content-tertiary truncate overflow-ellipsis">
-                        {broadcast?.name}
-                      </Text>
-                    </div>
-
-                    <div className="w-full max-w-[18%] flex justify-center items-center">
-                      <Badge variant="success" size="sm">
-                        Sent
-                      </Badge>
-                    </div>
-
-                    <div className="w-full max-w-[10%] flex items-center justify-center">
-                      <div className="flex items-center gap-2">
-                        <Text className="kb-content-tertiary">
-                          <MailOutIcon className="w-5 h-5 kb-content-disabled" />
-                        </Text>
-                        <Text className="kb-content-tertiary">4,827</Text>
-                      </div>
-                    </div>
-                    <div className="w-full max-w-[10%] flex items-center justify-center">
-                      <div className="flex items-center gap-2">
-                        <Text className="kb-content-tertiary">
-                          <MailOpenIcon className="w-5 h-5 kb-content-disabled" />
-                        </Text>
-                        <Text className="kb-content-tertiary">63%</Text>
-                      </div>
-                    </div>
-                    <div className="w-full max-w-[10%] flex items-center justify-center">
-                      <div className="flex items-center gap-2">
-                        <Text className="kb-content-tertiary">
-                          <OneFingerSelectHandGestureIcon className="w-5 h-5 kb-content-disabled" />
-                        </Text>
-                        <Text className="kb-content-tertiary">63%</Text>
-                      </div>
-                    </div>
-                    <div className="w-full max-w-[10%] flex items-center justify-end">
-                      <Text className="kb-content-tertiary truncate overflow-ellipsis">
-                        Edited 23 mins ago
-                      </Text>
-                    </div>
-                    <div className="w-full max-w-[2%] flex items-center">
-                      <Button
-                        variant="tertiary"
-                        onClick={(event) => [
-                          event.stopPropagation(),
-                          event.preventDefault(),
-                        ]}
-                      >
-                        <MoreVertIcon className="w-5 h-5" />
-                      </Button>
-                    </div>
-                  </a>
+                {getBroadcastsByGroup(group).map((broadcast) => (
+                  <BroadcastRow key={broadcast.id} broadcast={broadcast} />
                 ))}
               </div>
             </div>

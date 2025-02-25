@@ -17,8 +17,10 @@ import { usePageContext } from 'vike-react/usePageContext'
 export function StepThreeConfigure() {
   const ctx = usePageContext()
 
-  const { formState, setFormState } = useComposeBroadcastContext('StepThreeConfigure')
-  const pageProps = ctx.pageProps as EngageBroadcastsComposerPageProps
+  const { formState, setFormState, syncContentToServerMutation } =
+    useComposeBroadcastContext('StepThreeConfigure')
+
+  const { error } = syncContentToServerMutation
 
   const engageSendingDomain = ctx.sendingDomains.find(
     (domain) => domain.product === 'engage',
@@ -43,6 +45,9 @@ export function StepThreeConfigure() {
           }
         >
           <TextField.Label>Subject</TextField.Label>
+          {error?.errorsMap?.['emailContent.subject'] && (
+            <TextField.Error>{error.errorsMap['emailContent.subject']}</TextField.Error>
+          )}
         </TextField.Root>
 
         <TextField.Root
@@ -55,16 +60,23 @@ export function StepThreeConfigure() {
           }
         >
           <TextField.Label>Preview text</TextField.Label>
+          {error?.errorsMap?.['emailContent.previewText'] && (
+            <TextField.Error>
+              {error.errorsMap['emailContent.previewText']}
+            </TextField.Error>
+          )}
         </TextField.Root>
       </div>
 
       <div className="w-full flex gap-2 h-6 overflow-x-hidden my-5">
-        {new Array(50).fill(0).map((_slash, idx) => (
-          <div
-            key={idx}
-            className=" h-full w-px bg-[var(--border-tertiary)] transform rotate-45"
-          />
-        ))}
+        {new Array(50)
+          .map((_, idx) => idx)
+          .map((slash) => (
+            <div
+              key={slash}
+              className=" h-full w-px bg-[var(--border-tertiary)] transform rotate-45"
+            />
+          ))}
       </div>
 
       <div className="mt-6">
@@ -90,6 +102,11 @@ export function StepThreeConfigure() {
             <TextField.Slot side="right">
               <Text>@{engageSendingDomain?.name}</Text>
             </TextField.Slot>
+            {error?.errorsMap?.['emailContent.fromEmail'] && (
+              <TextField.Error>
+                {error.errorsMap['emailContent.fromEmail']}
+              </TextField.Error>
+            )}
           </TextField.Root>
 
           <TextField.Root
@@ -102,6 +119,11 @@ export function StepThreeConfigure() {
             }
           >
             <TextField.Label>From name</TextField.Label>
+            {error?.errorsMap?.['emailContent.fromName'] && (
+              <TextField.Error>
+                {error.errorsMap['emailContent.fromName']}
+              </TextField.Error>
+            )}
           </TextField.Root>
 
           <TextField.Root
@@ -115,6 +137,11 @@ export function StepThreeConfigure() {
             }
           >
             <TextField.Label>Reply to</TextField.Label>
+            {error?.errorsMap?.['emailContent.replyToEmail'] && (
+              <TextField.Error>
+                {error.errorsMap['emailContent.replyToEmail']}
+              </TextField.Error>
+            )}
           </TextField.Root>
         </div>
       ) : null}

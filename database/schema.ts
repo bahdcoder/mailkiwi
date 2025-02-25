@@ -1,7 +1,7 @@
 import type { CreateFormDto } from '@/forms/dto/create_form_dto.js'
 import type { SubmitFormDto } from '@/forms/dto/submit_form_dto.js'
 import type { UpdateWebsitePageDto } from '@/websites/dto/update_website_page_dto.js'
-import { sql } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import {
   type AnyMySqlColumn,
   boolean,
@@ -637,6 +637,7 @@ export const emailContents = mysqlTable('emailContents', {
   contentHtml: text('contentHtml'),
   subject: varchar('subject', { length: 255 }),
   previewText: varchar('previewText', { length: 255 }),
+  updatedAt: timestamp('updatedAt'),
 })
 
 export const broadcasts = mysqlTable('broadcasts', {
@@ -680,6 +681,8 @@ export const broadcasts = mysqlTable('broadcasts', {
   winningCriteria: mysqlEnum('winningCriteria', ['OPENS', 'CLICKS', 'CONVERSIONS']),
   winningWaitTime: int('winningWaitTime'),
   sendAt: timestamp('sendAt').$type<Date | undefined>(),
+  createdAt: timestamp('createdAt').notNull(),
+  updatedAt: timestamp('updatedAt'),
 })
 
 export const broadcastGroups = mysqlTable(
@@ -1000,3 +1003,13 @@ export const mediaDocuments = mysqlTable('mediaDocuments', {
     .notNull(),
   url: text('url').notNull(),
 })
+
+/* --------------------------- */
+/*      Table relations        */
+/* --------------------------- */
+export const broadcastRelations = relations(broadcasts, ({ one }) => ({
+  emailContent: one(emailContents, {
+    fields: [broadcasts.emailContentId],
+    references: [emailContents.id],
+  }),
+}))

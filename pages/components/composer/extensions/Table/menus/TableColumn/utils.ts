@@ -29,8 +29,7 @@ export const isColumnGripSelected = ({
     container = container.parentElement!
   }
 
-  const gripColumn =
-    container?.querySelector?.('a.grip-column.selected')
+  const gripColumn = container?.querySelector?.('a.grip-column.selected')
 
   return !!gripColumn
 }

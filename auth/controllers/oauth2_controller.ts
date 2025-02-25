@@ -118,7 +118,8 @@ export class Oauth2Controller extends VikeController {
 
       if (accountExists || userExists) {
         this.flash(ctx, {
-          title: 'A user with this account already exists. Are you trying to login instead ?',
+          title:
+            'A user with this account already exists. Are you trying to login instead ?',
           variant: 'error',
         })
         return this.response(ctx).redirect(route('auth_register')).send()

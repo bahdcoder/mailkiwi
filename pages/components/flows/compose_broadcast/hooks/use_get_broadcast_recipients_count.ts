@@ -42,6 +42,7 @@ export function useGetBroadcastRecipientsCount(segmentId: string) {
           headers: { 'Content-Type': 'application/json' },
         },
       )
+
       const json = await response.json()
 
       if (!response.ok) {

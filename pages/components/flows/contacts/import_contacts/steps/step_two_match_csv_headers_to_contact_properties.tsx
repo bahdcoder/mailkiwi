@@ -49,6 +49,10 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
   const [addingCustomPropertyForColumn, setAddingCustomPropertyForColumn] =
     React.useState('')
 
+  const [createCustomPropertyErrors, setCreateCustomPropertyErrors] = React.useState<
+    Record<string, string>
+  >({})
+
   const [selectFieldPropertyStates, setSelectFieldPropertyStates] =
     React.useState<SelectFieldPropertyState>(() => {
       const defaultFieldPropertyStates: SelectFieldPropertyState = {}
@@ -234,8 +238,6 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
       return
     }
 
-    console.log(selectFieldPropertyStates, properties)
-
     const contactProperties: FormState['contactProperties'] = {
       email: '',
       firstName: '',
@@ -252,15 +254,15 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
       }
     }
 
-    Object.keys(selectFieldPropertyStates).forEach((column) => {
+    for (const column of Object.keys(selectFieldPropertyStates)) {
       const property = selectFieldPropertyStates[column]?.property
 
       if (!property) {
-        return
+        continue
       }
 
       if (property.type === 'skip' || property.type === 'standard') {
-        return
+        continue
       }
 
       if (!contactProperties.customProperties) {
@@ -272,7 +274,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
         label: property.name,
         type: property.type,
       }
-    })
+    }
 
     setFormState((state) => ({ ...state, contactProperties }))
     setStep((current) => current + 1)
@@ -353,6 +355,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
   function onCreateNewCustomPropertySubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    const errors: Record<string, string> = {}
 
     const form = event.currentTarget
 
@@ -360,6 +363,22 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
     const name = formData.get('name') as string
     const type = formData.get('type') as 'text' | 'float' | 'date' | 'boolean'
+
+    console.log('@++++++++++', name, type)
+
+    if (!name) {
+      errors.name = 'Please provide a name for the custom property.'
+    }
+
+    if (!type) {
+      errors.type = 'Please select a type for the custom property.'
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setCreateCustomPropertyErrors(errors)
+
+      return
+    }
 
     setSelectFieldPropertyStates((state) => ({
       ...state,
@@ -450,6 +469,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
           onSubmit: onCreateNewCustomPropertySubmit,
           defaultValue: addingCustomPropertyForColumn,
         }}
+        errors={createCustomPropertyErrors}
       >
         {addingCustomPropertyForColumn ? (
           <Alert.Root variant="info">
@@ -490,8 +510,8 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
           return (
             <div
+              key={match.column.name}
               className="flex flex-col md:flex-row items-start w-full md:gap-x-24"
-              key={idx}
             >
               <Text className="flex-shrink-0 mb-6 md:mb-0 md:mt-2">
                 Column {idx + 1}/{matches.length}
@@ -539,7 +559,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                   }
                 >
                   <Select.Trigger placeholder="Select a property" />
-                  <Select.Content>
+                  <Select.Content className="z-[3]">
                     <Select.Item value="skip">None - Skip this column</Select.Item>
                     <Select.Separator />
 
@@ -551,6 +571,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                     ))}
                     <Select.Separator />
                     <button
+                      type="button"
                       value="create-new-property"
                       className="kb-select-item kb-reset sticky bottom-0 bg-[var(--background-primary)]"
                       onClick={() => {

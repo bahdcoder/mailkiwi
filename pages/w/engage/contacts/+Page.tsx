@@ -33,6 +33,8 @@ import {
   type Segment,
   type Tag,
 } from '@/database/database_schema_types.js'
+import { EmptyState } from '@/pages/components/empty-state/empty_state.jsx'
+import { ImportContactsDialog } from '@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
 
 const filterOperationLabels: Record<string, string> = {
   eq: 'Is',
@@ -125,7 +127,7 @@ const filterOperationOptions: FilterOperationOptions = {
       { label: 'Is in', value: 'eq' },
       { label: 'Is not in', value: 'ne' },
     ],
-    options({ pageCtx, children, onChange, filter }) {
+    options({ pageCtx, filter }) {
       const segments = pageCtx.pageProps?.segments as Segment[]
 
       const selectedSegment = segments.find((segment) => segment.id === filter.value)
@@ -133,7 +135,10 @@ const filterOperationOptions: FilterOperationOptions = {
       return (
         <Dropdown.Root>
           <Dropdown.Trigger asChild>
-            <button className="gap-4 box-border px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] flex items-center justify-between cursor-pointer">
+            <button
+              type="button"
+              className="gap-4 box-border px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] flex items-center justify-between cursor-pointer"
+            >
               <Text className="text-xs">{selectedSegment?.name}</Text>
             </button>
           </Dropdown.Trigger>
@@ -235,6 +240,21 @@ function ContactsPage() {
     pagination.pageIndex * pagination.pageSize + pagination.pageSize,
     data?.total ?? 0,
   )
+
+  const noContacts = data?.total === 0
+
+  if (noContacts) {
+    return (
+      <EmptyState
+        title="No contacts yet"
+        description="You may import all your contacts in a CSV file."
+      >
+        <ImportContactsDialog audienceId={ctx.audience.id}>
+          <Button>Import contacts</Button>
+        </ImportContactsDialog>
+      </EmptyState>
+    )
+  }
 
   return (
     <Tabs.Content value="contacts" className="py-6">

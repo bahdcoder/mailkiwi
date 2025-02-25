@@ -141,6 +141,7 @@ export const columns = [
       },
       style: {
         width: '320px',
+        minWidth: '320px',
       },
     },
   }),
@@ -151,7 +152,7 @@ export const columns = [
     header: () => <Text>First name</Text>,
     meta: {
       style: {
-        minWidth: 160,
+        minWidth: '220px',
       },
     },
   }),
@@ -162,62 +163,8 @@ export const columns = [
     header: () => <Text>Last name</Text>,
     meta: {
       style: {
-        minWidth: 160,
+        minWidth: '220px',
       },
     },
   }),
-  // columnHelper.accessor("age", {
-  //   cell: (info) => <Text>{info.getValue()}</Text>,
-  //   footer: (info) => info.column.id,
-  //   header: function () {
-  //     return <Text>Age</Text>
-  //   },
-  //   meta: {
-  //     style: {
-  //       minWidth: 160,
-  //     },
-  //   },
-  // }),
-  // columnHelper.accessor("visits", {
-  //   cell: (info) => <Text>{info.getValue()}</Text>,
-  //   footer: (info) => info.column.id,
-  //   header: function () {
-  //     return <Text>Visits</Text>
-  //   },
-  //   meta: {
-  //     style: {
-  //       minWidth: 160,
-  //     },
-  //   },
-  // }),
-  // columnHelper.accessor("status", {
-  //   cell: (info) => <Text>{info.getValue()}</Text>,
-  //   footer: (info) => info.column.id,
-  //   header: function () {
-  //     return <Text>Status</Text>
-  //   },
-  //   meta: {
-  //     style: {
-  //       minWidth: 160,
-  //     },
-  //   },
-  // }),
-  // columnHelper.accessor("progress", {
-  //   cell: (info) => <Text>{info.getValue()}</Text>,
-  //   footer: (info) => info.column.id,
-  //   header: function () {
-  //     return <Text>Profile Progress</Text>
-  //   },
-  //   meta: {
-  //     style: {
-  //       minWidth: 160,
-  //     },
-  //     header: {
-  //       className: "!border-r-0",
-  //     },
-  //     cell: {
-  //       className: "!border-r-0",
-  //     },
-  //   },
-  // }),
 ]

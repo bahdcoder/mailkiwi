@@ -34,7 +34,9 @@ export function ComposeBroadcastTopBar() {
             <CheckIcon className="kb-content-positive !w-5 !h-5" />
           ) : null}
           {isPending ? <Spinner size="md" /> : null}
-          {isError ? <WarningCircleIcon /> : null}
+          {isError ? (
+            <WarningCircleIcon className="kb-content-negative !w-5 !h-5" />
+          ) : null}
         </Button>
       </div>
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3">

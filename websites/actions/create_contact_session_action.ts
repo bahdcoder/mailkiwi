@@ -16,7 +16,6 @@ import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 import { container } from '@/utils/typi.js'
 
 export class CreateContactSessionAction {
-
   async handle(
     contact: Pick<Contact, 'id' | 'email' | 'firstName' | 'lastName'>,
     website: Website,
