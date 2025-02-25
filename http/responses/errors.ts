@@ -20,7 +20,7 @@ export class E_REQUEST_EXCEPTION extends Error {
       'Validation failed.',
       {
         errors: errors?.map((error: ValibotValidationError) => {
-          let fieldKey = error?.path
+          const fieldKey = error?.path
             ? error?.path?.map((path: any) => path.key).join('.')
             : error?.field
 

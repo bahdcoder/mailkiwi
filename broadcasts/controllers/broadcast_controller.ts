@@ -28,6 +28,7 @@ import { BaseController } from '@/shared/controllers/base_controller.js'
 import type { HonoContext } from '@/shared/server/types.js'
 
 import { container } from '@/utils/typi.js'
+import { RenderBroadcastContentAction } from '@/broadcasts/actions/render_broadcast_content_action.js'
 
 export class BroadcastController extends BaseController {
   constructor(
@@ -52,6 +53,7 @@ export class BroadcastController extends BaseController {
       [
         ['DELETE', '/', this.delete],
         ['GET', '/', this.get],
+        ['GET', '/preview', this.preview],
         ['PUT', '/', this.update],
         ['PUT', '/validate', this.validateContent],
         ['POST', '/send', this.send],
@@ -106,6 +108,18 @@ export class BroadcastController extends BaseController {
     const { id } = await container.resolve(UpdateBroadcastAction).handle(broadcast, data)
 
     return ctx.json({ id })
+  }
+
+  preview = async (ctx: HonoContext) => {
+    const broadcast = await this.ensureExists<Broadcast>(ctx, 'broadcastId')
+
+    this.ensureCanAuthor(ctx)
+
+    const preview = await container
+      .make(RenderBroadcastContentAction)
+      .handle(broadcast as BroadcastWithEmailContent)
+
+    return this.response(ctx).json({ preview }).send()
   }
 
   validateContent = async (ctx: HonoContext) => {

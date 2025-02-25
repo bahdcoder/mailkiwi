@@ -74,6 +74,7 @@ export const aliases = {
   // broadcasts
   broadcasts: engage('/'),
   get_broadcast: '/broadcasts/:uuid',
+  preview_broadcast: '/broadcasts/:uuid/preview',
   broadcasts_composer: engage('broadcasts/:uuid/composer'),
   create_broadcast: '/broadcasts',
   update_broadcast: '/broadcasts/:uuid/',

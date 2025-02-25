@@ -62,9 +62,6 @@ export function ComposeStepActions() {
 
   return (
     <div className="flex items-center gap-4">
-      <Button disabled={syncContentToServerMutation.isPending} variant="secondary">
-        Preview
-      </Button>
       <Button
         disabled={syncContentToServerMutation.isPending}
         onClick={() => setStep(ComposeBroadcastSteps.CONTACTS)}

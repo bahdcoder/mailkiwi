@@ -10,6 +10,7 @@ import { Spinner } from '@kibamail/owly/spinner'
 import React from 'react'
 
 import { route } from '@/shared/routes/route_aliases.js'
+import { ComposeBroadcastPreview } from '@/pages/components/flows/compose_broadcast/components/compose_broadcast_preview.jsx'
 
 export function ComposeBroadcastTopBar() {
   const {
@@ -83,7 +84,10 @@ export function ComposeBroadcastTopBar() {
         </Button>
       </div>
 
-      <ComposeBroadcastTopBarActions />
+      <div className="flex items-center gap-2">
+        <ComposeBroadcastPreview />
+        <ComposeBroadcastTopBarActions />
+      </div>
     </header>
   )
 }

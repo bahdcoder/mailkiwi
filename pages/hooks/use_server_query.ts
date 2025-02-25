@@ -18,7 +18,9 @@ export function useServerQuery<TQueryFnData>(
         },
       })
 
-      return response.json()
+      const json = await response.json()
+
+      return json.payload
     },
     enabled: false,
     ...restQueryOptions,
