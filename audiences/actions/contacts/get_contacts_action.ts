@@ -5,7 +5,12 @@ import { AudienceRepository } from '@/audiences/repositories/audience_repository
 import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
 import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
 
-import type { Audience, Contact, Segment } from '@/database/database_schema_types.js'
+import type {
+  Audience,
+  Contact,
+  ContactWithProperties,
+  Segment,
+} from '@/database/database_schema_types.js'
 import {
   ContactFilterGroup,
   contactProperties,
@@ -77,7 +82,7 @@ export class GetContactsAction {
       )
     }
 
-    return new Paginator<Contact>(contacts)
+    const paginator = await new Paginator<Contact>(contacts)
       .queryConditions([...queryConditions])
       .size(perPage ?? 100)
       .page(page ?? 1)
@@ -119,5 +124,37 @@ export class GetContactsAction {
         }))
       })
       .paginate()
+
+    d({ audience })
+    const knownProperties = audience?.knownProperties
+
+    const data = paginator.data as ContactWithProperties[]
+
+    const knownPropertiesIdToTypeMap: Record<
+      string,
+      'boolean' | 'date' | 'text' | 'float'
+    > = {}
+
+    for (const property of knownProperties ?? []) {
+      knownPropertiesIdToTypeMap[property.id] = property.type
+    }
+
+    return {
+      ...paginator,
+      data: data.map((contact) => {
+        const parsedProperties: ContactWithProperties['parsedProperties'] = {}
+
+        for (const property of contact.properties) {
+          parsedProperties[property.name] =
+            property[knownPropertiesIdToTypeMap[property.name]]
+        }
+
+        return {
+          ...contact,
+          properties: knownProperties,
+          parsedProperties,
+        }
+      }),
+    }
   }
 }

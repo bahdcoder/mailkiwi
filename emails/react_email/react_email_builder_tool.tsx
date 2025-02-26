@@ -219,6 +219,42 @@ export class ReactEmailBuilderTool {
     )
   }
 
+  private listItem(node: ProsemirrorContent) {
+    const attrs = node.attrs as { styles: Record<string, string> }
+
+    return (
+      <li style={this.styles(attrs.styles)}>
+        {node.content?.map((childNode) => (
+          <React.Fragment key={node.type}>{this.node(childNode)}</React.Fragment>
+        ))}
+      </li>
+    )
+  }
+
+  private bulletList(node: ProsemirrorContent) {
+    const attrs = node.attrs as { styles: Record<string, string> }
+
+    return (
+      <ul style={this.styles(attrs.styles)}>
+        {node.content?.map((childNode) => (
+          <React.Fragment key={node.type}>{this.node(childNode)}</React.Fragment>
+        ))}
+      </ul>
+    )
+  }
+
+  private orderedList(node: ProsemirrorContent) {
+    const attrs = node.attrs as { styles: Record<string, string> }
+
+    return (
+      <ol style={this.styles(attrs.styles)}>
+        {node.content?.map((childNode) => (
+          <React.Fragment key={node.type}>{this.node(childNode)}</React.Fragment>
+        ))}
+      </ol>
+    )
+  }
+
   private node(node: ProsemirrorContent): JSX.Element | null {
     switch (node.type) {
       case 'imageBlock':
@@ -229,6 +265,12 @@ export class ReactEmailBuilderTool {
         return this.text(node)
       case 'heading':
         return this.heading(node)
+      case 'orderedList':
+        return this.orderedList(node)
+      case 'bulletList':
+        return this.bulletList(node)
+      case 'listItem':
+        return this.listItem(node)
       default:
         return null
     }

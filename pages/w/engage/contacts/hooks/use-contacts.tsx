@@ -20,6 +20,7 @@ import type { ContactWithTagsAndProperties } from '@/database/database_schema_ty
 import type { KnownAudienceProperty } from '@/database/schema.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
+import dayjs from 'dayjs'
 
 export type ServerContactsPageProps = {
   contacts: { data: ContactWithTagsAndProperties[]; total: number }
@@ -173,7 +174,15 @@ export function useContacts() {
           return columnHelper.accessor((row) => row.firstName, {
             id: property.id,
             cell(info) {
-              return <Text>{info.getValue()}</Text>
+              const properties = info.row.original.parsedProperties
+
+              let value = properties?.[property.id]
+
+              if (value && property.type === 'date') {
+                value = dayjs(value as Date).format('DD/MM/YYYY')
+              }
+
+              return <Text>{(value as React.ReactNode) ?? '---'}</Text>
             },
             header: () => {
               const actions = [

@@ -8,7 +8,7 @@ import type { Table } from '@tanstack/react-table'
 
 import type { ContactWithTagsAndProperties } from '@/database/database_schema_types.js'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { formatCount } from '@/pages/utils/number_formatter.js'
 
 export interface PaginationProps {
   table: Table<ContactWithTagsAndProperties>
@@ -20,7 +20,7 @@ export function Pagination({ table }: PaginationProps) {
   return (
     <div className="w-full h-8 flex items-center justify-between">
       <Text data-testid="w-contacts-pagination-page-number">
-        Page {pageIndex + 1} of {table.getPageCount()}
+        Page {pageIndex + 1} of {formatCount(table.getPageCount())}
       </Text>
 
       <div className="flex items-center gap-2">

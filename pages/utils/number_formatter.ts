@@ -1,4 +1,4 @@
-export function formatContactsCount(count: number) {
+export function formatCount(count: number) {
   const intl = new Intl.NumberFormat('en-US', {
     style: 'decimal',
   })

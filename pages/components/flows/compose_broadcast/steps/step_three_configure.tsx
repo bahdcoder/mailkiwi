@@ -1,4 +1,5 @@
 import { DisplayedFilterCondition } from '@/pages/components/filters/displayed-filter-conditions.jsx'
+import { SlashesDivider } from '@/pages/components/flows/compose_broadcast/components/slashes_divider.jsx'
 import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
 import { MinusIcon } from '@/pages/components/icons/minus.svg.jsx'
 import { WarningTriangleSolidIcon } from '@/pages/components/icons/warning-triangle-solid.svg.jsx'
@@ -68,16 +69,7 @@ export function StepThreeConfigure() {
         </TextField.Root>
       </div>
 
-      <div className="w-full flex gap-2 h-6 overflow-x-hidden my-5">
-        {new Array(50)
-          .map((_, idx) => idx)
-          .map((slash) => (
-            <div
-              key={slash}
-              className=" h-full w-px bg-[var(--border-tertiary)] transform rotate-45"
-            />
-          ))}
-      </div>
+      <SlashesDivider />
 
       <div className="mt-6">
         <Heading size="xs">Sender details</Heading>

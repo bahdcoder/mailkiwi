@@ -1,7 +1,9 @@
 import { DisplayedFilterCondition } from '@/pages/components/filters/displayed-filter-conditions.jsx'
+import { SlashesDivider } from '@/pages/components/flows/compose_broadcast/components/slashes_divider.jsx'
 import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
 import { MinusIcon } from '@/pages/components/icons/minus.svg.jsx'
 import { WarningTriangleSolidIcon } from '@/pages/components/icons/warning-triangle-solid.svg.jsx'
+import { formatCount } from '@/pages/utils/number_formatter.js'
 import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
 import type { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
 import * as Alert from '@kibamail/owly/alert'
@@ -33,6 +35,9 @@ export function StepTwoRecipients() {
   function onSelectedSegmentChanged(value: string) {
     setFormState((current) => ({ ...current, segmentId: value }))
   }
+
+  const hasEnoughCredits =
+    ctx.team?.totalAvailableCredits >= (getBroadcastRecipientsCount?.data?.total ?? 0)
 
   return (
     <div className="w-full max-w-[480px] mx-auto pt-16">
@@ -73,14 +78,7 @@ export function StepTwoRecipients() {
         </div>
       ) : null}
 
-      <div className="w-full flex gap-2 h-6 overflow-x-hidden my-5">
-        {new Array(50).fill(0).map((_slash, idx) => (
-          <div
-            key={idx}
-            className=" h-full w-px bg-[var(--border-tertiary)] transform rotate-45"
-          />
-        ))}
-      </div>
+      <SlashesDivider />
 
       <div className="flex flex-col my-5">
         <Progress value={73} />
@@ -90,7 +88,7 @@ export function StepTwoRecipients() {
             {getBroadcastRecipientsCount.isLoading ? <Spinner className="ml-1" /> : null}
           </Text>
           <Text size="md" className="kb-content-tertiary">
-            23,009 total email credits
+            {formatCount(ctx.team?.totalAvailableCredits)} total email credits
           </Text>
         </div>
         {false ? (
@@ -104,7 +102,7 @@ export function StepTwoRecipients() {
         ) : null}
       </div>
 
-      {false ? (
+      {!hasEnoughCredits ? (
         <Alert.Root variant="warning">
           <Alert.Icon>
             <WarningTriangleSolidIcon />

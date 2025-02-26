@@ -177,8 +177,7 @@ export type ContactWithTags = Contact & {
   })[]
 }
 
-export type ContactWithTagsAndProperties = Contact & {
-  properties: ContactProperty[]
+export type ContactWithTagsAndProperties = ContactWithProperties & {
   tags: Tag[]
 }
 
@@ -192,6 +191,7 @@ export type TeamWithMemberships = Team & {
 
 export type ContactWithProperties = Contact & {
   properties: ContactProperty[]
+  parsedProperties: Record<string, string | string[] | number | boolean | Date | null>
 }
 
 export type WebsiteWithPages = Website & {

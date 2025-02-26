@@ -12,7 +12,10 @@ import type {
 
 export interface DefaultPageProps {
   user: UserWithTeams
-  team: TeamWithMemberships
+  team: TeamWithMemberships & {
+    totalAvailableCredits: number
+    totalConsumedCredits: number
+  }
   userAgent: UAParser.IResult
   memberships: (TeamMembership & { team: Team })[]
   audience: Audience

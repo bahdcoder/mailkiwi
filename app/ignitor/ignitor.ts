@@ -19,6 +19,7 @@ import { readFile } from 'node:fs/promises'
 import type { Redis } from 'ioredis'
 import { resolve } from 'node:path'
 import { type Logger, pino } from 'pino'
+import { showRoutes } from 'hono/dev'
 
 import { BroadcastController } from '@/broadcasts/controllers/broadcast_controller.js'
 import { BroadcastGroupController } from '@/broadcasts/controllers/broadcast_group_controller.js'
@@ -43,12 +44,17 @@ import { AutomationController } from '@/automations/controllers/automation_contr
 
 import { SendingDomainController } from '@/sending_domains/controllers/sending_domain_controller.js'
 
+import { HonoAdapter } from '@bull-board/hono'
+import { serveStatic } from '@hono/node-server/serve-static'
+import { createBullBoard } from '@bull-board/api'
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter.js'
+import { Queue } from '@/shared/queue/queue.js'
+
 import {
   type DrizzleClient,
   createDatabaseClient,
   createDrizzleDatabase,
 } from '@/database/client.js'
-
 import {
   ContainerKey,
   makeDatabaseConnection,
@@ -96,6 +102,24 @@ export class Ignitor {
     return this
   }
 
+  protected setupBullmqDashboard() {
+    const adapter = new HonoAdapter(serveStatic)
+
+    createBullBoard({
+      queues: [new BullMQAdapter(Queue.contacts())],
+      serverAdapter: adapter,
+    })
+
+    const basePath = '/queues'
+
+    showRoutes(this.app)
+
+    adapter.setBasePath(basePath)
+    this.app.route(basePath, adapter.registerPlugin())
+
+    showRoutes(this.app)
+  }
+
   async start() {
     const packageJsonFile = await readFile(resolve('package.json'), 'utf-8')
 
@@ -111,6 +135,7 @@ export class Ignitor {
 
     this.registerHttpControllers()
 
+    this.setupBullmqDashboard()
     await this.startSinglePageApplication()
 
     this.startHttpServer()

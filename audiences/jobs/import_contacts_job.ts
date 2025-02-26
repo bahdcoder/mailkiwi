@@ -113,28 +113,27 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
         const values = batch.map((row) => {
           const contactId = cuid()
 
-          Object.keys(contactImport.propertiesMap.customProperties ?? {}).forEach(
-            (csvColumnHeaderName) => {
-              const property =
-                contactImport.propertiesMap.customProperties?.[csvColumnHeaderName]
+          const customProperties = contactImport.propertiesMap.customProperties ?? {}
 
-              const value = row[csvColumnHeaderName]
+          for (const csvColumnHeaderName of Object.keys(customProperties)) {
+            const property = customProperties[csvColumnHeaderName]
+            const value = row[csvColumnHeaderName]
 
-              if (property && value) {
-                allContactProperties.push({
-                  id: cuid(),
-                  contactId,
-                  name: property.id,
-                  audienceId: contactImport.audienceId,
-                  boolean: null,
-                  float: property.type === 'float' ? Number.parseFloat(value) : null,
-                  date:
-                    property.type === 'date' ? DateTime.fromISO(value).toJSDate() : null,
-                  text: property.type === 'text' ? value : null,
-                })
-              }
-            },
-          )
+            if (property && value) {
+              const date = property.type === 'date' ? DateTime.fromISO(value) : null
+
+              allContactProperties.push({
+                id: cuid(),
+                contactId,
+                name: property.id,
+                audienceId: contactImport.audienceId,
+                boolean: null,
+                float: property.type === 'float' ? Number.parseFloat(value) : null,
+                date: date?.isValid ? date.toJSDate() : null,
+                text: property.type === 'text' ? value : null,
+              })
+            }
+          }
 
           return {
             id: contactId,

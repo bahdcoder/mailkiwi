@@ -26,6 +26,7 @@ import type { HonoContext, HonoRouteDefinition } from '@/shared/server/types.js'
 import { excludeKeys } from '@/shared/utils/helpers/exclude_keys.js'
 
 import { container } from '@/utils/typi.js'
+import { TeamCreditRepository } from '@/teams/repositories/team_credit_repository.js'
 
 export class VikeController extends BaseController {
   vikePath = (
@@ -62,9 +63,9 @@ export class VikeController extends BaseController {
 
     const { statusCode, headers, pipe } = pageContext.httpResponse
 
-    headers.forEach(([name, value]) => {
+    for (const [name, value] of headers) {
       responseHeaders.set(name, value)
-    })
+    }
 
     // Pass headers from hono ctx through to new response, excluding the content type header.
     const honoHeaders = ctx.newResponse('').headers.entries() as unknown as [
@@ -72,11 +73,11 @@ export class VikeController extends BaseController {
       string,
     ][]
 
-    honoHeaders.forEach(([name, value]) => {
+    for (const [name, value] of honoHeaders) {
       if (name !== 'content-type') {
         responseHeaders.set(name, value)
       }
-    })
+    }
 
     return new Promise((resolve, reject) => {
       const body = new PassThrough()
@@ -141,6 +142,16 @@ export class VikeController extends BaseController {
           .findAll(eq(tagsTable.audienceId, audience.id))
       : []
 
+    const teamCreditRepository = container.make(TeamCreditRepository)
+
+    const totalAvailableCredits = teamId
+      ? await container.make(TeamCreditRepository).totalAvailableCredits(teamId)
+      : 0
+
+    const totalConsumedCredits = teamId
+      ? await teamCreditRepository.totalConsumedCredits(teamId)
+      : 0
+
     return renderVikePage(ctx, next, {
       ...pageProps,
       user: excludeKeys(ctx.get('user'), [
@@ -158,7 +169,11 @@ export class VikeController extends BaseController {
         : undefined,
       isMobile: userAgent?.getDevice().type === 'mobile',
       memberships: ctx.get('memberships'),
-      team: excludeKeys(ctx.get('team'), ['commerceProviderAccountId']),
+      team: {
+        ...excludeKeys(ctx.get('team'), ['commerceProviderAccountId']),
+        totalAvailableCredits,
+        totalConsumedCredits,
+      },
       sendingDomains: sendingDomains.map((domain) =>
         excludeKeys(domain, [
           'engageSecSendingSourceId',

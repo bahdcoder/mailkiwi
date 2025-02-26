@@ -1,0 +1,1 @@
+export const FREE_MONTHLY_CREDITS = 10_000

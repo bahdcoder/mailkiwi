@@ -9,6 +9,8 @@ export type AppEnvVariables = typeof appEnv
 
 export const SHORT_NAME = 'kibamail'
 
+export const FREE_MONTHLY_CREDITS = 10_000
+
 // This is where we host the bounce processing server.
 // All incoming bounces and complaints from our customers will go through here.
 // They eventually get fed into a kafka topic that multiple services will consume.

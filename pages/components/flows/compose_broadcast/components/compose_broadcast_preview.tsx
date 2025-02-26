@@ -46,8 +46,8 @@ export function ComposeBroadcastPreview() {
         <header className="h-[3.75rem] w-full box-border flex justify-between items-center px-2">
           <div className="flex items-center gap-4">
             <Dialog.Close aria-label="Close preview" asChild>
-              <Button variant="tertiary">
-                <CancelIcon />
+              <Button variant="tertiary" className="flex-shrink-0">
+                <CancelIcon className="!w-6 !h-6" />
               </Button>
             </Dialog.Close>
           </div>

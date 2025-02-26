@@ -7,16 +7,14 @@ import type { Server } from 'node:https'
 import { createServer as createHttpsServer } from 'node:https'
 import path from 'node:path'
 import { createServer as createViteServer } from 'vite'
-
 import { EnsureUserAndTeamSessionsMiddleware } from '@/auth/middleware/ensure_user_and_team_sessions_middleware.js'
-
 import { VikeController } from '@/shared/controllers/vike_controller.js'
 import type { HonoContext } from '@/shared/server/types.js'
-
 import { container } from '@/utils/typi.js'
 
 export class IgnitorDev extends Ignitor {
   protected httpsServer: Server
+
   async startSinglePageApplication() {
     const viteDevServer = await createViteServer({
       server: { middlewareMode: true },

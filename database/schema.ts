@@ -81,7 +81,7 @@ export type KnownAudienceProperty = {
   archived?: boolean
   default?: boolean | string | number
   canContactUpdate?: boolean
-  type: 'boolean' | 'float' | 'date' | 'text' | 'enum' | 'list'
+  type: 'boolean' | 'float' | 'date' | 'text'
 }
 
 export const settings = mysqlTable('settings', {
@@ -1002,6 +1002,52 @@ export const mediaDocuments = mysqlTable('mediaDocuments', {
     .references(() => teams.id)
     .notNull(),
   url: text('url').notNull(),
+})
+
+export const creditGrantMandates = mysqlTable('creditGrantMandates', {
+  id,
+  teamId: primaryKeyCuid('teamId')
+    .references(() => teams.id)
+    .notNull(),
+  // 10,000 free credits per month by default to all teams
+  amount: int('amount').notNull(),
+  status: mysqlEnum('status', ['paused', 'active']).default('active').notNull(),
+  createdAt: timestamp('createdAt').notNull(),
+  updatedAt: timestamp('updatedAt'),
+})
+
+export const creditPurchases = mysqlTable('creditPurchases', {
+  id,
+  amount: int('amount').notNull(),
+  // this will be zero for credit grants (Example: 10,000 free credits per month for each team)
+  amountPaid: int('amountPaid').notNull(),
+  teamId: primaryKeyCuid('teamId')
+    .references(() => teams.id)
+    .notNull(),
+  currency: varchar('currency', { length: 10 }).notNull(), // USD, EUR, NGN
+  paymentProvider: varchar('paymentProvider', { length: 20 }).notNull(), // stripe, paystack, flutterwave
+  status: mysqlEnum('status', ['pending', 'successful', 'failed']).notNull(),
+  paymentReferenceId: varchar('paymentReferenceId', { length: 255 }),
+  createdAt: timestamp('createdAt').notNull(),
+  expiresAt: timestamp('expiresAt').notNull(),
+  updatedAt: timestamp('updatedAt'),
+  metadata: json('metadata').$type<Record<string, string>>(),
+})
+
+export const creditRefunds = mysqlTable('creditRefunds', {
+  id,
+  amount: int('amount').notNull(),
+  amountRefunded: int('amountRefunded').notNull(),
+  teamId: primaryKeyCuid('teamId')
+    .references(() => teams.id)
+    .notNull(),
+  refundStatus: mysqlEnum('refundStatus', ['pending', 'successful', 'failed']).notNull(),
+  paymentRefundReferenceId: varchar('paymentRefundReferenceId', {
+    length: 255,
+  }),
+  metadata: json('metadata').$type<Record<string, string>>(),
+  createdAt: timestamp('createdAt').notNull(),
+  updatedAt: timestamp('updatedAt'),
 })
 
 /* --------------------------- */

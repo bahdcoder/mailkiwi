@@ -179,6 +179,45 @@ CREATE TABLE `contacts` (
 	CONSTRAINT `ContactEmailAudienceIdKey` UNIQUE(`email`,`audienceId`)
 );
 --> statement-breakpoint
+CREATE TABLE `creditGrantMandates` (
+	`id` binary(16) NOT NULL,
+	`teamId` binary(16) NOT NULL,
+	`amount` int NOT NULL,
+	`status` enum('paused','active') NOT NULL DEFAULT 'active',
+	`createdAt` timestamp NOT NULL,
+	`updatedAt` timestamp,
+	CONSTRAINT `creditGrantMandates_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `creditPurchases` (
+	`id` binary(16) NOT NULL,
+	`amount` int NOT NULL,
+	`amountPaid` int NOT NULL,
+	`teamId` binary(16) NOT NULL,
+	`currency` varchar(10) NOT NULL,
+	`paymentProvider` varchar(20) NOT NULL,
+	`status` enum('pending','successful','failed') NOT NULL,
+	`paymentReferenceId` varchar(255),
+	`createdAt` timestamp NOT NULL,
+	`expiresAt` timestamp NOT NULL,
+	`updatedAt` timestamp,
+	`metadata` json,
+	CONSTRAINT `creditPurchases_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `creditRefunds` (
+	`id` binary(16) NOT NULL,
+	`amount` int NOT NULL,
+	`amountRefunded` int NOT NULL,
+	`teamId` binary(16) NOT NULL,
+	`refundStatus` enum('pending','successful','failed') NOT NULL,
+	`paymentRefundReferenceId` varchar(255),
+	`metadata` json,
+	`createdAt` timestamp NOT NULL,
+	`updatedAt` timestamp,
+	CONSTRAINT `creditRefunds_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `emailContents` (
 	`id` binary(16) NOT NULL,
 	`fromName` varchar(255),
@@ -546,6 +585,9 @@ ALTER TABLE `contactPurchases` ADD CONSTRAINT `contactPurchases_productId_produc
 ALTER TABLE `contactPurchases` ADD CONSTRAINT `contactPurchases_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `contacts` ADD CONSTRAINT `contacts_contactImportId_contactImports_id_fk` FOREIGN KEY (`contactImportId`) REFERENCES `contactImports`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `creditGrantMandates` ADD CONSTRAINT `creditGrantMandates_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `creditPurchases` ADD CONSTRAINT `creditPurchases_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `creditRefunds` ADD CONSTRAINT `creditRefunds_teamId_teams_id_fk` FOREIGN KEY (`teamId`) REFERENCES `teams`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_emailSendId_emailSends_id_fk` FOREIGN KEY (`emailSendId`) REFERENCES `emailSends`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_contactId_contacts_id_fk` FOREIGN KEY (`contactId`) REFERENCES `contacts`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `emailSendEvents` ADD CONSTRAINT `emailSendEvents_broadcastId_broadcasts_id_fk` FOREIGN KEY (`broadcastId`) REFERENCES `broadcasts`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

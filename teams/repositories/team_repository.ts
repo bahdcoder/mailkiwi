@@ -4,6 +4,8 @@ import type { CreateTeamDto } from '@/teams/dto/create_team_dto.js'
 
 import {
   broadcastGroups,
+  creditGrantMandates,
+  creditPurchases,
   sendingDomains,
   teamMemberships,
   teams,
@@ -13,6 +15,8 @@ import { hasMany } from '@/database/utils/relationships.js'
 
 import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { DateTime } from 'luxon'
+import { FREE_MONTHLY_CREDITS } from '@/app/env/app_env.js'
 
 export class TeamRepository extends BaseRepository {
   constructor(
@@ -49,10 +53,32 @@ export class TeamRepository extends BaseRepository {
   async create(payload: CreateTeamDto, userId: string) {
     const id = this.cuid()
 
-    await this.database.insert(teams).values({
-      id,
-      userId,
-      ...payload,
+    await this.database.transaction(async (trx) => {
+      await trx.insert(teams).values({
+        id,
+        userId,
+        ...payload,
+      })
+
+      await trx.insert(creditGrantMandates).values({
+        id: this.cuid(),
+        teamId: id,
+        status: 'active',
+        amount: FREE_MONTHLY_CREDITS,
+        createdAt: DateTime.now().toJSDate(),
+      })
+
+      await trx.insert(creditPurchases).values({
+        id: this.cuid(),
+        teamId: id,
+        status: 'successful',
+        amountPaid: 0,
+        amount: FREE_MONTHLY_CREDITS,
+        currency: 'NGN',
+        paymentProvider: 'stripe',
+        createdAt: DateTime.now().toJSDate(),
+        expiresAt: DateTime.now().endOf('month').plus({ millisecond: 1 }).toJSDate(),
+      })
     })
 
     return { id }

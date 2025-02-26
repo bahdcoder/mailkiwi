@@ -91,7 +91,7 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
 
         <DropdownMenu.Item className="p-2 flex items-center hover:bg-[var(--background-secondary)] rounded-lg cursor-pointer">
           <SettingsIcon className="mr-1.5 w-5 h-5 kb-content-tertiary" />
-          <Text>Workspace settings</Text>
+          <Text>Team settings</Text>
         </DropdownMenu.Item>
 
         <DropdownMenu.Item className="p-2 flex items-center hover:bg-[var(--background-secondary)] rounded-lg cursor-pointer">

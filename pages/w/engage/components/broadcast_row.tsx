@@ -31,6 +31,10 @@ export function BroadcastRow({ broadcast }: BroadcastRowProps) {
       : lastEditedEmailContent
   ).fromNow()
 
+  const subtitle = broadcastNameIsSubject
+    ? broadcast?.emailContent?.previewText
+    : broadcast?.emailContent?.subject
+
   return (
     <a
       key={broadcast.id}
@@ -44,9 +48,7 @@ export function BroadcastRow({ broadcast }: BroadcastRowProps) {
       <div className="w-full max-w-[40%] flex flex-col">
         <Text className="kb-content-secondary font-medium">{broadcast.name}</Text>
         <Text className="kb-content-tertiary truncate overflow-ellipsis">
-          {broadcastNameIsSubject
-            ? broadcast?.emailContent?.previewText
-            : broadcast?.emailContent?.subject}
+          {subtitle ?? 'Add a preview text or subject'}
         </Text>
       </div>
 

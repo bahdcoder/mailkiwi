@@ -1,5 +1,4 @@
 import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
-import { formatContactsCount } from '@/pages/components/flows/compose_broadcast/utils/format_contacts_count.js'
 import {
   SCHEDULED_DATE_READABLE_FORMAT,
   scheduledDateTimeToDayJsInstance,
@@ -8,6 +7,7 @@ import { CalendarIcon } from '@/pages/components/icons/calendar.svg.jsx'
 import { EditPencilIcon } from '@/pages/components/icons/edit-pencil.svg.jsx'
 import { GroupIcon } from '@/pages/components/icons/group.svg.jsx'
 import { NotesIcon } from '@/pages/components/icons/notes.svg.jsx'
+import { formatCount } from '@/pages/utils/number_formatter.js'
 import { Text } from '@kibamail/owly/text'
 
 export function BroadcastDetails() {
@@ -29,7 +29,9 @@ export function BroadcastDetails() {
           <Text className="kb-content-tertiary">Subject</Text>
         </dt>
         <dd className="w-full flex-grow">
-          <Text className="kb-content-secondary">{broadcast?.emailContent?.subject}</Text>
+          <Text className="kb-content-secondary">
+            {broadcast?.emailContent?.subject ?? '---'}
+          </Text>
         </dd>
       </dl>
 
@@ -40,7 +42,7 @@ export function BroadcastDetails() {
         </dt>
         <dd className="w-full flex-grow">
           <Text className="kb-content-secondary">
-            {broadcast?.emailContent?.previewText}
+            {broadcast?.emailContent?.previewText ?? '---'}
           </Text>
         </dd>
       </dl>
@@ -52,7 +54,7 @@ export function BroadcastDetails() {
         </dt>
         <dd className="w-full flex-grow flex gap-2">
           <Text className="kb-content-secondary">
-            {formatContactsCount(getBroadcastRecipientsCount?.data?.total ?? 0)} contacts
+            {formatCount(getBroadcastRecipientsCount?.data?.total ?? 0)} contacts
           </Text>
         </dd>
       </dl>

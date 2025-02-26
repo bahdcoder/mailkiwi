@@ -13,11 +13,12 @@ import { OptimiseIcon } from '@/pages/components/icons/products/optimise.svg.jsx
 import { SendIcon } from '@/pages/components/icons/products/send.svg.jsx'
 import { SidebarCollapseIcon } from '@/pages/components/icons/sidebar-collapse.svg.jsx'
 import { Button } from '@kibamail/owly/button'
-import { Progress } from '@kibamail/owly/progress'
+import { Progress, type ProgressProps } from '@kibamail/owly/progress'
 import { Text } from '@kibamail/owly/text'
 import { usePageContext } from 'vike-react/usePageContext'
-
+import { FREE_MONTHLY_CREDITS } from '@/pages/env.js'
 import { route } from '@/shared/routes/route_aliases.js'
+import { formatCount } from '@/pages/utils/number_formatter.js'
 
 interface SidebarContentProps {
   rootId: string
@@ -37,6 +38,23 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
     setSidebar((current) => ({ ...current, offscreen: true }))
   }
 
+  const percentageSpent = Math.max(
+    (ctx.team?.totalConsumedCredits / ctx.team?.totalAvailableCredits) * 100,
+    2,
+  )
+
+  function getProgressBarVariant(): ProgressProps['variant'] {
+    if (percentageSpent > 80) {
+      return 'error'
+    }
+
+    if (percentageSpent > 50) {
+      return 'warning'
+    }
+
+    return 'info'
+  }
+
   return (
     <>
       <div id={`${rootId}-content`} className="flex-grow w-full">
@@ -46,6 +64,7 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
           <button
             aria-label="Collapse sidebar"
             className="kb-reset"
+            type="button"
             onClick={setSidebarOffscreen}
           >
             <SidebarCollapseIcon className="kb-content-tertiary-inverse" />
@@ -120,14 +139,24 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
           </Text>
 
           <span className="flex items-center">
-            <Text className="kb-content-secondary">173</Text>
-            <Text className="kb-content-tertiary font-normal">/6,178 left</Text>
+            <Text className="kb-content-secondary">
+              {formatCount(ctx.team?.totalConsumedCredits)}
+            </Text>
+            <Text className="kb-content-tertiary font-normal">
+              /{formatCount(ctx.team?.totalAvailableCredits)} left
+            </Text>
           </span>
         </div>
 
-        <Progress value={12} className="flex-shrink-0" />
+        <Progress
+          value={percentageSpent}
+          className="flex-shrink-0"
+          variant={getProgressBarVariant()}
+        />
 
-        <Text className="kb-content-tertiary">6,178 free emails / month</Text>
+        <Text className="kb-content-tertiary">
+          {formatCount(FREE_MONTHLY_CREDITS)} free emails / month
+        </Text>
 
         <Button variant="secondary" width="full" className="mt-1">
           Get more emails
@@ -140,6 +169,8 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className="my-4"
+          role="img"
+          aria-label="divider"
         >
           <line y1="0.5" x2={228} y2="0.5" stroke="#E0DCD9" strokeDasharray="4 4" />
         </svg>

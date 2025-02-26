@@ -90,8 +90,6 @@ export function useDialogInDropdownMenuItem() {
     event.preventDefault()
 
     focusRef.current = dropdownTriggerRef.current
-
-    console.log('--------------------------', focusRef.current)
   }
 
   function handleDialogItemOpenChange(open: boolean) {

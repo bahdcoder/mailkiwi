@@ -17,6 +17,12 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.741.0
         version: 3.741.0
+      '@bull-board/api':
+        specifier: ^6.7.9
+        version: 6.7.9(@bull-board/ui@6.7.9)
+      '@bull-board/hono':
+        specifier: ^6.7.9
+        version: 6.7.9
       '@epic-web/totp':
         specifier: ^2.0.0
         version: 2.0.0
@@ -245,6 +251,9 @@ importers:
       bufferutil:
         specifier: ^4.0.8
         version: 4.0.8
+      bullMQAdapter:
+        specifier: link:@bull-board/api/bullMQAdapter
+        version: link:@bull-board/api/bullMQAdapter
       bullmq:
         specifier: ^5.12.10
         version: 5.34.5
@@ -950,6 +959,17 @@ packages:
 
   '@brillout/vite-plugin-server-entry@0.5.6':
     resolution: {integrity: sha512-lxgvTQhQBucZehhkvq9x2C7IUfrkAhp+YkW8S0MVR5EYkf6EWBg+bYZWB0//mDfbmUcc8aAEe3uRto7pOg35Ig==}
+
+  '@bull-board/api@6.7.9':
+    resolution: {integrity: sha512-wgUoaOq7JmY0udhQ+AyMrRdFRpGCtaQJpSgM/QLkAqKRpRpVz5yHFJK9uI6iV+uNvGJkUWE6hNsn3xamzcMy5A==}
+    peerDependencies:
+      '@bull-board/ui': 6.7.9
+
+  '@bull-board/hono@6.7.9':
+    resolution: {integrity: sha512-HbqBDKlbYZA78Ivs3Pc9lTl4rzURpZNug+RH7nAwhI0cQrPaQo+SF1nCFPRLmYrH4KFcotC4TwCI+WC65qiQdQ==}
+
+  '@bull-board/ui@6.7.9':
+    resolution: {integrity: sha512-41a6rr04wu5uVCtnozqYaAhxUMlJZ3Mu4UwbEmGEvwrkTplKb3TKc8uvP3x0KgKUcIl7WU34Wr9N3lHciAUosQ==}
 
   '@csstools/color-helpers@5.0.1':
     resolution: {integrity: sha512-MKtmkA0BX87PKaO1NFRTFH+UnkgnmySQOvNxJubsadusqPEC2aJ9MOQiMceZJJ6oitUl/i0L6u0M1IrmAOmgBA==}
@@ -4846,6 +4866,11 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
+  ejs@3.1.10:
+    resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
+    engines: {node: '>=0.10.0'}
+    hasBin: true
+
   electron-to-chromium@1.5.76:
     resolution: {integrity: sha512-CjVQyG7n7Sr+eBXE86HIulnL5N8xZY1sgmOPGuq/F0Rr0FJq63lg0kEtOIDfZBk44FnDLf6FUJ+dsJcuiUDdDQ==}
 
@@ -5098,6 +5123,9 @@ packages:
 
   fd-slicer@1.1.0:
     resolution: {integrity: sha512-cE1qsB/VwyQozZ+q1dGxR8LBYNZeofhEdUNGSMbQD3Gw2lAzX9Zb3uIU6Ebc/Fmyjo9AWWfnn0AUCHqtevs/8g==}
+
+  filelist@1.0.4:
+    resolution: {integrity: sha512-w1cEuf3S+DrLCQL7ET6kz+gmlJdbq9J7yXCSjK/OZCPA+qEN1WyF4ZAf0YYJa4/shHJra2t/d/r8SV4Ji+x+8Q==}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -5669,6 +5697,11 @@ packages:
 
   jackspeak@3.4.3:
     resolution: {integrity: sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==}
+
+  jake@10.9.2:
+    resolution: {integrity: sha512-2P4SQ0HrLQ+fw6llpLnOaGAvN2Zu6778SJMrCUwns4fOoG9ayrTiZk3VV8sCPkVZF8ab0zksVpS8FDY5pRCNBA==}
+    engines: {node: '>=10'}
+    hasBin: true
 
   jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
@@ -6962,6 +6995,9 @@ packages:
   redis-errors@1.2.0:
     resolution: {integrity: sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w==}
     engines: {node: '>=4'}
+
+  redis-info@3.1.0:
+    resolution: {integrity: sha512-ER4L9Sh/vm63DkIE0bkSjxluQlioBiBgf5w1UuldaW/3vPcecdljVDisZhmnCMvsxHNiARTTDDHGg9cGwTfrKg==}
 
   redis-parser@3.0.0:
     resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
@@ -8762,6 +8798,22 @@ snapshots:
     dependencies:
       '@brillout/import': 0.2.3
       '@brillout/picocolors': 1.0.15
+
+  '@bull-board/api@6.7.9(@bull-board/ui@6.7.9)':
+    dependencies:
+      '@bull-board/ui': 6.7.9
+      redis-info: 3.1.0
+
+  '@bull-board/hono@6.7.9':
+    dependencies:
+      '@bull-board/api': 6.7.9(@bull-board/ui@6.7.9)
+      '@bull-board/ui': 6.7.9
+      ejs: 3.1.10
+      hono: 4.6.14
+
+  '@bull-board/ui@6.7.9':
+    dependencies:
+      '@bull-board/api': 6.7.9(@bull-board/ui@6.7.9)
 
   '@csstools/color-helpers@5.0.1': {}
 
@@ -12441,6 +12493,10 @@ snapshots:
       minimatch: 9.0.1
       semver: 7.6.3
 
+  ejs@3.1.10:
+    dependencies:
+      jake: 10.9.2
+
   electron-to-chromium@1.5.76: {}
 
   emoji-regex@10.4.0: {}
@@ -12781,6 +12837,10 @@ snapshots:
   fd-slicer@1.1.0:
     dependencies:
       pend: 1.2.0
+
+  filelist@1.0.4:
+    dependencies:
+      minimatch: 5.1.6
 
   fill-range@7.1.1:
     dependencies:
@@ -13387,6 +13447,13 @@ snapshots:
       '@isaacs/cliui': 8.0.2
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
+
+  jake@10.9.2:
+    dependencies:
+      async: 3.2.6
+      chalk: 4.1.2
+      filelist: 1.0.4
+      minimatch: 3.1.2
 
   jiti@1.21.7: {}
 
@@ -15034,6 +15101,10 @@ snapshots:
       strip-indent: 4.0.0
 
   redis-errors@1.2.0: {}
+
+  redis-info@3.1.0:
+    dependencies:
+      lodash: 4.17.21
 
   redis-parser@3.0.0:
     dependencies:

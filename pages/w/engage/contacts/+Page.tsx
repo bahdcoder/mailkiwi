@@ -28,13 +28,10 @@ import * as React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 import type { PageContext } from 'vike/types'
 
-import {
-  ContactWithTagsAndProperties,
-  type Segment,
-  type Tag,
-} from '@/database/database_schema_types.js'
+import type { Segment, Tag } from '@/database/database_schema_types.js'
 import { EmptyState } from '@/pages/components/empty-state/empty_state.jsx'
 import { ImportContactsDialog } from '@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
+import { formatCount } from '@/pages/utils/number_formatter.js'
 
 const filterOperationLabels: Record<string, string> = {
   eq: 'Is',
@@ -220,7 +217,6 @@ function ContactsPage() {
   const {
     table,
     onClearFilters,
-    tagNames,
     setFilters,
     setDeletedFilters,
     setSearch,
@@ -319,7 +315,7 @@ function ContactsPage() {
 
       <div className="mt-4 border-t border-b border-[var(--black-5)] h-12 box-border pl-6 flex items-center justify-between">
         <Text className="kb-content-tertiary" data-testid="w-contacts-filters-showing">
-          Showing {startOfPage}-{endOfPage} of {data?.total ?? 0} contacts
+          Showing {startOfPage}-{endOfPage} of {formatCount(data?.total ?? 0)} contacts
         </Text>
 
         <NewContactProperty />
