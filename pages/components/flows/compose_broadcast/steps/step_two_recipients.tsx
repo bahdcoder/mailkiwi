@@ -1,3 +1,4 @@
+import { getProgressBarVariant } from '@/pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
 import { DisplayedFilterCondition } from '@/pages/components/filters/displayed-filter-conditions.jsx'
 import { SlashesDivider } from '@/pages/components/flows/compose_broadcast/components/slashes_divider.jsx'
 import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
@@ -38,6 +39,17 @@ export function StepTwoRecipients() {
 
   const hasEnoughCredits =
     ctx.team?.totalAvailableCredits >= (getBroadcastRecipientsCount?.data?.total ?? 0)
+
+  const additionalCreditsNeeded = hasEnoughCredits
+    ? 0
+    : (getBroadcastRecipientsCount?.data?.total ?? 0) - ctx.team?.totalAvailableCredits
+
+  const percentageOfAdditionalCreditsRequired =
+    (additionalCreditsNeeded / ctx.team?.totalAvailableCredits) * 100
+
+  const percentageOfCreditsConsumed =
+    ((getBroadcastRecipientsCount?.data?.total ?? 0) / ctx.team?.totalAvailableCredits) *
+    100
 
   return (
     <div className="w-full max-w-[480px] mx-auto pt-16">
@@ -81,42 +93,58 @@ export function StepTwoRecipients() {
       <SlashesDivider />
 
       <div className="flex flex-col my-5">
-        <Progress value={73} />
-        <div className="w-full flex items-center justify-between mt-2">
-          <Text size="md" className="kb-content-tertiary flex items-center">
-            Using {getBroadcastRecipientsCount?.data?.total} email credits{' '}
-            {getBroadcastRecipientsCount.isLoading ? <Spinner className="ml-1" /> : null}
-          </Text>
-          <Text size="md" className="kb-content-tertiary">
-            {formatCount(ctx.team?.totalAvailableCredits)} total email credits
-          </Text>
-        </div>
-        {false ? (
+        {hasEnoughCredits ? (
+          <Progress
+            value={percentageOfCreditsConsumed}
+            variant={getProgressBarVariant(percentageOfCreditsConsumed)}
+          />
+        ) : null}
+
+        {!hasEnoughCredits ? (
           <>
             <div className="flex items-center gap-px">
-              <Progress value={100} />
+              <div className="w-full flex-grow">
+                <Progress value={100} />
+              </div>
               <MinusIcon className="transform rotate-90" />
-              <Progress value={100} variant="error" />
+              <div
+                className="w-full"
+                style={{ width: `${percentageOfAdditionalCreditsRequired}%` }}
+              >
+                <Progress value={100} variant="error" />
+              </div>
+            </div>
+            <div className="w-full flex items-center justify-between mb-6">
+              <Text size="md" className="kb-content-tertiary flex items-center">
+                Using {formatCount(getBroadcastRecipientsCount?.data?.total ?? 0)} email
+                credits{' '}
+                {getBroadcastRecipientsCount.isLoading ? (
+                  <Spinner className="ml-1" />
+                ) : null}
+              </Text>
+              <Text size="md" className="kb-content-tertiary">
+                {formatCount(ctx.team?.totalAvailableCredits ?? 0)} total email credits
+              </Text>
             </div>
           </>
         ) : null}
+        {!hasEnoughCredits ? (
+          <Alert.Root variant="warning">
+            <Alert.Icon>
+              <WarningTriangleSolidIcon />
+            </Alert.Icon>
+            <Alert.Title className="font-semibold">Low on email credits</Alert.Title>
+            <Text>
+              To send this broadcast, you need an additional{' '}
+              {formatCount(additionalCreditsNeeded)} email credits. Please refill your
+              email credits before proceedin.
+            </Text>
+            <Button variant="tertiary" className="pl-0 underline">
+              Get more email credits
+            </Button>
+          </Alert.Root>
+        ) : null}
       </div>
-
-      {!hasEnoughCredits ? (
-        <Alert.Root variant="warning">
-          <Alert.Icon>
-            <WarningTriangleSolidIcon />
-          </Alert.Icon>
-          <Alert.Title className="font-semibold">Low on email credits</Alert.Title>
-          <Text>
-            To send this broadcast, you need an additional 23,000 email credits. Please
-            refill your email credits before proceedin.
-          </Text>
-          <Button variant="tertiary" className="pl-0 underline">
-            Get more email credits
-          </Button>
-        </Alert.Root>
-      ) : null}
     </div>
   )
 }

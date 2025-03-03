@@ -29,8 +29,6 @@ export function ComposeBroadcastPreview() {
     }
   }
 
-  console.log(previewQuery.data)
-
   return (
     <Dialog.Root onOpenChange={onDialogOpenChange}>
       <Dialog.Trigger>

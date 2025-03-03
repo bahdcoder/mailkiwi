@@ -13,7 +13,7 @@ function EngageLayout({ children }: React.PropsWithChildren) {
 
     if (pathname.includes('contacts')) return 'contacts'
 
-    if (pathname.includes('automations')) return 'automations'
+    if (pathname.includes('flows')) return 'flows'
 
     return 'broadcasts'
   }
@@ -48,8 +48,8 @@ function EngageLayout({ children }: React.PropsWithChildren) {
                 <Tabs.Trigger asChild value="contacts" className="px-0">
                   <a href={route('engage_contacts')}>Contacts</a>
                 </Tabs.Trigger>
-                <Tabs.Trigger asChild value="automations" className="px-0">
-                  <a href={route('engage_automations')}>Automations</a>
+                <Tabs.Trigger asChild value="flows" className="px-0">
+                  <a href={route('engage_automations')}>Flows</a>
                 </Tabs.Trigger>
                 <Tabs.Indicator />
               </Tabs.List>

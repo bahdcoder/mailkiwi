@@ -31,6 +31,7 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button
+          type="button"
           id={`${rootId}-dropdown-menu-trigger`}
           data-testid={`${rootId}-dropdown-menu-trigger`}
           className="flex-grow flex items-center border transition ease-in-out border-transparent hover:bg-[var(--background-hover)] focus:outline-none focus-within:border-[var(--border-focus)] p-1 rounded-lg"

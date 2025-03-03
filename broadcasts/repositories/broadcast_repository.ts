@@ -1,10 +1,11 @@
-import { eq, sql } from 'drizzle-orm'
+import { and, eq, type SQLWrapper } from 'drizzle-orm'
 import { alias } from 'drizzle-orm/mysql-core'
 
 import type { CreateBroadcastDto } from '@/broadcasts/dto/create_broadcast_dto.js'
 
 import type { DrizzleClient } from '@/database/client.js'
 import type {
+  Broadcast,
   BroadcastWithEmailContent,
   EmailContent,
   UpdateSetBroadcastInput,
@@ -13,6 +14,7 @@ import {
   abTestVariants,
   audiences,
   broadcasts,
+  contacts,
   emailContents,
   segments,
 } from '@/database/schema.js'
@@ -21,6 +23,10 @@ import { makeDatabase } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
 import { DateTime } from 'luxon'
 import { hasOne } from '@/database/utils/relationships.js'
+import { container } from '@/utils/typi.js'
+import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
+import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 
 export class BroadcastRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -136,5 +142,33 @@ export class BroadcastRepository extends BaseRepository {
       },
       where: eq(broadcasts.teamId, teamId),
     })
+  }
+
+  async getTotalRecipients(broadcast: Broadcast) {
+    const segmentQueryConditions: SQLWrapper[] = []
+
+    if (broadcast.segmentId) {
+      const segment = await container
+        .make(SegmentRepository)
+        .findById(broadcast.segmentId)
+      const audience = await container
+        .make(AudienceRepository)
+        .findById(broadcast.audienceId)
+
+      if (segment && audience) {
+        segmentQueryConditions.push(
+          new SegmentBuilder(segment.filterGroups, audience).build(),
+        )
+      }
+    }
+
+    const recipients = await this.database
+      .select({ id: contacts.id })
+      .from(contacts)
+      .where(
+        and(eq(contacts.audienceId, broadcast.audienceId), ...segmentQueryConditions),
+      )
+
+    return recipients
   }
 }

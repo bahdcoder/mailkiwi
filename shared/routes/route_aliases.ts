@@ -50,7 +50,7 @@ export const aliases = {
   engage_welcome: w('engage/welcome'),
   engage_onboarding: w('engage/onboarding'),
   engage_contacts: w('engage/contacts'),
-  engage_automations: w('engage/automations'),
+  engage_automations: w('engage/flows'),
 
   // single letter pages
   engage_overview: w('engage/broadcasts/:uuid/'),
@@ -87,6 +87,10 @@ export const aliases = {
 
   // media
   add_media_documents: '/media-documents',
+
+  // automations
+  create_automation: '/audiences/:audienceId/automations',
+  automation_composer: w('engage/flows/:uuid/composer'),
 } as const
 
 export function route(

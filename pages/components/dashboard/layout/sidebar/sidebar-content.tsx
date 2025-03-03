@@ -24,6 +24,18 @@ interface SidebarContentProps {
   rootId: string
 }
 
+export function getProgressBarVariant(percentageSpent: number): ProgressProps['variant'] {
+  if (percentageSpent > 80) {
+    return 'error'
+  }
+
+  if (percentageSpent > 50) {
+    return 'warning'
+  }
+
+  return 'info'
+}
+
 export function SidebarContent({ rootId }: SidebarContentProps) {
   const ctx = usePageContext()
   const { setSidebar } = useApplicationLayoutContext('Sidebar')
@@ -42,18 +54,6 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
     (ctx.team?.totalConsumedCredits / ctx.team?.totalAvailableCredits) * 100,
     2,
   )
-
-  function getProgressBarVariant(): ProgressProps['variant'] {
-    if (percentageSpent > 80) {
-      return 'error'
-    }
-
-    if (percentageSpent > 50) {
-      return 'warning'
-    }
-
-    return 'info'
-  }
 
   return (
     <>
@@ -151,7 +151,7 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
         <Progress
           value={percentageSpent}
           className="flex-shrink-0"
-          variant={getProgressBarVariant()}
+          variant={getProgressBarVariant(percentageSpent)}
         />
 
         <Text className="kb-content-tertiary">

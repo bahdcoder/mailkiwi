@@ -39,7 +39,7 @@ export class AutomationController extends BaseController {
 
     const automation = await action.handle(data, ctx.req.param('audienceId'))
 
-    return ctx.json(automation)
+    return this.response(ctx).json(automation).send()
   }
 
   async createStep(ctx: HonoContext) {
@@ -55,6 +55,6 @@ export class AutomationController extends BaseController {
       .resolve(CreateAutomationStepAction)
       .handle(automationId, data)
 
-    return ctx.json(step, 201)
+    return this.response(ctx).json(step).send()
   }
 }

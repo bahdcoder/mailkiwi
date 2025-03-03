@@ -29,6 +29,7 @@ import type { HonoContext } from '@/shared/server/types.js'
 
 import { container } from '@/utils/typi.js'
 import { RenderBroadcastContentAction } from '@/broadcasts/actions/render_broadcast_content_action.js'
+import { TeamCreditRepository } from '@/teams/repositories/team_credit_repository.js'
 
 export class BroadcastController extends BaseController {
   constructor(
@@ -198,6 +199,23 @@ export class BroadcastController extends BaseController {
     })
 
     if (!success) throw E_VALIDATION_FAILED(issues)
+
+    const availableCredits = await container
+      .make(TeamCreditRepository)
+      .totalAvailableCredits(ctx.team?.id)
+
+    const broadcastRecipients = await container
+      .make(BroadcastRepository)
+      .getTotalRecipients(broadcast)
+
+    if (availableCredits < broadcastRecipients.length) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: 'Not enough credits to send this broadcast.',
+          field: 'credits',
+        },
+      ])
+    }
 
     if (broadcast.isAbTest) {
       const validations = await Promise.all(
