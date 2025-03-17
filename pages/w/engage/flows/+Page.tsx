@@ -18,15 +18,15 @@ function EngageAutomationsPage() {
     </EmptyState>
   )
 
-  return (
-    <Tabs.Content value="automations">
-      {[1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((_) => (
-        <p key={_} className="my-6 kb-content-secondary">
-          Automations here
-        </p>
-      ))}
-    </Tabs.Content>
-  )
+  // return (
+  //   <Tabs.Content value="automations">
+  //     {[1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((_) => (
+  //       <p key={_} className="my-6 kb-content-secondary">
+  //         Automations here
+  //       </p>
+  //     ))}
+  //   </Tabs.Content>
+  // )
 }
 
 export { EngageAutomationsPage as Page }

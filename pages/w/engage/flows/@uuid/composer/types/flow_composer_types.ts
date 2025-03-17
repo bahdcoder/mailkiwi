@@ -6,17 +6,10 @@ export type AutomationStepNodeType = {
   label: string
   type: AutomationStep['type']
   subtype: AutomationStep['subtype']
-  edgePositions?: {
-    [edgeId: string]: 'left' | 'right'
-  }
 }
 
 export type AutomationStepNode = Node<AutomationStepNodeType>
 
 export type AutomationStepEdge = Edge<{
-  id: string
-  label: string
-  source: string
-  target: string
   position?: 'left' | 'right'
 }>

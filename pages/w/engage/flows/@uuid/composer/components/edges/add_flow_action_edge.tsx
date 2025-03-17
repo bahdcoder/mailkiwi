@@ -69,12 +69,14 @@ export function AddFlowActionEdge({ id, sourceX, sourceY, targetX, targetY }: Ed
         source: currentEdge.source,
         target: newNodeId,
         type: 'default',
+        data: currentEdge.data, // Preserve the original edge's data including position
       },
       {
         id: `${newNodeId}-${currentEdge.target}`,
         source: newNodeId,
         target: currentEdge.target,
         type: 'default',
+        data: currentEdge.data, // Preserve the original edge's data including position
       },
     ] as AutomationStepEdge[]
 

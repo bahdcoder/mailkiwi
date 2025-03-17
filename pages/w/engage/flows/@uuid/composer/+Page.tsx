@@ -89,12 +89,18 @@ function EngageCreateFlowPage() {
           source: '1',
           target: '2',
           type: 'default',
+          data: {
+            position: 'left'
+          }
         },
         {
           id: '1-3',
           source: '1',
           target: '3',
           type: 'default',
+          data: {
+            position: 'right'
+          }
         },
       ],
     })
