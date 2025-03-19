@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNodesState, useEdgesState } from '@xyflow/react'
 import type {
   AutomationStepEdge,
@@ -18,13 +18,44 @@ export const getLayoutedElements = (
     return { nodes, edges }
   }
 
-  const firstNode = window.document?.querySelector(`[data-id="${nodes[0].id}"]`)
+  // Define standard dimensions for different node types
+  const nodeDimensions = new Map<string, { width: number; height: number }>()
 
-  if (!firstNode) {
-    return { nodes, edges }
+  // Set default dimensions for all nodes
+  const defaultDimensions = { width: 200, height: 100 }
+
+  // Apply dimensions based on node type
+  for (const node of nodes) {
+    // Try to get dimensions from DOM first (for already rendered nodes)
+    const nodeElement = window.document?.querySelector(`[data-id="${node.id}"]`)
+    if (nodeElement) {
+      const rect = nodeElement.getBoundingClientRect()
+      // Only use DOM dimensions if they seem valid (non-zero)
+      if (rect.width > 10 && rect.height > 10) {
+        nodeDimensions.set(node.id, {
+          width: rect.width,
+          height: rect.height,
+        })
+        continue
+      }
+    }
+
+    // Fallback to type-based dimensions if DOM measurement fails
+    switch (node.type) {
+      case 'automationTrigger':
+        nodeDimensions.set(node.id, { width: 230, height: 80 })
+        break
+      case 'ifElseRule':
+        nodeDimensions.set(node.id, { width: 280, height: 120 })
+        break
+      case 'sendEmailAction':
+        nodeDimensions.set(node.id, { width: 250, height: 100 })
+        break
+      default:
+        // For any other node type, use the default dimensions
+        nodeDimensions.set(node.id, { ...defaultDimensions })
+    }
   }
-
-  const { width, height } = firstNode.getBoundingClientRect()
 
   // Create a map to store node positions
   const nodePositions = new Map<string, { x: number; y: number }>()
@@ -62,28 +93,25 @@ export const getLayoutedElements = (
     nodes.find((node) => !edges.some((edge) => edge.target === node.id))?.id ||
     nodes[0].id
 
-  // Set position for root node
+  // Set position for root node - center it horizontally
   const rootX = 0
   const rootY = 0
   nodePositions.set(rootNodeId, { x: rootX, y: rootY })
 
-  // Calculate appropriate spacing
-  const horizontalSpacing = Math.max(width * 2, 200)
-  const verticalSpacing = Math.max(height * 2, 150)
-
   // Position all nodes in the tree
-  positionNodesInTree(rootNodeId, rootX, rootY, horizontalSpacing, verticalSpacing)
+  positionNodesInTree(rootNodeId, rootX, rootY)
 
   // Function to position nodes in a tree structure
-  function positionNodesInTree(
-    nodeId: string,
-    x: number,
-    y: number,
-    horizontalSpacing: number,
-    verticalSpacing: number,
-  ) {
+  function positionNodesInTree(nodeId: string, x: number, y: number) {
     const childrenMap = nodeChildrenMap.get(nodeId)
     if (!childrenMap) return
+
+    // Get current node dimensions
+    const currentNodeDimensions = nodeDimensions.get(nodeId) || defaultDimensions
+
+    // Calculate appropriate spacing based on current node dimensions
+    const horizontalSpacing = Math.max(currentNodeDimensions.width * 1.5, 150)
+    const verticalSpacing = Math.max(currentNodeDimensions.height * 2, 150)
 
     const nextY = y + verticalSpacing
 
@@ -104,9 +132,9 @@ export const getLayoutedElements = (
       }
 
       if (childId) {
-        // Position the single child directly below its parent
+        // Position the single child directly below its parent, ensuring exact alignment
         nodePositions.set(childId, { x, y: nextY })
-        positionNodesInTree(childId, x, nextY, horizontalSpacing, verticalSpacing)
+        positionNodesInTree(childId, x, nextY)
         return
       }
     }
@@ -116,19 +144,27 @@ export const getLayoutedElements = (
     // Position left children
     if (childrenMap.left.length > 0) {
       // Calculate starting position for left children
-      let leftX = x - horizontalSpacing
+      const leftChildId = childrenMap.left[0]
+      const leftChildDimensions = nodeDimensions.get(leftChildId) || defaultDimensions
+      const parentDimensions = nodeDimensions.get(nodeId) || defaultDimensions
+
+      // Calculate offset considering both parent and child widths
+      const leftOffset =
+        (parentDimensions.width + leftChildDimensions.width) / 2 + horizontalSpacing / 2
+      let leftX = x - leftOffset
 
       // If there's only one left child, position it directly to the left
       if (childrenMap.left.length === 1) {
-        const childId = childrenMap.left[0]
-        nodePositions.set(childId, { x: leftX, y: nextY })
-        positionNodesInTree(childId, leftX, nextY, horizontalSpacing, verticalSpacing)
+        nodePositions.set(leftChildId, { x: leftX, y: nextY })
+        positionNodesInTree(leftChildId, leftX, nextY)
       } else {
         // Multiple left children, distribute them
         for (const childId of childrenMap.left) {
+          const childDimensions = nodeDimensions.get(childId) || defaultDimensions
           nodePositions.set(childId, { x: leftX, y: nextY })
-          positionNodesInTree(childId, leftX, nextY, horizontalSpacing, verticalSpacing)
-          leftX -= horizontalSpacing
+          positionNodesInTree(childId, leftX, nextY)
+          // Adjust spacing based on child width
+          leftX -= horizontalSpacing + childDimensions.width / 2
         }
       }
     }
@@ -136,19 +172,27 @@ export const getLayoutedElements = (
     // Position right children
     if (childrenMap.right.length > 0) {
       // Calculate starting position for right children
-      let rightX = x + horizontalSpacing
+      const rightChildId = childrenMap.right[0]
+      const rightChildDimensions = nodeDimensions.get(rightChildId) || defaultDimensions
+      const parentDimensions = nodeDimensions.get(nodeId) || defaultDimensions
+
+      // Calculate offset considering both parent and child widths
+      const rightOffset =
+        (parentDimensions.width + rightChildDimensions.width) / 2 + horizontalSpacing / 2
+      let rightX = x + rightOffset
 
       // If there's only one right child, position it directly to the right
       if (childrenMap.right.length === 1) {
-        const childId = childrenMap.right[0]
-        nodePositions.set(childId, { x: rightX, y: nextY })
-        positionNodesInTree(childId, rightX, nextY, horizontalSpacing, verticalSpacing)
+        nodePositions.set(rightChildId, { x: rightX, y: nextY })
+        positionNodesInTree(rightChildId, rightX, nextY)
       } else {
         // Multiple right children, distribute them
         for (const childId of childrenMap.right) {
+          const childDimensions = nodeDimensions.get(childId) || defaultDimensions
           nodePositions.set(childId, { x: rightX, y: nextY })
-          positionNodesInTree(childId, rightX, nextY, horizontalSpacing, verticalSpacing)
-          rightX += horizontalSpacing
+          positionNodesInTree(childId, rightX, nextY)
+          // Adjust spacing based on child width
+          rightX += horizontalSpacing + childDimensions.width / 2
         }
       }
     }
@@ -163,15 +207,36 @@ export const getLayoutedElements = (
       ) {
         const childId = childrenMap.other[0]
         nodePositions.set(childId, { x, y: nextY })
-        positionNodesInTree(childId, x, nextY, horizontalSpacing, verticalSpacing)
+        positionNodesInTree(childId, x, nextY)
       } else {
         // Multiple other children or there are also left/right children, distribute them evenly
-        const startX = x - ((childrenMap.other.length - 1) * horizontalSpacing) / 2
+        // Calculate total width needed for all children
+        let totalWidth = 0
+        const childWidths: number[] = []
+
+        for (const childId of childrenMap.other) {
+          const childDimensions = nodeDimensions.get(childId) || defaultDimensions
+          childWidths.push(childDimensions.width)
+          totalWidth += childDimensions.width
+        }
+
+        // Add spacing between nodes
+        totalWidth += (childrenMap.other.length - 1) * horizontalSpacing
+
+        // Calculate starting X position to center the group
+        let currentX = x - totalWidth / 2
 
         childrenMap.other.forEach((childId, index) => {
-          const childX = startX + index * horizontalSpacing
-          nodePositions.set(childId, { x: childX, y: nextY })
-          positionNodesInTree(childId, childX, nextY, horizontalSpacing, verticalSpacing)
+          const childDimensions = nodeDimensions.get(childId) || defaultDimensions
+          // Position the node and account for its width
+          nodePositions.set(childId, {
+            x: currentX + childDimensions.width / 2,
+            y: nextY,
+          })
+          positionNodesInTree(childId, currentX + childDimensions.width / 2, nextY)
+
+          // Move to the next position
+          currentX += childDimensions.width + horizontalSpacing
         })
       }
     }
@@ -195,19 +260,68 @@ export function useReactFlowNodes({
 }: UseReactFlowNodesProps = {}) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [isInitialLayoutDone, setIsInitialLayoutDone] = useState(false)
+  const layoutTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: We only need this to execute once, when the component renders and we receive initial props
-  React.useEffect(() => {
-    const layoutedNodesAndEdges = getLayoutedElements(nodes, edges)
-    setNodes(layoutedNodesAndEdges.nodes)
-    setEdges(layoutedNodesAndEdges.edges)
-  }, [setNodes, setEdges])
+  // Clear any existing timeout to prevent multiple layout calculations
+  const clearLayoutTimeout = () => {
+    if (layoutTimeoutRef.current) {
+      clearTimeout(layoutTimeoutRef.current)
+      layoutTimeoutRef.current = null
+    }
+  }
+
+  // Debounced layout calculation function
+  const calculateLayout = useCallback(
+    (delay = 100) => {
+      clearLayoutTimeout()
+
+      layoutTimeoutRef.current = setTimeout(() => {
+        const layoutedNodesAndEdges = getLayoutedElements(nodes, edges)
+        setNodes(layoutedNodesAndEdges.nodes)
+        setEdges(layoutedNodesAndEdges.edges)
+      }, delay)
+    },
+    [nodes, edges, setNodes, setEdges],
+  )
+
+  // Initial layout when component mounts
+  useEffect(() => {
+    if (!isInitialLayoutDone && nodes.length > 0) {
+      const layoutedNodesAndEdges = getLayoutedElements(nodes, edges)
+      setNodes(layoutedNodesAndEdges.nodes)
+      setEdges(layoutedNodesAndEdges.edges)
+      setIsInitialLayoutDone(true)
+
+      // Add a delayed layout refresh to ensure nodes are properly positioned after rendering
+      // but only do this once during initialization
+      layoutTimeoutRef.current = setTimeout(() => {
+        const refreshedLayout = getLayoutedElements(nodes, edges)
+        setNodes(refreshedLayout.nodes)
+        setEdges(refreshedLayout.edges)
+      }, 300) // Reduced from 500ms to 300ms for faster response
+    }
+
+    return clearLayoutTimeout
+  }, [nodes, edges, setNodes, setEdges, isInitialLayoutDone])
+
+  // Add another effect that runs when nodes or edges change significantly
+  // This uses the length as a dependency to avoid running on every minor change
+  useEffect(() => {
+    if (
+      isInitialLayoutDone &&
+      nodes.length > 0 &&
+      window.document.querySelector(`[data-id="${nodes[0].id}"]`)
+    ) {
+      calculateLayout(200)
+    }
+
+    return clearLayoutTimeout
+  }, [nodes.length, edges.length, isInitialLayoutDone, calculateLayout])
 
   const refreshLayoutedElements = useCallback(() => {
-    const layoutedNodesAndEdges = getLayoutedElements(nodes, edges)
-    setNodes(layoutedNodesAndEdges.nodes)
-    setEdges(layoutedNodesAndEdges.edges)
-  }, [nodes, edges, setNodes, setEdges])
+    calculateLayout(0) // Immediate calculation
+  }, [calculateLayout])
 
   return {
     nodes,

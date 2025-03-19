@@ -1,2 +1,14 @@
+import { Handle, Position } from '@xyflow/react'
 
-export function TimeDelayRuleNode() { }
+export function TimeDelayRuleNode() {
+  return (
+    <>
+      <div className="w-[300px] box-border p-4 bg-violet-500 text-white">
+        Time delay rule node
+      </div>
+
+      <Handle type="target" position={Position.Top} />
+      <Handle type="source" position={Position.Bottom} />
+    </>
+  )
+}
