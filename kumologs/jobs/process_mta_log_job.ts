@@ -1,25 +1,28 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { EmailSendEventRepository } from '@/email_sends/repositories/email_send_event_repository.js'
-import { EmailSendRepository } from '@/email_sends/repositories/email_send_repository.js'
-import { SendingSourceRepository } from '@/settings/repositories/sending_source_repository.js'
-import { Reader as MaxMindReader } from '@maxmind/geoip2-node'
-import { DateTime } from 'luxon'
-import { resolve } from 'node:path'
-import { UAParser } from 'ua-parser-js'
+import { appEnv } from "@/app/env/app_env.js"
+import { EmailSendEventRepository } from "@/email_sends/repositories/email_send_event_repository.js"
+import { EmailSendRepository } from "@/email_sends/repositories/email_send_repository.js"
+import { SendingSourceRepository } from "@/settings/repositories/sending_source_repository.js"
+import { Reader as MaxMindReader } from "@maxmind/geoip2-node"
+import { DateTime } from "luxon"
+import { resolve } from "node:path"
+import { UAParser } from "ua-parser-js"
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
-import type { EmailSend, SendingDomain } from '@/database/database_schema_types.js'
+import type {
+  EmailSend,
+  SendingDomain,
+} from "@/database/database_schema_types.js"
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import type { MtaLog } from '@/shared/types/mta.js'
-import { ipv4AdressFromIpAndPort } from '@/shared/utils/string.js'
+import { makeDatabase } from "@/shared/container/index.js"
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import type { MtaLog } from "@/shared/types/mta.js"
+import { ipv4AdressFromIpAndPort } from "@/shared/utils/string.js"
 
-import { container } from '@/utils/typi.js'
+import { container } from "@/utils/typi.js"
 
 export interface ProcessMtaLogJobPayload {
   log: MtaLog
@@ -27,7 +30,7 @@ export interface ProcessMtaLogJobPayload {
 
 export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
   static get id() {
-    return 'MTA_LOGS::PROCESS_MTA_LOG'
+    return "MTA_LOGS::PROCESS_MTA_LOG"
   }
 
   static get queue() {
@@ -42,22 +45,25 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
       .findById(log.headers[appEnv.emailHeaders.sendingDomainId])
 
     const emailSend = await emailSendRepository.findById(
-      log.headers[appEnv.emailHeaders.emailSendId],
+      log.headers[appEnv.emailHeaders.emailSendId]
     )
 
     if (!emailSend) {
-      return this.fail('Invalid email send ID.')
+      return this.fail("Invalid email send ID.")
     }
 
     const logTypeHandler = new LogTypeHandler(
       container.make(EmailSendEventRepository),
       sendingDomain,
       emailSend,
-      log,
+      log
     )
 
     const handlers: Partial<
-      Record<MtaLog['type'], (emailSendingId: string, log: MtaLog) => Promise<void>>
+      Record<
+        MtaLog["type"],
+        (emailSendingId: string, log: MtaLog) => Promise<void>
+      >
     > = {
       Click: logTypeHandler.handleClickAndOpenEvent,
       Open: logTypeHandler.handleClickAndOpenEvent,
@@ -76,10 +82,10 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
 
 export class LogTypeHandler {
   constructor(
-    protected emailSendEventRepository,
+    protected emailSendEventRepository: EmailSendEventRepository,
     protected sendingDomain: SendingDomain,
     protected emailSend: EmailSend,
-    protected log: MtaLog,
+    protected log: MtaLog
   ) {}
 
   handleDeliveryEvent = async () => {
@@ -118,7 +124,7 @@ export class LogTypeHandler {
     const parsedUserAgent = UAParser(log.user_agent)
 
     const maxMindDatabaseReader = await MaxMindReader.open(
-      resolve(process.cwd(), 'geo', 'cities.mmdb'),
+      resolve(process.cwd(), "geo", "cities.mmdb")
     )
 
     const city = maxMindDatabaseReader.city(log.ip_address)
@@ -142,7 +148,7 @@ export class LogTypeHandler {
         contactId: log?.headers?.[appEnv.emailHeaders.contactId],
         audienceId: log?.headers?.[appEnv.emailHeaders.audienceId],
         broadcastId: log?.headers?.[appEnv.emailHeaders.broadcastId],
-        product: isEngageProduct ? 'engage' : 'send',
+        product: isEngageProduct ? "engage" : "send",
         // location
         originCity: city?.city?.names?.en,
         originCountry: city?.country?.isoCode,
@@ -153,7 +159,7 @@ export class LogTypeHandler {
         const contactId = log?.headers?.[appEnv.emailHeaders.contactId]
         // trigger update to contact
         await contactRepository.transaction(trx).updateById(contactId, {
-          ...(log.type === 'Click'
+          ...(log.type === "Click"
             ? {
                 lastClickedBroadcastEmailLinkAt: DateTime.now().toJSDate(),
                 lastTrackedActivityFrom: city?.country?.isoCode,
@@ -161,7 +167,7 @@ export class LogTypeHandler {
                 lastTrackedActivityUsingBrowser: parsedUserAgent.browser.name,
               }
             : {}),
-          ...(log.type === 'Open'
+          ...(log.type === "Open"
             ? {
                 lastOpenedBroadcastEmailAt: DateTime.now().toJSDate(),
                 lastTrackedActivityFrom: city?.country?.isoCode,
@@ -192,7 +198,7 @@ export class LogTypeHandler {
       contactId: log?.headers?.[appEnv.emailHeaders.contactId],
       audienceId: log?.headers?.[appEnv.emailHeaders.audienceId],
       broadcastId: log?.headers?.[appEnv.emailHeaders.broadcastId],
-      product: 'engage',
+      product: "engage",
     })
   }
 }

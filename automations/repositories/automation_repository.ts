@@ -1,13 +1,14 @@
-import { eq } from 'drizzle-orm'
+import { eq } from "drizzle-orm"
 
-import type { CreateAutomationDto } from '@/automations/dto/create_automation_dto.js'
+import type { CreateAutomationDto } from "@/automations/dto/create_automation_dto.js"
 
-import type { DrizzleClient } from '@/database/client.js'
-import { automationSteps, automations } from '@/database/schema.js'
-import { hasMany } from '@/database/utils/relationships.js'
+import type { DrizzleClient } from "@/database/client.js"
+import { automationSteps, automations } from "@/database/schema.js"
+import { hasMany } from "@/database/utils/relationships.js"
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from "@/shared/container/index.js"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { automationStepSubtypesTriggerMap } from "@/database/types/automations.js"
 
 export class AutomationRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -19,12 +20,12 @@ export class AutomationRepository extends BaseRepository {
     to: automationSteps,
     primaryKey: automations.id,
     foreignKey: automationSteps.automationId,
-    relationName: 'steps',
+    relationName: "steps",
   })
 
   async findById(automationId: string) {
     const [automation] = await this.hasManySteps((query) =>
-      query.where(eq(automations.id, automationId)),
+      query.where(eq(automations.id, automationId))
     )
 
     return automation
@@ -32,9 +33,38 @@ export class AutomationRepository extends BaseRepository {
 
   async create(payload: CreateAutomationDto, audienceId: string) {
     const id = this.cuid()
-    await this.database.insert(automations).values({ id, ...payload, audienceId })
+    const triggerStepId = this.cuid()
+    const endStepId = this.cuid()
 
-    return { id }
+    await this.database.transaction(async (trx) => {
+      await trx.insert(automations).values({ id, ...payload, audienceId })
+
+      await trx.insert(automationSteps).values({
+        id: triggerStepId,
+        type: "TRIGGER",
+        automationId: id,
+        subtype: automationStepSubtypesTriggerMap.TRIGGER_EMPTY,
+        configuration: {
+          filterGroups: {
+            type: "AND",
+            groups: [],
+          },
+          tagIds: [],
+        },
+      })
+
+      await trx.insert(automationSteps).values({
+        id: endStepId,
+        type: "TRIGGER",
+        automationId: id,
+        subtype: "END",
+        configuration: {},
+        status: "ACTIVE",
+        parentId: triggerStepId,
+      })
+    })
+
+    return { id, endStepId, triggerStepId }
   }
 
   async update(payload: CreateAutomationDto, automationId: string) {

@@ -1,10 +1,13 @@
-import { isColumnGripSelected } from './utils'
-import type { MenuProps, ShouldShowProps } from '@/pages/components/tiptap/menus/types'
-import { Icon } from '@/pages/components/tiptap/ui/Icon'
-import * as PopoverMenu from '@/pages/components/tiptap/ui/PopoverMenu'
-import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar'
-import { BubbleMenu as BaseBubbleMenu } from '@tiptap/react'
-import React, { useCallback } from 'react'
+import { isColumnGripSelected } from "./utils.js"
+import type {
+  MenuProps,
+  ShouldShowProps,
+} from "@/pages/components/tiptap/menus/types.js"
+import { Icon } from "@/pages/components/tiptap/ui/Icon.jsx"
+import * as PopoverMenu from "@/pages/components/tiptap/ui/PopoverMenu.jsx"
+import { Toolbar } from "@/pages/components/tiptap/ui/Toolbar.jsx"
+import { BubbleMenu as BaseBubbleMenu } from "@tiptap/react"
+import React, { useCallback } from "react"
 
 export const TableColumnMenu = React.memo(
   ({ editor, appendTo }: MenuProps): JSX.Element => {
@@ -16,7 +19,7 @@ export const TableColumnMenu = React.memo(
 
         return isColumnGripSelected({ editor, view, state, from: from || 0 })
       },
-      [editor],
+      [editor]
     )
 
     const onAddColumnBefore = useCallback(() => {
@@ -42,7 +45,7 @@ export const TableColumnMenu = React.memo(
           },
           offset: [0, 15],
           popperOptions: {
-            modifiers: [{ name: 'flip', enabled: false }],
+            modifiers: [{ name: "flip", enabled: false }],
           },
         }}
         shouldShow={shouldShow}
@@ -69,9 +72,9 @@ export const TableColumnMenu = React.memo(
         </Toolbar.Wrapper>
       </BaseBubbleMenu>
     )
-  },
+  }
 )
 
-TableColumnMenu.displayName = 'TableColumnMenu'
+TableColumnMenu.displayName = "TableColumnMenu"
 
 export default TableColumnMenu

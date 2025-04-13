@@ -1,34 +1,37 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { addDefaultChannelsCommand } from '@/cli/commands/chat/add_default_channels_comand.js'
-import { seedDevSendingSourcesCommand } from '@/cli/commands/seed_dev_sending_sources_command.js'
-import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
-import { DateTime } from 'luxon'
-import Fs from 'node:fs/promises'
-import Path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { v1 } from 'uuid'
+import { appEnv } from "@/app/env/app_env.js"
+import { addDefaultChannelsCommand } from "@/cli/commands/chat/add_default_channels_comand.js"
+import { seedDevSendingSourcesCommand } from "@/cli/commands/seed_dev_sending_sources_command.js"
+import { faker } from "@faker-js/faker"
+import { eq } from "drizzle-orm"
+import { DateTime } from "luxon"
+import Fs from "node:fs/promises"
+import Path from "node:path"
+import { fileURLToPath } from "node:url"
+import { v1 } from "uuid"
 
-import { CreateBroadcastAction } from '@/broadcasts/actions/create_broadcast_action.js'
-import { UpdateBroadcastAction } from '@/broadcasts/actions/update_broadcast_action.js'
+import { CreateBroadcastAction } from "@/broadcasts/actions/create_broadcast_action.js"
+import { UpdateBroadcastAction } from "@/broadcasts/actions/update_broadcast_action.js"
 
-import { CreateAudienceAction } from '@/audiences/actions/audiences/create_audience_action.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
-import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.js'
-import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { CreateTeamAccessTokenAction } from "@/auth/actions/create_team_access_token.js"
+import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
+import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import { AssignSendingSourceToSendingDomainAction } from '@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js'
-import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { AssignSendingSourceToSendingDomainAction } from "@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js"
+import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
-import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
+import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
 
-import { createDatabaseClient, createDrizzleDatabase } from '@/database/client.js'
-import type { Broadcast, Team, User } from '@/database/database_schema_types.js'
+import {
+  createDatabaseClient,
+  createDrizzleDatabase,
+} from "@/database/client.js"
+import type { Broadcast, Team, User } from "@/database/database_schema_types.js"
 import {
   broadcastGroups,
   broadcasts,
@@ -37,14 +40,14 @@ import {
   tagsOnContacts,
   teamMemberships,
   teams,
-} from '@/database/schema.js'
+} from "@/database/schema.js"
 
-import { ContainerKey, makeDatabase } from '@/shared/container/index.js'
+import { ContainerKey, makeDatabase } from "@/shared/container/index.js"
 
-import { createRedisDatabaseInstance } from '@/redis/redis_client.js'
+import { createRedisDatabaseInstance } from "@/redis/redis_client.js"
 
-import { addSecondsToDate } from '@/utils/dates.js'
-import { container } from '@/utils/typi.js'
+import { addSecondsToDate } from "@/utils/dates.js"
+import { container } from "@/utils/typi.js"
 
 const connection = await createDatabaseClient(appEnv.DATABASE_URL)
 const redis = createRedisDatabaseInstance(appEnv.REDIS_URL)
@@ -76,7 +79,7 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
     }),
-    password: 'password',
+    password: "password",
   }
 
   const { user } = await registerUserAction.handle(userDetails)
@@ -89,7 +92,7 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
     {
       name: faker.company.buzzAdjective(),
     },
-    user.id,
+    user.id
   )
 
   await container.make(UserRepository).update(user.id, {
@@ -107,7 +110,7 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
       id,
       name: faker.lorem.words(3),
       teamId: team.id,
-    })),
+    }))
   )
 
   const broadcastIds = []
@@ -118,7 +121,10 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
       slug: faker.lorem.words(3),
     }
 
-    console.log('Creating audience: ', `${audienceIndex}: ${audiencePayload.name}`)
+    console.log(
+      "Creating audience: ",
+      `${audienceIndex}: ${audiencePayload.name}`
+    )
 
     const audience = await container
       .make(AudienceRepository)
@@ -149,7 +155,9 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
         firstName,
         email: faker.internet
           .email({
-            firstName: `${faker.person.firstName()}.${faker.number.int({ max: 50000 })}`,
+            firstName: `${faker.person.firstName()}.${faker.number.int({
+              max: 50000,
+            })}`,
             lastName: faker.person.lastName(),
           })
           .toLowerCase(),
@@ -160,8 +168,8 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
       }))
 
     console.log(
-      'Inserting contacts for audience:',
-      `${mockContacts.length} mock contacts.`,
+      "Inserting contacts for audience:",
+      `${mockContacts.length} mock contacts.`
     )
 
     // create 10 fake tags
@@ -197,20 +205,21 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
         tag.tags.map((tagId) => ({
           tagId,
           contactId: tag.id,
-        })),
+        }))
       )
 
     await database.insert(tagsOnContacts).values(contactsWithTags)
 
     // create a broadcast with complete information
-    const { id: broadcastId } = await container.make(CreateBroadcastAction).handle(
-      {
-        name: faker.commerce.productName(),
-        audienceId: audience.id,
-        broadcastGroupId: faker.helpers.arrayElement(broadcastGroupIds),
-      },
-      team.id,
-    )
+    const { id: broadcastId } = await container
+      .make(CreateBroadcastAction)
+      .handle(
+        {
+          name: faker.commerce.productName(),
+          broadcastGroupId: faker.helpers.arrayElement(broadcastGroupIds),
+        },
+        team.id
+      )
 
     const broadcast = await database.query.broadcasts.findFirst({
       where: eq(broadcasts.id, broadcastId),
@@ -227,19 +236,20 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
         contentHtml: await Fs.readFile(
           Path.resolve(
             Path.dirname(fileURLToPath(import.meta.url)),
-            '..',
-            'tests',
-            'snapshots',
-            'emails',
-            'foundation-emails-2.html',
+            "..",
+            "tests",
+            "snapshots",
+            "emails",
+            "foundation-emails-2.html"
           ),
-          'utf-8',
+          "utf-8"
         ),
         contentText: faker.lorem.paragraphs(12),
       },
       segmentId: undefined,
-      audienceId: undefined,
       sendAt: addSecondsToDate(new Date(), 300).toDateString(),
+      sendingDomainId: undefined,
+      audienceId: undefined,
     })
 
     broadcastIds.push({
@@ -248,26 +258,33 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
     })
   }
 
-  console.log('\n Seeded data ✅ \n')
+  console.log("\n Seeded data ✅ \n")
 
-  const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(team.id)
+  const { apiKey } = await container
+    .make(CreateTeamAccessTokenAction)
+    .handle(team.id)
 
   const { id: sendingDomainId } = await container
     .make(CreateSendingDomainAction)
     .handle(
       { name: `${faker.internet.domainWord()}.${faker.internet.domainName()}` },
-      team.id,
+      team.id
     )
 
   await seedDevSendingSourcesCommand?.handler?.()
 
-  await container.make(SendingDomainRepository).domains().update(sendingDomainId, {
-    returnPathDomainVerifiedAt: DateTime.now().toJSDate(),
-    dkimVerifiedAt: DateTime.now().toJSDate(),
-    trackingDomainVerifiedAt: DateTime.now().toJSDate(),
-  })
+  await container
+    .make(SendingDomainRepository)
+    .domains()
+    .update(sendingDomainId, {
+      returnPathDomainVerifiedAt: DateTime.now().toJSDate(),
+      dkimVerifiedAt: DateTime.now().toJSDate(),
+      trackingDomainVerifiedAt: DateTime.now().toJSDate(),
+    })
 
-  await container.make(AssignSendingSourceToSendingDomainAction).handle(sendingDomainId)
+  await container
+    .make(AssignSendingSourceToSendingDomainAction)
+    .handle(sendingDomainId)
 
   console.dir(
     [
@@ -285,7 +302,7 @@ for (let userIndex = 0; userIndex < 3; userIndex++) {
       audienceIds,
       broadcastIds,
     ],
-    { depth: null },
+    { depth: null }
   )
 
   allUsers.push({ user, team })
@@ -300,12 +317,12 @@ for (const [idx, { user }] of allUsers.entries()) {
       otherUsers.map((otherUser) => ({
         teamId: otherUser.team.id as string,
         userId: user.id as string,
-        role: 'MANAGER' as const,
+        role: "MANAGER" as const,
         email: faker.internet.email(),
-        status: 'ACTIVE' as const,
+        status: "ACTIVE" as const,
         invitedAt: new Date(),
         expiresAt: new Date(),
-      })),
+      }))
     )
 
   console.log(`\nInvited user ${user?.id} to other teams ✅ `)

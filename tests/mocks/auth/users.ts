@@ -1,28 +1,28 @@
-import { createFakeAbTestEmailContent } from '../audiences/email_content.js'
-import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
-import { defaultChannels } from '@/cli/commands/chat/add_default_channels_comand.js'
-import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
-import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
-import { DateTime } from 'luxon'
-import { update } from 'tar'
+import { createFakeAbTestEmailContent } from "../audiences/email_content.js"
+import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
+import { defaultChannels } from "@/cli/commands/chat/add_default_channels_comand.js"
+import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
+import { faker } from "@faker-js/faker"
+import { eq } from "drizzle-orm"
+import { DateTime } from "luxon"
+import { update } from "tar"
 
-import { CreateAudienceAction } from '@/audiences/actions/audiences/create_audience_action.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { CreateAudienceAction } from "@/audiences/actions/audiences/create_audience_action.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
 
-import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
-import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { RegisterUserAction } from "@/auth/actions/register_user_action.js"
+import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import { EmailContentSchemaDto } from '@/content/dto/create_email_content_dto.js'
+import { EmailContentSchemaDto } from "@/content/dto/create_email_content_dto.js"
 
-import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { CreateSendingDomainAction } from "@/sending_domains/actions/create_sending_domain_action.js"
+import { SendingDomainRepository } from "@/sending_domains/repositories/sending_domain_repository.js"
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
+import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import type {
   Team,
@@ -30,13 +30,13 @@ import type {
   User,
   Website,
   WebsiteWithPages,
-} from '@/database/database_schema_types.js'
-import { audiences, broadcastGroups, contacts } from '@/database/schema.js'
+} from "@/database/database_schema_types.js"
+import { audiences, broadcastGroups, contacts } from "@/database/schema.js"
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from "@/shared/container/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-import { container } from '@/utils/typi.js'
+import { container } from "@/utils/typi.js"
 
 export async function createBroadcastForUser(
   user: User,
@@ -52,15 +52,15 @@ export async function createBroadcastForUser(
       fromEmail?: string
       fromName?: string
     }
-  },
+  }
 ) {
   if (!options) {
     options = {}
   }
 
   const response = await makeRequestAsUser(user, {
-    method: 'POST',
-    path: '/broadcasts',
+    method: "POST",
+    path: "/broadcasts",
     body: {
       name: faker.lorem.words(3),
       audienceId,
@@ -75,14 +75,14 @@ export async function createBroadcastForUser(
   }
 
   if (!json.payload.id) {
-    throw new Error('No id in response to create a broadcast')
+    throw new Error("No id in response to create a broadcast")
   }
 
   const { id } = json.payload
 
   if (options?.updateWithValidContent) {
     const updateBroadcastResponse = await makeRequestAsUser(user, {
-      method: 'PUT',
+      method: "PUT",
       path: `/broadcasts/${id}`,
       body: {
         waitingTimeToPickWinner: faker.number.int({
@@ -97,14 +97,14 @@ export async function createBroadcastForUser(
           subject: faker.lorem.words(4),
           previewText: faker.lorem.sentence(),
           contentJson: {
-            type: 'doc',
+            type: "doc",
             content: [
               {
-                type: 'paragraph',
+                type: "paragraph",
                 content: [
                   {
-                    type: 'text',
-                    content: 'Hello world',
+                    type: "text",
+                    content: "Hello world",
                   },
                 ],
               },
@@ -175,7 +175,7 @@ export async function createBroadcastForUser(
 
 export async function createContactsForAudience(
   audienceId: string,
-  contactsCount: number,
+  contactsCount: number
 ) {
   const database = makeDatabase()
   const contactIds = faker.helpers.multiple(cuid, {
@@ -191,15 +191,15 @@ export async function createContactsForAudience(
       .map((_, idx) =>
         createFakeContact(audienceId, {
           id: contactIds[idx],
-        }),
-      ),
+        })
+      )
   )
   await database
     .insert(contacts)
     .values(
       faker.helpers
         .multiple(faker.lorem.word, { count: 23 })
-        .map(() => createFakeContact(otherAudience.id)),
+        .map(() => createFakeContact(otherAudience.id))
     )
 
   return { contactIds }
@@ -229,7 +229,8 @@ export const createUser = async ({
   const { user } = await registerUserAction.handle({
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
-    email: faker.number.int({ min: 0, max: 99 }) + faker.internet.exampleEmail(),
+    email:
+      faker.number.int({ min: 0, max: 99 }) + faker.internet.exampleEmail(),
     emailVerifiedAt: faker.date.past(),
   })
 
@@ -244,17 +245,17 @@ export const createUser = async ({
       channels.map((channel) => ({
         channelId: channel.id,
         userId: user.id,
-      })),
+      }))
     )
 
-  await container.make(UserRepository).update(user.id, { password: 'password' })
+  await container.make(UserRepository).update(user.id, { password: "password" })
 
   const teamRepository = container.resolve(TeamRepository)
   const team = await teamRepository.create(
     {
       name: faker.company.catchPhraseAdjective(),
     },
-    user.id,
+    user.id
   )
   const teamObject = await teamRepository.findById(team.id)
 
@@ -270,7 +271,7 @@ export const createUser = async ({
 
   if (enableCommerceOnTeam) {
     await teamRepository.teams().update(team.id, {
-      commerceProvider: 'paystack',
+      commerceProvider: "paystack",
       commerceProviderAccountId: `acct_${faker.string.uuid()}`,
       commerceProviderConfirmedAt: DateTime.now().toJSDate(),
     })
@@ -281,10 +282,13 @@ export const createUser = async ({
   if (createAudience) {
     const audience = await audienceRepository.create(
       {
-        name: 'Newsletter',
-        slug: `${faker.number.int({ min: 10, max: 100 })}-${faker.lorem.slug()}`,
+        name: "Newsletter",
+        slug: `${faker.number.int({
+          min: 10,
+          max: 100,
+        })}-${faker.lorem.slug()}`,
       },
-      team.id,
+      team.id
     )
 
     audienceId = audience.id
@@ -295,12 +299,11 @@ export const createUser = async ({
       .update(audiences)
       .set({
         knownProperties: [
-          { id: 'age', label: 'Age', type: 'float' },
+          { id: "age", label: "Age", type: "float" },
           {
-            id: 'profession',
-            label: 'Your profession',
-            type: 'enum',
-            options: ['frontend engineer', 'backend engineer', 'fullstack engineer'],
+            id: "profession",
+            label: "Your profession",
+            type: "text",
           },
         ],
       })
@@ -319,7 +322,7 @@ export const createUser = async ({
       broadcastGroupId,
       {
         updateWithValidContent: true,
-      },
+      }
     )
   }
 
@@ -333,38 +336,38 @@ export const createUser = async ({
       registerUserAction.handle({
         firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
-        password: 'password',
+        password: "password",
       }),
       registerUserAction.handle({
         firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
-        password: 'password',
+        password: "password",
       }),
       registerUserAction.handle({
         firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
-        password: 'password',
+        password: "password",
       }),
       registerUserAction.handle({
         firstName: faker.person.fullName(),
         email: faker.internet.exampleEmail(),
-        password: 'password',
+        password: "password",
       }),
     ])
 
     const teamMembershipRepository = container.make(TeamMembershipRepository)
 
     for (const [member, role] of [
-      [administrator, 'ADMINISTRATOR'],
-      [manager, 'MANAGER'],
-      [author, 'AUTHOR'],
-      [guest, 'GUEST'],
+      [administrator, "ADMINISTRATOR"],
+      [manager, "MANAGER"],
+      [author, "AUTHOR"],
+      [guest, "GUEST"],
     ] as const) {
       await teamMembershipRepository.create({
-        status: 'ACTIVE',
+        status: "ACTIVE",
         expiresAt: new Date(),
-        role: role as TeamMembership['role'],
-        email: '',
+        role: role as TeamMembership["role"],
+        email: "",
         userId: member?.user?.id,
         teamId: team.id,
       })
@@ -372,7 +375,9 @@ export const createUser = async ({
 
     const userRepository = container.make(UserRepository)
 
-    administratorUser = (await userRepository.findById(administrator.user.id)) as User
+    administratorUser = (await userRepository.findById(
+      administrator.user.id
+    )) as User
     managerUser = (await userRepository.findById(manager.user.id)) as User
 
     authorUser = (await userRepository.findById(author.user.id)) as User
@@ -392,7 +397,9 @@ export const createUser = async ({
   }
 
   async function findWebsiteWithPages() {
-    const website = await container.make(WebsiteRepository).findByTeamId(team?.id)
+    const website = await container
+      .make(WebsiteRepository)
+      .findByTeamId(team?.id)
 
     if (!website) {
       return undefined

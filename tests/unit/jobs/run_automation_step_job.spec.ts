@@ -1,21 +1,29 @@
-import { faker } from '@faker-js/faker'
-import { and, count, eq, inArray } from 'drizzle-orm'
-import { describe, test, vi } from 'vitest'
+import { faker } from "@faker-js/faker"
+import { and, count, eq, inArray } from "drizzle-orm"
+import { describe, test, vi } from "vitest"
 
-import { RunAutomationStepJob } from '@/automations/jobs/run_automation_step_job.js'
+import { RunAutomationStepJob } from "@/automations/jobs/run_automation_step_job.js"
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { seedAutomation } from '@/tests/mocks/teams/teams.js'
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
+import { createUser } from "@/tests/mocks/auth/users.js"
+import { seedAutomation } from "@/tests/mocks/teams/teams.js"
 
-import { automationSteps, contactAutomationSteps, contacts } from '@/database/schema.js'
+import {
+  automationSteps,
+  contactAutomationSteps,
+  contacts,
+} from "@/database/schema.js"
 
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import * as queues from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import {
+  makeDatabase,
+  makeLogger,
+  makeRedis,
+} from "@/shared/container/index.js"
+import * as queues from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-describe('@run-automation-step job', () => {
-  test('dispatches a run automation step for contact job for each contact at this step', async ({
+describe("@run-automation-step job", () => {
+  test("dispatches a run automation step for contact job for each contact at this step", async ({
     expect,
   }) => {
     const { audience } = await createUser()
@@ -41,8 +49,8 @@ describe('@run-automation-step job', () => {
         .map((_, idx) =>
           createFakeContact(audience.id, {
             id: contactIds[idx],
-          }),
-        ),
+          })
+        )
     )
 
     await database.insert(contacts).values(
@@ -50,23 +58,24 @@ describe('@run-automation-step job', () => {
         .multiple(faker.lorem.word, {
           count: totalContactsNotAtStep,
         })
-        .map(() => createFakeContact(audience.id)),
+        .map(() => createFakeContact(audience.id))
     )
 
-    const automationStepSendEmail = await database.query.automationSteps.findFirst({
-      where: and(
-        eq(automationSteps.automationId, automationId),
-        eq(automationSteps.subtype, 'ACTION_SEND_EMAIL'),
-      ),
-    })
+    const automationStepSendEmail =
+      await database.query.automationSteps.findFirst({
+        where: and(
+          eq(automationSteps.automationId, automationId),
+          eq(automationSteps.subtype, "ACTION_SEND_EMAIL")
+        ),
+      })
 
     // Insert automation steps for contacts before starting to process job.
     await database.insert(contactAutomationSteps).values(
       contactIds.map((contactId) => ({
         contactId,
-        status: 'PENDING' as const,
+        status: "PENDING" as const,
         automationStepId: automationStepSendEmail?.id as string,
-      })),
+      }))
     )
 
     await new RunAutomationStepJob().handle({
@@ -75,12 +84,13 @@ describe('@run-automation-step job', () => {
       payload: {
         automationStepId: automationStepSendEmail?.id as string,
       },
+      logger: makeLogger(),
     })
 
     const jobs = await queues.Queue.automations().getJobs()
 
     const automationsQueueJobs = jobs.filter((job) =>
-      contactIds.includes(job.data.contactId),
+      contactIds.includes(job.data.contactId)
     )
 
     expect(automationsQueueJobs).toHaveLength(totalContacts)

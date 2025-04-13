@@ -1,26 +1,30 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { asc, count, eq } from 'drizzle-orm'
-import { describe, test } from 'vitest'
+import { appEnv } from "@/app/env/app_env.js"
+import { asc, count, eq } from "drizzle-orm"
+import { describe, test } from "vitest"
 
-import { ImportContactsJob } from '@/audiences/jobs/import_contacts_job.js'
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.js"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
-import { setupImport } from '@/tests/integration/audiences/contacts.spec.js'
+import { setupImport } from "@/tests/integration/audiences/contacts.spec.js"
 
-import { audiences, contacts, tagsOnContacts } from '@/database/schema.js'
+import { audiences, contacts, tagsOnContacts } from "@/database/schema.js"
 
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
+import {
+  makeDatabase,
+  makeLogger,
+  makeRedis,
+} from "@/shared/container/index.js"
 
-import { container } from '@/utils/typi.js'
+import { container } from "@/utils/typi.js"
 
-describe('@contacts import job', () => {
-  test('reads the csv content from storage and syncs all values to contacts', async ({
+describe("@contacts import job", () => {
+  test("reads the csv content from storage and syncs all values to contacts", async ({
     expect,
   }) => {
     const { contactImport } = await setupImport(
-      '..' + '/' + '..' + '/' + 'audiences/mocks/contacts.csv',
-      true,
+      ".." + "/" + ".." + "/" + "audiences/mocks/contacts.csv",
+      true
     )
 
     const database = makeDatabase()
@@ -32,6 +36,7 @@ describe('@contacts import job', () => {
       payload: {
         contactImportId: contactImport?.id as string,
       },
+      logger: makeLogger(),
     })
 
     const [{ count: totalContacts }] = await database
@@ -60,30 +65,34 @@ describe('@contacts import job', () => {
     expect(contact.firstName).toBeDefined()
     expect(contact.lastName).toBeDefined()
 
-    const knownPropertiesKeys = audience.knownProperties?.map((property) => property.id)
+    const knownPropertiesKeys = audience.knownProperties?.map(
+      (property) => property.id
+    )
 
     expect(knownPropertiesKeys).toEqual([
-      'age',
-      'profession',
-      'company',
-      'customerId',
-      'index',
-      'city',
-      'phone1',
-      'phone2',
-      'subscriptionDate',
-      'website',
+      "age",
+      "profession",
+      "company",
+      "customerId",
+      "index",
+      "city",
+      "phone1",
+      "phone2",
+      "subscriptionDate",
+      "website",
     ])
 
-    expect(contactWithProperties.properties.map((property) => property.name)).toEqual([
-      'city',
-      'index',
-      'company',
-      'phone1',
-      'phone2',
-      'website',
-      'customerId',
-      'subscriptionDate',
+    expect(
+      contactWithProperties.properties.map((property) => property.name)
+    ).toEqual([
+      "city",
+      "index",
+      "company",
+      "phone1",
+      "phone2",
+      "website",
+      "customerId",
+      "subscriptionDate",
     ])
 
     expect(totalContacts).toEqual(360) // total contacts in test csv file
@@ -93,8 +102,8 @@ describe('@contacts import job', () => {
 
     const tagNames = tags.map((tag) => tag.name)
 
-    expect(tagNames.includes('interested-in-book')).toBe(true)
-    expect(tagNames.includes('ecommerce-prospects')).toBe(true)
+    expect(tagNames.includes("interested-in-book")).toBe(true)
+    expect(tagNames.includes("ecommerce-prospects")).toBe(true)
 
     const [{ count: contactsTags }] = await database
       .select({ count: count() })
@@ -106,12 +115,12 @@ describe('@contacts import job', () => {
   })
 
   test(
-    'when the job fails, it marks the import as failed and sends an email to the customer informing them.',
+    "when the job fails, it marks the import as failed and sends an email to the customer informing them.",
     { timeout: 20000 },
     async ({ expect }) => {
       const { contactImport } = await setupImport(
-        '..' + '/' + '..' + '/' + 'audiences/mocks/contacts-malformed.csv',
-        true,
+        ".." + "/" + ".." + "/" + "audiences/mocks/contacts-malformed.csv",
+        true
       )
 
       const database = makeDatabase()
@@ -123,12 +132,13 @@ describe('@contacts import job', () => {
         payload: {
           contactImportId: contactImport?.id as string,
         },
+        logger: makeLogger(),
       })
       const updatedContactImport = await container
         .make(ContactImportRepository)
         .findById(contactImport?.id as string)
 
-      expect(updatedContactImport?.status).toEqual('FAILED')
-    },
+      expect(updatedContactImport?.status).toEqual("FAILED")
+    }
   )
 })

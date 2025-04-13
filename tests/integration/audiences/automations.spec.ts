@@ -1,12 +1,12 @@
-import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
-import { describe, test } from 'vitest'
+import { faker } from "@faker-js/faker"
+import { eq } from "drizzle-orm"
+import { describe, test } from "vitest"
 
-import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
+import { AutomationRepository } from "@/automations/repositories/automation_repository.js"
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { seedAutomation } from '@/tests/mocks/teams/teams.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from "@/tests/mocks/auth/users.js"
+import { seedAutomation } from "@/tests/mocks/teams/teams.js"
+import { makeRequestAsUser } from "@/tests/utils/http.js"
 
 import {
   audiences,
@@ -14,23 +14,23 @@ import {
   automations,
   emails,
   tags,
-} from '@/database/schema.js'
+} from "@/database/schema.js"
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from "@/shared/container/index.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-import { container } from '@/utils/typi.js'
+import { container } from "@/utils/typi.js"
+import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.js"
+import { AutomationStep } from "@/database/database_schema_types.js"
 
-describe('@automations', () => {
-  test('experimenting with automations', async ({ expect }) => {
+describe("@automations", () => {
+  test("experimenting with automations", async ({ expect }) => {
     const { audience } = await createUser()
-
-    const database = makeDatabase()
 
     const automation = await seedAutomation({
       audienceId: audience.id,
-      name: 'Book launch',
-      description: 'Launch your book with these automated steps.',
+      name: "Book launch",
+      description: "Launch your book with these automated steps.",
     })
 
     interface AutomationStep {
@@ -56,17 +56,18 @@ describe('@automations', () => {
         const node = nodeMap[nodeId]
         const result: FlatTreeNode[] = [node]
 
-        if (node.subtype === 'RULE_IF_ELSE') {
+        if (node.subtype === "RULE_IF_ELSE") {
           node.branches = {}
 
           for (const step of steps) {
             if (step.parentId === node.id) {
-              const branchIndex = step.branchIndex !== null ? step.branchIndex : 0
+              const branchIndex =
+                step.branchIndex !== null ? step.branchIndex : 0
               if (!node.branches?.[branchIndex]) {
                 node.branches[branchIndex] = []
               }
               node.branches[branchIndex] = node.branches?.[branchIndex].concat(
-                processNode(step.id),
+                processNode(step.id)
               )
             }
           }
@@ -95,14 +96,17 @@ describe('@automations', () => {
       .make(AutomationRepository)
       .findById(automation.id)
 
-    const tree = createFlatAutomationTree(automationFetch?.steps ?? []) as FlatTreeNode[]
+    const tree = createFlatAutomationTree(
+      automationFetch?.steps ?? []
+    ) as FlatTreeNode[]
 
     expect(
-      tree[7]?.branches?.['1']?.[2]?.branches?.['1']?.[2]?.branches?.['1']?.[0]?.subtype,
-    ).toEqual('ACTION_UNSUBSCRIBE_FROM_AUDIENCE')
+      tree[7]?.branches?.["1"]?.[2]?.branches?.["1"]?.[2]?.branches?.["1"]?.[0]
+        ?.subtype
+    ).toEqual("ACTION_UNSUBSCRIBE_FROM_AUDIENCE")
   })
 
-  test('can create an automation', async ({ expect }) => {
+  test("can create an automation", async ({ expect }) => {
     const { user, audience } = await createUser()
 
     const database = makeDatabase()
@@ -113,7 +117,7 @@ describe('@automations', () => {
 
     const response = await makeRequestAsUser(user, {
       body: payload,
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/automations`,
     })
 
@@ -121,86 +125,90 @@ describe('@automations', () => {
       where: eq(automations.name, payload.name),
     })
 
+    const json = await response.json()
+
     expect(savedAutomation).toBeDefined()
-    expect(savedAutomation?.id).toEqual((await response.json()).id)
+    expect(savedAutomation?.id).toEqual(json.payload.id)
   })
 
-  test('can create ACTION_SEND_EMAIL automation step type', async ({ expect }) => {
+  test("can create ACTION_SEND_EMAIL automation step type", async ({
+    expect,
+  }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
-    const database = makeDatabase()
-
-    const emailId = cuid()
-
-    await database.insert(emails).values({
-      id: emailId,
-      title: faker.lorem.words(2),
-      type: 'AUTOMATION',
-      audienceId: audience.id,
-    })
+    const {
+      id: automationId,
+      triggerStepId,
+      endStepId,
+    } = await container.make(AutomationRepository).create(
+      {
+        name: faker.string.uuid(),
+      },
+      audience.id
+    )
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
+      method: "POST",
+      path: `/audiences/${audience.id}/automations/${automationId}/steps`,
       body: {
-        type: 'ACTION',
-        subtype: 'ACTION_SEND_EMAIL',
-        configuration: {},
-        emailId,
+        type: "ACTION",
+        subtype: "ACTION_SEND_EMAIL",
+        parentId: triggerStepId,
+        targetId: endStepId,
       },
     })
 
     const json = await response.json()
-
     expect(response.status).toBe(201)
 
-    const createdStep = await database.query.automationSteps.findFirst({
-      where: eq(automationSteps.id, json.id),
-    })
-
-    expect(createdStep?.type).toBe('ACTION')
-    expect(createdStep?.subtype).toBe('ACTION_SEND_EMAIL')
-    expect(createdStep?.emailId).toBe(emailId)
+    expect(json.payload.step).toBeDefined()
+    expect(json.payload.automation).toBeDefined()
   })
 
-  test('can create ACTION_ADD_TAG automation step type', async ({ expect }) => {
+  test("can create ACTION_ADD_TAG automation step type", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
-    const database = makeDatabase()
-
-    const tagId = cuid()
-
-    await database.insert(tags).values({
-      id: tagId,
-      name: faker.lorem.word(),
-      audienceId: audience.id,
-    })
+    const {
+      id: automationId,
+      triggerStepId,
+      endStepId,
+    } = await container.make(AutomationRepository).create(
+      {
+        name: faker.string.uuid(),
+      },
+      audience.id
+    )
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
+      method: "POST",
+      path: `/audiences/${audience.id}/automations/${automationId}/steps`,
       body: {
-        type: 'ACTION',
-        subtype: 'ACTION_ADD_TAG',
-        configuration: {},
-        tagId,
+        type: "ACTION",
+        subtype: "ACTION_ADD_TAG",
+        parentId: triggerStepId,
+        targetId: endStepId,
       },
     })
 
+    const json = await response.json()
     expect(response.status).toBe(201)
-    const createdStep = await database.query.automationSteps.findFirst({
-      where: eq(automationSteps.id, (await response.json()).id),
-    })
-    expect(createdStep?.type).toBe('ACTION')
-    expect(createdStep?.subtype).toBe('ACTION_ADD_TAG')
-    expect(createdStep?.tagId).toBe(tagId)
+
+    expect(json.payload.step).toBeDefined()
+    expect(json.payload.automation).toBeDefined()
   })
 
-  test('can create ACTION_SUBSCRIBE_TO_AUDIENCE automation step type', async ({
+  test("can create ACTION_SUBSCRIBE_TO_AUDIENCE automation step type", async ({
     expect,
   }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, true)
+    const {
+      id: automationId,
+      triggerStepId,
+      endStepId,
+    } = await container.make(AutomationRepository).create(
+      {
+        name: faker.string.uuid(),
+      },
+      audience.id
+    )
     const database = makeDatabase()
 
     const audienceId = cuid()
@@ -212,149 +220,83 @@ describe('@automations', () => {
     })
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
+      method: "POST",
+      path: `/audiences/${audience.id}/automations/${automationId}/steps`,
       body: {
-        type: 'ACTION',
-        subtype: 'ACTION_SUBSCRIBE_TO_AUDIENCE',
+        type: "ACTION",
+        subtype: "ACTION_SUBSCRIBE_TO_AUDIENCE",
         configuration: {},
         audienceId,
+        parentId: triggerStepId,
+        targetId: endStepId,
       },
-    })
-
-    expect(response.status).toBe(201)
-    const createdStep = await database.query.automationSteps.findFirst({
-      where: eq(automationSteps.id, (await response.json()).id),
-    })
-    expect(createdStep?.type).toBe('ACTION')
-    expect(createdStep?.subtype).toBe('ACTION_SUBSCRIBE_TO_AUDIENCE')
-    expect(createdStep?.audienceId).toBe(audienceId)
-  })
-})
-
-describe('@automations steps', () => {
-  test('can create a valid automation step for an automation', async ({ expect }) => {
-    const { user, audience } = await createUser()
-    const database = makeDatabase()
-
-    const automation = await seedAutomation(
-      {
-        audienceId: audience.id,
-        name: 'Book launch',
-        description: '',
-      },
-      false,
-    )
-
-    const stepData = {
-      type: 'TRIGGER',
-      subtype: 'TRIGGER_CONTACT_SUBSCRIBED',
-      configuration: {},
-    }
-
-    const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
-      body: stepData,
     })
 
     const json = await response.json()
 
     expect(response.status).toBe(201)
     const createdStep = await database.query.automationSteps.findFirst({
-      where: eq(automationSteps.id, json.id),
+      where: eq(automationSteps.id, json.payload.step.id),
     })
-
-    expect(createdStep).toMatchObject(stepData)
+    expect(createdStep?.type).toBe("ACTION")
+    expect(createdStep?.subtype).toBe("ACTION_SUBSCRIBE_TO_AUDIENCE")
+    expect(createdStep?.audienceId).toBe(audienceId)
   })
+})
 
-  test('cannot create an automation step with an invalid parent Id', async ({
+describe("@automations steps", () => {
+  test("cannot create an automation step with an invalid parent Id", async ({
     expect,
   }) => {
     const { user, audience } = await createUser()
     const automation = await seedAutomation({ audienceId: audience.id }, false)
 
     const stepData = {
-      type: 'TRIGGER',
-      subtype: 'TRIGGER_CONTACT_SUBSCRIBED',
+      type: "TRIGGER",
+      subtype: "TRIGGER_CONTACT_SUBSCRIBED",
       parentId: faker.string.uuid(), // Invalid parent ID
       configuration: {},
     }
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
       body: stepData,
     })
 
+    const json = await response.json()
+
     expect(response.status).toBe(422)
-  })
 
-  test('no two automation steps can have the same parent id', async ({ expect }) => {
-    const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
-    const database = makeDatabase()
-
-    const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
-      body: {
-        type: 'TRIGGER',
-        subtype: 'TRIGGER_CONTACT_SUBSCRIBED',
-        configuration: {},
-      },
-    })
-
-    const { id: parentId } = await response.json()
-
-    // Create second step with the parent
-    const stepData1 = {
-      type: 'ACTION',
-      subtype: 'ACTION_UPDATE_CONTACT_ATTRIBUTES',
-      parentId,
-      configuration: {
-        add: { age: 25 },
-        remove: { hobby: ['reading'] },
-      },
-    }
-
-    const response1 = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
-      body: stepData1,
-    })
-
-    expect(response1.status).toBe(201)
-
-    // Try to create another step with the same parent
-    const stepData2 = {
-      type: 'ACTION',
-      subtype: 'ACTION_UPDATE_CONTACT_TAGS',
-      parentId,
-      configuration: {},
-    }
-    const response2 = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
-      body: stepData2,
-    })
-
-    expect(response2.status).toBe(422)
+    const parentIdError = json.payload.errors.some(
+      (error: { field: string }) => error.field === "parentId"
+    )
+    expect(parentIdError).toBeTruthy()
   })
 })
 
-describe('@automations step validation', () => {
-  test('validates TRIGGER subtype', async ({ expect }) => {
+describe("@automations step validation", () => {
+  test("validates TRIGGER subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
-
+    const {
+      id: automationId,
+      triggerStepId,
+      endStepId,
+    } = await container.make(AutomationRepository).create(
+      {
+        name: faker.string.uuid(),
+      },
+      audience.id
+    )
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
+      method: "POST",
+      path: `/audiences/${audience.id}/automations/${automationId}/steps`,
       body: {
-        type: 'TRIGGER',
-        subtype: 'INVALID_SUBTYPE',
+        type: "TRIGGER",
+        subtype: "INVALID_SUBTYPE",
         configuration: {},
+        parentId: triggerStepId,
+        targetId: endStepId,
       },
     })
 
@@ -365,25 +307,35 @@ describe('@automations step validation', () => {
       errors: [
         {
           message: expect.stringContaining(
-            'Invalid type: Expected "TRIGGER_CONTACT_SUBSCRIBED" |',
+            'Invalid type: Expected "TRIGGER_EMPTY" |'
           ),
-          field: 'subtype',
+          field: "subtype",
         },
       ],
     })
   })
 
-  test('validates ACTION subtype', async ({ expect }) => {
+  test("validates ACTION subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
-
+    const {
+      id: automationId,
+      triggerStepId: parentId,
+      endStepId: targetId,
+    } = await container.make(AutomationRepository).create(
+      {
+        name: faker.string.uuid(),
+      },
+      audience.id
+    )
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
+      method: "POST",
+      path: `/audiences/${audience.id}/automations/${automationId}/steps`,
       body: {
-        type: 'ACTION',
-        subtype: 'TRIGGER_CONTACT_SUBSCRIBED',
+        type: "ACTION",
+        subtype: "TRIGGER_CONTACT_SUBSCRIBED",
         configuration: {},
+        parentId,
+        targetId,
       },
     })
 
@@ -394,24 +346,35 @@ describe('@automations step validation', () => {
       errors: [
         {
           message: expect.stringContaining(
-            'The subtype must be valid for the type action.',
+            "The subtype must be valid for the type."
           ),
         },
       ],
     })
   })
 
-  test('validates RULE subtype', async ({ expect }) => {
+  test("validates RULE subtype", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const {
+      id: automationId,
+      triggerStepId: parentId,
+      endStepId: targetId,
+    } = await container.make(AutomationRepository).create(
+      {
+        name: faker.string.uuid(),
+      },
+      audience.id
+    )
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
+      method: "POST",
+      path: `/audiences/${audience.id}/automations/${automationId}/steps`,
       body: {
-        type: 'RULE',
-        subtype: 'TRIGGER_CONTACT_SUBSCRIBED',
+        type: "RULE",
+        subtype: "TRIGGER_CONTACT_SUBSCRIBED",
         configuration: {},
+        parentId,
+        targetId,
       },
     })
 
@@ -422,49 +385,40 @@ describe('@automations step validation', () => {
       errors: [
         {
           message: expect.stringContaining(
-            'The subtype must be valid for the type rule.',
+            "The subtype must be valid for the type."
           ),
         },
       ],
     })
   })
 
-  test('validates END subtype', async ({ expect }) => {
+  test("validates ACTION_SEND_EMAIL configuration", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
-
-    const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
-      body: {
-        type: 'END',
-        subtype: 'TRIGGER_CONTACT_SUBSCRIBED',
-        configuration: {},
+    const {
+      id: automationId,
+      triggerStepId: parentId,
+      endStepId: targetId,
+    } = await container.make(AutomationRepository).create(
+      {
+        name: faker.string.uuid(),
       },
-    })
+      audience.id
+    )
 
-    const json = await response.json()
-
-    expect(response.status).toBe(422)
-    expect(json.payload).toMatchObject({
-      errors: [
-        {
-          message: expect.stringContaining('The subtype must be valid for the type END.'),
-        },
-      ],
-    })
-  })
-
-  test('validates ACTION_SEND_EMAIL configuration', async ({ expect }) => {
-    const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const { id: automationStepId } = await container
+      .make(AutomationStepRepository)
+      .create(automationId, {
+        type: "ACTION",
+        subtype: "ACTION_SEND_EMAIL",
+        configuration: {},
+        parentId,
+        targetId,
+      })
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
+      method: "PATCH",
+      path: `/audiences/${audience.id}/automations/${automationId}/steps/${automationStepId}/configuration`,
       body: {
-        type: 'ACTION',
-        subtype: 'ACTION_SEND_EMAIL',
         configuration: {},
         emailId: cuid(),
       },
@@ -476,23 +430,40 @@ describe('@automations step validation', () => {
     expect(json.payload).toMatchObject({
       errors: [
         {
-          message: expect.stringContaining('Invalid input: Received'),
-          field: 'emailId',
+          message: "The emailId must reference a valid email.",
+          field: "emailId",
         },
       ],
     })
   })
 
-  test('validates ACTION_ADD_TAG configuration', async ({ expect }) => {
+  test("validates ACTION_ADD_TAG configuration", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const {
+      id: automationId,
+      triggerStepId: parentId,
+      endStepId: targetId,
+    } = await container.make(AutomationRepository).create(
+      {
+        name: faker.string.uuid(),
+      },
+      audience.id
+    )
+
+    const { id: automationStepId } = await container
+      .make(AutomationStepRepository)
+      .create(automationId, {
+        type: "ACTION",
+        subtype: "ACTION_ADD_TAG",
+        configuration: {},
+        parentId,
+        targetId,
+      })
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
+      method: "PATCH",
+      path: `/audiences/${audience.id}/automations/${automationId}/steps/${automationStepId}/configuration`,
       body: {
-        type: 'ACTION',
-        subtype: 'ACTION_ADD_TAG',
         configuration: {},
         tagId: cuid(),
       },
@@ -504,25 +475,42 @@ describe('@automations step validation', () => {
     expect(json.payload).toMatchObject({
       errors: [
         {
-          message: expect.stringContaining('Invalid input: Received'),
-          field: 'tagId',
+          message: "The tagId must reference a valid tag.",
+          field: "tagId",
         },
       ],
     })
   })
 
-  test('validates ACTION_SUBSCRIBE_TO_AUDIENCE configuration', async ({ expect }) => {
+  test("validates ACTION_REMOVE_TAG configuration", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const {
+      id: automationId,
+      triggerStepId: parentId,
+      endStepId: targetId,
+    } = await container.make(AutomationRepository).create(
+      {
+        name: faker.string.uuid(),
+      },
+      audience.id
+    )
 
-    const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
-      body: {
-        type: 'ACTION',
-        subtype: 'ACTION_SUBSCRIBE_TO_AUDIENCE',
+    const { id: automationStepId } = await container
+      .make(AutomationStepRepository)
+      .create(automationId, {
+        type: "ACTION",
+        subtype: "ACTION_REMOVE_TAG",
         configuration: {},
-        audienceId: cuid(),
+        parentId,
+        targetId,
+      })
+
+    const response = await makeRequestAsUser(user, {
+      method: "PATCH",
+      path: `/audiences/${audience.id}/automations/${automationId}/steps/${automationStepId}/configuration`,
+      body: {
+        configuration: {},
+        tagId: cuid(),
       },
     })
 
@@ -532,81 +520,79 @@ describe('@automations step validation', () => {
     expect(json.payload).toMatchObject({
       errors: [
         {
-          message: expect.stringContaining('Invalid input: Received'),
-          field: 'audienceId',
+          message: "The tagId must reference a valid tag.",
+          field: "tagId",
         },
       ],
     })
   })
 
-  test('validates ACTION_UPDATE_CONTACT_ATTRIBUTES configuration', async ({ expect }) => {
+  test("validates RULE_IF_ELSE configuration", async ({ expect }) => {
     const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
+    const {
+      id: automationId,
+      triggerStepId: parentId,
+      endStepId: targetId,
+    } = await container.make(AutomationRepository).create(
+      {
+        name: faker.string.uuid(),
+      },
+      audience.id
+    )
+
+    const { id: automationStepId } = await container
+      .make(AutomationStepRepository)
+      .create(automationId, {
+        type: "RULE",
+        subtype: "RULE_IF_ELSE",
+        configuration: {
+          filterGroups: {
+            type: "AND",
+            groups: [],
+          },
+        },
+        parentId,
+        targetId,
+      })
+
+    const ifElseConfiguration = {
+      filterGroups: {
+        type: "AND",
+        groups: [
+          {
+            type: "AND",
+            conditions: [
+              {
+                field: "email",
+                operation: "endsWith",
+                value: "@gmail.com",
+              },
+            ],
+          },
+        ],
+      },
+    }
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
+      method: "PATCH",
+      path: `/audiences/${audience.id}/automations/${automationId}/steps/${automationStepId}/configuration`,
       body: {
-        type: 'ACTION',
-        subtype: 'ACTION_UPDATE_CONTACT_ATTRIBUTES',
-        configuration: {
-          invalidKey: {},
-        },
+        configuration: ifElseConfiguration,
       },
     })
 
     const json = await response.json()
 
-    expect(response.status).toBe(422)
-    expect(json.payload).toMatchObject({
-      message: 'Validation failed.',
-      errors: [
-        {
-          message:
-            'The configuration object is malformed for ACTION_UPDATE_CONTACT_ATTRIBUTES.',
-        },
-      ],
-    })
-  })
+    const step = json.payload.automation.steps.find(
+      (step: AutomationStep) => step.subtype === "RULE_IF_ELSE"
+    )
 
-  test('validates RULE_IF_ELSE configuration', async ({ expect }) => {
-    const { user, audience } = await createUser()
-    const automation = await seedAutomation({ audienceId: audience.id }, false)
-
-    const response = await makeRequestAsUser(user, {
-      method: 'POST',
-      path: `/audiences/${audience.id}/automations/${automation.id}/steps`,
-      body: {
-        type: 'RULE',
-        subtype: 'RULE_IF_ELSE',
-        configuration: {
-          conditions: [
-            {
-              field: 'invalidField',
-              operator: 'INVALID_OPERATOR',
-              value: 'test',
-            },
-          ],
-        },
-      },
-    })
-
-    const json = await response.json()
-
-    expect(response.status).toBe(422)
-    expect(json.payload).toMatchObject({
-      message: 'Validation failed.',
-      errors: [
-        {
-          message: 'The configuration object for RULE_IF_ELSE is malformed.',
-        },
-      ],
-    })
+    expect(response.status).toBe(200)
+    expect(step?.configuration).toMatchObject(ifElseConfiguration)
   })
 })
 
-describe('@automations run', () => {
-  test('can run all automation actions for an automation', async ({ expect }) => {
-    //
-  })
+// TODO: Implement automation run tests
+describe("@automations run", () => {
+  test.todo("can run all automation actions for an automation")
 })

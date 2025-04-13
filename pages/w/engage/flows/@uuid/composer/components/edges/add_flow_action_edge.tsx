@@ -1,5 +1,5 @@
 import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
-import { getLayoutedElements } from '@/pages/w/engage/flows/@uuid/composer/hooks/use_react_flow_nodes.js'
+import { getLayoutedElements } from '@/pages/w/engage/flows/@uuid/composer/components/hooks/use_react_flow_nodes.js'
 import type {
   AutomationStepEdge,
   AutomationStepNode,
@@ -7,7 +7,6 @@ import type {
 } from '@/pages/w/engage/flows/@uuid/composer/types/flow_composer_types.js'
 import { automationNodeTypes } from '@/pages/w/engage/flows/@uuid/composer/components/nodes/index.js'
 import { Button } from '@kibamail/owly/button'
-import * as Dialog from '@kibamail/owly/dialog'
 import {
   BaseEdge,
   EdgeLabelRenderer,
@@ -62,7 +61,7 @@ export function AddFlowActionEdge({
   const targetYWithOffset = targetY - targetYOffset
 
   // Create a custom path for trigger node connections
-  const edgePath = `M ${sourceX} ${sourceYWithOffset} L ${sourceX} ${centerY} L ${targetX} ${centerY} L ${targetX} ${targetYWithOffset}`
+  const edgePath = `M ${sourceX} ${sourceY} L ${sourceX} ${centerY} L ${targetX} ${centerY} L ${targetX} ${targetY}`
 
   // // Special handling for trigger node edges
   // if (isTriggerSource) {
@@ -153,7 +152,9 @@ export function AddFlowActionEdge({
     const layoutedElements = getLayoutedElements([...currentNodes, newNode], updatedEdges)
 
     // Apply the layout in a single update to prevent flickering
-    setNodes([...layoutedElements.nodes].sort((nodeA, nodeB) => nodeA.id > nodeB.id ? 1 : -1))
+    setNodes(
+      [...layoutedElements.nodes].sort((nodeA, nodeB) => (nodeA.id > nodeB.id ? 1 : -1)),
+    )
     setEdges(layoutedElements.edges)
     setIsDialogOpen(false)
   }
@@ -202,7 +203,7 @@ export function AddFlowActionEdge({
         >
           <Button
             variant="primary"
-            onClick={() => setIsDialogOpen(true)}
+            onClick={() => insertNodeAtEdgePosition('tag_untag')}
             className="kb-background-info border-[var(--black-5)] rounded-lg w-7 h-7 p-0 flex items-center justify-center"
             style={{ pointerEvents: 'all' }}
           >
@@ -210,79 +211,6 @@ export function AddFlowActionEdge({
           </Button>
         </div>
       </EdgeLabelRenderer>
-
-      <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <Dialog.Content>
-          <Dialog.Header>
-            <Dialog.Title>Select Node Type</Dialog.Title>
-            <Dialog.Description>
-              Choose a node type to insert at this position
-            </Dialog.Description>
-          </Dialog.Header>
-
-          <div className="p-4 flex flex-col gap-4">
-            {ruleNodes.length > 0 && (
-              <div>
-                <h3 className="text-sm font-medium mb-2">Rules</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {ruleNodes.map((node) => (
-                    <Button
-                      key={node.id}
-                      variant="tertiary"
-                      onClick={() => insertNodeAtEdgePosition(node.id)}
-                      className="justify-start text-left"
-                    >
-                      {node.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {actionNodes.length > 0 && (
-              <div>
-                <h3 className="text-sm font-medium mb-2">Actions</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {actionNodes.map((node) => (
-                    <Button
-                      key={node.id}
-                      variant="tertiary"
-                      onClick={() => insertNodeAtEdgePosition(node.id)}
-                      className="justify-start text-left"
-                    >
-                      {node.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {triggerNodes.length > 0 && (
-              <div>
-                <h3 className="text-sm font-medium mb-2">Triggers</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {triggerNodes.map((node) => (
-                    <Button
-                      key={node.id}
-                      variant="tertiary"
-                      onClick={() => insertNodeAtEdgePosition(node.id)}
-                      className="justify-start text-left"
-                    >
-                      {node.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <Dialog.Footer className="flex justify-end">
-            <Dialog.Close asChild>
-              <Button variant="tertiary">Cancel</Button>
-            </Dialog.Close>
-          </Dialog.Footer>
-        </Dialog.Content>
-      </Dialog.Root>
     </>
   )
 }

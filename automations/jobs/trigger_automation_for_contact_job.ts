@@ -1,24 +1,25 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from "drizzle-orm"
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
-import { RunAutomationForContactJob } from '@/automations/jobs/run_automation_for_contact_job.js'
+import { RunAutomationForContactJob } from "@/automations/jobs/run_automation_for_contact_job.js"
 
-import type { TagOnContact } from '@/database/database_schema_types.js'
+import type { TagOnContact } from "@/database/database_schema_types.js"
 import {
-  type AUTOMATION_STEP_SUB_TYPES_TRIGGER,
   type TRIGGER_CONFIGURATION,
   automationSteps,
   automations,
   contactAutomationSteps,
   tagsOnContacts,
-} from '@/database/schema.js'
+} from "@/database/schema.js"
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { Queue } from '@/shared/queue/queue.js'
+import type { AUTOMATION_STEP_SUB_TYPES_TRIGGER } from "@/database/types/automations.js"
 
-import { container } from '@/utils/typi.js'
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { Queue } from "@/shared/queue/queue.js"
+
+import { container } from "@/utils/typi.js"
 
 export interface TriggerAutomationsForContactJobPayload {
   contactId: string
@@ -27,7 +28,7 @@ export interface TriggerAutomationsForContactJobPayload {
 
 export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsForContactJobPayload> {
   static get id() {
-    return 'AUTOMATIONS::TRIGGER_AUTOMATIONS_FOR_CONTACT'
+    return "AUTOMATIONS::TRIGGER_AUTOMATIONS_FOR_CONTACT"
   }
 
   static get queue() {
@@ -38,7 +39,9 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
     payload,
     database,
   }: JobContext<TriggerAutomationsForContactJobPayload>) {
-    const contact = await container.make(ContactRepository).findById(payload.contactId)
+    const contact = await container
+      .make(ContactRepository)
+      .findById(payload.contactId)
 
     if (!contact) {
       return this.done(`Contact with id ${payload.contactId} not found.`)
@@ -51,16 +54,16 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
       .where(
         and(
           eq(automationSteps.subtype, payload.trigger),
-          eq(automationSteps.status, 'ACTIVE'),
-          eq(automations.audienceId, contact.audienceId),
-        ),
+          eq(automationSteps.status, "ACTIVE"),
+          eq(automations.audienceId, contact.audienceId)
+        )
       )
 
     let contactTags: TagOnContact[] = []
 
     if (
-      payload.trigger === 'TRIGGER_CONTACT_TAG_ADDED' ||
-      payload.trigger === 'TRIGGER_CONTACT_TAG_REMOVED'
+      payload.trigger === "TRIGGER_CONTACT_TAG_ADDED" ||
+      payload.trigger === "TRIGGER_CONTACT_TAG_REMOVED"
     ) {
       contactTags = await database
         .select()
@@ -81,7 +84,7 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
       }
 
       const hasCompletedTrigger = triggeredAutomationSteps.some(
-        (step) => step.automationStepId === trigger.automationSteps.id,
+        (step) => step.automationStepId === trigger.automationSteps.id
       )
 
       if (hasCompletedTrigger) {
@@ -89,11 +92,11 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
       }
 
       switch (trigger.automationSteps.subtype) {
-        case 'TRIGGER_CONTACT_TAG_ADDED': {
+        case "TRIGGER_CONTACT_TAG_ADDED": {
           const tagAdded = contactTagIds.some((tagId) =>
             (
               trigger.automationSteps.configuration as TRIGGER_CONFIGURATION
-            )?.tagIds?.includes(tagId),
+            )?.tagIds?.includes(tagId)
           )
 
           if (!tagAdded) {
@@ -102,12 +105,12 @@ export class TriggerAutomationsForContactJob extends BaseJob<TriggerAutomationsF
 
           break
         }
-        case 'TRIGGER_CONTACT_TAG_REMOVED': {
+        case "TRIGGER_CONTACT_TAG_REMOVED": {
           const tagRemoved = contactTagIds.some(
             (tagId) =>
               !(
                 trigger.automationSteps.configuration as TRIGGER_CONFIGURATION
-              )?.tagIds?.includes(tagId),
+              )?.tagIds?.includes(tagId)
           )
 
           if (!tagRemoved) {

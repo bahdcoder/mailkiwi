@@ -1,7 +1,7 @@
 import './flow_composer_styles.css'
 import { CancelIcon } from '@/pages/components/icons/cancel.svg.jsx'
 import { FlowComposerSidebar } from '@/pages/w/engage/flows/@uuid/composer/components/flow_composer_sidebar.jsx'
-import { useReactFlowNodes } from '@/pages/w/engage/flows/@uuid/composer/hooks/use_react_flow_nodes.js'
+import { useReactFlowNodes } from '@/pages/w/engage/flows/@uuid/composer/components/hooks/use_react_flow_nodes.js'
 import { Badge } from '@kibamail/owly/badge'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'

@@ -1,25 +1,35 @@
-import { and, eq } from 'drizzle-orm'
-import { describe, test, vi } from 'vitest'
+import { and, eq } from "drizzle-orm"
+import { describe, test, vi } from "vitest"
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
-import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.js'
+import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.js"
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
+import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
+import { createUser } from "@/tests/mocks/auth/users.js"
+import { refreshDatabase, seedAutomation } from "@/tests/mocks/teams/teams.js"
 
-import { contactAutomationSteps, contacts, tagsOnContacts } from '@/database/schema.js'
+import {
+  contactAutomationSteps,
+  contacts,
+  tagsOnContacts,
+} from "@/database/schema.js"
 
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { MailBuilder, Mailer } from '@/shared/mailers/mailer.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { fromQueryResultToPrimaryKey } from '@/shared/utils/database/primary_keys.js'
+import {
+  makeDatabase,
+  makeLogger,
+  makeRedis,
+} from "@/shared/container/index.js"
+import { MailBuilder, Mailer } from "@/shared/mailers/mailer.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { fromQueryResultToPrimaryKey } from "@/shared/utils/database/primary_keys.js"
 
-import { container } from '@/utils/typi.js'
+import { container } from "@/utils/typi.js"
 
-describe('Run automation step for contact job', () => {
-  test('automation step action: send email for a contact', async ({ expect }) => {
+describe("Run automation step for contact job", () => {
+  test("automation step action: send email for a contact", async ({
+    expect,
+  }) => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
@@ -37,7 +47,7 @@ describe('Run automation step for contact job', () => {
       send = fakeSendFn
     }
 
-    vi.spyOn(Mailer, 'from').mockImplementation(() => {
+    vi.spyOn(Mailer, "from").mockImplementation(() => {
       return new FakeMailer({} as any) as any
     })
 
@@ -53,6 +63,7 @@ describe('Run automation step for contact job', () => {
         contactId,
       },
       redis,
+      logger: makeLogger(),
     })
 
     expect(fakeSendFn.mock.calls).toHaveLength(1)
@@ -65,10 +76,10 @@ describe('Run automation step for contact job', () => {
           eq(contactAutomationSteps.contactId, contactId),
           eq(
             contactAutomationSteps.automationStepId,
-            receiveWelcomeEmailautomationStepId as string,
+            receiveWelcomeEmailautomationStepId as string
           ),
-          eq(contactAutomationSteps.status, 'COMPLETED'),
-        ),
+          eq(contactAutomationSteps.status, "COMPLETED")
+        )
       )
 
     expect(completed).toBeDefined()
@@ -77,18 +88,24 @@ describe('Run automation step for contact job', () => {
 
     expect(send).toBeDefined()
 
-    expect(send).toEqual(`AUTOMATION_STEP:${completed?.automationStepId}:${contactId}`)
+    expect(send).toEqual(
+      `AUTOMATION_STEP:${completed?.automationStepId}:${contactId}`
+    )
   })
 
-  test('automation step action: attach tags for a contact', async ({ expect }) => {
+  test("automation step action: attach tags for a contact", async ({
+    expect,
+  }) => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
     const redis = makeRedis()
 
-    const { attachesTagsAutomationStepId, attachTagIds } = await seedAutomation({
-      audienceId: audience.id,
-    })
+    const { attachesTagsAutomationStepId, attachTagIds } = await seedAutomation(
+      {
+        audienceId: audience.id,
+      }
+    )
 
     const contactId = cuid()
     await database
@@ -104,6 +121,7 @@ describe('Run automation step for contact job', () => {
         automationStepId: attachesTagsAutomationStepId as string,
         contactId,
       },
+      logger: makeLogger(),
     })
 
     const completed = await database.query.contactAutomationSteps.findFirst({
@@ -111,9 +129,9 @@ describe('Run automation step for contact job', () => {
         eq(contactAutomationSteps.contactId, contactId),
         eq(
           contactAutomationSteps.automationStepId,
-          attachesTagsAutomationStepId as string,
+          attachesTagsAutomationStepId as string
         ),
-        eq(contactAutomationSteps.status, 'COMPLETED'),
+        eq(contactAutomationSteps.status, "COMPLETED")
       ),
     })
 
@@ -121,27 +139,34 @@ describe('Run automation step for contact job', () => {
       where: eq(tagsOnContacts.contactId, contactId),
     })
 
-    expect(tagsForContact.map((tag) => tag.tagId).sort()).toEqual(attachTagIds?.sort())
+    expect(tagsForContact.map((tag) => tag.tagId).sort()).toEqual(
+      attachTagIds?.sort()
+    )
 
     expect(completed).toBeDefined()
   })
 
-  test('automation step action: detach tags from a contact', async ({ expect }) => {
+  test("automation step action: detach tags from a contact", async ({
+    expect,
+  }) => {
     const { audience } = await createUser()
 
     const database = makeDatabase()
     const redis = makeRedis()
 
-    const { detachesTagsAutomationStepId, detachTagIds = [] } = await seedAutomation({
-      audienceId: audience.id,
-    })
+    const { detachesTagsAutomationStepId, detachTagIds = [] } =
+      await seedAutomation({
+        audienceId: audience.id,
+      })
 
     const contactId = cuid()
     await database
       .insert(contacts)
       .values({ ...createFakeContact(audience.id), id: contactId })
 
-    await container.resolve(ContactRepository).attachTags(contactId, detachTagIds)
+    await container
+      .resolve(ContactRepository)
+      .attachTags(contactId, detachTagIds)
 
     await new RunAutomationStepForContactJob().handle({
       database,
@@ -150,6 +175,7 @@ describe('Run automation step for contact job', () => {
         automationStepId: detachesTagsAutomationStepId as string,
         contactId: contactId,
       },
+      logger: makeLogger(),
     })
 
     const completed = await database.query.contactAutomationSteps.findFirst({
@@ -157,9 +183,9 @@ describe('Run automation step for contact job', () => {
         eq(contactAutomationSteps.contactId, contactId),
         eq(
           contactAutomationSteps.automationStepId,
-          detachesTagsAutomationStepId as string,
+          detachesTagsAutomationStepId as string
         ),
-        eq(contactAutomationSteps.status, 'COMPLETED'),
+        eq(contactAutomationSteps.status, "COMPLETED")
       ),
     })
 

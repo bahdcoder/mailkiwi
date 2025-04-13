@@ -98,6 +98,7 @@ services:
       - ./kumomta/data:/var/log/kumomta
       - ./kumomta/spool:/var/spool/kumomta
     restart: unless-stopped
+    user: root
     dns: 172.20.0.2
     environment:
       API_HTTP_ACCESS_TOKEN: tSv1rimOykRimRB7XgLtYDctSv1rimOykRimRB7XgLtYDc
@@ -118,6 +119,7 @@ services:
     container_name: kumomta-tsa-daemon
     hostname: kumomta-tsa-daemon
     image: ghcr.io/kumocorp/kumomta-dev:latest
+    user: root
     volumes:
       - ../kumomta/policy:/opt/kumomta/etc/policy
       - ./kumomta/data:/var/log/kumomta

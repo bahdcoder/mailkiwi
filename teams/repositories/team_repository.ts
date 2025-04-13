@@ -75,7 +75,7 @@ export class TeamRepository extends BaseRepository {
         amountPaid: 0,
         amount: FREE_MONTHLY_CREDITS,
         currency: 'NGN',
-        paymentProvider: 'stripe',
+        paymentProvider: 'paystack',
         createdAt: DateTime.now().toJSDate(),
         expiresAt: DateTime.now().endOf('month').plus({ millisecond: 1 }).toJSDate(),
       })

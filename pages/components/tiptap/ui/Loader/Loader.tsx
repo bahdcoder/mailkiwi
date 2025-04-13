@@ -1,5 +1,5 @@
-import type { LoaderProps, LoadingWrapperProps } from './types'
-import { createPortal } from 'react-dom'
+import type { LoaderProps, LoadingWrapperProps } from "./types.js"
+import { createPortal } from "react-dom"
 
 const LoadingWrapper = ({ label }: LoadingWrapperProps) => {
   return (
@@ -31,7 +31,7 @@ export const Loader = ({ hasOverlay = true, label }: LoaderProps) => {
       <div className="items-center justify-center bg-black/60 flex h-full w-full fixed top-0 left-0 select-none z-[9999]">
         <LoadingWrapper label={label} />
       </div>,
-      document.body,
+      document.body
     )
   ) : (
     <LoadingWrapper label={label} />
