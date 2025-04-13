@@ -4,7 +4,7 @@ const EdgeAddButton = (props) => {
   const { data, id } = props
 
   return (
-    <div className='flex items-center justify-center'>
+    <div className="flex items-center justify-center">
       <AddEdgeButton onClick={() => data.onAddNodeCallback(id)} />
     </div>
   )

@@ -9,40 +9,40 @@ import {
   pipe,
   string,
   union,
-} from "valibot"
+} from 'valibot'
 
 const allowedFilterFields = [
-  "email",
-  "firstName",
-  "lastName",
-  "subscribedAt",
-  "tags",
+  'email',
+  'firstName',
+  'lastName',
+  'subscribedAt',
+  'tags',
 
   // Subscribed, unsubscribed, archived.
-  "status",
+  'status',
 
   // website, import, api, manual, etc.
-  "source",
+  'source',
 
   // sent events
-  "lastSentBroadcastEmailAt",
-  "lastSentAutomationEmailAt",
+  'lastSentBroadcastEmailAt',
+  'lastSentAutomationEmailAt',
 
   // open events
-  "lastOpenedBroadcastEmailAt",
-  "lastOpenedAutomationEmailAt",
+  'lastOpenedBroadcastEmailAt',
+  'lastOpenedAutomationEmailAt',
 
   // click events
-  "lastClickedBroadcastEmailLinkAt",
-  "lastClickedAutomationEmailLinkAt",
+  'lastClickedBroadcastEmailLinkAt',
+  'lastClickedAutomationEmailLinkAt',
 
   // device and location
-  "lastTrackedActivityFrom",
-  "lastTrackedActivityUsingDevice",
-  "lastTrackedActivityUsingBrowser",
+  'lastTrackedActivityFrom',
+  'lastTrackedActivityUsingDevice',
+  'lastTrackedActivityUsingBrowser',
 
   // segmentId
-  "segmentId",
+  'segmentId',
 ] as const
 
 export type AllowedFilterField = (typeof allowedFilterFields)[number]
@@ -57,37 +57,37 @@ export const FilterConditionSchema = object({
     check(
       (input) =>
         allowedFilterFields.includes(input as AllowedFilterField) ||
-        input.startsWith("properties."),
+        input.startsWith('properties.'),
       `Only the following fields are allowed: ${allowedFilterFields.join(
-        ", "
-      )}, properties.*`
-    )
+        ', ',
+      )}, properties.*`,
+    ),
   ) as unknown as AllowedFilterFieldPickList,
   operation: picklist([
-    "eq",
-    "ne",
-    "gt",
-    "lt",
-    "gte",
-    "lte",
-    "in",
-    "nin",
-    "startsWith",
-    "endsWith",
-    "contains",
-    "notContains",
-    "inTimeWindow",
+    'eq',
+    'ne',
+    'gt',
+    'lt',
+    'gte',
+    'lte',
+    'in',
+    'nin',
+    'startsWith',
+    'endsWith',
+    'contains',
+    'notContains',
+    'inTimeWindow',
   ]),
   value: union([string(), array(string()), number(), array(number())]),
 })
 
 export const FilterConditionGroupSchema = object({
-  type: picklist(["AND", "OR"]),
+  type: picklist(['AND', 'OR']),
   conditions: array(FilterConditionSchema),
 })
 
 export const FilterGroupsSchema = object({
-  type: picklist(["AND", "OR"]),
+  type: picklist(['AND', 'OR']),
   groups: array(FilterConditionGroupSchema),
 })
 

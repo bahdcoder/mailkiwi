@@ -9,16 +9,16 @@ import {
   pipeAsync,
   string,
   any,
-} from "valibot"
+} from 'valibot'
 
-import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.js"
+import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
 
 import {
   automationStepSubtypes,
   automationStepTypes,
-} from "@/database/types/automations.js"
+} from '@/database/types/automations.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 async function automationStepIdRequirement(input: string): Promise<boolean> {
   if (!input) return true
@@ -38,8 +38,8 @@ export const CreateAutomationStepDto = pipeAsync(
       string(),
       checkAsync(
         automationStepIdRequirement,
-        "The parentId must be a valid automation step ID."
-      )
+        'The parentId must be a valid automation step ID.',
+      ),
     ),
     emailId: optional(string()),
     audienceId: optional(string()),
@@ -48,16 +48,16 @@ export const CreateAutomationStepDto = pipeAsync(
       string(),
       checkAsync(
         automationStepIdRequirement,
-        "The targetId must be a valid automation step ID."
-      )
+        'The targetId must be a valid automation step ID.',
+      ),
     ),
     branchIndex: optional(number()),
   }),
   checkAsync((input) => {
-    if (input.type === "END") return true
+    if (input.type === 'END') return true
 
     return input.subtype.startsWith(input.type)
-  }, "The subtype must be valid for the type.")
+  }, 'The subtype must be valid for the type.'),
 )
 
 export type CreateAutomationStepDto = InferInput<typeof CreateAutomationStepDto>

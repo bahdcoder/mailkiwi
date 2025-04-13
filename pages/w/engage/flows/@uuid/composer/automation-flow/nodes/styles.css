@@ -1,70 +1,23 @@
 .w-node-wrapper {
-  @apply rounded-lg bg-white border border-[var(--border-tertiary)] p-3 box-border w-[300px] h-[92px];
+  @apply flex flex-col justify-end w-[300px] h-[104px] border border-transparent;
 }
 
-.NodeWrapper {
-  width: 300px;
-  height: 92px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.w-node-wrapper-with-configurations {
+  @apply flex flex-col items-center justify-start w-[300px] h-[104px];
 }
-.NodeInnerWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border-left-width: 3px;
-  border-left-style: solid;
-  border-left-color: currentColor;
-  border-radius: 2px;
-  background-color: var(--color-white);
-  box-shadow: var(--elevation-z1);
-  transition: box-shadow 0.2s ease-in-out;
-  cursor: pointer;
+
+.w-node-wrapper-empty {
+  @apply flex flex-col justify-end items-center w-[300px] h-[104px] box-border border border-transparent;
 }
-.NodeInnerWrapper[aria-disabled="true"] {
-  cursor: not-allowed;
+
+.w-node-wrapper-inner-empty {
+  @apply w-[200px] h-[56px] bg-[var(--background-subtle)] border border-[var(--border-tertiary)] box-border rounded-xl p-1;
 }
-.NodeInnerWrapper:not([aria-disabled="true"]):hover {
-  box-shadow: var(--elevation-z2);
+
+.w-node-selected {
+  @apply !border-[var(--border-focus)];
 }
-.NodeInnerWrapper:not([aria-disabled="true"])[data-selected="true"] {
-  box-shadow: inset 0px 0px 0px 1px currentColor, var(--elevation-z3);
-}
-.NodeInnerWrapper > .closeIcon {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-}
-.NodeInnerWrapper > .closeIcon > svg {
-  color: red;
-}
-.EmptyNodeInnerWrapper {
-  width: 1px;
-  height: 1px;
-  background-color: var(--edges-stroke-color);
-}
-.NodeContent {
-  display: flex;
-  flex-direction: column;
-}
-.NodeIcon {
-  font-size: 18px;
-  padding: 4px;
-}
-.NodeTitle {
-  color: var(--color-base900);
-  font-size: 14px;
-  text-transform: upppercase;
-}
-.NodeDesc {
-  color: var(--color-base700);
-  font-size: 12px;
-}
-.NodePort.react-flow__handle {
-  border: 0;
-  background-color: var(--edges-stroke-color);
+
+.w-node-wrapper-inner {
+  @apply rounded-lg bg-white border border-[var(--border-tertiary)] p-3 box-border w-[300px] h-[92px];
 }

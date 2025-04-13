@@ -1,17 +1,17 @@
-import type { CreateAutomationStepDto } from "@/automations/dto/create_automation_step_dto.js"
-import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.js"
+import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
+import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 interface EdgeInfo {
   sourceId: string
   targetId: string
-  branch?: "YES" | "NO"
+  branch?: 'YES' | 'NO'
 }
 
 export class CreateAutomationStepAction {
   constructor(
-    private automationStepRepository = container.make(AutomationStepRepository)
+    private automationStepRepository = container.make(AutomationStepRepository),
   ) {}
 
   /**
@@ -22,12 +22,12 @@ export class CreateAutomationStepAction {
   private parseEdgeId(edgeId?: string): EdgeInfo | null {
     if (!edgeId) return null
 
-    const parts = edgeId.split("-")
+    const parts = edgeId.split('-')
     if (parts.length < 2) return null
 
     const sourceId = parts[0]
     const targetId = parts[1]
-    const branch = parts[2] as "YES" | "NO" | undefined
+    const branch = parts[2] as 'YES' | 'NO' | undefined
 
     return { sourceId, targetId, branch }
   }
@@ -40,7 +40,7 @@ export class CreateAutomationStepAction {
    * @param edgeId - Optional edge ID for inserting a step between existing steps
    */
   handle = async (automationId: string, data: CreateAutomationStepDto) => {
-    if (data.subtype !== "RULE_IF_ELSE") {
+    if (data.subtype !== 'RULE_IF_ELSE') {
       return this.automationStepRepository.create(automationId, data)
     }
 
@@ -50,7 +50,7 @@ export class CreateAutomationStepAction {
         ...data,
         parentId: data.parentId,
       },
-      data.targetId as string
+      data.targetId as string,
     )
 
     return ifElseStep

@@ -1,1 +1,1 @@
-export * from "./Spinner.jsx"
+export * from './Spinner.jsx'

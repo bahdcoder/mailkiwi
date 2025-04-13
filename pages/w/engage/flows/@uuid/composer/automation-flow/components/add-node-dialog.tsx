@@ -1,44 +1,39 @@
-import {
-  AutomationStep,
-  AutomationWithSteps,
-} from "@/database/database_schema_types.js"
+import { AutomationStep, AutomationWithSteps } from '@/database/database_schema_types.js'
 import {
   automationStepSubtypesAction,
   automationStepSubtypesTrigger,
   automationStepSubtypesRule,
   type AutomationStepType,
   type AutomationStepSubType,
-} from "@/database/types/automations.js"
-import { AxesIcon } from "@/pages/components/icons/axes.svg.jsx"
-import { BellOffIcon } from "@/pages/components/icons/bell-off.svg.jsx"
-import { BellIcon } from "@/pages/components/icons/bell.svg.jsx"
-import { LabelIcon } from "@/pages/components/icons/label.svg.jsx"
-import { MailIcon } from "@/pages/components/icons/mail.svg.jsx"
-import { PercentageIcon } from "@/pages/components/icons/percentage.svg.jsx"
-import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
-import { TimerIcon } from "@/pages/components/icons/timer.svg.jsx"
-import { UserPlusIcon } from "@/pages/components/icons/user-plus.svg.jsx"
-import { UserXMarkIcon } from "@/pages/components/icons/user-xmark.svg.jsx"
-import { UserIcon } from "@/pages/components/icons/user.svg.jsx"
-import { WebhookIcon } from "@/pages/components/icons/webhook.svg.jsx"
-import { usePageProps } from "@/pages/hooks/use_page_props.js"
+} from '@/database/types/automations.js'
+import { AxesIcon } from '@/pages/components/icons/axes.svg.jsx'
+import { BellOffIcon } from '@/pages/components/icons/bell-off.svg.jsx'
+import { BellIcon } from '@/pages/components/icons/bell.svg.jsx'
+import { LabelIcon } from '@/pages/components/icons/label.svg.jsx'
+import { MailIcon } from '@/pages/components/icons/mail.svg.jsx'
+import { PercentageIcon } from '@/pages/components/icons/percentage.svg.jsx'
+import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
+import { TimerIcon } from '@/pages/components/icons/timer.svg.jsx'
+import { UserPlusIcon } from '@/pages/components/icons/user-plus.svg.jsx'
+import { UserXMarkIcon } from '@/pages/components/icons/user-xmark.svg.jsx'
+import { UserIcon } from '@/pages/components/icons/user.svg.jsx'
+import { WebhookIcon } from '@/pages/components/icons/webhook.svg.jsx'
+import { usePageProps } from '@/pages/hooks/use_page_props.js'
 import {
   ServerForm,
   useServerFormMutation,
-} from "@/pages/hooks/use_server_form_mutation.jsx"
-import { route } from "@/shared/routes/route_aliases.js"
-import { Button } from "@kibamail/owly/button"
-import * as Dialog from "@kibamail/owly/dialog"
-import { Spinner } from "@kibamail/owly/spinner"
-import { Text } from "@kibamail/owly/text"
-import classNames from "classnames"
-import React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+} from '@/pages/hooks/use_server_form_mutation.jsx'
+import { EdgeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import { route } from '@/shared/routes/route_aliases.js'
+import { Button } from '@kibamail/owly/button'
+import * as Dialog from '@kibamail/owly/dialog'
+import { Spinner } from '@kibamail/owly/spinner'
+import { Text } from '@kibamail/owly/text'
+import classNames from 'classnames'
+import React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
-const nodes: Record<
-  AutomationStepType,
-  ReadonlyArray<AutomationStepSubType>
-> = {
+const nodes: Record<AutomationStepType, ReadonlyArray<AutomationStepSubType>> = {
   TRIGGERS: automationStepSubtypesTrigger,
   ACTIONS: automationStepSubtypesAction,
   RULES: automationStepSubtypesRule,
@@ -72,17 +67,18 @@ const icons: Partial<
 
 export interface AddNodeDialogProps {
   open: boolean
-  parentId: string
   setOpen: (open: boolean) => void
   allowedTypes: AutomationStepType[]
-  onAddNodeSuccess: (node: AutomationStep) => void
+  edge: EdgeElement | null
+  onAddNodeSuccess: (automation: AutomationWithSteps) => void
 }
+
+const NODE_TYPES_ALLOWED_TO_ADD: AutomationStepType[] = ['ACTIONS', 'RULES']
 
 export function AddNodeDialog({
   open,
   setOpen,
-  parentId,
-  allowedTypes,
+  edge,
   onAddNodeSuccess,
 }: AddNodeDialogProps) {
   const ctx = usePageContext()
@@ -90,23 +86,26 @@ export function AddNodeDialog({
     React.useState<AutomationStepSubType | null>()
   const { automation } = usePageProps<{ automation: AutomationWithSteps }>()
 
-  const { serverFormProps, isError, ServerErrorsList, isPending, reset } =
-    useServerFormMutation<AutomationStep>({
-      action: route("add_automation_step", {
-        audienceId: ctx.audience?.id,
-        automationId: automation?.id,
-      }),
-      onSuccess(response) {
-        setOpen(false)
-        onAddNodeSuccess(response.payload)
-      },
-      transform(form) {
-        form.subtype = selectedSubType as string
-        form.type = selectedSubType?.split("_")[0] as string
-        form.parentId = parentId
-        return form
-      },
-    })
+  const { serverFormProps, ServerErrorsList, isPending, reset } = useServerFormMutation<{
+    automation: AutomationWithSteps
+    step: AutomationStep
+  }>({
+    action: route('add_automation_step', {
+      audienceId: ctx.audience?.id,
+      automationId: automation?.id,
+    }),
+    onSuccess(response) {
+      setOpen(false)
+      onAddNodeSuccess(response.payload.automation)
+    },
+    transform(form) {
+      form.subtype = selectedSubType as string
+      form.type = selectedSubType?.split('_')[0] as string
+      form.parentId = edge?.source || ''
+      form.targetId = edge?.target || ''
+      return form
+    },
+  })
 
   React.useEffect(() => {
     if (!open) {
@@ -129,16 +128,14 @@ export function AddNodeDialog({
             <div className="flex flex-col gap-4">
               {Object.keys(nodes)
                 .filter((node) =>
-                  allowedTypes.includes(
-                    node as "TRIGGERS" | "ACTIONS" | "RULES"
-                  )
+                  NODE_TYPES_ALLOWED_TO_ADD.includes(
+                    node as 'TRIGGERS' | 'ACTIONS' | 'RULES',
+                  ),
                 )
                 .map((node) => (
                   <div className="flex flex-col gap-2" key={node}>
                     <h3>
-                      <Text className="capitalize font-medium">
-                        {node.toLowerCase()}
-                      </Text>
+                      <Text className="capitalize font-medium">{node.toLowerCase()}</Text>
                     </h3>
 
                     <div className="grid grid-cols-2 gap-2">
@@ -150,13 +147,13 @@ export function AddNodeDialog({
                             onClick={() => setSelectedSubType(subtype)}
                             disabled={isPending}
                             className={classNames(
-                              "flex group font-medium items-center rounded-xl justify-between border kb-border-secondary p-3",
+                              'flex group font-medium items-center rounded-xl justify-between border kb-border-secondary p-3',
                               {
-                                "var(--background-pressed)":
+                                'var(--background-pressed)':
                                   isPending && selectedSubType === subtype,
-                                "hover:bg-[var(--background-hover)] active:bg-[var(--background-pressed)]":
+                                'hover:bg-[var(--background-hover)] active:bg-[var(--background-pressed)]':
                                   selectedSubType !== subtype && !isPending,
-                              }
+                              },
                             )}
                           >
                             <div className="flex gap-2 items-center">
@@ -194,5 +191,5 @@ export function AddNodeDialog({
 }
 
 function getSubtypeLabel(subtype: string): string {
-  return subtype.split("_").slice(1).join(" ")
+  return subtype.split('_').slice(1).join(' ')
 }

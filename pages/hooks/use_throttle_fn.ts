@@ -1,11 +1,11 @@
-import React from "react"
-import { useRef } from "react"
-import { type EffectCallback, useEffect } from "react"
+import React from 'react'
+import { useRef } from 'react'
+import { type EffectCallback, useEffect } from 'react'
 
 export function useThrottleFn<T, U extends any[]>(
   fn: (...args: U) => T,
   ms: number,
-  args: U
+  args: U,
 ) {
   const [state, setState] = React.useState<T | null>(null)
   const timeout = useRef<ReturnType<typeof setTimeout>>()

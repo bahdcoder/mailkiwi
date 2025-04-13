@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 import {
   type InferInput,
   array,
@@ -14,11 +14,11 @@ import {
   safeParse,
   string,
   union,
-} from "valibot"
+} from 'valibot'
 
-import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.js"
+import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
 
-import { audiences, emails, tags } from "@/database/schema.js"
+import { audiences, emails, tags } from '@/database/schema.js'
 import {
   automationStepSubtypes,
   automationStepSubtypesAction,
@@ -26,15 +26,15 @@ import {
   automationStepSubtypesRule,
   automationStepSubtypesTrigger,
   automationStepTypes,
-} from "@/database/types/automations.js"
+} from '@/database/types/automations.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 const configurationSchema = record(
   string(),
-  union([string(), array(string()), number(), array(number())])
+  union([string(), array(string()), number(), array(number())]),
 )
 export const CreateFullAutomationStepDto = pipeAsync(
   objectAsync({
@@ -49,26 +49,22 @@ export const CreateFullAutomationStepDto = pipeAsync(
         array(number()),
         array(record(string(), union([string(), array(string())]))),
         configurationSchema,
-      ])
+      ]),
     ),
     parentId: pipeAsync(
       optional(string()),
       checkAsync(async (input) => {
         if (!input) return true
 
-        const automationStepRepository = container.make(
-          AutomationStepRepository
-        )
+        const automationStepRepository = container.make(AutomationStepRepository)
 
         const [automationStep, automationStepWithParent] = await Promise.all([
           automationStepRepository.findById(input),
           automationStepRepository.findByParentId(input),
         ])
 
-        return (
-          automationStep !== undefined && automationStepWithParent === undefined
-        )
-      }, "The parentId must be a valid automation step ID and must not be linked to another automation step.")
+        return automationStep !== undefined && automationStepWithParent === undefined
+      }, 'The parentId must be a valid automation step ID and must not be linked to another automation step.'),
     ),
     emailId: pipeAsync(
       optional(string()),
@@ -82,7 +78,7 @@ export const CreateFullAutomationStepDto = pipeAsync(
         })
 
         return existingEmail !== undefined
-      })
+      }),
     ),
     audienceId: pipeAsync(
       optional(string()),
@@ -96,7 +92,7 @@ export const CreateFullAutomationStepDto = pipeAsync(
         })
 
         return existingAudience !== undefined
-      })
+      }),
     ),
     tagId: pipeAsync(
       optional(string()),
@@ -110,124 +106,110 @@ export const CreateFullAutomationStepDto = pipeAsync(
         })
 
         return existingTag !== undefined
-      })
+      }),
     ),
     branchIndex: optional(number()),
   }),
   checkAsync((input) => {
-    if (input.type === "TRIGGER") {
-      return safeParse(picklist(automationStepSubtypesTrigger), input.subtype)
-        .success
+    if (input.type === 'TRIGGER') {
+      return safeParse(picklist(automationStepSubtypesTrigger), input.subtype).success
     }
 
     return true
-  }, "The subtype must be valid for the type trigger."),
+  }, 'The subtype must be valid for the type trigger.'),
   checkAsync((input) => {
-    if (input.type === "RULE") {
-      return safeParse(picklist(automationStepSubtypesRule), input.subtype)
-        .success
+    if (input.type === 'RULE') {
+      return safeParse(picklist(automationStepSubtypesRule), input.subtype).success
     }
 
     return true
-  }, "The subtype must be valid for the type rule."),
+  }, 'The subtype must be valid for the type rule.'),
   checkAsync((input) => {
-    if (input.type === "ACTION") {
-      return safeParse(picklist(automationStepSubtypesAction), input.subtype)
-        .success
+    if (input.type === 'ACTION') {
+      return safeParse(picklist(automationStepSubtypesAction), input.subtype).success
     }
 
     return true
-  }, "The subtype must be valid for the type action."),
+  }, 'The subtype must be valid for the type action.'),
   checkAsync((input) => {
-    if (input.type === "END") {
-      return safeParse(picklist(automationStepSubtypesEnd), input.subtype)
-        .success
+    if (input.type === 'END') {
+      return safeParse(picklist(automationStepSubtypesEnd), input.subtype).success
     }
 
     return true
-  }, "The subtype must be valid for the type END."),
+  }, 'The subtype must be valid for the type END.'),
   checkAsync((input) => {
-    if (input.subtype === "RULE_IF_ELSE") {
+    if (input.subtype === 'RULE_IF_ELSE') {
       return safeParse(
         object({
           conditions: array(
             object({
               field: union([
-                literal("email"),
-                literal("firstName"),
-                literal("lastName"),
-                literal("tags"),
-                literal("subscriptionDate"),
+                literal('email'),
+                literal('firstName'),
+                literal('lastName'),
+                literal('tags'),
+                literal('subscriptionDate'),
               ]),
               operator: union([
-                literal("EQUAL"),
-                literal("NOT_EQUAL"),
-                literal("CONTAINS"),
-                literal("NOT_CONTAINS"),
-                literal("STARTS_WITH"),
-                literal("ENDS_WITH"),
-                literal("GREATER_THAN"),
-                literal("LESS_THAN"),
-                literal("BLANK"),
-                literal("NOT_BLANK"),
+                literal('EQUAL'),
+                literal('NOT_EQUAL'),
+                literal('CONTAINS'),
+                literal('NOT_CONTAINS'),
+                literal('STARTS_WITH'),
+                literal('ENDS_WITH'),
+                literal('GREATER_THAN'),
+                literal('LESS_THAN'),
+                literal('BLANK'),
+                literal('NOT_BLANK'),
               ]),
-              value: union([
-                string(),
-                number(),
-                array(string()),
-                array(number()),
-              ]),
-            })
+              value: union([string(), number(), array(string()), array(number())]),
+            }),
           ),
         }),
-        input.configuration
+        input.configuration,
       ).success
     }
 
     return true
-  }, "The configuration object for RULE_IF_ELSE is malformed."),
+  }, 'The configuration object for RULE_IF_ELSE is malformed.'),
   checkAsync((input) => {
-    if (input.subtype === "ACTION_UPDATE_CONTACT_ATTRIBUTES") {
+    if (input.subtype === 'ACTION_UPDATE_CONTACT_ATTRIBUTES') {
       return safeParse(
         object({
           add: configurationSchema,
           remove: configurationSchema,
         }),
-        input.configuration
+        input.configuration,
       ).success
     }
 
     return true
-  }, "The configuration object is malformed for ACTION_UPDATE_CONTACT_ATTRIBUTES."),
+  }, 'The configuration object is malformed for ACTION_UPDATE_CONTACT_ATTRIBUTES.'),
   checkAsync(async (input) => {
-    if (input.subtype === "ACTION_SEND_EMAIL") {
+    if (input.subtype === 'ACTION_SEND_EMAIL') {
       return safeParse(string(), input.emailId).success
     }
 
     return true
-  }, "The emailId must be present and valid for subtype ACTION_SEND_EMAIL."),
+  }, 'The emailId must be present and valid for subtype ACTION_SEND_EMAIL.'),
   checkAsync(async (input) => {
-    if (
-      input.subtype === "ACTION_ADD_TAG" ||
-      input.subtype === "ACTION_REMOVE_TAG"
-    ) {
+    if (input.subtype === 'ACTION_ADD_TAG' || input.subtype === 'ACTION_REMOVE_TAG') {
       return safeParse(string(), input.tagId).success
     }
 
     return true
-  }, "The tagId must be present for subtype ACTION_ADD_TAG and ACTION_REMOVE_TAG."),
+  }, 'The tagId must be present for subtype ACTION_ADD_TAG and ACTION_REMOVE_TAG.'),
   checkAsync(async (input) => {
     if (
-      input.subtype === "ACTION_SUBSCRIBE_TO_AUDIENCE" ||
-      input.subtype === "ACTION_UNSUBSCRIBE_FROM_AUDIENCE"
+      input.subtype === 'ACTION_SUBSCRIBE_TO_AUDIENCE' ||
+      input.subtype === 'ACTION_UNSUBSCRIBE_FROM_AUDIENCE'
     ) {
       return safeParse(string(), input.audienceId).success
     }
 
     return true
-  }, "The audienceId must be present for subtype ACTION_SUBSCRIBE_TO_AUDIENCE and ACTION_UNSUBSCRIBE_FROM_AUDIENCE.")
+  }, 'The audienceId must be present for subtype ACTION_SUBSCRIBE_TO_AUDIENCE and ACTION_UNSUBSCRIBE_FROM_AUDIENCE.'),
 )
 
-export type CreateFullAutomationStepDto = InferInput<
-  typeof CreateFullAutomationStepDto
->
+export type CreateFullAutomationStepDto = InferInput<typeof CreateFullAutomationStepDto>

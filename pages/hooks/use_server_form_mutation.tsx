@@ -1,21 +1,19 @@
-import { navigate } from "@/pages/utils/navigate.js"
-import { InputError } from "@kibamail/owly/input-hint"
-import { composeRefs } from "@radix-ui/react-compose-refs"
+import { navigate } from '@/pages/utils/navigate.js'
+import { InputError } from '@kibamail/owly/input-hint'
+import { composeRefs } from '@radix-ui/react-compose-refs'
 import {
   type MutationOptions,
   type UseMutationResult,
   useMutation,
-} from "@tanstack/react-query"
-import React from "react"
+} from '@tanstack/react-query'
+import React from 'react'
 
-export interface ServerSubmissionResponse<
-  TResponse = Record<"path" | string, any>
-> {
-  type: "redirect" | "json"
+export interface ServerSubmissionResponse<TResponse = Record<'path' | string, any>> {
+  type: 'redirect' | 'json'
   payload: TResponse
   success: boolean
   message: string
-  errors: Record<"field" | "message", string>[]
+  errors: Record<'field' | 'message', string>[]
   errorsMap: Record<string, string>
   errorsList: string[]
 }
@@ -30,26 +28,25 @@ export type FormPayload = Record<
   | Record<string, any>[]
 >
 
-export interface UseServerFormMutationProps<
-  TResponse = Record<"path" | string, any>
-> extends Omit<
+export interface UseServerFormMutationProps<TResponse = Record<'path' | string, any>>
+  extends Omit<
     MutationOptions<
       ServerSubmissionResponse<TResponse>,
       ServerSubmissionResponse<TResponse>,
       FormPayload
     >,
-    "mutationFn"
+    'mutationFn'
   > {
   action: string
   baseId?: string
-  method?: "POST" | "PUT" | "DELETE" | "PATCH"
-  onProgress?: XHRHelperConfig["onProgress"]
+  method?: 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+  onProgress?: XHRHelperConfig['onProgress']
   transform?: (form: FormPayload) => FormPayload
 }
 
-export function useServerFormMutation<T extends Record<"path" | string, any>>({
+export function useServerFormMutation<T extends Record<'path' | string, any>>({
   action,
-  method = "POST",
+  method = 'POST',
   onProgress,
   transform,
   baseId: defaultBaseId,
@@ -94,7 +91,7 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
           method,
           body: JSON.stringify(form),
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         })
       }
@@ -113,10 +110,7 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
         }
       }
 
-      if (
-        submissionResponse?.payload?.message &&
-        !submissionResponse?.payload?.errors
-      ) {
+      if (submissionResponse?.payload?.message && !submissionResponse?.payload?.errors) {
         submissionResponse.errorsList.push(submissionResponse?.payload?.message)
       }
 
@@ -124,7 +118,7 @@ export function useServerFormMutation<T extends Record<"path" | string, any>>({
         throw submissionResponse
       }
 
-      if (submissionResponse.type === "redirect") {
+      if (submissionResponse.type === 'redirect') {
         await navigate(submissionResponse.payload.path)
       }
 
@@ -169,14 +163,14 @@ export type ServerFormProps<TResponse = unknown> =
       ServerSubmissionResponse,
       FormPayload,
       unknown
-    >["mutate"]
+    >['mutate']
   }
 
 export const ServerForm = React.forwardRef<
-  React.ElementRef<"form">,
+  React.ElementRef<'form'>,
   ServerFormProps<unknown>
 >(({ children, method, mutate, action, ...formProps }, forwardedRef) => {
-  const isUnsupportedRequestmethod = method !== "POST"
+  const isUnsupportedRequestmethod = method !== 'POST'
   const formRef = React.useRef<HTMLFormElement>(null)
 
   function onFormSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -203,7 +197,7 @@ export const ServerForm = React.forwardRef<
     <form
       {...formProps}
       action={action}
-      method={"POST"}
+      method={'POST'}
       onSubmit={onFormSubmit}
       ref={composeRefs(formRef, forwardedRef)}
     >
@@ -218,7 +212,7 @@ export const ServerForm = React.forwardRef<
 interface XHRHelperConfig {
   formData: FormData
   url: string
-  method?: UseServerFormMutationProps["method"]
+  method?: UseServerFormMutationProps['method']
   onProgress?: (progress: {
     percent: number
     loaded: number
@@ -227,7 +221,7 @@ interface XHRHelperConfig {
 }
 
 function xhrHelper<T>(config: XHRHelperConfig): Promise<Response> {
-  const { formData, url, method = "POST", onProgress } = config
+  const { formData, url, method = 'POST', onProgress } = config
 
   function json(payload: T): T {
     return payload
@@ -251,16 +245,14 @@ function xhrHelper<T>(config: XHRHelperConfig): Promise<Response> {
         ok: false,
         json: () =>
           json({
-            message: "Network error occurred during the request.",
+            message: 'Network error occurred during the request.',
           } as T),
       } as unknown as Response)
     }
 
     if (onProgress) {
       xhr.upload.onprogress = (event) => {
-        const percent = event.lengthComputable
-          ? (event.loaded / event.total) * 100
-          : 0
+        const percent = event.lengthComputable ? (event.loaded / event.total) * 100 : 0
         onProgress({
           percent: Math.ceil(percent),
           loaded: event.loaded,

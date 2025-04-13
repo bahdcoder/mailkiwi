@@ -1,25 +1,21 @@
-import { faker } from "@faker-js/faker"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { describe, test } from 'vitest'
 
-import { RunAutomationForContactJob } from "@/automations/jobs/run_automation_for_contact_job.js"
-import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.js"
+import { RunAutomationForContactJob } from '@/automations/jobs/run_automation_for_contact_job.js'
+import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.js'
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { seedAutomation } from "@/tests/mocks/teams/teams.js"
+import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { seedAutomation } from '@/tests/mocks/teams/teams.js'
 
-import { contacts } from "@/database/schema.js"
+import { contacts } from '@/database/schema.js'
 
-import {
-  makeDatabase,
-  makeLogger,
-  makeRedis,
-} from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
+import { Queue } from '@/shared/queue/queue.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-describe("Run automation for contact job", () => {
-  test("successfully runs an automation job for a contact by queueing next job", async ({
+describe('Run automation for contact job', () => {
+  test('successfully runs an automation job for a contact by queueing next job', async ({
     expect,
   }) => {
     const { audience } = await createUser()
@@ -50,7 +46,7 @@ describe("Run automation for contact job", () => {
     const jobs = await Queue.automations().getJobs()
 
     const automationsQueueJobs = jobs.filter(
-      (job) => job.data.contactId.toString() === contactId.toString()
+      (job) => job.data.contactId.toString() === contactId.toString(),
     )
 
     expect(automationsQueueJobs.length).toBe(1)
@@ -66,7 +62,7 @@ describe("Run automation for contact job", () => {
     })
   })
 
-  test("does not trigger job if contact does not match query conditions", async ({
+  test('does not trigger job if contact does not match query conditions', async ({
     expect,
   }) => {
     const { audience } = await createUser()
@@ -77,9 +73,9 @@ describe("Run automation for contact job", () => {
       audienceId: audience.id,
       triggerConditions: [
         {
-          field: "email",
-          operation: "endsWith",
-          value: "@gmail.com",
+          field: 'email',
+          operation: 'endsWith',
+          value: '@gmail.com',
         },
       ],
     })
@@ -90,7 +86,7 @@ describe("Run automation for contact job", () => {
       createFakeContact(audience.id, {
         id: contactId,
         email: faker.internet.exampleEmail(),
-      })
+      }),
     )
 
     const result = await new RunAutomationForContactJob().handle({
@@ -106,17 +102,17 @@ describe("Run automation for contact job", () => {
     const jobs = await Queue.automations().getJobs()
 
     const automationsQueueJobs = jobs.filter(
-      (job) => job.data.contactId === contactId.toString()
+      (job) => job.data.contactId === contactId.toString(),
     )
 
     expect(automationsQueueJobs.length).toBe(0)
     expect(result.success).toBe(true)
     expect(result.output).toBe(
-      `No contact found with id ${contactId} that matches trigger conditions.`
+      `No contact found with id ${contactId} that matches trigger conditions.`,
     )
   })
 
-  test("correctly runs job if contact matches additional query conditions", async ({
+  test('correctly runs job if contact matches additional query conditions', async ({
     expect,
   }) => {
     const { audience } = await createUser()
@@ -146,7 +142,7 @@ describe("Run automation for contact job", () => {
     const jobs = await Queue.automations().getJobs()
 
     const automationsQueueJobs = jobs.filter(
-      (job) => job.data.contactId.toString() === contactId.toString()
+      (job) => job.data.contactId.toString() === contactId.toString(),
     )
 
     expect(automationsQueueJobs.length).toBe(1)

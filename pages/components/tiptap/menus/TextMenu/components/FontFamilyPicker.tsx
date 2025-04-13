@@ -1,59 +1,51 @@
 import {
   DropdownButton,
   DropdownCategoryTitle,
-} from "@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx"
-import { Icon } from "@/pages/components/tiptap/ui/Icon.jsx"
-import { Surface } from "@/pages/components/tiptap/ui/Surface.jsx"
-import { Toolbar } from "@/pages/components/tiptap/ui/Toolbar.jsx"
-import * as Dropdown from "@radix-ui/react-dropdown-menu"
-import { useCallback } from "react"
+} from '@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx'
+import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
+import { Surface } from '@/pages/components/tiptap/ui/Surface.jsx'
+import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
+import * as Dropdown from '@radix-ui/react-dropdown-menu'
+import { useCallback } from 'react'
 
 const FONT_FAMILY_GROUPS = [
   {
-    label: "Sans Serif",
+    label: 'Sans Serif',
     options: [
-      { label: "Inter", value: "" },
-      { label: "Arial", value: "Arial" },
-      { label: "Helvetica", value: "Helvetica" },
+      { label: 'Inter', value: '' },
+      { label: 'Arial', value: 'Arial' },
+      { label: 'Helvetica', value: 'Helvetica' },
     ],
   },
   {
-    label: "Serif",
+    label: 'Serif',
     options: [
-      { label: "Times New Roman", value: "Times" },
-      { label: "Garamond", value: "Garamond" },
-      { label: "Georgia", value: "Georgia" },
+      { label: 'Times New Roman', value: 'Times' },
+      { label: 'Garamond', value: 'Garamond' },
+      { label: 'Georgia', value: 'Georgia' },
     ],
   },
   {
-    label: "Monospace",
+    label: 'Monospace',
     options: [
-      { label: "Courier", value: "Courier" },
-      { label: "Courier New", value: "Courier New" },
+      { label: 'Courier', value: 'Courier' },
+      { label: 'Courier New', value: 'Courier New' },
     ],
   },
 ]
 
-const FONT_FAMILIES = FONT_FAMILY_GROUPS.flatMap((group) => [
-  group.options,
-]).flat()
+const FONT_FAMILIES = FONT_FAMILY_GROUPS.flatMap((group) => [group.options]).flat()
 
 export type FontFamilyPickerProps = {
   onChange: (value: string) => void // eslint-disable-line no-unused-vars
   value: string
 }
 
-export const FontFamilyPicker = ({
-  onChange,
-  value,
-}: FontFamilyPickerProps) => {
+export const FontFamilyPicker = ({ onChange, value }: FontFamilyPickerProps) => {
   const currentValue = FONT_FAMILIES.find((size) => size.value === value)
-  const currentFontLabel = currentValue?.label.split(" ")[0] || "Inter"
+  const currentFontLabel = currentValue?.label.split(' ')[0] || 'Inter'
 
-  const selectFont = useCallback(
-    (font: string) => () => onChange(font),
-    [onChange]
-  )
+  const selectFont = useCallback((font: string) => () => onChange(font), [onChange])
 
   return (
     <Dropdown.Root>
@@ -66,10 +58,7 @@ export const FontFamilyPicker = ({
       <Dropdown.Content asChild>
         <Surface className="flex flex-col gap-1 px-2 py-4">
           {FONT_FAMILY_GROUPS.map((group) => (
-            <div
-              className="mt-2.5 first:mt-0 gap-0.5 flex flex-col"
-              key={group.label}
-            >
+            <div className="mt-2.5 first:mt-0 gap-0.5 flex flex-col" key={group.label}>
               <DropdownCategoryTitle>{group.label}</DropdownCategoryTitle>
               {group.options.map((font) => (
                 <DropdownButton

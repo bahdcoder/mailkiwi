@@ -1,26 +1,22 @@
-import { faker } from "@faker-js/faker"
-import { eq } from "drizzle-orm"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
-import { SendAbTestBroadcastJob } from "@/broadcasts/jobs/send_ab_test_broadcast_job.js"
+import { SendAbTestBroadcastJob } from '@/broadcasts/jobs/send_ab_test_broadcast_job.js'
 
-import { createFakeContact } from "@/tests/mocks/audiences/contacts.js"
-import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
+import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
+import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
 
-import { abTestVariants, broadcasts, contacts } from "@/database/schema.js"
+import { abTestVariants, broadcasts, contacts } from '@/database/schema.js'
 
-import {
-  makeDatabase,
-  makeLogger,
-  makeRedis,
-} from "@/shared/container/index.js"
-import * as queues from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
+import * as queues from '@/shared/queue/queue.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { hoursToSeconds } from "@/utils/dates.js"
+import { hoursToSeconds } from '@/utils/dates.js'
 
-describe("Send broadcast job", () => {
-  test("queues send email jobs for all contacts in audience for the broadcast based on a/b test variants", async ({
+describe('Send broadcast job', () => {
+  test('queues send email jobs for all contacts in audience for the broadcast based on a/b test variants', async ({
     expect,
   }) => {
     const database = makeDatabase()
@@ -39,11 +35,11 @@ describe("Send broadcast job", () => {
     ]
 
     const totalWeights = testAbVariantWeights.map((weight) =>
-      Math.floor((weight / 100) * contactsForAudience)
+      Math.floor((weight / 100) * contactsForAudience),
     )
     const expectedTotalWeightsRecipients = totalWeights.reduce(
       (total, weight) => total + weight,
-      0
+      0,
     )
 
     const broadcastId = await createBroadcastForUser(
@@ -55,7 +51,7 @@ describe("Send broadcast job", () => {
         updateWithValidContent: true,
         updateWithABTestsContent: true,
         weights: testAbVariantWeights,
-      }
+      },
     )
 
     const contactIds = faker.helpers.multiple(cuid, {
@@ -70,8 +66,8 @@ describe("Send broadcast job", () => {
         .map((_, idx) =>
           createFakeContact(audience.id, {
             id: contactIds[idx],
-          })
-        )
+          }),
+        ),
     )
 
     await new SendAbTestBroadcastJob().handle({
@@ -87,14 +83,12 @@ describe("Send broadcast job", () => {
 
     const jobs = await queues.Queue.broadcasts().getJobs()
 
-    const broadcastsQueueJobs = jobs.filter(
-      (job) => job.data.broadcastId === broadcastId
-    )
+    const broadcastsQueueJobs = jobs.filter((job) => job.data.broadcastId === broadcastId)
 
     const abTestsJobs = await queues.Queue.abTestsBroadcasts().getJobs()
 
     const abTestsBroadcastsQueueJobs = abTestsJobs.filter(
-      (job) => job.data.broadcastId === broadcastId
+      (job) => job.data.broadcastId === broadcastId,
     )
 
     expect(broadcastsQueueJobs).toHaveLength(contactsForAudience)
@@ -105,7 +99,7 @@ describe("Send broadcast job", () => {
       .where(eq(abTestVariants.broadcastId, broadcastId))
 
     const totalSentToVariants = broadcastsQueueJobs.filter(
-      (job) => !job.data.isAbTestFinalSample
+      (job) => !job.data.isAbTestFinalSample,
     ).length
 
     expect(totalSentToVariants).toBe(expectedTotalWeightsRecipients)
@@ -114,18 +108,18 @@ describe("Send broadcast job", () => {
 
     for (const variant of allVariants) {
       const allCallsForVariant = broadcastsQueueJobs.filter(
-        (job) => job.data.abTestVariantId === variant.id
+        (job) => job.data.abTestVariantId === variant.id,
       )
 
       const totalForVariantWeight = Math.floor(
-        (variant.weight / 100) * contactsForAudience
+        (variant.weight / 100) * contactsForAudience,
       )
 
       expect(allCallsForVariant).toHaveLength(totalForVariantWeight)
     }
 
     const totalFinalSampleRecipients = broadcastsQueueJobs.filter(
-      (job) => job.data.isAbTestFinalSample
+      (job) => job.data.isAbTestFinalSample,
     )
 
     expect(totalFinalSampleRecipients).toHaveLength(finalSampleSize)
@@ -133,7 +127,7 @@ describe("Send broadcast job", () => {
     const abTestJobOptions = abTestsBroadcastsQueueJobs[0].opts
 
     expect(abTestJobOptions.delay).toEqual(
-      hoursToSeconds(broadcast?.waitingTimeToPickWinner ?? 0)
+      hoursToSeconds(broadcast?.waitingTimeToPickWinner ?? 0),
     )
   })
 })

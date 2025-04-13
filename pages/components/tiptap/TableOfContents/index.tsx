@@ -1,1 +1,1 @@
-export * from "./TableOfContents.jsx"
+export * from './TableOfContents.jsx'

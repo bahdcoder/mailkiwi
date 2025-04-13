@@ -1,57 +1,57 @@
-import { WEBSITES_DOMAIN, appEnv } from "@/app/env/app_env.js"
-import { ChannelRepository } from "@/chat/repositories/channel_repository.js"
-import { ProductRepository } from "@/commerce/repositories/product_repository.js"
-import { WebsitePageRepository } from "@/websites/repositories/website_page_repository.js"
-import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
-import type { RedirectStatusCode, StatusCode } from "hono/utils/http-status"
+import { WEBSITES_DOMAIN, appEnv } from '@/app/env/app_env.js'
+import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
+import { ProductRepository } from '@/commerce/repositories/product_repository.js'
+import { WebsitePageRepository } from '@/websites/repositories/website_page_repository.js'
+import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import type { RedirectStatusCode, StatusCode } from 'hono/utils/http-status'
 import {
   type BaseSchema,
   type BaseSchemaAsync,
   type InferInput,
   safeParseAsync,
-} from "valibot"
+} from 'valibot'
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
-import { TeamPolicy } from "@/audiences/policies/team_policy.js"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
-import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
-import { TagRepository } from "@/audiences/repositories/tag_repository.js"
+import { TeamPolicy } from '@/audiences/policies/team_policy.js'
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { TagRepository } from '@/audiences/repositories/tag_repository.js'
 
-import { TeamMembershipRepository } from "@/teams/repositories/team_membership_repository.js"
+import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
 
-import type { Website } from "@/database/database_schema_types.js"
+import type { Website } from '@/database/database_schema_types.js'
 
 import {
   E_OPERATION_FAILED,
   E_UNAUTHORIZED,
   E_VALIDATION_FAILED,
-} from "@/http/responses/errors.js"
+} from '@/http/responses/errors.js'
 
-import { FlashController } from "@/shared/controllers/flash_controller.js"
-import type { HonoContext } from "@/shared/server/types.js"
-import { Session } from "@/shared/sessions/sessions.js"
-import { SignedUrlManager } from "@/shared/utils/links/signed_url_manager.js"
+import { FlashController } from '@/shared/controllers/flash_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
+import { Session } from '@/shared/sessions/sessions.js'
+import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 
-import { container } from "@/utils/typi.js"
-import { AutomationRepository } from "@/automations/repositories/automation_repository.js"
+import { container } from '@/utils/typi.js'
+import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
 
 type ControllerParams =
-  | "importId"
-  | "audienceId"
-  | "contactId"
-  | "tagId"
-  | "broadcastId"
-  | "membershipId"
-  | "websiteId"
-  | "websitePageId"
-  | "productId"
-  | "channelId"
-  | "automationId"
+  | 'importId'
+  | 'audienceId'
+  | 'contactId'
+  | 'tagId'
+  | 'broadcastId'
+  | 'membershipId'
+  | 'websiteId'
+  | 'websitePageId'
+  | 'productId'
+  | 'channelId'
+  | 'automationId'
 
 interface ResponseConfiguration {
-  type: "redirect" | "json"
+  type: 'redirect' | 'json'
   payload: {
     redirect: {
       path: string
@@ -70,10 +70,10 @@ class ResponseBuilder {
   protected forceJson?: boolean = false
 
   protected configuration: ResponseConfiguration = {
-    type: "json",
+    type: 'json',
     payload: {
       redirect: {
-        path: "",
+        path: '',
         status: 302,
       },
       json: {
@@ -84,7 +84,7 @@ class ResponseBuilder {
   }
 
   redirect = <T extends RedirectStatusCode>(path: string, status?: T) => {
-    this.configuration.type = "redirect"
+    this.configuration.type = 'redirect'
     this.configuration.payload.redirect = {
       path,
       status: status ?? 302,
@@ -94,11 +94,11 @@ class ResponseBuilder {
   }
 
   json = (
-    content: ResponseConfiguration["payload"]["json"]["content"],
+    content: ResponseConfiguration['payload']['json']['content'],
     status?: StatusCode,
-    force = false
+    force = false,
   ) => {
-    this.configuration.type = "json"
+    this.configuration.type = 'json'
     this.forceJson = force
     this.configuration.payload.json = {
       content,
@@ -113,13 +113,13 @@ class ResponseBuilder {
       return true
     }
 
-    return this.ctx.req.header("Content-Type") === "application/json"
+    return this.ctx.req.header('Content-Type') === 'application/json'
   }
 
   send = () => {
     if (this.isRequestAJsonSubmission()) {
       const payload =
-        this.configuration.type === "redirect"
+        this.configuration.type === 'redirect'
           ? this.configuration.payload.redirect
           : this.configuration.payload.json.content
 
@@ -128,13 +128,13 @@ class ResponseBuilder {
           type: this.configuration.type,
           payload,
         },
-        this.configuration.payload.json.status as StatusCode
+        this.configuration.payload.json.status as StatusCode,
       )
     }
 
     return this.ctx.redirect(
       this.configuration.payload.redirect.path,
-      this.configuration.payload.redirect.status
+      this.configuration.payload.redirect.status,
     )
   }
 }
@@ -149,17 +149,15 @@ export class BaseController extends FlashController {
   }
 
   isRequestAskingForJson(ctx: HonoContext) {
-    return ctx.req.header("Accept")?.includes("application/json")
+    return ctx.req.header('Accept')?.includes('application/json')
   }
 
   isRequestAFormSubmission(ctx: HonoContext) {
-    return (
-      ctx.req.header("Content-Type") === "application/x-www-form-urlencoded"
-    )
+    return ctx.req.header('Content-Type') === 'application/x-www-form-urlencoded'
   }
 
   isRequestAJsonSubmission(ctx: HonoContext) {
-    return ctx.req.header("Content-Type") === "application/json"
+    return ctx.req.header('Content-Type') === 'application/json'
   }
 
   async parseSubmittedDataFromRequest(ctx: HonoContext) {
@@ -179,11 +177,11 @@ export class BaseController extends FlashController {
   }
 
   protected async validate<
-    T extends BaseSchema<any, any, any> | BaseSchemaAsync<any, any, any>
+    T extends BaseSchema<any, any, any> | BaseSchemaAsync<any, any, any>,
   >(
     ctx: HonoContext,
     schema: T,
-    extraContext?: Record<string, string>
+    extraContext?: Record<string, string>,
   ): Promise<InferInput<T>> {
     const payload = await this.parseSubmittedDataFromRequest(ctx)
 
@@ -198,31 +196,27 @@ export class BaseController extends FlashController {
   }
 
   protected getDecodedSignature(ctx: HonoContext) {
-    return new SignedUrlManager(appEnv.APP_KEY).decode(
-      ctx.req.param("signature")
-    )
+    return new SignedUrlManager(appEnv.APP_KEY).decode(ctx.req.param('signature'))
   }
 
   protected ensureBelongsToTeam(ctx: HonoContext, entity: { teamId: string }) {
     const team = this.ensureTeam(ctx)
 
     if (team.id !== entity.teamId) {
-      throw E_UNAUTHORIZED(
-        "This entity does not belong to your selected team. "
-      )
+      throw E_UNAUTHORIZED('This entity does not belong to your selected team. ')
     }
 
     return team
   }
 
   protected ensureTeam(ctx: HonoContext) {
-    const team = ctx.get("team")
+    const team = ctx.get('team')
 
     if (!team)
       throw E_VALIDATION_FAILED([
         {
-          message: "The team is required.",
-          field: "team",
+          message: 'The team is required.',
+          field: 'team',
         },
       ])
 
@@ -237,7 +231,7 @@ export class BaseController extends FlashController {
     const canAdministrate = teamPolicy.canAdministrate(team, this.user(ctx)?.id)
 
     if (!canAdministrate) {
-      throw E_UNAUTHORIZED("You are not authorised to administrate this team.")
+      throw E_UNAUTHORIZED('You are not authorised to administrate this team.')
     }
 
     return team
@@ -251,7 +245,7 @@ export class BaseController extends FlashController {
     const canManage = teamPolicy.canManage(team, this.user(ctx)?.id)
 
     if (!canManage) {
-      throw E_UNAUTHORIZED("You are not authorised to manage this team.")
+      throw E_UNAUTHORIZED('You are not authorised to manage this team.')
     }
 
     return team
@@ -265,9 +259,7 @@ export class BaseController extends FlashController {
     const canManage = teamPolicy.canAuthor(team, this.user(ctx)?.id)
 
     if (!canManage) {
-      throw E_UNAUTHORIZED(
-        "You are not authorised to perform this action on this team."
-      )
+      throw E_UNAUTHORIZED('You are not authorised to perform this action on this team.')
     }
 
     return team
@@ -281,40 +273,38 @@ export class BaseController extends FlashController {
     const canView = teamPolicy.canView(team, this.user(ctx)?.id)
 
     if (!canView) {
-      throw E_UNAUTHORIZED(
-        "You are not authorised to perform this action on this team."
-      )
+      throw E_UNAUTHORIZED('You are not authorised to perform this action on this team.')
     }
 
     return team
   }
 
   protected user(ctx: HonoContext) {
-    return ctx.get("user")
+    return ctx.get('user')
   }
 
   protected team(ctx: HonoContext) {
-    return ctx.get("team")
+    return ctx.get('team')
   }
 
   protected ensureAuthorized(ctx: HonoContext, authorizedUserIds: string[]) {
-    const userId = ctx.get("user")?.id
+    const userId = ctx.get('user')?.id
 
     if (!authorizedUserIds.includes(userId)) {
-      throw E_UNAUTHORIZED("You are not authorized to perform this action.")
+      throw E_UNAUTHORIZED('You are not authorized to perform this action.')
     }
   }
 
   protected ensureCanSendFromDomain(ctx: HonoContext, domain: string) {
-    const team = ctx.get("teamWithSendingDomains")
+    const team = ctx.get('teamWithSendingDomains')
 
-    if (!team) throw E_OPERATION_FAILED("Could not resolve team from API key.")
+    if (!team) throw E_OPERATION_FAILED('Could not resolve team from API key.')
 
     if (team.sendingDomains.length === 0)
-      throw E_OPERATION_FAILED("Team does not have any sending domains.")
+      throw E_OPERATION_FAILED('Team does not have any sending domains.')
 
     const sendingDomain = team.sendingDomains?.find(
-      (sendingDomain) => sendingDomain.name === domain
+      (sendingDomain) => sendingDomain.name === domain,
     )
 
     if (!sendingDomain)
@@ -347,7 +337,7 @@ export class BaseController extends FlashController {
 
       if (team.id !== entity.teamId) {
         throw E_UNAUTHORIZED(
-          `You are not authorized to perform this action on team ${team.id} and ${param} ${entity.id}`
+          `You are not authorized to perform this action on team ${team.id} and ${param} ${entity.id}`,
         )
       }
     }
@@ -366,9 +356,7 @@ export class BaseController extends FlashController {
 
   protected getWebsiteHomePage(website: Website) {
     return `${website.slug}.${
-      website?.websiteDomainSslVerifiedAt
-        ? website.websiteDomain
-        : WEBSITES_DOMAIN
+      website?.websiteDomainSslVerifiedAt ? website.websiteDomain : WEBSITES_DOMAIN
     }/`
   }
 }

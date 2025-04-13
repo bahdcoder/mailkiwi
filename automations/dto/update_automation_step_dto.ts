@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 import {
   type InferInput,
   checkAsync,
@@ -7,11 +7,11 @@ import {
   pipeAsync,
   string,
   unknown,
-} from "valibot"
+} from 'valibot'
 
-import { audiences, emails, tags } from "@/database/schema.js"
+import { audiences, emails, tags } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
+import { makeDatabase } from '@/shared/container/index.js'
 
 export const UpdateAutomationStepDto = pipeAsync(
   objectAsync({
@@ -28,7 +28,7 @@ export const UpdateAutomationStepDto = pipeAsync(
         })
 
         return existingEmail !== undefined
-      }, "The emailId must reference a valid email.")
+      }, 'The emailId must reference a valid email.'),
     ),
     audienceId: pipeAsync(
       optional(string()),
@@ -42,7 +42,7 @@ export const UpdateAutomationStepDto = pipeAsync(
         })
 
         return existingAudience !== undefined
-      }, "The audienceId must reference a valid audience.")
+      }, 'The audienceId must reference a valid audience.'),
     ),
     tagId: pipeAsync(
       optional(string()),
@@ -56,12 +56,12 @@ export const UpdateAutomationStepDto = pipeAsync(
         })
 
         return existingTag !== undefined
-      }, "The tagId must reference a valid tag.")
+      }, 'The tagId must reference a valid tag.'),
     ),
   }),
   checkAsync(async () => {
     return true
-  })
+  }),
 )
 
 export type UpdateAutomationStepDto = InferInput<typeof UpdateAutomationStepDto>

@@ -1,29 +1,27 @@
-import { and, eq, isNotNull } from "drizzle-orm"
+import { and, eq, isNotNull } from 'drizzle-orm'
 
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
+import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
 
-import { RunAutomationStepForContactJob } from "@/automations/jobs/run_automation_step_for_contact_job.js"
+import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.js'
 import type {
   AutomationStepRunnerContext,
   AutomationStepRunnerContract,
-} from "@/automations/utils/automation_step_runners/automation_runner_contract.js"
+} from '@/automations/utils/automation_step_runners/automation_runner_contract.js'
 
 import type {
   Audience,
   AutomationStep,
   Contact,
-} from "@/database/database_schema_types.js"
-import { automationSteps, contacts } from "@/database/schema.js"
+} from '@/database/database_schema_types.js'
+import { automationSteps, contacts } from '@/database/schema.js'
 
-import { Queue } from "@/shared/queue/queue.js"
+import { Queue } from '@/shared/queue/queue.js'
 
-export class AddTagAutomationStepRunner
-  implements AutomationStepRunnerContract
-{
+export class AddTagAutomationStepRunner implements AutomationStepRunnerContract {
   constructor(
     private automationStep: AutomationStep,
     private contact: Contact,
-    private audience: Audience
+    private audience: Audience,
   ) {}
 
   async run({ database }: AutomationStepRunnerContext) {
@@ -32,21 +30,16 @@ export class AddTagAutomationStepRunner
     }
 
     // if / else has 2 branches.
-    const automationStepBranches =
-      await database.query.automationSteps.findMany({
-        where: and(
-          eq(automationSteps.parentId, this.automationStep.id),
-          isNotNull(automationSteps.branchIndex)
-        ),
-      })
+    const automationStepBranches = await database.query.automationSteps.findMany({
+      where: and(
+        eq(automationSteps.parentId, this.automationStep.id),
+        isNotNull(automationSteps.branchIndex),
+      ),
+    })
 
-    const yesBranch = automationStepBranches.find(
-      (branch) => branch.branchIndex === 0
-    )
+    const yesBranch = automationStepBranches.find((branch) => branch.branchIndex === 0)
 
-    const noBranch = automationStepBranches.find(
-      (branch) => branch.branchIndex === 1
-    ) // Fixed: was using 0 for both branches
+    const noBranch = automationStepBranches.find((branch) => branch.branchIndex === 1) // Fixed: was using 0 for both branches
 
     if (!yesBranch) {
       // user did not define anything on the yes branch, we halt automation
@@ -67,8 +60,8 @@ export class AddTagAutomationStepRunner
       .where(
         and(
           eq(contacts.id, this.contact.id),
-          new SegmentBuilder(filterGroups, this.audience).build()
-        )
+          new SegmentBuilder(filterGroups, this.audience).build(),
+        ),
       )
       .limit(1)
 

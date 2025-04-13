@@ -1,21 +1,21 @@
-import { v4 as uuidv4 } from "uuid"
-import { cloneDeep } from "./clone_deep.js"
-import { AutomationElement } from "@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js"
+import { v4 as uuidv4 } from 'uuid'
+import { cloneDeep } from './clone_deep.js'
+import { AutomationElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 
 const position = { x: 0, y: 0 }
 
 const getTitleAndDescription = (type: any) => {
   switch (type) {
-    case "email":
-      return { title: "Email", description: "Send email to contacts." }
-    case "sms":
-      return { title: "Sms", description: "Send sms to contacts." }
-    case "waitThenCheck":
-      return { title: "New Rule", description: "Check behaviour of the Rule" }
-    case "end":
-      return { title: "End", description: "Process ends" }
+    case 'email':
+      return { title: 'Email', description: 'Send email to contacts.' }
+    case 'sms':
+      return { title: 'Sms', description: 'Send sms to contacts.' }
+    case 'waitThenCheck':
+      return { title: 'New Rule', description: 'Check behaviour of the Rule' }
+    case 'end':
+      return { title: 'End', description: 'Process ends' }
     default:
-      return { title: "", description: "" }
+      return { title: '', description: '' }
   }
 }
 
@@ -30,7 +30,7 @@ const getUpdatedElementsAfterActionNodeAddition = ({
     id: uuidv4(),
     source: newNodeId,
     target: targetNodeId,
-    type: "condition",
+    type: 'condition',
     data: { onAddNodeCallback },
   }
   clonedElements.push(newEdge)
@@ -52,7 +52,7 @@ const getUpdatedElementsAfterRuleNodeAdditon = ({
   const mergeNodeId = uuidv4()
   const emptyNode1 = {
     id: emptyNode1Id,
-    type: "empty",
+    type: 'empty',
     data: {},
     position,
     height: 6,
@@ -60,7 +60,7 @@ const getUpdatedElementsAfterRuleNodeAdditon = ({
   }
   const emptyNode2 = {
     id: emptyNode2Id,
-    type: "empty",
+    type: 'empty',
     data: {},
     position,
     height: 6,
@@ -69,7 +69,7 @@ const getUpdatedElementsAfterRuleNodeAdditon = ({
 
   const endNode = {
     id: endNodeId,
-    type: "end",
+    type: 'end',
     data: {},
     position,
     height: 92,
@@ -78,7 +78,7 @@ const getUpdatedElementsAfterRuleNodeAdditon = ({
     id: uuidv4(),
     source: newNodeId,
     target: emptyNode1Id,
-    type: "condition",
+    type: 'condition',
     // animated: true,
     data: { onAddNodeCallback },
   }
@@ -86,7 +86,7 @@ const getUpdatedElementsAfterRuleNodeAdditon = ({
     id: uuidv4(),
     source: newNodeId,
     target: emptyNode2Id,
-    type: "condition",
+    type: 'condition',
     // animated: true,
     data: { onAddNodeCallback },
   }
@@ -94,7 +94,7 @@ const getUpdatedElementsAfterRuleNodeAdditon = ({
     id: uuidv4(),
     source: emptyNode2Id,
     target: endNodeId,
-    type: "condition",
+    type: 'condition',
     data: { onAddNodeCallback },
   }
 
@@ -102,7 +102,7 @@ const getUpdatedElementsAfterRuleNodeAdditon = ({
     id: uuidv4(),
     source: emptyNode1Id,
     target: targetNodeId,
-    type: "condition",
+    type: 'condition',
     // animated: true,
     data: { onAddNodeCallback },
   }
@@ -123,7 +123,7 @@ const getUpdatedElementsAfterRuleNodeAdditon = ({
 
 export function getParentNodeIdFromTargetEdgeId(
   elements: AutomationElement[],
-  id: string
+  id: string,
 ) {
   const targetEdgeIndex = cloneDeep(elements).findIndex((x) => x.id === id)
 
@@ -160,9 +160,9 @@ const getUpdatedElementsAfterNodeAddition = ({
   clonedElements.push(newNode as unknown as AutomationElement)
 
   switch (type) {
-    case "end":
+    case 'end':
       return getUpdatedElementsAfterEndNodeAddition()
-    case "waitThenCheck":
+    case 'waitThenCheck':
       return getUpdatedElementsAfterRuleNodeAdditon({
         elements: clonedElements,
         newNodeId,

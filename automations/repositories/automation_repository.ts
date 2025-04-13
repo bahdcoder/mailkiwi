@@ -1,14 +1,14 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 
-import type { CreateAutomationDto } from "@/automations/dto/create_automation_dto.js"
+import type { CreateAutomationDto } from '@/automations/dto/create_automation_dto.js'
 
-import type { DrizzleClient } from "@/database/client.js"
-import { automationSteps, automations } from "@/database/schema.js"
-import { hasMany } from "@/database/utils/relationships.js"
+import type { DrizzleClient } from '@/database/client.js'
+import { automationSteps, automations } from '@/database/schema.js'
+import { hasMany } from '@/database/utils/relationships.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
-import { automationStepSubtypesTriggerMap } from "@/database/types/automations.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { automationStepSubtypesTriggerMap } from '@/database/types/automations.js'
 
 export class AutomationRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -20,12 +20,12 @@ export class AutomationRepository extends BaseRepository {
     to: automationSteps,
     primaryKey: automations.id,
     foreignKey: automationSteps.automationId,
-    relationName: "steps",
+    relationName: 'steps',
   })
 
   async findById(automationId: string) {
     const [automation] = await this.hasManySteps((query) =>
-      query.where(eq(automations.id, automationId))
+      query.where(eq(automations.id, automationId)),
     )
 
     return automation
@@ -41,12 +41,12 @@ export class AutomationRepository extends BaseRepository {
 
       await trx.insert(automationSteps).values({
         id: triggerStepId,
-        type: "TRIGGER",
+        type: 'TRIGGER',
         automationId: id,
         subtype: automationStepSubtypesTriggerMap.TRIGGER_EMPTY,
         configuration: {
           filterGroups: {
-            type: "AND",
+            type: 'AND',
             groups: [],
           },
           tagIds: [],
@@ -55,11 +55,11 @@ export class AutomationRepository extends BaseRepository {
 
       await trx.insert(automationSteps).values({
         id: endStepId,
-        type: "TRIGGER",
+        type: 'TRIGGER',
         automationId: id,
-        subtype: "END",
+        subtype: 'END',
         configuration: {},
-        status: "ACTIVE",
+        status: 'ACTIVE',
         parentId: triggerStepId,
       })
     })

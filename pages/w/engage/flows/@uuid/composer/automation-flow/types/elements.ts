@@ -1,5 +1,5 @@
-import { AutomationStep } from "@/database/database_schema_types.js"
-import { Node, Edge } from "react-flow-renderer"
+import { AutomationStep } from '@/database/database_schema_types.js'
+import { Node, Edge } from 'react-flow-renderer'
 
 export type NodeElement = Node<{
   onDeleteNodeCallback: (id: string) => void
@@ -11,14 +11,9 @@ export type NodeElement = Node<{
 }
 
 export type EdgeElement = Edge<{
-  onAddNodeCallback: () => void
+  onAddNodeCallback: (id: string) => void
   sourceStep: AutomationStep
   targetSteps: AutomationStep[]
-}> & {
-  position: {
-    x: number
-    y: number
-  }
-}
+}>
 
 export type AutomationElement = NodeElement | EdgeElement

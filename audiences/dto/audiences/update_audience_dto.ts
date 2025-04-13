@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 import {
   type InferInput,
   array,
@@ -9,13 +9,13 @@ import {
   pipe,
   string,
   enum as enum_,
-} from "valibot"
+} from 'valibot'
 
 enum PropertyType {
-  boolean = "boolean",
-  float = "float",
-  date = "date",
-  text = "text",
+  boolean = 'boolean',
+  float = 'float',
+  date = 'date',
+  text = 'text',
 }
 
 export const UpdateAudienceSchema = object({
@@ -31,8 +31,8 @@ export const UpdateAudienceSchema = object({
         canContactUpdate: optional(boolean()),
         type: enum_(PropertyType),
         archived: optional(boolean()),
-      })
-    )
+      }),
+    ),
   ),
 })
 

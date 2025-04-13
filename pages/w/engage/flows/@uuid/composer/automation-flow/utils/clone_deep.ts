@@ -52,7 +52,7 @@ interface DeepCloneOptions {
  */
 export function deepClone<T extends Cloneable>(
   value: T,
-  options: DeepCloneOptions = {}
+  options: DeepCloneOptions = {},
 ): T {
   const {
     preservePrototype = false,
@@ -73,12 +73,12 @@ export function deepClone<T extends Cloneable>(
     }
 
     // Handle primitive values (null, undefined, boolean, number, string, symbol, bigint)
-    if (value === null || value === undefined || typeof value !== "object") {
+    if (value === null || value === undefined || typeof value !== 'object') {
       return value
     }
 
     // Special case for functions - we don't clone them, just return the reference
-    if (typeof value === "function") {
+    if (typeof value === 'function') {
       return value
     }
 
@@ -112,14 +112,13 @@ export function deepClone<T extends Cloneable>(
     if (ArrayBuffer.isView(value) && !(value instanceof DataView)) {
       const typedArray = value as unknown as TypedArray
       // Get the constructor (Uint8Array, Float32Array, etc.)
-      const TypedArrayConstructor =
-        typedArray.constructor as TypedArrayConstructor
+      const TypedArrayConstructor = typedArray.constructor as TypedArrayConstructor
       // Create a new instance with the same buffer section
       return new TypedArrayConstructor(
         typedArray.buffer.slice(
           typedArray.byteOffset,
-          typedArray.byteOffset + typedArray.byteLength
-        )
+          typedArray.byteOffset + typedArray.byteLength,
+        ),
       ) as unknown as U
     }
 
@@ -137,8 +136,8 @@ export function deepClone<T extends Cloneable>(
       value.forEach((val, key) => {
         // Clone both keys and values
         clonedMap.set(
-          typeof key === "object" && key !== null ? clone(key, depth + 1) : key,
-          clone(val, depth + 1)
+          typeof key === 'object' && key !== null ? clone(key, depth + 1) : key,
+          clone(val, depth + 1),
         )
       })
 
@@ -190,7 +189,7 @@ export function deepClone<T extends Cloneable>(
     // Copy all properties using descriptors
     for (const [key, descriptor] of Object.entries(descriptors)) {
       // Clone property value if it's a data descriptor
-      if ("value" in descriptor) {
+      if ('value' in descriptor) {
         descriptor.value = clone(descriptor.value, depth + 1)
       }
 
@@ -203,7 +202,7 @@ export function deepClone<T extends Cloneable>(
     for (const sym of symbolProperties) {
       const descriptor = Object.getOwnPropertyDescriptor(value, sym)!
 
-      if ("value" in descriptor) {
+      if ('value' in descriptor) {
         descriptor.value = clone(descriptor.value, depth + 1)
       }
 
@@ -252,7 +251,7 @@ type TypedArrayConstructor = {
   new (
     buffer: ArrayBuffer | SharedArrayBuffer,
     byteOffset: number,
-    length: number
+    length: number,
   ): TypedArray
   new (length: number): TypedArray
   new (array: ArrayLike<number> | ArrayLike<bigint>): TypedArray
