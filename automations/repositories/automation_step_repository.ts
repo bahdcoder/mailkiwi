@@ -5,8 +5,8 @@ import { type AutomationStepConfiguration, automationSteps } from '@/database/sc
 
 import { makeDatabase } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
-import { UpdateAutomationStepDto } from '@/automations/dto/update_automation_step_dto.js'
+import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
+import type { UpdateAutomationStepDto } from '@/automations/dto/update_automation_step_dto.js'
 import { AutomationStep } from '@/database/database_schema_types.js'
 
 export class AutomationStepRepository extends BaseRepository {

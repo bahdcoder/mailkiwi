@@ -2,11 +2,11 @@ import type { NodeElement } from '@/pages/w/engage/flows/@uuid/composer/automati
 import classNames from 'classnames'
 import { Handle, Position } from 'react-flow-renderer'
 
-export interface RuleIfElseNodeProps {
+export interface ActionRemoveTagNodeProps {
   data: NodeElement['data']
 }
 
-export function RuleIfElseNode({ data }: RuleIfElseNodeProps) {
+export function ActionRemoveTagNode({ data }: ActionRemoveTagNodeProps) {
   return (
     <div
       className="w-node-wrapper"
@@ -18,8 +18,8 @@ export function RuleIfElseNode({ data }: RuleIfElseNodeProps) {
           'w-node-selected': data.selected,
         })}
       >
-        <Handle type="target" position={Position.Top} />
         <Handle type="source" position={Position.Bottom} />
+        <Handle type="target" position={Position.Top} />
       </div>
     </div>
   )

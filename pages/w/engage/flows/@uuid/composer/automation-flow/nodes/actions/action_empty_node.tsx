@@ -2,24 +2,26 @@ import type { NodeElement } from '@/pages/w/engage/flows/@uuid/composer/automati
 import classNames from 'classnames'
 import { Handle, Position } from 'react-flow-renderer'
 
-export interface RuleIfElseNodeProps {
+export interface ActionEmptyNodeProps {
   data: NodeElement['data']
 }
 
-export function RuleIfElseNode({ data }: RuleIfElseNodeProps) {
+export function ActionEmptyNode({ data }: ActionEmptyNodeProps) {
   return (
     <div
-      className="w-node-wrapper"
+      className="w-node-wrapper-empty"
       role="button"
       onClick={() => data.onNodeClickCallback(data.step.id)}
     >
       <div
-        className={classNames('w-node-wrapper-inner', {
+        className={classNames('w-node-wrapper-inner-empty', {
           'w-node-selected': data.selected,
         })}
       >
-        <Handle type="target" position={Position.Top} />
-        <Handle type="source" position={Position.Bottom} />
+        <div className="w-full h-full border kb-border-secondary rounded-lg border-dashed">
+          <Handle type="source" position={Position.Bottom} />
+          <Handle type="target" position={Position.Top} />
+        </div>
       </div>
     </div>
   )

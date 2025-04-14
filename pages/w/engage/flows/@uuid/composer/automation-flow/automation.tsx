@@ -9,7 +9,7 @@ import { edgeTypes } from './edges/index.js'
 import { getLayoutedElements } from './utils/WorkflowLayoutUtils.js'
 import './styles.css'
 import 'react-flow-renderer/dist/style.css'
-import {
+import type {
   AutomationElement,
   NodeElement,
 } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'

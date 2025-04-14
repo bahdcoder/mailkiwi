@@ -6,7 +6,7 @@ import { BroadcastsPropsResolver } from '@/shared/controllers/page_props/props_r
 import { EngagePropsResolver } from '@/shared/controllers/page_props/props_resolvers/engage_props_resolver.js'
 import { EngageContactsPropsResolver } from '@/shared/controllers/page_props/props_resolvers/engage_contacts_props_resolver.js'
 import { FlowComposerPropsResolver } from '@/shared/controllers/page_props/props_resolvers/flow_composer_props_resolver.js'
-import { PagePropsResolverContract } from '@/shared/controllers/page_props/page_props_resolver_contract.js'
+import type { PagePropsResolverContract } from '@/shared/controllers/page_props/page_props_resolver_contract.js'
 
 export class PagePropsResolver {
   protected resolvers: Array<{

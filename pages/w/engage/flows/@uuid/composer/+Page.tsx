@@ -8,7 +8,7 @@ import { Badge } from '@kibamail/owly/badge'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import React from 'react'
-import { AutomationWithSteps } from '@/database/database_schema_types.js'
+import type { AutomationWithSteps } from '@/database/database_schema_types.js'
 import { EditPencilIcon } from '@/pages/components/icons/edit-pencil.svg.jsx'
 
 function EngageCreateFlowPage() {

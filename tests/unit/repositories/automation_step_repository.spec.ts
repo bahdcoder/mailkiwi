@@ -4,7 +4,7 @@ import { describe, test } from 'vitest'
 
 import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
 import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
-import { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
+import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
 
 import { createUser } from '@/tests/mocks/auth/users.js'
 

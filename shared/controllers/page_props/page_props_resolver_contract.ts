@@ -1,5 +1,5 @@
-import { type DefaultPageProps } from '@/pages/types/page-context.js'
-import { HonoContext } from '@/shared/server/types.js'
+import type { DefaultPageProps } from '@/pages/types/page-context.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
 export abstract class PagePropsResolverContract {
   static get regex(): (RegExp | string | ((pathname: string) => boolean))[] {

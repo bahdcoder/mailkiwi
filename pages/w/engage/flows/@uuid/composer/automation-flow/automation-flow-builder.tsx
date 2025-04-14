@@ -5,29 +5,39 @@ import { initialElements } from './data/elements1.js'
 import { getParentNodeIdFromTargetEdgeId } from './utils/elements.js'
 import 'antd/dist/antd.css'
 import './styles.css'
-import {
+import type {
   AutomationElement,
   EdgeElement,
 } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
-import { NodeElement } from './types/elements.js'
+import type { NodeElement } from './types/elements.js'
 
 import { AddNodeDialog } from './components/add-node-dialog.jsx'
-import { AutomationStep, AutomationWithSteps } from '@/database/database_schema_types.js'
+import type {
+  AutomationStep,
+  AutomationWithSteps,
+} from '@/database/database_schema_types.js'
 import { usePageProps } from '@/pages/hooks/use_page_props.js'
 
 function generateNodesAndEdgesFromAutomationSteps(
   steps: AutomationStep[],
+  selectedNode: NodeElement | null,
   callbacks: {
     onDeleteNodeCallback: (id: string) => void
     onNodeClickCallback: (id: string) => void
     onAddNodeCallback: (id: string) => void
   },
 ): AutomationElement[] {
+  // Create a map of steps by ID for faster lookup
+  const stepsMap = new Map<string, AutomationStep>()
+  steps.forEach((step) => stepsMap.set(step.id, step))
+
+  // Create nodes for each step
   const nodes: NodeElement[] = steps.map((step) => ({
     id: step.id,
     type: step.subtype,
     data: {
       step,
+      selected: selectedNode ? selectedNode.id === step.id : false,
       onDeleteNodeCallback: callbacks.onDeleteNodeCallback,
       onNodeClickCallback: callbacks.onNodeClickCallback,
     },
@@ -38,9 +48,7 @@ function generateNodesAndEdgesFromAutomationSteps(
     },
   }))
 
-  let edges: EdgeElement[] = []
-  // Keep track of nodes we've already processed to avoid duplicates
-  const processedNodeIds = new Set<string>()
+  const edges: EdgeElement[] = []
 
   // Helper function to create an edge between two steps
   const createEdge = (
@@ -58,7 +66,6 @@ function generateNodesAndEdgesFromAutomationSteps(
         sourceStep,
         targetSteps: [targetStep],
       },
-      type: 'condition',
     }
   }
 
@@ -66,48 +73,29 @@ function generateNodesAndEdgesFromAutomationSteps(
   const triggerStep = steps.find((step) => !step.parentId)
   if (!triggerStep) return nodes // If no trigger step, just return nodes without edges
 
-  // Process a step and its children recursively
-  const processStep = (currentStep: AutomationStep) => {
-    // Skip if we've already processed this node
-    if (processedNodeIds.has(currentStep.id)) return
-    processedNodeIds.add(currentStep.id)
+  // Create parent-child edges
+  steps.forEach((step) => {
+    // Skip the trigger step as it has no parent
+    if (!step.parentId) return
 
-    // Find direct children of the current step
-    const childSteps = steps.filter((step) => step.parentId === currentStep.id)
-
-    // If this is an if/else rule node, handle the branches
-    if (currentStep.subtype === 'RULE_IF_ELSE') {
-      // Find the YES branch (branchIndex = 0) and NO branch (branchIndex = 1)
-      const yesBranchStep = childSteps.find((step) => step.branchIndex === 0)
-      const noBranchStep = childSteps.find((step) => step.branchIndex === 1)
-
-      if (yesBranchStep) {
-        // Create edge for YES branch
-        edges.push(createEdge(currentStep, yesBranchStep, 'YES'))
-        // Process the YES branch recursively
-        processStep(yesBranchStep)
-      }
-
-      if (noBranchStep) {
-        // Create edge for NO branch
-        edges.push(createEdge(currentStep, noBranchStep, 'NO'))
-        // Process the NO branch recursively
-        processStep(noBranchStep)
-      }
+    // Find the parent step
+    const parentStep = stepsMap.get(step.parentId)
+    if (!parentStep) {
+      console.warn(`Parent step ${step.parentId} not found for step ${step.id}`)
+      return
     }
-    // For other node types, just connect to the next step (if any)
-    else if (childSteps.length > 0) {
-      // For non-branching nodes, there should be only one child
-      const nextStep = childSteps[0]
-      edges.push(createEdge(currentStep, nextStep))
-      // Process the next step recursively
-      processStep(nextStep)
-    }
-    // If no children, this is an end node - no edges to create
-  }
 
-  // Start processing from the trigger step
-  processStep(triggerStep)
+    // Create the appropriate edge based on the parent type and branch index
+    if (parentStep.subtype === 'RULE_IF_ELSE') {
+      // For IF/ELSE rules, create YES/NO branch edges
+      const branch =
+        step.branchIndex === 0 ? 'YES' : step.branchIndex === 1 ? 'NO' : undefined
+      edges.push(createEdge(parentStep, step, branch))
+    } else {
+      // For other node types, create a standard edge
+      edges.push(createEdge(parentStep, step))
+    }
+  })
 
   // Return both nodes and edges
   return [...nodes, ...edges]
@@ -116,9 +104,9 @@ function generateNodesAndEdgesFromAutomationSteps(
 export const Flow = () => {
   const { automation } = usePageProps<{ automation: AutomationWithSteps }>()
 
-  const [automationSteps, setAutomationSteps] = React.useState<AutomationStep[]>(
-    automation.steps,
-  )
+  const [automationSteps] = React.useState<AutomationStep[]>(automation.steps)
+
+  console.log({ automationSteps })
 
   const [addNodeDialogOpen, setAddNodeDialogOpen] = React.useState(false)
   const [selectedNode, setSelectedNode] = React.useState<NodeElement | null>(null)
@@ -139,15 +127,23 @@ export const Flow = () => {
   const onDeleteNodeCallback = (id: string) => {}
 
   const onNodeClickCallback = (id: string) => {
-    console.log(`You clicked the "${id}" node`)
+    const currentSelectedNode =
+      (elements.find((element) => element.id === id) as NodeElement) || null
+    setSelectedNode(currentSelectedNode)
+    setElements(
+      generateNodesAndEdgesFromAutomationSteps(automationSteps, currentSelectedNode, {
+        onAddNodeCallback,
+        onDeleteNodeCallback,
+        onNodeClickCallback,
+      }),
+    )
   }
 
   const onAddNodeSuccess = (automation: AutomationWithSteps) => {
-    setAutomationSteps(automation.steps)
     setSelectedEdge(null)
     setAddNodeDialogOpen(false)
     setElements(
-      generateNodesAndEdgesFromAutomationSteps(automation.steps, {
+      generateNodesAndEdgesFromAutomationSteps(automation.steps, selectedNode, {
         onAddNodeCallback,
         onDeleteNodeCallback,
         onNodeClickCallback,
@@ -156,12 +152,14 @@ export const Flow = () => {
   }
 
   const [elements, setElements] = React.useState<AutomationElement[]>(
-    generateNodesAndEdgesFromAutomationSteps(automationSteps, {
+    generateNodesAndEdgesFromAutomationSteps(automationSteps, selectedNode, {
       onAddNodeCallback,
       onDeleteNodeCallback,
       onNodeClickCallback,
     }),
   )
+
+  console.log({ elements })
 
   return (
     <div className="h-screen fleelement items-center w-full justify-center">

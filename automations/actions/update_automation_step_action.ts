@@ -1,6 +1,6 @@
 import type { UpdateAutomationStepDto } from '@/automations/dto/update_automation_step_dto.js'
 import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
-import { AutomationStep } from '@/database/database_schema_types.js'
+import type { AutomationStep } from '@/database/database_schema_types.js'
 import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 import {
   type InferInput,
@@ -16,7 +16,7 @@ import {
   object,
   array,
   AnySchema,
-  BaseSchema,
+  type BaseSchema,
   record,
 } from 'valibot'
 import { container } from '@/utils/typi.js'

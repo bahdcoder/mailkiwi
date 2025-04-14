@@ -57,7 +57,7 @@ export function deepClone<T extends Cloneable>(
   const {
     preservePrototype = false,
     copyNonEnumerable = false,
-    maxDepth = Infinity,
+    maxDepth = Number.POSITIVE_INFINITY,
   } = options
 
   // Use a WeakMap to track objects we've already cloned to handle circular references

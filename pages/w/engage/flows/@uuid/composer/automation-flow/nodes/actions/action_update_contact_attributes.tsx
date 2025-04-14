@@ -1,12 +1,15 @@
 import type { NodeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import { Text } from '@kibamail/owly/text'
 import classNames from 'classnames'
 import { Handle, Position } from 'react-flow-renderer'
 
-export interface RuleIfElseNodeProps {
+export interface ActionUpdateContactAttributesNodeProps {
   data: NodeElement['data']
 }
 
-export function RuleIfElseNode({ data }: RuleIfElseNodeProps) {
+export function ActionUpdateContactAttributesNode({
+  data,
+}: ActionUpdateContactAttributesNodeProps) {
   return (
     <div
       className="w-node-wrapper"
@@ -18,8 +21,9 @@ export function RuleIfElseNode({ data }: RuleIfElseNodeProps) {
           'w-node-selected': data.selected,
         })}
       >
-        <Handle type="target" position={Position.Top} />
+        <Text>Update attributes</Text>
         <Handle type="source" position={Position.Bottom} />
+        <Handle type="target" position={Position.Top} />
       </div>
     </div>
   )

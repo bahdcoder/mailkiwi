@@ -1,4 +1,7 @@
-import { AutomationStep, AutomationWithSteps } from '@/database/database_schema_types.js'
+import type {
+  AutomationStep,
+  AutomationWithSteps,
+} from '@/database/database_schema_types.js'
 import {
   automationStepSubtypesAction,
   automationStepSubtypesTrigger,
@@ -23,7 +26,7 @@ import {
   ServerForm,
   useServerFormMutation,
 } from '@/pages/hooks/use_server_form_mutation.jsx'
-import { EdgeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import type { EdgeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 import { route } from '@/shared/routes/route_aliases.js'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
