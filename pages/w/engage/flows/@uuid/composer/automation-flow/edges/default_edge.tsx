@@ -3,17 +3,25 @@ import {
   getBezierPath,
   getEdgeCenter,
   getMarkerEnd,
-} from 'react-flow-renderer'
+} from "react-flow-renderer"
 
-import { Button } from '@kibamail/owly/button'
-import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
-import { EdgeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import { Button } from "@kibamail/owly/button"
+import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
+import { EdgeElement } from "@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js"
 
 const [buttonWidth, buttonHeight] = [100, 40]
 
-export function DefaultEdge(props: EdgeProps<EdgeElement['data']>) {
-  const { id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, data } =
-    props
+export function DefaultEdge(props: EdgeProps<EdgeElement["data"]>) {
+  const {
+    id,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    data,
+  } = props
   const edgePath = getBezierPath({
     sourceX,
     sourceY,
@@ -23,6 +31,8 @@ export function DefaultEdge(props: EdgeProps<EdgeElement['data']>) {
     targetPosition,
   })
   const markerEnd = getMarkerEnd()
+
+  console.log({ id })
 
   const [edgeCenterX, edgeCenterY] = getEdgeCenter({
     sourceX,
@@ -51,7 +61,7 @@ export function DefaultEdge(props: EdgeProps<EdgeElement['data']>) {
             variant="primary"
             onClick={() => data?.onAddNodeCallback(id)}
             className="kb-background-info border-[var(--black-5)] rounded-lg w-7 h-7 p-0 flex items-center justify-center"
-            style={{ pointerEvents: 'all' }}
+            style={{ pointerEvents: "all" }}
           >
             <PlusIcon />
           </Button>

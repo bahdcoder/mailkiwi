@@ -2,11 +2,13 @@ import type { NodeElement } from "@/pages/w/engage/flows/@uuid/composer/automati
 import classNames from "classnames"
 import { Handle, Position } from "react-flow-renderer"
 
-export interface ActionSendEmailNodeProps {
+export interface ActionUnsubscribeToAudienceNodeProps {
   data: NodeElement["data"]
 }
 
-export function ActionSendEmailNode({ data }: ActionSendEmailNodeProps) {
+export function ActionUnsubscribeToAudienceNode({
+  data,
+}: ActionUnsubscribeToAudienceNodeProps) {
   return (
     <div
       className="w-node-wrapper"
@@ -18,7 +20,7 @@ export function ActionSendEmailNode({ data }: ActionSendEmailNodeProps) {
           "w-node-selected": data.selected,
         })}
       >
-        <p>send email</p>
+        <p>Unsubscribe from audience node</p>
         <Handle type="source" position={Position.Bottom} />
         <Handle type="target" position={Position.Top} />
       </div>

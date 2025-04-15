@@ -1,43 +1,47 @@
-import React from 'react'
+import React from "react"
 import ReactFlow, {
   ReactFlowProvider,
   Background,
   BackgroundVariant,
-} from 'react-flow-renderer'
-import { nodeTypes } from './nodes/index.js'
-import { edgeTypes } from './edges/index.js'
-import { getLayoutedElements } from './utils/WorkflowLayoutUtils.js'
-import './styles.css'
-import 'react-flow-renderer/dist/style.css'
+} from "react-flow-renderer"
+import { nodeTypes } from "./nodes/index.js"
+import { edgeTypes } from "./edges/index.js"
+import { getLayoutedElements } from "./utils/workflow-layout.js"
+import "./styles.css"
+import "react-flow-renderer/dist/style.css"
 import type {
   AutomationElement,
   NodeElement,
-} from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+} from "@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js"
 
 export interface AutomationProps {
   elements: AutomationElement[]
 }
 
 export const Automation = ({ elements }: AutomationProps) => {
-  const [layoutElements, setLayoutElements] = React.useState<AutomationElement[]>([])
+  const [layoutElements, setLayoutElements] = React.useState<
+    AutomationElement[]
+  >([])
 
   React.useEffect(() => {
     setLayoutElements(getLayoutedElements(elements))
   }, [elements])
 
   const layoutNodes = layoutElements.filter(
-    (element) => (element as NodeElement).position,
+    (element) => (element as NodeElement).position
   )
   const layoutEdges = layoutElements.filter(
-    (element) => !(element as NodeElement).position,
+    (element) => !(element as NodeElement).position
   )
 
   function getReactFlowContainerDefaultPosition() {
-    if (typeof document === 'undefined') {
+    if (typeof document === "undefined") {
       return [300, 50]
     }
 
-    const container = document.querySelector('#automation-flow-container-wrapper')
+    const container = document.querySelector(
+      "#automation-flow-container-wrapper"
+    )
 
     if (!container) {
       return [300, 50]
