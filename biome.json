@@ -39,7 +39,16 @@
       "security": {
         "noDangerouslySetInnerHtml": "warn"
       }
-    }
+    },
+    "ignore": [
+      "**/build/",
+      "**/coverage/",
+      "**/node_modules/",
+      "**/pnpm-lock.yaml",
+      "docker/tidb/data",
+      "docker/data/",
+      "build/**"
+    ]
   },
   "javascript": {
     "formatter": {

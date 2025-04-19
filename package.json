@@ -201,7 +201,6 @@
     "@tiptap/suggestion": "^2.11.2",
     "@universal-middleware/core": "^0.2.12",
     "@universal-middleware/hono": "^0.2.9",
-    "@xyflow/react": "^12.4.4",
     "acme-client": "^5.4.0",
     "antd": "4.22.3",
     "bcrypt": "^5.1.1",

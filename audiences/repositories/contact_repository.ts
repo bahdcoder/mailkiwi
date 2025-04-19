@@ -1,13 +1,13 @@
-import { type SQL, and, eq, inArray } from 'drizzle-orm'
-import type { MySqlInsertOnDuplicateKeyUpdateConfig } from 'drizzle-orm/mysql-core'
-import { DateTime } from 'luxon'
+import { type SQL, and, eq, inArray } from "drizzle-orm"
+import type { MySqlInsertOnDuplicateKeyUpdateConfig } from "drizzle-orm/mysql-core"
+import { DateTime } from "luxon"
 
-import type { CreateContactDto } from '@/audiences/dto/contacts/create_contact_dto.js'
-import type { UpdateContactDto } from '@/audiences/dto/contacts/update_contact_dto.js'
+import type { CreateContactDto } from "@/audiences/dto/contacts/create_contact_dto.js"
+import type { UpdateContactDto } from "@/audiences/dto/contacts/update_contact_dto.js"
 
-import { TriggerAutomationsForContactJob } from '@/automations/jobs/trigger_automation_for_contact_job.js'
+import { TriggerAutomationsForContactJob } from "@/automations/jobs/trigger_automation_for_contact_job.js"
 
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from "@/database/client.js"
 import type {
   Audience,
   Contact,
@@ -16,7 +16,7 @@ import type {
   ContactWithTags,
   InsertContact,
   UpdateSetContactInput,
-} from '@/database/database_schema_types.js'
+} from "@/database/database_schema_types.js"
 import {
   audiences,
   contactProperties,
@@ -24,17 +24,17 @@ import {
   emailSendEvents,
   tags,
   tagsOnContacts,
-} from '@/database/schema.js'
-import { hasMany } from '@/database/utils/relationships.js'
+} from "@/database/schema.js"
+import { hasMany } from "@/database/utils/relationships.js"
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { guessValueType } from '@/shared/utils/helpers/guess_value_type.js'
-import { Paginator } from '@/shared/utils/pagination/paginator.js'
+import { makeDatabase } from "@/shared/container/index.js"
+import { Queue } from "@/shared/queue/queue.js"
+import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { guessValueType } from "@/shared/utils/helpers/guess_value_type.js"
+import { Paginator } from "@/shared/utils/pagination/paginator.js"
 
-import { container } from '@/utils/typi.js'
-import { automationStepSubtypesTriggerMap } from '@/database/types/automations.js'
+import { container } from "@/utils/typi.js"
+import { automationStepSubtypesTriggerMap } from "@/database/types/automations.js"
 
 export class ContactRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -46,7 +46,7 @@ export class ContactRepository extends BaseRepository {
     to: contactProperties,
     foreignKey: contactProperties.contactId,
     primaryKey: contacts.id,
-    relationName: 'properties',
+    relationName: "properties",
   })
 
   async findByEmailForTeam(email: string, teamId: string) {
@@ -66,7 +66,7 @@ export class ContactRepository extends BaseRepository {
 
   async findById(contactId: string) {
     const [contact] = await this.hasManyProperties((query) =>
-      query.where(eq(contacts.id, contactId)),
+      query.where(eq(contacts.id, contactId))
     )
 
     return contact
@@ -83,7 +83,7 @@ export class ContactRepository extends BaseRepository {
   getContactPropertiesFromPayloadProperties(
     audience: Audience,
     contactId: string,
-    properties: Record<string, string | number | boolean | Date>,
+    properties: Record<string, string | number | boolean | Date>
   ) {
     const contactPropertiesPayload: ContactProperty[] = []
 
@@ -97,13 +97,15 @@ export class ContactRepository extends BaseRepository {
           contactId,
           name: knownProperty.id,
           float:
-            knownProperty.type === 'float' ? Number.parseFloat(value as string) : null,
-          boolean: knownProperty.type === 'boolean' ? Boolean(value) : null,
+            knownProperty.type === "float"
+              ? Number.parseFloat(value as string)
+              : null,
+          boolean: knownProperty.type === "boolean" ? Boolean(value) : null,
           date:
-            knownProperty.type === 'date'
+            knownProperty.type === "date"
               ? DateTime.fromISO(value as string).toJSDate()
               : null,
-          text: knownProperty.type === 'text' ? (value as string) : null,
+          text: knownProperty.type === "text" ? (value as string) : null,
         })
       }
     })
@@ -116,11 +118,8 @@ export class ContactRepository extends BaseRepository {
 
     const properties = payload.properties ?? {}
 
-    const { contactPropertiesPayload } = this.getContactPropertiesFromPayloadProperties(
-      audience,
-      id,
-      properties,
-    )
+    const { contactPropertiesPayload } =
+      this.getContactPropertiesFromPayloadProperties(audience, id, properties)
 
     await this.database.transaction(async (trx) => {
       await trx.insert(contacts).values({
@@ -139,7 +138,7 @@ export class ContactRepository extends BaseRepository {
 
   async bulkCreate(
     contactsToCreate: InsertContact[],
-    onDuplicateKeyUpdate: MySqlInsertOnDuplicateKeyUpdateConfig<any>,
+    onDuplicateKeyUpdate: MySqlInsertOnDuplicateKeyUpdateConfig<any>
   ) {
     const query = () => this.database.insert(contacts).values(contactsToCreate)
 
@@ -152,7 +151,10 @@ export class ContactRepository extends BaseRepository {
     return contactsToCreate as Contact[]
   }
 
-  async updateById(contactId: string, updatedContact: Partial<UpdateSetContactInput>) {
+  async updateById(
+    contactId: string,
+    updatedContact: Partial<UpdateSetContactInput>
+  ) {
     await this.database
       .update(contacts)
       .set(updatedContact)
@@ -162,22 +164,23 @@ export class ContactRepository extends BaseRepository {
   async update(
     contact: ContactWithProperties,
     audience: Audience,
-    updatedContact: Partial<UpdateContactDto>,
+    updatedContact: Partial<UpdateContactDto>
   ) {
     const { properties, ...restOfContactDetails } = updatedContact
 
-    const { contactPropertiesPayload } = this.getContactPropertiesFromPayloadProperties(
-      audience,
-      contact.id,
-      properties ?? {},
-    )
+    const { contactPropertiesPayload } =
+      this.getContactPropertiesFromPayloadProperties(
+        audience,
+        contact.id,
+        properties ?? {}
+      )
 
     const existingPropertyNames = contact.properties.map(
-      (contactProperty) => contactProperty.name,
+      (contactProperty) => contactProperty.name
     )
 
     const propertiesToCreate = contactPropertiesPayload.filter(
-      (property) => !existingPropertyNames.includes(property.name),
+      (property) => !existingPropertyNames.includes(property.name)
     )
 
     const propertiesToUpdate = contactPropertiesPayload
@@ -185,7 +188,7 @@ export class ContactRepository extends BaseRepository {
       .map((property) => ({
         ...property,
         id: contact.properties.find(
-          (contactProperty) => contactProperty.name === property.name,
+          (contactProperty) => contactProperty.name === property.name
         )?.id,
       }))
 
@@ -199,8 +202,8 @@ export class ContactRepository extends BaseRepository {
           .where(
             and(
               eq(contactProperties.id, propertyId as string),
-              eq(contactProperties.contactId, contactId),
-            ),
+              eq(contactProperties.contactId, contactId)
+            )
           )
       }
 
@@ -247,7 +250,7 @@ export class ContactRepository extends BaseRepository {
           contactId,
           tagId,
           assignedAt: new Date(),
-        })),
+        }))
       )
 
       await Queue.automations().add(TriggerAutomationsForContactJob.id, {
@@ -265,14 +268,16 @@ export class ContactRepository extends BaseRepository {
       .where(
         and(
           eq(tagsOnContacts.contactId, contactId),
-          inArray(tagsOnContacts.tagId, tagIds),
-        ),
+          inArray(tagsOnContacts.tagId, tagIds)
+        )
       )
 
     return { id: contactId }
   }
 
-  async findAllContactsWithTags(filters: SQL | undefined): Promise<ContactWithTags[]> {
+  async findAllContactsWithTags(
+    filters: SQL | undefined
+  ): Promise<ContactWithTags[]> {
     const contactsWithTags = await this.database
       .select()
       .from(contacts)
@@ -281,25 +286,22 @@ export class ContactRepository extends BaseRepository {
       .leftJoin(tagsOnContacts, eq(tagsOnContacts.contactId, contacts.id))
       .leftJoin(tags, eq(tags.id, tagsOnContacts.tagId))
 
-    const groupedContacts = contactsWithTags.reduce(
-      (acc, row) => {
-        const contactId = row.contacts.id
-        if (!acc[contactId]) {
-          acc[contactId] = {
-            ...row.contacts,
-            tags: [],
-          }
+    const groupedContacts = contactsWithTags.reduce((acc, row) => {
+      const contactId = row.contacts.id
+      if (!acc[contactId]) {
+        acc[contactId] = {
+          ...row.contacts,
+          tags: [],
         }
-        if (row.tagsOnContacts && row.tags) {
-          acc[contactId].tags.push({
-            ...row.tagsOnContacts,
-            tag: row.tags,
-          })
-        }
-        return acc
-      },
-      {} as Record<string, any>,
-    )
+      }
+      if (row.tagsOnContacts && row.tags) {
+        acc[contactId].tags.push({
+          ...row.tagsOnContacts,
+          tag: row.tags,
+        })
+      }
+      return acc
+    }, {} as Record<string, string>)
 
     return Object.values(groupedContacts)
   }

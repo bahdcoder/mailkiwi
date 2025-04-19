@@ -1,38 +1,42 @@
-import { ImageBlockWidth } from './ImageBlockWidth.js'
-import { LinkEditorPanel } from '@/pages/components/composer/components/link-menu/link-editor-panel.jsx'
+import { ImageBlockWidth } from "./ImageBlockWidth.js"
+import { LinkEditorPanel } from "@/pages/components/composer/components/link-menu/link-editor-panel.jsx"
 import {
   ToolbarButton,
   ToolbarContainer,
   ToolbarSection,
-} from '@/pages/components/composer/components/toolbar/toolbar.jsx'
-import { EditImageInformationPanel } from '@/pages/components/composer/extensions/ImageBlock/components/edit-image-information-panel.jsx'
-import { CompAlignCenterIcon } from '@/pages/components/icons/comp-align-center.svg.jsx'
-import { CompAlignLeftIcon } from '@/pages/components/icons/comp-align-left.svg.jsx'
-import { CompAlignRightIcon } from '@/pages/components/icons/comp-align-right.svg.jsx'
-import { EditPencilIcon } from '@/pages/components/icons/edit-pencil.svg.jsx'
-import { LinkIcon } from '@/pages/components/icons/link.svg.jsx'
-import { TrashIcon } from '@/pages/components/icons/trash.svg.jsx'
-import type { MenuProps } from '@/pages/components/tiptap/menus/types.js'
-import { getRenderContainer } from '@/pages/components/tiptap/utils/index.js'
-import { BubbleMenu as BaseBubbleMenu, useEditorState } from '@tiptap/react'
-import React, { useCallback, useRef } from 'react'
-import { type Instance, sticky } from 'tippy.js'
-import { v4 as uuid } from 'uuid'
+} from "@/pages/components/composer/components/toolbar/toolbar.jsx"
+import { EditImageInformationPanel } from "@/pages/components/composer/extensions/ImageBlock/components/edit-image-information-panel.jsx"
+import { CompAlignCenterIcon } from "@/pages/components/icons/comp-align-center.svg.jsx"
+import { CompAlignLeftIcon } from "@/pages/components/icons/comp-align-left.svg.jsx"
+import { CompAlignRightIcon } from "@/pages/components/icons/comp-align-right.svg.jsx"
+import { EditPencilIcon } from "@/pages/components/icons/edit-pencil.svg.jsx"
+import { LinkIcon } from "@/pages/components/icons/link.svg.jsx"
+import { TrashIcon } from "@/pages/components/icons/trash.svg.jsx"
+import type { MenuProps } from "@/pages/components/tiptap/menus/types.js"
+import { getRenderContainer } from "@/pages/components/tiptap/utils/index.js"
+import { BubbleMenu as BaseBubbleMenu, useEditorState } from "@tiptap/react"
+import React, { useCallback, useRef } from "react"
+import { type Instance, sticky } from "tippy.js"
+import { v4 as uuid } from "uuid"
 
-export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
+export const ImageBlockMenu = ({
+  editor,
+  appendTo,
+}: MenuProps): JSX.Element => {
   const menuRef = useRef<HTMLDivElement>(null)
   const tippyInstance = useRef<Instance | null>(null)
 
   const getReferenceClientRect = useCallback(() => {
-    const renderContainer = getRenderContainer(editor, 'node-imageBlock')
+    const renderContainer = getRenderContainer(editor, "node-imageBlock")
     const rect =
-      renderContainer?.getBoundingClientRect() || new DOMRect(-1000, -1000, 0, 0)
+      renderContainer?.getBoundingClientRect() ||
+      new DOMRect(-1000, -1000, 0, 0)
 
     return rect
   }, [editor])
 
   const shouldShow = useCallback(() => {
-    const isActive = editor.isActive('imageBlock')
+    const isActive = editor.isActive("imageBlock")
 
     return isActive
   }, [editor])
@@ -41,7 +45,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
     editor
       .chain()
       .focus(undefined, { scrollIntoView: false })
-      .setImageBlockAlign('left')
+      .setImageBlockAlign("left")
       .run()
   }, [editor])
 
@@ -49,7 +53,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
     editor
       .chain()
       .focus(undefined, { scrollIntoView: false })
-      .setImageBlockAlign('center')
+      .setImageBlockAlign("center")
       .run()
   }, [editor])
 
@@ -57,7 +61,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
     editor
       .chain()
       .focus(undefined, { scrollIntoView: false })
-      .setImageBlockAlign('right')
+      .setImageBlockAlign("right")
       .run()
   }, [editor])
 
@@ -69,16 +73,18 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
         .setImageBlockWidth(value)
         .run()
     },
-    [editor],
+    [editor]
   )
   const { isImageCenter, isImageLeft, isImageRight, width } = useEditorState({
     editor,
     selector: (ctx) => {
       return {
-        isImageLeft: ctx.editor.isActive('imageBlock', { align: 'left' }),
-        isImageCenter: ctx.editor.isActive('imageBlock', { align: 'center' }),
-        isImageRight: ctx.editor.isActive('imageBlock', { align: 'right' }),
-        width: Number.parseInt(ctx.editor.getAttributes('imageBlock')?.width || 0),
+        isImageLeft: ctx.editor.isActive("imageBlock", { align: "left" }),
+        isImageCenter: ctx.editor.isActive("imageBlock", { align: "center" }),
+        isImageRight: ctx.editor.isActive("imageBlock", { align: "right" }),
+        width: Number.parseInt(
+          ctx.editor.getAttributes("imageBlock")?.width || 0
+        ),
       }
     },
   })
@@ -88,7 +94,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
     const pos = state.selection.$anchor.pos
     const node = state.doc.nodeAt(pos)
 
-    if (node?.type.name === 'imageBlock') {
+    if (node?.type.name === "imageBlock") {
       editor
         .chain()
         .focus()
@@ -110,7 +116,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
       tippyOptions={{
         offset: [0, 8],
         popperOptions: {
-          modifiers: [{ name: 'flip', enabled: false }],
+          modifiers: [{ name: "flip", enabled: false }],
         },
         getReferenceClientRect,
         onCreate: (instance: Instance) => {
@@ -120,13 +126,13 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
           return appendTo?.current
         },
         plugins: [sticky],
-        sticky: 'popper',
-        maxWidth: 'calc(100vw - 16px)',
+        sticky: "popper",
+        maxWidth: "calc(100vw - 16px)",
       }}
     >
       <ToolbarContainer>
         <ToolbarSection divider="right">
-          <LinkEditorPanel onSubmit={console.log}>
+          <LinkEditorPanel>
             <button>
               <LinkIcon className="w-4 h-4" />
             </button>

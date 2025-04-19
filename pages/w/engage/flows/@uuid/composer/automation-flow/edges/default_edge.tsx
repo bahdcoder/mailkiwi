@@ -1,5 +1,5 @@
 import {
-  EdgeProps,
+  type EdgeProps,
   getBezierPath,
   getEdgeCenter,
   getMarkerEnd,
@@ -7,7 +7,7 @@ import {
 
 import { Button } from "@kibamail/owly/button"
 import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
-import { EdgeElement } from "@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js"
+import type { EdgeElement } from "@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js"
 
 const [buttonWidth, buttonHeight] = [100, 40]
 
@@ -31,8 +31,6 @@ export function DefaultEdge(props: EdgeProps<EdgeElement["data"]>) {
     targetPosition,
   })
   const markerEnd = getMarkerEnd()
-
-  console.log({ id })
 
   const [edgeCenterX, edgeCenterY] = getEdgeCenter({
     sourceX,

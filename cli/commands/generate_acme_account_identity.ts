@@ -1,25 +1,27 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { SettingRepository } from '@/settings/repositories/setting_repository.js'
-import { command } from '@drizzle-team/brocli'
+import { appEnv } from "@/app/env/app_env.js"
+import { SettingRepository } from "@/settings/repositories/setting_repository.js"
+import { command } from "@drizzle-team/brocli"
 
-import { AcmeCertificatesTool } from '@/tools/ssl/acme_certificates_tool.js'
+import { AcmeCertificatesTool } from "@/tools/ssl/acme_certificates_tool.js"
 
-import { container } from '@/utils/typi.js'
+import { container } from "@/utils/typi.js"
+import { makeLogger } from "@/shared/container/index.js"
 
 export const generateAcmeAccountIdentityCommand = command({
-  name: 'generate_acme_account_identity',
+  name: "generate_acme_account_identity",
   desc: "Generate the account identity used to generate ssl certificates with Let's encrypt.",
   async transform(opts) {
     return opts
   },
   async handler() {
+    const logger = makeLogger()
     const acmeCertificatesTool = container.make(AcmeCertificatesTool)
     const settingRepository = container.make(SettingRepository)
 
     const settingsExist = await settingRepository.get()
 
     if (settingsExist) {
-      console.log('👍 Account identity already generated.')
+      logger.info("👍 Account identity already generated.")
 
       return
     }
@@ -27,9 +29,9 @@ export const generateAcmeAccountIdentityCommand = command({
     const { accountPrivateKey } = await acmeCertificatesTool.createAccount()
 
     await settingRepository.create({
-      acmeAccountIdentity: accountPrivateKey.toString('utf-8'),
+      acmeAccountIdentity: accountPrivateKey.toString("utf-8"),
     })
 
-    console.log('👍 Account identity generated')
+    logger.info("👍 Account identity generated")
   },
 })

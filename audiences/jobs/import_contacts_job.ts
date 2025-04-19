@@ -1,29 +1,32 @@
-import { makeS3Client } from '@/minio/s3_client.js'
-import CsvParser from 'csv-parser'
-import { sql } from 'drizzle-orm'
-import { DateTime } from 'luxon'
+import { makeS3Client } from "@/minio/s3_client.js"
+import CsvParser from "csv-parser"
+import { sql } from "drizzle-orm"
+import { DateTime } from "luxon"
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
-import { TagRepository } from '@/audiences/repositories/tag_repository.js'
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { TagRepository } from "@/audiences/repositories/tag_repository.js"
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from "@/teams/repositories/team_repository.js"
 
-import { ContactImport, type ContactProperty } from '@/database/database_schema_types.js'
+import {
+  ContactImport,
+  type ContactProperty,
+} from "@/database/database_schema_types.js"
 import {
   KnownAudienceProperty,
   contactProperties,
   contacts,
   tagsOnContacts,
-} from '@/database/schema.js'
+} from "@/database/schema.js"
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { guessValueType } from '@/shared/utils/helpers/guess_value_type.js'
+import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
+import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { guessValueType } from "@/shared/utils/helpers/guess_value_type.js"
 
-import { container } from '@/utils/typi.js'
+import { container } from "@/utils/typi.js"
 
 export interface ImportContactsJobPayload {
   contactImportId: string
@@ -31,20 +34,26 @@ export interface ImportContactsJobPayload {
 
 export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
   static get id() {
-    return 'ACCOUNTS::CONTACTS'
+    return "ACCOUNTS::CONTACTS"
   }
 
   static get queue() {
     return AVAILABLE_QUEUES.contacts
   }
 
-  async handle({ database, payload, logger }: JobContext<ImportContactsJobPayload>) {
+  async handle({
+    database,
+    payload,
+    logger,
+  }: JobContext<ImportContactsJobPayload>) {
     const contactImport = await container
       .make(ContactImportRepository)
       .findById(payload.contactImportId)
 
     if (!contactImport) {
-      logger.info(`Contact import with ID ${payload.contactImportId} does not exist.`)
+      logger.info(
+        `Contact import with ID ${payload.contactImportId} does not exist.`
+      )
       return this.done()
     }
 
@@ -53,7 +62,9 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
       .findById(contactImport?.audienceId)
 
     if (!audience) {
-      logger.info(`Audience with ID ${contactImport?.audienceId} does not exist.`)
+      logger.info(
+        `Audience with ID ${contactImport?.audienceId} does not exist.`
+      )
       return this.done()
     }
 
@@ -62,21 +73,27 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
     logger.info(`Processing import for team ${team?.id}.`)
 
     const csvStream = await makeS3Client().getObjectStream(
-      ContactImportRepository.getUploadedFileKey(contactImport.id, 'csv', team.id),
+      ContactImportRepository.getUploadedFileKey(
+        contactImport.id,
+        "csv",
+        team.id
+      )
     )
 
     const parser = csvStream.pipe(CsvParser())
 
-    const rows: any[] = await new Promise((resolve, reject) => {
-      const rows: any[] = []
+    const rows: Record<string, string>[] = await new Promise(
+      (resolve, reject) => {
+        const rows: Record<string, string>[] = []
 
-      parser
-        .on('data', async (row) => {
-          rows.push(row)
-        })
-        .on('end', () => resolve(rows))
-        .on('error', (error) => reject(error))
-    })
+        parser
+          .on("data", async (row) => {
+            rows.push(row)
+          })
+          .on("end", () => resolve(rows))
+          .on("error", (error) => reject(error))
+      }
+    )
 
     logger.info(`Importing ${rows.length} contacts from csv.`)
 
@@ -106,21 +123,25 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
       for (let i = 0; i < rows.length; i += chunkSize) {
         const batch = rows.slice(i, i + chunkSize)
 
-        logger.info(`Processing ${chunkSize} contacts in batch ${i} of ${batch.length}.`)
+        logger.info(
+          `Processing ${chunkSize} contacts in batch ${i} of ${batch.length}.`
+        )
 
         const allContactProperties: ContactProperty[] = []
 
         const values = batch.map((row) => {
           const contactId = cuid()
 
-          const customProperties = contactImport.propertiesMap.customProperties ?? {}
+          const customProperties =
+            contactImport.propertiesMap.customProperties ?? {}
 
           for (const csvColumnHeaderName of Object.keys(customProperties)) {
             const property = customProperties[csvColumnHeaderName]
             const value = row[csvColumnHeaderName]
 
             if (property && value) {
-              const date = property.type === 'date' ? DateTime.fromISO(value) : null
+              const date =
+                property.type === "date" ? DateTime.fromISO(value) : null
 
               allContactProperties.push({
                 id: cuid(),
@@ -128,9 +149,10 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
                 name: property.id,
                 audienceId: contactImport.audienceId,
                 boolean: null,
-                float: property.type === 'float' ? Number.parseFloat(value) : null,
+                float:
+                  property.type === "float" ? Number.parseFloat(value) : null,
                 date: date?.isValid ? date.toJSDate() : null,
-                text: property.type === 'text' ? value : null,
+                text: property.type === "text" ? value : null,
               })
             }
           }
@@ -166,10 +188,15 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
               : {},
           })
 
-        logger.info(`Inserted ${createdContacts.length} contacts into database.`)
+        logger.info(
+          `Inserted ${createdContacts.length} contacts into database.`
+        )
 
         for (let z = 0; z < allContactProperties.length; z += chunkSize) {
-          const contactPropertiesBatch = allContactProperties.slice(z, z + chunkSize)
+          const contactPropertiesBatch = allContactProperties.slice(
+            z,
+            z + chunkSize
+          )
 
           if (contactPropertiesBatch.length > 0) {
             await tx
@@ -193,7 +220,7 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
             contactId,
             tagId,
             assignedAt: new Date(),
-          })),
+          }))
         )
 
         if (attachTagsToContacts.length > 0) {
@@ -209,7 +236,7 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
         .make(ContactImportRepository)
         .transaction(tx)
         .update(contactImport.id, {
-          status: 'SUCCESS',
+          status: "SUCCESS",
         })
     })
 
@@ -219,19 +246,6 @@ export class ImportContactsJob extends BaseJob<ImportContactsJobPayload> {
   async failed({ payload }: JobContext<ImportContactsJobPayload>) {
     await container
       .make(ContactImportRepository)
-      .update(payload.contactImportId, { status: 'FAILED' })
-
-    // await Mailer.from(env.SMTP_MAIL_FROM)
-    //   .to(invite.email)
-    //   .subject("You've been invited to join a team on Kibamail.")
-    //   .content(
-    //     JSON.stringify({
-    //       transactionalEmailId: "transactionalEmailId",
-    //       variables: {
-    //         token,
-    //       },
-    //     }),
-    //   )
-    //   .send()
+      .update(payload.contactImportId, { status: "FAILED" })
   }
 }

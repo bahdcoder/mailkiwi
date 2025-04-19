@@ -1,6 +1,6 @@
-import type { WebSocket } from 'ws'
+import type { WebSocket } from "ws"
 
-import type { UserWithChannelMemberships } from '@/database/database_schema_types.js'
+import type { UserWithChannelMemberships } from "@/database/database_schema_types.js"
 
 export type MapOfConnections = Map<
   string,
@@ -10,7 +10,7 @@ export type MapOfConnections = Map<
 export type MapOfChannelConnections = Map<string, Set<string>>
 
 export type WebsocketMessage<T> = {
-  name: 'message' | 'join_channel'
+  name: "message" | "join_channel"
   payload: T
   user: UserWithChannelMemberships
 }
@@ -18,7 +18,7 @@ export type WebsocketMessage<T> = {
 export class WebsocketServerHandler {
   constructor(
     protected user: UserWithChannelMemberships,
-    message: any,
+    _message: Record<string, string>
   ) {}
 
   onNewMessage = async (
@@ -26,8 +26,8 @@ export class WebsocketServerHandler {
       content: {
         blocks: []
       }
-    }>,
+    }>
   ) => {}
 
-  onJoinChannel = async (event: WebsocketMessage<{}>) => {}
+  onJoinChannel = async (event: WebsocketMessage<Record<string, string>>) => {}
 }

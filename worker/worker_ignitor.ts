@@ -1,17 +1,24 @@
-import { Ignitor } from '@/app/ignitor/ignitor.js'
-import { SendTransactionalEmailJob } from '@/transactional/jobs/send_transactional_email_job.js'
-import { type Job, Worker } from 'bullmq'
+import { Ignitor } from "@/app/ignitor/ignitor.js"
+import { SendTransactionalEmailJob } from "@/transactional/jobs/send_transactional_email_job.js"
+import { type Job, Worker } from "bullmq"
 
-import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
-import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.js'
+import { SendBroadcastJob } from "@/broadcasts/jobs/send_broadcast_job.js"
+import { SendBroadcastToContact } from "@/broadcasts/jobs/send_broadcast_to_contact_job.js"
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import type { BaseJob } from '@/shared/queue/abstract_job.js'
-import { container } from '@/utils/typi.js'
-import { ImportContactsJob } from '@/audiences/jobs/import_contacts_job.js'
+import {
+  makeDatabase,
+  makeLogger,
+  makeRedis,
+} from "@/shared/container/index.js"
+import type {
+  BaseJob,
+  JobHandlerResponse,
+} from "@/shared/queue/abstract_job.js"
+import { container } from "@/utils/typi.js"
+import { ImportContactsJob } from "@/audiences/jobs/import_contacts_job.js"
 
 export class WorkerIgnitor extends Ignitor {
-  private workers: Worker<any, any, string>[] = []
+  private workers: Worker<object, JobHandlerResponse | undefined, string>[] = []
   private jobs: Map<string, new () => BaseJob<object>> = new Map()
 
   async start() {
@@ -39,7 +46,7 @@ export class WorkerIgnitor extends Ignitor {
     const Executor = this.jobs.get(job.name)
 
     if (!Executor) {
-      d(['No handler defined for job name:', job.name])
+      d(["No handler defined for job name:", job.name])
 
       return
     }
@@ -75,7 +82,7 @@ export class WorkerIgnitor extends Ignitor {
       })
     }
 
-    d(`Worker listening for jobs on queues: ${queueNames.join(', ')}`)
+    d(`Worker listening for jobs on queues: ${queueNames.join(", ")}`)
   }
 
   async shutdown() {

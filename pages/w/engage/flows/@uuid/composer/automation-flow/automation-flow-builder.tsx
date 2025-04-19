@@ -107,8 +107,6 @@ export const Flow = () => {
 
   const [automationSteps] = React.useState<AutomationStep[]>(automation.steps)
 
-  console.log({ automationSteps })
-
   const [addNodeDialogOpen, setAddNodeDialogOpen] = React.useState(false)
   const [selectedNode, setSelectedNode] = React.useState<NodeElement | null>(
     null

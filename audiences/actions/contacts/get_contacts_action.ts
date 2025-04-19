@@ -1,36 +1,36 @@
-import { type SQLWrapper, and, eq, inArray } from 'drizzle-orm'
+import { type SQLWrapper, and, eq, inArray } from "drizzle-orm"
 
-import type { SearchContactsDto } from '@/audiences/dto/contacts/search_contacts_dto.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
+import type { SearchContactsDto } from "@/audiences/dto/contacts/search_contacts_dto.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import { SegmentRepository } from "@/audiences/repositories/segment_repository.js"
+import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
 
 import type {
   Audience,
   Contact,
   ContactWithProperties,
   Segment,
-} from '@/database/database_schema_types.js'
+} from "@/database/database_schema_types.js"
 import {
   ContactFilterGroup,
   contactProperties,
   contacts,
   tags,
   tagsOnContacts,
-} from '@/database/schema.js'
+} from "@/database/schema.js"
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { Paginator } from '@/shared/utils/pagination/paginator.js'
+import { makeDatabase } from "@/shared/container/index.js"
+import { Paginator } from "@/shared/utils/pagination/paginator.js"
 
-import { container } from '@/utils/typi.js'
+import { container } from "@/utils/typi.js"
 
 export class GetContactsAction {
   constructor(
     private segmentRepository = container.make(SegmentRepository),
     private audienceRepository = container.make(AudienceRepository),
-    private database = makeDatabase(),
+    private database = makeDatabase()
   ) {}
 
   handle = async (
@@ -38,13 +38,13 @@ export class GetContactsAction {
     segmentId?: string,
     page?: number,
     perPage?: number,
-    filters?: SearchContactsDto['filters'],
+    filters?: SearchContactsDto["filters"]
   ) => {
     let segment: Segment | undefined
     let audience: Audience | undefined
 
     if (!audienceId) {
-      throw E_VALIDATION_FAILED([{ message: 'Audience id is required.' }])
+      throw E_VALIDATION_FAILED([{ message: "Audience id is required." }])
     }
 
     const queryConditions: SQLWrapper[] = []
@@ -64,7 +64,9 @@ export class GetContactsAction {
     }
 
     if (filters) {
-      queryConditions.push(new SegmentBuilder(filters, audience as Audience).build())
+      queryConditions.push(
+        new SegmentBuilder(filters, audience as Audience).build()
+      )
     }
 
     if (segmentId) {
@@ -78,7 +80,7 @@ export class GetContactsAction {
         ])
 
       queryConditions.push(
-        new SegmentBuilder(segment.filterGroups, audience as Audience).build(),
+        new SegmentBuilder(segment.filterGroups, audience as Audience).build()
       )
     }
 
@@ -86,7 +88,7 @@ export class GetContactsAction {
       .queryConditions([...queryConditions])
       .size(perPage ?? 100)
       .page(page ?? 1)
-      .transformRows(async (rows: any[]) => {
+      .transformRows(async (rows) => {
         const [tagsForContacts, allContactProperties] = await Promise.all([
           this.database
             .selectDistinct()
@@ -96,9 +98,9 @@ export class GetContactsAction {
               and(
                 inArray(
                   tagsOnContacts.contactId,
-                  rows.map((row) => row.id),
-                ),
-              ),
+                  rows.map((row) => row.id)
+                )
+              )
             ),
           this.database
             .select()
@@ -107,9 +109,9 @@ export class GetContactsAction {
               and(
                 inArray(
                   contactProperties.contactId,
-                  rows.map((row) => row.id),
-                ),
-              ),
+                  rows.map((row) => row.id)
+                )
+              )
             ),
         ])
 
@@ -119,20 +121,19 @@ export class GetContactsAction {
             .filter((tag) => tag.tagsOnContacts?.contactId === row.id)
             .map((relation) => relation.tags),
           properties: allContactProperties.filter(
-            (property) => property.contactId === row.id,
+            (property) => property.contactId === row.id
           ),
         }))
       })
       .paginate()
 
-    d({ audience })
     const knownProperties = audience?.knownProperties
 
     const data = paginator.data as ContactWithProperties[]
 
     const knownPropertiesIdToTypeMap: Record<
       string,
-      'boolean' | 'date' | 'text' | 'float'
+      "boolean" | "date" | "text" | "float"
     > = {}
 
     for (const property of knownProperties ?? []) {
@@ -142,7 +143,7 @@ export class GetContactsAction {
     return {
       ...paginator,
       data: data.map((contact) => {
-        const parsedProperties: ContactWithProperties['parsedProperties'] = {}
+        const parsedProperties: ContactWithProperties["parsedProperties"] = {}
 
         for (const property of contact.properties) {
           parsedProperties[property.name] =
