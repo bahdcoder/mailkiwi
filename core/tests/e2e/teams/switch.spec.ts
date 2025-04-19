@@ -1,0 +1,22 @@
+import { expect, test } from '@/tests/e2e/fixtures/users.js'
+
+import { route } from '@/shared/routes/route_aliases.js'
+
+test('can switch teams', async ({ managerPage, seed }) => {
+  await managerPage.page.goto(route('dashboard'))
+
+  const waitForSwitchTeamRequestPromise = managerPage.page.waitForRequest(
+    (request) =>
+      request.url().includes(seed.manager.team.id) && request.method() === 'GET',
+  )
+
+  await managerPage.switchToTeam(seed.manager.team.id)
+
+  const request = await waitForSwitchTeamRequestPromise
+
+  expect(request.url()).toContain(seed.manager.team.id)
+
+  const activeTeamName = await managerPage.teamSwitchDropdownMenuTrigger.textContent()
+
+  expect(activeTeamName?.toLowerCase()).toContain(seed.manager.team.name.toLowerCase())
+})

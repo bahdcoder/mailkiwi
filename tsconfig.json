@@ -14,8 +14,8 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@components/*": ["./components/*"]
+      "@/*": ["./core/*", "./*"],
+      "@components/*": ["./core/components/*", "./components/*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -24,6 +24,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["./**/*.ts", "./**/*.tsx"],
+  "include": ["./core/**/*.ts", "./core/**/*.tsx", "./**/*.ts", "./**/*.tsx"],
   "exclude": ["node_modules", "build", "vitest.config.ts", "vite.config.ts"]
 }

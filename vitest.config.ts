@@ -1,32 +1,32 @@
-import tsconfigPaths from 'vite-tsconfig-paths'
-import { configDefaults, defineConfig } from 'vitest/config'
+import tsconfigPaths from "vite-tsconfig-paths"
+import { configDefaults, defineConfig } from "vitest/config"
 
 export default defineConfig({
   test: {
     coverage: {
-      provider: 'v8',
+      provider: "v8",
       ignoreEmptyLines: true,
       exclude: [
-        'build/**',
-        'tests/**',
-        '.prettierrc.js',
-        'drizzle.config.ts',
-        'postcss.config.js',
-        'tailwind.config.js',
+        "build/**",
+        "tests/**",
+        ".prettierrc.js",
+        "drizzle.config.ts",
+        "postcss.config.js",
+        "tailwind.config.js",
       ],
     },
-    setupFiles: ['tests/setup.ts'],
+    setupFiles: ["core/tests/setup.ts"],
     hideSkippedTests: true,
     exclude: [
       ...configDefaults.exclude,
-      '**/build/**',
-      'pages/**/*.spec.tsx',
-      '**/*.client.spec.tsx',
-      'tests/e2e/**/*.spec.ts',
+      "**/build/**",
+      "pages/**/*.spec.tsx",
+      "**/*.client.spec.tsx",
+      "core/tests/e2e/**/*.spec.ts",
     ],
-    reporters: ['verbose'],
+    reporters: ["verbose"],
     retry: 1,
-    environment: 'node',
+    environment: "node",
   },
   plugins: [tsconfigPaths()],
 })

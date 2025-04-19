@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm mysql:migrate:dev && pnpm quick:dev",
-    "quick:dev": "env-cmd tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs app/start/dev.ts",
+    "quick:dev": "env-cmd tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/app/start/dev.ts",
     "test:server": "env-cmd -f .env.test pnpm test:watch --run",
-    "worker:dev": "env-cmd tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs worker/start.ts",
+    "worker:dev": "env-cmd tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/worker/start.ts",
     "test": "pnpm test:server && pnpm test:client",
     "build:clean": "del-cli build",
     "test:e2e": "env-cmd -f .env.e2e pnpm exec playwright test",
@@ -19,7 +19,7 @@
     "build": "pnpm test && pnpm types:check && pnpm build:quick",
     "format": "pnpm biome format --write .",
     "lint": "pnpm biome lint --write --unsafe .",
-    "start": "env-cmd node build/core/app/start/prod.js",
+    "start": "env-cmd node build/core/core/app/start/prod.js",
     "build:app": "tsc",
     "build:quick": "pnpm build:clean && pnpm build:app && pnpm build:client && pnpm cli fix_typescript_imports",
     "mysql:seed:dev": "pnpm mysql:migrate:dev && env-cmd tsx bin/seed.ts",
@@ -31,7 +31,7 @@
     "cli": "env-cmd tsx cli/cli_root.ts",
     "docker:dev": "pnpm docker:mysql:migrate:dev && pnpm docker:quick:dev",
     "docker:mysql:migrate:dev": "env-cmd-docker pnpm mysql:migrate",
-    "docker:quick:dev": "env-cmd-docker tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs app/start/dev.ts"
+    "docker:quick:dev": "env-cmd-docker tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/app/start/dev.ts"
   },
   "keywords": [
     "open source",
