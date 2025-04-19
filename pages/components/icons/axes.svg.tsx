@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const AxesIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -13,9 +13,12 @@ export const AxesIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Axes icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Axes icon</title>
       <path
         d="M21 19.4516L12 12.8428M12 12.8428L12 2.99999M12 12.8428L3 19.4516"
         stroke="currentColor"

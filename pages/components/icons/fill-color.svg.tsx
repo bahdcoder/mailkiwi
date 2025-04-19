@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const FillColorIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -13,9 +13,12 @@ export const FillColorIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Fill color icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Fill color icon</title>
       <path
         d="M2.63596 10.2927L9.70703 3.22168L18.1923 11.707L11.1212 18.778C10.3402 19.5591 9.07387 19.5591 8.29282 18.778L2.63596 13.1212C1.85492 12.3401 1.85492 11.0738 2.63596 10.2927Z"
         stroke="currentColor"

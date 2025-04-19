@@ -133,7 +133,7 @@ export const ImageBlockMenu = ({
       <ToolbarContainer>
         <ToolbarSection divider="right">
           <LinkEditorPanel>
-            <button>
+            <button type="button">
               <LinkIcon className="w-4 h-4" />
             </button>
           </LinkEditorPanel>

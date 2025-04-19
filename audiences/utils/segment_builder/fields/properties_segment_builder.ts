@@ -34,7 +34,7 @@ export class PropertiesSegmentBuilder {
   }
 
   private queryContactProperties = () => {
-    const [, name] = this.condition.field?.split("properties.")
+    const [, name] = this.condition.field?.split("properties.") || []
 
     const property = this.audience.knownProperties?.find(
       (property) => property.id === name

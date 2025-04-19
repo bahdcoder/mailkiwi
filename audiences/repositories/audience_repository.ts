@@ -109,9 +109,9 @@ export class AudienceRepository extends BaseRepository {
       existingProperties[property.id] = property
     }
 
-    properties.forEach((property) => {
+    for (const property of properties) {
       incomingProperties[property.id] = property
-    })
+    }
 
     const propertiesToBeCreated = properties.filter(
       (property) => !existingProperties[property.id]

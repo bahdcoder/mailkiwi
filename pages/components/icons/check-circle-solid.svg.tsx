@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const CheckCircleSolidIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -13,9 +13,12 @@ export const CheckCircleSolidIcon = React.forwardRef<
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
       strokeWidth="1.5"
+      role="img"
+      aria-label="Check circle solid icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Check circle solid icon</title>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

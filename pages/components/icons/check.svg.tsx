@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const CheckIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -13,9 +13,12 @@ export const CheckIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Check icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Check icon</title>
       <path
         d="M5 13L9 17L19 7"
         stroke="currentColor"

@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const ContentBreakIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -11,9 +11,12 @@ export const ContentBreakIcon = React.forwardRef<
       viewBox="0 0 18 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Content break icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Content break icon</title>
       <path
         d="M0 9.00015C0 9.35819 0.142232 9.70157 0.395406 9.95474C0.64858 10.2079 0.991958 10.3501 1.35 10.3501C1.70804 10.3501 2.05142 10.2079 2.30459 9.95474C2.55777 9.70157 2.7 9.35819 2.7 9.00015C2.7 8.6421 2.55777 8.29873 2.30459 8.04555C2.05142 7.79238 1.70804 7.65015 1.35 7.65015C0.991958 7.65015 0.64858 7.79238 0.395406 8.04555C0.142232 8.29873 0 8.6421 0 9.00015H0Z"
         fill="#0F1214"

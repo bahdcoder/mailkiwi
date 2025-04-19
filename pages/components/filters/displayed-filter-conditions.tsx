@@ -128,7 +128,10 @@ const filterOperationOptions: FilterOperationOptions = {
       return (
         <Dropdown.Root>
           <Dropdown.Trigger asChild>
-            <button className="gap-4 box-border px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] flex items-center justify-between cursor-pointer">
+            <button
+              type="button"
+              className="gap-4 box-border px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] flex items-center justify-between cursor-pointer"
+            >
               <Text className="text-xs">{selectedSegment?.name}</Text>
             </button>
           </Dropdown.Trigger>
@@ -252,6 +255,7 @@ export function DisplayedFilterCondition({
 
         const filterValue = (
           <button
+            type="button"
             className="kb-reset text-xs border-r border-[var(--border-tertiary)] px-2.5 h-full max-w-48 truncate text-ellipsis"
             key={`${filter.value}-${filter.field}`}
           >
@@ -282,6 +286,7 @@ export function DisplayedFilterCondition({
             <Dropdown.Root>
               <Dropdown.Trigger asChild>
                 <button
+                  type="button"
                   data-testid={`w-contacts-filters-select-operation-trigger-${filter.field}`}
                   className="kb-reset text-xs cursor-pointer border-r border-[var(--border-tertiary)] hover:bg-[var(--background-hover)] transition ease-linear px-2.5 h-full flex-shrink-0"
                 >
@@ -342,6 +347,7 @@ export function DisplayedFilterCondition({
 
             {readOnly ? null : (
               <button
+                type="button"
                 onClick={() => removeFilter?.(filter)}
                 data-testid={`w-contacts-filters-select-remove-filter-${filter.field}`}
                 className="px-2.5 cursor-pointer hover:bg-[var(--background-hover)] transition ease-linear h-full rounded-r-lg"

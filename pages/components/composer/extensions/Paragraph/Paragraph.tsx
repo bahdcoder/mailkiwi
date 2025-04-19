@@ -1,9 +1,9 @@
 import {
   getStyleAttributeDefaultCommands,
   getStyleAttributeDefinition,
-} from '@/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
-import { getDefaultStylesForNode } from '@/pages/components/composer/themes/default-theme.js'
-import { Node, mergeAttributes } from '@tiptap/core'
+} from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
+import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
+import { Node, mergeAttributes } from "@tiptap/core"
 
 export interface ParagraphOptions {
   /**
@@ -11,10 +11,10 @@ export interface ParagraphOptions {
    * @default {}
    * @example { class: 'foo' }
    */
-  HTMLAttributes: Record<string, any>
+  HTMLAttributes: Record<string, string | number | boolean>
 }
 
-declare module '@tiptap/core' {
+declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     paragraph: {
       /**
@@ -35,7 +35,7 @@ declare module '@tiptap/core' {
  * @see https://www.tiptap.dev/api/nodes/paragraph
  */
 export const Paragraph = Node.create<ParagraphOptions>({
-  name: 'paragraph',
+  name: "paragraph",
 
   priority: 1000,
 
@@ -45,16 +45,20 @@ export const Paragraph = Node.create<ParagraphOptions>({
     }
   },
 
-  group: 'block',
+  group: "block",
 
-  content: 'inline*',
+  content: "inline*",
 
   parseHTML() {
-    return [{ tag: 'p' }]
+    return [{ tag: "p" }]
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['p', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
+    return [
+      "p",
+      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+      0,
+    ]
   },
 
   addCommands() {
@@ -70,13 +74,15 @@ export const Paragraph = Node.create<ParagraphOptions>({
 
   addAttributes() {
     return {
-      styles: getStyleAttributeDefinition(getDefaultStylesForNode('paragraph').styles),
+      styles: getStyleAttributeDefinition(
+        getDefaultStylesForNode("paragraph").styles
+      ),
     }
   },
 
   addKeyboardShortcuts() {
     return {
-      'Mod-Alt-0': () => this.editor.commands.setParagraph(),
+      "Mod-Alt-0": () => this.editor.commands.setParagraph(),
     }
   },
 })

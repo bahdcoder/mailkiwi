@@ -1,22 +1,22 @@
-import { useReducer, useRef } from 'react'
+import { useReducer, useRef } from "react"
 
 // Define actions as an enum for clarity and type safety
 export enum FileUploadActionType {
-  Open = 'OPEN',
-  SetFiles = 'FILES.SET',
-  DeleteFile = 'FILE.DELETE',
-  ClearFiles = 'FILES.CLEAR',
-  ClearRejectedFiles = 'REJECTED_FILES.CLEAR',
-  DragOver = 'DROPZONE.DRAG_OVER',
-  DragLeave = 'DROPZONE.DRAG_LEAVE',
-  Drop = 'DROPZONE.DROP',
-  Focus = 'DROPZONE.FOCUS',
-  Blur = 'DROPZONE.BLUR',
+  Open = "OPEN",
+  SetFiles = "FILES.SET",
+  DeleteFile = "FILE.DELETE",
+  ClearFiles = "FILES.CLEAR",
+  ClearRejectedFiles = "REJECTED_FILES.CLEAR",
+  DragOver = "DROPZONE.DRAG_OVER",
+  DragLeave = "DROPZONE.DRAG_LEAVE",
+  Drop = "DROPZONE.DROP",
+  Focus = "DROPZONE.FOCUS",
+  Blur = "DROPZONE.BLUR",
 }
 
 // Define the shape of the state
 interface FileUploadState {
-  currentState: 'idle' | 'focused' | 'dragging'
+  currentState: "idle" | "focused" | "dragging"
   acceptedFiles: File[]
   rejectedFiles: File[]
   isFocused: boolean
@@ -43,7 +43,7 @@ type FileUploadAction =
 
 // Define the initial state
 const initialState: FileUploadState = {
-  currentState: 'idle',
+  currentState: "idle",
   acceptedFiles: [],
   rejectedFiles: [],
   isFocused: false,
@@ -57,7 +57,7 @@ const initialState: FileUploadState = {
 
 function fileUploadReducer(
   state: FileUploadState,
-  action: FileUploadAction,
+  action: FileUploadAction
 ): FileUploadState {
   switch (action.type) {
     case FileUploadActionType.Open:
@@ -65,14 +65,16 @@ function fileUploadReducer(
     case FileUploadActionType.SetFiles:
       return {
         ...state,
-        currentState: 'idle',
+        currentState: "idle",
         acceptedFiles: [...state.acceptedFiles, ...action.accepted],
         rejectedFiles: [...state.rejectedFiles, ...action.rejected],
       }
     case FileUploadActionType.DeleteFile:
       return {
         ...state,
-        acceptedFiles: state.acceptedFiles.filter((file) => file !== action.file),
+        acceptedFiles: state.acceptedFiles.filter(
+          (file) => file !== action.file
+        ),
       }
     case FileUploadActionType.ClearFiles:
       return {
@@ -86,19 +88,19 @@ function fileUploadReducer(
         rejectedFiles: [],
       }
     case FileUploadActionType.DragOver:
-      return { ...state, currentState: 'dragging' }
+      return { ...state, currentState: "dragging" }
     case FileUploadActionType.DragLeave:
-      return { ...state, currentState: 'idle' }
+      return { ...state, currentState: "idle" }
     case FileUploadActionType.Drop:
       return {
         ...state,
-        currentState: 'idle',
+        currentState: "idle",
         acceptedFiles: [...state.acceptedFiles, ...action.files],
       }
     case FileUploadActionType.Focus:
-      return { ...state, currentState: 'focused', isFocused: true }
+      return { ...state, currentState: "focused", isFocused: true }
     case FileUploadActionType.Blur:
-      return { ...state, currentState: 'idle', isFocused: false }
+      return { ...state, currentState: "idle", isFocused: false }
     default:
       return state
   }
@@ -113,8 +115,8 @@ export type UseFileUploadProps = Partial<FileUploadState> & {
   onFileReject?: (data: { files: File[] }) => void
 }
 
-type CommonTriggerProps = React.ComponentPropsWithoutRef<'button'> & {
-  [key in `data-${string}`]?: any | undefined
+type CommonTriggerProps = React.ComponentPropsWithoutRef<"button"> & {
+  [key in `data-${string}`]?: string | number | boolean | undefined
 }
 
 export function useFileUpload(initialConfig: UseFileUploadProps) {
@@ -128,14 +130,15 @@ export function useFileUpload(initialConfig: UseFileUploadProps) {
     const accepted: File[] = []
     const rejected: File[] = []
 
-    files.forEach((file) => {
+    for (const file of files) {
       const isValidType = state.accept?.some((type) =>
-        type.startsWith('.')
+        type.startsWith(".")
           ? file.name.endsWith(type)
-          : file.type === type || file.type.startsWith(type.replace('*', '')),
+          : file.type === type || file.type.startsWith(type.replace("*", ""))
       )
 
-      const isValidSize = file.size >= state.minFileSize && file.size <= state.maxFileSize
+      const isValidSize =
+        file.size >= state.minFileSize && file.size <= state.maxFileSize
 
       if (
         (!state.accept || isValidType) &&
@@ -146,7 +149,7 @@ export function useFileUpload(initialConfig: UseFileUploadProps) {
       } else {
         rejected.push(file)
       }
-    })
+    }
 
     return { accepted, rejected }
   }
@@ -156,7 +159,10 @@ export function useFileUpload(initialConfig: UseFileUploadProps) {
 
     const { accepted, rejected } = validateFiles(files)
 
-    const totalAccepted = [...state.acceptedFiles, ...accepted].slice(0, state.maxFiles)
+    const totalAccepted = [...state.acceptedFiles, ...accepted].slice(
+      0,
+      state.maxFiles
+    )
 
     dispatch({
       type: FileUploadActionType.SetFiles,
@@ -184,18 +190,18 @@ export function useFileUpload(initialConfig: UseFileUploadProps) {
 
   // Attribute getters
   const getRootProps = () => ({
-    role: 'region',
-    'aria-label': 'File Upload Area',
-    'data-disabled': state.isDisabled ? true : undefined,
-    'data-dragging': state.currentState === 'dragging' ? true : undefined,
+    role: "region",
+    "aria-label": "File Upload Area",
+    "data-disabled": state.isDisabled ? true : undefined,
+    "data-dragging": state.currentState === "dragging" ? true : undefined,
   })
 
   const getDropzoneProps = () => ({
-    role: 'button',
-    'aria-label': 'Drop files here',
-    'aria-disabled': state.isDisabled,
-    'data-disabled': state.isDisabled ? true : undefined,
-    'data-dragging': state.currentState === 'dragging' ? true : undefined,
+    role: "button",
+    "aria-label": "Drop files here",
+    "aria-disabled": state.isDisabled,
+    "data-disabled": state.isDisabled ? true : undefined,
+    "data-dragging": state.currentState === "dragging" ? true : undefined,
     onClick: openFilePicker,
     onDragOver: (event: React.DragEvent) => {
       if (state.isDisabled || !state.allowDrop) return
@@ -216,44 +222,44 @@ export function useFileUpload(initialConfig: UseFileUploadProps) {
 
   const getHiddenInputProps = () => ({
     ref: hiddenInputRef,
-    type: 'file',
+    type: "file",
     multiple: state.maxFiles > 1,
-    accept: state.accept?.join(','),
+    accept: state.accept?.join(","),
     onClick: (event: React.MouseEvent<HTMLInputElement>) => {
       event.stopPropagation()
-      ;(event.target as HTMLInputElement).value = '' // Reset value for re-selection
+      ;(event.target as HTMLInputElement).value = "" // Reset value for re-selection
     },
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       if (state.isDisabled) return
       const files = Array.from(event.target.files || [])
       setFiles(files)
     },
-    style: { display: 'none' },
+    style: { display: "none" },
   })
 
-  const getTriggerProps = (): React.ComponentPropsWithoutRef<'button'> => ({
-    type: 'button',
-    'aria-label': 'Upload files',
-    'aria-disabled': state.isDisabled,
+  const getTriggerProps = (): React.ComponentPropsWithoutRef<"button"> => ({
+    type: "button",
+    "aria-label": "Upload files",
+    "aria-disabled": state.isDisabled,
     onClick: openFilePicker,
   })
 
   const getItemProps = (file: File) => ({
     id: `file-item-${file.name}`,
-    'data-disabled': state.isDisabled ? true : undefined,
+    "data-disabled": state.isDisabled ? true : undefined,
   })
 
   const getItemDeleteTriggerProps = (file: File): CommonTriggerProps => ({
-    type: 'button',
-    'aria-label': `Delete ${file.name}`,
+    type: "button",
+    "aria-label": `Delete ${file.name}`,
     onClick: () => deleteFile(file),
   })
 
   const getClearTriggerProps = (): CommonTriggerProps => ({
-    type: 'button',
-    'aria-label': 'Clear all files',
+    type: "button",
+    "aria-label": "Clear all files",
     hidden: state.acceptedFiles.length === 0,
-    'data-disabled': state.isDisabled ? true : undefined,
+    "data-disabled": state.isDisabled ? true : undefined,
     onClick: () => dispatch({ type: FileUploadActionType.ClearFiles }),
   })
 

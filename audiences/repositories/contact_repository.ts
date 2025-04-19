@@ -87,7 +87,7 @@ export class ContactRepository extends BaseRepository {
   ) {
     const contactPropertiesPayload: ContactProperty[] = []
 
-    audience.knownProperties?.forEach((knownProperty) => {
+    for (const knownProperty of audience.knownProperties || []) {
       const value = properties?.[knownProperty.id]
 
       if (value) {
@@ -108,7 +108,7 @@ export class ContactRepository extends BaseRepository {
           text: knownProperty.type === "text" ? (value as string) : null,
         })
       }
-    })
+    }
 
     return { contactPropertiesPayload }
   }
@@ -301,7 +301,7 @@ export class ContactRepository extends BaseRepository {
         })
       }
       return acc
-    }, {} as Record<string, string>)
+    }, {} as Record<string, ContactWithTags>)
 
     return Object.values(groupedContacts)
   }

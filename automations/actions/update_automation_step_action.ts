@@ -72,7 +72,8 @@ export class UpdateAutomationStepAction {
       ])
     }
 
-    let schema: BaseSchema<any, any, BaseIssue<unknown>> | undefined = undefined
+    let schema: BaseSchema<unknown, unknown, BaseIssue<unknown>> | undefined =
+      undefined
 
     switch (step.subtype) {
       case "RULE_IF_ELSE":

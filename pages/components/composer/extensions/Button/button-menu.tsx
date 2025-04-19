@@ -1,32 +1,32 @@
 import {
   FillPanel,
   type FillValue,
-} from '@/pages/components/composer/components/fill-panel/fill-panel.jsx'
-import { LinkEditorPanel } from '@/pages/components/composer/components/link-menu/link-editor-panel.jsx'
+} from "@/pages/components/composer/components/fill-panel/fill-panel.jsx"
+import { LinkEditorPanel } from "@/pages/components/composer/components/link-menu/link-editor-panel.jsx"
 import {
   ToolbarButton,
   ToolbarContainer,
   ToolbarSection,
   getToolbarClassNames,
-} from '@/pages/components/composer/components/toolbar/toolbar.jsx'
-import { CompAlignCenterIcon } from '@/pages/components/icons/comp-align-center.svg.jsx'
-import { CompAlignLeftIcon } from '@/pages/components/icons/comp-align-left.svg.jsx'
-import { CompAlignRightIcon } from '@/pages/components/icons/comp-align-right.svg.jsx'
-import { FillColorIcon } from '@/pages/components/icons/fill-color.svg.jsx'
-import { FullWidthIcon } from '@/pages/components/icons/full-width.svg.jsx'
-import { LinkIcon } from '@/pages/components/icons/link.svg.jsx'
-import { OpenNewWindowIcon } from '@/pages/components/icons/open-new-window.svg.jsx'
-import { TrashIcon } from '@/pages/components/icons/trash.svg.jsx'
-import getRenderContainer from '@/pages/components/tiptap/utils/getRenderContainer.js'
-import { BubbleMenu, type Editor } from '@tiptap/react'
-import type React from 'react'
-import { useCallback } from 'react'
-import { sticky } from 'tippy.js'
-import 'tippy.js/animations/scale.css'
+} from "@/pages/components/composer/components/toolbar/toolbar.jsx"
+import { CompAlignCenterIcon } from "@/pages/components/icons/comp-align-center.svg.jsx"
+import { CompAlignLeftIcon } from "@/pages/components/icons/comp-align-left.svg.jsx"
+import { CompAlignRightIcon } from "@/pages/components/icons/comp-align-right.svg.jsx"
+import { FillColorIcon } from "@/pages/components/icons/fill-color.svg.jsx"
+import { FullWidthIcon } from "@/pages/components/icons/full-width.svg.jsx"
+import { LinkIcon } from "@/pages/components/icons/link.svg.jsx"
+import { OpenNewWindowIcon } from "@/pages/components/icons/open-new-window.svg.jsx"
+import { TrashIcon } from "@/pages/components/icons/trash.svg.jsx"
+import getRenderContainer from "@/pages/components/tiptap/utils/getRenderContainer.js"
+import { BubbleMenu, type Editor } from "@tiptap/react"
+import type React from "react"
+import { useCallback } from "react"
+import { sticky } from "tippy.js"
+import "tippy.js/animations/scale.css"
 
 export interface ButtonMenuProps {
   editor: Editor
-  appendTo?: React.RefObject<any>
+  appendTo?: React.RefObject<HTMLElement>
 }
 
 type ButtonMenuAction = {
@@ -39,28 +39,28 @@ type ButtonMenuAction = {
 
 const buttonMenuActions: ButtonMenuAction[] = [
   {
-    id: 'left-align',
-    name: 'Left align',
+    id: "left-align",
+    name: "Left align",
     icon: <CompAlignLeftIcon className="w-4 h-4" />,
     command(editor) {
       // todo: align left
-      editor.chain().focus().setButtonStyles('text-align', 'left').run()
+      editor.chain().focus().setButtonStyles("text-align", "left").run()
     },
   },
   {
-    id: 'center-align',
-    name: 'Center align',
+    id: "center-align",
+    name: "Center align",
     icon: <CompAlignCenterIcon className="w-4 h-4" />,
     command(editor) {
-      editor.chain().focus().setButtonStyles('text-align', 'center').run()
+      editor.chain().focus().setButtonStyles("text-align", "center").run()
     },
   },
   {
-    id: 'right-align',
-    name: 'Right align',
+    id: "right-align",
+    name: "Right align",
     icon: <CompAlignRightIcon className="w-4 h-4" />,
     command(editor) {
-      editor.chain().focus().setButtonStyles('text-align', 'right').run()
+      editor.chain().focus().setButtonStyles("text-align", "right").run()
     },
   },
 ]
@@ -70,15 +70,16 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
     useButtonMenuStates(editor)
 
   const getReferenceClientRect = useCallback(() => {
-    const renderContainer = getRenderContainer(editor, 'node-button')
+    const renderContainer = getRenderContainer(editor, "node-button")
     const rect =
-      renderContainer?.getBoundingClientRect() || new DOMRect(-1000, -1000, 0, 0)
+      renderContainer?.getBoundingClientRect() ||
+      new DOMRect(-1000, -1000, 0, 0)
 
     return rect
   }, [editor])
 
   const shouldShow = useCallback(() => {
-    return editor?.isActive('button')
+    return editor?.isActive("button")
   }, [editor])
 
   if (!editor) {
@@ -91,7 +92,7 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
     editor
       .chain()
       .focus()
-      .updateAttributes('button', {
+      .updateAttributes("button", {
         href: href,
       })
       .run()
@@ -105,7 +106,7 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
       .focus()
       .command(({ tr }) => {
         const node = tr.selection.$anchor.node()
-        if (node.type.name === 'button') {
+        if (node.type.name === "button") {
           tr.delete(tr.selection.$anchor.before(), tr.selection.$anchor.after())
           return true
         }
@@ -115,10 +116,10 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
   }
 
   function onBackgroundUpdated(fill: FillValue) {
-    if (fill.type === 'color') {
+    if (fill.type === "color") {
       editor
         .chain()
-        .setButtonStyles('background-color', fill.value ?? 'transparent')
+        .setButtonStyles("background-color", fill.value ?? "transparent")
         .run()
     }
   }
@@ -128,30 +129,30 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
       editor={editor}
       tippyOptions={{
         appendTo() {
-          return appendTo?.current
+          return appendTo?.current as HTMLElement
         },
         getReferenceClientRect,
         popperOptions: {
-          placement: 'top',
+          placement: "top",
           modifiers: [
             {
-              name: 'preventOverflow',
+              name: "preventOverflow",
               options: {
-                boundary: 'viewport',
+                boundary: "viewport",
                 padding: 8,
               },
             },
             {
-              name: 'flip',
+              name: "flip",
               options: {
-                fallbackPlacements: ['bottom-start', 'top-end', 'bottom-end'],
+                fallbackPlacements: ["bottom-start", "top-end", "bottom-end"],
               },
             },
           ],
         },
-        maxWidth: 'calc(100vw - 16px)',
+        maxWidth: "calc(100vw - 16px)",
         plugins: [sticky],
-        sticky: 'popper',
+        sticky: "popper",
       }}
       pluginKey="buttonMenu"
       shouldShow={shouldShow}
@@ -160,7 +161,7 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
       <ToolbarContainer>
         {buttonMenuActions
           .filter((action) =>
-            action?.hidden === undefined ? true : !action?.hidden(editor),
+            action?.hidden === undefined ? true : !action?.hidden(editor)
           )
           .map((action) => (
             <ToolbarButton
@@ -177,8 +178,12 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
             isActive={isFullWidth}
             onClick={() =>
               isFullWidth
-                ? editor.chain().focus().setButtonStyles('width', 'fit-content').run()
-                : editor.chain().focus().setButtonStyles('width', '100%').run()
+                ? editor
+                    .chain()
+                    .focus()
+                    .setButtonStyles("width", "fit-content")
+                    .run()
+                : editor.chain().focus().setButtonStyles("width", "100%").run()
             }
           >
             <FullWidthIcon className="w-4 h-4" />
@@ -188,23 +193,30 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
         <ToolbarSection divider="right">
           <FillPanel
             onChange={onBackgroundUpdated}
-            value={button.attrs.styles?.['background-color']}
+            value={button.attrs.styles?.["background-color"]}
           >
-            <button className={getToolbarClassNames(isFilled)}>
+            <button type="button" className={getToolbarClassNames(isFilled)}>
               <FillColorIcon className="w-4 h-4" />
             </button>
           </FillPanel>
         </ToolbarSection>
 
         <ToolbarSection divider="right">
-          <LinkEditorPanel onSubmit={onValidUrlSubmitted} initialUrl={currentButtonHref}>
-            <button>
+          <LinkEditorPanel
+            onSubmit={onValidUrlSubmitted}
+            initialUrl={currentButtonHref}
+          >
+            <button type="button">
               <LinkIcon className="w-4 h-4" />
             </button>
           </LinkEditorPanel>
 
           {currentButtonHref ? (
-            <a href={currentButtonHref} rel="noreferrer nofollow" target="_blank">
+            <a
+              href={currentButtonHref}
+              rel="noreferrer nofollow"
+              target="_blank"
+            >
               <ToolbarButton as="span">
                 <OpenNewWindowIcon className="w-3 h-3" />
               </ToolbarButton>
@@ -223,16 +235,16 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
 }
 
 export function useButtonMenuStates(editor: Editor) {
-  const isInsideButton = editor.isActive('button')
+  const isInsideButton = editor.isActive("button")
   const button = editor.state.selection.$anchor.node()
   const styles = button.attrs.styles
 
   return {
     isInsideButton,
-    isFilled: styles?.['background-color'] !== undefined,
-    isFullWidth: styles?.width === '100%',
-    isLeftAlign: styles?.['text-align'] === 'left',
-    isRightAlign: styles?.['text-align'] === 'right',
-    isCenterAlign: styles?.['text-align'] === 'center',
+    isFilled: styles?.["background-color"] !== undefined,
+    isFullWidth: styles?.width === "100%",
+    isLeftAlign: styles?.["text-align"] === "left",
+    isRightAlign: styles?.["text-align"] === "right",
+    isCenterAlign: styles?.["text-align"] === "center",
   }
 }

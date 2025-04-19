@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const BlockQuoteIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -11,9 +11,12 @@ export const BlockQuoteIcon = React.forwardRef<
       height={16}
       viewBox="0 0 16 16"
       fill="none"
+      role="img"
+      aria-label="Blockquote icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Blockquote icon</title>
       <path
         d="M2.6665 4L2.6665 12"
         stroke="currentColor"

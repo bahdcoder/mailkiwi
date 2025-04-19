@@ -1,20 +1,20 @@
-import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
-import { LinkIcon } from '@/pages/components/icons/link.svg.jsx'
-import { Text } from '@kibamail/owly/text'
-import * as TextField from '@kibamail/owly/text-field'
-import * as Popover from '@radix-ui/react-popover'
-import { Editor } from '@tiptap/core'
-import cn from 'classnames'
-import React, { type PropsWithChildren } from 'react'
+import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
+import { LinkIcon } from "@/pages/components/icons/link.svg.jsx"
+import { Text } from "@kibamail/owly/text"
+import * as TextField from "@kibamail/owly/text-field"
+import * as Popover from "@radix-ui/react-popover"
+import { Editor } from "@tiptap/core"
+import cn from "classnames"
+import React, { type PropsWithChildren } from "react"
 
 export const linkPresets = [
   {
-    name: 'Contact unsubscribe',
-    value: '{{contact_unsubscribe_url}}',
+    name: "Contact unsubscribe",
+    value: "{{contact_unsubscribe_url}}",
   },
   {
-    name: 'Contact preferences',
-    value: 'contact_preferences_url',
+    name: "Contact preferences",
+    value: "contact_preferences_url",
   },
 ]
 
@@ -42,11 +42,13 @@ export function LinkEditorPanel({
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    const href = new FormData(event.target as HTMLFormElement).get('url') as string
+    const href = new FormData(event.target as HTMLFormElement).get(
+      "url"
+    ) as string
 
     if (
       !/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/.test(
-        href,
+        href
       )
     ) {
       setIsInvalidUrl(true)
@@ -56,21 +58,23 @@ export function LinkEditorPanel({
     onValidUrlSubmitted(href)
   }
 
-  const internalLinkPreset = linkPresets.find((preset) => preset.value === initialUrl)
+  const internalLinkPreset = linkPresets.find(
+    (preset) => preset.value === initialUrl
+  )
 
-  const urlDefaultValue = internalLinkPreset ? '' : initialUrl
+  const urlDefaultValue = internalLinkPreset ? "" : initialUrl
 
   return (
     <Popover.Root open={isOpen} onOpenChange={setIsOpen}>
       <Popover.Trigger
         asChild
         className={cn(
-          'w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md',
+          "w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md",
           {
-            'bg-white bg-opacity-[0.08] text-white': initialUrl,
-            'hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]':
+            "bg-white bg-opacity-[0.08] text-white": initialUrl,
+            "hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]":
               !initialUrl,
-          },
+          }
         )}
       >
         {children}
@@ -84,7 +88,9 @@ export function LinkEditorPanel({
         <form onSubmit={onSubmit} method="post" action="">
           <TextField.Root
             placeholder={
-              internalLinkPreset ? internalLinkPreset.name : 'Paste or type a link'
+              internalLinkPreset
+                ? internalLinkPreset.name
+                : "Paste or type a link"
             }
             name="url"
             defaultValue={urlDefaultValue}
@@ -98,13 +104,15 @@ export function LinkEditorPanel({
         <div className="flex flex-col gap-1 pt-1">
           {linkPresets.map((preset) => (
             <button
+              type="button"
               key={preset.name}
               onClick={() => onValidUrlSubmitted(preset.value)}
               className="flex items-center justify-between w-full h-8 box-border p-2 gap-1 hover:bg-[var(--background-secondary)] cursor-pointer rounded-lg"
             >
               <Text>{preset.name}</Text>
 
-              {internalLinkPreset && internalLinkPreset.value === preset.value ? (
+              {internalLinkPreset &&
+              internalLinkPreset.value === preset.value ? (
                 <CheckIcon className="w-5 h-5" />
               ) : null}
             </button>

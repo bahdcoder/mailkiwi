@@ -112,27 +112,29 @@ export class ValidateBroadcastEmailContentAction {
     const images: string[] = []
 
     const findLinksAndImages = (content: JSONContent) => {
-      content.content?.forEach((child) => {
-        if (child.type === "imageBlock") {
-          images.push(child.attrs?.src)
-        }
+      if (content.content) {
+        for (const child of content.content) {
+          if (child.type === "imageBlock") {
+            images.push(child.attrs?.src)
+          }
 
-        if (child.type === "button") {
-          links.push(child.attrs?.href)
-        }
+          if (child.type === "button") {
+            links.push(child.attrs?.href)
+          }
 
-        if (child.marks) {
-          for (const mark of child.marks) {
-            if (mark.type === "link") {
-              links.push(mark.attrs?.href as string)
+          if (child.marks) {
+            for (const mark of child.marks) {
+              if (mark.type === "link") {
+                links.push(mark.attrs?.href as string)
+              }
             }
           }
-        }
 
-        if (child.content) {
-          findLinksAndImages(child)
+          if (child.content) {
+            findLinksAndImages(child)
+          }
         }
-      })
+      }
     }
 
     findLinksAndImages(emailContent)

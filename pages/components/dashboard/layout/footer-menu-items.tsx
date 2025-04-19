@@ -1,11 +1,14 @@
-import { SettingsIcon } from '@/pages/components/icons/settings.svg.jsx'
-import { Text } from '@kibamail/owly/text'
+import { SettingsIcon } from "@/pages/components/icons/settings.svg.jsx"
+import { Text } from "@kibamail/owly/text"
 
 export function FooterMenuItems() {
   return (
     <>
       <div className="flex items-center">
-        <button className="underline kb-content-tertiary kb-reset">
+        <button
+          type="button"
+          className="underline kb-content-tertiary kb-reset"
+        >
           <Text className="kb-content-tertiary underline">Give feedback</Text>
         </button>
 
@@ -16,7 +19,10 @@ export function FooterMenuItems() {
           viewBox="0 0 2 2"
           fill="none"
           className="mx-2"
+          role="img"
+          aria-label="Separator dot"
         >
+          <title>Separator dot</title>
           <circle cx={1} cy={1} r={1} fill="#716D6A" />
         </svg>
 

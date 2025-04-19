@@ -33,9 +33,9 @@ export const syncGoogleFontsCommand = command({
 
     const allExistingFonts = await database.select().from(fontsTable)
     const allExistingFontsNames: Record<string, boolean> = {}
-    allExistingFonts.forEach((font) => {
+    for (const font of allExistingFonts) {
       allExistingFontsNames[font.family] = true
-    })
+    }
 
     const newFontsToInsert = items.filter(
       (item) => !allExistingFontsNames[item.family]

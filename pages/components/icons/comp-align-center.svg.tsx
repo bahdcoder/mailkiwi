@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const CompAlignCenterIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -13,9 +13,12 @@ export const CompAlignCenterIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Align center icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Align center icon</title>
       <path
         d="M12 22L12 2"
         stroke="currentColor"

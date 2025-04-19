@@ -13,7 +13,11 @@ import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builde
 
 import { UserRepository } from "@/auth/users/repositories/user_repository.js"
 
-import type { Audience, Contact } from "@/database/database_schema_types.js"
+import type {
+  Audience,
+  Contact,
+  ContactWithTags,
+} from "@/database/database_schema_types.js"
 import { contacts } from "@/database/schema.js"
 
 import { Mailer } from "@/shared/mailers/mailer.js"
@@ -65,8 +69,10 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
       },
       {
         field: { name: "subscribedAt", type: "date" },
-        formatter(value: Date) {
-          return DateTime.fromJSDate(value).toFormat("yyyy-mm-dd hh:mm:ss")
+        formatter(value: string) {
+          return DateTime.fromJSDate(new Date(value)).toFormat(
+            "yyyy-mm-dd hh:mm:ss"
+          )
         },
         isAttribute: false,
       },
@@ -81,10 +87,10 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
   }
 
   private prepareContactsToCsv(
-    contactsToExport: Contact[],
+    contactsToExport: ContactWithTags[],
     audience: Audience
   ) {
-    return contactsToExport.map((contact: Record<string, any>) => {
+    return contactsToExport.map((contact) => {
       const fields: Record<string, string> = {}
 
       for (const {
@@ -93,9 +99,14 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
         isAttribute,
       } of this.databaseColumnsToCsvHeaders(audience)) {
         if (isAttribute) {
-          fields[field.name] = formatter(contact?.attributes?.[field.name])
+          fields[field.name] = formatter(
+            contact?.attributes?.[field.name] as string
+          )
         } else {
-          fields[sentenceCase(field.name)] = formatter(contact[field.name])
+          const contactProperties = contact as unknown as Record<string, string>
+          fields[sentenceCase(field.name)] = formatter(
+            contactProperties[field.name]
+          )
         }
       }
 
@@ -107,7 +118,7 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     })
   }
 
-  async handle({ database, payload }: JobContext<ExportContactsJobPayload>) {
+  async handle({ payload }: JobContext<ExportContactsJobPayload>) {
     const audience = await container
       .make(AudienceRepository)
       .findById(payload.audienceId)
@@ -178,5 +189,5 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     return this.done()
   }
 
-  async failed({ payload }: JobContext<ExportContactsJobPayload>) {}
+  async failed(_: JobContext<ExportContactsJobPayload>) {}
 }

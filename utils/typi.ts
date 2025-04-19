@@ -1,31 +1,37 @@
-type Constructor<T = unknown> = new (...args: any[]) => T
+// A more flexible constructor type that can handle any parameters
+
+// biome-ignore lint/suspicious/noExplicitAny: We need to use any here to support existing code
+type Constructor<T = unknown, Args extends any[] = any[]> = new (
+  ...args: Args
+) => T
 
 export class Container {
-  private instances: Map<string | Constructor, any> = new Map()
-  private singletons: Map<string | Constructor, any> = new Map()
-  private fakes: Map<string | Constructor, any> = new Map()
-  private originalInstances: Map<string | Constructor, any> = new Map()
-  private originalSingletons: Map<string | Constructor, any> = new Map()
+  private instances: Map<string | Constructor, unknown> = new Map()
+  private singletons: Map<string | Constructor, unknown> = new Map()
+  private fakes: Map<string | Constructor, unknown> = new Map()
+  private originalInstances: Map<string | Constructor, unknown> = new Map()
+  private originalSingletons: Map<string | Constructor, unknown> = new Map()
 
-  register<T>(key: string | (new (...args: any[]) => T), value: T): void {
+  register<T>(key: string | Constructor<T>, value: T): void {
     this.instances.set(key, value)
   }
 
   registerInstance = this.register
 
-  make<T>(key: string | (new (...args: any[]) => T)): T {
+  // biome-ignore lint/suspicious/noExplicitAny: We need to use any here to support existing code
+  make<T>(key: string | Constructor<T>, ...args: any[]): T {
     if (this.fakes.has(key)) {
-      return this.fakes.get(key)
+      return this.fakes.get(key) as T
     }
 
-    if (typeof key === 'string') {
+    if (typeof key === "string") {
       if (!this.instances.has(key)) {
         throw new Error(`No instance registered for key: ${key}`)
       }
-      return this.instances.get(key)
+      return this.instances.get(key) as T
     }
 
-    const instance = new key()
+    const instance = new key(...args)
 
     this.instances.set(key, instance)
 
@@ -34,22 +40,23 @@ export class Container {
 
   resolve = this.make
 
-  singleton<T>(key: string | (new (...args: unknown[]) => T), value?: T): T {
+  // biome-ignore lint/suspicious/noExplicitAny: We need to use any here to support existing code
+  singleton<T>(key: string | Constructor<T>, value?: T, ...args: any[]): T {
     if (this.fakes.has(key)) {
-      return this.fakes.get(key)
+      return this.fakes.get(key) as T
     }
 
     if (this.singletons.has(key)) {
-      return this.singletons.get(key)
+      return this.singletons.get(key) as T
     }
 
     let instance: T
     if (value) {
       instance = value
-    } else if (typeof key === 'string') {
+    } else if (typeof key === "string") {
       instance = this.make(key)
     } else {
-      instance = new key()
+      instance = new key(...args)
     }
 
     this.singletons.set(key, instance)
@@ -83,7 +90,8 @@ export class Container {
   }
 
   restoreAll(): void {
-    for (const key of this.fakes.keys()) {
+    const keys = Array.from(this.fakes.keys())
+    for (const key of keys) {
       this.restore(key)
     }
   }

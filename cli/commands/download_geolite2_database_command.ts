@@ -45,7 +45,10 @@ export const downloadGeolite2Database = command({
     const compressedFileOutputStream = createWriteStream(compressedFilePath)
 
     logger.info("Streaming to compressed zip file.")
-    await pipeline(response.body, compressedFileOutputStream)
+    await pipeline(
+      response.body as unknown as NodeJS.ReadableStream,
+      compressedFileOutputStream
+    )
 
     const compressedFileReadStream = createReadStream(compressedFilePath)
 

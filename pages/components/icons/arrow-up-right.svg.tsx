@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const ArrowUpRightIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -13,9 +13,12 @@ export const ArrowUpRightIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Arrow up right icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Arrow up right icon</title>
       <path
         d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005"
         stroke="currentColor"

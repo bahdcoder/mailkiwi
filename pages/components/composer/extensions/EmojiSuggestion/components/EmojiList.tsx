@@ -1,8 +1,8 @@
-import type { EmojiListProps } from '../types.js'
-import { Button } from '@/pages/components/tiptap/ui/Button/Button.jsx'
-import { Panel } from '@/pages/components/tiptap/ui/Panel/index.jsx'
-import type { EmojiItem } from '@tiptap-pro/extension-emoji'
-import type { SuggestionKeyDownProps } from '@tiptap/suggestion'
+import type { EmojiListProps } from "../types.js"
+import { Button } from "@/pages/components/tiptap/ui/Button/Button.jsx"
+import { Panel } from "@/pages/components/tiptap/ui/Panel/index.jsx"
+import type { EmojiItem } from "@tiptap-pro/extension-emoji"
+import type { SuggestionKeyDownProps } from "@tiptap/suggestion"
 import React, {
   type ForwardedRef,
   forwardRef,
@@ -10,16 +10,16 @@ import React, {
   useEffect,
   useImperativeHandle,
   useState,
-} from 'react'
+} from "react"
 
 const EmojiList = forwardRef(
   (
     props: EmojiListProps,
-    ref: ForwardedRef<{ onKeyDown: (evt: SuggestionKeyDownProps) => boolean }>,
+    ref: ForwardedRef<{ onKeyDown: (evt: SuggestionKeyDownProps) => boolean }>
   ) => {
     const [selectedIndex, setSelectedIndex] = useState(0)
 
-    useEffect(() => setSelectedIndex(0), [props.items])
+    useEffect(() => setSelectedIndex(0), [])
 
     const selectItem = useCallback(
       (index: number) => {
@@ -29,7 +29,7 @@ const EmojiList = forwardRef(
           props.command({ name: item.name })
         }
       },
-      [props],
+      [props]
     )
 
     useImperativeHandle(
@@ -39,16 +39,19 @@ const EmojiList = forwardRef(
           const item = props.items[index]
 
           if (item) {
-            const node = document.querySelector(`[data-emoji-name="${item.name}"]`)
+            const node = document.querySelector(
+              `[data-emoji-name="${item.name}"]`
+            )
 
             if (node) {
-              node.scrollIntoView({ block: 'nearest' })
+              node.scrollIntoView({ block: "nearest" })
             }
           }
         }
 
         const upHandler = () => {
-          const newIndex = (selectedIndex + props.items.length - 1) % props.items.length
+          const newIndex =
+            (selectedIndex + props.items.length - 1) % props.items.length
           setSelectedIndex(newIndex)
           scrollIntoView(newIndex)
         }
@@ -65,17 +68,17 @@ const EmojiList = forwardRef(
 
         return {
           onKeyDown: ({ event }) => {
-            if (event.key === 'ArrowUp') {
+            if (event.key === "ArrowUp") {
               upHandler()
               return true
             }
 
-            if (event.key === 'ArrowDown') {
+            if (event.key === "ArrowDown") {
               downHandler()
               return true
             }
 
-            if (event.key === 'Enter') {
+            if (event.key === "Enter") {
               enterHandler()
               return true
             }
@@ -84,12 +87,12 @@ const EmojiList = forwardRef(
           },
         }
       },
-      [props, selectedIndex, selectItem],
+      [props, selectedIndex, selectItem]
     )
 
     const createClickHandler = useCallback(
       (index: number) => () => selectItem(index),
-      [selectItem],
+      [selectItem]
     )
 
     if (!props.items || !props.items.length) {
@@ -112,15 +115,15 @@ const EmojiList = forwardRef(
               <img src={item.fallbackImage} className="w-5 h-5" alt="emoji" />
             ) : (
               item.emoji
-            )}{' '}
+            )}{" "}
             <span className="truncate text-ellipsis">:{item.name}:</span>
           </Button>
         ))}
       </Panel>
     )
-  },
+  }
 )
 
-EmojiList.displayName = 'EmojiList'
+EmojiList.displayName = "EmojiList"
 
 export default EmojiList

@@ -1,16 +1,19 @@
-import { ComposeBroadcastSteps } from '@/pages/components/flows/compose_broadcast/compose_broadcast_types.js'
-import { useDebounceCallback } from '@react-hook/debounce'
-import type { MutationOptions } from '@tanstack/react-query'
-import type React from 'react'
-import { usePageContext } from 'vike-react/usePageContext'
+import { ComposeBroadcastSteps } from "@/pages/components/flows/compose_broadcast/compose_broadcast_types.js"
+import { useDebounceCallback } from "@react-hook/debounce"
+import type { MutationOptions } from "@tanstack/react-query"
+import type React from "react"
+import { usePageContext } from "vike-react/usePageContext"
 
-import { route } from '@/shared/routes/route_aliases.js'
-import { useServerFormMutation } from '@/pages/hooks/use_server_form_mutation.jsx'
+import { route } from "@/shared/routes/route_aliases.js"
+import { useServerFormMutation } from "@/pages/hooks/use_server_form_mutation.jsx"
 
 export interface UseSyncComposerContentToServerProps {
   currentStep: number
   setStep: React.Dispatch<React.SetStateAction<number>>
-  mutationOptions?: Omit<MutationOptions<any, any, any, any>, 'mutationFn'>
+  mutationOptions?: Omit<
+    MutationOptions<unknown, unknown, unknown, unknown>,
+    "mutationFn"
+  >
 }
 
 export function useSyncComposerContentToServer({
@@ -23,8 +26,8 @@ export function useSyncComposerContentToServer({
   const { onSuccess, ...restOfMutationOptions } = mutationOptions ?? {}
 
   const serverFormMutation = useServerFormMutation({
-    action: route('update_broadcast', { uuid: ctx?.routeParams?.uuid }),
-    method: 'PUT',
+    action: route("update_broadcast", { uuid: ctx?.routeParams?.uuid }),
+    method: "PUT",
     transform(form) {
       return form
     },
@@ -50,7 +53,10 @@ export function useSyncComposerContentToServer({
     ...restOfMutationOptions,
   })
 
-  serverFormMutation.mutate = useDebounceCallback(serverFormMutation.mutate, 1500)
+  serverFormMutation.mutate = useDebounceCallback(
+    serverFormMutation.mutate,
+    1500
+  )
 
   return serverFormMutation
 }

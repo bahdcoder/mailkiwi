@@ -1,6 +1,5 @@
-import { ImageUpload } from './ImageUpload/ImageUpload.js'
+import { ImageUpload } from "./ImageUpload/ImageUpload.js"
 import {
-  BlockquoteFigure,
   BullettedList,
   Color,
   Column,
@@ -27,13 +26,13 @@ import {
   Typography,
   Underline,
   emojiSuggestion,
-} from './index.js'
-import { BulletList as BaseBulletList } from '@tiptap/extension-bullet-list'
-import Code from '@tiptap/extension-code'
-import History from '@tiptap/extension-history'
-import { OrderedList as BaseNumberedList } from '@tiptap/extension-ordered-list'
+} from "./index.js"
+import { BulletList as BaseBulletList } from "@tiptap/extension-bullet-list"
+import Code from "@tiptap/extension-code"
+import History from "@tiptap/extension-history"
+import { OrderedList as BaseNumberedList } from "@tiptap/extension-ordered-list"
 
-type ExtensionKitProps = {}
+type ExtensionKitProps = { options?: { [key: string]: unknown } }
 
 export const ExtensionKit = () => [
   Document,
@@ -85,13 +84,13 @@ export const ExtensionKit = () => [
       return {}
     },
   }).configure({
-    types: ['heading', 'paragraph'],
+    types: ["heading", "paragraph"],
   }),
   Typography,
   Placeholder.configure({
     includeChildren: false,
     showOnlyCurrent: true,
-    placeholder: () => 'Type / to browse commands',
+    placeholder: () => "Type / to browse commands",
   }),
   SlashCommand,
   Focus,
@@ -99,6 +98,6 @@ export const ExtensionKit = () => [
   // BlockquoteFigure,
   Dropcursor.configure({
     width: 2,
-    class: 'ProseMirror-dropcursor',
+    class: "ProseMirror-dropcursor",
   }),
 ]

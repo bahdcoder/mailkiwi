@@ -109,7 +109,7 @@ export class GithubDriver
       emailsData.data.find((email) => email.verified && email.primary) ||
       emailsData.data.find((email) => email.verified)
 
-    let [firstName, lastName] = profileData?.data?.name?.split(" ")
+    let [firstName, lastName] = profileData?.data?.name?.split(" ") || []
 
     if (!firstName) {
       firstName = profileData?.data?.login

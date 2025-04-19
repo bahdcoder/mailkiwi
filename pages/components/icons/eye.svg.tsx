@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const EyeIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -13,9 +13,12 @@ export const EyeIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Eye icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Eye icon</title>
       <path
         d="M3 13C6.6 5 17.4 5 21 13"
         stroke="currentColor"

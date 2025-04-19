@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const CloudUploadIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -13,9 +13,12 @@ export const CloudUploadIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Cloud upload icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Cloud upload icon</title>
       <path
         d="M12 22V13M12 13L15.5 16.5M12 13L8.5 16.5"
         stroke="currentColor"

@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const BellOffIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <>
@@ -14,9 +14,12 @@ export const BellOffIcon = React.forwardRef<
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         color="currentColor"
+        role="img"
+        aria-label="Bell off icon"
         {...props}
         ref={forwardedRef}
       >
+        <title>Bell off icon</title>
         <path
           d="M6.27049 6.5C6.09277 7.10971 6 7.74975 6 8.4C6 15.8667 3 18 3 18H18"
           stroke="currentColor"

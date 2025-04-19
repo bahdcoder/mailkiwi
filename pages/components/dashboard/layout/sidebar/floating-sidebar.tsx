@@ -61,22 +61,33 @@ export function FloatingSidebar() {
           className="absolute hidden lg:block h-[calc(100vh-6rem)] top-16 bg-transparent z-50 -left-2 w-6"
         />
       ) : null}
-      <div
-        role="button"
+      <button
+        type="button"
+        tabIndex={0}
         onClick={ctx.isMobile ? undefined : hideFloatingSidebar}
+        onKeyDown={(e) =>
+          e.key === "Escape" &&
+          hideFloatingSidebar(e as unknown as React.MouseEvent)
+        }
         className={cn(
-          "w-full h-screen bg-[rgba(17,17,17,0.10)] transition-opacity ease-in-out duration-200 absolute top-0 pl-2 left-0 z-[5] py-6 flex items-center",
+          "w-full h-screen bg-[rgba(17,17,17,0.10)] transition-opacity ease-in-out duration-200 absolute top-0 pl-2 left-0 z-[5] py-6 flex items-center border-0",
           {
             "pointer-events-none opacity-0": !sidebar.floating,
             "pointer-events-auto opacity-100": sidebar.floating,
           }
         )}
       >
-        <div
+        <button
+          type="button"
           onClick={hideFloatingSidebar}
-          className="absolute lg:hidden w-[calc(100vw-256px)] right-0 h-screen bg-transparent"
+          onKeyDown={(e) =>
+            e.key === "Escape" &&
+            hideFloatingSidebar(e as unknown as React.MouseEvent)
+          }
+          tabIndex={0}
+          className="absolute lg:hidden w-[calc(100vw-256px)] right-0 h-screen bg-transparent border-0"
         />
-      </div>
+      </button>
       <div
         ref={menuRef}
         onMouseLeave={ctx.isMobile ? undefined : onMouseLeave}

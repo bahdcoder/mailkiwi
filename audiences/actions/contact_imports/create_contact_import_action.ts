@@ -1,14 +1,14 @@
-import { makeMinioClient } from '@/minio/minio_client.js'
-import { makeS3Client } from '@/minio/s3_client.js'
-import mime from 'mime-types'
-import { Readable } from 'node:stream'
+import { makeMinioClient } from "@/minio/minio_client.js"
+import { makeS3Client } from "@/minio/s3_client.js"
+import mime from "mime-types"
+import { Readable } from "node:stream"
 
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
 
-import { readHeadersAndRowsFromCsvStream } from '@/shared/utils/csv/read_headers_and_rows_from_csv_stream.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { readHeadersAndRowsFromCsvStream } from "@/shared/utils/csv/read_headers_and_rows_from_csv_stream.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-import { container } from '@/utils/typi.js'
+import { container } from "@/utils/typi.js"
 
 type HeaderMap = {
   email: string
@@ -20,30 +20,37 @@ type HeaderMap = {
   tagIds: string[]
 }
 
-type FieldType = keyof Omit<HeaderMap, 'customProperties' | 'headers' | 'tags' | 'tagIds'>
+type FieldType = keyof Omit<
+  HeaderMap,
+  "customProperties" | "headers" | "tags" | "tagIds"
+>
 
 export class CreateContactImportAction {
   constructor(
-    private contactImportRepository = container.make(ContactImportRepository),
+    private contactImportRepository = container.make(ContactImportRepository)
   ) {}
 
   handle = async (file: File, audienceId: string, teamId: string) => {
     const fileIdentifier = cuid()
 
-    const extension = mime.extension(file.type) || 'csv'
+    const extension = mime.extension(file.type) || "csv"
 
     const fileKey = ContactImportRepository.getUploadedFileKey(
       fileIdentifier,
       extension,
-      teamId,
+      teamId
     )
 
     const storage = makeS3Client()
 
-    await storage.putObject(fileKey, Readable.from(file.stream() as any), {
-      ACL: 'private',
-      ContentType: `${mime.contentType(file.type)}`,
-    })
+    await storage.putObject(
+      fileKey,
+      Readable.from(file.stream() as unknown as NodeJS.ReadableStream),
+      {
+        ACL: "private",
+        ContentType: `${mime.contentType(file.type)}`,
+      }
+    )
 
     const stream = await storage.getObjectStream(fileKey)
 
@@ -54,7 +61,7 @@ export class CreateContactImportAction {
 
     const { id } = await this.contactImportRepository.create({
       audienceId,
-      status: 'PENDING',
+      status: "PENDING",
       id: fileIdentifier,
       propertiesMap: {
         ...propertiesMap,
@@ -76,7 +83,7 @@ export class CreateContactImportAction {
 
   private async readHeadersAndFirstNRows(
     stream: Readable,
-    n = 3,
+    n = 3
   ): Promise<{
     headers: string[]
     headerCounts: Record<string, number>
@@ -107,9 +114,9 @@ export class CreateContactImportAction {
 
   private mapCsvHeaders(headers: string[]): HeaderMap {
     const csvToContactAttributes: HeaderMap = {
-      email: '',
-      firstName: '',
-      lastName: '',
+      email: "",
+      firstName: "",
+      lastName: "",
       customProperties: [],
       tags: [],
       tagIds: [],
@@ -121,7 +128,7 @@ export class CreateContactImportAction {
       firstName: /^(?:f(?:irst)?[-_\s]?name|given[-_\s]?name|forename|fname)$/i,
       lastName: /^(?:l(?:ast)?[-_\s]?name|surname|family[-_\s]?name|lname)$/i,
     }
-    headers.forEach((header) => {
+    for (const header of headers) {
       const normalizedHeader = header.trim()
       let matched = false
 
@@ -136,7 +143,7 @@ export class CreateContactImportAction {
       if (!matched) {
         csvToContactAttributes.customProperties.push(header)
       }
-    })
+    }
 
     return csvToContactAttributes
   }

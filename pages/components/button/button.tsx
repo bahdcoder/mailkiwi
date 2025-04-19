@@ -1,8 +1,8 @@
-import React, { type HTMLAttributes, type PropsWithChildren } from 'react'
+import React, { type HTMLAttributes, type PropsWithChildren } from "react"
 
 export interface ButtonProps
   extends PropsWithChildren<HTMLAttributes<HTMLButtonElement>> {}
 
 export function Button({ children }: ButtonProps) {
-  return <button>{children}</button>
+  return <button type="button">{children}</button>
 }

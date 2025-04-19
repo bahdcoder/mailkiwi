@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const FilterListIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -13,9 +13,12 @@ export const FilterListIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Filter list icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Filter list icon</title>
       <path
         d="M3 6H21"
         stroke="currentColor"

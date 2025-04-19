@@ -18,7 +18,7 @@ export type WebsocketMessage<T> = {
 export class WebsocketServerHandler {
   constructor(
     protected user: UserWithChannelMemberships,
-    _message: Record<string, string>
+    _message: Buffer | ArrayBuffer | Buffer[]
   ) {}
 
   onNewMessage = async (

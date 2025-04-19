@@ -1,10 +1,10 @@
-import type React from 'react'
+import type React from "react"
 
 interface StepsRendererProps {
   current: number
   steps: Record<
     number,
-    | React.FC<any>
+    | React.FC<Record<string, unknown>>
     | React.ComponentType<{
         fallback?: React.ReactNode
       }>

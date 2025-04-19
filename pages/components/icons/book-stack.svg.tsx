@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 
 export const BookStackIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
+  React.ElementRef<"svg">,
+  React.ComponentPropsWithoutRef<"svg">
 >((props, forwardedRef) => {
   return (
     <svg
@@ -13,16 +13,24 @@ export const BookStackIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Book stack icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Book stack icon</title>
       <path
         d="M5 19.5V5C5 3.89543 5.89543 3 7 3H18.4C18.7314 3 19 3.26863 19 3.6V21"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
       />
-      <path d="M9 7L15 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path
+        d="M9 7L15 7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
       <path
         d="M6.5 15L19 15"
         stroke="currentColor"
