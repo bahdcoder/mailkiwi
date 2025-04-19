@@ -13,9 +13,12 @@ export const CompAlignRightIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Align right icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Align right icon</title>
       <path
         d="M21 22V2"
         stroke="currentColor"

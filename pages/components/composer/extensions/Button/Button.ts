@@ -1,15 +1,15 @@
-import { ButtonNodeView } from "@/pages/components/composer/extensions/Button/button-node-view.jsx"
+import { ButtonNodeView } from '@/pages/components/composer/extensions/Button/button-node-view.jsx'
 import {
   getStyleAttributeDefaultCommands,
   getStyleAttributeDefinition,
-} from "@/pages/components/composer/extensions/NodeStyles/NodeStyles.js"
-import { getDefaultStylesForNode } from "@/pages/components/composer/themes/default-theme.js"
-import { Node, type NodeViewProps } from "@tiptap/core"
-import type { Node as ProseMirrorNode } from "prosemirror-model"
-import { ReactNodeViewRenderer } from "@tiptap/react"
-import type { ComponentType } from "react"
+} from '@/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
+import { getDefaultStylesForNode } from '@/pages/components/composer/themes/default-theme.js'
+import { Node, type NodeViewProps } from '@tiptap/core'
+import type { Node as ProseMirrorNode } from 'prosemirror-model'
+import { ReactNodeViewRenderer } from '@tiptap/react'
+import type { ComponentType } from 'react'
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     button: {
       setButton: (attributes: { href: string }) => ReturnType
@@ -20,11 +20,11 @@ declare module "@tiptap/core" {
 }
 
 export const Button = Node.create({
-  name: "button",
+  name: 'button',
 
-  group: "block", // Changed from 'inline' to 'block'
+  group: 'block', // Changed from 'inline' to 'block'
 
-  content: "text*", // Only allow text content
+  content: 'text*', // Only allow text content
 
   isolating: true,
 
@@ -37,13 +37,13 @@ export const Button = Node.create({
   addAttributes() {
     return {
       href: {
-        default: "",
+        default: '',
       },
       styles: getStyleAttributeDefinition(
-        getDefaultStylesForNode("button").styles as Record<
+        getDefaultStylesForNode('button').styles as Record<
           string,
           string | number | boolean
-        >
+        >,
       ),
     }
   },
@@ -57,7 +57,7 @@ export const Button = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["a", { "data-type": "button", ...HTMLAttributes }, 0]
+    return ['a', { 'data-type': 'button', ...HTMLAttributes }, 0]
   },
 
   addCommands() {
@@ -70,12 +70,12 @@ export const Button = Node.create({
               type: this.name,
               attrs: {
                 ...attributes,
-                ...getDefaultStylesForNode("button"),
+                ...getDefaultStylesForNode('button'),
               },
               content: [
                 {
-                  type: "text",
-                  text: "Click me",
+                  type: 'text',
+                  text: 'Click me',
                 },
               ],
             })
@@ -105,8 +105,8 @@ export const Button = Node.create({
           return editor
             .chain()
             .insertContentAt($from.before(), {
-              type: "paragraph",
-              attrs: getDefaultStylesForNode("paragraph"),
+              type: 'paragraph',
+              attrs: getDefaultStylesForNode('paragraph'),
             })
             .setTextSelection($from.pos + 2)
             .run()
@@ -120,8 +120,8 @@ export const Button = Node.create({
           return editor
             .chain()
             .insertContentAt($from.after(), {
-              type: "paragraph",
-              attrs: getDefaultStylesForNode("paragraph"),
+              type: 'paragraph',
+              attrs: getDefaultStylesForNode('paragraph'),
             })
             .focus()
             .run()
@@ -143,12 +143,12 @@ export const Button = Node.create({
               {
                 type: this.name,
                 attrs,
-                content: [{ type: "text", text: beforeText, marks }],
+                content: [{ type: 'text', text: beforeText, marks }],
               },
               {
                 type: this.name,
                 attrs,
-                content: [{ type: "text", text: afterText, marks }],
+                content: [{ type: 'text', text: afterText, marks }],
               },
             ])
 
@@ -189,7 +189,7 @@ export const Button = Node.create({
 
             const node = editor.schema.nodes[this.name].create(
               previousNode.attrs,
-              editor.schema.text(previousButtonText + currentButtonText)
+              editor.schema.text(previousButtonText + currentButtonText),
             )
 
             return editor
@@ -201,7 +201,7 @@ export const Button = Node.create({
                 tr.replaceWith(
                   nodeBefore,
                   nodeBefore + previousNode.nodeSize,
-                  node as ProseMirrorNode
+                  node as ProseMirrorNode,
                 )
                 return true
               })

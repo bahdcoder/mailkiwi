@@ -1,9 +1,9 @@
-import "./styles.css"
-import { Composer } from "@/pages/components/composer/composer.jsx"
-import { useTiptapEditor } from "@/pages/components/composer/editor-state.jsx"
-import { useComposeBroadcastContext } from "@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx"
-import { Spinner } from "@kibamail/owly/spinner"
-import { usePageContext } from "vike-react/usePageContext"
+import './styles.css'
+import { Composer } from '@/pages/components/composer/composer.jsx'
+import { useTiptapEditor } from '@/pages/components/composer/editor-state.jsx'
+import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { Spinner } from '@kibamail/owly/spinner'
+import { usePageContext } from 'vike-react/usePageContext'
 
 interface EditorSaveState {
   isSaving: boolean
@@ -18,8 +18,7 @@ interface StepOneComposerProps {
 export function StepOneComposer() {
   const ctx = usePageContext()
 
-  const { syncContentToServerMutation } =
-    useComposeBroadcastContext("StepOneComposer")
+  const { syncContentToServerMutation } = useComposeBroadcastContext('StepOneComposer')
 
   const { editor } = useTiptapEditor({
     onUpdate({ editor }) {

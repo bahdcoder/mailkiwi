@@ -1,12 +1,12 @@
-import { FormRepository } from "@/forms/repositories/form_repository.js"
-import { FormResponseRepository } from "@/forms/repositories/form_response_repository.js"
+import { FormRepository } from '@/forms/repositories/form_repository.js'
+import { FormResponseRepository } from '@/forms/repositories/form_response_repository.js'
 
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface TagContactBasedOnResponseJobPayload {
   formResponseId: string
@@ -14,17 +14,14 @@ export interface TagContactBasedOnResponseJobPayload {
 
 export class TagContactBasedOnResponseJob extends BaseJob<TagContactBasedOnResponseJobPayload> {
   static get id() {
-    return "CONTACTS::TAG_CONTACT_BASED_ON_RESPONSE"
+    return 'CONTACTS::TAG_CONTACT_BASED_ON_RESPONSE'
   }
 
   static get queue() {
     return AVAILABLE_QUEUES.contacts
   }
 
-  async handle({
-    payload,
-    database,
-  }: JobContext<TagContactBasedOnResponseJobPayload>) {
+  async handle({ payload, database }: JobContext<TagContactBasedOnResponseJobPayload>) {
     const formResponse = await container
       .make(FormResponseRepository)
       .responses()
@@ -32,12 +29,12 @@ export class TagContactBasedOnResponseJob extends BaseJob<TagContactBasedOnRespo
 
     if (!formResponse) {
       return this.done(
-        "Form response not found. Might have been deleted before this job ran."
+        'Form response not found. Might have been deleted before this job ran.',
       )
     }
 
     if (!formResponse.contactId) {
-      return this.done("Form response is not associated with a contactId.")
+      return this.done('Form response is not associated with a contactId.')
     }
 
     const form = await container
@@ -46,13 +43,11 @@ export class TagContactBasedOnResponseJob extends BaseJob<TagContactBasedOnRespo
       .findById(formResponse.formId)
 
     const fields = form.fields?.filter(
-      (field) => field.autoTagging && field.autoTagging.length > 0
+      (field) => field.autoTagging && field.autoTagging.length > 0,
     )
 
     if (!fields || fields.length === 0) {
-      return this.done(
-        "This form does not have any fields with auto tagging enabled."
-      )
+      return this.done('This form does not have any fields with auto tagging enabled.')
     }
 
     await database.transaction(async (trx) => {

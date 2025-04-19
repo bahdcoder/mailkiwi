@@ -1,41 +1,41 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { makeMinioClient } from "@/minio/minio_client.js"
-import { sentenceCase } from "change-case"
-import { stringify as csvStringify } from "csv-stringify"
-import { and, eq } from "drizzle-orm"
-import { DateTime } from "luxon"
-import { Readable } from "node:stream"
+import { appEnv } from '@/app/env/app_env.js'
+import { makeMinioClient } from '@/minio/minio_client.js'
+import { sentenceCase } from 'change-case'
+import { stringify as csvStringify } from 'csv-stringify'
+import { and, eq } from 'drizzle-orm'
+import { DateTime } from 'luxon'
+import { Readable } from 'node:stream'
 
-import type { CreateContactExportDto } from "@/audiences/dto/contact_exports/create_contact_export_dto.js"
-import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
-import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
-import { SegmentBuilder } from "@/audiences/utils/segment_builder/segment_builder.js"
+import type { CreateContactExportDto } from '@/audiences/dto/contact_exports/create_contact_export_dto.js'
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
 
-import { UserRepository } from "@/auth/users/repositories/user_repository.js"
+import { UserRepository } from '@/auth/users/repositories/user_repository.js'
 
 import type {
   Audience,
   Contact,
   ContactWithTags,
-} from "@/database/database_schema_types.js"
-import { contacts } from "@/database/schema.js"
+} from '@/database/database_schema_types.js'
+import { contacts } from '@/database/schema.js'
 
-import { Mailer } from "@/shared/mailers/mailer.js"
-import { BaseJob, type JobContext } from "@/shared/queue/abstract_job.js"
-import { AVAILABLE_QUEUES } from "@/shared/queue/config.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { Mailer } from '@/shared/mailers/mailer.js'
+import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export interface ExportContactsJobPayload {
-  filterGroups: CreateContactExportDto["filterGroups"]
+  filterGroups: CreateContactExportDto['filterGroups']
   audienceId: string
   exportCreatedBy: string
 }
 
 export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
   static get id() {
-    return "ACCOUNTS::CONTACTS"
+    return 'ACCOUNTS::CONTACTS'
   }
 
   private HOURS_TO_EXPIRATION = 24
@@ -47,32 +47,30 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
   private databaseColumnsToCsvHeaders(audience: Audience) {
     return [
       {
-        field: { name: "firstName", type: "text" },
+        field: { name: 'firstName', type: 'text' },
         formatter(value: string) {
           return value
         },
         isAttribute: false,
       },
       {
-        field: { name: "lastName", type: "text" },
+        field: { name: 'lastName', type: 'text' },
         formatter(value: string) {
           return value
         },
         isAttribute: false,
       },
       {
-        field: { name: "email", type: "text" },
+        field: { name: 'email', type: 'text' },
         formatter(value: string) {
           return value
         },
         isAttribute: false,
       },
       {
-        field: { name: "subscribedAt", type: "date" },
+        field: { name: 'subscribedAt', type: 'date' },
         formatter(value: string) {
-          return DateTime.fromJSDate(new Date(value)).toFormat(
-            "yyyy-mm-dd hh:mm:ss"
-          )
+          return DateTime.fromJSDate(new Date(value)).toFormat('yyyy-mm-dd hh:mm:ss')
         },
         isAttribute: false,
       },
@@ -86,62 +84,51 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     ]
   }
 
-  private prepareContactsToCsv(
-    contactsToExport: ContactWithTags[],
-    audience: Audience
-  ) {
+  private prepareContactsToCsv(contactsToExport: ContactWithTags[], audience: Audience) {
     return contactsToExport.map((contact) => {
       const fields: Record<string, string> = {}
 
-      for (const {
-        field,
-        formatter,
-        isAttribute,
-      } of this.databaseColumnsToCsvHeaders(audience)) {
+      for (const { field, formatter, isAttribute } of this.databaseColumnsToCsvHeaders(
+        audience,
+      )) {
         if (isAttribute) {
-          fields[field.name] = formatter(
-            contact?.attributes?.[field.name] as string
-          )
+          fields[field.name] = formatter(contact?.attributes?.[field.name] as string)
         } else {
           const contactProperties = contact as unknown as Record<string, string>
-          fields[sentenceCase(field.name)] = formatter(
-            contactProperties[field.name]
-          )
+          fields[sentenceCase(field.name)] = formatter(contactProperties[field.name])
         }
       }
 
       fields.Tags = contact.tags
         ?.map((tag: { tag: { name: string } }) => tag.tag.name)
-        .join(",")
+        .join(',')
 
       return fields
     })
   }
 
   async handle({ payload }: JobContext<ExportContactsJobPayload>) {
-    const audience = await container
-      .make(AudienceRepository)
-      .findById(payload.audienceId)
+    const audience = await container.make(AudienceRepository).findById(payload.audienceId)
 
     const filteredContacts = await container
       .make(ContactRepository)
       .findAllContactsWithTags(
         and(
           new SegmentBuilder(payload.filterGroups, audience).build(),
-          eq(contacts.audienceId, payload.audienceId)
-        )
+          eq(contacts.audienceId, payload.audienceId),
+        ),
       )
 
     if (filteredContacts.length === 0) {
-      return this.done("No contacts to export.")
+      return this.done('No contacts to export.')
     }
 
     if (!audience) {
-      return this.fail("The audience could not be found.")
+      return this.fail('The audience could not be found.')
     }
 
     const readableCsvStream = Readable.from(
-      this.prepareContactsToCsv(filteredContacts, audience)
+      this.prepareContactsToCsv(filteredContacts, audience),
     )
 
     const fileStream = csvStringify({
@@ -149,9 +136,9 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
     })
 
     const minio = makeMinioClient()
-      .bucket("contacts")
+      .bucket('contacts')
       .metadata({
-        "x-amz-expiration": DateTime.now()
+        'x-amz-expiration': DateTime.now()
           .plus({ hours: this.HOURS_TO_EXPIRATION })
           .toISO(),
       })
@@ -159,30 +146,24 @@ export class ExportContactsJob extends BaseJob<ExportContactsJobPayload> {
 
     await minio.write(readableCsvStream.pipe(fileStream))
 
-    const downloadUrl = await minio.presignedUrl(
-      this.HOURS_TO_EXPIRATION * 60 * 60
-    )
+    const downloadUrl = await minio.presignedUrl(this.HOURS_TO_EXPIRATION * 60 * 60)
 
-    const user = await container
-      .make(UserRepository)
-      .findById(payload.exportCreatedBy)
+    const user = await container.make(UserRepository).findById(payload.exportCreatedBy)
 
     if (!user) {
-      return this.fail(
-        "Generated report, but could not find user to deliver to."
-      )
+      return this.fail('Generated report, but could not find user to deliver to.')
     }
 
     await Mailer.from(appEnv.SMTP_MAIL_FROM)
       .to(user.email)
-      .subject("Your contacts export is ready.")
+      .subject('Your contacts export is ready.')
       .content(
         JSON.stringify({
-          transactionalEmailId: "transactionalEmailId",
+          transactionalEmailId: 'transactionalEmailId',
           variables: {
             downloadUrl,
           },
-        })
+        }),
       )
       .send()
 

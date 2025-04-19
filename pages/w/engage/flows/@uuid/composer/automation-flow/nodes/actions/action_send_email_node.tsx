@@ -1,9 +1,9 @@
-import type { NodeElement } from "@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js"
-import classNames from "classnames"
-import { Handle, Position } from "react-flow-renderer"
+import type { NodeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import classNames from 'classnames'
+import { Handle, Position } from 'react-flow-renderer'
 
 export interface ActionSendEmailNodeProps {
-  data: NodeElement["data"]
+  data: NodeElement['data']
 }
 
 export function ActionSendEmailNode({ data }: ActionSendEmailNodeProps) {
@@ -14,8 +14,8 @@ export function ActionSendEmailNode({ data }: ActionSendEmailNodeProps) {
       onClick={() => data.onNodeClickCallback(data.step.id)}
     >
       <div
-        className={classNames("w-node-wrapper-inner", {
-          "w-node-selected": data.selected,
+        className={classNames('w-node-wrapper-inner', {
+          'w-node-selected': data.selected,
         })}
       >
         <p>send email</p>

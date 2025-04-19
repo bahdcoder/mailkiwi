@@ -1,4 +1,4 @@
-import type { StatusCode } from "hono/utils/http-status"
+import type { StatusCode } from 'hono/utils/http-status'
 import type {
   BaseIssue,
   BaseSchema,
@@ -10,7 +10,7 @@ import type {
   RecordIssue,
   MinLengthIssue,
   MaxLengthIssue,
-} from "valibot"
+} from 'valibot'
 
 type ValibotValidationError =
   | InferIssue<BaseSchema<unknown, unknown, BaseIssue<unknown>>>
@@ -28,16 +28,14 @@ export class E_REQUEST_EXCEPTION extends Error {
   constructor(
     public message: string,
     public payload?: unknown,
-    public statusCode: StatusCode = 500
+    public statusCode: StatusCode = 500,
   ) {
-    super(message ?? "An error occurred.")
+    super(message ?? 'An error occurred.')
   }
 
-  public static E_VALIDATION_FAILED(
-    errors: ValibotValidationError[] | undefined
-  ) {
+  public static E_VALIDATION_FAILED(errors: ValibotValidationError[] | undefined) {
     return new E_REQUEST_EXCEPTION(
-      "Validation failed.",
+      'Validation failed.',
       {
         errors: errors?.map((error) => {
           const valibotError = error as InferIssue<
@@ -45,9 +43,7 @@ export class E_REQUEST_EXCEPTION extends Error {
           >
           const appError = error as { message?: string; field?: string }
           const fieldKey = valibotError?.path
-            ? valibotError?.path
-                ?.map((path: { key: unknown }) => path.key)
-                .join(".")
+            ? valibotError?.path?.map((path: { key: unknown }) => path.key).join('.')
             : appError?.field
 
           return {
@@ -56,23 +52,23 @@ export class E_REQUEST_EXCEPTION extends Error {
           }
         }),
       },
-      422
+      422,
     )
   }
 
   public static E_UNAUTHORIZED(message?: string) {
     return new E_REQUEST_EXCEPTION(
-      `Unauthorized${message ? `: ${message}` : "."}`,
+      `Unauthorized${message ? `: ${message}` : '.'}`,
       {},
-      401
+      401,
     )
   }
 
   public static E_OPERATION_FAILED(message?: string, payload?: unknown) {
     return new E_REQUEST_EXCEPTION(
-      `Internal server error${message ? `: ${message}` : "."}`,
+      `Internal server error${message ? `: ${message}` : '.'}`,
       payload,
-      500
+      500,
     )
   }
 }
@@ -85,8 +81,6 @@ export function E_OPERATION_FAILED(message?: string, payload?: unknown) {
   throw E_REQUEST_EXCEPTION.E_OPERATION_FAILED(message, payload)
 }
 
-export function E_VALIDATION_FAILED(
-  error: ValibotValidationError[] | undefined
-): never {
+export function E_VALIDATION_FAILED(error: ValibotValidationError[] | undefined): never {
   throw E_REQUEST_EXCEPTION.E_VALIDATION_FAILED(error)
 }

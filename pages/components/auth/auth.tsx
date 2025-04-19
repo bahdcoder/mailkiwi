@@ -1,13 +1,13 @@
-import { GithubSvgIcon } from "@/pages/components/icons/github.svg.jsx"
-import { GoogleSvgIcon } from "@/pages/components/icons/google.svg.jsx"
-import { PasswordField } from "@/pages/components/input/password-field.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
-import * as TextField from "@kibamail/owly/text-field"
-import type React from "react"
+import { GithubSvgIcon } from '@/pages/components/icons/github.svg.jsx'
+import { GoogleSvgIcon } from '@/pages/components/icons/google.svg.jsx'
+import { PasswordField } from '@/pages/components/input/password-field.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
+import * as TextField from '@kibamail/owly/text-field'
+import type React from 'react'
 
-import { route } from "@/shared/routes/route_aliases.js"
+import { route } from '@/shared/routes/route_aliases.js'
 
 export function PageContainer({ children }: React.PropsWithChildren) {
   return (
@@ -45,52 +45,50 @@ export function AuthMethodsDivider({
   return (
     <div className="mt-4 flex items-center">
       <div className="w-full h-px border-t kb-border-tertiary" />
-      <Text className="flex-shrink-0 px-4 kb-content-secondary">
-        {children}
-      </Text>
+      <Text className="flex-shrink-0 px-4 kb-content-secondary">{children}</Text>
       <div className="w-full h-px border-t kb-border-tertiary" />
     </div>
   )
 }
 
 interface Oauth2MethodsProps {
-  page: "login" | "register"
+  page: 'login' | 'register'
 }
 
 export function Oauth2Methods({ page }: Oauth2MethodsProps) {
   const content: Record<
-    Oauth2MethodsProps["page"],
-    Record<"google" | "github", { link: string; title: string }>
+    Oauth2MethodsProps['page'],
+    Record<'google' | 'github', { link: string; title: string }>
   > = {
     login: {
       google: {
-        title: "Continue with Google",
-        link: route("auth_oauth2_provider", {
-          provider: "google",
-          action: "login",
+        title: 'Continue with Google',
+        link: route('auth_oauth2_provider', {
+          provider: 'google',
+          action: 'login',
         }),
       },
       github: {
-        title: "Continue with Github",
-        link: route("auth_oauth2_provider", {
-          provider: "github",
-          action: "login",
+        title: 'Continue with Github',
+        link: route('auth_oauth2_provider', {
+          provider: 'github',
+          action: 'login',
         }),
       },
     },
     register: {
       google: {
-        title: "Sign up with Google",
-        link: route("auth_oauth2_provider", {
-          provider: "google",
-          action: "register",
+        title: 'Sign up with Google',
+        link: route('auth_oauth2_provider', {
+          provider: 'google',
+          action: 'register',
         }),
       },
       github: {
-        title: "Sign up with github",
-        link: route("auth_oauth2_provider", {
-          provider: "github",
-          action: "register",
+        title: 'Sign up with github',
+        link: route('auth_oauth2_provider', {
+          provider: 'github',
+          action: 'register',
         }),
       },
     },

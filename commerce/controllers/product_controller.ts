@@ -1,56 +1,52 @@
-import { CreateProductSchema } from "@/commerce/dto/create_product_dto.js"
-import { InitialiseProductPaymentSchema } from "@/commerce/dto/initialise_product_payment_dto.js"
-import { ProductRepository } from "@/commerce/repositories/product_repository.js"
-import { CommerceProviderTool } from "@/commerce/tools/commerce_provider_tool.js"
+import { CreateProductSchema } from '@/commerce/dto/create_product_dto.js'
+import { InitialiseProductPaymentSchema } from '@/commerce/dto/initialise_product_payment_dto.js'
+import { ProductRepository } from '@/commerce/repositories/product_repository.js'
+import { CommerceProviderTool } from '@/commerce/tools/commerce_provider_tool.js'
 
-import { TeamRepository } from "@/teams/repositories/team_repository.js"
+import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
-import { type Audience, Product } from "@/database/database_schema_types.js"
+import { type Audience, Product } from '@/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from "@/http/responses/errors.js"
+import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
-import { makeApp } from "@/shared/container/index.js"
-import { BaseController } from "@/shared/controllers/base_controller.js"
-import type { HonoContext } from "@/shared/server/types.js"
+import { makeApp } from '@/shared/container/index.js'
+import { BaseController } from '@/shared/controllers/base_controller.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class ProductController extends BaseController {
   constructor(
     protected app = makeApp(),
-    protected productRepository = container.make(ProductRepository)
+    protected productRepository = container.make(ProductRepository),
   ) {
     super()
 
-    this.app.defineRoutes([["POST", "/", this.create.bind(this)]], {
-      prefix: "/audiences/:audienceId/products",
+    this.app.defineRoutes([['POST', '/', this.create.bind(this)]], {
+      prefix: '/audiences/:audienceId/products',
     })
 
     this.app.defineRoutes(
       [
-        ["POST", "/payments/initialize", this.initializePayment.bind(this)],
-        [
-          "GET",
-          "/payments/callback",
-          this.initializePaymentCallback.bind(this),
-        ],
+        ['POST', '/payments/initialize', this.initializePayment.bind(this)],
+        ['GET', '/payments/callback', this.initializePaymentCallback.bind(this)],
       ],
       {
-        prefix: "/products/:productId/",
+        prefix: '/products/:productId/',
         middleware: [],
-      }
+      },
     )
   }
 
   async create(ctx: HonoContext) {
     const team = this.ensureTeam(ctx)
-    const audience = await this.ensureExists<Audience>(ctx, "audienceId")
+    const audience = await this.ensureExists<Audience>(ctx, 'audienceId')
 
     if (!team.commerceProviderConfirmedAt) {
       return E_VALIDATION_FAILED([
         {
           message:
-            "Before you create a commerce product, You must first connect a commerce provider such as stripe, paypal, flutterwave, paystack.",
+            'Before you create a commerce product, You must first connect a commerce provider such as stripe, paypal, flutterwave, paystack.',
         },
       ])
     }
@@ -68,21 +64,18 @@ export class ProductController extends BaseController {
     const product = await container
       .make(ProductRepository)
       .products()
-      .findById(ctx.req.param("productId"))
+      .findById(ctx.req.param('productId'))
 
     if (!product) {
       throw E_VALIDATION_FAILED([
         {
-          message: "Invalid productId provided.",
-          field: "productId",
+          message: 'Invalid productId provided.',
+          field: 'productId',
         },
       ])
     }
 
-    const team = await container
-      .make(TeamRepository)
-      .teams()
-      .findById(product.teamId)
+    const team = await container.make(TeamRepository).teams().findById(product.teamId)
 
     if (
       !team.commerceProvider ||
@@ -91,8 +84,7 @@ export class ProductController extends BaseController {
     ) {
       throw E_VALIDATION_FAILED([
         {
-          message:
-            "You must connect a commerce provider before you can make a payment",
+          message: 'You must connect a commerce provider before you can make a payment',
         },
       ])
     }
@@ -107,7 +99,7 @@ export class ProductController extends BaseController {
 
     const commerceProvider = container
       .make(CommerceProviderTool)
-      .createProvider(team.commerceProvider || "stripe")
+      .createProvider(team.commerceProvider || 'stripe')
 
     const data = await commerceProvider.initialiseOneTimePayment({
       email: payload.email,
@@ -126,10 +118,10 @@ export class ProductController extends BaseController {
 
     const commerceProvider = container
       .make(CommerceProviderTool)
-      .createProvider(team.commerceProvider || "stripe")
+      .createProvider(team.commerceProvider || 'stripe')
 
     const { success } = await commerceProvider.confirmOneTimePayment({
-      reference: ctx.req.query("reference") as string,
+      reference: ctx.req.query('reference') as string,
       product,
     })
 

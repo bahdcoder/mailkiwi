@@ -1,8 +1,8 @@
-import { useApplicationLayoutContext } from "@/pages/components/dashboard/layout/application-layout-context.jsx"
-import { SidebarContent } from "@/pages/components/dashboard/layout/sidebar/sidebar-content.jsx"
-import cn from "classnames"
-import React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+import { useApplicationLayoutContext } from '@/pages/components/dashboard/layout/application-layout-context.jsx'
+import { SidebarContent } from '@/pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
+import cn from 'classnames'
+import React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
 export function FloatingSidebar() {
   const ctx = usePageContext()
@@ -10,7 +10,7 @@ export function FloatingSidebar() {
   const menuRef = React.useRef<HTMLDivElement | null>(null)
   const slideInSidebarTriggerRef = React.useRef<HTMLDivElement | null>(null)
 
-  const { sidebar, setSidebar } = useApplicationLayoutContext("FloatingSidebar")
+  const { sidebar, setSidebar } = useApplicationLayoutContext('FloatingSidebar')
 
   function onMouseEnter() {
     setVisible(true)
@@ -22,11 +22,11 @@ export function FloatingSidebar() {
 
   function onMouseLeave(event: React.MouseEvent<HTMLDivElement>) {
     const workspacesDropdownMenuTrigger = document.querySelector(
-      "#floating-sidebar-dropdown-menu-trigger"
+      '#floating-sidebar-dropdown-menu-trigger',
     )
 
     const workspacesDropdownMenuContent = document.querySelector(
-      "#floating-sidebar-dropdown-menu-content"
+      '#floating-sidebar-dropdown-menu-content',
     )
 
     if (
@@ -66,23 +66,21 @@ export function FloatingSidebar() {
         tabIndex={0}
         onClick={ctx.isMobile ? undefined : hideFloatingSidebar}
         onKeyDown={(e) =>
-          e.key === "Escape" &&
-          hideFloatingSidebar(e as unknown as React.MouseEvent)
+          e.key === 'Escape' && hideFloatingSidebar(e as unknown as React.MouseEvent)
         }
         className={cn(
-          "w-full h-screen bg-[rgba(17,17,17,0.10)] transition-opacity ease-in-out duration-200 absolute top-0 pl-2 left-0 z-[5] py-6 flex items-center border-0",
+          'w-full h-screen bg-[rgba(17,17,17,0.10)] transition-opacity ease-in-out duration-200 absolute top-0 pl-2 left-0 z-[5] py-6 flex items-center border-0',
           {
-            "pointer-events-none opacity-0": !sidebar.floating,
-            "pointer-events-auto opacity-100": sidebar.floating,
-          }
+            'pointer-events-none opacity-0': !sidebar.floating,
+            'pointer-events-auto opacity-100': sidebar.floating,
+          },
         )}
       >
         <button
           type="button"
           onClick={hideFloatingSidebar}
           onKeyDown={(e) =>
-            e.key === "Escape" &&
-            hideFloatingSidebar(e as unknown as React.MouseEvent)
+            e.key === 'Escape' && hideFloatingSidebar(e as unknown as React.MouseEvent)
           }
           tabIndex={0}
           className="absolute lg:hidden w-[calc(100vw-256px)] right-0 h-screen bg-transparent border-0"
@@ -92,7 +90,7 @@ export function FloatingSidebar() {
         ref={menuRef}
         onMouseLeave={ctx.isMobile ? undefined : onMouseLeave}
         style={{
-          transform: `translateX(${sidebar.floating ? "0px" : "-284px"})`,
+          transform: `translateX(${sidebar.floating ? '0px' : '-284px'})`,
         }}
         className="h-[calc(100vh-2rem)] mt-4 absolute left-4 top-0 z-20 transition-transform duration-300 kb-background-secondary w-64 p-2 flex flex-col rounded-2xl shadow-[0px_16px_24px_-8px_var(--black-10)]"
       >

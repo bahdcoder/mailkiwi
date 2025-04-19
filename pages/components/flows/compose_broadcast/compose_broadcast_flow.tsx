@@ -1,49 +1,45 @@
 import {
   type ComposeBroadcastContextInterface,
   ComposeBroadcastProvider,
-} from "./state/compose_broadcast_context.jsx"
-import { ComposeBroadcastTopBar } from "@/pages/components/flows/compose_broadcast/components/compose_broadcast_top_bar.jsx"
-import { useGetBroadcastRecipientsCount } from "@/pages/components/flows/compose_broadcast/hooks/use_get_broadcast_recipients_count.js"
-import { useSyncComposerContentToServer } from "@/pages/components/flows/compose_broadcast/hooks/use_sync_composer_content_to_server.js"
-import { useValidateBroadcastContentMutation } from "@/pages/components/flows/compose_broadcast/hooks/use_validate_broadcast_content_mutation.js"
-import { parseISODateToFormattedScheduleDate } from "@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js"
-import { StepsRenderer } from "@/pages/components/flows/steps_renderer.jsx"
-import { usePageProps } from "@/pages/hooks/use_page_props.js"
-import { useServerQuery } from "@/pages/hooks/use_server_query.js"
-import type { EngageBroadcastsComposerPageProps } from "@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx"
-import { route } from "@/shared/routes/route_aliases.js"
-import dayjs from "dayjs"
-import React from "react"
-import { clientOnly } from "vike-react/clientOnly"
+} from './state/compose_broadcast_context.jsx'
+import { ComposeBroadcastTopBar } from '@/pages/components/flows/compose_broadcast/components/compose_broadcast_top_bar.jsx'
+import { useGetBroadcastRecipientsCount } from '@/pages/components/flows/compose_broadcast/hooks/use_get_broadcast_recipients_count.js'
+import { useSyncComposerContentToServer } from '@/pages/components/flows/compose_broadcast/hooks/use_sync_composer_content_to_server.js'
+import { useValidateBroadcastContentMutation } from '@/pages/components/flows/compose_broadcast/hooks/use_validate_broadcast_content_mutation.js'
+import { parseISODateToFormattedScheduleDate } from '@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
+import { StepsRenderer } from '@/pages/components/flows/steps_renderer.jsx'
+import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { useServerQuery } from '@/pages/hooks/use_server_query.js'
+import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
+import { route } from '@/shared/routes/route_aliases.js'
+import dayjs from 'dayjs'
+import React from 'react'
+import { clientOnly } from 'vike-react/clientOnly'
 
 const StepOneComposer = clientOnly(() =>
-  import("./steps/step_one_composer.jsx").then(
-    ({ StepOneComposer }) => StepOneComposer
-  )
+  import('./steps/step_one_composer.jsx').then(({ StepOneComposer }) => StepOneComposer),
 )
 
 const StepTwoRecipients = clientOnly(() =>
-  import("./steps/step_two_recipients.jsx").then(
-    ({ StepTwoRecipients }) => StepTwoRecipients
-  )
+  import('./steps/step_two_recipients.jsx').then(
+    ({ StepTwoRecipients }) => StepTwoRecipients,
+  ),
 )
 
 const StepThreeConfigure = clientOnly(() =>
-  import("./steps/step_three_configure.jsx").then(
-    ({ StepThreeConfigure }) => StepThreeConfigure
-  )
+  import('./steps/step_three_configure.jsx').then(
+    ({ StepThreeConfigure }) => StepThreeConfigure,
+  ),
 )
 
 const StepFivePreview = clientOnly(() =>
-  import("./steps/step_five_preview.jsx").then(
-    ({ StepFivePreview }) => StepFivePreview
-  )
+  import('./steps/step_five_preview.jsx').then(({ StepFivePreview }) => StepFivePreview),
 )
 
 const StepFourTracking = clientOnly(() =>
-  import("./steps/step_four_tracking.jsx").then(
-    ({ StepFourTracking }) => StepFourTracking
-  )
+  import('./steps/step_four_tracking.jsx').then(
+    ({ StepFourTracking }) => StepFourTracking,
+  ),
 )
 
 export function ComposeBroadcastFlow() {
@@ -52,28 +48,28 @@ export function ComposeBroadcastFlow() {
 
   const [step, setStep] = React.useState(0)
   const [formState, setFormState] = React.useState<
-    ComposeBroadcastContextInterface["formState"]
+    ComposeBroadcastContextInterface['formState']
   >({
-    segmentId: broadcastFromServer?.segmentId ?? "all",
-    previewText: broadcastFromServer?.emailContent?.previewText ?? "",
-    subject: broadcastFromServer?.name ?? "",
-    replyToEmail: broadcastFromServer?.emailContent?.replyToEmail ?? "",
-    fromEmail: broadcastFromServer?.emailContent?.fromEmail ?? "",
-    fromName: broadcastFromServer?.emailContent?.fromName ?? "",
+    segmentId: broadcastFromServer?.segmentId ?? 'all',
+    previewText: broadcastFromServer?.emailContent?.previewText ?? '',
+    subject: broadcastFromServer?.name ?? '',
+    replyToEmail: broadcastFromServer?.emailContent?.replyToEmail ?? '',
+    fromEmail: broadcastFromServer?.emailContent?.fromEmail ?? '',
+    fromName: broadcastFromServer?.emailContent?.fromName ?? '',
     trackClicks: broadcastFromServer?.trackClicks ?? false,
     trackOpens: broadcastFromServer?.trackOpens ?? false,
     scheduledAt: broadcastFromServer?.sendAt
       ? parseISODateToFormattedScheduleDate(broadcastFromServer?.sendAt)
       : {
-          minute: "00",
-          hour: "09",
-          ampm: "AM",
-          value: dayjs().add(1, "day").toDate(),
+          minute: '00',
+          hour: '09',
+          ampm: 'AM',
+          value: dayjs().add(1, 'day').toDate(),
         },
   })
 
   const broadcastQuery = useServerQuery({
-    queryKey: route("get_broadcast", { uuid: broadcastFromServer.id }),
+    queryKey: route('get_broadcast', { uuid: broadcastFromServer.id }),
     initialData: broadcastFromServer,
   })
 
@@ -87,9 +83,7 @@ export function ComposeBroadcastFlow() {
     },
   })
   const validateBroadcastContentMutation = useValidateBroadcastContentMutation()
-  const getBroadcastRecipientsCount = useGetBroadcastRecipientsCount(
-    formState.segmentId
-  )
+  const getBroadcastRecipientsCount = useGetBroadcastRecipientsCount(formState.segmentId)
 
   return (
     <ComposeBroadcastProvider

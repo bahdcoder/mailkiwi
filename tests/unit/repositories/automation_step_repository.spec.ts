@@ -1,22 +1,22 @@
-import { faker } from "@faker-js/faker"
-import { eq } from "drizzle-orm"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
-import { AutomationRepository } from "@/automations/repositories/automation_repository.js"
-import { AutomationStepRepository } from "@/automations/repositories/automation_step_repository.js"
-import type { CreateAutomationStepDto } from "@/automations/dto/create_automation_step_dto.js"
+import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
+import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
+import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
 
-import { createUser } from "@/tests/mocks/auth/users.js"
+import { createUser } from '@/tests/mocks/auth/users.js'
 
-import { automationSteps } from "@/database/schema.js"
+import { automationSteps } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@automation-step-repository", () => {
-  test("creates a standard automation step", async ({ expect }) => {
+describe('@automation-step-repository', () => {
+  test('creates a standard automation step', async ({ expect }) => {
     const { audience } = await createUser()
     const {
       id: automationId,
@@ -26,15 +26,15 @@ describe("@automation-step-repository", () => {
       {
         name: faker.lorem.words(2),
       },
-      audience.id
+      audience.id,
     )
     const database = makeDatabase()
 
     const repository = new AutomationStepRepository()
 
     const data = {
-      type: "ACTION" as const,
-      subtype: "ACTION_SEND_EMAIL" as const,
+      type: 'ACTION' as const,
+      subtype: 'ACTION_SEND_EMAIL' as const,
       configuration: { emailId: cuid() },
       parentId: triggerStepId,
       targetId: endStepId,
@@ -49,12 +49,12 @@ describe("@automation-step-repository", () => {
     })
 
     expect(createdStep).toBeDefined()
-    expect(createdStep?.type).toBe("ACTION")
-    expect(createdStep?.subtype).toBe("ACTION_SEND_EMAIL")
+    expect(createdStep?.type).toBe('ACTION')
+    expect(createdStep?.subtype).toBe('ACTION_SEND_EMAIL')
     expect(createdStep?.automationId).toBe(automationId)
   })
 
-  test("creates an IF/ELSE rule step with branches", async ({ expect }) => {
+  test('creates an IF/ELSE rule step with branches', async ({ expect }) => {
     const { audience } = await createUser()
     const {
       id: automationId,
@@ -64,28 +64,28 @@ describe("@automation-step-repository", () => {
       {
         name: faker.lorem.words(2),
       },
-      audience.id
+      audience.id,
     )
     const database = makeDatabase()
 
     const repository = new AutomationStepRepository()
 
     const data = {
-      type: "RULE" as const,
-      subtype: "RULE_IF_ELSE" as const,
+      type: 'RULE' as const,
+      subtype: 'RULE_IF_ELSE' as const,
       parentId: triggerStepId,
       targetId: endStepId,
       configuration: {
         filterGroups: {
-          type: "AND",
+          type: 'AND',
           groups: [
             {
-              type: "AND",
+              type: 'AND',
               conditions: [
                 {
-                  field: "email",
-                  operation: "endsWith",
-                  value: ["@gmail.com"],
+                  field: 'email',
+                  operation: 'endsWith',
+                  value: ['@gmail.com'],
                 },
               ],
             },
@@ -94,11 +94,7 @@ describe("@automation-step-repository", () => {
       },
     } satisfies CreateAutomationStepDto
 
-    const result = await repository.createIfElseStep(
-      automationId,
-      data,
-      endStepId
-    )
+    const result = await repository.createIfElseStep(automationId, data, endStepId)
 
     expect(result.id).toBeDefined()
     expect(result.yesBranchStepId).toBeDefined()
@@ -111,8 +107,8 @@ describe("@automation-step-repository", () => {
     })
 
     expect(ifElseStep).toBeDefined()
-    expect(ifElseStep?.type).toBe("RULE")
-    expect(ifElseStep?.subtype).toBe("RULE_IF_ELSE")
+    expect(ifElseStep?.type).toBe('RULE')
+    expect(ifElseStep?.subtype).toBe('RULE_IF_ELSE')
     expect(ifElseStep?.parentId).toBe(data.parentId)
 
     // Verify the YES branch step was created correctly
@@ -121,7 +117,7 @@ describe("@automation-step-repository", () => {
     })
 
     expect(yesBranchStep).toBeDefined()
-    expect(yesBranchStep?.type).toBe("ACTION")
+    expect(yesBranchStep?.type).toBe('ACTION')
     expect(yesBranchStep?.parentId).toBe(result.id)
     expect(yesBranchStep?.branchIndex).toBe(1) // YES branch
 
@@ -138,7 +134,7 @@ describe("@automation-step-repository", () => {
     })
 
     expect(noBranchStep).toBeDefined()
-    expect(noBranchStep?.type).toBe("ACTION")
+    expect(noBranchStep?.type).toBe('ACTION')
     expect(noBranchStep?.parentId).toBe(result.id)
     expect(noBranchStep?.branchIndex).toBe(0) // NO branch
 
@@ -148,8 +144,8 @@ describe("@automation-step-repository", () => {
     })
 
     expect(noEndStep).toBeDefined()
-    expect(noEndStep?.type).toBe("END")
-    expect(noEndStep?.subtype).toBe("END")
+    expect(noEndStep?.type).toBe('END')
+    expect(noEndStep?.subtype).toBe('END')
     expect(noEndStep?.parentId).toBe(result.noBranchStepId)
   })
 })

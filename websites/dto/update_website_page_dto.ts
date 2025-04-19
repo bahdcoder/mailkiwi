@@ -14,16 +14,16 @@ import {
   record,
   string,
   union,
-} from "valibot"
+} from 'valibot'
 
 const htmlJsonTypes = [
-  "doc",
-  "container",
-  "columns",
-  "column",
-  "paragraph",
-  "heading",
-  "text",
+  'doc',
+  'container',
+  'columns',
+  'column',
+  'paragraph',
+  'heading',
+  'text',
 ] as const
 const htmlJsonContentType = picklist(htmlJsonTypes)
 
@@ -38,19 +38,17 @@ export const BlockContentSchema = array(
   object({
     type: htmlJsonContentType,
     text: optional(string()),
-    attrs: optional(
-      record(string(), union([string(), number(), array(string())]))
-    ),
+    attrs: optional(record(string(), union([string(), number(), array(string())]))),
     content: optional(lazy(() => BlockContentSchema)),
-  })
+  }),
 ) as GenericSchema<HTMLJsonBlock[]>
 
 export const UpdateWebsitePageSchema = objectAsync({
   draftWebsiteContent: optional(
     object({
-      type: picklist(["doc"]),
+      type: picklist(['doc']),
       content: BlockContentSchema,
-    })
+    }),
   ),
   slug: optional(pipe(string(), minLength(2), maxLength(24))),
   title: optional(pipe(string(), minLength(10), maxLength(100))),

@@ -1,23 +1,20 @@
-import { ComposeBroadcastFlow } from "@/pages/components/flows/compose_broadcast/compose_broadcast_flow.jsx"
-import { CreateBroadcastFlow } from "@/pages/components/flows/compose_broadcast/create_broadcast_flow.jsx"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import React from "react"
+import { ComposeBroadcastFlow } from '@/pages/components/flows/compose_broadcast/compose_broadcast_flow.jsx'
+import { CreateBroadcastFlow } from '@/pages/components/flows/compose_broadcast/create_broadcast_flow.jsx'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import React from 'react'
 
-import * as DropdownMenu from "@/pages/components/dropdown/dropdown.jsx"
-import { MoreVertIcon } from "@/pages/components/icons/more-vert.svg.jsx"
-import { Text } from "@kibamail/owly/text"
-import { ImportContactsDialog } from "@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx"
-import { usePageContext } from "vike-react/usePageContext"
+import * as DropdownMenu from '@/pages/components/dropdown/dropdown.jsx'
+import { MoreVertIcon } from '@/pages/components/icons/more-vert.svg.jsx'
+import { Text } from '@kibamail/owly/text'
+import { ImportContactsDialog } from '@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
+import { usePageContext } from 'vike-react/usePageContext'
 
 export interface ProductPageHeadingProps extends React.PropsWithChildren {
   header?: React.ReactNode
 }
 
-export function ProductPageHeading({
-  children,
-  header,
-}: ProductPageHeadingProps) {
+export function ProductPageHeading({ children, header }: ProductPageHeadingProps) {
   const ctx = usePageContext()
 
   const {
@@ -45,16 +42,9 @@ export function ProductPageHeading({
               <Button className="h-10">Compose a broadcast</Button>
             </CreateBroadcastFlow>
 
-            <DropdownMenu.Root
-              open={dropdownOpen}
-              onOpenChange={setDropdownOpen}
-            >
+            <DropdownMenu.Root open={dropdownOpen} onOpenChange={setDropdownOpen}>
               <DropdownMenu.Trigger asChild>
-                <Button
-                  className="h-10"
-                  variant="secondary"
-                  ref={dropdownTriggerRef}
-                >
+                <Button className="h-10" variant="secondary" ref={dropdownTriggerRef}>
                   <MoreVertIcon />
                 </Button>
               </DropdownMenu.Trigger>

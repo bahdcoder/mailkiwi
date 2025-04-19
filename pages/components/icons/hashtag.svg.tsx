@@ -13,9 +13,12 @@ export const HashTagIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
+      role="img"
+      aria-label="Hashtag icon"
       {...props}
       ref={forwardedRef}
     >
+      <title>Hashtag icon</title>
       <path
         d="M10 3L6 21"
         stroke="currentColor"

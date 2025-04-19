@@ -1,4 +1,4 @@
-// eslint-disable-next-line
+// biome-ignore lint/suspicious/noExplicitAny: Just a dumper
 declare function dump<any>(...value: any[]): void
-// eslint-disable-next-line
+// biome-ignore lint/suspicious/noExplicitAny: Just a dumper
 declare function d<any>(...value: any[]): void

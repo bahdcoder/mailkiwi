@@ -1,6 +1,6 @@
-import React from "react"
+import React from 'react'
 
-export const GoogleSvgIcon = React.forwardRef<React.ElementRef<"svg">>(
+export const GoogleSvgIcon = React.forwardRef<React.ElementRef<'svg'>>(
   (props, forwardedRef) => {
     return (
       <svg
@@ -33,5 +33,5 @@ export const GoogleSvgIcon = React.forwardRef<React.ElementRef<"svg">>(
         />
       </svg>
     )
-  }
+  },
 )

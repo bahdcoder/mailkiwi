@@ -1,14 +1,14 @@
-import { AgreeToTermsAndPolicy } from "@/pages/components/auth/agree-to-terms-and-policy.jsx"
-import { CheckCircleSolidIcon } from "@/pages/components/icons/check-circle-solid.svg.jsx"
-import { Text } from "@kibamail/owly/text"
-import type React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+import { AgreeToTermsAndPolicy } from '@/pages/components/auth/agree-to-terms-and-policy.jsx'
+import { CheckCircleSolidIcon } from '@/pages/components/icons/check-circle-solid.svg.jsx'
+import { Text } from '@kibamail/owly/text'
+import type React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
 type AuthLayoutProps = { children?: React.ReactNode }
 
-const PASSWORD_RESET_PATHS = "/passwords"
+const PASSWORD_RESET_PATHS = '/passwords'
 
-const WELCOME_PATHS = "register/profile"
+const WELCOME_PATHS = 'register/profile'
 
 function PasswordResetsFlowLayout({
   children,
@@ -41,11 +41,7 @@ function AuthLayout({ children }: React.PropsWithChildren<AuthLayoutProps>) {
       <div className="flex flex-col kb-bg-secondary h-full w-full">
         <div className="w-full py-8 px-4 md:px-10">
           <a href="/">
-            <img
-              src="/logos/full-light.svg"
-              className="h-8"
-              alt="Kibamail Logo"
-            />
+            <img src="/logos/full-light.svg" className="h-8" alt="Kibamail Logo" />
           </a>
         </div>
         <div className="flex-grow px-5 lg:px-0">{children}</div>

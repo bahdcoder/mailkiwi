@@ -1,25 +1,22 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { Oauth2Client } from "@poppinss/oauth-client/oauth2"
+import { appEnv } from '@/app/env/app_env.js'
+import { Oauth2Client } from '@poppinss/oauth-client/oauth2'
 import type {
   Oauth2AccessToken,
   RedirectRequestContract,
-} from "@poppinss/oauth-client/types"
-import { getCookie } from "hono/cookie"
+} from '@poppinss/oauth-client/types'
+import { getCookie } from 'hono/cookie'
 
-import type {
-  Oauth2Driver,
-  Oauth2Params,
-} from "@/auth/oauth2_drivers/base_driver.js"
+import type { Oauth2Driver, Oauth2Params } from '@/auth/oauth2_drivers/base_driver.js'
 
-import { makeHttpClient } from "@/shared/http/http_client.js"
-import type { HonoContext } from "@/shared/server/types.js"
+import { makeHttpClient } from '@/shared/http/http_client.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
 export class GithubDriver
   extends Oauth2Client<Oauth2AccessToken>
   implements Oauth2Driver
 {
-  OAUTH2_STATE_COOKIE_NAME = "gh_oauth_state"
-  OAUTH_2_ACTION_COOKIE_NAME = "gh_action"
+  OAUTH2_STATE_COOKIE_NAME = 'gh_oauth_state'
+  OAUTH_2_ACTION_COOKIE_NAME = 'gh_action'
 
   state: string
 
@@ -30,8 +27,8 @@ export class GithubDriver
       callbackUrl: appEnv.GITHUB_CALLBACK_URL,
       clientId: appEnv.GITHUB_CLIENT_ID,
       clientSecret: appEnv.GITHUB_CLIENT_SECRET,
-      authorizeUrl: "https://github.com/login/oauth/authorize",
-      accessTokenUrl: "https://github.com/login/oauth/access_token",
+      authorizeUrl: 'https://github.com/login/oauth/authorize',
+      accessTokenUrl: 'https://github.com/login/oauth/access_token',
     })
 
     this.state = this.getState()
@@ -50,8 +47,8 @@ export class GithubDriver
    * the user callback
    */
   protected configureRedirectRequest(request: RedirectRequestContract) {
-    request.param("state", this.state)
-    request.param("scope", "user:email read:user")
+    request.param('state', this.state)
+    request.param('scope', 'user:email read:user')
   }
 
   protected getProviderState() {
@@ -59,10 +56,7 @@ export class GithubDriver
   }
 
   protected getProviderAction() {
-    return getCookie(
-      this.ctx,
-      this.OAUTH_2_ACTION_COOKIE_NAME
-    ) as Oauth2Params["action"]
+    return getCookie(this.ctx, this.OAUTH_2_ACTION_COOKIE_NAME) as Oauth2Params['action']
   }
 
   /**
@@ -72,8 +66,8 @@ export class GithubDriver
    * the user callback
    */
   protected configureAccessTokenRequest(request: RedirectRequestContract) {
-    request.param("code", this.ctx.req.param("code"))
-    request.param("state", this.getProviderState())
+    request.param('code', this.ctx.req.param('code'))
+    request.param('state', this.getProviderState())
   }
 
   async handleCallback() {
@@ -82,12 +76,12 @@ export class GithubDriver
     this.verifyState(state, this.getProviderState())
 
     const accessToken = await this.getAccessToken((request) => {
-      request.param("code", code)
-      request.param("state", state)
+      request.param('code', code)
+      request.param('state', state)
     })
 
     const githubApiClient = makeHttpClient()
-      .baseURL("https://api.github.com")
+      .baseURL('https://api.github.com')
       .headers({
         Authorization: `Bearer ${accessToken.token}`,
       })
@@ -95,12 +89,12 @@ export class GithubDriver
     const [profileData, emailsData] = await Promise.all([
       githubApiClient
         .get()
-        .url("/user")
+        .url('/user')
         .asJson()
         .send<{ name: string; login: string; id: number }>(),
       githubApiClient
         .get()
-        .url("/user/emails")
+        .url('/user/emails')
         .asJson()
         .send<{ email: string; verified: boolean; primary: boolean }[]>(),
     ])
@@ -109,7 +103,7 @@ export class GithubDriver
       emailsData.data.find((email) => email.verified && email.primary) ||
       emailsData.data.find((email) => email.verified)
 
-    let [firstName, lastName] = profileData?.data?.name?.split(" ") || []
+    let [firstName, lastName] = profileData?.data?.name?.split(' ') || []
 
     if (!firstName) {
       firstName = profileData?.data?.login
@@ -123,7 +117,7 @@ export class GithubDriver
         providerId: profileData.data.id.toString(),
       },
       accessToken,
-      provider: "github" as const,
+      provider: 'github' as const,
       action: this.getProviderAction(),
     }
   }

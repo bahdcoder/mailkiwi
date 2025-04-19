@@ -1,12 +1,12 @@
-import type { FormFieldDto } from "@/forms/dto/create_form_dto.js"
-import { email, pipe, safeParse, string } from "valibot"
+import type { FormFieldDto } from '@/forms/dto/create_form_dto.js'
+import { email, pipe, safeParse, string } from 'valibot'
 
-import type { Form, FormResponse } from "@/database/database_schema_types.js"
+import type { Form, FormResponse } from '@/database/database_schema_types.js'
 
 export class FormResponseValidatorTool {
   constructor(
     protected form: Form,
-    protected payload: NonNullable<FormResponse["response"]>
+    protected payload: NonNullable<FormResponse['response']>,
   ) {}
 
   async handleSignupForm() {
@@ -18,7 +18,7 @@ export class FormResponseValidatorTool {
       return { valid: true, errors: {} }
     }
 
-    if (this.form.type === "signup") {
+    if (this.form.type === 'signup') {
       return this.handleSignupForm()
     }
 
@@ -26,10 +26,10 @@ export class FormResponseValidatorTool {
 
     for (const field of this.form.fields) {
       switch (field.type) {
-        case "select":
+        case 'select':
           if (field.id) errors[field.id] = this.validateSelectField(field)
           break
-        case "email":
+        case 'email':
           if (field.id) errors[field.id] = this.validateEmailField(field)
           break
         default:
@@ -49,7 +49,7 @@ export class FormResponseValidatorTool {
     const { success } = safeParse(pipe(string(), email()), value)
 
     if (!success) {
-      return "Please enter a valid email address"
+      return 'Please enter a valid email address'
     }
   }
 
@@ -57,11 +57,11 @@ export class FormResponseValidatorTool {
     const value = field.id ? this.payload[field.id] : undefined
 
     if (!value) {
-      return "This field is required"
+      return 'This field is required'
     }
 
     if (!field.options?.includes(value?.[0])) {
-      return "Please select a valid option"
+      return 'Please select a valid option'
     }
   }
 }

@@ -1,10 +1,10 @@
-import type { NodeElement } from "@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js"
-import { Text } from "@kibamail/owly/text"
-import classNames from "classnames"
-import { Handle, Position } from "react-flow-renderer"
+import type { NodeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import { Text } from '@kibamail/owly/text'
+import classNames from 'classnames'
+import { Handle, Position } from 'react-flow-renderer'
 
 export interface ActionUpdateContactAttributesNodeProps {
-  data: NodeElement["data"]
+  data: NodeElement['data']
 }
 
 export function ActionUpdateContactAttributesNode({
@@ -17,8 +17,8 @@ export function ActionUpdateContactAttributesNode({
       onClick={() => data.onNodeClickCallback(data.step.id)}
     >
       <div
-        className={classNames("w-node-wrapper-inner", {
-          "w-node-selected": data.selected,
+        className={classNames('w-node-wrapper-inner', {
+          'w-node-selected': data.selected,
         })}
       >
         <Text>Update attributes</Text>

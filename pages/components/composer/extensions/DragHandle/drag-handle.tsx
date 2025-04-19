@@ -1,12 +1,9 @@
-import {
-  DragHandlePlugin,
-  dragHandlePluginDefaultKey,
-} from "./drag-handle-plugin.js"
-import type { Editor } from "@tiptap/core"
-import type { Node } from "@tiptap/pm/model"
-import React, { useEffect, useRef, useState } from "react"
-import type { ReactNode } from "react"
-import type { Props as TippyProps } from "tippy.js"
+import { DragHandlePlugin, dragHandlePluginDefaultKey } from './drag-handle-plugin.js'
+import type { Editor } from '@tiptap/core'
+import type { Node } from '@tiptap/pm/model'
+import React, { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
+import type { Props as TippyProps } from 'tippy.js'
 
 export type DragHandleProps = {
   editor: Editor
@@ -23,7 +20,7 @@ export type DragHandleProps = {
 
 export function DragHandle(props: DragHandleProps) {
   const {
-    className = "drag-handle",
+    className = 'drag-handle',
     children,
     editor,
     pluginKey = dragHandlePluginDefaultKey,

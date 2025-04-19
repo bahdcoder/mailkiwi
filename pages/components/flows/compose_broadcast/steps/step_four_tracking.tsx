@@ -1,21 +1,20 @@
-import { useComposeBroadcastContext } from "@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx"
-import { WarningCircleIcon } from "@/pages/components/icons/warning-circle-solid.svg.jsx"
-import { WarningTriangleSolidIcon } from "@/pages/components/icons/warning-triangle-solid.svg.jsx"
-import { RadioGroupCardItem } from "@/pages/components/radio-group/radio-group-card-item.jsx"
-import * as Alert from "@kibamail/owly/alert"
-import { Button } from "@kibamail/owly/button"
-import { Heading } from "@kibamail/owly/heading"
-import { Text } from "@kibamail/owly/text"
-import React from "react"
-import { usePageContext } from "vike-react/usePageContext"
+import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { WarningCircleIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
+import { WarningTriangleSolidIcon } from '@/pages/components/icons/warning-triangle-solid.svg.jsx'
+import { RadioGroupCardItem } from '@/pages/components/radio-group/radio-group-card-item.jsx'
+import * as Alert from '@kibamail/owly/alert'
+import { Button } from '@kibamail/owly/button'
+import { Heading } from '@kibamail/owly/heading'
+import { Text } from '@kibamail/owly/text'
+import React from 'react'
+import { usePageContext } from 'vike-react/usePageContext'
 
 export function StepFourTracking() {
   const ctx = usePageContext()
-  const { formState, setFormState } =
-    useComposeBroadcastContext("StepFourTracking")
+  const { formState, setFormState } = useComposeBroadcastContext('StepFourTracking')
 
   const engageSendingDomain = ctx.sendingDomains.find(
-    (domain) => domain.product === "engage"
+    (domain) => domain.product === 'engage',
   )
 
   const trackingDomainVerified = !!engageSendingDomain?.trackingDomainVerifiedAt
@@ -38,9 +37,8 @@ export function StepFourTracking() {
               Configure a sending domain
             </Alert.Title>
             <Text>
-              To enable tracking, please set up a sending domain. This process
-              will also guide you on how to set up a unique tracking domain for
-              your brand.
+              To enable tracking, please set up a sending domain. This process will also
+              guide you on how to set up a unique tracking domain for your brand.
             </Text>
             <Button variant="tertiary" className="pl-0 underline">
               Configure domain
@@ -72,12 +70,10 @@ export function StepFourTracking() {
             </Alert.Icon>
             <Alert.Title className="text-left flex flex-col gap-1">
               <span>
-                To track opens, we'll insert a tracking pixel at the end of your
-                email.
+                To track opens, we'll insert a tracking pixel at the end of your email.
               </span>
               <span>
-                This may produce inaccurate results based on the inbox of your
-                contacts.
+                This may produce inaccurate results based on the inbox of your contacts.
               </span>
             </Alert.Title>
           </Alert.Root>
@@ -104,9 +100,8 @@ export function StepFourTracking() {
             </Alert.Icon>
             <Alert.Title className="text-left flex flex-col">
               <span>
-                To track clicks, we'll replace every link in your email to track
-                clicks, and immediately redirect users to the intended
-                destination.{" "}
+                To track clicks, we'll replace every link in your email to track clicks,
+                and immediately redirect users to the intended destination.{' '}
               </span>
             </Alert.Title>
           </Alert.Root>

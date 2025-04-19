@@ -1,24 +1,22 @@
-import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
-import { and, eq } from "drizzle-orm"
+import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { and, eq } from 'drizzle-orm'
 
-import type { CreateAudienceDto } from "@/audiences/dto/audiences/create_audience_dto.js"
+import type { CreateAudienceDto } from '@/audiences/dto/audiences/create_audience_dto.js'
 
-import type { DrizzleClient } from "@/database/client.js"
+import type { DrizzleClient } from '@/database/client.js'
 import {
   Audience,
   type UpdateSetAudienceInput,
-} from "@/database/database_schema_types.js"
-import { type KnownAudienceProperty, audiences } from "@/database/schema.js"
+} from '@/database/database_schema_types.js'
+import { type KnownAudienceProperty, audiences } from '@/database/schema.js'
 
-import { ContainerKey } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
+import { ContainerKey } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
 export class AudienceRepository extends BaseRepository {
-  constructor(
-    protected database: DrizzleClient = container.make(ContainerKey.database)
-  ) {
+  constructor(protected database: DrizzleClient = container.make(ContainerKey.database)) {
     super()
   }
 
@@ -80,18 +78,12 @@ export class AudienceRepository extends BaseRepository {
   }
 
   async update(payload: UpdateSetAudienceInput, audienceId: string) {
-    await this.database
-      .update(audiences)
-      .set(payload)
-      .where(eq(audiences.id, audienceId))
+    await this.database.update(audiences).set(payload).where(eq(audiences.id, audienceId))
 
     return { id: audienceId }
   }
 
-  async updateKnownProperties(
-    audienceId: string,
-    properties: KnownAudienceProperty[]
-  ) {
+  async updateKnownProperties(audienceId: string, properties: KnownAudienceProperty[]) {
     const audience = await this.findById(audienceId)
 
     if (!audience) {
@@ -114,15 +106,15 @@ export class AudienceRepository extends BaseRepository {
     }
 
     const propertiesToBeCreated = properties.filter(
-      (property) => !existingProperties[property.id]
+      (property) => !existingProperties[property.id],
     )
 
     const propertiesToBeUpdated = properties.filter(
-      (property) => existingProperties[property.id]
+      (property) => existingProperties[property.id],
     )
 
     const propertiesUnchanged = audience.knownProperties?.filter(
-      (property) => !incomingProperties[property.id]
+      (property) => !incomingProperties[property.id],
     )
 
     await this.database

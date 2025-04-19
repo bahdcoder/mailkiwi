@@ -1,16 +1,13 @@
-import { eq } from "drizzle-orm"
+import { eq } from 'drizzle-orm'
 
-import type { DrizzleClient } from "@/database/client.js"
-import {
-  type AutomationStepConfiguration,
-  automationSteps,
-} from "@/database/schema.js"
+import type { DrizzleClient } from '@/database/client.js'
+import { type AutomationStepConfiguration, automationSteps } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { BaseRepository } from "@/shared/repositories/base_repository.js"
-import type { CreateAutomationStepDto } from "@/automations/dto/create_automation_step_dto.js"
-import type { UpdateAutomationStepDto } from "@/automations/dto/update_automation_step_dto.js"
-import { AutomationStep } from "@/database/database_schema_types.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
+import type { UpdateAutomationStepDto } from '@/automations/dto/update_automation_step_dto.js'
+import { AutomationStep } from '@/database/database_schema_types.js'
 
 export class AutomationStepRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -31,8 +28,7 @@ export class AutomationStepRepository extends BaseRepository {
         id,
         ...payload,
         automationId,
-        configuration:
-          payload.configuration || ({} as AutomationStepConfiguration),
+        configuration: payload.configuration || ({} as AutomationStepConfiguration),
       })
 
       await trx
@@ -56,7 +52,7 @@ export class AutomationStepRepository extends BaseRepository {
   async createIfElseStep(
     automationId: string,
     payload: CreateAutomationStepDto,
-    targetId: string
+    targetId: string,
   ) {
     // Generate IDs for all the steps we'll create
     const ifElseStepId = this.cuid()
@@ -69,15 +65,15 @@ export class AutomationStepRepository extends BaseRepository {
       await trx.insert(automationSteps).values({
         id: ifElseStepId,
         automationId,
-        type: "RULE",
-        subtype: "RULE_IF_ELSE",
+        type: 'RULE',
+        subtype: 'RULE_IF_ELSE',
         parentId: payload.parentId,
         configuration: payload.configuration || {
           filterGroups: JSON.stringify({
-            type: "AND",
+            type: 'AND',
             groups: [
               {
-                type: "AND",
+                type: 'AND',
                 conditions: [],
               },
             ],
@@ -89,8 +85,8 @@ export class AutomationStepRepository extends BaseRepository {
       await trx.insert(automationSteps).values({
         id: yesBranchStepId,
         automationId,
-        type: "ACTION",
-        subtype: "ACTION_EMPTY", // Default action type, can be changed by user later
+        type: 'ACTION',
+        subtype: 'ACTION_EMPTY', // Default action type, can be changed by user later
         parentId: ifElseStepId,
         branchIndex: 1, // yes branch
         configuration: {} as AutomationStepConfiguration,
@@ -106,8 +102,8 @@ export class AutomationStepRepository extends BaseRepository {
       await trx.insert(automationSteps).values({
         id: noBranchStepId,
         automationId,
-        type: "ACTION",
-        subtype: "ACTION_SEND_EMAIL", // Default action type, can be changed by user later
+        type: 'ACTION',
+        subtype: 'ACTION_SEND_EMAIL', // Default action type, can be changed by user later
         parentId: ifElseStepId,
         branchIndex: 0, // no branch
         configuration: {} as AutomationStepConfiguration,
@@ -117,8 +113,8 @@ export class AutomationStepRepository extends BaseRepository {
       await trx.insert(automationSteps).values({
         id: noEndStepId,
         automationId,
-        type: "END",
-        subtype: "END",
+        type: 'END',
+        subtype: 'END',
         parentId: noBranchStepId,
         configuration: {} as AutomationStepConfiguration,
       })
@@ -169,10 +165,7 @@ export class AutomationStepRepository extends BaseRepository {
    * @param data - The new configuration data
    * @returns The updated step ID
    */
-  async updateConfiguration(
-    automationStepId: string,
-    data: UpdateAutomationStepDto
-  ) {
+  async updateConfiguration(automationStepId: string, data: UpdateAutomationStepDto) {
     await this.database.transaction(async (trx) => {
       await trx
         .update(automationSteps)

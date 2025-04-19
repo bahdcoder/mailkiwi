@@ -1,19 +1,19 @@
-import type { ContentPickerOptions } from "@/pages/components/composer/types/content-types.js"
-import { BlockQuoteIcon } from "@/pages/components/icons/blockquote.svg.jsx"
-import { CheckIcon } from "@/pages/components/icons/check.svg.jsx"
-import { CodeBlockIcon } from "@/pages/components/icons/codeblock.svg.jsx"
-import { HeadingOneIcon } from "@/pages/components/icons/heading-one.svg.jsx"
-import { HeadingThreeIcon } from "@/pages/components/icons/heading-three.svg.jsx"
-import { HeadingTwoIcon } from "@/pages/components/icons/heading-two.svg.jsx"
-import { NavArrowDownIcon } from "@/pages/components/icons/nav-arrow-down.svg.jsx"
-import { NumberedListIcon } from "@/pages/components/icons/numbered-list.svg.jsx"
-import { TextIcon } from "@/pages/components/icons/text.svg.jsx"
-import { UnorderedListIcon } from "@/pages/components/icons/unordered-list.svg.jsx"
-import { Text } from "@kibamail/owly/text"
-import * as Dropdown from "@radix-ui/react-dropdown-menu"
-import type { Editor } from "@tiptap/core"
-import { useEditorState } from "@tiptap/react"
-import React from "react"
+import type { ContentPickerOptions } from '@/pages/components/composer/types/content-types.js'
+import { BlockQuoteIcon } from '@/pages/components/icons/blockquote.svg.jsx'
+import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
+import { CodeBlockIcon } from '@/pages/components/icons/codeblock.svg.jsx'
+import { HeadingOneIcon } from '@/pages/components/icons/heading-one.svg.jsx'
+import { HeadingThreeIcon } from '@/pages/components/icons/heading-three.svg.jsx'
+import { HeadingTwoIcon } from '@/pages/components/icons/heading-two.svg.jsx'
+import { NavArrowDownIcon } from '@/pages/components/icons/nav-arrow-down.svg.jsx'
+import { NumberedListIcon } from '@/pages/components/icons/numbered-list.svg.jsx'
+import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
+import { UnorderedListIcon } from '@/pages/components/icons/unordered-list.svg.jsx'
+import { Text } from '@kibamail/owly/text'
+import * as Dropdown from '@radix-ui/react-dropdown-menu'
+import type { Editor } from '@tiptap/core'
+import { useEditorState } from '@tiptap/react'
+import React from 'react'
 
 export interface ContentTypeSelectorProps {
   editor: Editor
@@ -23,9 +23,8 @@ export function ContentTypeSelector({ editor }: ContentTypeSelectorProps) {
   const options = useTextmenuContentTypes(editor)
 
   const activeItem = React.useMemo(
-    () =>
-      options.find((option) => option.type === "option" && option.isActive()),
-    [options]
+    () => options.find((option) => option.type === 'option' && option.isActive()),
+    [options],
   )
 
   return (
@@ -48,7 +47,7 @@ export function ContentTypeSelector({ editor }: ContentTypeSelectorProps) {
         className="z-50 w-40 overflow-hidden border kb-border-tertiary rounded-xl p-1 shadow-[0px_16px_24px_-8px_var(--black-10)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-[var(--background-primary)] gap-1 -ml-1"
       >
         {options.map((option) => {
-          if (option.type !== "option") {
+          if (option.type !== 'option') {
             return <div className="w-full h-px bg-[var(--black-5)]" />
           }
 
@@ -81,20 +80,15 @@ function useTextmenuContentTypes(editor: Editor) {
         {
           icon: <TextIcon className="w-4 h-4" />,
           onClick: () =>
-            ctx.editor
-              .chain()
-              .focus()
-              .liftListItem("listItem")
-              .setParagraph()
-              .run(),
-          id: "paragraph",
+            ctx.editor.chain().focus().liftListItem('listItem').setParagraph().run(),
+          id: 'paragraph',
           disabled: () => !ctx.editor.can().setParagraph(),
           isActive: () =>
-            ctx.editor.isActive("paragraph") &&
-            !ctx.editor.isActive("orderedList") &&
-            !ctx.editor.isActive("bulletList"),
-          label: "Paragraph",
-          type: "option",
+            ctx.editor.isActive('paragraph') &&
+            !ctx.editor.isActive('orderedList') &&
+            !ctx.editor.isActive('bulletList'),
+          label: 'Paragraph',
+          type: 'option',
         },
         {
           icon: <HeadingOneIcon className="w-4 h-4" />,
@@ -102,14 +96,14 @@ function useTextmenuContentTypes(editor: Editor) {
             ctx.editor
               .chain()
               .focus()
-              .liftListItem("listItem")
+              .liftListItem('listItem')
               .setHeading({ level: 1 })
               .run(),
-          id: "heading1",
+          id: 'heading1',
           disabled: () => !ctx.editor.can().setHeading({ level: 1 }),
-          isActive: () => ctx.editor.isActive("heading", { level: 1 }),
-          label: "Heading 1",
-          type: "option",
+          isActive: () => ctx.editor.isActive('heading', { level: 1 }),
+          label: 'Heading 1',
+          type: 'option',
         },
         {
           icon: <HeadingTwoIcon className="w-4 h-4" />,
@@ -117,14 +111,14 @@ function useTextmenuContentTypes(editor: Editor) {
             ctx.editor
               .chain()
               .focus()
-              .liftListItem("listItem")
+              .liftListItem('listItem')
               .setHeading({ level: 2 })
               .run(),
-          id: "heading2",
+          id: 'heading2',
           disabled: () => !ctx.editor.can().setHeading({ level: 2 }),
-          isActive: () => ctx.editor.isActive("heading", { level: 2 }),
-          label: "Heading 2",
-          type: "option",
+          isActive: () => ctx.editor.isActive('heading', { level: 2 }),
+          label: 'Heading 2',
+          type: 'option',
         },
         {
           icon: <HeadingThreeIcon className="w-4 h-4" />,
@@ -132,14 +126,14 @@ function useTextmenuContentTypes(editor: Editor) {
             ctx.editor
               .chain()
               .focus()
-              .liftListItem("listItem")
+              .liftListItem('listItem')
               .setHeading({ level: 3 })
               .run(),
-          id: "heading3",
+          id: 'heading3',
           disabled: () => !ctx.editor.can().setHeading({ level: 3 }),
-          isActive: () => ctx.editor.isActive("heading", { level: 3 }),
-          label: "Heading 3",
-          type: "option",
+          isActive: () => ctx.editor.isActive('heading', { level: 3 }),
+          label: 'Heading 3',
+          type: 'option',
         },
         // Lists feature disabled for now
         // {

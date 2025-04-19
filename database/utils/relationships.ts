@@ -22,8 +22,11 @@ export function hasMany<
 >(db: DrizzleClient, config: RelationshipConfig<T, R, RName>) {
   return async (
     $modifyQuery?: (
+      // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
       query: MySqlSelect<T['_']['name'], Record<string, any>>,
+      // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
     ) => MySqlSelect<T['_']['name'], Record<string, any>>,
+    // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
     $modifyRelationshipResults?: (row: any, results: any) => any,
   ): Promise<
     (T['$inferSelect'] & {
@@ -79,7 +82,9 @@ export function hasOne<
   const toTableName = getTableName(config.to)
   return async (
     $modifyQuery?: (
+      // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
       query: MySqlSelect<T['_']['name'], Record<string, any>>,
+      // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
     ) => MySqlSelect<T['_']['name'], Record<string, any>>,
   ): Promise<(T['$inferSelect'] & { [K in RName]: R['$inferSelect'] | null })[]> => {
     const { from, to, foreignKey, primaryKey, relationName } = config
@@ -94,6 +99,7 @@ export function hasOne<
     return results.map((row) => ({
       ...row[fromTableName],
       [relationName]: row[toTableName] || null,
+      // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
     })) as any
   }
 }
@@ -119,7 +125,9 @@ export function belongsTo<
   const toTableName = getTableName(config.to)
   return async (
     $modifyQuery?: (
+      // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
       query: MySqlSelect<T['_']['name'], Record<string, any>>,
+      // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
     ) => MySqlSelect<T['_']['name'], Record<string, any>>,
   ): Promise<(InferSelectModel<T> & { [K in RName]: InferSelectModel<R> | null })[]> => {
     const { from, to, foreignKey, primaryKey, relationName } = config
@@ -134,6 +142,7 @@ export function belongsTo<
     return results.map((row) => ({
       ...row[fromTableName],
       [relationName]: row[toTableName] || null,
+      // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
     })) as any
   }
 }

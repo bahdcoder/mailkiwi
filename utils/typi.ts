@@ -1,9 +1,7 @@
 // A more flexible constructor type that can handle any parameters
 
 // biome-ignore lint/suspicious/noExplicitAny: We need to use any here to support existing code
-type Constructor<T = unknown, Args extends any[] = any[]> = new (
-  ...args: Args
-) => T
+type Constructor<T = unknown, Args extends any[] = any[]> = new (...args: Args) => T
 
 export class Container {
   private instances: Map<string | Constructor, unknown> = new Map()
@@ -24,7 +22,7 @@ export class Container {
       return this.fakes.get(key) as T
     }
 
-    if (typeof key === "string") {
+    if (typeof key === 'string') {
       if (!this.instances.has(key)) {
         throw new Error(`No instance registered for key: ${key}`)
       }
@@ -53,7 +51,7 @@ export class Container {
     let instance: T
     if (value) {
       instance = value
-    } else if (typeof key === "string") {
+    } else if (typeof key === 'string') {
       instance = this.make(key)
     } else {
       instance = new key(...args)

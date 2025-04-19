@@ -1,8 +1,8 @@
-import React from "react"
+import React from 'react'
 
 export const BookStackIcon = React.forwardRef<
-  React.ElementRef<"svg">,
-  React.ComponentPropsWithoutRef<"svg">
+  React.ElementRef<'svg'>,
+  React.ComponentPropsWithoutRef<'svg'>
 >((props, forwardedRef) => {
   return (
     <svg
@@ -25,12 +25,7 @@ export const BookStackIcon = React.forwardRef<
         strokeWidth="1.5"
         strokeLinecap="round"
       />
-      <path
-        d="M9 7L15 7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <path d="M9 7L15 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path
         d="M6.5 15L19 15"
         stroke="currentColor"
