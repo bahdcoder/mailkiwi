@@ -1,17 +1,17 @@
-name: kibamail
+name: client tests
 
 on:
   pull_request:
     branches: [ main ]
 
 jobs:
-  build:
-    name: build and test
+  client-tests:
+    name: client tests
     runs-on: ubuntu-latest
 
     steps:
       - name: checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: setup node.js
         uses: actions/setup-node@v4
@@ -41,26 +41,5 @@ jobs:
       - name: install dependencies
         run: pnpm install
 
-      - name: start docker services
-        run: |
-          make dev
-          sleep 10
-
-      - name: run type checking
-        run: pnpm types:check
-
-      - name: run linting
-        run: pnpm lint
-
-      - name: run format checking
-        run: pnpm format:check
-
-      - name: run server tests with coverage
-        run: |
-          pnpm test:server:coverage
- 
       - name: run client tests
         run: pnpm test:client
-
-      - name: build project
-        run: pnpm build:quick
