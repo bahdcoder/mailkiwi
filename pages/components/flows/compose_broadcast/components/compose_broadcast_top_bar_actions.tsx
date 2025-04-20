@@ -33,6 +33,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import type { BroadcastPageProps } from '@/pages/types/broadcast-page-props.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
+import type { Broadcast } from '@/database/database_schema_types.js'
 
 dayjs.extend(advancedFormat)
 
@@ -153,7 +154,9 @@ export function PreviewStepActions() {
   const { getBroadcastRecipientsCount, formState, setFormState } =
     useComposeBroadcastContext('PreviewStepActions')
 
-  const { broadcast } = ctx.pageProps as BroadcastPageProps
+  const { broadcast } = ctx.pageProps as {
+    broadcast: Broadcast
+  }
 
   function setScheduleAt(scheduledAt: ScheduleDateTime) {
     setFormState((current) => ({ ...current, scheduledAt }))
@@ -199,8 +202,8 @@ export function PreviewStepActions() {
       }
     },
   })
-  // biome-ignore lint/suspicious/noExplicitAny: We need to access the status property
-  const isQueuedForSending = (broadcast as any)?.status === 'QUEUED_FOR_SENDING'
+
+  const isQueuedForSending = broadcast?.status === 'QUEUED_FOR_SENDING'
 
   return (
     <div className="flex items-center gap-4">

@@ -17,6 +17,8 @@ import { cuid } from '@/shared/utils/cuid/cuid.js'
 import { fromQueryResultToPrimaryKey } from '@/shared/utils/database/primary_keys.js'
 
 import { container } from '@/utils/typi.js'
+import type { MailerDriverResponse } from '@/shared/mailers/mailer_types.js'
+import type { SentMessageInfo, Transporter } from 'nodemailer'
 
 describe('Run automation step for contact job', () => {
   test('automation step action: send email for a contact', async ({ expect }) => {
@@ -31,16 +33,16 @@ describe('Run automation step for contact job', () => {
 
     const messageId = cuid()
 
-    // biome-ignore lint/suspicious/noExplicitAny: Test mock function
-    const fakeSendFn = vi.fn(() => [{ messageId }] as any)
+    const fakeSendFn = vi.fn(
+      async () => [{ messageId }] as unknown as [MailerDriverResponse, Error | null],
+    )
 
     class FakeMailer extends MailBuilder {
       send = fakeSendFn
     }
 
     vi.spyOn(Mailer, 'from').mockImplementation(() => {
-      // biome-ignore lint/suspicious/noExplicitAny: Test mock function
-      return new FakeMailer({} as any) as any
+      return new FakeMailer({} as unknown as Transporter<SentMessageInfo>)
     })
 
     const contactId = cuid()

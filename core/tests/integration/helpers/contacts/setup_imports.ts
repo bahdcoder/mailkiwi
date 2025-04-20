@@ -56,8 +56,7 @@ export const setupImport = async (fileName: string, updateSettings = false) => {
     getObjectStream: vi.fn(async () => Readable.from(contactsCsv)),
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: Test mock
-  container.fake(S3Disk, FakeS3Client as any)
+  container.fake(S3Disk, FakeS3Client as unknown as S3Disk)
 
   const contactsCsvBlob = new Blob([contactsCsv], {
     type: 'text/csv',

@@ -99,8 +99,9 @@ export function hasOne<
     return results.map((row) => ({
       ...row[fromTableName],
       [relationName]: row[toTableName] || null,
-      // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
-    })) as any
+    })) as unknown as Promise<
+      (T['$inferSelect'] & { [K in RName]: R['$inferSelect'] | null })[]
+    >
   }
 }
 
@@ -142,7 +143,8 @@ export function belongsTo<
     return results.map((row) => ({
       ...row[fromTableName],
       [relationName]: row[toTableName] || null,
-      // biome-ignore lint/suspicious/noExplicitAny: Using any here to match the MySQL driver types
-    })) as any
+    })) as unknown as (InferSelectModel<T> & {
+      [K in RName]: InferSelectModel<R> | null
+    })[]
   }
 }

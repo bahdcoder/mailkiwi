@@ -1,7 +1,9 @@
 // A more flexible constructor type that can handle any parameters
 
 // biome-ignore lint/suspicious/noExplicitAny: We need to use any here to support existing code
-type Constructor<T = unknown, Args extends any[] = any[]> = new (...args: Args) => T
+export type Constructor<T = unknown, Args extends any[] = any[]> = new (
+  ...args: Args
+) => T
 
 export class Container {
   private instances: Map<string | Constructor, unknown> = new Map()

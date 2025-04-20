@@ -136,8 +136,7 @@ describe('@contacts exports job', () => {
 
     const minio = new FakeMinioClient()
 
-    // biome-ignore lint/suspicious/noExplicitAny: Test mock
-    container.fake(MinioClient, minio as any)
+    container.fake(MinioClient, minio as unknown as MinioClient)
 
     await container.make(ExportContactsJob).handle({
       payload: {

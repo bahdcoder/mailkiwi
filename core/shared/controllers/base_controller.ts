@@ -35,7 +35,7 @@ import { Session } from '@/shared/sessions/sessions.js'
 import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 
 import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
-import { container } from '@/utils/typi.js'
+import { type Constructor, container } from '@/utils/typi.js'
 
 type ControllerParams =
   | 'importId'
@@ -329,8 +329,13 @@ export class BaseController extends FlashController {
       automationId: AutomationRepository,
     } as const
 
-    // biome-ignore lint/suspicious/noExplicitAny: Dynamic repository resolution requires any
-    const repository = container.make(repositories[param] as any) as any
+    type GenericRepository = {
+      findById: (id: string) => Promise<{ teamId: string; id: string }>
+    }
+
+    const repository = container.make(
+      repositories[param] as unknown as Constructor<GenericRepository>,
+    )
 
     const entity = await repository.findById(this.getParameter(ctx, param))
 

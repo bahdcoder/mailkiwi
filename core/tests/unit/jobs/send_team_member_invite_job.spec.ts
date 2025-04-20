@@ -31,8 +31,8 @@ describe('Send team member invite', () => {
         },
       }))
 
-    // biome-ignore lint/suspicious/noExplicitAny: Test mock function
-    Mailer.transport.sendMail = mockSendMail as any
+    Mailer.transport.sendMail =
+      mockSendMail as unknown as typeof Mailer.transport.sendMail
 
     await new SendTeamMemberInviteJob().handle({
       database,

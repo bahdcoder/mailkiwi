@@ -30,7 +30,6 @@ export function StepTwoRecipients() {
     (segment: Segment) => segment.id === formState.segmentId,
   )
 
-  // Convert the conditions to FilterCondition type
   const filters =
     (selectedSegment?.filterGroups?.groups?.flatMap(
       (group: {
@@ -41,10 +40,8 @@ export function StepTwoRecipients() {
         }>
       }) =>
         group.conditions.map((condition) => ({
-          // biome-ignore lint/suspicious/noExplicitAny: We need to convert the field type
-          field: condition.field as any,
-          // biome-ignore lint/suspicious/noExplicitAny: We need to convert the operation type
-          operation: condition.operator as any,
+          field: condition.field,
+          operation: condition.operator,
           value: condition.value,
         })),
     ) as FilterCondition[]) || []

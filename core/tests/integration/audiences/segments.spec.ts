@@ -11,7 +11,13 @@ import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
 import { createUser } from '@/tests/mocks/auth/users.js'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
 
-import { contactProperties, contacts, segments, tags } from '@/database/schema.js'
+import {
+  type ContactFilterCondition,
+  contactProperties,
+  contacts,
+  segments,
+  tags,
+} from '@/database/schema.js'
 
 import { makeDatabase } from '@/shared/container/index.js'
 import { cuid } from '@/shared/utils/cuid/cuid.js'
@@ -583,7 +589,7 @@ describe('@audience segments', () => {
             type: 'AND',
             conditions: [
               {
-                field: 'properties.age' as any,
+                field: 'properties.age' as unknown as ContactFilterCondition['field'],
                 operation: 'gte',
                 value: '25',
               },
