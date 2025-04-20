@@ -12,9 +12,6 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: setup node.js
         uses: actions/setup-node@v4
