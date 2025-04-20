@@ -1,43 +1,43 @@
-import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
-import { Readable } from 'node:stream'
-import { appEnv } from '@/app/env/app_env.js'
-import { S3Disk } from '@/minio/s3_client.js'
-import { S3Client } from '@aws-sdk/client-s3'
-import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
-import { describe, test, vi } from 'vitest'
+import { readFile } from "node:fs/promises"
+import { resolve } from "node:path"
+import { Readable } from "node:stream"
+import { appEnv } from "@/app/env/app_env.js"
+import { S3Disk } from "@/minio/s3_client.js"
+import { S3Client } from "@aws-sdk/client-s3"
+import { faker } from "@faker-js/faker"
+import { eq } from "drizzle-orm"
+import { describe, test, vi } from "vitest"
 
-import { CreateTagAction } from '@/audiences/actions/tags/create_tag_action.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { CreateTagAction } from "@/audiences/actions/tags/create_tag_action.js"
+import { AudienceRepository } from "@/audiences/repositories/audience_repository.js"
+import { ContactImportRepository } from "@/audiences/repositories/contact_import_repository.js"
+import { ContactRepository } from "@/audiences/repositories/contact_repository.js"
 
-import { createUser } from '@/tests/mocks/auth/users.js'
+import { createUser } from "@/tests/mocks/auth/users.js"
 import {
   getCookieSessionForUser,
   makeRequest,
   makeRequestAsUser,
-} from '@/tests/utils/http.js'
+} from "@/tests/utils/http.js"
 
-import type { ContactImport } from '@/database/database_schema_types.js'
+import type { ContactImport } from "@/database/database_schema_types.js"
 import {
   audiences,
   contactImports,
   emailSendEvents,
   emailSends,
-} from '@/database/schema.js'
+} from "@/database/schema.js"
 
-import { makeApp, makeDatabase } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeApp, makeDatabase } from "@/shared/container/index.js"
+import { Queue } from "@/shared/queue/queue.js"
+import { cuid } from "@/shared/utils/cuid/cuid.js"
 
-import { container } from '@/utils/typi.js'
-import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
-import { setupImport } from '@/tests/integration/helpers/contacts/setup_imports.js'
+import { container } from "@/utils/typi.js"
+import { setupDomainForDnsChecks } from "@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js"
+import { setupImport } from "@/tests/integration/helpers/contacts/setup_imports.js"
 
-describe('@contacts', () => {
-  test('can create a contact for an audience', async ({ expect }) => {
+describe("@contacts", () => {
+  test("can create a contact for an audience", async ({ expect }) => {
     const { user, audience } = await createUser({
       createKnownProperties: false,
     })
@@ -47,14 +47,14 @@ describe('@contacts', () => {
       .set({
         knownProperties: [
           {
-            id: 'totalPurchasesMade',
-            label: 'Total purchases made',
-            type: 'float',
+            id: "totalPurchasesMade",
+            label: "Total purchases made",
+            type: "float",
           },
           {
-            id: 'lastLoginAt',
-            label: 'Last logged in at',
-            type: 'date',
+            id: "lastLoginAt",
+            label: "Last logged in at",
+            type: "date",
           },
         ],
       })
@@ -72,7 +72,7 @@ describe('@contacts', () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/contacts`,
       body: contactPayload,
     })
@@ -86,21 +86,23 @@ describe('@contacts', () => {
     expect(savedContact).toBeDefined()
     expect(savedContact.properties).toHaveLength(2)
 
-    const updatedAudience = await container.make(AudienceRepository).findById(audience.id)
+    const updatedAudience = await container
+      .make(AudienceRepository)
+      .findById(audience.id)
 
     const lastLoginAtProperty = savedContact.properties.find(
-      (property) => property.name === 'lastLoginAt',
+      (property) => property.name === "lastLoginAt"
     )
 
     const totalPurchasesMadeProperty = savedContact.properties.find(
-      (property) => property.name === 'totalPurchasesMade',
+      (property) => property.name === "totalPurchasesMade"
     )
 
     expect(lastLoginAtProperty?.date?.toISOString()).toBeDefined()
     expect(totalPurchasesMadeProperty?.float).toEqual(53)
   })
 
-  test('cannot create a contact with invalid data', async ({ expect }) => {
+  test("cannot create a contact with invalid data", async ({ expect }) => {
     const { user, audience } = await createUser()
 
     const contactPayload = {
@@ -108,7 +110,7 @@ describe('@contacts', () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/contacts`,
       body: contactPayload,
     })
@@ -116,12 +118,14 @@ describe('@contacts', () => {
     const json = await response.json()
 
     expect(response.status).toEqual(422)
-    expect(json.payload.errors[0].field).toEqual('email')
+    expect(json.payload.errors[0].field).toEqual("email")
   })
 })
 
-describe('@contact-details', () => {
-  test('can fetch the details of a contact (including activity)', async ({ expect }) => {
+describe("@contact-details", () => {
+  test("can fetch the details of a contact (including activity)", async ({
+    expect,
+  }) => {
     const { user, audience } = await createUser()
     const { sendingDomain } = await setupDomainForDnsChecks()
 
@@ -137,7 +141,7 @@ describe('@contact-details', () => {
     }
 
     const createContactResponse = await makeRequestAsUser(user, {
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/contacts`,
       body: contactPayload,
     })
@@ -152,22 +156,22 @@ describe('@contact-details', () => {
     await database.insert(emailSends).values({
       recipient: contactPayload.email,
       sendingDomainId: sendingDomain.id,
-      product: 'engage',
+      product: "engage",
       id: emailSendId,
     })
 
-    for (const eventType of ['Open', 'Click', 'Click', 'Click']) {
+    for (const eventType of ["Open", "Click", "Click", "Click"]) {
       await database.insert(emailSendEvents).values({
         emailSendId,
         // biome-ignore lint/suspicious/noExplicitAny: Test mock
         type: eventType as any,
         contactId: id,
-        product: 'engage',
+        product: "engage",
       })
     }
 
     const getContactResponse = await makeRequestAsUser(user, {
-      method: 'GET',
+      method: "GET",
       path: `/audiences/${audience.id}/contacts/${id}`,
       body: contactPayload,
     })
@@ -182,23 +186,24 @@ describe('@contact-details', () => {
     })
 
     const getContactActivityResponse = await makeRequestAsUser(user, {
-      method: 'GET',
+      method: "GET",
       path: `/audiences/${audience.id}/contacts/${id}/activity`,
       body: contactPayload,
     })
 
-    const getContactActivityResponseJson = await getContactActivityResponse.json()
+    const getContactActivityResponseJson =
+      await getContactActivityResponse.json()
 
     expect(getContactActivityResponseJson.total).toBe(4)
     expect(getContactActivityResponseJson.data?.[0]).toMatchObject({
       emailSendId,
-      type: 'Open',
+      type: "Open",
     })
   })
 })
 
-describe('@contacts update', () => {
-  test('can update the first name, last name, avatar and properties of a contact', async ({
+describe("@contacts update", () => {
+  test("can update the first name, last name, avatar and properties of a contact", async ({
     expect,
   }) => {
     const { user, audience } = await createUser()
@@ -206,7 +211,7 @@ describe('@contacts update', () => {
 
     // Create a contact
     const createContactResponse = await makeRequestAsUser(user, {
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/contacts`,
       body: { email: faker.internet.email() },
     })
@@ -217,11 +222,11 @@ describe('@contacts update', () => {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       avatarUrl: faker.image.url(),
-      properties: { profession: 'frontend engineer' },
+      properties: { profession: "frontend engineer" },
     }
 
     const updateResponse = await makeRequestAsUser(user, {
-      method: 'PATCH',
+      method: "PATCH",
       path: `/audiences/${audience.id}/contacts/${contactId}`,
       body: updateData,
     })
@@ -237,10 +242,10 @@ describe('@contacts update', () => {
     expect(updatedContact.lastName).toEqual(updateData.lastName)
     expect(updatedContact.avatarUrl).toEqual(updateData.avatarUrl)
 
-    expect(updatedContact?.properties?.[0]?.text).toEqual('frontend engineer')
+    expect(updatedContact?.properties?.[0]?.text).toEqual("frontend engineer")
   })
 
-  test('can override properties', async ({ expect }) => {
+  test("can override properties", async ({ expect }) => {
     const { user, audience } = await createUser({
       createKnownProperties: false,
     })
@@ -250,16 +255,16 @@ describe('@contacts update', () => {
       .update(audiences)
       .set({
         knownProperties: [
-          { id: 'age', label: 'Age', type: 'float' },
+          { id: "age", label: "Age", type: "float" },
           {
-            id: 'hobby',
-            label: 'Your hobbies',
-            type: 'text',
+            id: "hobby",
+            label: "Your hobbies",
+            type: "text",
           },
           {
-            id: 'favoriteColor',
-            label: 'Favourite color',
-            type: 'text',
+            id: "favoriteColor",
+            label: "Favourite color",
+            type: "text",
           },
         ],
       })
@@ -267,24 +272,24 @@ describe('@contacts update', () => {
 
     // Create a contact with initial properties
     const createContactResponse = await makeRequestAsUser(user, {
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/contacts`,
       body: {
         email: faker.internet.email(),
-        properties: { hobby: 'swimming', age: 25 },
+        properties: { hobby: "swimming", age: 25 },
       },
     })
     const { id: contactId } = await createContactResponse.json()
 
     const updateData = {
       properties: {
-        hobby: 'reading',
-        favoriteColor: 'blue',
+        hobby: "reading",
+        favoriteColor: "blue",
       },
     }
 
     const updateResponse = await makeRequestAsUser(user, {
-      method: 'PATCH',
+      method: "PATCH",
       path: `/audiences/${audience.id}/contacts/${contactId}`,
       body: updateData,
     })
@@ -298,23 +303,23 @@ describe('@contacts update', () => {
       .findById(updatedContactId)
 
     const favouriteColor = updatedContact.properties.find(
-      (property) => property.name === 'favoriteColor',
+      (property) => property.name === "favoriteColor"
     )
 
     const ageProperty = updatedContact.properties.find(
-      (property) => property.name === 'age',
+      (property) => property.name === "age"
     )
 
     const hobbyProperty = updatedContact.properties.find(
-      (property) => property.name === 'hobby',
+      (property) => property.name === "hobby"
     )
 
-    expect(favouriteColor?.text).toEqual('blue')
+    expect(favouriteColor?.text).toEqual("blue")
     expect(ageProperty?.float).toEqual(25)
-    expect(hobbyProperty?.text).toEqual('reading')
+    expect(hobbyProperty?.text).toEqual("reading")
   })
 
-  test('can merge attributes without deleting existing properties', async ({
+  test("can merge attributes without deleting existing properties", async ({
     expect,
   }) => {
     const { user, audience } = await createUser()
@@ -324,16 +329,16 @@ describe('@contacts update', () => {
       .update(audiences)
       .set({
         knownProperties: [
-          { id: 'age', label: 'Age', type: 'float' },
+          { id: "age", label: "Age", type: "float" },
           {
-            id: 'hobby',
-            label: 'Your hobbies',
-            type: 'text',
+            id: "hobby",
+            label: "Your hobbies",
+            type: "text",
           },
           {
-            id: 'favoriteColor',
-            label: 'Favourite color',
-            type: 'text',
+            id: "favoriteColor",
+            label: "Favourite color",
+            type: "text",
           },
         ],
       })
@@ -341,22 +346,22 @@ describe('@contacts update', () => {
 
     // Create a contact with initial attributes
     const createContactResponse = await makeRequestAsUser(user, {
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/contacts`,
       body: {
         email: faker.internet.email(),
-        properties: { hobby: 'swimming', age: 25 },
+        properties: { hobby: "swimming", age: 25 },
       },
     })
 
     const { id: contactId } = await createContactResponse.json()
 
     const updateData = {
-      properties: { favoriteColor: 'blue' },
+      properties: { favoriteColor: "blue" },
     }
 
     const updateResponse = await makeRequestAsUser(user, {
-      method: 'PATCH',
+      method: "PATCH",
       path: `/audiences/${audience.id}/contacts/${contactId}`,
       body: updateData,
     })
@@ -369,21 +374,21 @@ describe('@contacts update', () => {
       .findById(updatedContactId)
 
     const hobbyProperty = updatedContact.properties.find(
-      (property) => property.name === 'hobby',
+      (property) => property.name === "hobby"
     )
     const ageProperty = updatedContact.properties.find(
-      (property) => property.name === 'age',
+      (property) => property.name === "age"
     )
     const favouriteColorProperty = updatedContact.properties.find(
-      (property) => property.name === 'favoriteColor',
+      (property) => property.name === "favoriteColor"
     )
 
-    expect(hobbyProperty?.text).toEqual('swimming')
+    expect(hobbyProperty?.text).toEqual("swimming")
     expect(ageProperty?.float).toEqual(25)
-    expect(favouriteColorProperty?.text).toEqual('blue')
+    expect(favouriteColorProperty?.text).toEqual("blue")
   })
 
-  test('cannot update without proper authorisation', async ({ expect }) => {
+  test("cannot update without proper authorisation", async ({ expect }) => {
     const { user, audience, team } = await createUser()
     const { user: unauthorizedUser } = await createUser()
     const database = makeDatabase()
@@ -392,11 +397,11 @@ describe('@contacts update', () => {
     const createContactResponse = await makeRequestAsUser(
       user,
       {
-        method: 'POST',
+        method: "POST",
         path: `/audiences/${audience.id}/contacts`,
         body: { email: faker.internet.email() },
       },
-      team.id,
+      team.id
     )
     const { id: contactId } = await createContactResponse.json()
 
@@ -405,7 +410,7 @@ describe('@contacts update', () => {
     }
 
     const updateResponse = await makeRequestAsUser(unauthorizedUser, {
-      method: 'PATCH',
+      method: "PATCH",
       path: `/audiences/${audience.id}/contacts/${contactId}`,
       body: updateData,
     })
@@ -414,95 +419,97 @@ describe('@contacts update', () => {
   })
 })
 
-describe('@contacts imports', () => {
-  test('can import contacts into an audience as a csv file', async ({ expect }) => {
-    const { response, imports } = await setupImport('contacts.csv')
+describe("@contacts imports", () => {
+  test("can import contacts into an audience as a csv file", async ({
+    expect,
+  }) => {
+    const { response, imports } = await setupImport("contacts.csv")
 
     expect(response.status).toBe(200)
 
     expect(imports).toHaveLength(1)
-    expect(imports[0].status).toBe('PENDING')
+    expect(imports[0].status).toBe("PENDING")
     expect(imports[0].propertiesMap).toMatchObject({
-      email: 'Email',
-      lastName: 'Last Name',
-      firstName: 'First Name',
+      email: "Email",
+      lastName: "Last Name",
+      firstName: "First Name",
       customPropertiesHeaders: [
-        'Index',
-        'Customer Id',
-        'Company',
-        'City',
-        'Country',
-        'Phone 1',
-        'Phone 2',
-        'Subscription Date',
-        'Website',
+        "Index",
+        "Customer Id",
+        "Company",
+        "City",
+        "Country",
+        "Phone 1",
+        "Phone 2",
+        "Subscription Date",
+        "Website",
       ],
     })
   })
 
-  test('can begin processing by updating processing settings and status', async ({
+  test("can begin processing by updating processing settings and status", async ({
     expect,
   }) => {
-    const { imports, user, audience } = await setupImport('contacts.csv')
+    const { imports, user, audience } = await setupImport("contacts.csv")
 
     const importId = imports?.[0]?.id
 
     const response = await makeRequestAsUser(user, {
-      method: 'PUT',
+      method: "PUT",
       path: `/audiences/${audience.id}/imports/${importId}`,
       body: {
         subscribeAllContacts: false,
         tags: [],
         tagIds: [],
         propertiesMap: {
-          firstName: 'First Name',
-          lastName: 'Last Name',
-          email: 'Email',
+          firstName: "First Name",
+          lastName: "Last Name",
+          email: "Email",
           customProperties: {
             Index: {
-              id: 'Index',
-              label: 'Index',
-              type: 'float',
+              id: "Index",
+              label: "Index",
+              type: "float",
             },
-            'Customer Id': {
-              id: 'Customer Id',
-              label: 'Customer Id',
-              type: 'text',
+            "Customer Id": {
+              id: "Customer Id",
+              label: "Customer Id",
+              type: "text",
             },
             Company: {
-              id: 'Company',
-              label: 'Company',
-              type: 'text',
+              id: "Company",
+              label: "Company",
+              type: "text",
             },
             City: {
-              id: 'City',
-              label: 'City',
-              type: 'text',
+              id: "City",
+              label: "City",
+              type: "text",
             },
             Country: {
-              id: 'Country',
-              label: 'Country',
-              type: 'text',
+              id: "Country",
+              label: "Country",
+              type: "text",
             },
-            'Phone 1': {
-              id: 'Phone 1',
-              label: 'Phone 1',
-              type: 'text',
+            "Phone 1": {
+              id: "Phone 1",
+              label: "Phone 1",
+              type: "text",
             },
-            'Phone 2': {
-              id: 'Phone 2',
-              label: 'Phone 2',
-              type: 'text',
+            "Phone 2": {
+              id: "Phone 2",
+              label: "Phone 2",
+              type: "text",
             },
-            'Subscription Date': {
-              id: 'Subscription Date',
-              label: 'Subscription Date',
-              type: 'date',
+            "Subscription Date": {
+              id: "Subscription Date",
+              label: "Subscription Date",
+              type: "date",
             },
             Website: {
-              id: 'Website',
-              label: 'Website',
-              type: 'text',
+              id: "Website",
+              label: "Website",
+              type: "text",
             },
           },
         },
@@ -511,9 +518,11 @@ describe('@contacts imports', () => {
 
     expect(response.status).toBe(200)
 
-    const contactImport = await container.make(ContactImportRepository).findById(importId)
+    const contactImport = await container
+      .make(ContactImportRepository)
+      .findById(importId)
 
-    expect(contactImport?.status).toBe('PROCESSING')
+    expect(contactImport?.status).toBe("PROCESSING")
 
     const jobs = await Queue.contacts().getJobs()
 
@@ -521,30 +530,32 @@ describe('@contacts imports', () => {
   })
 })
 
-describe('@contacts exports', () => {
-  test('can export all contacts matching provided filterGroups', async ({ expect }) => {
+describe("@contacts exports", () => {
+  test("can export all contacts matching provided filterGroups", async ({
+    expect,
+  }) => {
     const { user, audience } = await createUser()
 
     const filterGroups = {
-      type: 'OR',
+      type: "OR",
       groups: [
         {
-          type: 'AND',
+          type: "AND",
           conditions: [
             {
-              field: 'email',
-              operation: 'startsWith',
-              value: 'xx',
+              field: "email",
+              operation: "startsWith",
+              value: "xx",
             },
           ],
         },
         {
-          type: 'AND',
+          type: "AND",
           conditions: [
             {
-              field: 'firstName',
-              operation: 'contains',
-              value: 'xxx',
+              field: "firstName",
+              operation: "contains",
+              value: "xxx",
             },
           ],
         },
@@ -552,7 +563,7 @@ describe('@contacts exports', () => {
     }
 
     await makeRequestAsUser(user, {
-      method: 'POST',
+      method: "POST",
       path: `/audiences/${audience.id}/exports`,
       body: {
         filterGroups,
