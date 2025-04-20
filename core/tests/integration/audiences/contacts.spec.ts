@@ -156,11 +156,10 @@ describe('@contact-details', () => {
       id: emailSendId,
     })
 
-    for (const eventType of ['Open', 'Click', 'Click', 'Click']) {
+    for (const eventType of ['Open', 'Click', 'Click', 'Click'] as const) {
       await database.insert(emailSendEvents).values({
         emailSendId,
-        // biome-ignore lint/suspicious/noExplicitAny: Test mock
-        type: eventType as any,
+        type: eventType,
         contactId: id,
         product: 'engage',
       })
