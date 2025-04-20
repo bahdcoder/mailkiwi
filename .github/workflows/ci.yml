@@ -1,0 +1,67 @@
+name: Kibamail CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Start Docker services
+        run: |
+          docker-compose -f docker/compose.databases.yaml -f docker/compose.storage.yaml -f docker/compose.mailserver.yaml up -d
+          # Wait for services to be ready
+          sleep 10
+
+      - name: Run type checking
+        run: pnpm types:check
+
+      - name: Run linting
+        run: pnpm lint
+
+      - name: Run format checking
+        run: pnpm format:check
+
+      - name: Run server tests with coverage
+        run: |
+          pnpm test:server:coverage
+ 
+      - name: Run client tests
+        run: pnpm test:client
+
+      - name: Build project
+        run: pnpm build:quick
