@@ -1,7 +1,7 @@
-import { TableOfContents } from '../TableOfContents/TableOfContents.jsx'
 import { cn } from '@/pages/components/tiptap/utils/index.js'
 import type { Editor } from '@tiptap/react'
 import { memo, useCallback } from 'react'
+import { TableOfContents } from '../TableOfContents/TableOfContents.jsx'
 
 export const Sidebar = memo(
   ({

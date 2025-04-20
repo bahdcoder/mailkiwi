@@ -5,8 +5,8 @@ import {
 } from '@/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
 import { getDefaultStylesForNode } from '@/pages/components/composer/themes/default-theme.js'
 import { Node, type NodeViewProps } from '@tiptap/core'
-import type { Node as ProseMirrorNode } from 'prosemirror-model'
 import { ReactNodeViewRenderer } from '@tiptap/react'
+import type { Node as ProseMirrorNode } from 'prosemirror-model'
 import type { ComponentType } from 'react'
 
 declare module '@tiptap/core' {

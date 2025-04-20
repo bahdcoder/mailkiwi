@@ -1,7 +1,7 @@
-import { and, eq, gt, sql, sum } from 'drizzle-orm'
-import { creditPurchases, emailSends, audiences } from '@/database/schema.js'
+import { audiences, creditPurchases, emailSends } from '@/database/schema.js'
 import { makeDatabase } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { and, eq, gt, sql, sum } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 
 export class TeamCreditRepository extends BaseRepository {

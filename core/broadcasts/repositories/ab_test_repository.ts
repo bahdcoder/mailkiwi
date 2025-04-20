@@ -1,5 +1,5 @@
-import type { EmailContentVariant } from '../dto/update_broadcast_dto.js'
 import { eq } from 'drizzle-orm'
+import type { EmailContentVariant } from '../dto/update_broadcast_dto.js'
 
 import { EmailContentRepository } from '@/content/repositories/email_content_repository.js'
 

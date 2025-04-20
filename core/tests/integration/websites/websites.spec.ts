@@ -1,25 +1,23 @@
-import type { HTMLJsonBlock } from "@/websites/dto/update_website_page_dto.js"
-import { CheckWebsiteDomainDnsConfiguration } from "@/websites/jobs/check_website_domain_dns_configuration_job.js"
-import { WebsitePageRepository } from "@/websites/repositories/website_page_repository.js"
-import { WebsiteRepository } from "@/websites/repositories/website_repository.js"
-import { faker } from "@faker-js/faker"
-import { load as cheerioLoad } from "cheerio"
-import { readFile } from "node:fs/promises"
-import { resolve } from "node:path"
-import { describe, test } from "vitest"
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+import type { HTMLJsonBlock } from '@/websites/dto/update_website_page_dto.js'
+import { CheckWebsiteDomainDnsConfiguration } from '@/websites/jobs/check_website_domain_dns_configuration_job.js'
+import { WebsitePageRepository } from '@/websites/repositories/website_page_repository.js'
+import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { faker } from '@faker-js/faker'
+import { load as cheerioLoad } from 'cheerio'
+import { describe, test } from 'vitest'
 
-import { createUser } from "@/tests/mocks/auth/users.js"
-import { makeRequestAsUser } from "@/tests/utils/http.js"
+import { createUser } from '@/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '@/tests/utils/http.js'
 
-import { ContainerKey, makeApp } from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.js"
+import { ContainerKey, makeApp } from '@/shared/container/index.js'
+import { Queue } from '@/shared/queue/queue.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@websites", () => {
-  test("can add a custom domain to a newsletter website", async ({
-    expect,
-  }) => {
+describe('@websites', () => {
+  test('can add a custom domain to a newsletter website', async ({ expect }) => {
     const { website, user, team } = await createUser({
       createAudienceForNewsletter: true,
     })
@@ -27,7 +25,7 @@ describe("@websites", () => {
     const response = await makeRequestAsUser(
       user,
       {
-        method: "PUT",
+        method: 'PUT',
         body: {
           domain: `${`${faker.lorem.slug()}-${faker.number.int({
             min: 10,
@@ -36,22 +34,20 @@ describe("@websites", () => {
         },
         path: `/websites/${website.id}/custom_domains`,
       },
-      team.id
+      team.id,
     )
 
     expect(response.status).toEqual(200)
 
     const queueJobs = await Queue.websites().getJobs()
 
-    const jobForWebsite = queueJobs.find(
-      (job) => job.data.websiteId === website.id
-    )
+    const jobForWebsite = queueJobs.find((job) => job.data.websiteId === website.id)
 
     expect(jobForWebsite).toBeDefined()
     expect(jobForWebsite?.name).toEqual(CheckWebsiteDomainDnsConfiguration.id)
   })
 
-  test("cannot add an existing domain as custom domain to a newsletter website", async ({
+  test('cannot add an existing domain as custom domain to a newsletter website', async ({
     expect,
   }) => {
     const { website, user, team } = await createUser({
@@ -70,39 +66,39 @@ describe("@websites", () => {
     const response = await makeRequestAsUser(
       user,
       {
-        method: "PUT",
+        method: 'PUT',
         body: {
           domain: customDomain,
         },
         path: `/websites/${website.id}/custom_domains`,
       },
-      team.id
+      team.id,
     )
 
     const json = await response.json()
 
     expect(response.status).toEqual(422)
     expect(json.payload).toMatchObject({
-      message: "Validation failed.",
+      message: 'Validation failed.',
       errors: [
         {
           message:
-            "A website with this domain already exists. Please choose another domain for your newsletter website.",
-          field: "domain",
+            'A website with this domain already exists. Please choose another domain for your newsletter website.',
+          field: 'domain',
         },
       ],
     })
   })
 
-  test("can update website page content", async ({ expect }) => {
+  test('can update website page content', async ({ expect }) => {
     const { website, user, team } = await createUser()
 
     const draftWebsiteContent = {
-      type: "doc",
+      type: 'doc',
       content: [
         {
-          type: "paragraph",
-          content: [{ type: "text", text: "Hello world" }],
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Hello world' }],
         },
       ],
     }
@@ -110,13 +106,13 @@ describe("@websites", () => {
     const response = await makeRequestAsUser(
       user,
       {
-        method: "PUT",
+        method: 'PUT',
         body: {
           draftWebsiteContent,
         },
         path: `/websites/${website.id}/website_pages/${website?.pages?.[0]?.id}`,
       },
-      team.id
+      team.id,
     )
 
     expect(response.status).toEqual(200)
@@ -125,22 +121,22 @@ describe("@websites", () => {
       .make(WebsiteRepository)
       .findByIdWithPages(website.id)
 
-    expect(
-      updatedNewletterWebsite.pages?.[0]?.draftWebsiteContent
-    ).toMatchObject(draftWebsiteContent)
+    expect(updatedNewletterWebsite.pages?.[0]?.draftWebsiteContent).toMatchObject(
+      draftWebsiteContent,
+    )
   })
 
-  test("can create additional website pages", async ({ expect }) => {
+  test('can create additional website pages', async ({ expect }) => {
     const { website, user, team } = await createUser({
       createAudienceForNewsletter: true,
     })
 
     const draftWebsiteContent = {
-      type: "doc",
+      type: 'doc',
       content: [
         {
-          type: "paragraph",
-          content: [{ type: "text", text: "Hello world" }],
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Hello world' }],
         },
       ],
     }
@@ -155,11 +151,11 @@ describe("@websites", () => {
     const response = await makeRequestAsUser(
       user,
       {
-        method: "POST",
+        method: 'POST',
         body: payload,
         path: `/websites/${website.id}/website_pages/`,
       },
-      team.id
+      team.id,
     )
 
     expect(response.status).toEqual(200)
@@ -179,18 +175,16 @@ describe("@websites", () => {
     }).toMatchObject({ ...payload })
   })
 
-  test("can publish website pages", async ({ expect }) => {
+  test('can publish website pages', async ({ expect }) => {
     const { website, user, team } = await createUser()
 
     const draftWebsiteContent = {
-      type: "doc" as const,
+      type: 'doc' as const,
       attrs: {},
       content: [
         {
-          type: "paragraph" as const,
-          content: [
-            { type: "text", text: "Hello world", attrs: {}, content: [] },
-          ],
+          type: 'paragraph' as const,
+          content: [{ type: 'text', text: 'Hello world', attrs: {}, content: [] }],
           attrs: {},
         },
       ] as HTMLJsonBlock[],
@@ -210,11 +204,11 @@ describe("@websites", () => {
     const response = await makeRequestAsUser(
       user,
       {
-        method: "PUT",
+        method: 'PUT',
         body: payload,
         path: `/websites/${website.id}/website_pages/${websitePageId}/publish`,
       },
-      team.id
+      team.id,
     )
 
     expect(response.status).toEqual(200)
@@ -226,26 +220,24 @@ describe("@websites", () => {
     const secondPage = updatedNewletterWebsite.pages?.[1]
 
     expect(secondPage.websiteContent).toMatchObject(
-      secondPage.draftWebsiteContent as HTMLJsonBlock
+      secondPage.draftWebsiteContent as HTMLJsonBlock,
     )
 
     expect(
-      updatedNewletterWebsite.pages.filter((page) => page.publishedAt !== null)
+      updatedNewletterWebsite.pages.filter((page) => page.publishedAt !== null),
     ).toHaveLength(2)
   })
 
-  test("can unpublish website pages", async ({ expect }) => {
+  test('can unpublish website pages', async ({ expect }) => {
     const { website, user, team } = await createUser()
 
     const draftWebsiteContent = {
-      type: "doc" as const,
+      type: 'doc' as const,
       attrs: {},
       content: [
         {
-          type: "paragraph" as const,
-          content: [
-            { type: "text", text: "Hello world", attrs: {}, content: [] },
-          ],
+          type: 'paragraph' as const,
+          content: [{ type: 'text', text: 'Hello world', attrs: {}, content: [] }],
           attrs: {},
         },
       ] as HTMLJsonBlock[],
@@ -260,23 +252,20 @@ describe("@websites", () => {
 
     const websitePageRepository = container.make(WebsitePageRepository)
 
-    const { id: websitePageId } = await websitePageRepository.create(
-      payload,
-      website.id
-    )
+    const { id: websitePageId } = await websitePageRepository.create(payload, website.id)
 
     await websitePageRepository.publish(
-      await websitePageRepository.findById(websitePageId)
+      await websitePageRepository.findById(websitePageId),
     )
 
     const response = await makeRequestAsUser(
       user,
       {
-        method: "PUT",
+        method: 'PUT',
         body: payload,
         path: `/websites/${website.id}/website_pages/${websitePageId}/unpublish`,
       },
-      team.id
+      team.id,
     )
 
     expect(response.status).toEqual(200)
@@ -290,27 +279,27 @@ describe("@websites", () => {
     expect(secondPage.publishedAt).toBeNull()
 
     expect(
-      updatedNewletterWebsite.pages.filter((page) => page.publishedAt !== null)
+      updatedNewletterWebsite.pages.filter((page) => page.publishedAt !== null),
     ).toHaveLength(1)
   })
 })
 
-describe("@websites-pages", () => {
-  test("can visit a newsletter website home page using website slug", async ({
+describe('@websites-pages', () => {
+  test('can visit a newsletter website home page using website slug', async ({
     expect,
   }) => {
     const websiteContent = JSON.parse(
       await readFile(
-        resolve("core/tests/integration/websites/website_content_doc.json"),
-        "utf-8"
-      )
+        resolve('core/tests/integration/websites/website_content_doc.json'),
+        'utf-8',
+      ),
     )
 
     const { website } = await createUser({
       createAudienceForNewsletter: true,
     })
 
-    const aboutPagePath = "about-me-page"
+    const aboutPagePath = 'about-me-page'
 
     const websitePageRepository = await container.make(WebsitePageRepository)
 
@@ -320,11 +309,11 @@ describe("@websites-pages", () => {
         title: faker.lorem.words(5),
         draftWebsiteContent: websiteContent,
       },
-      website.id
+      website.id,
     )
 
     await websitePageRepository.publish(
-      await websitePageRepository.findById(websitePageId)
+      await websitePageRepository.findById(websitePageId),
     )
 
     const homePage = website?.pages?.[0]
@@ -341,28 +330,28 @@ describe("@websites-pages", () => {
 
     const $ = cheerioLoad(html)
 
-    expect($(".kb-container").html()).not.toBeNull()
-    expect($(".kb-columns").html()).not.toBeNull()
-    expect($(".kb-column").html()).not.toBeNull()
-    expect($(".kb-heading").html()).not.toBeNull()
-    expect($(".kb-heading-level-1").html()).not.toBeNull()
-    expect($("span.kb-text-slice").html()).not.toBeNull()
+    expect($('.kb-container').html()).not.toBeNull()
+    expect($('.kb-columns').html()).not.toBeNull()
+    expect($('.kb-column').html()).not.toBeNull()
+    expect($('.kb-heading').html()).not.toBeNull()
+    expect($('.kb-heading-level-1').html()).not.toBeNull()
+    expect($('span.kb-text-slice').html()).not.toBeNull()
 
     const link = $('link[rel="stylesheet"]').first()
 
-    link.attr("href")
-    expect(link.attr("href")).toEqual(
-      `/assets/letters/kb-letters.css?v=${container.make(ContainerKey.version)}`
+    link.attr('href')
+    expect(link.attr('href')).toEqual(
+      `/assets/letters/kb-letters.css?v=${container.make(ContainerKey.version)}`,
     )
 
     const aboutMePageResponse = await app.request(
-      `/__websites/${website.slug}/${aboutPagePath}`
+      `/__websites/${website.slug}/${aboutPagePath}`,
     )
 
     expect(aboutMePageResponse.status).toBe(200)
 
     const aboutMePageHtml = await aboutMePageResponse.text()
 
-    expect(cheerioLoad(aboutMePageHtml)(".kb-container").html()).not.toBeNull()
+    expect(cheerioLoad(aboutMePageHtml)('.kb-container').html()).not.toBeNull()
   })
 })

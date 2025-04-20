@@ -1,6 +1,6 @@
-import { base64 } from '@poppinss/utils'
 import { randomBytes } from 'node:crypto'
 import type { Readable } from 'node:stream'
+import { base64 } from '@poppinss/utils'
 import { v1, v4 } from 'uuid'
 
 export function fromEmailToDomain(email: string) {

@@ -1,7 +1,7 @@
-import { command } from '@drizzle-team/brocli'
-import { build } from 'esbuild'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { command } from '@drizzle-team/brocli'
+import { build } from 'esbuild'
 
 export const fixTypescriptImportsCommand = command({
   name: 'fix_typescript_imports',

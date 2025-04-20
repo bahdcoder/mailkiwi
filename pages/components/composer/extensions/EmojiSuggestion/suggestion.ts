@@ -1,10 +1,10 @@
-import EmojiList from './components/EmojiList.jsx'
-import type { EmojiListProps } from './types.js'
 import type { Editor } from '@tiptap/core'
 import { ReactRenderer } from '@tiptap/react'
 import type { SuggestionKeyDownProps, SuggestionProps } from '@tiptap/suggestion'
 import type { RefAttributes } from 'react'
 import tippy, { Instance as TippyInstance } from 'tippy.js'
+import EmojiList from './components/EmojiList.jsx'
+import type { EmojiListProps } from './types.js'
 
 export const emojiSuggestion = {
   items: ({ editor, query }: { editor: Editor; query: string }) =>

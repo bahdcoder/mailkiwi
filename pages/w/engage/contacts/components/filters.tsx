@@ -155,6 +155,7 @@ const fields: FilterDefinition[] = [
 
             return (
               <button
+                type="button"
                 id={id}
                 key={segment.id}
                 onClick={() => onSegmentSelected(segment)}
@@ -346,17 +347,17 @@ function FiltersBuilder() {
     setSelectedFilter(filter.id)
   }
 
-  function clearDropdownContent() {
+  const clearDropdownContent = React.useCallback(() => {
     setTimeout(() => {
       setSelectedFilter(undefined)
     }, 250)
-  }
+  }, [])
 
   React.useEffect(() => {
     if (!filterBuilderOpen) {
       clearDropdownContent()
     }
-  }, [filterBuilderOpen])
+  }, [filterBuilderOpen, clearDropdownContent])
 
   function onOpenChange(open: boolean) {
     if (!open) {
@@ -388,7 +389,7 @@ function FiltersBuilder() {
           <>
             {[fields, activity, properties].map((group, idx) => {
               return (
-                <React.Fragment key={idx}>
+                <React.Fragment key={`filter-group-${group[0]?.name || idx}`}>
                   {group.map((field) => (
                     <Dropdown.Item
                       key={field.name}
@@ -438,7 +439,7 @@ function FiltersBuilderContainer({ onFiltersChange }: FiltersBuilderContainerPro
 
   React.useEffect(() => {
     onFiltersChange?.(validConditions)
-  }, [validConditions])
+  }, [validConditions, onFiltersChange])
 
   return (
     <FiltersBuilderProvider

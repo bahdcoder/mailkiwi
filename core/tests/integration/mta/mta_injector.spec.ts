@@ -21,7 +21,6 @@ import {
 import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
 import { getInjectEmailContent } from '@/tests/mocks/emails/email_content.js'
 import { injectEmailForTeam } from '@/tests/mocks/emails/email_content.js'
-import { setupDomainForDnsChecks } from '@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js'
 import { getApiKeyForTeam } from '@/tests/utils/http.js'
 
 import type { Audience } from '@/database/database_schema_types.js'
@@ -32,6 +31,7 @@ import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 
 import { sleep } from '@/utils/sleep.js'
 import { container } from '@/utils/typi.js'
+import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 const xForwardedFor = '66.249.93.66'
 const userAgent =
@@ -273,15 +273,16 @@ describe.sequential('@mta', () => {
 
     const json = await response.json()
 
+    // biome-ignore lint/suspicious/noExplicitAny: API response type
     const messageIds = json.messages.map((message: any) => message.messageId)
 
     await sleep(2000)
 
     const { messages: allMessages } = await getAllMailpitMessages()
 
-    const [message] = allMessages?.filter(
-      (message) => message.Subject === injectEmail.subject,
-    )
+    const [message] = allMessages
+      ? allMessages.filter((message) => message.Subject === injectEmail.subject)
+      : []
 
     const { $ } = await getMailpitMessageSource(message.ID)
 
@@ -352,9 +353,9 @@ describe.sequential('@mta', () => {
 
     const { messages: allMessages } = await getAllMailpitMessages()
 
-    const [message] = allMessages?.filter(
-      (message) => message.Subject === injectEmail.subject,
-    )
+    const [message] = allMessages
+      ? allMessages.filter((message) => message.Subject === injectEmail.subject)
+      : []
 
     const { $ } = await getMailpitMessageSource(message.ID)
 
@@ -390,9 +391,9 @@ describe.sequential('@mta', () => {
 
     const { messages: allMessages } = await getAllMailpitMessages()
 
-    const [message] = allMessages?.filter(
-      (message) => message.Subject === injectEmail.subject,
-    )
+    const [message] = allMessages
+      ? allMessages.filter((message) => message.Subject === injectEmail.subject)
+      : []
 
     const { $ } = await getMailpitMessageSource(message.ID)
 
@@ -421,13 +422,14 @@ describe.sequential('@mta', () => {
 
     const json = await injectResponse.json()
 
+    // biome-ignore lint/suspicious/noExplicitAny: API response type
     const messageIds = json.messages.map((message: any) => message.messageId)
 
     const { messages: allMessages } = await getAllMailpitMessages()
 
-    const [message] = allMessages?.filter(
-      (message) => message.Subject === injectEmail.subject,
-    )
+    const [message] = allMessages
+      ? allMessages.filter((message) => message.Subject === injectEmail.subject)
+      : []
 
     const { $ } = await getMailpitMessageSource(message.ID)
 
@@ -443,7 +445,7 @@ describe.sequential('@mta', () => {
       source.includes(sendingDomainLink),
     ) as string
 
-    const [, signature] = trackingLink?.split(sendingDomainLink)
+    const [, signature] = trackingLink ? trackingLink.split(sendingDomainLink) : []
 
     const unsigned = new SignedUrlManager(appEnv.APP_KEY).decode(signature)
 
@@ -501,9 +503,9 @@ describe.sequential('@mta', () => {
 
     const { messages: allMessages } = await getAllMailpitMessages()
 
-    const [message] = allMessages?.filter(
-      (message) => message.Subject === injectEmail.subject,
-    )
+    const [message] = allMessages
+      ? allMessages.filter((message) => message.Subject === injectEmail.subject)
+      : []
 
     const { $ } = await getMailpitMessageSource(message.ID)
 
@@ -538,9 +540,9 @@ describe.sequential('@mta', () => {
 
     const { messages: allMessages } = await getAllMailpitMessages()
 
-    const [message] = allMessages?.filter(
-      (message) => message.Subject === injectEmail.subject,
-    )
+    const [message] = allMessages
+      ? allMessages.filter((message) => message.Subject === injectEmail.subject)
+      : []
 
     const { $ } = await getMailpitMessageSource(message.ID)
 
@@ -596,11 +598,12 @@ describe.sequential('@mta', () => {
       logger: makeLogger(),
     })
 
-    expect(output?.[0]?.ok, 'The output from the MTA inject job was unsuccessful.').toBe(
-      true,
-    )
+    expect(
+      output && typeof output === 'object' && 'ok' in output,
+      'The output from the MTA inject job was unsuccessful.',
+    ).toBe(true)
 
-    const [message] = output
+    const message = output as { messageId: string; ok: boolean }
 
     await sleep(2000)
 

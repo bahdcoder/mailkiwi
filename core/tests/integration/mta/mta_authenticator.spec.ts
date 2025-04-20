@@ -3,11 +3,10 @@ import { describe, test } from 'vitest'
 
 import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.js'
 
-import { setupDomainForDnsChecks } from '@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js'
-
 import { makeApp } from '@/shared/container/index.js'
 
 import { container } from '@/utils/typi.js'
+import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 describe('@mta Http server', () => {
   test('can fetch dkim records for a domain', async ({ expect }) => {

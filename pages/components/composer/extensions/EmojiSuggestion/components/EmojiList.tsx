@@ -1,4 +1,3 @@
-import type { EmojiListProps } from '../types.js'
 import { Button } from '@/pages/components/tiptap/ui/Button/Button.jsx'
 import { Panel } from '@/pages/components/tiptap/ui/Panel/index.jsx'
 import type { EmojiItem } from '@tiptap-pro/extension-emoji'
@@ -11,6 +10,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from 'react'
+import type { EmojiListProps } from '../types.js'
 
 const EmojiList = forwardRef(
   (

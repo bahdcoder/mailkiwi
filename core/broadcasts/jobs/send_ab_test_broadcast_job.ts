@@ -1,7 +1,7 @@
+import { asc, count } from 'drizzle-orm'
 import { ContactsConcern } from '../concerns/broadcast_contacts_concern.js'
 import { PickAbTestWinnerJob } from './pick_ab_test_winner_job.js'
 import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
-import { asc, count } from 'drizzle-orm'
 
 import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 

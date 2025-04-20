@@ -13,7 +13,9 @@ import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 import { makeDatabase } from '@/shared/container/index.js'
 
 export type QueryModifierFn = (
+  // biome-ignore lint/suspicious/noExplicitAny: MySQL query types require any
   query: MySqlSelect<any, any, any>,
+  // biome-ignore lint/suspicious/noExplicitAny: MySQL query types require any
 ) => MySqlSelect<any, any, any>
 
 type CursorControls = {
@@ -21,14 +23,17 @@ type CursorControls = {
   next: string | undefined
 }
 export type CursorResultsModifierFn = (
+  // biome-ignore lint/suspicious/noExplicitAny: Generic row type
   rows: any[],
   originalCursorResults: CursorControls,
 ) => CursorControls
 
 type SelectFields = SelectedFields<AnyMySqlColumn, AnyMySqlTable>
 
+// biome-ignore lint/suspicious/noExplicitAny: Generic transformer type
 type RowTransformer<T = any> = (row: T[]) => Promise<T[]> | T[]
 
+// biome-ignore lint/suspicious/noExplicitAny: Generic paginator class
 export class Paginator<RowType extends object = any> {
   private conditions: (SQLWrapper | undefined)[] = []
   private $selectColumns: SelectFields

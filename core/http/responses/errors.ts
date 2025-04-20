@@ -3,13 +3,13 @@ import type {
   BaseIssue,
   BaseSchema,
   BaseSchemaAsync,
-  InferIssue,
-  StringIssue,
   EmailIssue,
+  InferIssue,
+  MaxLengthIssue,
+  MinLengthIssue,
   NonEmptyIssue,
   RecordIssue,
-  MinLengthIssue,
-  MaxLengthIssue,
+  StringIssue,
 } from 'valibot'
 
 type ValibotValidationError =

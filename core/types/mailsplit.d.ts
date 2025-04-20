@@ -4,6 +4,7 @@ declare module 'mailsplit' {
   export class Splitter extends Transform {}
 
   export class Rewriter extends Transform {
+    // biome-ignore lint/suspicious/noExplicitAny: Mailsplit type definitions
     constructor(filterFunc: (node: any) => boolean)
   }
 

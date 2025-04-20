@@ -27,9 +27,9 @@ import { makeApp } from '@/shared/container/index.js'
 import { BaseController } from '@/shared/controllers/base_controller.js'
 import type { HonoContext } from '@/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
 import { RenderBroadcastContentAction } from '@/broadcasts/actions/render_broadcast_content_action.js'
 import { TeamCreditRepository } from '@/teams/repositories/team_credit_repository.js'
+import { container } from '@/utils/typi.js'
 
 export class BroadcastController extends BaseController {
   constructor(
@@ -156,6 +156,7 @@ export class BroadcastController extends BaseController {
   }
 
   send = async (ctx: HonoContext) => {
+    const team = this.ensureTeam(ctx)
     this.ensureCanManage(ctx)
 
     let broadcast = await container
@@ -202,7 +203,7 @@ export class BroadcastController extends BaseController {
 
     const availableCredits = await container
       .make(TeamCreditRepository)
-      .totalAvailableCredits(ctx.team?.id)
+      .totalAvailableCredits(team.id)
 
     const broadcastRecipients = await container
       .make(BroadcastRepository)

@@ -4,8 +4,8 @@ import type { MutationOptions } from '@tanstack/react-query'
 import type React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
 import { useServerFormMutation } from '@/pages/hooks/use_server_form_mutation.jsx'
+import { route } from '@/shared/routes/route_aliases.js'
 
 export interface UseSyncComposerContentToServerProps {
   currentStep: number

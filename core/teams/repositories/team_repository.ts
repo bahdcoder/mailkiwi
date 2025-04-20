@@ -13,10 +13,10 @@ import {
 } from '@/database/schema.js'
 import { hasMany } from '@/database/utils/relationships.js'
 
+import { FREE_MONTHLY_CREDITS } from '@/app/env/app_env.js'
 import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
 import { DateTime } from 'luxon'
-import { FREE_MONTHLY_CREDITS } from '@/app/env/app_env.js'
 
 export class TeamRepository extends BaseRepository {
   constructor(

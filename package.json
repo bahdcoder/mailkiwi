@@ -22,7 +22,6 @@
     "start": "env-cmd node build/core/core/app/start/prod.js",
     "build:app": "tsc",
     "build:quick": "pnpm build:clean && pnpm build:app && pnpm build:client && pnpm cli fix_typescript_imports",
-    "mysql:seed:dev": "pnpm mysql:migrate:dev && env-cmd tsx bin/seed.ts",
     "mysql:migrate:dev": "env-cmd pnpm mysql:migrate",
     "mysql:migrate:test": "env-cmd -f .env.test pnpm mysql:migrate",
     "mysql:migrate": "pnpm drizzle-kit migrate",

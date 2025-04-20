@@ -1,5 +1,5 @@
-import { FieldSegmentBuilder } from './base_field_segment_builder.js'
 import { type SQLWrapper, and, eq, inArray, notInArray } from 'drizzle-orm'
+import { FieldSegmentBuilder } from './base_field_segment_builder.js'
 
 import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
 

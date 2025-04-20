@@ -4,6 +4,7 @@ import { useTiptapEditor } from '@/pages/components/composer/editor-state.jsx'
 import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
 import { Spinner } from '@kibamail/owly/spinner'
 import { usePageContext } from 'vike-react/usePageContext'
+import type { BroadcastPageProps } from '@/pages/types/broadcast-page-props.js'
 
 interface EditorSaveState {
   isSaving: boolean
@@ -26,7 +27,7 @@ export function StepOneComposer() {
         emailContent: { contentJson: editor.getJSON() },
       })
     },
-    content: ctx.pageProps.broadcast?.emailContent?.contentJson,
+    content: (ctx.pageProps as BroadcastPageProps)?.broadcast?.emailContent?.contentJson,
   })
 
   if (!editor) {

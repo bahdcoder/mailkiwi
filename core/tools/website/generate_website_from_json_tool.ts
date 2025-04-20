@@ -10,7 +10,11 @@ export class GenerateWebsiteFromJsonTool {
     this.$ = cheerioLoad('<body></body>')
   }
 
-  async createDomNodesAndAppendToNode(blocks: HTMLJsonBlock[], node: Cheerio<any>) {
+  async createDomNodesAndAppendToNode(
+    blocks: HTMLJsonBlock[],
+    // biome-ignore lint/suspicious/noExplicitAny: Cheerio type
+    node: Cheerio<any>,
+  ) {
     if (!blocks || !blocks.length) {
       return
     }

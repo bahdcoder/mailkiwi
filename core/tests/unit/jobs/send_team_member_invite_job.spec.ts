@@ -2,10 +2,9 @@ import { describe, test, vi } from 'vitest'
 
 import { SendTeamMemberInviteJob } from '@/teams/jobs/send_team_member_invite_job.js'
 
-import { setup as teamMembershipSetup } from '@/tests/integration/teams/team_membership.spec.js'
-
 import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
 import { Mailer } from '@/shared/mailers/mailer.js'
+import { setupTeamMemberships } from '@/tests/unit/helpers/teams/setup_team_membership.js'
 
 describe('Send team member invite', () => {
   test('sends an email with a unique hashed link for joining the team', async ({
@@ -14,7 +13,7 @@ describe('Send team member invite', () => {
     const database = makeDatabase()
     const redis = makeRedis()
 
-    const { getInvite } = await teamMembershipSetup()
+    const { getInvite } = await setupTeamMemberships()
 
     const { invite } = await getInvite()
 
@@ -32,6 +31,7 @@ describe('Send team member invite', () => {
         },
       }))
 
+    // biome-ignore lint/suspicious/noExplicitAny: Test mock function
     Mailer.transport.sendMail = mockSendMail as any
 
     await new SendTeamMemberInviteJob().handle({

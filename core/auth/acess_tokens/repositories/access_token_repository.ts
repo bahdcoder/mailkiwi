@@ -1,6 +1,6 @@
+import { randomBytes } from 'node:crypto'
 import { Secret } from '@poppinss/utils'
 import { eq } from 'drizzle-orm'
-import { randomBytes } from 'node:crypto'
 
 import type { DrizzleClient } from '@/database/client.js'
 import { accessTokens } from '@/database/schema.js'

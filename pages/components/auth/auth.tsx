@@ -1,5 +1,5 @@
-import { GithubSvgIcon } from '@/pages/components/icons/github.svg.jsx'
-import { GoogleSvgIcon } from '@/pages/components/icons/google.svg.jsx'
+import { GithubIcon } from '@/pages/components/icons/github.svg.jsx'
+import { GoogleIcon } from '@/pages/components/icons/google.svg.jsx'
 import { PasswordField } from '@/pages/components/input/password-field.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
@@ -103,7 +103,7 @@ export function Oauth2Methods({ page }: Oauth2MethodsProps) {
         asChild
       >
         <a href={content[page].google.link}>
-          <GoogleSvgIcon />
+          <GoogleIcon />
           {content[page].google.title}
         </a>
       </Button>
@@ -114,7 +114,7 @@ export function Oauth2Methods({ page }: Oauth2MethodsProps) {
         asChild
       >
         <a href={content[page].github.link}>
-          <GithubSvgIcon />
+          <GithubIcon />
           {content[page].github.title}
         </a>
       </Button>

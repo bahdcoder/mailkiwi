@@ -1,8 +1,8 @@
-import { useOnboardingContext } from './context_provider.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'
 import React from 'react'
+import { useOnboardingContext } from './context_provider.jsx'
 
 import { route } from '@/shared/routes/route_aliases.js'
 

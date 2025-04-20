@@ -33,5 +33,5 @@ export type HonoRouteDefinition = [
 ]
 
 export type HonoContext = BaseHonoContext<{
-  Bindings: { _: boolean }
+  Bindings: { _?: boolean }
 }>

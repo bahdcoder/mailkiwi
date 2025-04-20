@@ -19,6 +19,7 @@
 /**
  * Type definition for any JavaScript value
  */
+// biome-ignore lint/suspicious/noExplicitAny: Generic cloning function needs to handle any type
 type Cloneable = any
 
 /**
@@ -61,6 +62,7 @@ export function deepClone<T extends Cloneable>(
   } = options
 
   // Use a WeakMap to track objects we've already cloned to handle circular references
+  // biome-ignore lint/suspicious/noExplicitAny: WeakMap needs to store any cloned value type
   const cloneCache = new WeakMap<object, any>()
 
   /**
@@ -149,9 +151,9 @@ export function deepClone<T extends Cloneable>(
       const clonedSet = new Set()
       cloneCache.set(value as object, clonedSet)
 
-      value.forEach((val) => {
+      for (const val of value) {
         clonedSet.add(clone(val, depth + 1))
-      })
+      }
 
       return clonedSet as unknown as U
     }
@@ -163,6 +165,7 @@ export function deepClone<T extends Cloneable>(
 
     // Arrays
     if (Array.isArray(value)) {
+      // biome-ignore lint/suspicious/noExplicitAny: Array needs to store any cloned value type
       const clonedArray: any[] = []
       cloneCache.set(value as unknown as object, clonedArray)
 
@@ -200,7 +203,10 @@ export function deepClone<T extends Cloneable>(
     // Handle symbol properties
     const symbolProperties = Object.getOwnPropertySymbols(value)
     for (const sym of symbolProperties) {
-      const descriptor = Object.getOwnPropertyDescriptor(value, sym)!
+      const descriptor = Object.getOwnPropertyDescriptor(value, sym) ?? {
+        configurable: true,
+        enumerable: true,
+      }
 
       if ('value' in descriptor) {
         descriptor.value = clone(descriptor.value, depth + 1)

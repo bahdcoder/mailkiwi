@@ -31,6 +31,7 @@ describe('Run automation step for contact job', () => {
 
     const messageId = cuid()
 
+    // biome-ignore lint/suspicious/noExplicitAny: Test mock function
     const fakeSendFn = vi.fn(() => [{ messageId }] as any)
 
     class FakeMailer extends MailBuilder {
@@ -38,6 +39,7 @@ describe('Run automation step for contact job', () => {
     }
 
     vi.spyOn(Mailer, 'from').mockImplementation(() => {
+      // biome-ignore lint/suspicious/noExplicitAny: Test mock function
       return new FakeMailer({} as any) as any
     })
 

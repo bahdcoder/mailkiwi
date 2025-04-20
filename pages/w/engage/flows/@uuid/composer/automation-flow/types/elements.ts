@@ -1,5 +1,5 @@
 import type { AutomationStep } from '@/database/database_schema_types.js'
-import type { Node, Edge } from 'react-flow-renderer'
+import type { Edge, Node } from 'react-flow-renderer'
 
 export type NodeElement = Node<{
   onDeleteNodeCallback: (id: string) => void

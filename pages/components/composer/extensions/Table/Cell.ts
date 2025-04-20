@@ -1,7 +1,7 @@
-import { getCellsInColumn, isRowSelected, selectRow } from './utils.js'
 import { Node, mergeAttributes } from '@tiptap/core'
 import { Plugin } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
+import { getCellsInColumn, isRowSelected, selectRow } from './utils.js'
 
 export interface TableCellOptions {
   HTMLAttributes: Record<string, string | number | boolean>

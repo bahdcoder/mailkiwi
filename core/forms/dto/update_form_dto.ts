@@ -1,11 +1,4 @@
 import {
-  Appearance,
-  FieldSchema,
-  firstQuestionHasNoConditionsCheck,
-  signupFormMustHaveAnEmailFieldCheck,
-  surveyHasOneSelectTypesCheck,
-} from './create_form_dto.js'
-import {
   type InferInput,
   array,
   maxLength,
@@ -15,6 +8,13 @@ import {
   pipe,
   string,
 } from 'valibot'
+import {
+  Appearance,
+  FieldSchema,
+  firstQuestionHasNoConditionsCheck,
+  signupFormMustHaveAnEmailFieldCheck,
+  surveyHasOneSelectTypesCheck,
+} from './create_form_dto.js'
 
 export const UpdateFormSchema = pipe(
   object({

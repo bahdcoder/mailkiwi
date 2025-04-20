@@ -30,6 +30,7 @@ import advancedFormat from 'dayjs/plugin/advancedFormat.js'
 import React from 'react'
 import { toast } from 'sonner'
 import { usePageContext } from 'vike-react/usePageContext'
+import type { BroadcastPageProps } from '@/pages/types/broadcast-page-props.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
 
@@ -152,7 +153,7 @@ export function PreviewStepActions() {
   const { getBroadcastRecipientsCount, formState, setFormState } =
     useComposeBroadcastContext('PreviewStepActions')
 
-  const { broadcast } = ctx.pageProps as EngageBroadcastsComposerPageProps
+  const { broadcast } = ctx.pageProps as BroadcastPageProps
 
   function setScheduleAt(scheduledAt: ScheduleDateTime) {
     setFormState((current) => ({ ...current, scheduledAt }))
@@ -198,7 +199,8 @@ export function PreviewStepActions() {
       }
     },
   })
-  const isQueuedForSending = broadcast.status === 'QUEUED_FOR_SENDING'
+  // biome-ignore lint/suspicious/noExplicitAny: We need to access the status property
+  const isQueuedForSending = (broadcast as any)?.status === 'QUEUED_FOR_SENDING'
 
   return (
     <div className="flex items-center gap-4">

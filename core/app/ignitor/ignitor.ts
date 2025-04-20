@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { type AppEnvVariables, appEnv } from '@/app/env/app_env.js'
 import { ChannelController } from '@/chat/controllers/channel_controller.js'
 import { ChatController } from '@/chat/controllers/chat_controller.js'
@@ -15,11 +17,9 @@ import { ClickTrackingController } from '@/tracking/controllers/click_tracking_c
 import { OpenTrackingController } from '@/tracking/controllers/open_tracking_controller.js'
 import { MailerWebhooksContorller } from '@/webhooks/controllers/mailer_webhooks_controller.js'
 import { WebsiteController } from '@/websites/controllers/website_controller.js'
-import { readFile } from 'node:fs/promises'
-import type { Redis } from 'ioredis'
-import { resolve } from 'node:path'
-import { type Logger, pino } from 'pino'
 import { showRoutes as _showRoutes } from 'hono/dev'
+import type { Redis } from 'ioredis'
+import { type Logger, pino } from 'pino'
 
 import { BroadcastController } from '@/broadcasts/controllers/broadcast_controller.js'
 import { BroadcastGroupController } from '@/broadcasts/controllers/broadcast_group_controller.js'
@@ -44,11 +44,11 @@ import { AutomationController } from '@/automations/controllers/automation_contr
 
 import { SendingDomainController } from '@/sending_domains/controllers/sending_domain_controller.js'
 
-import { HonoAdapter } from '@bull-board/hono'
-import { serveStatic } from '@hono/node-server/serve-static'
+import { Queue } from '@/shared/queue/queue.js'
 import { createBullBoard } from '@bull-board/api'
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { HonoAdapter } from '@bull-board/hono'
+import { serveStatic } from '@hono/node-server/serve-static'
 
 import {
   type DrizzleClient,

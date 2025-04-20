@@ -7,9 +7,9 @@ import { SendingDomainRepository } from '@/sending_domains/repositories/sending_
 
 import { sendingDomains } from '@/database/schema.js'
 
-import { container } from '@/utils/typi.js'
 import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import { container } from '@/utils/typi.js'
 
 export class CreateBroadcastAction {
   constructor(

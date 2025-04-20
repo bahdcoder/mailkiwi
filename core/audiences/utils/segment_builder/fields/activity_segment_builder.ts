@@ -1,7 +1,7 @@
-import { FieldSegmentBuilder } from './base_field_segment_builder.js'
 import { type SQLWrapper, and, eq, gte, like, lte } from 'drizzle-orm'
 import type { AnyMySqlColumn } from 'drizzle-orm/mysql-core'
 import { DateTime } from 'luxon'
+import { FieldSegmentBuilder } from './base_field_segment_builder.js'
 
 import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
 

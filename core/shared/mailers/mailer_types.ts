@@ -15,7 +15,7 @@ export interface MailObject {
   to: MailerContact
   replyTo: MailerContact
   content: MailContent
-  personalise?: Record<string, any>
+  personalise?: Record<string, string | number | boolean | null | undefined>
 }
 
 export interface MailerDriverResponse {

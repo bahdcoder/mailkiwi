@@ -5,9 +5,9 @@ import {
   getMarkerEnd,
 } from 'react-flow-renderer'
 
-import { Button } from '@kibamail/owly/button'
 import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
 import type { EdgeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import { Button } from '@kibamail/owly/button'
 
 const [buttonWidth, buttonHeight] = [100, 40]
 

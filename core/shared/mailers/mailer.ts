@@ -1,7 +1,7 @@
-import type { MailObject, MailerDriverResponse } from './mailer_types.js'
 import { appEnv } from '@/app/env/app_env.js'
 import { type SentMessageInfo, type Transporter, createTransport } from 'nodemailer'
 import { v4 as uuidV4 } from 'uuid'
+import type { MailObject, MailerDriverResponse } from './mailer_types.js'
 
 import { cuid } from '@/shared/utils/cuid/cuid.js'
 
@@ -61,7 +61,7 @@ export class MailBuilder {
     return this
   }
 
-  personalise(personalise: Record<string, any>) {
+  personalise(personalise: Record<string, string | number | boolean | null | undefined>) {
     this.mail.personalise = personalise
 
     return this

@@ -1,7 +1,9 @@
-import csvParser from 'csv-parser'
 import type { Readable } from 'node:stream'
+import csvParser from 'csv-parser'
 
-export async function readHeadersAndRowsFromCsvStream<T = any>(stream: Readable) {
+export async function readHeadersAndRowsFromCsvStream<
+  T = Record<string, string | number | boolean | null>,
+>(stream: Readable) {
   const parser = stream.pipe(csvParser())
 
   const { headers, rows }: { headers: string[]; rows: T[] } = await new Promise(

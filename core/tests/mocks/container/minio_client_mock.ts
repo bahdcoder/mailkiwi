@@ -8,7 +8,9 @@ export class FakeMinioClient {
 
   public stream: Readable
 
+  // biome-ignore lint/suspicious/noExplicitAny: Mock implementation
   private env = {} as any
+  // biome-ignore lint/suspicious/noExplicitAny: Mock implementation
   private client = {} as any
 
   public bucketExists = vi.fn().mockResolvedValue(true)

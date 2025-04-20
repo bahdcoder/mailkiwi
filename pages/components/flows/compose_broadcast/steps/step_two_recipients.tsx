@@ -16,6 +16,7 @@ import { Spinner } from '@kibamail/owly/spinner'
 import { Text } from '@kibamail/owly/text'
 import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
+import type { BroadcastPageProps, Segment } from '@/pages/types/broadcast-page-props.js'
 
 export function StepTwoRecipients() {
   const ctx = usePageContext()
@@ -23,15 +24,30 @@ export function StepTwoRecipients() {
   const { formState, setFormState, getBroadcastRecipientsCount } =
     useComposeBroadcastContext('StepTwoRecipients')
 
-  const pageProps = ctx.pageProps as EngageBroadcastsComposerPageProps
+  const { segments = [] } = ctx.pageProps as BroadcastPageProps
 
-  const selectedSegment = pageProps.segments.find(
-    (segment) => segment.id === formState.segmentId,
+  const selectedSegment = segments.find(
+    (segment: Segment) => segment.id === formState.segmentId,
   )
 
-  const filters = selectedSegment?.filterGroups?.groups?.flatMap(
-    (group) => group.conditions,
-  ) as FilterCondition[]
+  // Convert the conditions to FilterCondition type
+  const filters =
+    (selectedSegment?.filterGroups?.groups?.flatMap(
+      (group: {
+        conditions: Array<{
+          field: string
+          operator: string
+          value: string | number | boolean
+        }>
+      }) =>
+        group.conditions.map((condition) => ({
+          // biome-ignore lint/suspicious/noExplicitAny: We need to convert the field type
+          field: condition.field as any,
+          // biome-ignore lint/suspicious/noExplicitAny: We need to convert the operation type
+          operation: condition.operator as any,
+          value: condition.value,
+        })),
+    ) as FilterCondition[]) || []
 
   function onSelectedSegmentChanged(value: string) {
     setFormState((current) => ({ ...current, segmentId: value }))
@@ -73,7 +89,7 @@ export function StepTwoRecipients() {
 
           <SelectField.Content className="relative z-[50]">
             <SelectField.Item value="all">All contacts</SelectField.Item>
-            {pageProps.segments.map((segment) => (
+            {segments.map((segment: Segment) => (
               <SelectField.Item key={segment.id} value={segment.id}>
                 {segment.name}
               </SelectField.Item>

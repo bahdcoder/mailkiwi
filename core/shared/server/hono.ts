@@ -1,4 +1,3 @@
-import type { HonoContext, HonoRouteDefinition } from './types.js'
 import type { HttpBindings } from '@hono/node-server'
 import { Hono as BaseHono, type Handler, type MiddlewareHandler } from 'hono'
 import { pinoLogger } from 'hono-pino'
@@ -6,6 +5,7 @@ import { compress } from 'hono/compress'
 import type { HonoOptions } from 'hono/hono-base'
 import { requestId } from 'hono/request-id'
 import type { StatusCode } from 'hono/utils/http-status'
+import type { HonoContext, HonoRouteDefinition } from './types.js'
 
 import { EnsureUserAndTeamSessionsMiddleware } from '@/auth/middleware/ensure_user_and_team_sessions_middleware.js'
 import { UserSessionMiddleware } from '@/auth/middleware/user_session_middleware.js'
@@ -112,7 +112,9 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
   }
 
   protected getRoutePath(path: string, prefix = '/') {
-    return `${prefix?.replace(/^\/|\/$/g, '')}${path === '/' ? '' : '/'}${path?.replace(/^\/|\/$/g, '')}`
+    return `${prefix?.replace(/^\/|\/$/g, '')}${
+      path === '/' ? '' : '/'
+    }${path?.replace(/^\/|\/$/g, '')}`
   }
 
   protected defineRoutesForMiddleware(

@@ -1,4 +1,3 @@
-import { ImageUploader } from './ImageUploader.jsx'
 import { FileUploadDropbox } from '@/pages/components/file-upload/file-upload-dropbox.jsx'
 import {
   ServerForm,
@@ -6,6 +5,7 @@ import {
 } from '@/pages/hooks/use_server_form_mutation.jsx'
 import { type Editor, NodeViewWrapper } from '@tiptap/react'
 import React, { useCallback, useRef } from 'react'
+import { ImageUploader } from './ImageUploader.jsx'
 
 import { route } from '@/shared/routes/route_aliases.js'
 

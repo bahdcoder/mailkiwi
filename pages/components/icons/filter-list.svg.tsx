@@ -9,37 +9,20 @@ export const FilterListIcon = React.forwardRef<
       width="24px"
       height="24px"
       viewBox="0 0 24 24"
-      strokeWidth="1.5"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      color="currentColor"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       role="img"
-      aria-label="Filter list icon"
+      aria-label="Filter List"
       {...props}
       ref={forwardedRef}
     >
-      <title>Filter list icon</title>
-      <path
-        d="M3 6H21"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M7 12L17 12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M11 18L13 18"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <title>Filter List</title>
     </svg>
   )
 })
+
+FilterListIcon.displayName = 'FilterListIcon'

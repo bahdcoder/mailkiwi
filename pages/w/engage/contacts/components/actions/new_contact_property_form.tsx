@@ -1,7 +1,7 @@
 import { ArrowUpRightIcon } from '@/pages/components/icons/arrow-up-right.svg.jsx'
 import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
 import { CheckSquareIcon } from '@/pages/components/icons/check-square.svg.jsx'
-import { HashTagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
+import { HashtagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
 import { InfoCircleIcon } from '@/pages/components/icons/info-circle.svg.jsx'
 import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
 import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
@@ -50,7 +50,7 @@ export function NewContactPropertyForm({
       method: 'PUT',
       action: route('audiences_update', { audienceId: ctx.audience?.id }),
       onSuccess(response) {
-        ;(reload as any)?.()
+        // No need to reload, the parent component will handle this
         setOpen(false)
 
         // TODO: Flash a toast message to the user.
@@ -108,7 +108,7 @@ export function NewContactPropertyForm({
                   Text
                 </Select.Item>
                 <Select.Item value="number">
-                  <HashTagIcon />
+                  <HashtagIcon />
                   Number
                 </Select.Item>
                 <Select.Item value="date">

@@ -1,30 +1,30 @@
-import { faker } from "@faker-js/faker"
-import { eq } from "drizzle-orm"
-import { describe, test } from "vitest"
+import { faker } from '@faker-js/faker'
+import { eq } from 'drizzle-orm'
+import { describe, test } from 'vitest'
 
-import { BroadcastRepository } from "@/broadcasts/repositories/broadcast_repository.js"
+import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 
-import { createBroadcastForUser, createUser } from "@/tests/mocks/auth/users.js"
-import { refreshRedisDatabase } from "@/tests/mocks/teams/teams.js"
-import { makeRequestAsUser } from "@/tests/utils/http.js"
+import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
+import { refreshRedisDatabase } from '@/tests/mocks/teams/teams.js'
+import { makeRequestAsUser } from '@/tests/utils/http.js'
 
-import { broadcasts, emailContents } from "@/database/schema.js"
+import { broadcasts, emailContents } from '@/database/schema.js'
 
-import { makeDatabase } from "@/shared/container/index.js"
-import { Queue } from "@/shared/queue/queue.js"
-import { cuid } from "@/shared/utils/cuid/cuid.js"
+import { makeDatabase } from '@/shared/container/index.js'
+import { Queue } from '@/shared/queue/queue.js'
+import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { container } from "@/utils/typi.js"
+import { container } from '@/utils/typi.js'
 
-describe("@broadcasts create", () => {
-  test("can create a broadcast for an audience", async ({ expect }) => {
+describe('@broadcasts create', () => {
+  test('can create a broadcast for an audience', async ({ expect }) => {
     const { user, audience, broadcastGroupId } = await createUser()
     const database = makeDatabase()
 
     const broadcastName = faker.lorem.words(3)
     const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/broadcasts",
+      method: 'POST',
+      path: '/broadcasts',
       body: {
         name: broadcastName,
         audienceId: audience.id,
@@ -47,14 +47,14 @@ describe("@broadcasts create", () => {
     expect(createdBroadcast?.audienceId).toBe(audience.id)
   })
 
-  test("cannot create a broadcast without a valid name", async ({ expect }) => {
+  test('cannot create a broadcast without a valid name', async ({ expect }) => {
     const { user, audience, broadcastGroupId } = await createUser()
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/broadcasts",
+      method: 'POST',
+      path: '/broadcasts',
       body: {
-        name: "",
+        name: '',
         audienceId: audience.id,
         broadcastGroupId,
       },
@@ -66,22 +66,22 @@ describe("@broadcasts create", () => {
     expect(json.payload).toMatchObject({
       errors: [
         {
-          message: "Invalid length: Expected !0 but received 0",
-          field: "name",
+          message: 'Invalid length: Expected !0 but received 0',
+          field: 'name',
         },
       ],
     })
   })
 
-  test("cannot create a broadcast without a valid audience that exists in the database", async ({
+  test('cannot create a broadcast without a valid audience that exists in the database', async ({
     expect,
   }) => {
     const { user, team } = await createUser()
     const database = makeDatabase()
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
-      path: "/broadcasts",
+      method: 'POST',
+      path: '/broadcasts',
       body: {
         name: faker.lorem.words(3),
         audienceId: faker.string.uuid(),
@@ -99,8 +99,8 @@ describe("@broadcasts create", () => {
   })
 })
 
-describe("@broadcasts update", () => {
-  test("can update a broadcast with valid data", async ({ expect }) => {
+describe('@broadcasts update', () => {
+  test('can update a broadcast with valid data', async ({ expect }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
     const broadcastId = await createBroadcastForUser(
       user,
@@ -110,7 +110,7 @@ describe("@broadcasts update", () => {
       {
         updateWithABTestsContent: true,
         updateWithValidContent: true,
-      }
+      },
     )
     const database = makeDatabase()
 
@@ -127,7 +127,7 @@ describe("@broadcasts update", () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: updateData,
     })
@@ -142,26 +142,22 @@ describe("@broadcasts update", () => {
     const emailContent = await database
       .select()
       .from(emailContents)
-      .where(
-        eq(emailContents.id, updatedBroadcast?.[0].emailContentId as string)
-      )
+      .where(eq(emailContents.id, updatedBroadcast?.[0].emailContentId as string))
 
     expect(emailContent[0]).toMatchObject(updateData.emailContent)
   })
 
-  test("cannot update a broadcast with an invalid audience ID", async ({
-    expect,
-  }) => {
+  test('cannot update a broadcast with an invalid audience ID', async ({ expect }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
     const broadcastId = await createBroadcastForUser(
       user,
       team.id,
       audience.id,
-      broadcastGroupId
+      broadcastGroupId,
     )
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: {
         audienceId: cuid(),
@@ -173,30 +169,28 @@ describe("@broadcasts update", () => {
     expect(json.payload).toMatchObject({
       errors: [
         {
-          message: expect.stringMatching("Invalid input: Received"),
-          field: "audienceId",
+          message: expect.stringMatching('Invalid input: Received'),
+          field: 'audienceId',
         },
       ],
     })
   })
 
-  test("cannot update a broadcast with invalid email addresses", async ({
-    expect,
-  }) => {
+  test('cannot update a broadcast with invalid email addresses', async ({ expect }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
     const broadcastId = await createBroadcastForUser(
       user,
       team.id,
       audience.id,
-      broadcastGroupId
+      broadcastGroupId,
     )
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: {
         emailContent: {
-          replyToEmail: "also-invalid",
+          replyToEmail: 'also-invalid',
         },
       },
     })
@@ -207,20 +201,20 @@ describe("@broadcasts update", () => {
     expect(json.payload).toMatchObject({
       errors: [
         {
-          message: expect.stringMatching("Invalid email: Received"),
-          field: "emailContent.replyToEmail",
+          message: expect.stringMatching('Invalid email: Received'),
+          field: 'emailContent.replyToEmail',
         },
       ],
     })
   })
 
-  test("can update individual fields of a broadcast", async ({ expect }) => {
+  test('can update individual fields of a broadcast', async ({ expect }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
     const broadcastId = await createBroadcastForUser(
       user,
       team.id,
       audience.id,
-      broadcastGroupId
+      broadcastGroupId,
     )
 
     const updateData = {
@@ -230,7 +224,7 @@ describe("@broadcasts update", () => {
     }
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: updateData,
     })
@@ -241,17 +235,15 @@ describe("@broadcasts update", () => {
       .make(BroadcastRepository)
       .findByIdWithAbTestVariants(broadcastId)
 
-    expect(updatedBroadcast?.emailContent?.subject).toBe(
-      updateData.emailContent.subject
-    )
+    expect(updatedBroadcast?.emailContent?.subject).toBe(updateData.emailContent.subject)
     expect(updatedBroadcast?.name).toBeDefined() // Other fields should remain unchanged
   })
 
-  test("cannot update a non-existent broadcast", async ({ expect }) => {
+  test('cannot update a non-existent broadcast', async ({ expect }) => {
     const { user } = await createUser()
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${cuid()}`,
       body: {
         name: faker.lorem.words(3),
@@ -262,26 +254,24 @@ describe("@broadcasts update", () => {
 
     expect(response.status).toBe(422)
     expect(json.payload).toMatchObject({
-      errors: [
-        { message: "Invalid broadcastId provided.", field: "broadcastId" },
-      ],
+      errors: [{ message: 'Invalid broadcastId provided.', field: 'broadcastId' }],
     })
   })
 
-  test("can update sendAt to a valid timestamp", async ({ expect }) => {
+  test('can update sendAt to a valid timestamp', async ({ expect }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
     const database = makeDatabase()
     const broadcastId = await createBroadcastForUser(
       user,
       team.id,
       audience.id,
-      broadcastGroupId
+      broadcastGroupId,
     )
 
     const sendAt = new Date(Date.now() + 86400000) // 24 hours from now
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: {
         sendAt,
@@ -297,19 +287,19 @@ describe("@broadcasts update", () => {
     expect(updatedBroadcast?.sendAt?.getDate()).toBe(sendAt.getDate())
   })
 
-  test("cannot update sendAt to a past timestamp", async ({ expect }) => {
+  test('cannot update sendAt to a past timestamp', async ({ expect }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
     const broadcastId = await createBroadcastForUser(
       user,
       team.id,
       audience.id,
-      broadcastGroupId
+      broadcastGroupId,
     )
 
     const sendAt = new Date(Date.now() - 86400000) // 24 hours ago
 
     const response = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: {
         sendAt,
@@ -322,17 +312,16 @@ describe("@broadcasts update", () => {
     expect(json.payload).toMatchObject({
       errors: [
         {
-          message:
-            "Please select a scheduled date at least six hours into the future.",
-          field: "sendAt",
+          message: 'Please select a scheduled date at least six hours into the future.',
+          field: 'sendAt',
         },
       ],
     })
   })
 })
 
-describe("@broadcasts delete", () => {
-  test("cannot delete a broadcast from another team", async ({ expect }) => {
+describe('@broadcasts delete', () => {
+  test('cannot delete a broadcast from another team', async ({ expect }) => {
     const {
       user: user1,
       audience: audience1,
@@ -345,34 +334,32 @@ describe("@broadcasts delete", () => {
       user1,
       team.id,
       audience1.id,
-      broadcastGroupId
+      broadcastGroupId,
     )
 
     const response = await makeRequestAsUser(user2, {
-      method: "DELETE",
+      method: 'DELETE',
       path: `/broadcasts/${broadcastId}`,
     })
 
     expect(response.status).toBe(401)
 
-    const broadcast = await container
-      .make(BroadcastRepository)
-      .findById(broadcastId)
+    const broadcast = await container.make(BroadcastRepository).findById(broadcastId)
     expect(broadcast).toBeDefined()
   })
 
-  test("can delete a broadcast", async ({ expect }) => {
+  test('can delete a broadcast', async ({ expect }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
 
     const broadcastId = await createBroadcastForUser(
       user,
       team.id,
       audience.id,
-      broadcastGroupId
+      broadcastGroupId,
     )
 
     const response = await makeRequestAsUser(user, {
-      method: "DELETE",
+      method: 'DELETE',
       path: `/broadcasts/${broadcastId}`,
     })
 
@@ -386,8 +373,8 @@ describe("@broadcasts delete", () => {
   })
 })
 
-describe("@broadcasts send", () => {
-  test("can queue a broadcast for sending", async ({ expect }) => {
+describe('@broadcasts send', () => {
+  test('can queue a broadcast for sending', async ({ expect }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
 
     const broadcastId = await createBroadcastForUser(
@@ -398,12 +385,12 @@ describe("@broadcasts send", () => {
       {
         updateWithValidContent: true,
         updateWithABTestsContent: true,
-      }
+      },
     )
 
     await refreshRedisDatabase()
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/broadcasts/${broadcastId}/send`,
     })
 
@@ -411,14 +398,12 @@ describe("@broadcasts send", () => {
 
     const jobs = await Queue.abTestsBroadcasts().getJobs()
 
-    const broadcastJob = jobs.find(
-      (job) => job.data.broadcastId === broadcastId
-    )
+    const broadcastJob = jobs.find((job) => job.data.broadcastId === broadcastId)
 
     expect(broadcastJob).toBeDefined()
   })
 
-  test("cannot queue a broadcast if all required information is not provided", async ({
+  test('cannot queue a broadcast if all required information is not provided', async ({
     expect,
   }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
@@ -427,11 +412,11 @@ describe("@broadcasts send", () => {
       user,
       team.id,
       audience.id,
-      broadcastGroupId
+      broadcastGroupId,
     )
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/broadcasts/${broadcastId}/send`,
     })
 
@@ -439,42 +424,42 @@ describe("@broadcasts send", () => {
 
     expect(response.status).toBe(422)
     expect(json.payload).toMatchObject({
-      message: "Validation failed.",
+      message: 'Validation failed.',
       errors: [
         {
-          field: "sendingDomainId",
-          message: "Invalid type: Expected string but received null",
+          field: 'sendingDomainId',
+          message: 'Invalid type: Expected string but received null',
         },
         {
-          message: "Please provide a valid subject",
-          field: "emailContent.subject",
+          message: 'Please provide a valid subject',
+          field: 'emailContent.subject',
         },
         {
           message: 'Please provide a valid "from" name',
-          field: "emailContent.fromName",
+          field: 'emailContent.fromName',
         },
         {
           message: 'Please provide a valid "from" email',
-          field: "emailContent.fromEmail",
+          field: 'emailContent.fromEmail',
         },
         {
           message: "Please provide a valid 'reply to' email",
-          field: "emailContent.replyToEmail",
+          field: 'emailContent.replyToEmail',
         },
         {
-          message: "Invalid type: Expected Object but received null",
-          field: "emailContent.contentJson",
+          message: 'Invalid type: Expected Object but received null',
+          field: 'emailContent.contentJson',
         },
         {
-          message: "Please provide a valid preview text",
-          field: "emailContent.previewText",
+          message: 'Please provide a valid preview text',
+          field: 'emailContent.previewText',
         },
       ],
     })
     // TODO: Check redis for queued job.
   })
 
-  test("cannot queue a broadcast if the account has sending disabled", async ({
+  test('cannot queue a broadcast if the account has sending disabled', async ({
     expect,
   }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
@@ -488,17 +473,17 @@ describe("@broadcasts send", () => {
       broadcastGroupId,
       {
         updateWithValidContent: true,
-      }
+      },
     )
 
     await database
       .update(broadcasts)
-      .set({ status: "SENDING_FAILED" })
+      .set({ status: 'SENDING_FAILED' })
       .where(eq(broadcasts.id, broadcastId))
       .execute()
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/broadcasts/${broadcastId}/send`,
     })
 
@@ -506,18 +491,18 @@ describe("@broadcasts send", () => {
 
     expect(response.status).toBe(422)
     expect(json.payload).toMatchObject({
-      message: "Validation failed.",
+      message: 'Validation failed.',
       errors: [
         {
-          message: "Only a draft broadcast can be sent.",
-          field: "status",
+          message: 'Only a draft broadcast can be sent.',
+          field: 'status',
         },
       ],
     })
     // TODO: Check redis for queued job.
   })
 
-  test("cannot send a broadcast with invalid or incomplete a/b variants information", async ({
+  test('cannot send a broadcast with invalid or incomplete a/b variants information', async ({
     expect,
   }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
@@ -529,7 +514,7 @@ describe("@broadcasts send", () => {
       broadcastGroupId,
       {
         updateWithValidContent: true,
-      }
+      },
     )
 
     const updateData = {
@@ -553,7 +538,7 @@ describe("@broadcasts send", () => {
     }
 
     const updateResponse = await makeRequestAsUser(user, {
-      method: "PUT",
+      method: 'PUT',
       path: `/broadcasts/${broadcastId}`,
       body: updateData,
     })
@@ -561,7 +546,7 @@ describe("@broadcasts send", () => {
     expect(updateResponse.status).toBe(200)
 
     const response = await makeRequestAsUser(user, {
-      method: "POST",
+      method: 'POST',
       path: `/broadcasts/${broadcastId}/send`,
     })
 
@@ -571,8 +556,8 @@ describe("@broadcasts send", () => {
 
     expect(json.payload.errors[0]).toEqual({
       message:
-        "Some A/B test variants are invalid. Please make sure all variants are valid.",
-      field: "abTestVariants",
+        'Some A/B test variants are invalid. Please make sure all variants are valid.',
+      field: 'abTestVariants',
     })
   })
 })

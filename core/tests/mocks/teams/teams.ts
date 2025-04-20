@@ -1,6 +1,6 @@
-import { createFakeEmailContent } from '../audiences/email_content.js'
 import { faker } from '@faker-js/faker'
 import { sql } from 'drizzle-orm'
+import { createFakeEmailContent } from '../audiences/email_content.js'
 
 import {
   type AutomationStepConfiguration,

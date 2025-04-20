@@ -1,6 +1,6 @@
 import { type BinaryLike, randomBytes, scrypt } from 'node:crypto'
-import { eq } from 'drizzle-orm'
 import { promisify } from 'node:util'
+import { eq } from 'drizzle-orm'
 
 import { accessTokens } from '@/database/schema.js'
 
@@ -20,7 +20,7 @@ export class ScryptTokenRepository extends BaseRepository {
   }
 
   async verify(secretKey: string, hash: string) {
-    const [salt, secret] = hash?.split(this.hashAndSaltSeparator)
+    const [salt, secret] = hash.split(this.hashAndSaltSeparator)
 
     const derivedKey = await this.scryptAsync(
       secretKey,

@@ -8,7 +8,7 @@ import {
   picklist,
   pipeAsync,
   string,
-  any,
+  unknown,
 } from 'valibot'
 
 import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
@@ -33,7 +33,7 @@ export const CreateAutomationStepDto = pipeAsync(
   objectAsync({
     type: picklist(automationStepTypes),
     subtype: picklist(automationStepSubtypes),
-    configuration: optional(any()),
+    configuration: optional(unknown()),
     parentId: pipeAsync(
       string(),
       checkAsync(

@@ -5,10 +5,10 @@ import { type Job, Worker } from 'bullmq'
 import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
 import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.js'
 
+import { ImportContactsJob } from '@/audiences/jobs/import_contacts_job.js'
 import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
 import type { BaseJob, JobHandlerResponse } from '@/shared/queue/abstract_job.js'
 import { container } from '@/utils/typi.js'
-import { ImportContactsJob } from '@/audiences/jobs/import_contacts_job.js'
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<object, JobHandlerResponse | undefined, string>[] = []

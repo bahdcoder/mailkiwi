@@ -1,10 +1,10 @@
+import { resolve } from 'node:path'
 import { appEnv } from '@/app/env/app_env.js'
 import { EmailSendEventRepository } from '@/email_sends/repositories/email_send_event_repository.js'
 import { EmailSendRepository } from '@/email_sends/repositories/email_send_repository.js'
 import { SendingSourceRepository } from '@/settings/repositories/sending_source_repository.js'
 import { Reader as MaxMindReader } from '@maxmind/geoip2-node'
 import { DateTime } from 'luxon'
-import { resolve } from 'node:path'
 import { UAParser } from 'ua-parser-js'
 
 import { ContactRepository } from '@/audiences/repositories/contact_repository.js'

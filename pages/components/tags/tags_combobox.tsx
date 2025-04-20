@@ -8,7 +8,12 @@ import cn from 'classnames'
 import { useCombobox, useMultipleSelection } from 'downshift'
 import React, { useEffect } from 'react'
 
-export type ComboboxItem = { id: string; label: string; new?: boolean }
+export type ComboboxItem = {
+  id: string
+  label: string
+  new?: boolean
+  value?: string
+}
 
 interface TagsComboboxProps {
   defaultValue?: Omit<ComboboxItem, 'new'>[]
@@ -29,7 +34,7 @@ export function TagsCombobox({
     defaultValue ?? [],
   )
   const [allItems, setAllItems] = React.useState<ComboboxItem[]>(defaultAllItems)
-  const items = React.useMemo(() => searchItems(inputValue), [selectedItems, inputValue])
+  const items = React.useMemo(() => searchItems(inputValue), [inputValue])
 
   function searchItems(inputValue: string) {
     const lowerCasedInputValue = inputValue.toLowerCase()
@@ -41,7 +46,7 @@ export function TagsCombobox({
 
   useEffect(() => {
     onChange?.(selectedItems)
-  }, [selectedItems])
+  }, [selectedItems, onChange])
 
   const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =
     useMultipleSelection({
@@ -184,6 +189,11 @@ export function TagsCombobox({
                 ) : null}
                 <li
                   onClick={onCreateNewItem}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      onCreateNewItem()
+                    }
+                  }}
                   aria-label={`Create new tag "${inputValue}"`}
                   className="h-9 box-border select-none bg-[var(--background-primary)] rounded-lg hover:bg-[var(--background-secondary)] flex items-center cursor-pointer px-2 transition-[background] ease-in-out"
                 >
@@ -203,14 +213,16 @@ export function TagsCombobox({
           return (
             <span
               className="flex items-center border kb-border-tertiary font-medium bg-[var(--background-primary)] px-2 py-1 rounded-lg shadow-[0px_2px_0px_0px_var(--white-5)_inset,0px_1px_0px_0px_var(--black-10)]"
-              key={`selected-item-${index}`}
+              key={`selected-item-${
+                selectedItemForRender.id || selectedItemForRender.value
+              }`}
               {...getSelectedItemProps({
                 selectedItem: selectedItemForRender,
                 index,
               })}
             >
               <Text className="kb-content-secondary">{selectedItemForRender.label}</Text>
-              <button className="kb-reset">
+              <button type="button" className="kb-reset">
                 <CancelIcon
                   className="kb-content-disabled ml-2"
                   onClick={(e) => {

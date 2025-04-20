@@ -1,16 +1,17 @@
 import './styles.css'
 import type { AutomationStepSubType } from '@/database/types/automations.js'
-import { TriggerEmptyNode } from './triggers/trigger_empty_node.jsx'
-import { EndNode } from './end/end_node.jsx'
-import { RuleIfElseNode } from './rules/rule_if_else_node.jsx'
-import { ActionSendEmailNode } from './actions/action_send_email_node.jsx'
+import { ActionUnsubscribeToAudienceNode } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/nodes/actions/action_unsubscribe_from_audience.jsx'
+import { ActionAddTagNode } from './actions/action_add_tag_node.jsx'
 import { ActionEmptyNode } from './actions/action_empty_node.jsx'
 import { ActionRemoveTagNode } from './actions/action_remove_tag_node.jsx'
-import { ActionAddTagNode } from './actions/action_add_tag_node.jsx'
-import { ActionUpdateContactAttributesNode } from './actions/action_update_contact_attributes.jsx'
+import { ActionSendEmailNode } from './actions/action_send_email_node.jsx'
 import { ActionSubscribeToAudienceNode } from './actions/action_subscribe_to_audience.jsx'
-import { ActionUnsubscribeToAudienceNode } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/nodes/actions/action_unsubscribe_from_audience.jsx'
+import { ActionUpdateContactAttributesNode } from './actions/action_update_contact_attributes.jsx'
+import { EndNode } from './end/end_node.jsx'
+import { RuleIfElseNode } from './rules/rule_if_else_node.jsx'
+import { TriggerEmptyNode } from './triggers/trigger_empty_node.jsx'
 
+// biome-ignore lint/suspicious/noExplicitAny: React component props are complex and varied
 export const nodeTypes: Partial<Record<AutomationStepSubType, React.FC<any>>> = {
   // triggers
   TRIGGER_EMPTY: TriggerEmptyNode,

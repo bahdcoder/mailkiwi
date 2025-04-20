@@ -1,5 +1,5 @@
-import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.js'
 import { and, eq } from 'drizzle-orm'
+import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.js'
 
 import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'

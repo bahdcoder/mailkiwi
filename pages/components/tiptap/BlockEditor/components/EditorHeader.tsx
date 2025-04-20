@@ -1,9 +1,9 @@
-import type { EditorUser } from '../types.jsx'
-import { EditorInfo } from './EditorInfo.jsx'
 import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
 import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
 import type { Editor } from '@tiptap/core'
 import { useEditorState } from '@tiptap/react'
+import type { EditorUser } from '../types.jsx'
+import { EditorInfo } from './EditorInfo.jsx'
 
 export type EditorHeaderProps = {
   isSidebarOpen?: boolean

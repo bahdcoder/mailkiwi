@@ -13,7 +13,9 @@ export const isTableGripSelected = (node: HTMLElement) => {
   let container = node
 
   while (container && !['TD', 'TH'].includes(container.tagName)) {
-    container = container.parentElement!
+    const parentElement = container.parentElement
+    if (!parentElement) break
+    container = parentElement
   }
 
   const gripColumn = container?.querySelector?.('a.grip-column.selected')

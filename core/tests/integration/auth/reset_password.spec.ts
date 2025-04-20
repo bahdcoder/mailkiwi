@@ -1,5 +1,5 @@
-import { faker } from '@faker-js/faker'
 import { randomBytes } from 'node:crypto'
+import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, expect, it } from 'vitest'
 

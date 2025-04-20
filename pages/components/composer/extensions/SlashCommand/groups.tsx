@@ -1,7 +1,6 @@
-import type { Command, Group } from './types.js'
 import { getDefaultStylesForNode } from '@/pages/components/composer/themes/default-theme.js'
-import { BlockQuoteIcon } from '@/pages/components/icons/blockquote.svg.jsx'
-import { CodeBlockIcon } from '@/pages/components/icons/codeblock.svg.jsx'
+import { BlockquoteIcon } from '@/pages/components/icons/blockquote.svg.jsx'
+import { CodeblockIcon } from '@/pages/components/icons/codeblock.svg.jsx'
 import { ContainerIcon } from '@/pages/components/icons/container.svg.jsx'
 import { HeadingOneIcon } from '@/pages/components/icons/heading-one.svg.jsx'
 import { HeadingThreeIcon } from '@/pages/components/icons/heading-three.svg.jsx'
@@ -11,6 +10,7 @@ import { MediaImageIcon } from '@/pages/components/icons/media-image.svg.jsx'
 import { MinusIcon } from '@/pages/components/icons/minus.svg.jsx'
 import { NumberedListIcon } from '@/pages/components/icons/numbered-list.svg.jsx'
 import { UnorderedListIcon } from '@/pages/components/icons/unordered-list.svg.jsx'
+import type { Command, Group } from './types.js'
 
 export const GROUPS: Group[] = [
   {

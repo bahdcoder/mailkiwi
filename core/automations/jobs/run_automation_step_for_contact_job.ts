@@ -1,5 +1,5 @@
-import { AutomationStepRunner } from '../utils/automation_step_runners/automation_step_runner.js'
 import { and, eq } from 'drizzle-orm'
+import { AutomationStepRunner } from '../utils/automation_step_runners/automation_step_runner.js'
 
 import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 

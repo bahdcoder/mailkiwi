@@ -5,9 +5,9 @@ import { Heading } from '@kibamail/owly/heading'
 import React from 'react'
 
 import * as DropdownMenu from '@/pages/components/dropdown/dropdown.jsx'
+import { ImportContactsDialog } from '@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
 import { MoreVertIcon } from '@/pages/components/icons/more-vert.svg.jsx'
 import { Text } from '@kibamail/owly/text'
-import { ImportContactsDialog } from '@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
 import { usePageContext } from 'vike-react/usePageContext'
 
 export interface ProductPageHeadingProps extends React.PropsWithChildren {

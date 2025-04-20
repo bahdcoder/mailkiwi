@@ -1,11 +1,11 @@
-import { ContainerKey } from '../container/index.js'
-import type { VikePageRenderer } from '../types/vike.js'
+import { PassThrough } from 'node:stream'
 import { createReadableStreamFromReadable } from '@remix-run/node'
 import { and, eq } from 'drizzle-orm'
 import type { Handler, MiddlewareHandler, Next } from 'hono'
-import { PassThrough } from 'node:stream'
 import { UAParser } from 'ua-parser-js'
 import { renderPage } from 'vike/server'
+import { ContainerKey } from '../container/index.js'
+import type { VikePageRenderer } from '../types/vike.js'
 
 import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 import { TagRepository } from '@/audiences/repositories/tag_repository.js'
@@ -25,8 +25,9 @@ import { route } from '@/shared/routes/route_aliases.js'
 import type { HonoContext, HonoRouteDefinition } from '@/shared/server/types.js'
 import { excludeKeys } from '@/shared/utils/helpers/exclude_keys.js'
 
-import { container } from '@/utils/typi.js'
 import { TeamCreditRepository } from '@/teams/repositories/team_credit_repository.js'
+import { container } from '@/utils/typi.js'
+import type { DefaultPageProps } from '@/pages/types/page-context.js'
 
 export class VikeController extends BaseController {
   vikePath = (
@@ -45,14 +46,12 @@ export class VikeController extends BaseController {
     ]
   }
 
-  renderVikePage = async (
-    ctx: HonoContext,
-    next: Next,
-    pageProps?: Record<string, any>,
-  ) => {
+  renderVikePage = async (ctx: HonoContext, next: Next, pageProps?: unknown) => {
+    const props = pageProps as DefaultPageProps
+
     const pageContext = await renderPage({
-      pageProps: await container.make(PagePropsResolver).handle(ctx, pageProps as any),
-      ...pageProps,
+      pageProps: await container.make(PagePropsResolver).handle(ctx, props),
+      // ...props,
       urlOriginal: ctx.req.url,
       headersOriginal: ctx.req.raw.headers,
     })
@@ -115,7 +114,7 @@ export class VikeController extends BaseController {
     return this.page(ctx, next)
   }
 
-  page = async (ctx: HonoContext, next: Next, pageProps?: Record<string, any>) => {
+  page = async (ctx: HonoContext, next: Next, pageProps?: Record<string, unknown>) => {
     const renderVikePage = container.make<VikePageRenderer>(ContainerKey.vikeRenderPage)
 
     const userAgentHeader = ctx.req.header('user-agent')

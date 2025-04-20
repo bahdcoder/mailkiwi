@@ -4,11 +4,11 @@ import {
   array,
   boolean,
   check,
+  enum as enum_,
   object,
   optional,
   pipe,
   string,
-  enum as enum_,
 } from 'valibot'
 
 enum PropertyType {

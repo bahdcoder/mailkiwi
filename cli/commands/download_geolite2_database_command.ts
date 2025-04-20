@@ -1,12 +1,12 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { boolean, command } from '@drizzle-team/brocli'
 import { createReadStream, createWriteStream, existsSync } from 'node:fs'
 import { lstat, readdir, rename, rm } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { pipeline } from 'node:stream/promises'
-import { extract as tarExtract } from 'tar'
 import { createGunzip } from 'node:zlib'
+import { appEnv } from '@/app/env/app_env.js'
 import { makeLogger } from '@/shared/container/index.js'
+import { boolean, command } from '@drizzle-team/brocli'
+import { extract as tarExtract } from 'tar'
 
 export const downloadGeolite2Database = command({
   name: 'download_geolite2_database',

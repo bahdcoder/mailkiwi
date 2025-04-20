@@ -1,5 +1,5 @@
-import { AVAILABLE_QUEUES } from './config.js'
 import { Queue as BullQueue } from 'bullmq'
+import { AVAILABLE_QUEUES } from './config.js'
 
 import { makeRedis } from '@/shared/container/index.js'
 

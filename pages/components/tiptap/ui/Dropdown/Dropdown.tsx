@@ -1,7 +1,11 @@
 import { cn } from '@/pages/components/tiptap/utils/index.js'
 import React from 'react'
 
-export const DropdownCategoryTitle = ({ children }: { children: React.ReactNode }) => {
+export const DropdownCategoryTitle = ({
+  children,
+}: {
+  children: React.ReactNode
+}) => {
   return (
     <div className="text-[.65rem] font-semibold mb-1 uppercase text-neutral-500 dark:text-neutral-400 px-1.5">
       {children}
@@ -34,7 +38,13 @@ export const DropdownButton = React.forwardRef<
   )
 
   return (
-    <button className={buttonClass} disabled={disabled} onClick={onClick} ref={ref}>
+    <button
+      type="button"
+      className={buttonClass}
+      disabled={disabled}
+      onClick={onClick}
+      ref={ref}
+    >
       {children}
     </button>
   )

@@ -6,9 +6,9 @@ import type { DrizzleClient } from '@/database/client.js'
 import { automationSteps, automations } from '@/database/schema.js'
 import { hasMany } from '@/database/utils/relationships.js'
 
+import { automationStepSubtypesTriggerMap } from '@/database/types/automations.js'
 import { makeDatabase } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { automationStepSubtypesTriggerMap } from '@/database/types/automations.js'
 
 export class AutomationRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

@@ -1,11 +1,11 @@
 import { appEnv } from '@/app/env/app_env.js'
 import { type SQLWrapper, and, eq } from 'drizzle-orm'
-import type { MySqlRawQueryResult } from 'drizzle-orm/mysql2'
 import type {
   AnyMySqlColumn,
   AnyMySqlTable,
   MySqlUpdateSetSource,
 } from 'drizzle-orm/mysql-core'
+import type { MySqlRawQueryResult } from 'drizzle-orm/mysql2'
 
 import type { DrizzleClient } from '@/database/client.js'
 import { products } from '@/database/schema.js'

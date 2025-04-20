@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
 
+// biome-ignore lint/suspicious/noExplicitAny: Function needs to handle any value type
 export function guessValueType(value: any) {
   if (isValueABoolean(value)) {
     return 'boolean'
@@ -16,10 +17,12 @@ export function guessValueType(value: any) {
   return 'text'
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: Function needs to handle any value type
 export function isValueABoolean(value: any) {
   return value === true || value === false
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: Function needs to handle any value type
 export function isValueANumber(value: any) {
   if (!Number.isNaN(value) && value !== '' && typeof value !== 'boolean') {
     const parsedValue = Number.parseFloat(value)
@@ -34,6 +37,7 @@ export function isValueANumber(value: any) {
   return false
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: Function needs to handle any value type
 export function isValueADateType(value: any) {
   if (typeof value !== 'string') {
     return false

@@ -16,28 +16,7 @@ import { Queue } from '@/shared/queue/queue.js'
 import { cuid } from '@/shared/utils/cuid/cuid.js'
 
 import { container } from '@/utils/typi.js'
-
-export const survey = {
-  type: 'survey',
-  name: 'Newsletter subscribers',
-  fields: [
-    {
-      id: cuid(),
-      type: 'select',
-      label: "What's your role at your current employer?",
-      options: ['Engineer', 'Designer', 'Product Manager', 'Other'],
-      autoTagging: [{ option: 'Engineer', tagId: [cuid()] }],
-    },
-    {
-      id: cuid(),
-      type: 'select',
-      label: 'How long have you been in this role ?',
-      options: ['1 - 5 years', '10 - 15 years', '20+ years'],
-      autoTagging: [{ option: '10 - 15 years', tagId: [cuid()] }],
-    },
-  ],
-  appearance: 'inline',
-} as InsertForm
+import { survey } from '@/tests/integration/helpers/forms/survey.js'
 
 describe('@forms', () => {
   test('can create a sign up form', async ({ expect }) => {

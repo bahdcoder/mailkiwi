@@ -16,7 +16,6 @@ import { container } from '@/utils/typi.js'
 
 export class UserSessionMiddleware {
   constructor(
-    private userRepository = container.make(UserRepository),
     private teamRepository = container.make(TeamRepository),
     private contactRepository = container.make(ContactRepository),
   ) {}

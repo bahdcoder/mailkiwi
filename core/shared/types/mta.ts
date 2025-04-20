@@ -57,8 +57,8 @@ export interface MtaLog {
   egress_pool: string
   egress_source: string
   source_address: SourceAddress
-  feedback_report: null | any
-  meta: Record<string, any>
+  feedback_report: null | Record<string, unknown>
+  meta: Record<string, unknown>
   headers: Headers
   delivery_protocol: string
   reception_protocol: string

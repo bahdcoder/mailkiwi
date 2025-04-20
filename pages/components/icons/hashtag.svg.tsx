@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const HashTagIcon = React.forwardRef<
+export const HashtagIcon = React.forwardRef<
   React.ElementRef<'svg'>,
   React.ComponentPropsWithoutRef<'svg'>
 >((props, forwardedRef) => {
@@ -9,35 +9,20 @@ export const HashTagIcon = React.forwardRef<
       width="24px"
       height="24px"
       viewBox="0 0 24 24"
-      strokeWidth="1.5"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      color="currentColor"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       role="img"
-      aria-label="Hashtag icon"
+      aria-label="Hashtag"
       {...props}
       ref={forwardedRef}
     >
-      <title>Hashtag icon</title>
-      <path
-        d="M10 3L6 21"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M20.5 16H2.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path d="M22 7H4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path
-        d="M18 3L14 21"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <title>Hashtag</title>
     </svg>
   )
 })
+
+HashtagIcon.displayName = 'HashtagIcon'

@@ -4,9 +4,9 @@ import type { ScheduleDateTime } from '@/pages/components/flows/compose_broadcas
 import { createContext } from '@radix-ui/react-context'
 import type React from 'react'
 
+import type { BroadcastWithEmailContent } from '@/database/database_schema_types.js'
 import type { useSyncComposerContentToServer } from '@/pages/components/flows/compose_broadcast/hooks/use_sync_composer_content_to_server.js'
 import type { UseQueryResult } from '@tanstack/react-query'
-import type { BroadcastWithEmailContent } from '@/database/database_schema_types.js'
 
 export interface ComposeBroadcastContextInterface {
   syncContentToServerMutation: ReturnType<typeof useSyncComposerContentToServer>

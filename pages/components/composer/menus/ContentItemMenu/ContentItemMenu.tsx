@@ -1,5 +1,3 @@
-import useContentItemActions from './hooks/useContentItemActions.jsx'
-import { useData } from './hooks/useData.jsx'
 import { DragHandle } from '@/pages/components/composer/extensions/DragHandle/drag-handle.jsx'
 import { DropdownButton } from '@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx'
 import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
@@ -8,6 +6,8 @@ import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
 import * as Popover from '@radix-ui/react-popover'
 import type { Editor } from '@tiptap/react'
 import { useEffect, useState } from 'react'
+import useContentItemActions from './hooks/useContentItemActions.jsx'
+import { useData } from './hooks/useData.jsx'
 
 export type ContentItemMenuProps = {
   editor: Editor

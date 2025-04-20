@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 
-export const basePath = resolve('tests', 'e2e', 'state')
+export const basePath = resolve('core', 'tests', 'e2e', 'state')
 
 export function owner() {
   return resolve(basePath, 'auth.owner.json')

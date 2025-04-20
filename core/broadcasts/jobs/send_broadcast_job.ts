@@ -1,5 +1,5 @@
-import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
 import { type SQLWrapper, and, eq } from 'drizzle-orm'
+import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
 
 import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 

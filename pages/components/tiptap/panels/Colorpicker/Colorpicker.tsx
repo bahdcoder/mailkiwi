@@ -1,9 +1,9 @@
-import { Icon } from '../../ui/Icon.jsx'
-import { Toolbar } from '../../ui/Toolbar.jsx'
-import { ColorButton } from './ColorButton.jsx'
 import { themeColors } from '@/pages/components/tiptap/constants.js'
 import { useCallback, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
+import { Icon } from '../../ui/Icon.jsx'
+import { Toolbar } from '../../ui/Toolbar.jsx'
+import { ColorButton } from './ColorButton.jsx'
 
 export type ColorPickerProps = {
   color?: string

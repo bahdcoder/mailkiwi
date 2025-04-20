@@ -1,5 +1,5 @@
-import { appEnv } from '@/app/env/app_env.js'
 import dns from 'node:dns/promises'
+import { appEnv } from '@/app/env/app_env.js'
 
 import { DnsConfigurationTool } from '@/tools/dns/dns_configuration_tool.js'
 

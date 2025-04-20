@@ -15,7 +15,7 @@ import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 
 import { container } from '@/utils/typi.js'
 
-export const setup = async (email?: string, role?: string) => {
+const setup = async (email?: string, role?: string) => {
   const { user, team } = await createUser()
 
   const body = {

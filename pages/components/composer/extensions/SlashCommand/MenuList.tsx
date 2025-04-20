@@ -1,7 +1,7 @@
-import type { MenuListProps } from './types.js'
 import { Text } from '@kibamail/owly/text'
 import cn from 'classnames'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import type { MenuListProps } from './types.js'
 
 export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
   const scrollContainer = useRef<HTMLDivElement>(null)

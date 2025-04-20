@@ -99,7 +99,7 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
         body: this.config.method !== 'GET' ? JSON.stringify(this.config.payload) : null,
       })
 
-      let data: any
+      let data: unknown
 
       if (this.config.as === 'json') {
         data = await response.json()
@@ -110,14 +110,18 @@ class HttpClient<TPayload extends object = object, TResponse = unknown> {
       }
 
       if (!response.ok) {
-        throw new Error((data as any)?.message || 'Request failed')
+        throw new Error(
+          typeof data === 'object' && data !== null && 'message' in data
+            ? String(data.message)
+            : 'Request failed',
+        )
       }
 
-      return { data, error: null }
-    } catch (error: any) {
+      return { data: data as T, error: null }
+    } catch (error: unknown) {
       return {
         data: null,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       } as HttpResponse<T>
     }
   }

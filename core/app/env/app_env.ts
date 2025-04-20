@@ -1,4 +1,4 @@
-import { cleanEnv, host, port, str, url } from 'envalid'
+import { url, cleanEnv, host, port, str } from 'envalid'
 
 import { makeEnvSecrets } from '@/shared/utils/env/make_env_secrets.js'
 import { makeExtraAppConfigurations } from '@/shared/utils/env/make_extra_app_configurations.js'

@@ -1,8 +1,8 @@
-import type { MenuProps } from '../types.js'
 import { LinkEditorPanel } from '@/pages/components/tiptap/panels/LinkEditorPanel/LinkEditorPanel.jsx'
 import { LinkPreviewPanel } from '@/pages/components/tiptap/panels/LinkPreviewPanel/LinkPreviewPanel.jsx'
 import { BubbleMenu as BaseBubbleMenu, useEditorState } from '@tiptap/react'
 import React, { useCallback, useState } from 'react'
+import type { MenuProps } from '../types.js'
 
 export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
   const [showEdit, setShowEdit] = useState(false)
@@ -52,9 +52,7 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
         popperOptions: {
           modifiers: [{ name: 'flip', enabled: false }],
         },
-        appendTo: () => {
-          return appendTo?.current
-        },
+        appendTo: appendTo?.current || 'parent',
         onHidden: () => {
           setShowEdit(false)
         },

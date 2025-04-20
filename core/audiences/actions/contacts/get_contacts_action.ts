@@ -150,7 +150,6 @@ export class GetContactsAction {
 
         return {
           ...contact,
-          properties: knownProperties,
           parsedProperties,
         }
       }),

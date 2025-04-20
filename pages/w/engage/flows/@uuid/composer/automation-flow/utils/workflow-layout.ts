@@ -1,7 +1,7 @@
 import type { AutomationElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 import { cloneDeep } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/utils/clone_deep.js'
 import dagre from 'dagre'
-import { isNode, Position } from 'react-flow-renderer'
+import { Position, isNode } from 'react-flow-renderer'
 
 const nodeWidth = 300
 const nodeHeight = 92
@@ -13,7 +13,7 @@ const getLayoutedElements = (_elements: AutomationElement[]) => {
   dagreGraph.setDefaultEdgeLabel(() => ({}))
   dagreGraph.setGraph({ rankdir: 'TB', ranksep: 150 })
 
-  elements.forEach((el) => {
+  for (const el of elements) {
     if (isNode(el)) {
       dagreGraph.setNode(el.id, {
         width: el.width || nodeWidth,
@@ -22,7 +22,7 @@ const getLayoutedElements = (_elements: AutomationElement[]) => {
     } else {
       dagreGraph.setEdge(el.source, el.target)
     }
-  })
+  }
 
   dagre.layout(dagreGraph)
 

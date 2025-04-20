@@ -8,9 +8,9 @@ export interface ActionRemoveTagNodeProps {
 
 export function ActionRemoveTagNode({ data }: ActionRemoveTagNodeProps) {
   return (
-    <div
+    <button
+      type="button"
       className="w-node-wrapper"
-      role="button"
       onClick={() => data.onNodeClickCallback(data.step.id)}
     >
       <div
@@ -22,6 +22,6 @@ export function ActionRemoveTagNode({ data }: ActionRemoveTagNodeProps) {
         <Handle type="source" position={Position.Bottom} />
         <Handle type="target" position={Position.Top} />
       </div>
-    </div>
+    </button>
   )
 }

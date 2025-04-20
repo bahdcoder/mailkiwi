@@ -1,4 +1,3 @@
-import { ImageBlockWidth } from './ImageBlockWidth.js'
 import { LinkEditorPanel } from '@/pages/components/composer/components/link-menu/link-editor-panel.jsx'
 import {
   ToolbarButton,
@@ -18,6 +17,7 @@ import { BubbleMenu as BaseBubbleMenu, useEditorState } from '@tiptap/react'
 import React, { useCallback, useRef } from 'react'
 import { type Instance, sticky } from 'tippy.js'
 import { v4 as uuid } from 'uuid'
+import { ImageBlockWidth } from './ImageBlockWidth.js'
 
 export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
   const menuRef = useRef<HTMLDivElement>(null)
@@ -116,9 +116,7 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
         onCreate: (instance: Instance) => {
           tippyInstance.current = instance
         },
-        appendTo: () => {
-          return appendTo?.current
-        },
+        appendTo: appendTo?.current || 'parent',
         plugins: [sticky],
         sticky: 'popper',
         maxWidth: 'calc(100vw - 16px)',

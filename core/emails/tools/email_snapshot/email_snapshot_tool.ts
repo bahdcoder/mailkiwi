@@ -1,6 +1,6 @@
-import mjml from 'mjml'
 import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import mjml from 'mjml'
 import puppeteer, { KnownDevices } from 'puppeteer'
 
 import { E_OPERATION_FAILED } from '@/http/responses/errors.js'

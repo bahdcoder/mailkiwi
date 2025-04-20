@@ -8,7 +8,6 @@ import { describe, it } from 'vitest'
 import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
 import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
-import { setupDomainForDnsChecks } from '@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js'
 
 import type { Audience } from '@/database/database_schema_types.js'
 
@@ -16,9 +15,10 @@ import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js
 import type { MtaLog } from '@/shared/types/mta.js'
 
 import { container } from '@/utils/typi.js'
+import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
-export const xForwardedFor = '66.249.93.66'
-export const userAgent =
+const xForwardedFor = '66.249.93.66'
+const userAgent =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
 
 describe('@process-mta-log', () => {

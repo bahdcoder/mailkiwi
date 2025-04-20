@@ -1,5 +1,5 @@
-import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.js'
 import { and, eq, isNotNull, sql } from 'drizzle-orm'
+import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.js'
 
 import type { Contact } from '@/database/database_schema_types.js'
 import {

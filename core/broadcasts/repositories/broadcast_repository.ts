@@ -1,4 +1,4 @@
-import { and, eq, type SQLWrapper } from 'drizzle-orm'
+import { type SQLWrapper, and, eq } from 'drizzle-orm'
 import { alias } from 'drizzle-orm/mysql-core'
 
 import type { CreateBroadcastDto } from '@/broadcasts/dto/create_broadcast_dto.js'
@@ -19,14 +19,14 @@ import {
   segments,
 } from '@/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { DateTime } from 'luxon'
-import { hasOne } from '@/database/utils/relationships.js'
-import { container } from '@/utils/typi.js'
+import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
 import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { hasOne } from '@/database/utils/relationships.js'
+import { makeDatabase } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { container } from '@/utils/typi.js'
+import { DateTime } from 'luxon'
 
 export class BroadcastRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

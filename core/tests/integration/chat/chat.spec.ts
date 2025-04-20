@@ -1,9 +1,9 @@
+import { setTimeout } from 'node:timers/promises'
 import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
 import { MessageRepository } from '@/chat/repositories/message_repository.js'
 import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { DateTime } from 'luxon'
-import { setTimeout } from 'node:timers/promises'
 import { describe, test } from 'vitest'
 
 import { createUser } from '@/tests/mocks/auth/users.js'
@@ -226,6 +226,7 @@ describe('@chat messages', () => {
     return { channelId, user, secondUser, channelName, allMessagesIds }
   }
 
+  // biome-ignore lint/suspicious/noExplicitAny: Test response data
   function getMessagePositionsFromResponse(data: any) {
     return (data?.pageProps?.messages?.data || data).map(
       (message: Message) => message.content?.blocks?.[1],

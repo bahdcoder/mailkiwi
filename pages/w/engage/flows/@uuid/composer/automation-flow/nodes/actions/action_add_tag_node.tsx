@@ -8,9 +8,9 @@ export interface ActionAddTagNodeProps {
 
 export function ActionAddTagNode({ data }: ActionAddTagNodeProps) {
   return (
-    <div
+    <button
+      type="button"
       className="w-node-wrapper"
-      role="button"
       onClick={() => data.onNodeClickCallback(data.step.id)}
     >
       <div
@@ -22,6 +22,6 @@ export function ActionAddTagNode({ data }: ActionAddTagNodeProps) {
         <Handle type="source" position={Position.Bottom} />
         <Handle type="target" position={Position.Top} />
       </div>
-    </div>
+    </button>
   )
 }

@@ -1,17 +1,23 @@
-export const languages: any[] = [
-  { name: 'arabic', label: 'Arabic', value: 'ar' as any['value'] },
-  { name: 'chinese', label: 'Chinese', value: 'zh' as any['value'] },
-  { name: 'english', label: 'English', value: 'en' as any['value'] },
-  { name: 'french', label: 'French', value: 'fr' as any['value'] },
-  { name: 'german', label: 'German', value: 'de' as any['value'] },
-  { name: 'greek', label: 'Greek', value: 'gr' as any['value'] },
-  { name: 'italian', label: 'Italian', value: 'it' as any['value'] },
-  { name: 'japanese', label: 'Japanese', value: 'jp' as any['value'] },
-  { name: 'korean', label: 'Korean', value: 'ko' as any['value'] },
-  { name: 'russian', label: 'Russian', value: 'ru' as any['value'] },
-  { name: 'spanish', label: 'Spanish', value: 'es' as any['value'] },
-  { name: 'swedish', label: 'Swedish', value: 'sv' as any['value'] },
-  { name: 'ukrainian', label: 'Ukrainian', value: 'ua' as any['value'] },
+export interface Language {
+  name: string
+  label: string
+  value: string
+}
+
+export const languages: Language[] = [
+  { name: 'arabic', label: 'Arabic', value: 'ar' },
+  { name: 'chinese', label: 'Chinese', value: 'zh' },
+  { name: 'english', label: 'English', value: 'en' },
+  { name: 'french', label: 'French', value: 'fr' },
+  { name: 'german', label: 'German', value: 'de' },
+  { name: 'greek', label: 'Greek', value: 'gr' },
+  { name: 'italian', label: 'Italian', value: 'it' },
+  { name: 'japanese', label: 'Japanese', value: 'jp' },
+  { name: 'korean', label: 'Korean', value: 'ko' },
+  { name: 'russian', label: 'Russian', value: 'ru' },
+  { name: 'spanish', label: 'Spanish', value: 'es' },
+  { name: 'swedish', label: 'Swedish', value: 'sv' },
+  { name: 'ukrainian', label: 'Ukrainian', value: 'ua' },
 ]
 
 export const userNames = [

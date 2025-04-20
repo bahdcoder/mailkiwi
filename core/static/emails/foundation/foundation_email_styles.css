@@ -115,6 +115,7 @@ table.spacer {
   width: 100%;
 }
 table.spacer td {
+  /* biome-ignore lint/correctness/noUnknownProperty: MS Office specific property */
   mso-line-height-rule: exactly;
 }
 
@@ -925,6 +926,7 @@ th.float-center {
 
 .hide-for-large {
   display: none !important;
+  /* biome-ignore lint/correctness/noUnknownProperty: MS Office specific property */
   mso-hide: all;
   overflow: hidden;
   max-height: 0;
@@ -944,6 +946,7 @@ th.float-center {
 }
 
 table.body table.container .hide-for-large * {
+  /* biome-ignore lint/correctness/noUnknownProperty: MS Office specific property */
   mso-hide: all;
 }
 
@@ -966,6 +969,7 @@ table.body table.container .hide-for-large * {
   table.body table.container .show-for-large {
     display: none !important;
     width: 0;
+    /* biome-ignore lint/correctness/noUnknownProperty: MS Office specific property */
     mso-hide: all;
     overflow: hidden;
   }
@@ -1136,6 +1140,7 @@ p + .stat {
 span.preheader {
   display: none !important;
   visibility: hidden;
+  /* biome-ignore lint/correctness/noUnknownProperty: MS Office specific property */
   mso-hide: all !important;
   font-size: 1px;
   color: #f3f3f3;

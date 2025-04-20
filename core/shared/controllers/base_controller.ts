@@ -34,8 +34,8 @@ import type { HonoContext } from '@/shared/server/types.js'
 import { Session } from '@/shared/sessions/sessions.js'
 import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 
-import { container } from '@/utils/typi.js'
 import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
+import { container } from '@/utils/typi.js'
 
 type ControllerParams =
   | 'importId'
@@ -59,7 +59,7 @@ interface ResponseConfiguration {
     }
     json: {
       status?: StatusCode
-      content: Record<string, any>
+      content: Record<string, unknown>
     }
   }
 }
@@ -177,6 +177,7 @@ export class BaseController extends FlashController {
   }
 
   protected async validate<
+    // biome-ignore lint/suspicious/noExplicitAny: Valibot schema types require any
     T extends BaseSchema<any, any, any> | BaseSchemaAsync<any, any, any>,
   >(
     ctx: HonoContext,
@@ -328,6 +329,7 @@ export class BaseController extends FlashController {
       automationId: AutomationRepository,
     } as const
 
+    // biome-ignore lint/suspicious/noExplicitAny: Dynamic repository resolution requires any
     const repository = container.make(repositories[param] as any) as any
 
     const entity = await repository.findById(this.getParameter(ctx, param))

@@ -9,7 +9,7 @@ export type FlashMessagePayload = {
   title: string
   description?: string
   variant?: AlertRootProps['variant']
-  [key: string]: any
+  [key: string]: string | number | boolean | undefined
 }
 
 export class FlashController {

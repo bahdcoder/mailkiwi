@@ -1,4 +1,3 @@
-import { LinkEditorPanel, linkPresets } from './link-editor-panel.jsx'
 import { ToolbarButton } from '@/pages/components/composer/components/toolbar/toolbar.jsx'
 import { ToolbarContainer } from '@/pages/components/composer/components/toolbar/toolbar.jsx'
 import { EditPencilIcon } from '@/pages/components/icons/edit-pencil.svg.jsx'
@@ -7,6 +6,7 @@ import type { MenuProps } from '@/pages/components/tiptap/menus/types.js'
 import { Text } from '@kibamail/owly/text'
 import { BubbleMenu as BaseBubbleMenu, useEditorState } from '@tiptap/react'
 import React, { useCallback, useState } from 'react'
+import { LinkEditorPanel, linkPresets } from './link-editor-panel.jsx'
 
 export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
   const { link, target } = useEditorState({
@@ -44,9 +44,7 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
         popperOptions: {
           modifiers: [{ name: 'flip', enabled: false }],
         },
-        appendTo() {
-          return appendTo?.current
-        },
+        appendTo: appendTo?.current || 'parent',
       }}
     >
       <ToolbarContainer>

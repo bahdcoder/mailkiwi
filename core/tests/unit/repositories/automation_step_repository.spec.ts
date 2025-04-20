@@ -2,9 +2,9 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
+import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
 import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
 import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
-import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
 
 import { createUser } from '@/tests/mocks/auth/users.js'
 

@@ -1,6 +1,6 @@
-import { MessageRepository } from './message_repository.js'
 import { defaultChannels } from '@/cli/commands/chat/add_default_channels_comand.js'
 import { and, asc, desc, eq, gt, inArray, isNull, lt, sql } from 'drizzle-orm'
+import { MessageRepository } from './message_repository.js'
 
 import type { Channel, Message } from '@/database/database_schema_types.js'
 import {

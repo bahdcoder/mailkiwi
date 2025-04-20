@@ -6,13 +6,12 @@ import { ImportContactsJob } from '@/audiences/jobs/import_contacts_job.js'
 import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
 import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
-import { setupImport } from '@/tests/integration/audiences/contacts.spec.js'
-
 import { audiences, contacts, tagsOnContacts } from '@/database/schema.js'
 
 import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
 
 import { container } from '@/utils/typi.js'
+import { setupImport } from '@/tests/integration/helpers/contacts/setup_imports.js'
 
 describe('@contacts import job', () => {
   test('reads the csv content from storage and syncs all values to contacts', async ({

@@ -1,9 +1,9 @@
-import { DragHandlePlugin, dragHandlePluginDefaultKey } from './drag-handle-plugin.js'
 import type { Editor } from '@tiptap/core'
 import type { Node } from '@tiptap/pm/model'
 import React, { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { Props as TippyProps } from 'tippy.js'
+import { DragHandlePlugin, dragHandlePluginDefaultKey } from './drag-handle-plugin.js'
 
 export type DragHandleProps = {
   editor: Editor

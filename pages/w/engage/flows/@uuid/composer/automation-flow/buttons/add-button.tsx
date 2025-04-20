@@ -1,6 +1,6 @@
+import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import React, { type HTMLAttributes, type PropsWithChildren } from 'react'
-import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
 
 export interface AddEdgeButtonProps
   extends PropsWithChildren<HTMLAttributes<HTMLButtonElement>> {}

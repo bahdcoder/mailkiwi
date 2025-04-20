@@ -3,11 +3,11 @@ import type {
   AutomationWithSteps,
 } from '@/database/database_schema_types.js'
 import {
-  automationStepSubtypesAction,
-  automationStepSubtypesTrigger,
-  automationStepSubtypesRule,
-  type AutomationStepType,
   type AutomationStepSubType,
+  type AutomationStepType,
+  automationStepSubtypesAction,
+  automationStepSubtypesRule,
+  automationStepSubtypesTrigger,
 } from '@/database/types/automations.js'
 import { AxesIcon } from '@/pages/components/icons/axes.svg.jsx'
 import { BellOffIcon } from '@/pages/components/icons/bell-off.svg.jsx'
@@ -18,7 +18,7 @@ import { PercentageIcon } from '@/pages/components/icons/percentage.svg.jsx'
 import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
 import { TimerIcon } from '@/pages/components/icons/timer.svg.jsx'
 import { UserPlusIcon } from '@/pages/components/icons/user-plus.svg.jsx'
-import { UserXMarkIcon } from '@/pages/components/icons/user-xmark.svg.jsx'
+import { UserXmarkIcon } from '@/pages/components/icons/user-xmark.svg.jsx'
 import { UserIcon } from '@/pages/components/icons/user.svg.jsx'
 import { WebhookIcon } from '@/pages/components/icons/webhook.svg.jsx'
 import { usePageProps } from '@/pages/hooks/use_page_props.js'
@@ -55,7 +55,7 @@ const icons: Partial<
 
   // triggers
   TRIGGER_CONTACT_SUBSCRIBED: UserPlusIcon,
-  TRIGGER_CONTACT_UNSUBSCRIBED: UserXMarkIcon,
+  TRIGGER_CONTACT_UNSUBSCRIBED: UserXmarkIcon,
   TRIGGER_CONTACT_TAG_ADDED: LabelIcon,
   TRIGGER_CONTACT_TAG_REMOVED: LabelIcon,
   TRIGGER_EMPTY: LabelIcon,
@@ -114,7 +114,7 @@ export function AddNodeDialog({
     if (!open) {
       reset()
     }
-  }, [open])
+  }, [open, reset])
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -146,6 +146,7 @@ export function AddNodeDialog({
                         const Icon = icons[subtype] ? icons[subtype] : null
                         return (
                           <button
+                            type="button"
                             key={subtype}
                             onClick={() => setSelectedSubType(subtype)}
                             disabled={isPending}

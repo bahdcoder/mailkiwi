@@ -12,13 +12,13 @@ import { InsightsIcon } from '@/pages/components/icons/products/insights.svg.jsx
 import { OptimiseIcon } from '@/pages/components/icons/products/optimise.svg.jsx'
 import { SendIcon } from '@/pages/components/icons/products/send.svg.jsx'
 import { SidebarCollapseIcon } from '@/pages/components/icons/sidebar-collapse.svg.jsx'
+import { FREE_MONTHLY_CREDITS } from '@/pages/env.js'
+import { formatCount } from '@/pages/utils/number_formatter.js'
+import { route } from '@/shared/routes/route_aliases.js'
 import { Button } from '@kibamail/owly/button'
 import { Progress, type ProgressProps } from '@kibamail/owly/progress'
 import { Text } from '@kibamail/owly/text'
 import { usePageContext } from 'vike-react/usePageContext'
-import { FREE_MONTHLY_CREDITS } from '@/pages/env.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import { formatCount } from '@/pages/utils/number_formatter.js'
 
 interface SidebarContentProps {
   rootId: string

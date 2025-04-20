@@ -8,9 +8,9 @@ export interface TriggerEmptyNodeProps {
 
 export function TriggerEmptyNode({ data }: TriggerEmptyNodeProps) {
   return (
-    <div
+    <button
+      type="button"
       className="w-node-wrapper-empty"
-      role="button"
       onClick={() => data.onNodeClickCallback(data.step.id)}
     >
       <div
@@ -22,6 +22,6 @@ export function TriggerEmptyNode({ data }: TriggerEmptyNodeProps) {
           <Handle type="source" position={Position.Bottom} />
         </div>
       </div>
-    </div>
+    </button>
   )
 }

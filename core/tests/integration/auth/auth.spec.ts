@@ -297,6 +297,7 @@ describe('@oauth ', () => {
       lastName: faker.person.lastName(),
       providerId: faker.string.uuid(),
     }
+    // biome-ignore lint/suspicious/noExplicitAny: Test mock data
     const FakeDriver: any = {
       async handleCallback() {
         return {

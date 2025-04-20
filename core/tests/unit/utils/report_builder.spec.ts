@@ -1,14 +1,13 @@
 import { faker } from '@faker-js/faker'
-import { and, count, eq } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
 import { ReportBuilder } from '@/audiences/utils/report_builder/report_builder.js'
 
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
-import { setupDomainForDnsChecks } from '@/tests/unit/jobs/check_sending_domain_dns_configuration_job.spec.js'
+import { createBroadcastForUser } from '@/tests/mocks/auth/users.js'
 
-import { Audience, type InsertEmailSendEvent } from '@/database/database_schema_types.js'
+import type { InsertEmailSendEvent } from '@/database/database_schema_types.js'
 import {
   contacts,
   emailSendEvents,
@@ -20,6 +19,7 @@ import { makeDatabase } from '@/shared/container/index.js'
 import { cuid } from '@/shared/utils/cuid/cuid.js'
 
 import { container } from '@/utils/typi.js'
+import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 describe('@report-builder', () => {
   async function prepareBatchOfContactsForReport({

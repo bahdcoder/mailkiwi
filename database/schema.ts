@@ -1,3 +1,4 @@
+import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
 import type { CreateFormDto } from '@/forms/dto/create_form_dto.js'
 import type { SubmitFormDto } from '@/forms/dto/submit_form_dto.js'
 import type { UpdateWebsitePageDto } from '@/websites/dto/update_website_page_dto.js'
@@ -18,7 +19,6 @@ import {
   varchar,
 } from 'drizzle-orm/mysql-core'
 import { v1 } from 'uuid'
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
 
 export const automationStepSubtypesTriggerMap = {
   TRIGGER_EMPTY: 'TRIGGER_EMPTY',

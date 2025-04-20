@@ -19,9 +19,9 @@ import {
 import { makeDatabase } from '@/shared/container/index.js'
 import { cuid } from '@/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
 import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
 import type { AutomationStep } from '@/database/database_schema_types.js'
+import { container } from '@/utils/typi.js'
 
 describe('@automations', () => {
   test('experimenting with automations', async ({ expect }) => {

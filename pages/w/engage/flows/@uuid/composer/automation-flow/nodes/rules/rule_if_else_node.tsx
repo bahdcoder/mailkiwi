@@ -8,9 +8,9 @@ export interface RuleIfElseNodeProps {
 
 export function RuleIfElseNode({ data }: RuleIfElseNodeProps) {
   return (
-    <div
+    <button
+      type="button"
       className="w-node-wrapper"
-      role="button"
       onClick={() => data.onNodeClickCallback(data.step.id)}
     >
       <div
@@ -22,6 +22,6 @@ export function RuleIfElseNode({ data }: RuleIfElseNodeProps) {
         <Handle type="target" position={Position.Top} />
         <Handle type="source" position={Position.Bottom} />
       </div>
-    </div>
+    </button>
   )
 }

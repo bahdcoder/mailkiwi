@@ -1,7 +1,7 @@
+import type { Readable } from 'node:stream'
 import { MinioClient } from '@/minio/minio_client.js'
 import { faker } from '@faker-js/faker'
 import { like } from 'drizzle-orm'
-import type { Readable } from 'node:stream'
 import { describe, test } from 'vitest'
 
 import type { CreateContactExportDto } from '@/audiences/dto/contact_exports/create_contact_export_dto.js'
@@ -136,6 +136,7 @@ describe('@contacts exports job', () => {
 
     const minio = new FakeMinioClient()
 
+    // biome-ignore lint/suspicious/noExplicitAny: Test mock
     container.fake(MinioClient, minio as any)
 
     await container.make(ExportContactsJob).handle({
@@ -167,7 +168,7 @@ describe('@contacts exports job', () => {
   })
 })
 
-export async function streamToBuffer(stream: Readable): Promise<Buffer> {
+async function streamToBuffer(stream: Readable): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     const chunks: Buffer[] = []
     stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)))

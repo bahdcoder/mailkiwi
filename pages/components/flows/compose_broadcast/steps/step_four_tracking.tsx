@@ -1,5 +1,5 @@
 import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
-import { WarningCircleIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
+import { WarningCircleSolidIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
 import { WarningTriangleSolidIcon } from '@/pages/components/icons/warning-triangle-solid.svg.jsx'
 import { RadioGroupCardItem } from '@/pages/components/radio-group/radio-group-card-item.jsx'
 import * as Alert from '@kibamail/owly/alert'
@@ -66,7 +66,7 @@ export function StepFourTracking() {
         >
           <Alert.Root variant="feature" className="mt-4 -ml-6">
             <Alert.Icon>
-              <WarningCircleIcon />
+              <WarningCircleSolidIcon />
             </Alert.Icon>
             <Alert.Title className="text-left flex flex-col gap-1">
               <span>
@@ -96,7 +96,7 @@ export function StepFourTracking() {
         >
           <Alert.Root variant="feature" className="mt-4 -ml-6">
             <Alert.Icon>
-              <WarningCircleIcon />
+              <WarningCircleSolidIcon />
             </Alert.Icon>
             <Alert.Title className="text-left flex flex-col">
               <span>

@@ -10,9 +10,9 @@ export function ActionUnsubscribeToAudienceNode({
   data,
 }: ActionUnsubscribeToAudienceNodeProps) {
   return (
-    <div
+    <button
+      type="button"
       className="w-node-wrapper"
-      role="button"
       onClick={() => data.onNodeClickCallback(data.step.id)}
     >
       <div
@@ -24,6 +24,6 @@ export function ActionUnsubscribeToAudienceNode({
         <Handle type="source" position={Position.Bottom} />
         <Handle type="target" position={Position.Top} />
       </div>
-    </div>
+    </button>
   )
 }

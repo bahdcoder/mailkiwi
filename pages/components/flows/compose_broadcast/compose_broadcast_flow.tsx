@@ -1,7 +1,3 @@
-import {
-  type ComposeBroadcastContextInterface,
-  ComposeBroadcastProvider,
-} from './state/compose_broadcast_context.jsx'
 import { ComposeBroadcastTopBar } from '@/pages/components/flows/compose_broadcast/components/compose_broadcast_top_bar.jsx'
 import { useGetBroadcastRecipientsCount } from '@/pages/components/flows/compose_broadcast/hooks/use_get_broadcast_recipients_count.js'
 import { useSyncComposerContentToServer } from '@/pages/components/flows/compose_broadcast/hooks/use_sync_composer_content_to_server.js'
@@ -15,6 +11,10 @@ import { route } from '@/shared/routes/route_aliases.js'
 import dayjs from 'dayjs'
 import React from 'react'
 import { clientOnly } from 'vike-react/clientOnly'
+import {
+  type ComposeBroadcastContextInterface,
+  ComposeBroadcastProvider,
+} from './state/compose_broadcast_context.jsx'
 
 const StepOneComposer = clientOnly(() =>
   import('./steps/step_one_composer.jsx').then(({ StepOneComposer }) => StepOneComposer),

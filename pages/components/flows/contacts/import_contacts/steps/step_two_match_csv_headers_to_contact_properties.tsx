@@ -1,12 +1,8 @@
-import {
-  type FormState,
-  useImportcontactsContext,
-} from '../state/import_contacts_context.jsx'
 import { CreateCustomContactProperty } from '@/pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx'
 import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
 import { CheckCircleSolidIcon } from '@/pages/components/icons/check-circle-solid.svg.jsx'
 import { CheckSquareIcon } from '@/pages/components/icons/check-square.svg.jsx'
-import { HashTagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
+import { HashtagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
 import { InfoCircleSolidIcon } from '@/pages/components/icons/info-circle-solid.svg.jsx'
 import { MailIcon } from '@/pages/components/icons/mail.svg.jsx'
 import { NavArrowRightIcon } from '@/pages/components/icons/nav-arrow-right.svg.jsx'
@@ -23,6 +19,10 @@ import * as TextField from '@kibamail/owly/text-field'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import cn from 'classnames'
 import * as React from 'react'
+import {
+  type FormState,
+  useImportcontactsContext,
+} from '../state/import_contacts_context.jsx'
 
 type PropertyType = 'date' | 'float' | 'text' | 'boolean' | 'standard' | 'skip'
 type SelectFieldPropertyState = Record<
@@ -139,7 +139,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
       const icons = {
         date: CalendarIcon,
-        float: HashTagIcon,
+        float: HashtagIcon,
         text: TextIcon,
         boolean: CheckSquareIcon,
         standard: TextIcon,

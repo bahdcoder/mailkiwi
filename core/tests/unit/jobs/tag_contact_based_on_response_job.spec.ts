@@ -5,9 +5,6 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
-
-import { survey } from '@/tests/integration/forms/forms.spec.js'
 import { createContactsForAudience, createUser } from '@/tests/mocks/auth/users.js'
 
 import { tags, tagsOnContacts } from '@/database/schema.js'
@@ -16,6 +13,7 @@ import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js
 import { cuid } from '@/shared/utils/cuid/cuid.js'
 
 import { container } from '@/utils/typi.js'
+import { survey } from '@/tests/integration/helpers/forms/survey.js'
 
 describe('@tag-contact', () => {
   const setup = async () => {
@@ -61,9 +59,9 @@ describe('@tag-contact', () => {
 
     const submitContent: Record<string, string[]> = {}
 
-    survey.fields?.forEach((field) => {
+    for (const field of survey.fields || []) {
       submitContent[field.id as string] = [field.options?.[0] as string]
-    })
+    }
 
     const { id: formResponseId } = await container
       .make(FormResponseRepository)

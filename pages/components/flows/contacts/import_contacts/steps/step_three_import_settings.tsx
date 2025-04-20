@@ -2,14 +2,14 @@ import * as CheckboxField from '@/pages/components/checkbox-field/checkbox-field
 import { useImportcontactsContext } from '@/pages/components/flows/contacts/import_contacts/state/import_contacts_context.jsx'
 import { NavArrowLeftIcon } from '@/pages/components/icons/nav-arrow-left.svg.jsx'
 import {
+  type ComboboxItem,
+  TagsCombobox,
+} from '@/pages/components/tags/tags_combobox.jsx'
+import {
   type FormPayload,
   ServerForm,
   useServerFormMutation,
 } from '@/pages/hooks/use_server_form_mutation.jsx'
-import {
-  type ComboboxItem,
-  TagsCombobox,
-} from '@/pages/components/tags/tags_combobox.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'

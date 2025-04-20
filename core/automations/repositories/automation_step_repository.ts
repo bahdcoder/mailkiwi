@@ -3,11 +3,11 @@ import { eq } from 'drizzle-orm'
 import type { DrizzleClient } from '@/database/client.js'
 import { type AutomationStepConfiguration, automationSteps } from '@/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
 import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
 import type { UpdateAutomationStepDto } from '@/automations/dto/update_automation_step_dto.js'
 import { AutomationStep } from '@/database/database_schema_types.js'
+import { makeDatabase } from '@/shared/container/index.js'
+import { BaseRepository } from '@/shared/repositories/base_repository.js'
 
 export class AutomationStepRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -69,7 +69,7 @@ export class AutomationStepRepository extends BaseRepository {
         subtype: 'RULE_IF_ELSE',
         parentId: payload.parentId,
         configuration: payload.configuration || {
-          filterGroups: JSON.stringify({
+          filterGroups: {
             type: 'AND',
             groups: [
               {
@@ -77,7 +77,7 @@ export class AutomationStepRepository extends BaseRepository {
                 conditions: [],
               },
             ],
-          }),
+          },
         },
       })
 

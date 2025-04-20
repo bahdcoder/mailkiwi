@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query'
 import React from 'react'
 
-export interface ServerSubmissionResponse<TResponse = Record<'path' | string, any>> {
+export interface ServerSubmissionResponse<TResponse = Record<'path' | string, unknown>> {
   type: 'redirect' | 'json'
   payload: TResponse
   success: boolean
@@ -24,11 +24,11 @@ export type FormPayload = Record<
   | FormDataEntryValue[]
   | boolean
   | null
-  | Record<string, any>
-  | Record<string, any>[]
+  | Record<string, unknown>
+  | Record<string, unknown>[]
 >
 
-export interface UseServerFormMutationProps<TResponse = Record<'path' | string, any>>
+export interface UseServerFormMutationProps<TResponse = Record<'path' | string, unknown>>
   extends Omit<
     MutationOptions<
       ServerSubmissionResponse<TResponse>,
@@ -44,7 +44,7 @@ export interface UseServerFormMutationProps<TResponse = Record<'path' | string, 
   transform?: (form: FormPayload) => FormPayload
 }
 
-export function useServerFormMutation<T extends Record<'path' | string, any>>({
+export function useServerFormMutation<T extends Record<'path' | string, unknown>>({
   action,
   method = 'POST',
   onProgress,
@@ -103,15 +103,19 @@ export function useServerFormMutation<T extends Record<'path' | string, any>>({
       if (submissionResponse?.payload?.errors) {
         const errors = submissionResponse?.payload?.errors
 
-        for (const error of errors) {
-          submissionResponse.errorsMap[error.field] = error.message
+        if (Array.isArray(errors)) {
+          for (const error of errors) {
+            submissionResponse.errorsMap[error.field] = error.message
 
-          submissionResponse.errorsList.push(error.message)
+            submissionResponse.errorsList.push(error.message)
+          }
         }
       }
 
       if (submissionResponse?.payload?.message && !submissionResponse?.payload?.errors) {
-        submissionResponse.errorsList.push(submissionResponse?.payload?.message)
+        if (typeof submissionResponse?.payload?.message === 'string') {
+          submissionResponse.errorsList.push(submissionResponse.payload.message)
+        }
       }
 
       if (!response.ok) {
@@ -119,7 +123,10 @@ export function useServerFormMutation<T extends Record<'path' | string, any>>({
       }
 
       if (submissionResponse.type === 'redirect') {
-        await navigate(submissionResponse.payload.path)
+        const path = submissionResponse.payload.path
+        if (typeof path === 'string') {
+          await navigate(path)
+        }
       }
 
       return submissionResponse as ServerSubmissionResponse<T>

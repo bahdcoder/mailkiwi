@@ -1,4 +1,4 @@
-export function dump(...value: any[]) {
+export function dump(...value: unknown[]) {
   console.dir(value, { depth: null })
 }
 

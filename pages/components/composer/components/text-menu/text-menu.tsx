@@ -8,7 +8,7 @@ import {
   ToolbarSection,
 } from '@/pages/components/composer/components/toolbar/toolbar.jsx'
 import { BoldIcon } from '@/pages/components/icons/bold.svg.jsx'
-import { CodeBlockIcon } from '@/pages/components/icons/codeblock.svg.jsx'
+import { CodeblockIcon } from '@/pages/components/icons/codeblock.svg.jsx'
 import { ItalicIcon } from '@/pages/components/icons/italic.svg.jsx'
 import { LinkIcon } from '@/pages/components/icons/link.svg.jsx'
 import { UnderlineIcon } from '@/pages/components/icons/underline.svg.jsx'
@@ -70,7 +70,7 @@ export const textMenuActions: TextMenuAction[] = [
   {
     id: 'code',
     name: 'Code',
-    icon: <CodeBlockIcon className="w-4 h-4" />,
+    icon: <CodeblockIcon className="w-4 h-4" />,
     command(editor) {
       editor
         .chain()

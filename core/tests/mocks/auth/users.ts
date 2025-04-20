@@ -1,4 +1,3 @@
-import { createFakeAbTestEmailContent } from '../audiences/email_content.js'
 import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
 import { defaultChannels } from '@/cli/commands/chat/add_default_channels_comand.js'
 import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
@@ -6,6 +5,7 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 import { update } from 'tar'
+import { createFakeAbTestEmailContent } from '../audiences/email_content.js'
 
 import { CreateAudienceAction } from '@/audiences/actions/audiences/create_audience_action.js'
 import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
@@ -43,7 +43,7 @@ export async function createBroadcastForUser(
   teamId: string,
   audienceId: string,
   broadcastGroupId: string,
-  options?: {
+  options: {
     updateWithValidContent?: boolean
     updateWithABTestsContent?: boolean
     weights?: number[]
@@ -52,11 +52,10 @@ export async function createBroadcastForUser(
       fromEmail?: string
       fromName?: string
     }
-  },
+  } = {},
 ) {
-  if (!options) {
-    options = {}
-  }
+  // Create a local copy to avoid parameter reassignment
+  const opts = options || {}
 
   const response = await makeRequestAsUser(user, {
     method: 'POST',

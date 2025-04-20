@@ -1,11 +1,11 @@
-import type { AVAILABLE_QUEUE_TYPE } from './config.js'
+import type { DrizzleClient } from '@/database/client.js'
 import type { Redis } from 'ioredis'
 import type { Logger } from 'pino'
-import type { DrizzleClient } from '@/database/client.js'
+import type { AVAILABLE_QUEUE_TYPE } from './config.js'
 
 export interface JobHandlerResponse {
   success: boolean
-  output?: string
+  output?: string | number | boolean | object | null
 }
 
 type PromiseFunction<T> = () => Promise<T>
@@ -25,7 +25,7 @@ export abstract class BaseJob<T extends object = object> {
     throw new Error('Queue is not defined for this job.')
   }
 
-  done(output?: any) {
+  done(output?: string | number | boolean | object | null) {
     return { success: true, output }
   }
 

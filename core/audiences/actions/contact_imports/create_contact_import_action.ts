@@ -1,7 +1,7 @@
+import { Readable } from 'node:stream'
 import { makeMinioClient } from '@/minio/minio_client.js'
 import { makeS3Client } from '@/minio/s3_client.js'
 import mime from 'mime-types'
-import { Readable } from 'node:stream'
 
 import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
 
@@ -100,7 +100,7 @@ export class CreateContactImportAction {
           headerCounts[header]++
 
           if (headerSamples[header].length < 5) {
-            headerSamples[header].push(row[header])
+            headerSamples[header].push(String(row[header]))
           }
         }
       }

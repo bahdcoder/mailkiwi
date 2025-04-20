@@ -1,5 +1,5 @@
-import { Secret } from '@poppinss/utils'
 import { generateKeyPairSync } from 'node:crypto'
+import { Secret } from '@poppinss/utils'
 
 export class RsaKeyPair {
   public publicKey = ''

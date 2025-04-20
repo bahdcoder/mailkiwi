@@ -1,5 +1,5 @@
-import type { Secret } from '@poppinss/utils'
 import crypto from 'node:crypto'
+import type { Secret } from '@poppinss/utils'
 
 export interface UrlMetadata {
   [key: string]: string | undefined

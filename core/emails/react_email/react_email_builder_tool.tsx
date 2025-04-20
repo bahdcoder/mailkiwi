@@ -1,15 +1,15 @@
 import {
-  Html,
-  Head,
   Body,
   Container,
-  Section,
-  Text,
-  Img,
-  render,
   Font,
+  Head,
   Heading,
   type HeadingAs,
+  Html,
+  Img,
+  Section,
+  Text,
+  render,
 } from '@react-email/components'
 import React from 'react'
 

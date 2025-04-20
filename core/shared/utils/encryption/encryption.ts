@@ -1,5 +1,5 @@
-import { Secret } from '@poppinss/utils'
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'node:crypto'
+import { Secret } from '@poppinss/utils'
 
 export class Encryption {
   private algorithm = 'aes-256-cbc'

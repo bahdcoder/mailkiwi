@@ -4,8 +4,8 @@ import ReactFlow, {
   Background,
   BackgroundVariant,
 } from 'react-flow-renderer'
-import { nodeTypes } from './nodes/index.js'
 import { edgeTypes } from './edges/index.js'
+import { nodeTypes } from './nodes/index.js'
 import { getLayoutedElements } from './utils/workflow-layout.js'
 import './styles.css'
 import 'react-flow-renderer/dist/style.css'

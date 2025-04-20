@@ -8,12 +8,12 @@ import type {
 } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 import type { NodeElement } from './types/elements.js'
 
-import { AddNodeDialog } from './components/add-node-dialog.jsx'
 import type {
   AutomationStep,
   AutomationWithSteps,
 } from '@/database/database_schema_types.js'
 import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { AddNodeDialog } from './components/add-node-dialog.jsx'
 
 function generateNodesAndEdgesFromAutomationSteps(
   steps: AutomationStep[],
@@ -26,7 +26,9 @@ function generateNodesAndEdgesFromAutomationSteps(
 ): AutomationElement[] {
   // Create a map of steps by ID for faster lookup
   const stepsMap = new Map<string, AutomationStep>()
-  steps.forEach((step) => stepsMap.set(step.id, step))
+  for (const step of steps) {
+    stepsMap.set(step.id, step)
+  }
 
   // Create nodes for each step
   const nodes: NodeElement[] = steps.map((step) => ({
@@ -71,15 +73,15 @@ function generateNodesAndEdgesFromAutomationSteps(
   if (!triggerStep) return nodes // If no trigger step, just return nodes without edges
 
   // Create parent-child edges
-  steps.forEach((step) => {
+  for (const step of steps) {
     // Skip the trigger step as it has no parent
-    if (!step.parentId) return
+    if (!step.parentId) continue
 
     // Find the parent step
     const parentStep = stepsMap.get(step.parentId)
     if (!parentStep) {
       console.warn(`Parent step ${step.parentId} not found for step ${step.id}`)
-      return
+      continue
     }
 
     // Create the appropriate edge based on the parent type and branch index
@@ -92,7 +94,7 @@ function generateNodesAndEdgesFromAutomationSteps(
       // For other node types, create a standard edge
       edges.push(createEdge(parentStep, step))
     }
-  })
+  }
 
   // Return both nodes and edges
   return [...nodes, ...edges]

@@ -20,7 +20,7 @@ export interface DefaultPageProps {
   memberships: (TeamMembership & { team: Team })[]
   audience: Audience
   tags: Tag[]
-  pageProps: Record<string, any>
+  pageProps: Record<string, unknown>
   engage: {
     onboarded: boolean
   }
