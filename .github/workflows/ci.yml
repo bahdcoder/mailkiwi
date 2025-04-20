@@ -1,4 +1,4 @@
-name: Kibamail CI
+name: kibamail
 
 on:
   pull_request:
@@ -6,31 +6,31 @@ on:
 
 jobs:
   build:
-    name: Build and Test
+    name: build and test
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: setup node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Install pnpm
+      - name: install pnpm
         uses: pnpm/action-setup@v3
         with:
           version: 8
           run_install: false
 
-      - name: Get pnpm store directory
+      - name: get pnpm store directory
         id: pnpm-cache
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - name: Setup pnpm cache
+      - name: setup pnpm cache
         uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -38,30 +38,29 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install dependencies
+      - name: install dependencies
         run: pnpm install
 
-      - name: Start Docker services
+      - name: start docker services
         run: |
-          docker-compose -f docker/compose.databases.yaml -f docker/compose.storage.yaml -f docker/compose.mailserver.yaml up -d
-          # Wait for services to be ready
+          make dev
           sleep 10
 
-      - name: Run type checking
+      - name: run type checking
         run: pnpm types:check
 
-      - name: Run linting
+      - name: run linting
         run: pnpm lint
 
-      - name: Run format checking
+      - name: run format checking
         run: pnpm format:check
 
-      - name: Run server tests with coverage
+      - name: run server tests with coverage
         run: |
           pnpm test:server:coverage
  
-      - name: Run client tests
+      - name: run client tests
         run: pnpm test:client
 
-      - name: Build project
+      - name: build project
         run: pnpm build:quick
