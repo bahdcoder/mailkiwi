@@ -44,15 +44,10 @@ jobs:
       - name: start docker services
         run: |
           make dev
-  
+
       - name: wait for docker services
         run: |
           sleep 10
-      
-      - name: install infisical for secrets
-        run: |
-          curl -1sLf 'https://artifacts-cli.infisical.com/setup.deb.sh' | sudo -E bash
-          apt-get update && sudo apt-get install -y infisical
 
       - name: run server tests with coverage
-        run: pnpm test:server:coverage
+        run: pnpm ci:test:server:coverage

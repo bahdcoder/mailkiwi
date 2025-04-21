@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
- 
+
       - name: setup node.js
         uses: actions/setup-node@v4
         with:
@@ -42,4 +42,4 @@ jobs:
         run: pnpm install
 
       - name: build project
-        run: pnpm build:quick
+        run: pnpm ci:build:quick
