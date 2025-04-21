@@ -76,7 +76,8 @@ jobs:
       DOPPLER_PROJECT: ${{ secrets.DOPPLER_PROJECT }}
 
     steps:
-      - uses: ./.github/actions/checkout-and-cache
+      - name: checkout code
+        uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node-pnpm
       - uses: ./.github/actions/install-dependencies
 

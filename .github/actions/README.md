@@ -4,14 +4,6 @@ This directory contains reusable GitHub Actions for our CI/CD workflows.
 
 ## Available Actions
 
-### checkout-and-cache
-
-Checks out the code from the repository.
-
-```yaml
-- uses: ./.github/actions/checkout-and-cache
-```
-
 ### setup-node-pnpm
 
 Sets up Node.js and PNPM with caching.
@@ -19,8 +11,8 @@ Sets up Node.js and PNPM with caching.
 ```yaml
 - uses: ./.github/actions/setup-node-pnpm
   with:
-    node-version: '22' # optional, defaults to '22'
-    pnpm-version: '8'  # optional, defaults to '8'
+    node-version: "22" # optional, defaults to '22'
+    pnpm-version: "8" # optional, defaults to '8'
 ```
 
 ### install-dependencies
@@ -30,7 +22,7 @@ Installs project dependencies using PNPM.
 ```yaml
 - uses: ./.github/actions/install-dependencies
   with:
-    frozen-lockfile: 'true' # optional, defaults to 'true'
+    frozen-lockfile: "true" # optional, defaults to 'true'
 ```
 
 ### setup-docker
@@ -40,7 +32,7 @@ Sets up Docker services for testing.
 ```yaml
 - uses: ./.github/actions/setup-docker
   with:
-    wait-seconds: '10' # optional, defaults to '10'
+    wait-seconds: "10" # optional, defaults to '10'
 ```
 
 ### run-command
@@ -50,8 +42,8 @@ Runs a command.
 ```yaml
 - uses: ./.github/actions/run-command
   with:
-    name: 'run tests'
-    command: 'pnpm test'
+    name: "run tests"
+    command: "pnpm test"
 ```
 
 ### setup-env-vars
@@ -67,18 +59,19 @@ name: my workflow
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   my-job:
     name: my job
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: ./.github/actions/checkout-and-cache
+      - name: checkout code
+        uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node-pnpm
       - uses: ./.github/actions/install-dependencies
-      
+
       - uses: ./.github/actions/run-command
         with:
           name: run my command
