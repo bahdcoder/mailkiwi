@@ -1,9 +1,9 @@
 name: 'setup docker services'
-description: 'Sets up docker services for testing'
+description: 'sets up docker services for testing'
 
 inputs:
   wait-seconds:
-    description: 'Number of seconds to wait for services to start'
+    description: 'number of seconds to wait for services to start'
     required: false
     default: '10'
 

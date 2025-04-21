@@ -1,12 +1,12 @@
 name: 'run command'
-description: 'Runs a command'
+description: 'runs a command'
 
 inputs:
   command:
-    description: 'Command to run'
+    description: 'command to run'
     required: true
   name:
-    description: 'Name of the step'
+    description: 'name of the step'
     required: true
 
 runs:
