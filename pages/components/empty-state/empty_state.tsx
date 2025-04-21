@@ -1,6 +1,6 @@
-import type React from 'react'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'
+import type React from 'react'
 
 export interface EmptyStateProps extends React.PropsWithChildren {
   title?: string

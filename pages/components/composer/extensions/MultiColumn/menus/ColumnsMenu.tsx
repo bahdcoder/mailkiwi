@@ -1,4 +1,3 @@
-import { ColumnLayout } from '../Columns.js'
 import type { MenuProps } from '@/pages/components/tiptap/menus/types.js'
 import { Icon } from '@/pages/components/tiptap/ui/Icon.js'
 import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.js'
@@ -7,6 +6,7 @@ import { BubbleMenu as BaseBubbleMenu, useEditorState } from '@tiptap/react'
 import { useCallback } from 'react'
 import { sticky } from 'tippy.js'
 import { v4 as uuid } from 'uuid'
+import { ColumnLayout } from '../Columns.js'
 
 export const ColumnsMenu = ({ editor, appendTo }: MenuProps) => {
   const getReferenceClientRect = useCallback(() => {
@@ -62,7 +62,7 @@ export const ColumnsMenu = ({ editor, appendTo }: MenuProps) => {
           modifiers: [{ name: 'flip', enabled: false }],
         },
         getReferenceClientRect,
-        appendTo: () => appendTo?.current,
+        appendTo: appendTo?.current || 'parent',
         plugins: [sticky],
         sticky: 'popper',
       }}

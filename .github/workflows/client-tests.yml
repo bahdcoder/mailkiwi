@@ -1,0 +1,21 @@
+name: client tests
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  client-tests:
+    name: client tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-pnpm
+      - uses: ./.github/actions/install-dependencies
+
+      - uses: ./.github/actions/run-command
+        with:
+          name: run client tests
+          command: pnpm test:client

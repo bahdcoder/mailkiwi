@@ -1,0 +1,27 @@
+export interface Segment {
+  id: string
+  name: string
+  filterGroups?: {
+    groups?: Array<{
+      conditions: Array<{
+        field: string
+        operator: string
+        value: string | number | boolean
+      }>
+    }>
+  }
+}
+
+export interface Broadcast {
+  id: string
+  name: string
+  emailContent?: {
+    subject?: string
+    contentJson?: Record<string, unknown>
+  }
+}
+
+export interface BroadcastPageProps {
+  broadcast?: Broadcast
+  segments?: Segment[]
+}

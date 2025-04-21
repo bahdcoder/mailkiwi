@@ -1,6 +1,6 @@
-import type { Editor } from "@tiptap/core"
-import type { Node } from "@tiptap/pm/model"
-import { useCallback, useState } from "react"
+import type { Editor } from '@tiptap/core'
+import type { Node } from '@tiptap/pm/model'
+import { useCallback, useState } from 'react'
 
 export const useData = () => {
   const [currentNode, setCurrentNode] = useState<Node | null>(null)
@@ -14,7 +14,7 @@ export const useData = () => {
 
       setCurrentNodePos(data.pos)
     },
-    []
+    [],
   )
 
   return {

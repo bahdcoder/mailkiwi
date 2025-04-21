@@ -1,17 +1,17 @@
 import { BroadcastDetails } from '@/pages/w/engage/broadcasts/@uuid/components/broadcast-details.jsx'
-import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
 import { Heading } from '@kibamail/owly/heading'
 import { usePageContext } from 'vike-react/usePageContext'
+import type { BroadcastPageProps } from '@/pages/types/broadcast-page-props.js'
 
 export function StepFivePreview() {
   const ctx = usePageContext()
-  const pageProps = ctx.pageProps as EngageBroadcastsComposerPageProps
+  const { broadcast } = ctx.pageProps as BroadcastPageProps
 
   return (
     <div className="w-full h-full overflow-y-auto">
       <div className="w-full max-w-[640px] mx-auto pt-16">
         <Heading size="xs" variant="display">
-          {pageProps?.broadcast?.emailContent?.subject ?? pageProps?.broadcast?.name}
+          {broadcast?.emailContent?.subject ?? broadcast?.name}
         </Heading>
 
         <div className="mt-4">

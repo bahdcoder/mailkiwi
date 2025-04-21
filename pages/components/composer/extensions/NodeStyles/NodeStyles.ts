@@ -1,6 +1,6 @@
-import { type CommandProps, Editor, Extension } from "@tiptap/core"
+import { type CommandProps, Editor, Extension } from '@tiptap/core'
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     nodeStyles: {
       setNodeStyle: (property: string, value: string) => ReturnType
@@ -13,16 +13,16 @@ declare module "@tiptap/core" {
 const stylesToString = (styles: Record<string, string>) => {
   return Object.entries(styles)
     .map(([property, value]) => `${property}: ${value}`)
-    .join("; ")
+    .join('; ')
 }
 
 export function getStyleAttributeDefinition(
-  defaultAttributes?: Record<string, string | number | boolean>
+  defaultAttributes?: Record<string, string | number | boolean>,
 ) {
   return {
     default: defaultAttributes ?? {},
     parseHTML(element: HTMLElement) {
-      const styleString = element.getAttribute("style")
+      const styleString = element.getAttribute('style')
       return styleString ? parseStyleString(styleString) : {}
     },
     renderHTML(attributes: Record<string, unknown>) {
@@ -82,43 +82,43 @@ export function getStyleAttributeDefaultCommands() {
 const parseStyleString = (styleString: string) => {
   if (!styleString) return {}
   return styleString
-    .split(";")
+    .split(';')
     .filter((style) => style.trim())
-    .reduce((acc, style) => {
-      const [property, value] = style.split(":").map((str) => str.trim())
-      acc[property] = value
-      return acc
-    }, {} as Record<string, string>)
+    .reduce(
+      (acc, style) => {
+        const [property, value] = style.split(':').map((str) => str.trim())
+        acc[property] = value
+        return acc
+      },
+      {} as Record<string, string>,
+    )
 }
 
 export const NodeStyles = Extension.create({
-  name: "nodeStyles",
+  name: 'nodeStyles',
 
   addGlobalAttributes() {
     return [
       {
         types: [
-          "paragraph",
-          "heading",
-          "blockquote",
-          "bulletList",
-          "orderedList",
-          "listItem",
-          "code",
-          "container",
+          'paragraph',
+          'heading',
+          'blockquote',
+          'bulletList',
+          'orderedList',
+          'listItem',
+          'code',
+          'container',
         ],
         attributes: {
           styles: {
             default: {},
             parseHTML: (element) => {
-              const styleString = element.getAttribute("style")
+              const styleString = element.getAttribute('style')
               return styleString ? parseStyleString(styleString) : {}
             },
             renderHTML: (attributes) => {
-              if (
-                !attributes.styles ||
-                Object.keys(attributes.styles).length === 0
-              ) {
+              if (!attributes.styles || Object.keys(attributes.styles).length === 0) {
                 return {}
               }
               return { style: stylesToString(attributes.styles) }

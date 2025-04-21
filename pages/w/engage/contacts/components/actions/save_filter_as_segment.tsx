@@ -38,7 +38,7 @@ export function SaveFilterAsSegmentForm({
       method: 'POST',
       action: route('create_segment', { audienceId: ctx.audience?.id }),
       onSuccess() {
-        ;(reload as any)?.()
+        // No need to reload, the parent component will handle this
         onSuccess?.()
         setOpen(false)
 

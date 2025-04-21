@@ -8,7 +8,7 @@ export type EditorUser = {
 export type LanguageOption = {
   name: string
   label: string
-  value: any
+  value: string
 }
 
 export type AiTone =

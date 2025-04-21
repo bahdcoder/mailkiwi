@@ -1,7 +1,7 @@
-import { Surface } from '../Surface.jsx'
 import { cn } from '@/pages/components/tiptap/utils/index.js'
 import { Slot } from '@radix-ui/react-slot'
 import { forwardRef } from 'react'
+import { Surface } from '../Surface.jsx'
 
 export type PanelProps = {
   spacing?: 'medium' | 'small'

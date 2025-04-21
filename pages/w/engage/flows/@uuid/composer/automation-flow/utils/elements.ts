@@ -1,10 +1,10 @@
+import type { AutomationElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from './clone_deep.js'
-import type { AutomationElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 
 const position = { x: 0, y: 0 }
 
-const getTitleAndDescription = (type: any) => {
+const getTitleAndDescription = (type: string) => {
   switch (type) {
     case 'email':
       return { title: 'Email', description: 'Send email to contacts.' }
@@ -22,18 +22,29 @@ const getTitleAndDescription = (type: any) => {
 const getUpdatedElementsAfterActionNodeAddition = ({
   elements,
   newNodeId,
+  newNode,
   targetNodeId,
   onAddNodeCallback,
-}: any) => {
+}: {
+  elements: AutomationElement[]
+  newNodeId: string
+  newNode: Record<string, unknown>
+  targetNodeId: string
+  onAddNodeCallback: (id: string) => void
+}) => {
   const clonedElements = cloneDeep(elements)
   const newEdge = {
     id: uuidv4(),
     source: newNodeId,
     target: targetNodeId,
     type: 'condition',
-    data: { onAddNodeCallback },
+    data: {
+      onAddNodeCallback,
+      sourceStep: { id: newNodeId, type: newNode.type },
+      targetSteps: [{ id: targetNodeId }],
+    },
   }
-  clonedElements.push(newEdge)
+  clonedElements.push(newEdge as AutomationElement)
   return clonedElements
 }
 
@@ -44,7 +55,12 @@ const getUpdatedElementsAfterRuleNodeAdditon = ({
   newNodeId,
   targetNodeId,
   onAddNodeCallback,
-}: any) => {
+}: {
+  elements: AutomationElement[]
+  newNodeId: string
+  targetNodeId: string
+  onAddNodeCallback: (id: string) => void
+}) => {
   const clonedElements = cloneDeep(elements)
   const emptyNode1Id = uuidv4()
   const emptyNode2Id = uuidv4()
@@ -137,7 +153,14 @@ const getUpdatedElementsAfterNodeAddition = ({
   onDeleteNodeCallback,
   onNodeClickCallback,
   onAddNodeCallback,
-}: any) => {
+}: {
+  elements: AutomationElement[]
+  targetEdgeId: string
+  type: string
+  onDeleteNodeCallback: (id: string) => void
+  onNodeClickCallback: (id: string) => void
+  onAddNodeCallback: (id: string) => void
+}) => {
   const newNodeId = uuidv4()
   const { title, description } = getTitleAndDescription(type)
   const newNode = {
@@ -166,7 +189,7 @@ const getUpdatedElementsAfterNodeAddition = ({
       return getUpdatedElementsAfterRuleNodeAdditon({
         elements: clonedElements,
         newNodeId,
-        targetNodeId,
+        targetNodeId: targetNodeId || '',
         onAddNodeCallback,
       })
     default:
@@ -174,7 +197,7 @@ const getUpdatedElementsAfterNodeAddition = ({
         elements: clonedElements,
         newNodeId,
         newNode,
-        targetNodeId,
+        targetNodeId: targetNodeId || '',
         onAddNodeCallback,
       })
   }

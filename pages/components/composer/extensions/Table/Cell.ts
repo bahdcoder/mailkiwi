@@ -1,18 +1,18 @@
-import { getCellsInColumn, isRowSelected, selectRow } from "./utils.js"
-import { Node, mergeAttributes } from "@tiptap/core"
-import { Plugin } from "@tiptap/pm/state"
-import { Decoration, DecorationSet } from "@tiptap/pm/view"
+import { Node, mergeAttributes } from '@tiptap/core'
+import { Plugin } from '@tiptap/pm/state'
+import { Decoration, DecorationSet } from '@tiptap/pm/view'
+import { getCellsInColumn, isRowSelected, selectRow } from './utils.js'
 
 export interface TableCellOptions {
   HTMLAttributes: Record<string, string | number | boolean>
 }
 
 export const TableCell = Node.create<TableCellOptions>({
-  name: "tableCell",
+  name: 'tableCell',
 
-  content: "block+", // TODO: Do not allow table in table
+  content: 'block+', // TODO: Do not allow table in table
 
-  tableRole: "cell",
+  tableRole: 'cell',
 
   isolating: true,
 
@@ -23,15 +23,11 @@ export const TableCell = Node.create<TableCellOptions>({
   },
 
   parseHTML() {
-    return [{ tag: "td" }]
+    return [{ tag: 'td' }]
   },
 
   renderHTML({ HTMLAttributes }) {
-    return [
-      "td",
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-      0,
-    ]
+    return ['td', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
   },
 
   addAttributes() {
@@ -39,7 +35,7 @@ export const TableCell = Node.create<TableCellOptions>({
       colspan: {
         default: 1,
         parseHTML: (element) => {
-          const colspan = element.getAttribute("colspan")
+          const colspan = element.getAttribute('colspan')
           const value = colspan ? Number.parseInt(colspan, 10) : 1
 
           return value
@@ -48,7 +44,7 @@ export const TableCell = Node.create<TableCellOptions>({
       rowspan: {
         default: 1,
         parseHTML: (element) => {
-          const rowspan = element.getAttribute("rowspan")
+          const rowspan = element.getAttribute('rowspan')
           const value = rowspan ? Number.parseInt(rowspan, 10) : 1
 
           return value
@@ -57,7 +53,7 @@ export const TableCell = Node.create<TableCellOptions>({
       colwidth: {
         default: null,
         parseHTML: (element) => {
-          const colwidth = element.getAttribute("colwidth")
+          const colwidth = element.getAttribute('colwidth')
           const value = colwidth ? [Number.parseInt(colwidth, 10)] : null
 
           return value
@@ -89,34 +85,32 @@ export const TableCell = Node.create<TableCellOptions>({
                 decorations.push(
                   Decoration.widget(pos + 1, () => {
                     const rowSelected = isRowSelected(index)(selection)
-                    let className = "grip-row"
+                    let className = 'grip-row'
 
                     if (rowSelected) {
-                      className += " selected"
+                      className += ' selected'
                     }
 
                     if (index === 0) {
-                      className += " first"
+                      className += ' first'
                     }
 
                     if (index === cells.length - 1) {
-                      className += " last"
+                      className += ' last'
                     }
 
-                    const grip = document.createElement("a")
+                    const grip = document.createElement('a')
 
                     grip.className = className
-                    grip.addEventListener("mousedown", (event) => {
+                    grip.addEventListener('mousedown', (event) => {
                       event.preventDefault()
                       event.stopImmediatePropagation()
 
-                      this.editor.view.dispatch(
-                        selectRow(index)(this.editor.state.tr)
-                      )
+                      this.editor.view.dispatch(selectRow(index)(this.editor.state.tr))
                     })
 
                     return grip
-                  })
+                  }),
                 )
               })
             }

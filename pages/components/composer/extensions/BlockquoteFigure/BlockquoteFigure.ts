@@ -1,7 +1,7 @@
+import { mergeAttributes } from '@tiptap/core'
 import { Figure } from '../Figure/Figure.js'
 import { Quote } from './Quote/Quote.js'
 import { QuoteCaption } from './QuoteCaption/QuoteCaption.js'
-import { mergeAttributes } from '@tiptap/core'
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line no-unused-vars

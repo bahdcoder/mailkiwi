@@ -1,10 +1,10 @@
-import { EnterHandler } from './extensions/EnterHandler/EnterHandler.js'
 import { Button } from '@/pages/components/composer/extensions/Button/Button.js'
 import { Container } from '@/pages/components/composer/extensions/Container/Container.js'
 import { NodeStyles } from '@/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
 import { ExtensionKit } from '@/pages/components/composer/extensions/extension-kit.js'
 import { TrailingNode } from '@/pages/components/composer/extensions/index.js'
 import { type UseEditorOptions, useEditor } from '@tiptap/react'
+import { EnterHandler } from './extensions/EnterHandler/EnterHandler.js'
 
 export function useTiptapEditor(moreEditorProps?: UseEditorOptions) {
   const editor = useEditor({

@@ -1,6 +1,6 @@
 import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
 import { CheckSquareIcon } from '@/pages/components/icons/check-square.svg.jsx'
-import { HashTagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
+import { HashtagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
 import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
@@ -66,7 +66,7 @@ export function CreateCustomContactProperty({
                   Text
                 </Select.Item>
                 <Select.Item value="number">
-                  <HashTagIcon />
+                  <HashtagIcon />
                   Number
                 </Select.Item>
                 <Select.Item value="date">

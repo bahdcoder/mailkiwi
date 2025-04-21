@@ -1,6 +1,6 @@
-import react from '@vitejs/plugin-react'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
 import vike from 'vike/plugin'
 import { defineConfig } from 'vite'
@@ -17,9 +17,12 @@ export default defineConfig({
   },
   server: {
     cors: false,
-    https: {
-      key: readFileSync(resolve(process.cwd(), 'certs', 'localhost-key.pem')),
-      cert: readFileSync(resolve(process.cwd(), 'certs', 'localhost.pem')),
-    },
+    https:
+      process.env.NODE_ENV === 'production'
+        ? undefined
+        : {
+            key: readFileSync(resolve(process.cwd(), 'certs', 'localhost-key.pem')),
+            cert: readFileSync(resolve(process.cwd(), 'certs', 'localhost.pem')),
+          },
   },
 })

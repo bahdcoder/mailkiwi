@@ -1,9 +1,11 @@
+import type { InferSelectModel } from 'drizzle-orm'
+import type { MySqlUpdateSetSource } from 'drizzle-orm/mysql-core'
 import type {
   abTestVariants,
   accessTokens,
   audiences,
-  automations,
   automationSteps,
+  automations,
   broadcastGroups,
   broadcasts,
   channelMemberships,
@@ -34,8 +36,6 @@ import type {
   websitePages,
   websites,
 } from './schema.js'
-import type { InferSelectModel } from 'drizzle-orm'
-import type { MySqlUpdateSetSource } from 'drizzle-orm/mysql-core'
 
 import type { makeDatabase } from '@/shared/container/index.js'
 

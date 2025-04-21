@@ -1,0 +1,21 @@
+name: 'setup docker services'
+description: 'sets up docker services for testing'
+
+inputs:
+  wait-seconds:
+    description: 'number of seconds to wait for services to start'
+    required: false
+    default: '10'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: start docker services
+      shell: bash
+      run: |
+        make dev
+
+    - name: wait for docker services
+      shell: bash
+      run: |
+        sleep ${{ inputs.wait-seconds }}

@@ -1,11 +1,11 @@
-import { command } from "@drizzle-team/brocli"
+import { command } from '@drizzle-team/brocli'
 
-import { refreshDatabase } from "@/tests/mocks/teams/teams.js"
-import { makeLogger } from "@/shared/container/index.js"
+import { makeLogger } from '@/shared/container/index.js'
+import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
 
 export const resetDatabaseCommand = command({
-  name: "reset_database",
-  desc: "Clear data in all database tables.",
+  name: 'reset_database',
+  desc: 'Clear data in all database tables.',
   async transform(opts) {
     return opts
   },
@@ -13,6 +13,6 @@ export const resetDatabaseCommand = command({
     const logger = makeLogger()
     await refreshDatabase()
 
-    logger.info("👍 Database reset successfully.")
+    logger.info('👍 Database reset successfully.')
   },
 })

@@ -1,13 +1,13 @@
-import "./composer.styles.css"
-import LinkMenu from "@/pages/components/composer/components/link-menu/link-menu.jsx"
-import { TextMenu } from "@/pages/components/composer/components/text-menu/text-menu.jsx"
-import { useTextmenuStates } from "@/pages/components/composer/components/text-menu/use-text-menu-states.js"
-import { ButtonMenu } from "@/pages/components/composer/extensions/Button/button-menu.jsx"
-import { ContainerMenu } from "@/pages/components/composer/extensions/Container/container-menu.jsx"
-import ImageBlockMenu from "@/pages/components/composer/extensions/ImageBlock/components/ImageBlockMenu.jsx"
-import type { ShouldShowProps } from "@/pages/components/tiptap/menus/types.js"
-import { type Editor, EditorContent } from "@tiptap/react"
-import React, { useCallback } from "react"
+import './composer.styles.css'
+import LinkMenu from '@/pages/components/composer/components/link-menu/link-menu.jsx'
+import { TextMenu } from '@/pages/components/composer/components/text-menu/text-menu.jsx'
+import { useTextmenuStates } from '@/pages/components/composer/components/text-menu/use-text-menu-states.js'
+import { ButtonMenu } from '@/pages/components/composer/extensions/Button/button-menu.jsx'
+import { ContainerMenu } from '@/pages/components/composer/extensions/Container/container-menu.jsx'
+import ImageBlockMenu from '@/pages/components/composer/extensions/ImageBlock/components/ImageBlockMenu.jsx'
+import type { ShouldShowProps } from '@/pages/components/tiptap/menus/types.js'
+import { type Editor, EditorContent } from '@tiptap/react'
+import React, { useCallback } from 'react'
 
 interface ComposerMenusProps {
   editor: Editor
@@ -19,17 +19,17 @@ function ComposerMenus({ editor, container }: ComposerMenusProps) {
 
   const shouldShowTextMenu = useCallback(
     ({ view, from }: ShouldShowProps) => {
-      return shouldShow({ view, from }) && !editor.isActive("button")
+      return shouldShow({ view, from }) && !editor.isActive('button')
     },
-    [editor, shouldShow]
+    [editor, shouldShow],
   )
 
   const shouldShowNodeTextEditingMenu = useCallback(
     ({ view, from }: ShouldShowProps) => {
       // TODO: Add more conditions for other blocks like container, columns, etc
-      return shouldShow({ view, from }) && editor.isActive("button")
+      return shouldShow({ view, from }) && editor.isActive('button')
     },
-    [editor, shouldShow]
+    [editor, shouldShow],
   )
 
   return (
@@ -38,13 +38,13 @@ function ComposerMenus({ editor, container }: ComposerMenusProps) {
         editor={editor}
         pluginKey="textMenu"
         shouldShow={shouldShowTextMenu}
-        tippyProps={{ placement: "top" }}
+        tippyProps={{ placement: 'top' }}
       />
       <ButtonMenu editor={editor} appendTo={container} />
       <TextMenu
         editor={editor}
         pluginKey="buttonTextMenu"
-        tippyProps={{ placement: "bottom" }}
+        tippyProps={{ placement: 'bottom' }}
         shouldShow={shouldShowNodeTextEditingMenu}
       />
       <LinkMenu editor={editor} appendTo={container} />

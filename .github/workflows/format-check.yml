@@ -1,0 +1,21 @@
+name: format checking
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  format-check:
+    name: format check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-pnpm
+      - uses: ./.github/actions/install-dependencies
+
+      - uses: ./.github/actions/run-command
+        with:
+          name: run format checking
+          command: pnpm format:check

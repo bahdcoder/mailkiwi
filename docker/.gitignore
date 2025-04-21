@@ -2,3 +2,4 @@ data/
 init-*
 mailserver/
 nginx.conf/
+kumomta/*

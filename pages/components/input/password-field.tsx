@@ -1,7 +1,7 @@
 import { CheckCircleIcon } from '@/pages/components/icons/check-circle.svg.jsx'
 import { EyeClosedIcon } from '@/pages/components/icons/eye-closed.svg.jsx'
 import { EyeIcon } from '@/pages/components/icons/eye.svg.jsx'
-import { XMarkCircle } from '@/pages/components/icons/x-mark-circle.svg.jsx'
+import { XMarkCircleIcon } from '@/pages/components/icons/x-mark-circle.svg.jsx'
 import { usePasswordStrengthIndicator } from '@/pages/components/input/hooks/use-password-strength-indicator.js'
 import { Progress } from '@kibamail/owly/progress'
 import * as TextField from '@kibamail/owly/text-field'
@@ -94,14 +94,14 @@ export const PasswordField = React.forwardRef<
 
               return (
                 <TextField.Hint
-                  key={idx}
+                  key={`password-rule-${rule}`}
                   className={cn({
                     'mt-8': idx === 0 && !hasError,
                     'kb-content-positive': passed,
                   })}
                 >
                   <TextField.HintIcon>
-                    {passed ? <CheckCircleIcon /> : <XMarkCircle />}
+                    {passed ? <CheckCircleIcon /> : <XMarkCircleIcon />}
                   </TextField.HintIcon>
                   {rule.message}
                 </TextField.Hint>

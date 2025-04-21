@@ -1,9 +1,9 @@
-import { Surface } from './Surface.jsx'
-import { Toolbar } from './Toolbar.jsx'
 import { cn } from '@/pages/components/tiptap/utils/index.js'
 import * as Popover from '@radix-ui/react-popover'
 import { icons } from 'lucide-react'
 import { forwardRef } from 'react'
+import { Surface } from './Surface.jsx'
+import { Toolbar } from './Toolbar.jsx'
 
 export const Trigger = Popover.Trigger
 export const Portal = Popover.Portal

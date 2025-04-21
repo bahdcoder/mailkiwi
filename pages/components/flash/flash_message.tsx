@@ -1,5 +1,5 @@
 import './flash_message.css'
-import { WarningCircleIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
+import { WarningCircleSolidIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
 import * as Alert from '@kibamail/owly/alert'
 import { Text } from '@kibamail/owly/text'
 import { usePageContext } from 'vike-react/usePageContext'
@@ -32,7 +32,7 @@ export function FlashMessage({ alert: defaultAlert, ...rootProps }: FlashMessage
   return (
     <Alert.Root {...rootProps} variant={alert.variant}>
       <Alert.Icon>
-        <WarningCircleIcon />
+        <WarningCircleSolidIcon />
       </Alert.Icon>
 
       <div className="w-full flex flex-col">

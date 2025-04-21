@@ -1,0 +1,17 @@
+name: 'run command'
+description: 'runs a command'
+
+inputs:
+  command:
+    description: 'command to run'
+    required: true
+  name:
+    description: 'name of the step'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: ${{ inputs.name }}
+      shell: bash
+      run: ${{ inputs.command }}

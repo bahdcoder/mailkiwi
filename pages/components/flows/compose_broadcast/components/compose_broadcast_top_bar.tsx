@@ -4,13 +4,13 @@ import { useComposeBroadcastContext } from '@/pages/components/flows/compose_bro
 import { CancelIcon } from '@/pages/components/icons/cancel.svg.jsx'
 import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
 import { MinusIcon } from '@/pages/components/icons/minus.svg.jsx'
-import { WarningCircleIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
+import { WarningCircleSolidIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Spinner } from '@kibamail/owly/spinner'
 import React from 'react'
 
-import { route } from '@/shared/routes/route_aliases.js'
 import { ComposeBroadcastPreview } from '@/pages/components/flows/compose_broadcast/components/compose_broadcast_preview.jsx'
+import { route } from '@/shared/routes/route_aliases.js'
 
 export function ComposeBroadcastTopBar() {
   const {
@@ -36,7 +36,7 @@ export function ComposeBroadcastTopBar() {
           ) : null}
           {isPending ? <Spinner size="md" /> : null}
           {isError ? (
-            <WarningCircleIcon className="kb-content-negative !w-5 !h-5" />
+            <WarningCircleSolidIcon className="kb-content-negative !w-5 !h-5" />
           ) : null}
         </Button>
       </div>

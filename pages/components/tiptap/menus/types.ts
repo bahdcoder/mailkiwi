@@ -6,7 +6,7 @@ import type React from 'react'
 
 export interface MenuProps {
   editor: Editor
-  appendTo?: React.RefObject<any>
+  appendTo?: React.RefObject<HTMLElement>
   shouldHide?: boolean
 }
 

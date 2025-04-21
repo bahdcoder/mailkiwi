@@ -1,29 +1,29 @@
-import { LinkEditorPanel, linkPresets } from "./link-editor-panel.jsx"
-import { ToolbarButton } from "@/pages/components/composer/components/toolbar/toolbar.jsx"
-import { ToolbarContainer } from "@/pages/components/composer/components/toolbar/toolbar.jsx"
-import { EditPencilIcon } from "@/pages/components/icons/edit-pencil.svg.jsx"
-import { TrashIcon } from "@/pages/components/icons/trash.svg.jsx"
-import type { MenuProps } from "@/pages/components/tiptap/menus/types.js"
-import { Text } from "@kibamail/owly/text"
-import { BubbleMenu as BaseBubbleMenu, useEditorState } from "@tiptap/react"
-import React, { useCallback, useState } from "react"
+import { ToolbarButton } from '@/pages/components/composer/components/toolbar/toolbar.jsx'
+import { ToolbarContainer } from '@/pages/components/composer/components/toolbar/toolbar.jsx'
+import { EditPencilIcon } from '@/pages/components/icons/edit-pencil.svg.jsx'
+import { TrashIcon } from '@/pages/components/icons/trash.svg.jsx'
+import type { MenuProps } from '@/pages/components/tiptap/menus/types.js'
+import { Text } from '@kibamail/owly/text'
+import { BubbleMenu as BaseBubbleMenu, useEditorState } from '@tiptap/react'
+import React, { useCallback, useState } from 'react'
+import { LinkEditorPanel, linkPresets } from './link-editor-panel.jsx'
 
 export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
   const { link, target } = useEditorState({
     editor,
     selector: (ctx) => {
-      const attrs = ctx.editor.getAttributes("link")
+      const attrs = ctx.editor.getAttributes('link')
       return { link: attrs.href as string, target: attrs.target }
     },
   })
 
   const shouldShow = useCallback(() => {
-    const isActive = editor.isActive("link")
+    const isActive = editor.isActive('link')
     return isActive
   }, [editor])
 
   const onUnsetLink = useCallback(() => {
-    editor.chain().focus().extendMarkRange("link").unsetLink().run()
+    editor.chain().focus().extendMarkRange('link').unsetLink().run()
 
     return null
   }, [editor])
@@ -31,7 +31,7 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
   const presetLink = linkPresets.find((preset) => preset.value === link)
 
   function onValidUrlSubmitted(href: string) {
-    editor.chain().focus().extendMarkRange("link").setLink({ href }).run()
+    editor.chain().focus().extendMarkRange('link').setLink({ href }).run()
   }
 
   return (
@@ -42,11 +42,9 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
       updateDelay={0}
       tippyOptions={{
         popperOptions: {
-          modifiers: [{ name: "flip", enabled: false }],
+          modifiers: [{ name: 'flip', enabled: false }],
         },
-        appendTo() {
-          return appendTo?.current
-        },
+        appendTo: appendTo?.current || 'parent',
       }}
     >
       <ToolbarContainer>

@@ -3,11 +3,11 @@ import {
   getBezierPath,
   getEdgeCenter,
   getMarkerEnd,
-} from "react-flow-renderer"
+} from 'react-flow-renderer'
 
-import { Button } from "@kibamail/owly/button"
-import { PlusIcon } from "@/pages/components/icons/plus.svg.jsx"
-import type { EdgeElement } from "@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js"
+import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
+import type { EdgeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import { Button } from '@kibamail/owly/button'
 
 const [buttonWidth, buttonHeight] = [100, 40]
 
@@ -16,30 +16,22 @@ const getStraightPath = (
   sourceX: number,
   sourceY: number,
   targetX: number,
-  targetY: number
+  targetY: number,
 ) => {
   // Create a straight line path
   return `M ${sourceX},${sourceY} L ${targetX},${targetY}`
 }
 
-export function CustomEdge(props: EdgeProps<EdgeElement["data"]>) {
-  const {
-    id,
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-    sourcePosition,
-    targetPosition,
-    data,
-  } = props
+export function CustomEdge(props: EdgeProps<EdgeElement['data']>) {
+  const { id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, data } =
+    props
 
   // Check if the source node is an IF/ELSE node
-  const isSourceIfElse = data?.sourceStep?.subtype === "RULE_IF_ELSE"
+  const isSourceIfElse = data?.sourceStep?.subtype === 'RULE_IF_ELSE'
 
   // Use bezier path for IF/ELSE nodes and straight path for others
   let edgePath: string
-  
+
   if (isSourceIfElse) {
     // Use bezier path for IF/ELSE nodes
     edgePath = getBezierPath({
@@ -84,7 +76,7 @@ export function CustomEdge(props: EdgeProps<EdgeElement["data"]>) {
             variant="primary"
             onClick={() => data?.onAddNodeCallback(id)}
             className="kb-background-info border-[var(--black-5)] rounded-lg w-7 h-7 p-0 flex items-center justify-center"
-            style={{ pointerEvents: "all" }}
+            style={{ pointerEvents: 'all' }}
           >
             <PlusIcon />
           </Button>

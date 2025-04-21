@@ -1,7 +1,7 @@
 import { ArrowUpRightIcon } from '@/pages/components/icons/arrow-up-right.svg.jsx'
 import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
 import { CheckSquareIcon } from '@/pages/components/icons/check-square.svg.jsx'
-import { HashTagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
+import { HashtagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
 import { InfoCircleIcon } from '@/pages/components/icons/info-circle.svg.jsx'
 import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
 import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
@@ -33,7 +33,7 @@ const CreateCustomContactProperty = clientOnly(() =>
   ).then(({ CreateCustomContactProperty }) => CreateCustomContactProperty),
 )
 
-export type NewContactPropertyProps = {}
+export type NewContactPropertyProps = Record<string, never>
 
 export function NewContactProperty(_props: NewContactPropertyProps) {
   const [open, setOpen] = React.useState(false)

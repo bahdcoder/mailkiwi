@@ -1,5 +1,5 @@
-import type { LoaderProps, LoadingWrapperProps } from './types.js'
 import { createPortal } from 'react-dom'
+import type { LoaderProps, LoadingWrapperProps } from './types.js'
 
 const LoadingWrapper = ({ label }: LoadingWrapperProps) => {
   return (
@@ -13,7 +13,10 @@ const LoadingWrapper = ({ label }: LoadingWrapperProps) => {
         strokeLinecap="round"
         strokeLinejoin="round"
         className="w-8 h-8 animate-spin"
+        role="img"
+        aria-label="Loading"
       >
+        <title>Loading</title>
         <path d="M21 12a9 9 0 1 1-6.219-8.56" />
       </svg>
       {label && (

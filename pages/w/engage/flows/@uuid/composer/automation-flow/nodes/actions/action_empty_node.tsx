@@ -8,9 +8,9 @@ export interface ActionEmptyNodeProps {
 
 export function ActionEmptyNode({ data }: ActionEmptyNodeProps) {
   return (
-    <div
+    <button
+      type="button"
       className="w-node-wrapper-empty"
-      role="button"
       onClick={() => data.onNodeClickCallback(data.step.id)}
     >
       <div
@@ -23,6 +23,6 @@ export function ActionEmptyNode({ data }: ActionEmptyNodeProps) {
           <Handle type="target" position={Position.Top} />
         </div>
       </div>
-    </div>
+    </button>
   )
 }

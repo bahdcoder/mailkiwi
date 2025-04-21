@@ -1,14 +1,14 @@
-import {
-  type FormState,
-  ImportContactsProvider,
-} from './state/import_contacts_context.jsx'
 import { StepsRenderer } from '@/pages/components/flows/steps_renderer.jsx'
 import { CancelIcon } from '@/pages/components/icons/cancel.svg.jsx'
 import * as Dialog from '@radix-ui/react-dialog'
 import { FocusScope } from '@radix-ui/react-focus-scope'
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import React, { type PropsWithChildren } from 'react'
 import { clientOnly } from 'vike-react/clientOnly'
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
+import {
+  type FormState,
+  ImportContactsProvider,
+} from './state/import_contacts_context.jsx'
 
 const StepOneUploadACsv = clientOnly(() =>
   import('./steps/step_one_upload_a_csv.jsx').then(

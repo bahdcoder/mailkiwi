@@ -1,46 +1,28 @@
-import React from "react"
+import React from 'react'
 
-export const BlockQuoteIcon = React.forwardRef<
-  React.ElementRef<"svg">,
-  React.ComponentPropsWithoutRef<"svg">
+export const BlockquoteIcon = React.forwardRef<
+  React.ElementRef<'svg'>,
+  React.ComponentPropsWithoutRef<'svg'>
 >((props, forwardedRef) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={16}
-      height={16}
-      viewBox="0 0 16 16"
+      width="24px"
+      height="24px"
+      viewBox="0 0 24 24"
       fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       role="img"
-      aria-label="Blockquote icon"
+      aria-label="Blockquote"
       {...props}
       ref={forwardedRef}
     >
-      <title>Blockquote icon</title>
-      <path
-        d="M2.6665 4L2.6665 12"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M5.3335 4L11.3335 4"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M5.3335 8L13.3335 8"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M5.3335 12L10.6668 12"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <title>Blockquote</title>
     </svg>
   )
 })
+
+BlockquoteIcon.displayName = 'BlockquoteIcon'

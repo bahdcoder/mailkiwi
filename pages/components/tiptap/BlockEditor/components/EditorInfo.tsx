@@ -1,5 +1,5 @@
-import type { EditorUser } from '../types.jsx'
 import { memo } from 'react'
+import type { EditorUser } from '../types.jsx'
 
 export type EditorInfoProps = {
   characters: number

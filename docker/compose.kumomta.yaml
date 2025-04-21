@@ -94,7 +94,7 @@ services:
     hostname: kumomta-dev
     image: ghcr.io/kumocorp/kumomta-dev:latest
     volumes:
-      - ../kumomta/policy:/opt/kumomta/etc/policy
+      - ../core/kumomta/policy:/opt/kumomta/etc/policy
       - ./kumomta/data:/var/log/kumomta
       - ./kumomta/spool:/var/spool/kumomta
     restart: unless-stopped
@@ -121,7 +121,7 @@ services:
     image: ghcr.io/kumocorp/kumomta-dev:latest
     user: root
     volumes:
-      - ../kumomta/policy:/opt/kumomta/etc/policy
+      - ../core/kumomta/policy:/opt/kumomta/etc/policy
       - ./kumomta/data:/var/log/kumomta
       - ./kumomta/spool:/var/spool/kumomta
     restart: unless-stopped

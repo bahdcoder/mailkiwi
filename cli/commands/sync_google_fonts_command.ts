@@ -1,9 +1,9 @@
-import { appEnv } from "@/app/env/app_env.js"
-import { command } from "@drizzle-team/brocli"
+import { appEnv } from '@/app/env/app_env.js'
+import { command } from '@drizzle-team/brocli'
 
-import { fonts as fontsTable } from "@/database/schema.js"
+import { fonts as fontsTable } from '@/database/schema.js'
 
-import { makeDatabase, makeLogger } from "@/shared/container/index.js"
+import { makeDatabase, makeLogger } from '@/shared/container/index.js'
 
 type GoogleFont = {
   family: string
@@ -15,8 +15,8 @@ type GoogleFont = {
 }
 
 export const syncGoogleFontsCommand = command({
-  name: "sync_google_fonts",
-  desc: "Sync google fonts to the database.",
+  name: 'sync_google_fonts',
+  desc: 'Sync google fonts to the database.',
   async transform(opts) {
     return opts
   },
@@ -24,7 +24,7 @@ export const syncGoogleFontsCommand = command({
     const logger = makeLogger()
     const database = makeDatabase()
     const response = await fetch(
-      `https://www.googleapis.com/webfonts/v1/webfonts?key=${appEnv.GOOGLE_FONTS_API_KEY}&sort=popularity`
+      `https://www.googleapis.com/webfonts/v1/webfonts?key=${appEnv.GOOGLE_FONTS_API_KEY}&sort=popularity`,
     )
 
     const fonts = await response.json()
@@ -37,20 +37,18 @@ export const syncGoogleFontsCommand = command({
       allExistingFontsNames[font.family] = true
     }
 
-    const newFontsToInsert = items.filter(
-      (item) => !allExistingFontsNames[item.family]
-    )
+    const newFontsToInsert = items.filter((item) => !allExistingFontsNames[item.family])
 
     await database.insert(fontsTable).values(
       newFontsToInsert.map((font) => ({
         family: font.family,
         category: font.category,
         files: font.files,
-        subsets: font.subsets.join("___"),
-        variants: font.variants.join("___"),
-      }))
+        subsets: font.subsets.join('___'),
+        variants: font.variants.join('___'),
+      })),
     )
 
-    logger.info("👍 Google fonts synced successfully.")
+    logger.info('👍 Google fonts synced successfully.')
   },
 })

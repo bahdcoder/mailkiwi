@@ -1,10 +1,10 @@
-import { isRowGripSelected } from './utils.js'
 import type { MenuProps, ShouldShowProps } from '@/pages/components/tiptap/menus/types.js'
 import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
 import * as PopoverMenu from '@/pages/components/tiptap/ui/PopoverMenu.jsx'
 import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
 import { BubbleMenu as BaseBubbleMenu } from '@tiptap/react'
 import React, { useCallback } from 'react'
+import { isRowGripSelected } from './utils.js'
 
 export const TableRowMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.Element => {
   const shouldShow = useCallback(
@@ -36,9 +36,7 @@ export const TableRowMenu = React.memo(({ editor, appendTo }: MenuProps): JSX.El
       pluginKey="tableRowMenu"
       updateDelay={0}
       tippyOptions={{
-        appendTo: () => {
-          return appendTo?.current
-        },
+        appendTo: appendTo?.current || 'parent',
         placement: 'left',
         offset: [0, 15],
         popperOptions: {
