@@ -10,36 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout code
-        uses: actions/checkout@v4
+      - uses: ./.github/actions/checkout-and-cache
+      - uses: ./.github/actions/setup-node-pnpm
+      - uses: ./.github/actions/install-dependencies
 
-      - name: setup node.js
-        uses: actions/setup-node@v4
+      - uses: ./.github/actions/run-command
         with:
-          node-version: '22'
-
-      - name: install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
-          run_install: false
-
-      - name: get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: run client tests
-        run: pnpm test:client
+          name: run client tests
+          command: pnpm test:client

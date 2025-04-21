@@ -1,0 +1,20 @@
+name: 'install dependencies'
+description: 'Installs project dependencies using PNPM'
+
+inputs:
+  frozen-lockfile:
+    description: 'Whether to use --frozen-lockfile flag'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: install dependencies
+      shell: bash
+      run: |
+        if [ "${{ inputs.frozen-lockfile }}" = "true" ]; then
+          pnpm install --frozen-lockfile
+        else
+          pnpm install
+        fi

@@ -1,0 +1,8 @@
+name: 'checkout and cache'
+description: 'Checks out code and sets up caching'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: checkout code
+      uses: actions/checkout@v4
