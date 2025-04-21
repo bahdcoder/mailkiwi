@@ -81,6 +81,8 @@ jobs:
       - uses: ./.github/actions/setup-node-pnpm
       - uses: ./.github/actions/install-dependencies
 
+      - uses: ./.github/actions/setup-docker
+
       - uses: ./.github/actions/run-command
         with:
           name: build project
