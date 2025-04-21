@@ -1,4 +1,4 @@
-import type { StatusCode } from 'hono/utils/http-status'
+import type { ContentfulStatusCode, StatusCode } from 'hono/utils/http-status'
 import type {
   BaseIssue,
   BaseSchema,
@@ -28,7 +28,7 @@ export class E_REQUEST_EXCEPTION extends Error {
   constructor(
     public message: string,
     public payload?: unknown,
-    public statusCode: StatusCode = 500,
+    public statusCode: ContentfulStatusCode = 500,
   ) {
     super(message ?? 'An error occurred.')
   }

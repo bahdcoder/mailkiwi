@@ -3,7 +3,11 @@ import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
 import { ProductRepository } from '@/commerce/repositories/product_repository.js'
 import { WebsitePageRepository } from '@/websites/repositories/website_page_repository.js'
 import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
-import type { RedirectStatusCode, StatusCode } from 'hono/utils/http-status'
+import type {
+  ContentfulStatusCode,
+  RedirectStatusCode,
+  StatusCode,
+} from 'hono/utils/http-status'
 import {
   type BaseSchema,
   type BaseSchemaAsync,
@@ -95,7 +99,7 @@ class ResponseBuilder {
 
   json = (
     content: ResponseConfiguration['payload']['json']['content'],
-    status?: StatusCode,
+    status?: ContentfulStatusCode,
     force = false,
   ) => {
     this.configuration.type = 'json'
@@ -128,7 +132,7 @@ class ResponseBuilder {
           type: this.configuration.type,
           payload,
         },
-        this.configuration.payload.json.status as StatusCode,
+        this.configuration.payload.json.status as ContentfulStatusCode,
       )
     }
 

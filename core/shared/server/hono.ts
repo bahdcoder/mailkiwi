@@ -4,7 +4,7 @@ import { pinoLogger } from 'hono-pino'
 import { compress } from 'hono/compress'
 import type { HonoOptions } from 'hono/hono-base'
 import { requestId } from 'hono/request-id'
-import type { StatusCode } from 'hono/utils/http-status'
+import type { ContentfulStatusCode, StatusCode } from 'hono/utils/http-status'
 import type { HonoContext, HonoRouteDefinition } from './types.js'
 
 import { EnsureUserAndTeamSessionsMiddleware } from '@/auth/middleware/ensure_user_and_team_sessions_middleware.js'
@@ -78,7 +78,7 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
       const requestContext = ctx as unknown as HonoContext
 
       let redirectToPath = route('auth_login')
-      let statusCode: StatusCode = 200
+      let statusCode: ContentfulStatusCode = 200
 
       if (error instanceof E_REQUEST_EXCEPTION) {
         statusCode = error?.statusCode
