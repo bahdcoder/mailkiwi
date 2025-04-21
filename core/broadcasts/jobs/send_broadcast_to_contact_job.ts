@@ -20,6 +20,21 @@ export interface SendBroadcastToContactPayload {
   contactId: string
 }
 
+/**
+ * SendBroadcastToContact is responsible for sending a single marketing email to an individual contact.
+ *
+ * This job is a critical component in Kibamail's email marketing infrastructure. It's created in bulk
+ * by the SendBroadcastJob for each recipient in a marketing campaign. The job handles:
+ *
+ * 1. Retrieving the contact and broadcast data
+ * 2. Determining the appropriate sending domain and tracking settings
+ * 3. Preparing the email with proper headers for tracking and analytics
+ * 4. Injecting the email into the MTA (Mail Transfer Agent) for delivery
+ *
+ * The system uses custom headers (X-Kibamail-*) to track emails through the entire delivery pipeline,
+ * enabling comprehensive analytics and event tracking. These headers connect email events back to
+ * specific contacts, broadcasts, and audiences.
+ */
 export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayload> {
   static get id() {
     return 'BROADCASTS::SEND_BROADCAST_TO_CONTACTS'
@@ -29,6 +44,21 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     return AVAILABLE_QUEUES.broadcasts
   }
 
+  /**
+   * Processes a single email send to a specific contact as part of a broadcast campaign.
+   *
+   * This method implements a sophisticated email preparation workflow that:
+   * 1. Retrieves the contact and broadcast data with their associated content
+   * 2. Determines the appropriate sending domain using a fallback hierarchy:
+   *    - First tries the broadcast's specified sending domain
+   *    - Then looks for any domain configured for the 'engage' product
+   *    - Finally falls back to the first available sending domain
+   * 3. Applies tracking settings based on both domain and broadcast-level configurations
+   * 4. Prepares the email with proper headers for tracking and analytics
+   *
+   * The tracking headers enable the system to connect email events (opens, clicks, bounces)
+   * back to specific contacts and broadcasts, powering the analytics and automation features.
+   */
   async handle({ payload }: JobContext<SendBroadcastToContactPayload>) {
     const contactRepository = container.make(ContactRepository)
     const broadcastRepository = container.make(BroadcastRepository)
@@ -50,6 +80,11 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       .make(SendingDomainRepository)
       .findAllForTeam(broadcast.teamId)
 
+    // Determine the appropriate sending domain using a fallback hierarchy:
+    // 1. First try to use the domain specifically configured for this broadcast
+    // 2. If not found, look for any domain configured for marketing emails ('engage' product)
+    // 3. As a last resort, use the first available sending domain
+    // This ensures emails are always sent from a valid domain even if configurations change
     const sendingDomain =
       teamSendingDomains.find(
         (sendingDomain) => broadcast.sendingDomainId === sendingDomain.id,
@@ -57,6 +92,16 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       teamSendingDomains.find((sendingDomain) => sendingDomain.product === 'engage') ||
       teamSendingDomains?.[0]
 
+    // Determine tracking settings using a hierarchical configuration approach:
+    // 1. Start with domain-level defaults (may be undefined if not explicitly set)
+    // 2. Override with broadcast-specific settings if provided
+    //
+    // This allows for flexible tracking configuration:
+    // - Global defaults at the domain level for consistent tracking
+    // - Per-broadcast overrides for special cases (e.g., turning off tracking for certain campaigns)
+    // - Fallback to false if no configuration exists
+    //
+    // Tracking is essential for engagement metrics that power segmentation and automation features
     let openTrackingEnabled = sendingDomain.openTrackingEnabled ?? false
     let clickTrackingEnabled = sendingDomain.clickTrackingEnabled ?? false
 
@@ -70,16 +115,16 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
 
     const injectEmailPayload: InjectEmailSchemaDto = {
       from: {
-        name: emailContent.fromName,
+        name: emailContent.fromName ?? '',
         email: `${emailContent.fromEmail}@${sendingDomain.name}`,
       },
       replyTo: {
-        name: emailContent.replyToName,
+        name: emailContent.replyToName ?? '',
         email: emailContent.replyToEmail,
       },
       recipients: [
         {
-          name: `${contact.firstName} ${contact.lastName}`,
+          name: `${contact.firstName || ''} ${contact.lastName || ''}`.trim(),
           email: contact.email,
         },
       ],
@@ -102,5 +147,19 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
     return this.done(messages)
   }
 
-  async failed() {}
+  /**
+   * Handles job failure scenarios.
+   *
+   * This method would implement error handling and recovery strategies for when
+   * an individual email send fails. Potential actions might include:
+   * - Logging detailed error information
+   * - Recording the failure in the contact's engagement history
+   * - Updating campaign metrics to reflect the failure
+   * - Attempting recovery or fallback strategies
+   *
+   * Note: This is currently a placeholder implementation.
+   */
+  async failed() {
+    // TODO: Implement failure handling
+  }
 }

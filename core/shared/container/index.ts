@@ -1,6 +1,6 @@
 import type { Redis } from 'ioredis'
 import type { Connection } from 'mysql2'
-import type { Logger, pino } from 'pino'
+import type { Logger } from 'pino'
 
 import type { DrizzleClient } from '@/database/client.js'
 

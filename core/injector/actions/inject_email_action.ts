@@ -10,7 +10,41 @@ import { generateMessageIdForDomain } from '@/shared/utils/string.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * InjectEmailAction is responsible for preparing and injecting emails into the Mail Transfer Agent (MTA).
+ *
+ * This class is a critical component in Kibamail's email delivery infrastructure, handling:
+ * 1. Email preparation with proper headers and tracking elements
+ * 2. Link and open tracking injection based on configuration
+ * 3. Message ID generation and tracking for analytics
+ * 4. Bulk email injection with retry logic
+ * 5. Recording email sends in the database for analytics and tracking
+ *
+ * The class works with both marketing ('engage') and transactional ('send') emails,
+ * applying different business rules to each type. It's designed to handle both
+ * single emails and bulk sends efficiently.
+ */
 export class InjectEmailAction {
+  /**
+   * Prepares and injects emails into the Mail Transfer Agent (MTA) for delivery.
+   *
+   * This complex method orchestrates the entire email preparation and injection process:
+   *
+   * 1. For each recipient, generates a unique message ID for tracking
+   * 2. Applies link tracking by rewriting URLs if enabled
+   * 3. Injects open tracking pixel if enabled
+   * 4. Prepares the email with proper headers and envelope settings
+   * 5. Records the email send in the database for analytics
+   * 6. Injects the email into the MTA with retry logic
+   *
+   * The method handles both marketing ('engage') and transactional ('send') emails,
+   * identified by the presence of a broadcastId header. This distinction affects
+   * how the email is tracked and processed throughout the system.
+   *
+   * @param payload - The email content and recipient information
+   * @param sendingDomain - The domain configuration to use for sending
+   * @returns Object containing the results of the email injection
+   */
   async handle(payload: InjectEmailSchemaDto, sendingDomain: SendingDomain) {
     type Injection = {
       messageId: string
@@ -54,6 +88,15 @@ export class InjectEmailAction {
 
       const metadata = { m: id }
 
+      // Apply link tracking if enabled by rewriting all <a href> links in the HTML content
+      // This process:
+      // 1. Extracts all links from the HTML
+      // 2. Replaces them with tracking URLs that point to Kibamail's tracking domain
+      // 3. Stores the original URLs to redirect users when they click
+      // 4. Captures the tracking signatures for analytics
+      //
+      // When a recipient clicks a tracked link, the system records the event and redirects
+      // to the original URL, enabling click tracking while preserving the user experience
       if (htmlMessage && clickTrackingEnabled) {
         const { html: trackedHtml, trackingSignatures } =
           injectTrackingLinksEmailAction.rewriteHrefAttributes(
@@ -69,6 +112,12 @@ export class InjectEmailAction {
         htmlMessage = trackedHtml
       }
 
+      // Add open tracking pixel if enabled by injecting a 1x1 transparent image
+      // This invisible image is loaded from Kibamail's tracking servers when the email is opened,
+      // allowing the system to detect when recipients view the email
+      //
+      // The pixel is added at the end of the HTML content to ensure it's loaded
+      // even if the email client blocks remote images by default
       if (htmlMessage && openTrackingEnabled) {
         const { html: trackedOpensHtml } =
           injectTrackingLinksEmailAction.injectTrackingPixel(
@@ -80,6 +129,15 @@ export class InjectEmailAction {
         htmlMessage = trackedOpensHtml
       }
 
+      // Prepare the final email payload for injection into the MTA
+      // This includes:
+      // 1. Setting the envelope sender with a domain-specific bounce address
+      //    (enables proper bounce handling and feedback loop processing)
+      // 2. Configuring all content including HTML, text, and attachments
+      // 3. Adding all required headers for tracking and compliance
+      //
+      // The custom headers (X-Kibamail-*) are critical for the entire tracking system,
+      // connecting email events back to specific sends, broadcasts, and contacts
       const injectEmailPayload = {
         envelope_sender: `bounces@${sendingDomain.returnPathSubDomain}.${sendingDomain.name}`,
         recipients: [recipient],

@@ -31,6 +31,22 @@ import { RenderBroadcastContentAction } from '@/broadcasts/actions/render_broadc
 import { TeamCreditRepository } from '@/teams/repositories/team_credit_repository.js'
 import { container } from '@/utils/typi.js'
 
+/**
+ * BroadcastController handles API endpoints for managing email marketing campaigns.
+ *
+ * This controller is responsible for the core email marketing functionality in Kibamail,
+ * providing endpoints to create, manage, and send broadcast campaigns. These broadcasts
+ * enable marketing features such as:
+ *
+ * - Newsletter distribution to audience segments
+ * - Promotional campaigns for products or services
+ * - Announcement emails to entire audiences
+ * - A/B testing different email content variations
+ *
+ * The controller enforces proper authorization and validation for all broadcast
+ * operations, ensuring that users can only manage broadcasts they have access to
+ * and that all broadcasts meet the required criteria before sending.
+ */
 export class BroadcastController extends BaseController {
   constructor(
     private app = makeApp(),
@@ -40,9 +56,12 @@ export class BroadcastController extends BaseController {
   ) {
     super()
 
+    // Define routes for broadcast list operations
     this.app.defineRoutes(
       [
+        // Create a new broadcast campaign
         ['POST', '/', this.create],
+        // List all broadcasts for the current team
         ['GET', '/', this.index],
       ],
       {
@@ -50,14 +69,22 @@ export class BroadcastController extends BaseController {
       },
     )
 
+    // Define routes for individual broadcast operations
     this.app.defineRoutes(
       [
+        // Delete a broadcast
         ['DELETE', '/', this.delete],
+        // Get a specific broadcast
         ['GET', '/', this.get],
+        // Preview the rendered content of a broadcast
         ['GET', '/preview', this.preview],
+        // Update a broadcast's configuration
         ['PUT', '/', this.update],
+        // Validate a broadcast's content before sending
         ['PUT', '/validate', this.validateContent],
+        // Send a broadcast to its audience
         ['POST', '/send', this.send],
+        // Cancel a scheduled broadcast
         ['POST', '/unsend', this.unsend],
       ],
       { prefix: 'broadcasts/:broadcastId' },
@@ -155,20 +182,47 @@ export class BroadcastController extends BaseController {
     return ctx.json({ id: broadcast.id })
   }
 
+  /**
+   * Sends a broadcast campaign to its audience.
+   *
+   * This method implements the comprehensive broadcast sending process:
+   * 1. Verifies the user has permission to send broadcasts
+   * 2. Retrieves the broadcast with its A/B test variants if applicable
+   * 3. Validates the broadcast status (must be DRAFT or QUEUED_FOR_SENDING)
+   * 4. Updates the broadcast with any final changes from the request
+   * 5. Validates the broadcast against the sending schema
+   * 6. Checks if the team has sufficient credits for the recipient count
+   * 7. For A/B tests, validates all variant content
+   * 8. Queues the broadcast for sending
+   *
+   * The method includes multiple validation steps to ensure that broadcasts
+   * meet all requirements before being sent. This prevents issues like:
+   * - Sending incomplete or invalid content
+   * - Sending to more recipients than the team has credits for
+   * - Sending broadcasts with invalid A/B test configurations
+   *
+   * @param ctx - The HTTP context containing the request data
+   * @returns JSON response with the broadcast ID
+   * @throws E_VALIDATION_FAILED if any validation check fails
+   */
   send = async (ctx: HonoContext) => {
+    // Verify the team context and user permissions
     const team = this.ensureTeam(ctx)
     this.ensureCanManage(ctx)
 
+    // Retrieve the broadcast with its A/B test variants
     let broadcast = await container
       .make(BroadcastRepository)
       .findByIdWithAbTestVariants(ctx.req.param('broadcastId'))
 
+    // Helper function to refresh the broadcast data after updates
     async function refreshBroadcast() {
       broadcast = await container
         .make(BroadcastRepository)
         .findByIdWithAbTestVariants(ctx.req.param('broadcastId'))
     }
 
+    // Validate that the broadcast exists
     if (!broadcast) {
       throw E_VALIDATION_FAILED([
         {
@@ -178,6 +232,8 @@ export class BroadcastController extends BaseController {
       ])
     }
 
+    // Validate the broadcast status
+    // Only drafts or already queued broadcasts can be sent
     const allowedStatuses: Broadcast['status'][] = ['DRAFT', 'QUEUED_FOR_SENDING']
 
     if (!allowedStatuses?.includes(broadcast.status))
@@ -188,12 +244,15 @@ export class BroadcastController extends BaseController {
         },
       ])
 
+    // Apply any final updates to the broadcast
     const data = await this.validate(ctx, UpdateBroadcastDto)
-
     await container.resolve(UpdateBroadcastAction).handle(broadcast, data)
 
+    // Refresh the broadcast data after updates
     await refreshBroadcast()
 
+    // Validate the broadcast against the sending schema
+    // This checks for required fields like subject, content, etc.
     const { success, issues } = await safeParseAsync(SendBroadcastSchema, {
       ...broadcast,
       sendAt: broadcast.sendAt?.toString(),
@@ -201,6 +260,7 @@ export class BroadcastController extends BaseController {
 
     if (!success) throw E_VALIDATION_FAILED(issues)
 
+    // Check if the team has sufficient credits for the recipient count
     const availableCredits = await container
       .make(TeamCreditRepository)
       .totalAvailableCredits(team.id)
@@ -218,6 +278,7 @@ export class BroadcastController extends BaseController {
       ])
     }
 
+    // For A/B tests, validate all variant content
     if (broadcast.isAbTest) {
       const validations = await Promise.all(
         broadcast.abTestVariants.map((variant) =>
@@ -237,6 +298,7 @@ export class BroadcastController extends BaseController {
       }
     }
 
+    // Queue the broadcast for sending
     await container.make(SendBroadcastAction).handle(broadcast)
 
     return ctx.json({ id: broadcast.id })

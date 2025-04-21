@@ -1,9 +1,6 @@
 build/
 coverage/
 node_modules/
-.env
-.env.test
-.env.e2e
 
 .aider*
 /test-results/

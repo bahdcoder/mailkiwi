@@ -599,7 +599,7 @@ describe.sequential('@mta', () => {
     })
 
     expect(
-      output && typeof output === 'object' && 'ok' in output,
+      output && Array.isArray(output) && 'ok' in output[0],
       'The output from the MTA inject job was unsuccessful.',
     ).toBe(true)
 

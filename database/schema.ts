@@ -20,6 +20,21 @@ import {
 } from 'drizzle-orm/mysql-core'
 import { v1 } from 'uuid'
 
+/**
+ * Mapping of automation trigger types used throughout the system.
+ *
+ * These constants define the available trigger types that can start an automation workflow:
+ * - TRIGGER_EMPTY: A placeholder trigger used for manual testing or template automations
+ * - TRIGGER_CONTACT_SUBSCRIBED: Triggered when a contact subscribes to an audience
+ * - TRIGGER_CONTACT_UNSUBSCRIBED: Triggered when a contact unsubscribes from an audience
+ * - TRIGGER_CONTACT_TAG_ADDED: Triggered when a tag is added to a contact
+ * - TRIGGER_CONTACT_TAG_REMOVED: Triggered when a tag is removed from a contact
+ * - TRIGGER_API_MANUAL: Triggered via API call for external system integration
+ *
+ * These trigger types are used in the automation system to determine when to start
+ * a workflow for a contact. Each trigger type corresponds to a specific event in the
+ * system that can initiate an automation sequence.
+ */
 export const automationStepSubtypesTriggerMap = {
   TRIGGER_EMPTY: 'TRIGGER_EMPTY',
   TRIGGER_CONTACT_SUBSCRIBED: 'TRIGGER_CONTACT_SUBSCRIBED',
@@ -65,6 +80,24 @@ export const automationStepSubtypes = [
   ...automationStepSubtypesEnd,
 ] as const
 
+/**
+ * Custom type for efficiently storing UUIDs in MySQL.
+ *
+ * This custom type implementation optimizes UUID storage by using MySQL's binary type
+ * instead of storing UUIDs as strings. Key benefits include:
+ *
+ * 1. Reduced storage space: 16 bytes for binary vs 36 bytes for string UUIDs
+ * 2. Improved query performance: Binary comparisons are faster than string comparisons
+ * 3. Proper indexing: Binary UUIDs can be efficiently indexed
+ *
+ * The implementation handles conversion between string UUIDs (used in application code)
+ * and binary UUIDs (stored in the database) transparently. It uses MySQL's UUID_TO_BIN
+ * function with time-based ordering (swapping time-low and time-high components) to
+ * improve index efficiency for time-based UUIDs.
+ *
+ * This is particularly important for Kibamail's performance as UUIDs are used as primary
+ * keys throughout the database schema.
+ */
 export const binaryUuid = customType<{
   data: string
   driverData: Buffer
@@ -74,15 +107,17 @@ export const binaryUuid = customType<{
     return typeof config?.length !== 'undefined' ? `binary(${config.length})` : 'binary'
   },
   fromDriver(buf) {
+    // Convert binary UUID back to string format with proper byte ordering
     return [
-      buf.toString('hex', 4, 8),
-      buf.toString('hex', 2, 4),
-      buf.toString('hex', 0, 2),
-      buf.toString('hex', 8, 10),
-      buf.toString('hex', 10, 16),
+      buf.toString('hex', 4, 8), // time-low
+      buf.toString('hex', 2, 4), // time-mid
+      buf.toString('hex', 0, 2), // time-high-and-version
+      buf.toString('hex', 8, 10), // clock-seq-and-reserved + clock-seq-low
+      buf.toString('hex', 10, 16), // node
     ].join('-')
   },
   toDriver(value: string) {
+    // Convert string UUID to optimized binary format
     return uuidToBin(value)
   },
 })
@@ -211,15 +246,34 @@ export const accessTokens = mysqlTable('accessTokens', {
   expiresAt: timestamp('expiresAt').defaultNow().notNull(),
 })
 
+/**
+ * Teams table - Core entity for multi-tenant functionality.
+ *
+ * The teams table implements Kibamail's multi-tenant architecture, allowing the system
+ * to support multiple organizations with isolated data and configurations. Each team:
+ *
+ * - Represents a distinct organization or business unit
+ * - Has its own contacts, audiences, broadcasts, and other resources
+ * - Can have multiple team members with different permission levels
+ * - Maintains separate tracking and configuration settings
+ * - Can integrate with different commerce providers for billing
+ *
+ * Teams are the foundation of Kibamail's permission system, as all resources
+ * are associated with a team, and users access resources through team memberships.
+ */
 export const teams = mysqlTable('teams', {
   id,
   name: varchar('name', { length: 100 }).notNull(),
+  // Owner of the team (typically the user who created it)
   userId: primaryKeyCuid('userId')
     .notNull()
     .references(() => users.id),
+  // Team-level tracking settings (can be overridden at the sending domain level)
   trackClicks: boolean('trackClicks'),
   trackOpens: boolean('trackOpens'),
+  // Email editor preference for the team
   broadcastEditor: mysqlEnum('broadcastEditor', ['DEFAULT', 'MARKDOWN']),
+  // E-commerce integration settings for monetization features
   commerceProvider: mysqlEnum('commerceProvider', ['stripe', 'paystack', 'flutterwave']),
   commerceProviderAccountId: varchar('commerceProviderAccountId', {
     length: 255,
@@ -227,6 +281,24 @@ export const teams = mysqlTable('teams', {
   commerceProviderConfirmedAt: timestamp('commerceProviderConfirmedAt'),
 })
 
+/**
+ * SendingDomains table - Manages email sending infrastructure configuration.
+ *
+ * This table is a critical component of Kibamail's email deliverability system, storing
+ * all the configuration needed for proper email authentication and tracking. Each sending domain:
+ *
+ * - Represents a verified domain used for sending emails
+ * - Contains DKIM cryptographic keys for email authentication
+ * - Configures return path (bounce handling) settings
+ * - Manages tracking domain configuration for analytics
+ * - Associates with specific IP addresses for sending
+ * - Separates transactional and marketing email configurations
+ *
+ * The sending domain configuration directly impacts email deliverability, as proper
+ * authentication (DKIM, SPF via return path) is essential for avoiding spam filters.
+ * The system maintains separate configurations for marketing ('engage') and transactional ('send')
+ * emails to optimize deliverability for each type.
+ */
 export const sendingDomains = mysqlTable('sendingDomains', {
   id,
   name: varchar('name', { length: 100 }).notNull(),
@@ -234,7 +306,8 @@ export const sendingDomains = mysqlTable('sendingDomains', {
     .notNull()
     .references(() => teams.id),
 
-  // Dkim
+  // DKIM (DomainKeys Identified Mail) authentication configuration
+  // This cryptographic authentication is critical for deliverability
   dkimSubDomain: varchar('dkimSubDomain', {
     length: 120,
   }).notNull(),
@@ -242,7 +315,8 @@ export const sendingDomains = mysqlTable('sendingDomains', {
   dkimPrivateKey: text('dkimPrivateKey').notNull(),
   dkimVerifiedAt: timestamp('dkimVerifiedAt'),
 
-  // return path
+  // Return path configuration for bounce handling and SPF authentication
+  // This subdomain receives bounce notifications and implements SPF
   returnPathSubDomain: varchar('returnPathSubDomain', {
     length: 120,
   }).notNull(),
@@ -251,13 +325,15 @@ export const sendingDomains = mysqlTable('sendingDomains', {
   }).notNull(),
   returnPathDomainVerifiedAt: timestamp('returnPathDomainVerifiedAt'),
 
-  // transactional email
+  // Transactional email sending sources (primary and secondary/fallback)
+  // Used for sending individual transactional emails ('send' product)
   sendingSourceId: primaryKeyCuid('sendingSourceId').references(() => sendingSources.id),
   secondarySendingSourceId: primaryKeyCuid('secondarySendingSourceId').references(
     () => sendingSources.id,
   ),
 
-  // marketing email
+  // Marketing email sending sources (primary and secondary/fallback)
+  // Used for sending bulk marketing campaigns ('engage' product)
   engageSendingSourceId: primaryKeyCuid('engageSendingSourceId').references(
     () => sendingSources.id,
   ),
@@ -265,7 +341,8 @@ export const sendingDomains = mysqlTable('sendingDomains', {
     () => sendingSources.id,
   ),
 
-  // tracking
+  // Tracking domain configuration for open/click analytics
+  // This subdomain handles redirects for click tracking and pixel loading for open tracking
   trackingDomainCnameValue: varchar('trackingDomainCnameValue', {
     length: 120,
   }).notNull(),
@@ -273,17 +350,21 @@ export const sendingDomains = mysqlTable('sendingDomains', {
     length: 120,
   }).notNull(),
 
+  // Verification timestamps for tracking domain setup
   trackingDomainVerifiedAt: timestamp('trackingDomainVerifiedAt'),
   trackingDomainSslVerifiedAt: timestamp('trackingDomainSslVerifiedAt'),
 
+  // SSL certificate for secure tracking (HTTPS)
   trackingSslCertKey: text('trackingSslCertKey'),
   trackingSslCertSecret: text('trackingSslCertSecret'),
 
+  // Tracking feature toggles (can override team-level settings)
   openTrackingEnabled: boolean('openTrackingEnabled').default(false),
   clickTrackingEnabled: boolean('clickTrackingEnabled').default(false),
 
-  // product
-  product: mysqlEnum('product', ['engage', 'send']).default('engage'), // an engage domain will only be used
+  // Domain purpose - separates marketing and transactional email infrastructure
+  // This separation improves deliverability by isolating different email types
+  product: mysqlEnum('product', ['engage', 'send']).default('engage'),
 })
 
 export const webhooks = mysqlTable('webhooks', {
@@ -418,32 +499,61 @@ export const contactImports = mysqlTable('contactImports', {
     .notNull(),
 })
 
+/**
+ * Contacts table - Core entity for audience management and email targeting.
+ *
+ * This table is the foundation of Kibamail's audience management system, storing
+ * all recipient information and engagement metrics. The contacts table:
+ *
+ * - Stores basic contact information (name, email)
+ * - Tracks subscription status and verification
+ * - Records detailed engagement metrics for segmentation
+ * - Captures device and location data for targeting
+ * - Maintains custom attributes for personalization
+ *
+ * The engagement metrics stored in this table power many of Kibamail's advanced features:
+ * - Segmentation based on engagement (e.g., "contacts who opened in last 30 days")
+ * - Automation triggers based on behavior
+ * - Re-engagement campaigns for inactive contacts
+ * - Deliverability optimization through engagement-based sending
+ */
 export const contacts = mysqlTable(
   'contacts',
   {
     id,
+    // Basic contact information
     firstName: varchar('firstName', { length: 50 }),
     lastName: varchar('lastName', { length: 50 }),
     email: varchar('email', { length: 80 }).notNull(),
     avatarUrl: varchar('avatarUrl', { length: 256 }),
+
+    // Subscription status tracking
     subscribedAt: timestamp('subscribedAt'),
     unsubscribedAt: timestamp('unsubscribedAt'),
     audienceId: primaryKeyCuid('audienceId')
       .references(() => audiences.id)
       .notNull(),
+
+    // Email verification for double opt-in
     emailVerificationToken: varchar('emailVerificationToken', {
       length: 100,
     }),
     emailVerificationTokenExpiresAt: timestamp('emailVerificationTokenExpiresAt'),
+
+    // Import tracking for compliance and audit
     contactImportId: primaryKeyCuid('contactImportId').references(
       () => contactImports.id,
     ),
+
+    // Custom attributes for personalization and segmentation
+    // Stored as JSON to support flexible schema per audience
     attributes: json('attributes').$type<Record<string, unknown>>(),
     createdAt: timestamp('createdAt').defaultNow(),
 
-    // activity window queryes: Active Campaign
-
-    // In the last [days, weeks, months, years], Between [exact dates, today, yesterday, relative dates], Ever
+    // Engagement metrics for marketing campaigns
+    // These timestamps enable powerful segmentation queries like:
+    // "Contacts who opened an email in the last 30 days"
+    // "Contacts who clicked but haven't purchased"
     lastSentBroadcastEmailAt: timestamp('lastSentBroadcastEmailAt'),
     lastSentAutomationEmailAt: timestamp('lastSentAutomationEmailAt'),
 
@@ -453,7 +563,8 @@ export const contacts = mysqlTable(
     lastOpenedAutomationEmailAt: timestamp('lastOpenedAutomationEmailAt'),
     lastClickedAutomationEmailLinkAt: timestamp('lastClickedAutomationEmailLinkAt'),
 
-    // Device and location information
+    // Device and location tracking for advanced segmentation
+    // This data enables targeting based on device type or location
     lastTrackedActivityFrom: varchar('lastTrackedActivityFrom', {
       length: 10,
     }),
@@ -465,6 +576,8 @@ export const contacts = mysqlTable(
     }),
   },
   (table) => ({
+    // Ensure email uniqueness within an audience
+    // This constraint prevents duplicate contacts in the same audience
     ContactEmailAudienceIdKey: unique('ContactEmailAudienceIdKey').on(
       table.email,
       table.audienceId,

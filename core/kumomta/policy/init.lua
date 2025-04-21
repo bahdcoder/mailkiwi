@@ -1,11 +1,21 @@
---  Init the kumo mta. 
--- Set up event handler for smtp_server_auth_plain: Which handles SMTP injection authentication ✅
--- Set up Dkim signing for Email Service Provider (Kibamail)
--- Set up Dkim signing for sending domain (Kibamail managed tenant)
--- Set up IP pool management and IP address picking for specific Kibamail tenant
--- Set up HTTP injection layer (Should only receive HTTP injections from internal proxy (running nodejs instances)).
--- Setup Socks5 Egress Proxy
--- Setup logs webhooks
+--[[
+  KumoMTA Initialization and Configuration
+
+  This is the core configuration file for Kibamail's Mail Transfer Agent (MTA) infrastructure.
+  It implements a sophisticated email delivery system with the following key components:
+
+  1. SMTP Authentication - Secures the SMTP server by validating credentials against Kibamail's API
+  2. DKIM Signing - Implements domain-based message authentication for both Kibamail and customer domains
+  3. IP Pool Management - Intelligently routes emails through appropriate IP addresses based on domain reputation
+  4. HTTP Injection API - Provides an internal interface for the application to submit emails
+  5. Tracking Integration - Processes emails to add click and open tracking before delivery
+  6. Logging System - Captures detailed delivery events for analytics and troubleshooting
+  7. Bounce Handling - Configures proper bounce processing for deliverability management
+
+  This infrastructure separates transactional and marketing email paths to maintain optimal deliverability,
+  implements sophisticated IP warming and reputation management, and provides comprehensive tracking
+  and analytics capabilities while maintaining compliance with email best practices.
+]]
 
 -- This config acts as a sink that will discard all received mail
 local kumo = require 'kumo'
@@ -28,18 +38,34 @@ local HTTP_INJECTOR_PORT = os.getenv 'HTTP_INJECTOR_PORT' or '8000'
 
  ########################### KIBAMAIL AUTHENTICATION #############################
  Define the methods needed for handling smtp authentication
- 
+
  1. Integrate a module for making http requests.
  2. Set environment variable for access to MTA helper API.
 
  ######################### KIBAMAIL AUTHENTICATION ###############################
 ]]--
 
+--[[
+  SMTP Authentication Handler
+
+  This function validates SMTP credentials against Kibamail's authentication API.
+  It's a critical security component that:
+
+  1. Prevents unauthorized use of the SMTP server for sending emails
+  2. Enables customer-specific rate limiting and policy enforcement
+  3. Associates emails with specific Kibamail accounts for billing and analytics
+  4. Provides an audit trail of which accounts are sending emails
+
+  The authentication is performed via a secure HTTP request to the Kibamail API,
+  which validates the credentials against the user database and returns appropriate
+  status codes. This allows for centralized credential management and real-time
+  account status checking (e.g., suspending sending for accounts with payment issues).
+]]
 local function smtp_check_auth_credentials(username, passwd)
   local auth_url = API_HTTP_SERVER .. "/mta/smtp/auth"
 
   local request = kumo.http.build_client({}):post(auth_url)
-  
+
   request:header('Content-Type', 'application/json')
   request:header('x-mta-access-token', API_HTTP_SERVER)
 
@@ -104,12 +130,12 @@ local shaper = shaping:setup_with_automation {
 
 local authenticated_request = function (url, json)
   local request = kumo.http.build_client({}):post(url)
-  
+
   request:header('Content-Type', 'application/json')
   request:header('x-mta-access-token', API_HTTP_ACCESS_TOKEN)
 
   request:body(kumo.json_encode(json))
-  
+
   local response = request:send()
 
   local json = kumo.serde.json_parse(response:text())
@@ -117,6 +143,22 @@ local authenticated_request = function (url, json)
   return json
 end
 
+--[[
+  DKIM Information Retrieval
+
+  This function fetches DKIM (DomainKeys Identified Mail) signing information for a specific domain.
+  DKIM is a critical email authentication method that:
+
+  1. Proves email authenticity by cryptographically signing messages
+  2. Improves deliverability by verifying the sender's identity
+  3. Helps prevent email spoofing and phishing attacks
+  4. Is required by many major email providers for inbox placement
+
+  The function retrieves domain-specific DKIM keys from Kibamail's API, which manages
+  the cryptographic keys for both Kibamail's domains and customer domains. This centralized
+  key management allows Kibamail to rotate keys, handle key compromises, and ensure
+  proper DKIM implementation across all sending domains.
+]]
 local get_domain_dkim_information = function (domain)
   local json = authenticated_request(API_HTTP_SERVER .. "/mta/dkim", {
     domain = domain,
@@ -169,6 +211,26 @@ local process_message_with_tracking = function (message)
   message:set_data(json.content)
 end
 
+--[[
+  SMTP Message Processing Handler
+
+  This function processes each email received via SMTP before delivery. It implements
+  several critical email delivery functions:
+
+  1. DKIM Signing - Cryptographically signs the email with the domain's private key
+  2. Domain Validation - Ensures the sending domain is properly configured
+  3. Routing Configuration - Sets metadata for proper IP selection and delivery path
+  4. Compliance Enforcement - Rejects messages that don't meet requirements
+
+  The function distinguishes between transactional and marketing emails ("send" vs "engage" products)
+  and applies different routing and processing rules to each. This separation is crucial for
+  maintaining optimal deliverability, as mixing marketing and transactional traffic can harm
+  IP reputation and deliverability.
+
+  The metadata set here (campaign, tenant) determines which IP pools and sending policies
+  will be applied to the message during delivery, enabling sophisticated routing strategies
+  based on message type, domain reputation, and other factors.
+]]
 local on_smtp_server_message_received = function (message)
   local from_header = message:from_header()
 
