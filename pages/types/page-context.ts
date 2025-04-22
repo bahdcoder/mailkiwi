@@ -1,5 +1,3 @@
-import type { UAParser } from 'ua-parser-js'
-
 import type {
   Audience,
   SendingDomain,
