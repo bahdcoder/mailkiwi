@@ -1,6 +1,6 @@
 import { usePageContext } from 'vike-react/usePageContext'
-import { DefaultPageProps } from '../types/page-context.js'
-import { PageContext } from 'vike/types'
+import type { DefaultPageProps } from '../types/page-context.js'
+import type { PageContext } from 'vike/types'
 
 export type PageContextWithPageProps<T extends object = object> = PageContext & {
   pageProps: T

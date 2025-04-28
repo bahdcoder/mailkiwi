@@ -11,7 +11,7 @@ import * as React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 import type { PageContext } from 'vike/types'
 
-import { type Segment, type Tag } from '@/database/database_schema_types.js'
+import type { Segment, Tag } from '@/database/database_schema_types.js'
 
 const filterOperationLabels: Record<string, string> = {
   eq: 'Is',

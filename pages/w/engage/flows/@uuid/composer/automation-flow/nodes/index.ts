@@ -10,6 +10,7 @@ import { ActionUpdateContactAttributesNode } from './actions/action_update_conta
 import { EndNode } from './end/end_node.jsx'
 import { RuleIfElseNode } from './rules/rule_if_else_node.jsx'
 import { TriggerEmptyNode } from './triggers/trigger_empty_node.jsx'
+import { RuleWaitForDurationNode } from './rules/rule_wait_for_duration_node.jsx'
 
 // biome-ignore lint/suspicious/noExplicitAny: React component props are complex and varied
 export const nodeTypes: Partial<Record<AutomationStepSubType, React.FC<any>>> = {
@@ -27,6 +28,7 @@ export const nodeTypes: Partial<Record<AutomationStepSubType, React.FC<any>>> = 
 
   // rules
   RULE_IF_ELSE: RuleIfElseNode,
+  RULE_WAIT_FOR_DURATION: RuleWaitForDurationNode,
 
   // end
   END: EndNode,

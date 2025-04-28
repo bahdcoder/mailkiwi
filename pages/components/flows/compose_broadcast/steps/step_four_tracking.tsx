@@ -1,4 +1,4 @@
-import { SendingDomain } from '@/database/database_schema_types.js'
+import type { SendingDomain } from '@/database/database_schema_types.js'
 import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
 import { WarningCircleSolidIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
 import { WarningTriangleSolidIcon } from '@/pages/components/icons/warning-triangle-solid.svg.jsx'

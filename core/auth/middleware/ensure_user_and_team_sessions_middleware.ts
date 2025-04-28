@@ -1,5 +1,5 @@
 import { E_OPERATION_FAILED, E_UNAUTHORIZED } from '@/http/responses/errors.js'
-import { HonoContext } from '@/shared/server/types.js'
+import type { HonoContext } from '@/shared/server/types.js'
 
 export class EnsureUserAndTeamSessionsMiddleware {
   handle = async (ctx: HonoContext, next: () => Promise<void>) => {

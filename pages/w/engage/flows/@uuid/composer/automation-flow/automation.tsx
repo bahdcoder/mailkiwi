@@ -32,22 +32,6 @@ export const Automation = ({ elements }: AutomationProps) => {
     (element) => !(element as NodeElement).position,
   )
 
-  function getReactFlowContainerDefaultPosition() {
-    if (typeof document === 'undefined') {
-      return [300, 50]
-    }
-
-    const container = document.querySelector('#automation-flow-container-wrapper')
-
-    if (!container) {
-      return [300, 50]
-    }
-
-    const { width } = container.getBoundingClientRect()
-
-    return [width / 3, 50]
-  }
-
   return (
     <div className="w-full h-full">
       <ReactFlowProvider>
@@ -60,9 +44,9 @@ export const Automation = ({ elements }: AutomationProps) => {
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           panOnScroll
-          defaultPosition={getReactFlowContainerDefaultPosition()}
           panOnDrag
           preventScrolling
+          fitView
         >
           <Background
             className="!z-[2]"

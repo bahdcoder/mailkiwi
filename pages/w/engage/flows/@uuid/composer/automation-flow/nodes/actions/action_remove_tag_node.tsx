@@ -1,6 +1,8 @@
 import type { NodeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 import classNames from 'classnames'
 import { Handle, Position } from 'react-flow-renderer'
+import { SkeletonNode } from '../skeleton_node.jsx'
+import { Badge } from '@kibamail/owly/badge'
 
 export interface ActionRemoveTagNodeProps {
   data: NodeElement['data']
@@ -18,7 +20,13 @@ export function ActionRemoveTagNode({ data }: ActionRemoveTagNodeProps) {
           'w-node-selected': data.selected,
         })}
       >
-        <p>remove tag</p>
+        <SkeletonNode step={data.step}>
+          <div className="flex flex-wrap items-center gap-1">
+            <Badge variant="neutral" size="sm" className="lowercase">
+              2024-subscribers
+            </Badge>
+          </div>
+        </SkeletonNode>
         <Handle type="source" position={Position.Bottom} />
         <Handle type="target" position={Position.Top} />
       </div>

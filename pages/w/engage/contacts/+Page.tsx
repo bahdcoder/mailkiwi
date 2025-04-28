@@ -33,7 +33,7 @@ import { EmptyState } from '@/pages/components/empty-state/empty_state.jsx'
 import { ImportContactsDialog } from '@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
 import { formatCount } from '@/pages/utils/number_formatter.js'
 import {
-  PageContextWithPageProps,
+  type PageContextWithPageProps,
   usePageContextWithProps,
 } from '@/pages/hooks/use_page_props.js'
 import { DefaultPageContext } from '@/pages/types/page-context.js'

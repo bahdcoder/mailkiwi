@@ -8,6 +8,7 @@ import type { UpdateAutomationStepDto } from '@/automations/dto/update_automatio
 import { AutomationStep } from '@/database/database_schema_types.js'
 import { makeDatabase } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { AUTOMATION_STEP_BRANCH_TYPES } from '@/database/constants.js'
 
 export class AutomationStepRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {
@@ -54,14 +55,11 @@ export class AutomationStepRepository extends BaseRepository {
     payload: CreateAutomationStepDto,
     targetId: string,
   ) {
-    // Generate IDs for all the steps we'll create
     const ifElseStepId = this.cuid()
-    const yesBranchStepId = this.cuid()
     const noBranchStepId = this.cuid()
     const noEndStepId = this.cuid()
 
     await this.database.transaction(async (trx) => {
-      // 1. Create the IF/ELSE rule step
       await trx.insert(automationSteps).values({
         id: ifElseStepId,
         automationId,
@@ -81,35 +79,21 @@ export class AutomationStepRepository extends BaseRepository {
         },
       })
 
-      // 2. Create the YES branch step (action) that connects to the target
-      await trx.insert(automationSteps).values({
-        id: yesBranchStepId,
-        automationId,
-        type: 'ACTION',
-        subtype: 'ACTION_EMPTY', // Default action type, can be changed by user later
-        parentId: ifElseStepId,
-        branchIndex: 1, // yes branch
-        configuration: {} as AutomationStepConfiguration,
-      })
-
-      // 3. Update the target step to have the YES branch step as its parent
       await trx
         .update(automationSteps)
-        .set({ parentId: yesBranchStepId })
+        .set({ parentId: ifElseStepId })
         .where(eq(automationSteps.id, targetId))
 
-      // 4. Create the NO branch step (action)
       await trx.insert(automationSteps).values({
         id: noBranchStepId,
         automationId,
         type: 'ACTION',
-        subtype: 'ACTION_SEND_EMAIL', // Default action type, can be changed by user later
+        subtype: 'ACTION_EMPTY',
         parentId: ifElseStepId,
-        branchIndex: 0, // no branch
+        branchIndex: AUTOMATION_STEP_BRANCH_TYPES.NO,
         configuration: {} as AutomationStepConfiguration,
       })
 
-      // 5. Create an END step for the NO branch
       await trx.insert(automationSteps).values({
         id: noEndStepId,
         automationId,
@@ -122,7 +106,6 @@ export class AutomationStepRepository extends BaseRepository {
 
     return {
       id: ifElseStepId,
-      yesBranchStepId,
       noBranchStepId,
       noEndStepId,
     }

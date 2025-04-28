@@ -4,11 +4,11 @@ import { Handle, Position } from 'react-flow-renderer'
 import { SkeletonNode } from '../skeleton_node.jsx'
 import { Text } from '@kibamail/owly/text'
 
-export interface RuleIfElseNodeProps {
+export interface RuleWaitForDurationNodeProps {
   data: NodeElement['data']
 }
 
-export function RuleIfElseNode({ data }: RuleIfElseNodeProps) {
+export function RuleWaitForDurationNode({ data }: RuleWaitForDurationNodeProps) {
   return (
     <button
       type="button"
@@ -22,8 +22,8 @@ export function RuleIfElseNode({ data }: RuleIfElseNodeProps) {
       >
         <SkeletonNode step={data?.step}>
           <Text className="kb-content-tertiary">
-            <span className="kb-content-primary font-medium pr-1">2</span>
-            filter conditions
+            Wait <span className="kb-content-primary font-medium px-1">2</span>
+            hours
           </Text>
         </SkeletonNode>
         <Handle type="target" position={Position.Top} />

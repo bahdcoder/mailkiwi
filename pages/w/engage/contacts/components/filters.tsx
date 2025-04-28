@@ -17,7 +17,7 @@ import type {
 
 import type { Segment, Tag } from '@/database/database_schema_types.js'
 import {
-  PageContextWithPageProps,
+  type PageContextWithPageProps,
   usePageContextWithProps,
 } from '@/pages/hooks/use_page_props.js'
 

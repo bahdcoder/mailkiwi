@@ -16,7 +16,7 @@ import { CreateBroadcastFlow } from '@/pages/components/flows/compose_broadcast/
 import { BroadcastRow } from '@/pages/w/engage/components/broadcast_row.jsx'
 import { route } from '@/shared/routes/route_aliases.js'
 import { Button } from '@kibamail/owly/button'
-import { DefaultPageProps } from '@/pages/types/page-context.js'
+import type { DefaultPageProps } from '@/pages/types/page-context.js'
 
 enum BroadcastStatusFilters {
   DRAFT = 'draft',

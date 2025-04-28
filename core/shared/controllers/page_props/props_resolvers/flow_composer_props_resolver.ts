@@ -13,10 +13,8 @@ export class FlowComposerPropsResolver extends PagePropsResolverContract {
     ]
   }
 
-  async resolve(pathname: string, defaultProps: DefaultPageProps, ctx: HonoContext) {
+  async resolve(pathname: string, _defaultProps: DefaultPageProps, _ctx: HonoContext) {
     const automationId = pathname.split('/w/engage/flows/')?.[1]?.split('/composer')?.[0]
-
-    d('#+++++++++++++++++++++++++++++', { automationId })
 
     const automation = await container
       .resolve(AutomationRepository)

@@ -15,7 +15,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { route } from '@/shared/routes/route_aliases.js'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { DefaultPageProps } from '@/pages/types/page-context.js'
-import { BroadcastGroupWithBroadcasts } from '@/database/database_schema_types.js'
+import type { BroadcastGroupWithBroadcasts } from '@/database/database_schema_types.js'
 import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 
 export interface CreateBroadcastFlowProps extends React.PropsWithChildren {}
