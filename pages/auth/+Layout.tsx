@@ -27,10 +27,9 @@ function PasswordResetsFlowLayout({
 }
 
 function AuthLayout({ children }: React.PropsWithChildren<AuthLayoutProps>) {
-  const ctx = usePageContext()
+  const { urlOriginal } = usePageContext()
 
-  const isPasswordResetsFlow = ctx.urlOriginal.includes(PASSWORD_RESET_PATHS)
-  const isRegisterWelcomeFlow = ctx.urlOriginal.includes(WELCOME_PATHS)
+  const isPasswordResetsFlow = urlOriginal.includes(PASSWORD_RESET_PATHS)
 
   if (isPasswordResetsFlow) {
     return <PasswordResetsFlowLayout>{children}</PasswordResetsFlowLayout>

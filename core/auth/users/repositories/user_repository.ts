@@ -61,52 +61,45 @@ export class UserRepository extends ScryptTokenRepository {
    * Relationship between users and the teams they own.
    * This relationship is used to retrieve all teams created by a user.
    */
-  private hasManyTeams = hasMany(this.database, {
-    from: users,
-    to: teams,
-    primaryKey: users.id,
-    foreignKey: teams.userId,
-    relationName: 'teams',
-  })
-
-  /**
-   * Relationship between users and their team memberships.
-   * This relationship is used to retrieve all teams a user belongs to,
-   * including those created by other users.
-   */
-  private hasManyTeamMemberships = hasMany(this.database, {
-    from: users,
-    to: teamMemberships,
-    primaryKey: users.id,
-    foreignKey: teamMemberships.userId,
-    relationName: 'memberships',
-  })
+  private hasManyTeams() {
+    return hasMany(this.database, {
+      from: users,
+      to: teams,
+      primaryKey: users.id,
+      foreignKey: teams.userId,
+      relationName: 'teams',
+    })
+  }
 
   /**
    * Relationship between users and their channel memberships.
    * This relationship is used for the chat/collaboration features,
    * allowing users to participate in different communication channels.
    */
-  private hasManyChannelMemberships = hasMany(this.database, {
-    from: users,
-    to: channelMemberships,
-    primaryKey: users.id,
-    foreignKey: channelMemberships.userId,
-    relationName: 'channels',
-  })
+  private hasManyChannelMemberships() {
+    return hasMany(this.database, {
+      from: users,
+      to: channelMemberships,
+      primaryKey: users.id,
+      foreignKey: channelMemberships.userId,
+      relationName: 'channels',
+    })
+  }
 
   /**
    * Relationship between users and their OAuth accounts.
    * This relationship supports social login features, allowing users
    * to authenticate via providers like Google and GitHub.
    */
-  private hasManyOauth2Accounts = hasMany(this.database, {
-    from: users,
-    to: oauth2Accounts,
-    primaryKey: users.id,
-    foreignKey: oauth2Accounts.userId,
-    relationName: 'accounts',
-  })
+  private hasManyOauth2Accounts() {
+    return hasMany(this.database, {
+      from: users,
+      to: oauth2Accounts,
+      primaryKey: users.id,
+      foreignKey: oauth2Accounts.userId,
+      relationName: 'accounts',
+    })
+  }
 
   /**
    * Generates a secure email verification code for a user.
@@ -345,11 +338,9 @@ export class UserRepository extends ScryptTokenRepository {
    * @returns The user if found, or undefined if not found
    */
   async findByEmail(email: string) {
-    const [user] = await this.database
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1)
+    const [user] = await this.hasManyTeams()((query) =>
+      query.where(eq(users.email, email)),
+    )
 
     return user
   }
@@ -357,7 +348,7 @@ export class UserRepository extends ScryptTokenRepository {
   async findByOauth2AccountProviderId(id: string) {}
 
   async findByIdWithChannelMemberships(id: string) {
-    const [user] = await this.hasManyChannelMemberships((query) =>
+    const [user] = await this.hasManyChannelMemberships()((query) =>
       query.where(eq(users.id, id)),
     )
 
@@ -379,7 +370,7 @@ export class UserRepository extends ScryptTokenRepository {
    * @returns The user with their owned teams, or undefined if not found
    */
   async findById(id: string) {
-    const userWithTeams = await this.hasManyTeams((query) =>
+    const userWithTeams = await this.hasManyTeams()((query) =>
       query.where(eq(users.id, id)),
     )
 

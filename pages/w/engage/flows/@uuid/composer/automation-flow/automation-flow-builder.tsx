@@ -1,6 +1,5 @@
 import React from 'react'
 import { Automation } from './automation.jsx'
-import 'antd/dist/antd.css'
 import './styles.css'
 import type {
   AutomationElement,
@@ -12,7 +11,7 @@ import type {
   AutomationStep,
   AutomationWithSteps,
 } from '@/database/database_schema_types.js'
-import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps, usePageProps } from '@/pages/hooks/use_page_props.js'
 import { AddNodeDialog } from './components/add-node-dialog.jsx'
 
 function generateNodesAndEdgesFromAutomationSteps(
@@ -101,7 +100,9 @@ function generateNodesAndEdgesFromAutomationSteps(
 }
 
 export const Flow = () => {
-  const { automation } = usePageProps<{ automation: AutomationWithSteps }>()
+  const {
+    pageProps: { automation },
+  } = usePageContextWithProps<{ automation: AutomationWithSteps }>()
 
   const [automationSteps] = React.useState<AutomationStep[]>(automation.steps)
 

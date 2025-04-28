@@ -17,10 +17,10 @@ interface CancelScheduledBroadcastProps {
 }
 
 export function CancelScheduledBroadcast({ sendAt }: CancelScheduledBroadcastProps) {
-  const ctx = usePageContext()
+  const { routeParams } = usePageContext()
 
   const { serverFormProps, isPending, isSuccess } = useServerFormMutation({
-    action: route('unsend_broadcast', { uuid: ctx?.routeParams?.uuid }),
+    action: route('unsend_broadcast', { uuid: routeParams?.uuid }),
     onSuccess() {
       toast.success('Broadcast is no longer queued for publish.')
 

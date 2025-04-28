@@ -15,7 +15,6 @@ import { E_REQUEST_EXCEPTION } from '@/http/responses/errors.js'
 import { makeLogger } from '@/shared/container/index.js'
 import { VikeController } from '@/shared/controllers/vike_controller.js'
 import { FlashMiddleware } from '@/shared/middleware/flash_middleware.js'
-import { middleware } from '@/shared/middleware/middleware_aliases.js'
 import { route } from '@/shared/routes/route_aliases.js'
 
 import { container } from '@/utils/typi.js'

@@ -17,15 +17,15 @@ import { usePageContext } from 'vike-react/usePageContext'
 interface ApplicationLayoutProps extends React.PropsWithChildren {}
 
 function ApplicationLayout({ children }: ApplicationLayoutProps) {
-  const ctx = usePageContext()
+  const { urlPathname, isMobile } = usePageContext()
 
   const [sidebarState, setSidebarState] = React.useState<SidebarState>(() => ({
     width: DEFAULT_SIDEBAR_WIDTH,
     floating: false,
-    offscreen: ctx.isMobile,
+    offscreen: isMobile,
   }))
 
-  if (ctx.urlPathname.includes('composer')) {
+  if (urlPathname.includes('composer')) {
     return <>{children}</>
   }
 

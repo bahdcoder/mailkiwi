@@ -40,13 +40,15 @@ export class AutomationRepository extends BaseRepository {
    * are loaded together, allowing the frontend to render the complete workflow
    * without additional queries.
    */
-  private hasManySteps = hasMany(this.database, {
-    from: automations,
-    to: automationSteps,
-    primaryKey: automations.id,
-    foreignKey: automationSteps.automationId,
-    relationName: 'steps',
-  })
+  private hasManySteps() {
+    return hasMany(this.database, {
+      from: automations,
+      to: automationSteps,
+      primaryKey: automations.id,
+      foreignKey: automationSteps.automationId,
+      relationName: 'steps',
+    })
+  }
 
   /**
    * Retrieves an automation with all its steps by ID.
@@ -63,7 +65,7 @@ export class AutomationRepository extends BaseRepository {
    * @returns The automation with all its steps, or undefined if not found
    */
   async findById(automationId: string) {
-    const [automation] = await this.hasManySteps((query) =>
+    const [automation] = await this.hasManySteps()((query) =>
       query.where(eq(automations.id, automationId)),
     )
 

@@ -29,6 +29,10 @@ down:
 	@echo "Destroying the application environment..."
 	docker compose $(COMPOSE_DEV) down
 
+down-clean:
+	@echo "Destroying the application environment and cleaning volumes..."
+	docker compose $(COMPOSE_DEV) down -v
+
 # Build only the app Docker image
 app.build:
 	@echo "Building only the app Docker image..."

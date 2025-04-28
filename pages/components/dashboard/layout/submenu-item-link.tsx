@@ -6,11 +6,11 @@ interface SubmenuItemLinkProps
     React.ComponentPropsWithoutRef<'a'> {}
 
 export function SubmenuItemLink({ children, ...linkProps }: SubmenuItemLinkProps) {
-  const ctx = usePageContext()
+  const { urlOriginal } = usePageContext()
 
   const isActive =
-    ctx.urlOriginal.includes(linkProps.href as string) ||
-    `${ctx.urlOriginal}/`.includes(linkProps.href as string)
+    urlOriginal.includes(linkProps.href as string) ||
+    `${urlOriginal}/`.includes(linkProps.href as string)
 
   return (
     <a

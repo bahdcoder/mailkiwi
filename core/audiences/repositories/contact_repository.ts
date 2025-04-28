@@ -38,13 +38,15 @@ export class ContactRepository extends BaseRepository {
     super()
   }
 
-  protected hasManyProperties = hasMany(this.database, {
-    from: contacts,
-    to: contactProperties,
-    foreignKey: contactProperties.contactId,
-    primaryKey: contacts.id,
-    relationName: 'properties',
-  })
+  protected hasManyProperties() {
+    return hasMany(this.database, {
+      from: contacts,
+      to: contactProperties,
+      foreignKey: contactProperties.contactId,
+      primaryKey: contacts.id,
+      relationName: 'properties',
+    })
+  }
 
   async findByEmailForTeam(email: string, teamId: string) {
     const [website] = await this.database
@@ -62,7 +64,7 @@ export class ContactRepository extends BaseRepository {
   }
 
   async findById(contactId: string) {
-    const [contact] = await this.hasManyProperties((query) =>
+    const [contact] = await this.hasManyProperties()((query) =>
       query.where(eq(contacts.id, contactId)),
     )
 

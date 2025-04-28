@@ -1,5 +1,4 @@
 import * as Dropdown from '@/pages/components/dropdown/dropdown.jsx'
-import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
 import { FilterListIcon } from '@/pages/components/icons/filter-list.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Checkbox } from '@kibamail/owly/checkbox'
@@ -17,6 +16,10 @@ import type {
 } from '@/audiences/dto/segments/create_segment_dto.js'
 
 import type { Segment, Tag } from '@/database/database_schema_types.js'
+import {
+  PageContextWithPageProps,
+  usePageContextWithProps,
+} from '@/pages/hooks/use_page_props.js'
 
 export type FilterCondition =
   CreateSegmentDto['filterGroups']['groups'][number]['conditions'][number] & {
@@ -37,7 +40,7 @@ type FilterDefinition = {
   name: string
   disabled?: boolean
   id: AllowedFilterField
-  options: React.FC<{ pageCtx: PageContext }>
+  options: React.FC<{ pageCtx: PageContextWithPageProps<{ segments: Segment[] }> }>
 }
 
 const fields: FilterDefinition[] = [
@@ -45,8 +48,7 @@ const fields: FilterDefinition[] = [
     id: 'tags',
     name: 'Tags',
     options: ({ pageCtx: { tags } }) => {
-      const { setFilterBuilderOpen, setFilterConditions, filterBuilderOpen } =
-        useFiltersBuilder('ContactsFiltersBuilderTags')
+      const { setFilterConditions } = useFiltersBuilder('ContactsFiltersBuilderTags')
 
       const [id] = React.useState(() => Math.random().toString(36).slice(2))
 
@@ -114,7 +116,7 @@ const fields: FilterDefinition[] = [
         'ContactsFiltersBuilderTags',
       )
 
-      const { segments } = pageCtx?.pageProps as { segments: Segment[] }
+      const { segments } = pageCtx?.pageProps
 
       function onSegmentSelected(segment: Segment) {
         setFilterBuilderOpen(false)
@@ -332,14 +334,11 @@ function FiltersBuilder() {
     )
   }, [])
 
-  const ctx = usePageContext()
+  const ctx = usePageContextWithProps<{ segments: Segment[] }>()
 
-  const {
-    filterConditions,
-    setFilterConditions,
-    filterBuilderOpen,
-    setFilterBuilderOpen,
-  } = useFiltersBuilder('ContactsFiltersBuilder')
+  const { filterBuilderOpen, setFilterBuilderOpen } = useFiltersBuilder(
+    'ContactsFiltersBuilder',
+  )
 
   function onFilterSelected(event: Event, filter: FilterDefinition) {
     event.preventDefault()

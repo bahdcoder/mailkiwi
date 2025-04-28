@@ -2,7 +2,7 @@ import { CreateCustomContactProperty } from '@/pages/components/flows/contacts/i
 import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
 import { CheckCircleSolidIcon } from '@/pages/components/icons/check-circle-solid.svg.jsx'
 import { CheckSquareIcon } from '@/pages/components/icons/check-square.svg.jsx'
-import { HashtagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
+import { HashTagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
 import { InfoCircleSolidIcon } from '@/pages/components/icons/info-circle-solid.svg.jsx'
 import { MailIcon } from '@/pages/components/icons/mail.svg.jsx'
 import { NavArrowRightIcon } from '@/pages/components/icons/nav-arrow-right.svg.jsx'
@@ -11,11 +11,9 @@ import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
 import { slugify } from '@/pages/utils/slugify.js'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
-import * as Dialog from '@kibamail/owly/dialog'
 import { Heading } from '@kibamail/owly/heading'
 import * as Select from '@kibamail/owly/select-field'
 import { Text } from '@kibamail/owly/text'
-import * as TextField from '@kibamail/owly/text-field'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import cn from 'classnames'
 import * as React from 'react'
@@ -139,7 +137,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
 
       const icons = {
         date: CalendarIcon,
-        float: HashtagIcon,
+        float: HashTagIcon,
         text: TextIcon,
         boolean: CheckSquareIcon,
         standard: TextIcon,

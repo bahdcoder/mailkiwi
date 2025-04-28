@@ -5,6 +5,7 @@ import { useComposeBroadcastContext } from '@/pages/components/flows/compose_bro
 import { Spinner } from '@kibamail/owly/spinner'
 import { usePageContext } from 'vike-react/usePageContext'
 import type { BroadcastPageProps } from '@/pages/types/broadcast-page-props.js'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 
 interface EditorSaveState {
   isSaving: boolean
@@ -17,7 +18,7 @@ interface StepOneComposerProps {
 }
 
 export function StepOneComposer() {
-  const ctx = usePageContext()
+  const { pageProps } = usePageContextWithProps<BroadcastPageProps>()
 
   const { syncContentToServerMutation } = useComposeBroadcastContext('StepOneComposer')
 
@@ -27,7 +28,7 @@ export function StepOneComposer() {
         emailContent: { contentJson: editor.getJSON() },
       })
     },
-    content: (ctx.pageProps as BroadcastPageProps)?.broadcast?.emailContent?.contentJson,
+    content: pageProps?.broadcast?.emailContent?.contentJson,
   })
 
   if (!editor) {

@@ -37,11 +37,11 @@ export function getProgressBarVariant(percentageSpent: number): ProgressProps['v
 }
 
 export function SidebarContent({ rootId }: SidebarContentProps) {
-  const ctx = usePageContext()
+  const { isMobile, team } = usePageContext()
   const { setSidebar } = useApplicationLayoutContext('Sidebar')
 
   function setSidebarOffscreen() {
-    if (ctx.isMobile) {
+    if (isMobile) {
       setSidebar((current) => ({ ...current, floating: false }))
 
       return
@@ -51,7 +51,7 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
   }
 
   const percentageSpent = Math.max(
-    (ctx.team?.totalConsumedCredits / ctx.team?.totalAvailableCredits) * 100,
+    (team?.totalConsumedCredits / team?.totalAvailableCredits) * 100,
     2,
   )
 
@@ -140,10 +140,10 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
 
           <span className="flex items-center">
             <Text className="kb-content-secondary">
-              {formatCount(ctx.team?.totalConsumedCredits)}
+              {formatCount(team?.totalConsumedCredits)}
             </Text>
             <Text className="kb-content-tertiary font-normal">
-              /{formatCount(ctx.team?.totalAvailableCredits)} left
+              /{formatCount(team?.totalAvailableCredits)} left
             </Text>
           </span>
         </div>

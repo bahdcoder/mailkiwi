@@ -18,10 +18,10 @@ import { PercentageIcon } from '@/pages/components/icons/percentage.svg.jsx'
 import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
 import { TimerIcon } from '@/pages/components/icons/timer.svg.jsx'
 import { UserPlusIcon } from '@/pages/components/icons/user-plus.svg.jsx'
-import { UserXmarkIcon } from '@/pages/components/icons/user-xmark.svg.jsx'
+import { UserXMarkIcon } from '@/pages/components/icons/user-xmark.svg.jsx'
 import { UserIcon } from '@/pages/components/icons/user.svg.jsx'
 import { WebhookIcon } from '@/pages/components/icons/webhook.svg.jsx'
-import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps, usePageProps } from '@/pages/hooks/use_page_props.js'
 import {
   ServerForm,
   useServerFormMutation,
@@ -55,7 +55,7 @@ const icons: Partial<
 
   // triggers
   TRIGGER_CONTACT_SUBSCRIBED: UserPlusIcon,
-  TRIGGER_CONTACT_UNSUBSCRIBED: UserXmarkIcon,
+  TRIGGER_CONTACT_UNSUBSCRIBED: UserXMarkIcon,
   TRIGGER_CONTACT_TAG_ADDED: LabelIcon,
   TRIGGER_CONTACT_TAG_REMOVED: LabelIcon,
   TRIGGER_EMPTY: LabelIcon,
@@ -84,17 +84,20 @@ export function AddNodeDialog({
   edge,
   onAddNodeSuccess,
 }: AddNodeDialogProps) {
-  const ctx = usePageContext()
+  const { pageProps: ctx } = usePageContext()
   const [selectedSubType, setSelectedSubType] =
     React.useState<AutomationStepSubType | null>()
-  const { automation } = usePageProps<{ automation: AutomationWithSteps }>()
+  const {
+    pageProps: { automation },
+    audience,
+  } = usePageContextWithProps<{ automation: AutomationWithSteps }>()
 
   const { serverFormProps, ServerErrorsList, isPending, reset } = useServerFormMutation<{
     automation: AutomationWithSteps
     step: AutomationStep
   }>({
     action: route('add_automation_step', {
-      audienceId: ctx.audience?.id,
+      audienceId: audience?.id,
       automationId: automation?.id,
     }),
     onSuccess(response) {

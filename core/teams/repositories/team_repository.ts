@@ -53,13 +53,15 @@ export class TeamRepository extends BaseRepository {
    * to determine what actions a user can perform within a team based on their
    * membership role.
    */
-  private hasManyMemberships = hasMany(this.database, {
-    from: teams,
-    to: teamMemberships,
-    primaryKey: teams.id,
-    foreignKey: teamMemberships.teamId,
-    relationName: 'members',
-  })
+  private hasManyMemberships() {
+    return hasMany(this.database, {
+      from: teams,
+      to: teamMemberships,
+      primaryKey: teams.id,
+      foreignKey: teamMemberships.teamId,
+      relationName: 'members',
+    })
+  }
 
   /**
    * Relationship between teams and their sending domains.
@@ -71,13 +73,15 @@ export class TeamRepository extends BaseRepository {
    * Each team can have multiple sending domains, allowing for different branding
    * and deliverability configurations for different types of emails.
    */
-  private hasManySendingDomains = hasMany(this.database, {
-    from: teams,
-    to: sendingDomains,
-    primaryKey: teams.id,
-    foreignKey: sendingDomains.teamId,
-    relationName: 'sendingDomains',
-  })
+  private hasManySendingDomains() {
+    return hasMany(this.database, {
+      from: teams,
+      to: sendingDomains,
+      primaryKey: teams.id,
+      foreignKey: sendingDomains.teamId,
+      relationName: 'sendingDomains',
+    })
+  }
 
   /**
    * Creates the first team for a user if one doesn't already exist.
@@ -204,7 +208,7 @@ export class TeamRepository extends BaseRepository {
    * @returns The default team with memberships, or undefined if none exists
    */
   async findUserDefaultTeam(userId: string) {
-    const team = await this.hasManyMemberships((query) =>
+    const team = await this.hasManyMemberships()((query) =>
       query
         .leftJoin(users, eq(users.id, teamMemberships.userId))
         .where(eq(teams.userId, userId))
@@ -229,7 +233,7 @@ export class TeamRepository extends BaseRepository {
    * @returns The team with all memberships and user details, or undefined if not found
    */
   async findById(teamId: string) {
-    const [team] = await this.hasManyMemberships(
+    const [team] = await this.hasManyMemberships()(
       (query) =>
         query
           .leftJoin(users, eq(users.id, teamMemberships.userId))
@@ -243,7 +247,7 @@ export class TeamRepository extends BaseRepository {
     return team
   }
 
-  teams() {
+  public teams() {
     return this.crud(teams)
   }
 
@@ -284,8 +288,7 @@ export class TeamRepository extends BaseRepository {
     return this.cache
       .namespace('teams')
       .get(`team_with_sending_domains:${teamId}`, async () => {
-        // If not in cache, query the database and cache the result
-        const [team] = await this.hasManySendingDomains((query) =>
+        const [team] = await this.hasManySendingDomains()((query) =>
           query.where(eq(teams.id, teamId)),
         )
 

@@ -1,6 +1,6 @@
 import { CancelIcon } from '@/pages/components/icons/cancel.svg.jsx'
 import { cn } from '@/pages/components/tiptap/utils/index.js'
-import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps, usePageProps } from '@/pages/hooks/use_page_props.js'
 import { useServerQuery } from '@/pages/hooks/use_server_query.js'
 import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
 import { route } from '@/shared/routes/route_aliases.js'
@@ -14,7 +14,7 @@ import React from 'react'
 type Device = 'mobile' | 'desktop'
 
 export function ComposeBroadcastPreview() {
-  const pageProps = usePageProps<EngageBroadcastsComposerPageProps>()
+  const { pageProps } = usePageContextWithProps<EngageBroadcastsComposerPageProps>()
   const [activeDevice, setActiveDevice] = React.useState<Device>('desktop')
 
   const previewQuery = useServerQuery({

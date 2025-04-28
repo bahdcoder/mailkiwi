@@ -4,10 +4,10 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { route } from '@/shared/routes/route_aliases.js'
 
 export function useValidateBroadcastContentMutation() {
-  const ctx = usePageContext()
+  const { routeParams } = usePageContext()
 
   return useServerFormMutation({
-    action: route('validate_broadcast', { uuid: ctx?.routeParams?.uuid }),
+    action: route('validate_broadcast', { uuid: routeParams?.uuid }),
     method: 'PUT',
   })
 }

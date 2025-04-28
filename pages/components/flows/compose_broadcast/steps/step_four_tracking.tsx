@@ -1,16 +1,19 @@
+import { SendingDomain } from '@/database/database_schema_types.js'
 import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
 import { WarningCircleSolidIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
 import { WarningTriangleSolidIcon } from '@/pages/components/icons/warning-triangle-solid.svg.jsx'
 import { RadioGroupCardItem } from '@/pages/components/radio-group/radio-group-card-item.jsx'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'
 import React from 'react'
-import { usePageContext } from 'vike-react/usePageContext'
 
 export function StepFourTracking() {
-  const ctx = usePageContext()
+  const { pageProps: ctx } = usePageContextWithProps<{
+    sendingDomains: SendingDomain[]
+  }>()
   const { formState, setFormState } = useComposeBroadcastContext('StepFourTracking')
 
   const engageSendingDomain = ctx.sendingDomains.find(

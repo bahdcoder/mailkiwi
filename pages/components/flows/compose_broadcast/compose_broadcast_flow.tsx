@@ -4,7 +4,7 @@ import { useSyncComposerContentToServer } from '@/pages/components/flows/compose
 import { useValidateBroadcastContentMutation } from '@/pages/components/flows/compose_broadcast/hooks/use_validate_broadcast_content_mutation.js'
 import { parseISODateToFormattedScheduleDate } from '@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
 import { StepsRenderer } from '@/pages/components/flows/steps_renderer.jsx'
-import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps, usePageProps } from '@/pages/hooks/use_page_props.js'
 import { useServerQuery } from '@/pages/hooks/use_server_query.js'
 import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
 import { route } from '@/shared/routes/route_aliases.js'
@@ -43,8 +43,9 @@ const StepFourTracking = clientOnly(() =>
 )
 
 export function ComposeBroadcastFlow() {
-  const { broadcast: broadcastFromServer } =
-    usePageProps<EngageBroadcastsComposerPageProps>()
+  const {
+    pageProps: { broadcast: broadcastFromServer },
+  } = usePageContextWithProps<EngageBroadcastsComposerPageProps>()
 
   const [step, setStep] = React.useState(0)
   const [formState, setFormState] = React.useState<

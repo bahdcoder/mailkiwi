@@ -14,28 +14,34 @@ import { usePageContext } from 'vike-react/usePageContext'
 
 import { route } from '@/shared/routes/route_aliases.js'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
+import { DefaultPageProps } from '@/pages/types/page-context.js'
+import { BroadcastGroupWithBroadcasts } from '@/database/database_schema_types.js'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 
 export interface CreateBroadcastFlowProps extends React.PropsWithChildren {}
 
+export interface PageProps {
+  groups: BroadcastGroupWithBroadcasts[]
+}
+
 export function CreateBroadcastFlow({ children }: CreateBroadcastFlowProps) {
-  const ctx = usePageContext()
+  const {
+    pageProps: { groups },
+    audience,
+  } = usePageContextWithProps<PageProps>()
 
   const { serverFormProps, isPending, error, ServerErrorsList } = useServerFormMutation<{
     id: string
   }>({
     action: route('create_broadcast'),
     transform(form) {
-      form.audienceId = ctx.audience?.id
+      form.audienceId = audience?.id
       return form
     },
     async onSuccess(response) {
       await navigate(route('broadcasts_composer', { uuid: response.payload.id }))
     },
   })
-
-  const pageProps = ctx.pageProps as EngagePageProps
-
-  const { groups } = pageProps
 
   return (
     <Dialog.Root>

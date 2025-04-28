@@ -21,7 +21,7 @@ export function StepOneUploadACsv() {
   const [uploadProgress, setUploadProgress] = React.useState(0)
   const formRef = useRef<HTMLFormElement | null>(null)
 
-  const ctx = usePageContext()
+  const { audience } = usePageContext()
   const { setFormState, setStep } = useImportcontactsContext('UploadACsv')
 
   const { serverFormProps, isPending, error } = useServerFormMutation<{
@@ -30,7 +30,7 @@ export function StepOneUploadACsv() {
     headerSamples: FormState['headerSamples']
     propertiesMap: FormState['propertiesMap']
   }>({
-    action: route('contacts_import', { audienceId: ctx.audience.id }),
+    action: route('contacts_import', { audienceId: audience.id }),
     onSuccess({ payload }) {
       setFormState((current) => ({
         ...current,

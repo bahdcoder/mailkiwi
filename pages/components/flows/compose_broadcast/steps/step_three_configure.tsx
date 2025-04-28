@@ -1,29 +1,25 @@
-import { DisplayedFilterCondition } from '@/pages/components/filters/displayed-filter-conditions.jsx'
+import { SendingDomain } from '@/database/database_schema_types.js'
 import { SlashesDivider } from '@/pages/components/flows/compose_broadcast/components/slashes_divider.jsx'
 import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
-import { MinusIcon } from '@/pages/components/icons/minus.svg.jsx'
 import { WarningTriangleSolidIcon } from '@/pages/components/icons/warning-triangle-solid.svg.jsx'
-import { EngagePageProps } from '@/pages/w/engage/+Page.jsx'
-import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
-import { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
+
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
-import { Progress } from '@kibamail/owly/progress'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 import React from 'react'
-import { usePageContext } from 'vike-react/usePageContext'
 
 export function StepThreeConfigure() {
-  const ctx = usePageContext()
+  const { pageProps } = usePageContextWithProps<{ sendingDomains: SendingDomain[] }>()
 
   const { formState, setFormState, syncContentToServerMutation } =
     useComposeBroadcastContext('StepThreeConfigure')
 
   const { error } = syncContentToServerMutation
 
-  const engageSendingDomain = ctx.sendingDomains.find(
+  const engageSendingDomain = pageProps.sendingDomains.find(
     (domain) => domain.product === 'engage',
   )
 

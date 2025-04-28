@@ -19,6 +19,7 @@ import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_d
 import type { Audience } from '@/database/database_schema_types.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 
 export interface SaveFilterAsSegmentFormProps extends React.PropsWithChildren {
   filterGroups: CreateSegmentDto['filterGroups']
@@ -30,13 +31,13 @@ export function SaveFilterAsSegmentForm({
   filterGroups,
   onSuccess,
 }: SaveFilterAsSegmentFormProps) {
-  const ctx = usePageContext()
+  const { audience } = usePageContextWithProps()
   const [open, setOpen] = React.useState(false)
 
   const { isPending, serverFormProps, ServerErrorsList } =
     useServerFormMutation<Audience>({
       method: 'POST',
-      action: route('create_segment', { audienceId: ctx.audience?.id }),
+      action: route('create_segment', { audienceId: audience?.id }),
       onSuccess() {
         // No need to reload, the parent component will handle this
         onSuccess?.()

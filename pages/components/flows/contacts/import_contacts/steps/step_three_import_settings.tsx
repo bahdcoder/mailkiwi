@@ -22,7 +22,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 export function StepThreeImportSettings() {
   const selectedTagsRef = React.useRef<ComboboxItem[]>([])
 
-  const ctx = usePageContext()
+  const { pageProps: ctx } = usePageContext()
 
   const { setStep, formState, audienceId } = useImportcontactsContext('ImportSettings')
 

@@ -6,7 +6,7 @@ import { Text } from '@kibamail/owly/text'
 import { usePageContext } from 'vike-react/usePageContext'
 
 function LetterPerformancePage() {
-  const ctx = usePageContext()
+  const { pageProps: ctx } = usePageContext()
 
   return (
     <Tabs.Content value="performance" className="pt-6">

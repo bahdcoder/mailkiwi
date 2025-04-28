@@ -5,7 +5,6 @@ import { useComposeBroadcastContext } from '@/pages/components/flows/compose_bro
 import { MinusIcon } from '@/pages/components/icons/minus.svg.jsx'
 import { WarningTriangleSolidIcon } from '@/pages/components/icons/warning-triangle-solid.svg.jsx'
 import { formatCount } from '@/pages/utils/number_formatter.js'
-import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
 import type { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
@@ -15,16 +14,17 @@ import * as SelectField from '@kibamail/owly/select-field'
 import { Spinner } from '@kibamail/owly/spinner'
 import { Text } from '@kibamail/owly/text'
 import React from 'react'
-import { usePageContext } from 'vike-react/usePageContext'
 import type { BroadcastPageProps, Segment } from '@/pages/types/broadcast-page-props.js'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 
 export function StepTwoRecipients() {
-  const ctx = usePageContext()
+  const {
+    pageProps: { segments = [] },
+    team,
+  } = usePageContextWithProps<BroadcastPageProps>()
 
   const { formState, setFormState, getBroadcastRecipientsCount } =
     useComposeBroadcastContext('StepTwoRecipients')
-
-  const { segments = [] } = ctx.pageProps as BroadcastPageProps
 
   const selectedSegment = segments.find(
     (segment: Segment) => segment.id === formState.segmentId,
@@ -51,18 +51,17 @@ export function StepTwoRecipients() {
   }
 
   const hasEnoughCredits =
-    ctx.team?.totalAvailableCredits >= (getBroadcastRecipientsCount?.data?.total ?? 0)
+    team?.totalAvailableCredits >= (getBroadcastRecipientsCount?.data?.total ?? 0)
 
   const additionalCreditsNeeded = hasEnoughCredits
     ? 0
-    : (getBroadcastRecipientsCount?.data?.total ?? 0) - ctx.team?.totalAvailableCredits
+    : (getBroadcastRecipientsCount?.data?.total ?? 0) - team?.totalAvailableCredits
 
   const percentageOfAdditionalCreditsRequired =
-    (additionalCreditsNeeded / ctx.team?.totalAvailableCredits) * 100
+    (additionalCreditsNeeded / team?.totalAvailableCredits) * 100
 
   const percentageOfCreditsConsumed =
-    ((getBroadcastRecipientsCount?.data?.total ?? 0) / ctx.team?.totalAvailableCredits) *
-    100
+    ((getBroadcastRecipientsCount?.data?.total ?? 0) / team?.totalAvailableCredits) * 100
 
   return (
     <div className="w-full max-w-[480px] mx-auto pt-16">
@@ -136,7 +135,7 @@ export function StepTwoRecipients() {
                 ) : null}
               </Text>
               <Text size="md" className="kb-content-tertiary">
-                {formatCount(ctx.team?.totalAvailableCredits ?? 0)} total email credits
+                {formatCount(team?.totalAvailableCredits ?? 0)} total email credits
               </Text>
             </div>
           </>

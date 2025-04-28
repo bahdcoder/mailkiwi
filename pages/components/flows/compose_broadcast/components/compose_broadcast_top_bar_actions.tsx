@@ -17,7 +17,6 @@ import {
   useServerFormMutation,
 } from '@/pages/hooks/use_server_form_mutation.jsx'
 import { navigate } from '@/pages/utils/navigate.js'
-import type { EngageBroadcastsComposerPageProps } from '@/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import { Calendar } from '@kibamail/owly/calendar'
@@ -29,18 +28,15 @@ import dayjs from 'dayjs'
 import advancedFormat from 'dayjs/plugin/advancedFormat.js'
 import React from 'react'
 import { toast } from 'sonner'
-import { usePageContext } from 'vike-react/usePageContext'
 import type { BroadcastPageProps } from '@/pages/types/broadcast-page-props.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
-import type { Broadcast } from '@/database/database_schema_types.js'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 
 dayjs.extend(advancedFormat)
 
 export function ComposeBroadcastTopBarActions() {
-  const { step, syncContentToServerMutation, setStep } = useComposeBroadcastContext(
-    'ComposeBroadcastTopBarActions',
-  )
+  const { step } = useComposeBroadcastContext('ComposeBroadcastTopBarActions')
 
   switch (step) {
     case ComposeBroadcastSteps.COMPOSE:
@@ -150,13 +146,12 @@ export function TrackingStepActions() {
 }
 
 export function PreviewStepActions() {
-  const ctx = usePageContext()
+  const {
+    pageProps: { broadcast },
+    routeParams,
+  } = usePageContextWithProps<BroadcastPageProps>()
   const { getBroadcastRecipientsCount, formState, setFormState } =
     useComposeBroadcastContext('PreviewStepActions')
-
-  const { broadcast } = ctx.pageProps as {
-    broadcast: Broadcast
-  }
 
   function setScheduleAt(scheduledAt: ScheduleDateTime) {
     setFormState((current) => ({ ...current, scheduledAt }))
@@ -190,7 +185,7 @@ export function PreviewStepActions() {
   const minimumDate = dayjs().toDate()
 
   const { serverFormProps, isPending, ServerErrorsList } = useServerFormMutation({
-    action: route('send_broadcast', { uuid: ctx.routeParams.uuid }),
+    action: route('send_broadcast', { uuid: routeParams.uuid }),
     onSuccess() {
       toast.success('Broadcast has been scheduled for publish.')
 

@@ -14,16 +14,18 @@ export class EmailRepository extends BaseRepository {
     super()
   }
 
-  private belongsToEmailContent = belongsTo(this.database, {
-    from: emails,
-    to: emailContents,
-    primaryKey: emailContents.id,
-    foreignKey: emails.emailContentId,
-    relationName: 'emailContent',
-  })
+  private belongsToEmailContent() {
+    return belongsTo(this.database, {
+      from: emails,
+      to: emailContents,
+      primaryKey: emailContents.id,
+      foreignKey: emails.emailContentId,
+      relationName: 'emailContent',
+    })
+  }
 
   async findById(emailId: string) {
-    const [email] = await this.belongsToEmailContent((query) =>
+    const [email] = await this.belongsToEmailContent()((query) =>
       query.where(eq(emails.id, emailId)),
     )
 

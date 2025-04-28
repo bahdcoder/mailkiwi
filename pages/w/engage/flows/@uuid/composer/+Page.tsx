@@ -1,4 +1,4 @@
-import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps, usePageProps } from '@/pages/hooks/use_page_props.js'
 import { Flow } from './automation-flow/automation-flow-builder.jsx'
 
 import './flow_composer_styles.css'
@@ -12,7 +12,7 @@ import { Heading } from '@kibamail/owly/heading'
 import React from 'react'
 
 function EngageCreateFlowPage() {
-  const pageProps = usePageProps<{ automation: AutomationWithSteps }>()
+  const { pageProps } = usePageContextWithProps<{ automation: AutomationWithSteps }>()
 
   return (
     <div className="w-full h-screen flex box-border flex-col px-2 pb-2">

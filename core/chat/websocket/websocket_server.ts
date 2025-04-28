@@ -24,11 +24,12 @@ export class WebsocketServer {
 
   protected channelConnections: MapOfChannelConnections = new Map()
 
-  protected $wss = new WebSocketServer({
-    server: this.server as Server,
-  })
+  protected $wss
 
   constructor(protected server: ServerType) {
+    this.$wss = new WebSocketServer({
+      server: this.server as Server,
+    })
     this.registerEventListeners()
   }
 

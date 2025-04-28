@@ -1,3 +1,4 @@
+import { Broadcast as DatabaseBroadcast } from '@/database/database_schema_types.js'
 export interface Segment {
   id: string
   name: string
@@ -19,6 +20,7 @@ export interface Broadcast {
     subject?: string
     contentJson?: Record<string, unknown>
   }
+  status: DatabaseBroadcast['status']
 }
 
 export interface BroadcastPageProps {

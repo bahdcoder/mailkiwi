@@ -60,7 +60,7 @@ export class RegisterController extends VikeController {
   }
 
   async register(ctx: HonoContext) {
-    const { user, plainEmailVerificationCode } = await container
+    const { user, plainEmailVerificationCode, teamId } = await container
       .resolve(RegisterUserAction)
       .handle(await this.validate(ctx, CreateUserSchema))
 
@@ -72,21 +72,23 @@ export class RegisterController extends VikeController {
       userId: user.id,
     })
 
+    await container.make(Session).updateCurrentSessionTeamId(ctx, teamId)
+
     return this.response(ctx).redirect(route('auth_register_email_confirm')).send()
   }
 
   async profile(ctx: HonoContext) {
     const user = ctx.get('user')
+    const team = ctx.get('team')
 
     const payload = await this.validate(ctx, SetUserNameSchema)
 
     await makeDatabase().transaction(async (trx) => {
-      const [, team] = await Promise.all([
+      await Promise.all([
         this.userRepository.transaction(trx).update(user.id, payload),
-        container
-          .make(TeamRepository)
-          .transaction(trx)
-          .createFirstTeam({ name: payload.teamName }, user.id),
+        container.make(TeamRepository).transaction(trx).teams().update(team?.id, {
+          name: payload.teamName,
+        }),
       ])
 
       await Promise.all([

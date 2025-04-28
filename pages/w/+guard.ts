@@ -2,13 +2,14 @@ import { redirect } from 'vike/abort'
 import type { PageContext } from 'vike/types'
 
 import { route } from '@/shared/routes/route_aliases.js'
+import { DEFAULT_TEAM_NAME } from '@/database/constants.js'
 
-export function guard(ctx: PageContext) {
-  if (!ctx.user) {
+export function guard({ user, team }: PageContext) {
+  if (!user) {
     throw redirect(route('auth_login'))
   }
 
-  if (!ctx.team) {
+  if (!team || team.name === DEFAULT_TEAM_NAME) {
     throw redirect(route('auth_register_profile'))
   }
 }

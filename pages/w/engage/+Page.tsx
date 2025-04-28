@@ -16,6 +16,7 @@ import { CreateBroadcastFlow } from '@/pages/components/flows/compose_broadcast/
 import { BroadcastRow } from '@/pages/w/engage/components/broadcast_row.jsx'
 import { route } from '@/shared/routes/route_aliases.js'
 import { Button } from '@kibamail/owly/button'
+import { DefaultPageProps } from '@/pages/types/page-context.js'
 
 enum BroadcastStatusFilters {
   DRAFT = 'draft',
@@ -24,17 +25,17 @@ enum BroadcastStatusFilters {
   ALL = 'all',
 }
 
-export type EngagePageProps = {
+export interface EngagePageProps extends DefaultPageProps {
   groups: BroadcastGroup[]
   broadcasts: BroadcastWithEmailContent[]
 }
 
 function EngagePage() {
-  const ctx = usePageContext()
+  const { pageProps, urlParsed } = usePageContext()
 
-  const defaultTabValue = ctx.urlParsed?.search?.status ?? BroadcastStatusFilters.ALL
+  const defaultTabValue = urlParsed?.search?.status ?? BroadcastStatusFilters.ALL
 
-  const { groups, broadcasts } = ctx.pageProps as EngagePageProps
+  const { groups, broadcasts } = pageProps as EngagePageProps
 
   function getBroadcastsByGroup(group: BroadcastGroup) {
     return broadcasts.filter((broadcast) => broadcast.broadcastGroupId === group.id)

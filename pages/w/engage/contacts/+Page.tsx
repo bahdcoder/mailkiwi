@@ -32,6 +32,11 @@ import type { Segment, Tag } from '@/database/database_schema_types.js'
 import { EmptyState } from '@/pages/components/empty-state/empty_state.jsx'
 import { ImportContactsDialog } from '@/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
 import { formatCount } from '@/pages/utils/number_formatter.js'
+import {
+  PageContextWithPageProps,
+  usePageContextWithProps,
+} from '@/pages/hooks/use_page_props.js'
+import { DefaultPageContext } from '@/pages/types/page-context.js'
 
 const filterOperationLabels: Record<string, string> = {
   eq: 'Is',
@@ -47,7 +52,7 @@ type FilterOperationOptions = Record<
     operationLabels?: Record<string, string>
     operations: { label: string; value: FilterCondition['operation'] }[]
     options?: React.FC<{
-      pageCtx: PageContext
+      pageCtx: PageContextWithPageProps<{ segments: Segment[] }>
       children: React.ReactNode
       filter: FilterCondition
       onChange: (value: FilterCondition['value']) => void
@@ -212,7 +217,7 @@ const filterOperationOptions: FilterOperationOptions = {
 }
 
 function ContactsPage() {
-  const ctx = usePageContext()
+  const { audience } = usePageContextWithProps()
   const {
     table,
     onClearFilters,
@@ -244,7 +249,7 @@ function ContactsPage() {
         title="No contacts yet"
         description="You may import all your contacts in a CSV file."
       >
-        <ImportContactsDialog audienceId={ctx.audience.id}>
+        <ImportContactsDialog audienceId={audience.id}>
           <Button>Import contacts</Button>
         </ImportContactsDialog>
       </EmptyState>

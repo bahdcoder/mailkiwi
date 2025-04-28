@@ -1,28 +1,34 @@
 import React from 'react'
 
-export const GoogleIcon = React.forwardRef<
-  React.ElementRef<'svg'>,
-  React.ComponentPropsWithoutRef<'svg'>
->((props, forwardedRef) => {
-  return (
-    <svg
-      width="24px"
-      height="24px"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      role="img"
-      aria-label="Google"
-      {...props}
-      ref={forwardedRef}
-    >
-      <title>Google</title>
-    </svg>
-  )
-})
-
-GoogleIcon.displayName = 'GoogleIcon'
+export const GoogleIcon = React.forwardRef<React.ElementRef<'svg'>>(
+  (props, forwardedRef) => {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={21}
+        height={20}
+        viewBox="0 0 21 20"
+        fill="none"
+        {...props}
+        ref={forwardedRef}
+      >
+        <path
+          d="M19.2511 10.1951C19.2511 9.47569 19.1915 8.95069 19.0626 8.40625H10.6797V11.6534H15.6003C15.5011 12.4604 14.9654 13.6757 13.7749 14.4923L13.7582 14.601L16.4087 16.6133L16.5924 16.6312C18.2788 15.1048 19.2511 12.859 19.2511 10.1951Z"
+          fill="#4285F4"
+        />
+        <path
+          d="M10.6788 18.75C13.0895 18.75 15.1133 17.9722 16.5915 16.6305L13.774 14.4916C13.0201 15.0068 12.0081 15.3666 10.6788 15.3666C8.31773 15.3666 6.31379 13.8402 5.59944 11.7305L5.49473 11.7392L2.73868 13.8295L2.70264 13.9277C4.17087 16.786 7.18674 18.75 10.6788 18.75Z"
+          fill="#34A853"
+        />
+        <path
+          d="M5.60014 11.7302C5.41165 11.1858 5.30257 10.6024 5.30257 9.99967C5.30257 9.39686 5.41165 8.81355 5.59022 8.26911L5.58523 8.15316L2.79464 6.0293L2.70333 6.07186C2.0982 7.25798 1.75098 8.58995 1.75098 9.99967C1.75098 11.4094 2.0982 12.7413 2.70333 13.9274L5.60014 11.7302Z"
+          fill="#FBBC05"
+        />
+        <path
+          d="M10.6789 4.63331C12.3554 4.63331 13.4864 5.34303 14.1312 5.93612L16.6511 3.525C15.1035 2.11528 13.0895 1.25 10.6789 1.25C7.18676 1.25 4.17088 3.21387 2.70264 6.07218L5.58953 8.26943C6.31381 6.15972 8.31776 4.63331 10.6789 4.63331Z"
+          fill="#EB4335"
+        />
+      </svg>
+    )
+  },
+)

@@ -17,7 +17,7 @@ import { useOnboardingContext } from './context_provider.js'
 import { route } from '@/shared/routes/route_aliases.js'
 
 export function CreateBroadcastGroupStep() {
-  const ctx = usePageContext()
+  const { pageProps: ctx } = usePageContext()
   const { step, setStep, setFormState } = useOnboardingContext('CreateBroadcastGroupStep')
 
   const { serverFormProps, isPending, error } = useServerFormMutation<{

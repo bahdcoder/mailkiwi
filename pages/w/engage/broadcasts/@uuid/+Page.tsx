@@ -9,7 +9,7 @@ import { Text } from '@kibamail/owly/text'
 import { usePageContext } from 'vike-react/usePageContext'
 
 function LetterOverviewPage() {
-  const ctx = usePageContext()
+  const { pageProps: ctx } = usePageContext()
 
   return (
     <Tabs.Content value="overview" className="pt-6">
