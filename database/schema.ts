@@ -1158,6 +1158,48 @@ export const creditRefunds = mysqlTable('creditRefunds', {
   updatedAt: timestamp('updatedAt'),
 })
 
+/**
+ * SenderIdentities table - Manages reusable sender information for emails.
+ *
+ * This table stores predefined sender profiles that users can select when sending
+ * broadcasts, eliminating the need to manually enter sender details for each email.
+ * Each sender identity:
+ *
+ * - Name - used as the fromName when injecting emails into the mta
+ * - Contains the local part of the email address (before the @ symbol) - Will be combined with the sendingDomain to create the full domain for the fromEmail field
+ * - Is associated with a specific sending domain for the domain part
+ * - Belongs to a team for proper multi-tenant isolation
+ * - Includes verification mechanisms for sender email addresses
+ * - Can specify a custom reply-to address for responses
+ *
+ * Sender identities improve the user experience by providing consistent sender
+ * information across campaigns and reducing the potential for errors when
+ * configuring email sending details.
+ */
+export const senderIdentities = mysqlTable('senderIdentities', {
+  id,
+  name: varchar('name', { length: 100 }).notNull(),
+
+  email: varchar('email', { length: 80 }).notNull(),
+
+  sendingDomainId: primaryKeyCuid('sendingDomainId')
+    .references(() => sendingDomains.id)
+    .notNull(),
+
+  teamId: primaryKeyCuid('teamId')
+    .references(() => teams.id)
+    .notNull(),
+
+  emailVerificationCode: varchar('emailVerificationCode', { length: 256 }),
+  emailVerifiedAt: timestamp('emailVerifiedAt'),
+  emailVerificationCodeExpiresAt: timestamp('emailVerificationCodeExpiresAt'),
+
+  replyToEmail: varchar('replyToEmail', { length: 255 }),
+
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt'),
+})
+
 /* --------------------------- */
 /*      Table relations        */
 /* --------------------------- */
@@ -1165,5 +1207,16 @@ export const broadcastRelations = relations(broadcasts, ({ one }) => ({
   emailContent: one(emailContents, {
     fields: [broadcasts.emailContentId],
     references: [emailContents.id],
+  }),
+}))
+
+export const senderIdentityRelations = relations(senderIdentities, ({ one }) => ({
+  team: one(teams, {
+    fields: [senderIdentities.teamId],
+    references: [teams.id],
+  }),
+  sendingDomain: one(sendingDomains, {
+    fields: [senderIdentities.sendingDomainId],
+    references: [sendingDomains.id],
   }),
 }))

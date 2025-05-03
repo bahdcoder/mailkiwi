@@ -25,6 +25,7 @@ import type {
   passwordResets,
   products,
   segments,
+  senderIdentities,
   sendingDomains,
   sendingSources,
   settings,
@@ -64,12 +65,17 @@ export type AccessToken = InferSelectModel<typeof accessTokens>
 export type Team = InferSelectModel<typeof teams>
 export type SendingDomain = InferSelectModel<typeof sendingDomains>
 export type SendingSource = InferSelectModel<typeof sendingSources>
+export type SenderIdentity = InferSelectModel<typeof senderIdentities>
 export type TeamMembership = InferSelectModel<typeof teamMemberships>
 export type Oauth2Account = InferSelectModel<typeof oauth2Accounts>
 export type TagOnContact = InferSelectModel<typeof tagsOnContacts>
 export type FindUserByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>['query']['users']['findFirst']
 >[0]
+
+export type SenderIdentityWithSendingDomain = SenderIdentity & {
+  sendingDomain: SendingDomain
+}
 
 export type FindAutomationByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>['query']['automations']['findFirst']
@@ -105,6 +111,7 @@ export type InsertEmailSendEvent = typeof emailSendEvents.$inferInsert
 export type InsertContactImport = typeof contactImports.$inferInsert
 export type InsertTeamMembership = typeof teamMemberships.$inferInsert
 export type InsertSendingDomain = typeof sendingDomains.$inferInsert
+export type InsertSenderIdentity = typeof senderIdentities.$inferInsert
 export type InsertAbTestVariant = typeof abTestVariants.$inferInsert
 export type InsertProduct = typeof products.$inferInsert
 export type InsertWebsite = typeof websites.$inferInsert
@@ -132,6 +139,7 @@ export type UpdatePasswordReset = MySqlUpdateSetSource<typeof passwordResets>
 
 export type UpdateEmailSend = MySqlUpdateSetSource<typeof emailSends>
 export type UpdateSendingDomain = MySqlUpdateSetSource<typeof sendingDomains>
+export type UpdateSenderIdentity = MySqlUpdateSetSource<typeof senderIdentities>
 
 export type UpdateUser = MySqlUpdateSetSource<typeof users>
 export type UpdateContactImport = MySqlUpdateSetSource<typeof contactImports>
@@ -189,6 +197,10 @@ export type TeamWithSendingDomains = Team & {
   sendingDomains: SendingDomain[]
 }
 
+export type TeamWithSenderIdentities = Team & {
+  senderIdentities: SenderIdentity[]
+}
+
 export type TeamWithMemberships = Team & {
   members: TeamMembership[]
 }
@@ -204,4 +216,8 @@ export type WebsiteWithPages = Website & {
 
 export type BroadcastGroupWithBroadcasts = BroadcastGroup & {
   broadcasts: Broadcast[]
+}
+
+export type SendingDomainWithSenderIdentities = SendingDomain & {
+  senderIdentities: SenderIdentity[]
 }

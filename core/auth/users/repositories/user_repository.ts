@@ -46,15 +46,12 @@ import { container } from '@/utils/typi.js'
  * different roles within each team.
  */
 export class UserRepository extends ScryptTokenRepository {
-  /**
-   * Time in minutes before email verification codes expire.
-   * This relatively short expiration time enhances security while still
-   * providing users enough time to complete the verification process.
-   */
-  protected EMAIL_VERIFICATION_CODE_EXPIRATION_MINUTES = 10
-
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
+  }
+
+  users() {
+    return this.crud(users)
   }
 
   /**
@@ -99,36 +96,6 @@ export class UserRepository extends ScryptTokenRepository {
       foreignKey: oauth2Accounts.userId,
       relationName: 'accounts',
     })
-  }
-
-  /**
-   * Generates a secure email verification code for a user.
-   *
-   * This method creates a one-time password (OTP) for email verification, which is:
-   * 1. Generated using a secure random number generator
-   * 2. Hashed for secure storage in the database
-   * 3. Given an expiration time to limit its validity period
-   *
-   * The verification code is used in the email verification flow to confirm
-   * that users have access to the email address they registered with, which
-   * is essential for security and anti-spam measures.
-   *
-   * @returns Object containing both plain and hashed versions of the code, plus expiration time
-   */
-  async createUserEmailVerificationCode() {
-    // Generate a secure random verification code
-    const emailVerificationCode = container.make(OtpGenerator).generate()
-
-    return {
-      // Plain version to send to the user via email
-      plainEmailVerificationCode: emailVerificationCode,
-      // Hashed version to store in the database for security
-      emailVerificationCode: await this.hash(emailVerificationCode.toString()),
-      // Expiration timestamp to limit the code's validity period
-      emailVerificationCodeExpiresAt: DateTime.now()
-        .plus({ minutes: this.EMAIL_VERIFICATION_CODE_EXPIRATION_MINUTES })
-        .toJSDate(),
-    }
   }
 
   /**
@@ -201,17 +168,14 @@ export class UserRepository extends ScryptTokenRepository {
    * @returns Object containing the new user ID and email verification code
    */
   async create(user: InsertUser) {
-    // Generate a unique ID for the new user
     const id = this.cuid()
 
-    // Create a secure email verification code
     const {
       emailVerificationCode,
       emailVerificationCodeExpiresAt,
       plainEmailVerificationCode,
-    } = await this.createUserEmailVerificationCode()
+    } = await this.createEmailVerificationCode()
 
-    // Store the user record with the hashed verification code
     await this.database
       .insert(users)
       .values({
@@ -222,7 +186,6 @@ export class UserRepository extends ScryptTokenRepository {
       })
       .execute()
 
-    // Return the plain verification code to be sent to the user
     return { id, emailVerificationCode: plainEmailVerificationCode }
   }
 
@@ -244,53 +207,6 @@ export class UserRepository extends ScryptTokenRepository {
    */
   completedOnboarding(user: UserWithTeams) {
     return Boolean(user.firstName && user.lastName && user.emailVerifiedAt)
-  }
-
-  /**
-   * Verifies a user's email using their verification code.
-   *
-   * This method implements the email verification process:
-   * 1. Checks if the verification code has expired
-   * 2. Verifies the provided code against the stored hash
-   * 3. If valid, marks the user's email as verified
-   * 4. Clears the verification code to prevent reuse
-   *
-   * Email verification is a critical security measure that ensures users
-   * have access to the email addresses they register with. This prevents
-   * spam accounts and protects users from having their email addresses
-   * registered by others without permission.
-   *
-   * @param user - The user attempting to verify their email
-   * @param code - The verification code provided by the user
-   * @returns True if verification succeeded, false otherwise
-   */
-  async confirmEmailVerificationCode(user: UserWithTeams, code: string) {
-    // Check if the verification code has expired
-    if (user.emailVerificationCodeExpiresAt) {
-      const hasExpired =
-        DateTime.fromJSDate(user.emailVerificationCodeExpiresAt as Date).diffNow()
-          .milliseconds < 0
-
-      if (hasExpired) {
-        return false
-      }
-    }
-
-    // Verify the provided code against the stored hash
-    const passed = await this.verify(
-      code.toString(),
-      user.emailVerificationCode as string,
-    )
-
-    // If valid, mark the email as verified and clear the code
-    if (passed) {
-      await this.update(user.id, {
-        emailVerifiedAt: new Date(),
-        emailVerificationCode: null,
-      })
-    }
-
-    return passed
   }
 
   /**

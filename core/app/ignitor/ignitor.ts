@@ -43,6 +43,7 @@ import { PasswordResetsController } from '@/auth/password_resets/controllers/pas
 import { AutomationController } from '@/automations/controllers/automation_controller.js'
 
 import { SendingDomainController } from '@/sending_domains/controllers/sending_domain_controller.js'
+import { SenderIdentityController } from '@/sending_domains/controllers/sender_identity_controller.js'
 
 import { Queue } from '@/shared/queue/queue.js'
 import { createBullBoard } from '@bull-board/api'
@@ -182,6 +183,7 @@ export class Ignitor {
     container.resolve(TeamMembershipController)
     container.resolve(MailerWebhooksContorller)
     container.resolve(SendingDomainController)
+    container.resolve(SenderIdentityController)
     container.resolve(MtaLogsController)
     container.resolve(DkimController)
     container.resolve(SmtpAuthController)

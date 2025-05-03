@@ -8,7 +8,6 @@ import type {
 import type { MySqlRawQueryResult } from 'drizzle-orm/mysql2'
 
 import type { DrizzleClient } from '@/database/client.js'
-import { products } from '@/database/schema.js'
 
 import { Cache } from '@/shared/cache/cache.js'
 import { makeDatabase } from '@/shared/container/index.js'

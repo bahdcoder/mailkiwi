@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "ae5aaafd-6609-4150-9c1e-9d70262f16e5",
+  "id": "1a7cf797-c0bf-40ef-9329-f35d4e2fd177",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -2990,6 +2990,117 @@
       "compositePrimaryKeys": {
         "segments_id": {
           "name": "segments_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "senderIdentities": {
+      "name": "senderIdentities",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "sendingDomainId": {
+          "name": "sendingDomainId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "teamId": {
+          "name": "teamId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "emailVerificationCode": {
+          "name": "emailVerificationCode",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "emailVerifiedAt": {
+          "name": "emailVerifiedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "emailVerificationCodeExpiresAt": {
+          "name": "emailVerificationCodeExpiresAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "replyToEmail": {
+          "name": "replyToEmail",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "senderIdentities_sendingDomainId_sendingDomains_id_fk": {
+          "name": "senderIdentities_sendingDomainId_sendingDomains_id_fk",
+          "tableFrom": "senderIdentities",
+          "tableTo": "sendingDomains",
+          "columnsFrom": ["sendingDomainId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "senderIdentities_teamId_teams_id_fk": {
+          "name": "senderIdentities_teamId_teams_id_fk",
+          "tableFrom": "senderIdentities",
+          "tableTo": "teams",
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "senderIdentities_id": {
+          "name": "senderIdentities_id",
           "columns": ["id"]
         }
       },

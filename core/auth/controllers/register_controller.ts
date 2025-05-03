@@ -119,6 +119,14 @@ export class RegisterController extends VikeController {
       payload.code,
     )
 
+    if (passed) {
+      await this.userRepository.users().update(user.id, {
+        emailVerifiedAt: new Date(),
+        emailVerificationCode: null,
+        emailVerificationCodeExpiresAt: null,
+      })
+    }
+
     if (!passed) {
       throw E_VALIDATION_FAILED([
         {
