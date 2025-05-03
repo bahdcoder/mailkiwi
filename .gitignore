@@ -9,3 +9,10 @@ node_modules/
 /playwright/.cache/
 stats.html
 /maily
+
+.env
+.env.local
+.env.prod
+.env.staging
+.env.test
+.env.example
