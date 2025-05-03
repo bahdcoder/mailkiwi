@@ -4,7 +4,7 @@ import { pinoLogger } from 'hono-pino'
 import { compress } from 'hono/compress'
 import type { HonoOptions } from 'hono/hono-base'
 import { requestId } from 'hono/request-id'
-import type { ContentfulStatusCode, StatusCode } from 'hono/utils/http-status'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import type { HonoContext, HonoRouteDefinition } from './types.js'
 
 import { EnsureUserAndTeamSessionsMiddleware } from '@/auth/middleware/ensure_user_and_team_sessions_middleware.js'

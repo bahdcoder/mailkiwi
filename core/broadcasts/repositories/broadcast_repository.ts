@@ -61,13 +61,15 @@ export class BroadcastRepository extends BaseRepository {
    * allows for more efficient storage and retrieval of email content, especially
    * for A/B testing where multiple content variations may exist.
    */
-  protected hasOneEmailContent = hasOne(this.database, {
-    from: broadcasts,
-    to: emailContents,
-    primaryKey: broadcasts.id,
-    foreignKey: emailContents.id,
-    relationName: 'emailContent',
-  })
+  protected hasOneEmailContent() {
+    return hasOne(this.database, {
+      from: broadcasts,
+      to: emailContents,
+      primaryKey: broadcasts.id,
+      foreignKey: emailContents.id,
+      relationName: 'emailContent',
+    })
+  }
 
   broadcasts() {
     return this.crud(broadcasts)

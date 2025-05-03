@@ -28,7 +28,9 @@ export class PagePropsResolver {
       return defaultPageProps
     }
 
-    return resolver.resolve(pathname, defaultPageProps, ctx)
+    const resolvedProps = await resolver.resolve(pathname, defaultPageProps, ctx)
+
+    return { ...defaultPageProps, ...resolvedProps }
   }
 
   private makeResolver(pathname: string) {

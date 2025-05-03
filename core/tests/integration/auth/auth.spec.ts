@@ -365,7 +365,7 @@ describe('@oauth ', () => {
     expect(query.response_type).toBe('code')
     expect(query.access_type).toBe('offline')
     expect(query.prompt).toBe('select_account')
-    expect(query.client_id).toBe(appEnv.GOOGLE_CLIENT_ID)
+    expect(query.client_id).toBe(appEnv.OAUTH_GOOGLE_CLIENT_ID)
     expect(query.scope).toBe(
       'openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
     )

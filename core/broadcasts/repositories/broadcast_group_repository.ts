@@ -14,20 +14,22 @@ export class BroadcastGroupRepository extends BaseRepository {
     super()
   }
 
-  protected hasManyBroadcasts = hasMany(this.database, {
-    from: broadcastGroupsTable,
-    to: broadcastsTable,
-    primaryKey: broadcastGroupsTable.id,
-    foreignKey: broadcastsTable.broadcastGroupId,
-    relationName: 'broadcasts',
-  })
+  protected hasManyBroadcasts() {
+    return hasMany(this.database, {
+      from: broadcastGroupsTable,
+      to: broadcastsTable,
+      primaryKey: broadcastGroupsTable.id,
+      foreignKey: broadcastsTable.broadcastGroupId,
+      relationName: 'broadcasts',
+    })
+  }
 
   groups() {
     return this.crud(broadcastGroupsTable)
   }
 
   async findWithBroadcastsForTeam(teamId: string) {
-    const broadcasts = await this.hasManyBroadcasts((query) =>
+    const broadcasts = await this.hasManyBroadcasts()((query) =>
       query.where(eq(broadcastGroupsTable.teamId, teamId)),
     )
 

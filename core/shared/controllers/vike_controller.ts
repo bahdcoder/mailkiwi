@@ -50,8 +50,8 @@ export class VikeController extends BaseController {
     const props = pageProps as DefaultPageProps
 
     const pageContext = await renderPage({
+      ...props,
       pageProps: await container.make(PagePropsResolver).handle(ctx, props),
-      // ...props,
       urlOriginal: ctx.req.url,
       headersOriginal: ctx.req.raw.headers,
     })

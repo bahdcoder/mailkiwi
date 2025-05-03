@@ -25,21 +25,25 @@ export class TeamMembershipRepository extends BaseRepository {
     return this.crud(teamMemberships)
   }
 
-  private belongsToUser = belongsTo(this.database, {
-    from: teamMemberships,
-    to: users,
-    primaryKey: users.id,
-    foreignKey: teamMemberships.userId,
-    relationName: 'user',
-  })
+  private belongsToUser() {
+    return belongsTo(this.database, {
+      from: teamMemberships,
+      to: users,
+      primaryKey: users.id,
+      foreignKey: teamMemberships.userId,
+      relationName: 'user',
+    })
+  }
 
-  private belongsToTeam = belongsTo(this.database, {
-    from: teamMemberships,
-    to: teams,
-    primaryKey: teams.id,
-    foreignKey: teamMemberships.teamId,
-    relationName: 'team',
-  })
+  private belongsToTeam() {
+    return belongsTo(this.database, {
+      from: teamMemberships,
+      to: teams,
+      primaryKey: teams.id,
+      foreignKey: teamMemberships.teamId,
+      relationName: 'team',
+    })
+  }
 
   async create(payload: InsertTeamMembership) {
     const id = this.cuid()
@@ -86,7 +90,7 @@ export class TeamMembershipRepository extends BaseRepository {
   }
 
   async findAllForUser(userId: string) {
-    return this.belongsToTeam((query) =>
+    return this.belongsToTeam()((query) =>
       query.where(
         and(eq(teamMemberships.userId, userId), eq(teamMemberships.status, 'ACTIVE')),
       ),
@@ -94,7 +98,7 @@ export class TeamMembershipRepository extends BaseRepository {
   }
 
   async findById(membershipId: string) {
-    const [membership] = await this.belongsToUser((query) =>
+    const [membership] = await this.belongsToUser()((query) =>
       query.where(eq(teamMemberships.id, membershipId)),
     )
 
