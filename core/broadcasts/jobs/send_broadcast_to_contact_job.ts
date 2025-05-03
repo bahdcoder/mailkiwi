@@ -144,8 +144,6 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
       .make(InjectEmailAction)
       .handle(injectEmailPayload, sendingDomain)
 
-    d({ messages })
-
     return this.done(messages)
   }
 
