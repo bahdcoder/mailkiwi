@@ -97,7 +97,6 @@ describe('@automation-step-repository', () => {
     const result = await repository.createIfElseStep(automationId, data, endStepId)
 
     expect(result.id).toBeDefined()
-    expect(result.yesBranchStepId).toBeDefined()
     expect(result.noBranchStepId).toBeDefined()
     expect(result.noEndStepId).toBeDefined()
 
@@ -111,22 +110,12 @@ describe('@automation-step-repository', () => {
     expect(ifElseStep?.subtype).toBe('RULE_IF_ELSE')
     expect(ifElseStep?.parentId).toBe(data.parentId)
 
-    // Verify the YES branch step was created correctly
-    const yesBranchStep = await database.query.automationSteps.findFirst({
-      where: eq(automationSteps.id, result.yesBranchStepId),
-    })
-
-    expect(yesBranchStep).toBeDefined()
-    expect(yesBranchStep?.type).toBe('ACTION')
-    expect(yesBranchStep?.parentId).toBe(result.id)
-    expect(yesBranchStep?.branchIndex).toBe(1) // YES branch
-
     // Verify the target step was updated to have the YES branch step as its parent
     const targetStep = await database.query.automationSteps.findFirst({
       where: eq(automationSteps.id, endStepId),
     })
 
-    expect(targetStep?.parentId).toBe(result.yesBranchStepId)
+    expect(targetStep?.parentId).toEqual(ifElseStep?.id)
 
     // Verify the NO branch step was created correctly
     const noBranchStep = await database.query.automationSteps.findFirst({

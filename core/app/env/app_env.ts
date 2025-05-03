@@ -93,7 +93,7 @@ export const appEnv = makeExtraAppConfigurations(
 
       // MTA auth
       MTA_ACCESS_TOKEN: str(),
-      MTA_INJECTOR_URL: host(),
+      MTA_INJECTOR_URL: str(),
 
       // S3 file uploads
       FILE_UPLOADS_ACCESS_KEY: str(),
@@ -127,9 +127,9 @@ export const appEnv = makeExtraAppConfigurations(
       OAUTH_GITHUB_CLIENT_SECRET: str(),
       OAUTH_GITHUB_CALLBACK_URL: str(),
 
-      GOOGLE_CLIENT_ID: str(),
-      GOOGLE_CLIENT_SECRET: str(),
-      GOOGLE_CALLBACK_URL: str(),
+      OAUTH_GOOGLE_CLIENT_ID: str(),
+      OAUTH_GOOGLE_CLIENT_SECRET: str(),
+      OAUTH_GOOGLE_CALLBACK_URL: str(),
 
       GOOGLE_FONTS_API_KEY: str(),
     }),
