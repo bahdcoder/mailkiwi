@@ -6,6 +6,7 @@ services:
       - "5567:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: kibamail

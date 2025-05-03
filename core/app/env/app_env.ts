@@ -78,7 +78,7 @@ export const appEnv = makeExtraAppConfigurations(
         default: 'test',
       }),
       APP_URL: url(),
-      MAILPIT_API_URL: host(),
+      MAILPIT_API_URL: str(),
 
       // Databases
       REDIS_URL: redisDatabaseUrl(),
