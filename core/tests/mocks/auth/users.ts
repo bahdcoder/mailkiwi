@@ -225,7 +225,7 @@ export const createUser = async ({
 
   const registerUserAction = container.resolve(RegisterUserAction)
 
-  const { user } = await registerUserAction.handle({
+  const { user, teamId } = await registerUserAction.handle({
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     email: faker.number.int({ min: 0, max: 99 }) + faker.internet.exampleEmail(),
@@ -249,13 +249,7 @@ export const createUser = async ({
   await container.make(UserRepository).update(user.id, { password: 'password' })
 
   const teamRepository = container.resolve(TeamRepository)
-  const team = await teamRepository.create(
-    {
-      name: faker.company.catchPhraseAdjective(),
-    },
-    user.id,
-  )
-  const teamObject = await teamRepository.findById(team.id)
+  const team = await teamRepository.findById(teamId)
 
   const broadcastGroupId = cuid()
 
@@ -404,7 +398,7 @@ export const createUser = async ({
 
   return {
     user: freshUser,
-    team: teamObject as Team,
+    team,
     audience: { id: audienceId as string },
     administratorUser,
     managerUser,

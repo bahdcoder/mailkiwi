@@ -603,7 +603,7 @@ describe.sequential('@mta', () => {
       'The output from the MTA inject job was unsuccessful.',
     ).toBe(true)
 
-    const message = output as { messageId: string; ok: boolean }
+    const [message] = output as { messageId: string; ok: boolean }[]
 
     await sleep(2000)
 

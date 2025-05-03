@@ -17,6 +17,7 @@ import { FREE_MONTHLY_CREDITS } from '@/app/env/app_env.js'
 import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
 import { DateTime } from 'luxon'
+import { DrizzleClient } from '@/database/client.js'
 
 /**
  * TeamRepository handles database operations for team management.
@@ -132,8 +133,7 @@ export class TeamRepository extends BaseRepository {
     // Generate a unique ID for the team
     const id = this.cuid()
 
-    // Use a transaction to ensure all records are created atomically
-    await this.database.transaction(async (trx) => {
+    const insertTeamRecord = async (trx: DrizzleClient) => {
       // Create the team record with basic metadata
       await trx.insert(teams).values({
         id,
@@ -165,6 +165,16 @@ export class TeamRepository extends BaseRepository {
         // Set expiration to the start of the next month
         expiresAt: DateTime.now().endOf('month').plus({ millisecond: 1 }).toJSDate(),
       })
+    }
+
+    if (this.isATransactionRepository) {
+      await insertTeamRecord(this.database)
+
+      return { id }
+    }
+
+    await this.database.transaction(async (trx) => {
+      await insertTeamRecord(trx)
     })
 
     return { id }
