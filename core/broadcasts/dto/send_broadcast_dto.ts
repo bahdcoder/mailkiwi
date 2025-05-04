@@ -37,13 +37,16 @@ import { makeDatabase } from '@/shared/container/index.js'
  */
 export const SendBroadcastEmailContentSchema = object({
   subject: pipe(
-    string('Please provide a valid subject'),
-    nonEmpty(),
-    minLength(8),
-    maxLength(120),
+    string('Please provide a valid subject for your email'),
+    nonEmpty('Subject cannot be empty'),
+    minLength(8, 'Subject must be at least 8 characters for better deliverability'),
+    maxLength(120, 'Subject must be less than 120 characters to avoid truncation'),
   ),
-  contentJson: record(string(), any()),
-  previewText: pipe(string('Please provide a valid preview text'), nonEmpty()),
+  contentJson: record(string(), any(), 'Email content is required'),
+  previewText: pipe(
+    string('Please provide a valid preview text'),
+    nonEmpty('Preview text cannot be empty - it improves open rates'),
+  ),
 })
 
 /**
@@ -63,10 +66,15 @@ export const SendBroadcastEmailContentSchema = object({
  * that broadcasts meet quality and deliverability standards before being queued.
  */
 export const SendBroadcastSchema = objectAsync({
-  name: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
+  name: pipe(
+    string('Please provide a name for your broadcast'),
+    nonEmpty('Broadcast name cannot be empty'),
+    minLength(8, 'Broadcast name must be at least 8 characters for better organization'),
+    maxLength(120, 'Broadcast name must be less than 120 characters'),
+  ),
 
   audienceId: pipeAsync(
-    string(),
+    string('Please select a valid audience'),
     checkAsync(async (value) => {
       const database = makeDatabase()
 
@@ -75,11 +83,14 @@ export const SendBroadcastSchema = objectAsync({
       })
 
       return audience !== undefined
-    }),
+    }, 'The selected audience does not exist. Please choose a valid audience.'),
   ),
 
   sendingDomainId: pipeAsync(
-    pipe(string(), uuid()),
+    pipe(
+      string('Please provide a valid sending domain ID'),
+      uuid('Sending domain ID must be a valid UUID format'),
+    ),
     checkAsync(async (value) => {
       if (!value) return true
 
@@ -90,11 +101,11 @@ export const SendBroadcastSchema = objectAsync({
       })
 
       return sendingDomain !== undefined
-    }, 'The sending domain must be an engage domain'),
+    }, 'The selected sending domain is not configured for marketing emails. Please choose a domain set up for the "engage" product.'),
   ),
 
   senderIdentityId: pipeAsync(
-    string(),
+    string('Please provide a valid sender identity ID'),
     checkAsync(async (value) => {
       const database = makeDatabase()
 
@@ -103,7 +114,7 @@ export const SendBroadcastSchema = objectAsync({
       })
 
       return senderIdentity !== undefined
-    }, 'The specified sender identity does not exist or is invalid.'),
+    }, 'The specified sender identity does not exist. Please select a valid sender identity from your account.'),
   ),
 
   trackClicks: optional(nullable(boolean())),
@@ -112,7 +123,7 @@ export const SendBroadcastSchema = objectAsync({
   emailContent: SendBroadcastEmailContentSchema,
 
   sendAt: pipeAsync(
-    nullable(optional(string())),
+    nullable(optional(string('Please provide a valid date string for scheduling'))),
     check((input) => {
       if (!input) return true
 
@@ -125,7 +136,7 @@ export const SendBroadcastSchema = objectAsync({
       const dateTime = DateTime.fromJSDate(date).diffNow('hours')
 
       return dateTime.hours > 1
-    }, 'You may schedule to send this broadcast at least on hour in the future.'),
+    }, 'Scheduled broadcasts must be set at least one hour in the future to allow for proper preparation and processing.'),
   ),
 })
 

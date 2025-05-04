@@ -112,7 +112,8 @@ describe('@broadcasts update broadcasts', () => {
       message: 'Validation failed.',
       errors: [
         {
-          message: 'The sum of all ab test variant weights must be less than 100.',
+          message:
+            'The total weight of all A/B test variants must be less than 100%. Please adjust the weights so they sum to less than 100.',
         },
       ],
     })

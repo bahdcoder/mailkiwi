@@ -9,8 +9,11 @@ import { type InferInput, objectAsync, pipe, regex, string } from 'valibot'
  */
 export const VerifySenderIdentityEmailSchema = objectAsync({
   code: pipe(
-    string(),
-    regex(/^\d{6}$/, 'Please enter a valid 6-digit verification code'),
+    string('Verification code must be a text value'),
+    regex(
+      /^\d{6}$/,
+      'Please enter the 6-digit verification code sent to your email address',
+    ),
   ),
 })
 

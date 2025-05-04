@@ -27,9 +27,12 @@ import { makeDatabase } from '@/shared/container/index.js'
  * non-existent groups and maintains data integrity.
  */
 export const CreateBroadcastDto = objectAsync({
-  name: pipe(string(), nonEmpty()),
+  name: pipe(
+    string('Broadcast name must be a text value'),
+    nonEmpty('Please provide a name for your broadcast campaign'),
+  ),
   broadcastGroupId: pipeAsync(
-    string(),
+    string('Broadcast group ID must be a text value'),
     checkAsync(async (value) => {
       const database = makeDatabase()
 
@@ -38,9 +41,9 @@ export const CreateBroadcastDto = objectAsync({
       })
 
       return broadcastGroup !== undefined
-    }),
+    }, 'The selected broadcast group does not exist. Please choose a valid broadcast group.'),
   ),
-  senderIdentityId: optional(string()),
+  senderIdentityId: optional(string('Sender identity ID must be a text value')),
 })
 
 export type CreateBroadcastDto = InferInput<typeof CreateBroadcastDto>

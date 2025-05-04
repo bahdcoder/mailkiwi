@@ -83,7 +83,7 @@ describe('@websites', () => {
       errors: [
         {
           message:
-            'A website with this domain already exists. Please choose another domain for your newsletter website.',
+            'This domain is already in use by another newsletter website. Please choose a different domain or subdomain for your newsletter.',
           field: 'domain',
         },
       ],

@@ -69,7 +69,7 @@ describe('@sender-identities', () => {
     const json = await response.json()
 
     expect(json.payload.errors[0].message).toEqual(
-      'The specified sending domain does not exist or is invalid.',
+      'The selected sending domain does not exist in your account. Please choose a valid sending domain.',
     )
 
     expect(response.status).toBe(422)

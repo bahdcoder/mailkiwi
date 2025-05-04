@@ -13,11 +13,21 @@ import { websites } from '@/database/schema.js'
 
 import { makeDatabase } from '@/shared/container/index.js'
 
+/**
+ * Schema for creating a new audience.
+ *
+ * This schema validates the input for creating an audience, ensuring:
+ * - The audience has an optional name
+ * - The slug (used for website URLs) is properly formatted and unique
+ */
 export const CreateAudienceSchema = objectAsync({
-  name: optional(string()),
+  name: optional(string('Audience name must be a text value')),
   slug: pipeAsync(
-    string(),
-    regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    string('Slug must be a text value'),
+    regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      'Slug must contain only lowercase letters, numbers, and hyphens (e.g., my-audience)',
+    ),
     checkAsync(async (slug) => {
       if (!slug) {
         return true
@@ -32,7 +42,7 @@ export const CreateAudienceSchema = objectAsync({
         .limit(1)
 
       return exists.length === 0
-    }, 'A website with this slug already exists. Please choose another subdomain for your website.'),
+    }, 'This slug is already in use. Please choose a different slug for your audience website (e.g., my-newsletter, company-updates).'),
   ),
 })
 
