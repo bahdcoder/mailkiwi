@@ -13,6 +13,18 @@ import type { HonoContext } from '@/shared/server/types.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * PasswordResetsController handles password recovery and reset functionality.
+ *
+ * This controller is responsible for:
+ * 1. Initiating password reset requests via email
+ * 2. Validating password reset tokens
+ * 3. Processing password changes during reset flows
+ *
+ * The password reset flow provides a secure way for users to regain access
+ * to their accounts when they've forgotten their passwords, while maintaining
+ * security and preventing unauthorized access.
+ */
 export class PasswordResetsController extends VikeController {
   constructor(
     protected app = makeApp(),
@@ -20,10 +32,6 @@ export class PasswordResetsController extends VikeController {
   ) {
     super()
 
-    // request password reset (email)
-    //  generate and send password reset email
-    //
-    // reset password (with reset token) and redirect user to login page.
     this.app.defineRoutes(
       [
         ...this.vikePath('forgot', this.redirectToWelcomeIfAuthenticatedPage),
@@ -38,6 +46,13 @@ export class PasswordResetsController extends VikeController {
     )
   }
 
+  /**
+   * Initiates a password reset request.
+   *
+   * Creates a password reset token for the specified email address
+   * and prepares to send a reset link to the user. For security,
+   * returns a success response regardless of whether the email exists.
+   */
   request = async (ctx: HonoContext) => {
     const payload = await this.validate(ctx, RequestPasswordResetSchema)
 
@@ -55,6 +70,13 @@ export class PasswordResetsController extends VikeController {
     return ctx.json({ Ok: true })
   }
 
+  /**
+   * Completes a password reset with a valid token.
+   *
+   * Validates the reset token, confirms the user's identity,
+   * and sets a new password for the account. This is the final
+   * step in the password recovery process.
+   */
   reset = async (ctx: HonoContext) => {
     const payload = await this.validate(ctx, ResetPasswordSchema)
 

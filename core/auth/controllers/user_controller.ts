@@ -6,6 +6,16 @@ import type { HonoContext } from '@/shared/server/types.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * UserController manages user profile information.
+ *
+ * This controller is responsible for:
+ * 1. Retrieving user profile data
+ * 2. Providing endpoints for user self-service
+ *
+ * The controller enables users to access and manage their own account
+ * information, supporting user autonomy and self-service capabilities.
+ */
 export class UserController extends BaseController {
   constructor(
     private userRepository = container.make(UserRepository),
@@ -17,6 +27,12 @@ export class UserController extends BaseController {
     })
   }
 
+  /**
+   * Retrieves the authenticated user's profile information.
+   *
+   * Returns detailed user data for the currently authenticated user,
+   * including personal information and account settings.
+   */
   async profile(ctx: HonoContext) {
     const user = await this.userRepository.findById(this.user(ctx).id)
 

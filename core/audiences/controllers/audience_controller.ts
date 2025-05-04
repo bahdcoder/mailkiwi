@@ -16,6 +16,18 @@ import { Paginator } from '@/shared/utils/pagination/paginator.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * AudienceController manages audience resources for email marketing.
+ *
+ * This controller is responsible for:
+ * 1. Creating and managing audience segments for targeted marketing
+ * 2. Providing endpoints to list, create, and update audiences
+ * 3. Enforcing team-based access control for audience resources
+ *
+ * Audiences are a fundamental organizational unit in Kibamail, representing
+ * groups of contacts that can be targeted for email campaigns. Each audience
+ * belongs to a specific team and can contain multiple segments and contacts.
+ */
 export class AudienceController extends BaseController {
   constructor(private app = makeApp()) {
     super()
@@ -32,6 +44,11 @@ export class AudienceController extends BaseController {
     )
   }
 
+  /**
+   * Lists all audiences for the current team.
+   *
+   * Returns a paginated list of audiences that belong to the authenticated user's team.
+   */
   async index(ctx: HonoContext) {
     const team = this.ensureTeam(ctx)
 
@@ -44,6 +61,12 @@ export class AudienceController extends BaseController {
     return this.response(ctx).json(data).send()
   }
 
+  /**
+   * Creates a new audience for the team.
+   *
+   * Validates the request data and creates an audience resource that will be
+   * available for contacts and email campaigns.
+   */
   async store(ctx: HonoContext) {
     const data = await this.validate(ctx, CreateAudienceSchema)
 
@@ -54,6 +77,12 @@ export class AudienceController extends BaseController {
     return this.response(ctx).json(audience).send()
   }
 
+  /**
+   * Updates an existing audience.
+   *
+   * Validates the request data and updates the specified audience if the
+   * authenticated user has permission to manage it.
+   */
   async update(ctx: HonoContext) {
     this.ensureCanManage(ctx)
 

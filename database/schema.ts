@@ -667,6 +667,9 @@ export const emails = mysqlTable('emails', {
   emailContentId: primaryKeyCuid('emailContentId').references(() => emailContents.id, {
     onDelete: 'cascade',
   }),
+  senderIdentityId: primaryKeyCuid('senderIdentityId').references(
+    () => senderIdentities.id,
+  ),
 })
 
 export const abTestVariants = mysqlTable('abTestVariants', {
@@ -784,10 +787,6 @@ export const emailSendEvents = mysqlTable('emailSendEvents', {
 
 export const emailContents = mysqlTable('emailContents', {
   id,
-  fromName: varchar('fromName', { length: 255 }),
-  fromEmail: varchar('fromEmail', { length: 255 }),
-  replyToEmail: varchar('replyToEmail', { length: 255 }),
-  replyToName: varchar('replyToName', { length: 255 }),
   contentJson: json('contentJson'),
   contentText: text('contentText'),
   contentHtml: text('contentHtml'),
@@ -816,6 +815,9 @@ export const broadcasts = mysqlTable('broadcasts', {
   emailContentId: primaryKeyCuid('emailContentId').references(() => emailContents.id, {
     onDelete: 'cascade',
   }),
+  senderIdentityId: primaryKeyCuid('senderIdentityId').references(
+    () => senderIdentities.id,
+  ),
   sendingDomainId: primaryKeyCuid('sendingDomainId').references(() => sendingDomains.id),
   winningAbTestVariantId: primaryKeyCuid('winningAbTestVariantId').references(
     (): AnyMySqlColumn => abTestVariants.id,
@@ -1207,6 +1209,10 @@ export const broadcastRelations = relations(broadcasts, ({ one }) => ({
   emailContent: one(emailContents, {
     fields: [broadcasts.emailContentId],
     references: [emailContents.id],
+  }),
+  senderIdentity: one(senderIdentities, {
+    fields: [broadcasts.senderIdentityId],
+    references: [senderIdentities.id],
   }),
 }))
 

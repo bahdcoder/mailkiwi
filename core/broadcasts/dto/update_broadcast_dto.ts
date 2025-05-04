@@ -22,18 +22,19 @@ import {
   uuid,
 } from 'valibot'
 
-import { abTestVariants, audiences, segments, sendingDomains } from '@/database/schema.js'
+import {
+  abTestVariants,
+  audiences,
+  segments,
+  senderIdentities,
+  sendingDomains,
+} from '@/database/schema.js'
 
 import { makeDatabase } from '@/shared/container/index.js'
 
 import { isDateInPast } from '@/utils/dates.js'
 
 const emailContentFields = {
-  fromName: optional(string()),
-  fromEmail: optional(pipe(string(), maxLength(24))),
-  replyToEmail: optional(pipe(string(), email())),
-  replyToName: optional(string()),
-
   contentJson: optional(record(string(), any())),
   contentText: optional(string()),
   contentHtml: optional(string()),
@@ -110,6 +111,21 @@ export const UpdateBroadcastDto = pipeAsync(
 
         return segment !== undefined
       }),
+    ),
+
+    senderIdentityId: pipeAsync(
+      optional(string()),
+      checkAsync(async (value) => {
+        if (!value) return true
+
+        const database = makeDatabase()
+
+        const senderIdentity = await database.query.senderIdentities.findFirst({
+          where: eq(senderIdentities.id, value),
+        })
+
+        return senderIdentity !== undefined
+      }, 'The specified sender identity does not exist or is invalid.'),
     ),
 
     trackClicks: optional(boolean()),

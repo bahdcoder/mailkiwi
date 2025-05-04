@@ -18,19 +18,24 @@ import { BaseController } from '@/shared/controllers/base_controller.js'
 import type { HonoContext } from '@/shared/server/types.js'
 
 import { container } from '@/utils/typi.js'
-import {
+import type {
   SenderIdentity,
   SenderIdentityWithSendingDomain,
 } from '@/database/database_schema_types.js'
 import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
 
 /**
- * Controller for managing sender identities.
+ * SenderIdentityController manages email sender identities for marketing campaigns.
  *
- * This controller handles HTTP requests related to sender identities:
- * - Creating, updating, and deleting sender identities
- * - Listing sender identities for a team
- * - Managing email verification for sender identities
+ * This controller is responsible for:
+ * 1. Creating and managing sender identities (from name, email address)
+ * 2. Verifying sender email addresses to ensure deliverability
+ * 3. Associating sender identities with verified sending domains
+ * 4. Enforcing team-based access control for sender resources
+ *
+ * Sender identities are critical for email deliverability and brand consistency.
+ * This controller ensures that all sender identities are properly verified and
+ * configured to maximize inbox placement and maintain sender reputation.
  */
 export class SenderIdentityController extends BaseController {
   constructor(
@@ -65,7 +70,10 @@ export class SenderIdentityController extends BaseController {
   }
 
   /**
-   * List all sender identities for the team.
+   * Lists all sender identities for the team.
+   *
+   * Returns a collection of sender identities that belong to the authenticated
+   * user's team, including their verification status and associated domains.
    */
   async index(ctx: HonoContext) {
     const team = this.ensureTeam(ctx)
@@ -76,7 +84,11 @@ export class SenderIdentityController extends BaseController {
   }
 
   /**
-   * Create a new sender identity.
+   * Creates a new sender identity.
+   *
+   * Validates the request data and creates a sender identity associated with
+   * a verified sending domain. The sender identity will require email verification
+   * before it can be used for sending emails.
    */
   async store(ctx: HonoContext) {
     const team = this.ensureTeam(ctx)
@@ -99,7 +111,10 @@ export class SenderIdentityController extends BaseController {
   }
 
   /**
-   * Get a specific sender identity.
+   * Retrieves a specific sender identity.
+   *
+   * Returns detailed information about a sender identity, including
+   * its verification status and associated sending domain.
    */
   async show(ctx: HonoContext) {
     const senderIdentity = await this.ensureExists<SenderIdentity>(
@@ -111,7 +126,11 @@ export class SenderIdentityController extends BaseController {
   }
 
   /**
-   * Update a sender identity.
+   * Updates a sender identity.
+   *
+   * Modifies sender identity information such as the display name or email address.
+   * If the email address is changed, the sender identity will require
+   * re-verification before it can be used for sending emails.
    */
   async update(ctx: HonoContext) {
     const team = this.ensureTeam(ctx)
@@ -143,6 +162,13 @@ export class SenderIdentityController extends BaseController {
     return this.response(ctx).json(result).send()
   }
 
+  /**
+   * Deletes a sender identity.
+   *
+   * Permanently removes a sender identity from the system. This operation
+   * cannot be undone, and any broadcasts using this sender identity will
+   * need to be updated to use a different sender.
+   */
   async delete(ctx: HonoContext) {
     const senderIdentity = await this.ensureExists<SenderIdentity>(
       ctx,
@@ -154,6 +180,13 @@ export class SenderIdentityController extends BaseController {
     return this.response(ctx).json(result).send()
   }
 
+  /**
+   * Generates a verification code for a sender identity email.
+   *
+   * Creates and sends a 6-digit verification code to the email address
+   * associated with the sender identity. This code is required to verify
+   * ownership of the email address before it can be used for sending.
+   */
   async generateVerificationCode(ctx: HonoContext) {
     const senderIdentity = await this.ensureExists<SenderIdentityWithSendingDomain>(
       ctx,
@@ -171,6 +204,13 @@ export class SenderIdentityController extends BaseController {
       .send()
   }
 
+  /**
+   * Verifies a sender identity email using a verification code.
+   *
+   * Validates the provided verification code against the stored code
+   * for the sender identity. If valid, marks the email address as verified
+   * and enables it for use in email campaigns.
+   */
   async verifyEmail(ctx: HonoContext) {
     const payload = await this.validate(ctx, VerifySenderIdentityEmailSchema)
 

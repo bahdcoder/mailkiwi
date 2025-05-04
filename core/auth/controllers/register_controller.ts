@@ -23,6 +23,19 @@ import { Session } from '@/shared/sessions/sessions.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * RegisterController handles the user registration process.
+ *
+ * This controller is responsible for:
+ * 1. Creating new user accounts with email verification
+ * 2. Managing the multi-step registration flow
+ * 3. Setting up user profiles, passwords, and initial team
+ * 4. Verifying email addresses via confirmation codes
+ *
+ * The registration process is designed as a guided flow that ensures
+ * users complete all necessary steps while maintaining security and
+ * data integrity throughout the account creation process.
+ */
 export class RegisterController extends VikeController {
   constructor(
     private userRepository = container.make(UserRepository),
@@ -59,12 +72,20 @@ export class RegisterController extends VikeController {
     )
   }
 
+  /**
+   * Initiates the user registration process.
+   *
+   * Creates a new user account with the provided email address,
+   * generates an email verification code, and redirects to the
+   * email confirmation step of the registration flow.
+   */
   async register(ctx: HonoContext) {
     const { user, plainEmailVerificationCode, teamId } = await container
       .resolve(RegisterUserAction)
       .handle(await this.validate(ctx, CreateUserSchema))
 
     if (appEnv.isDev) {
+      // Log verification code in development for testing
       d({ plainEmailVerificationCode })
     }
 
@@ -77,6 +98,13 @@ export class RegisterController extends VikeController {
     return this.response(ctx).redirect(route('auth_register_email_confirm')).send()
   }
 
+  /**
+   * Completes the user profile setup.
+   *
+   * Updates the user's name and team name, creates an initial audience,
+   * and finalizes the registration process. This is typically the final
+   * step in the registration flow before the user reaches the application.
+   */
   async profile(ctx: HonoContext) {
     const user = ctx.get('user')
     const team = ctx.get('team')
@@ -105,6 +133,13 @@ export class RegisterController extends VikeController {
     return this.response(ctx).redirect(route('welcome')).send()
   }
 
+  /**
+   * Verifies the user's email address with a confirmation code.
+   *
+   * Validates the verification code entered by the user against the
+   * code sent to their email address. Upon successful verification,
+   * marks the email as verified and proceeds to the password setup step.
+   */
   async emailConfirm(ctx: HonoContext) {
     const user = ctx.get('user')
 
@@ -140,6 +175,13 @@ export class RegisterController extends VikeController {
     return this.response(ctx).redirect(route('auth_register_password')).send()
   }
 
+  /**
+   * Handles the password setup page rendering.
+   *
+   * Checks if the user already has a password set and redirects
+   * to the profile setup if they do, otherwise renders the
+   * password setup page.
+   */
   passwordPage = async (ctx: HonoContext, next: Next) => {
     const user = ctx.get('user')
 
@@ -150,6 +192,13 @@ export class RegisterController extends VikeController {
     return this.page(ctx, next)
   }
 
+  /**
+   * Sets the user's password.
+   *
+   * Validates and stores the user's password, ensuring it meets
+   * security requirements. Once the password is set, the user
+   * is redirected to complete their profile setup.
+   */
   async password(ctx: HonoContext) {
     const user = ctx.get('user')
 

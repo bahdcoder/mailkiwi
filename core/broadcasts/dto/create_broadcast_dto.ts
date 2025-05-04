@@ -1,15 +1,16 @@
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import {
   type InferInput,
   checkAsync,
   nonEmpty,
   objectAsync,
+  optional,
   pipe,
   pipeAsync,
   string,
 } from 'valibot'
 
-import { broadcastGroups } from '@/database/schema.js'
+import { broadcastGroups, senderIdentities } from '@/database/schema.js'
 
 import { makeDatabase } from '@/shared/container/index.js'
 
@@ -27,6 +28,7 @@ export const CreateBroadcastDto = objectAsync({
       return broadcastGroup !== undefined
     }),
   ),
+  senderIdentityId: optional(string()),
 })
 
 export type CreateBroadcastDto = InferInput<typeof CreateBroadcastDto>

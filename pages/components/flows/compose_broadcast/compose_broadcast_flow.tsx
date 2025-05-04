@@ -54,9 +54,7 @@ export function ComposeBroadcastFlow() {
     segmentId: broadcastFromServer?.segmentId ?? 'all',
     previewText: broadcastFromServer?.emailContent?.previewText ?? '',
     subject: broadcastFromServer?.name ?? '',
-    replyToEmail: broadcastFromServer?.emailContent?.replyToEmail ?? '',
-    fromEmail: broadcastFromServer?.emailContent?.fromEmail ?? '',
-    fromName: broadcastFromServer?.emailContent?.fromName ?? '',
+    senderIdentityId: broadcastFromServer?.senderIdentityId ?? '',
     trackClicks: broadcastFromServer?.trackClicks ?? false,
     trackOpens: broadcastFromServer?.trackOpens ?? false,
     scheduledAt: broadcastFromServer?.sendAt

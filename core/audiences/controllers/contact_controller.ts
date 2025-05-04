@@ -23,6 +23,18 @@ import type { HonoContext } from '@/shared/server/types.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * ContactController manages contact resources within audiences.
+ *
+ * This controller is responsible for:
+ * 1. Creating and managing contacts within audience segments
+ * 2. Searching and filtering contacts based on various criteria
+ * 3. Managing contact tags and tracking contact activity
+ *
+ * Contacts are the core recipients of email campaigns in Kibamail. This controller
+ * provides comprehensive functionality for managing contact data, including personal
+ * information, custom properties, tags, and engagement history.
+ */
 export class ContactController extends VikeController {
   constructor(private app: HonoInstance = makeApp()) {
     super()
@@ -44,6 +56,11 @@ export class ContactController extends VikeController {
     )
   }
 
+  /**
+   * Helper method to retrieve paginated contacts for an audience.
+   *
+   * Handles pagination parameters and optional segment filtering.
+   */
   paginatedContacts = (ctx: HonoContext, audienceId: string) =>
     container
       .make(GetContactsAction)
@@ -54,6 +71,12 @@ export class ContactController extends VikeController {
         Number.parseInt(ctx.req.query('perPage') ?? '10'),
       )
 
+  /**
+   * Searches contacts based on filter criteria.
+   *
+   * Allows advanced filtering of contacts within an audience using
+   * various search parameters and conditions.
+   */
   async search(ctx: HonoContext) {
     const payload = await this.validate(ctx, SearchContactsSchema)
 
@@ -70,10 +93,21 @@ export class ContactController extends VikeController {
     )
   }
 
+  /**
+   * Lists all contacts for an audience.
+   *
+   * Returns a paginated list of contacts that belong to the specified audience.
+   */
   async index(ctx: HonoContext) {
     return ctx.json(await this.paginatedContacts(ctx, ctx.req.param('audienceId')))
   }
 
+  /**
+   * Retrieves a specific contact with its properties.
+   *
+   * Returns detailed information about a contact, including custom properties
+   * and associated metadata.
+   */
   async get(ctx: HonoContext) {
     const [audience, contact] = await Promise.all([
       this.ensureExists<Audience>(ctx, 'audienceId'),
@@ -83,6 +117,12 @@ export class ContactController extends VikeController {
     return ctx.json(contact)
   }
 
+  /**
+   * Retrieves activity history for a contact.
+   *
+   * Returns a chronological list of interactions and events associated with
+   * the specified contact, such as email opens, clicks, and form submissions.
+   */
   async getActivity(ctx: HonoContext) {
     const [audience, contact] = await Promise.all([
       this.ensureExists<Audience>(ctx, 'audienceId'),
@@ -92,6 +132,12 @@ export class ContactController extends VikeController {
     return ctx.json(await container.make(ContactRepository).getActivity(contact.id))
   }
 
+  /**
+   * Creates a new contact in an audience.
+   *
+   * Validates the contact data and creates a new contact record with
+   * the specified properties in the given audience.
+   */
   async store(ctx: HonoContext) {
     const audience = await this.ensureExists<Audience>(ctx, 'audienceId')
 
@@ -104,6 +150,12 @@ export class ContactController extends VikeController {
     return ctx.json(contact)
   }
 
+  /**
+   * Updates an existing contact.
+   *
+   * Modifies contact information and properties while ensuring
+   * the user has proper authorization to make changes.
+   */
   async update(ctx: HonoContext) {
     const [audience, contact] = await Promise.all([
       this.ensureExists<Audience>(ctx, 'audienceId'),
@@ -121,6 +173,12 @@ export class ContactController extends VikeController {
     return ctx.json({ id }, 200)
   }
 
+  /**
+   * Attaches tags to a contact.
+   *
+   * Adds one or more tags to a contact for segmentation and
+   * organizational purposes.
+   */
   async attachTags(ctx: HonoContext) {
     const [, contact] = await Promise.all([
       this.ensureExists<Audience>(ctx, 'audienceId'),
@@ -136,6 +194,12 @@ export class ContactController extends VikeController {
     return ctx.json({ id: contact.id })
   }
 
+  /**
+   * Removes tags from a contact.
+   *
+   * Detaches one or more tags from a contact, updating their
+   * segmentation and categorization.
+   */
   async detachTags(ctx: HonoContext) {
     const [, contact] = await Promise.all([
       this.ensureExists<Audience>(ctx, 'audienceId'),

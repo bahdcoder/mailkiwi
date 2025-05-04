@@ -99,17 +99,7 @@ export function ConfigureStepActions() {
       previewText: formState.previewText,
     }
 
-    if (formState.fromEmail) {
-      emailContent.fromEmail = formState.fromEmail
-    }
-
-    if (formState.replyToEmail) {
-      emailContent.replyToEmail = formState.replyToEmail
-    }
-
-    if (formState.fromName) {
-      emailContent.fromName = formState.fromName
-    }
+    // Sender identity is now used instead of direct email fields
 
     await syncContentToServerMutation.mutateAsync({
       emailContent,

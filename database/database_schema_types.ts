@@ -16,6 +16,7 @@ import type {
   emailContents,
   emailSendEvents,
   emailSends,
+  emails,
   formResponses,
   forms,
   mediaDocuments,
@@ -44,6 +45,7 @@ export type Audience = InferSelectModel<typeof audiences>
 export type Website = InferSelectModel<typeof websites>
 export type WebsitePage = InferSelectModel<typeof websitePages>
 export type EmailSend = InferSelectModel<typeof emailSends>
+export type Email = InferSelectModel<typeof emails>
 export type Tag = InferSelectModel<typeof tags>
 export type Contact = InferSelectModel<typeof contacts>
 export type User = InferSelectModel<typeof users>
@@ -161,6 +163,10 @@ export type NonNullableProperties<T> = {
 }
 
 export type ValidatedEmailContent = NonNullableProperties<EmailContent>
+
+export type EmailWithContent = Email & {
+  emailContent: EmailContent | null
+}
 
 export type BroadcastWithEmailContent = Broadcast & {
   emailContent: Required<ValidatedEmailContent>

@@ -13,6 +13,17 @@ import type { HonoContext } from '@/shared/server/types.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * ContactImportController handles the import of contacts from external files.
+ *
+ * This controller is responsible for:
+ * 1. Processing CSV file uploads containing contact data
+ * 2. Mapping file headers to contact properties
+ * 3. Configuring and executing bulk contact imports
+ *
+ * The import process is designed to be user-friendly while handling large datasets
+ * efficiently, with proper validation and error handling to ensure data integrity.
+ */
 export class ContactImportController extends BaseController {
   constructor(
     private app = makeApp(),
@@ -31,6 +42,13 @@ export class ContactImportController extends BaseController {
     )
   }
 
+  /**
+   * Initiates a new contact import process.
+   *
+   * Handles file upload, performs initial analysis of the CSV data,
+   * and returns header mapping information to guide the user through
+   * the import configuration process.
+   */
   async create(ctx: HonoContext) {
     const form = await ctx.req.formData()
 
@@ -49,6 +67,12 @@ export class ContactImportController extends BaseController {
       .send()
   }
 
+  /**
+   * Updates import settings and starts the import process.
+   *
+   * Configures how CSV headers map to contact properties and
+   * initiates the actual import of contacts into the audience.
+   */
   async update(ctx: HonoContext) {
     const audience = await this.ensureExists<Audience>(ctx, 'audienceId')
 
@@ -62,6 +86,11 @@ export class ContactImportController extends BaseController {
     return this.response(ctx).json({ id: contactImport.id }).send()
   }
 
+  /**
+   * Ensures that the requested import exists.
+   *
+   * Validates that the import ID is valid and belongs to an existing import.
+   */
   private async ensureContactImportExists(ctx: HonoContext) {
     const importId = ctx.req.param('importId')
     const contactImport = await this.contactImportRepository.findById(importId)

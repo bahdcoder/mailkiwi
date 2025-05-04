@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "1a7cf797-c0bf-40ef-9329-f35d4e2fd177",
+  "id": "2457b866-7f25-4bc7-986f-b111234e0ecd",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -551,6 +551,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "senderIdentityId": {
+          "name": "senderIdentityId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "sendingDomainId": {
           "name": "sendingDomainId",
           "type": "binary(16)",
@@ -670,6 +677,15 @@
           "columnsFrom": ["emailContentId"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "broadcasts_senderIdentityId_senderIdentities_id_fk": {
+          "name": "broadcasts_senderIdentityId_senderIdentities_id_fk",
+          "tableFrom": "broadcasts",
+          "tableTo": "senderIdentities",
+          "columnsFrom": ["senderIdentityId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
           "onUpdate": "no action"
         },
         "broadcasts_sendingDomainId_sendingDomains_id_fk": {
@@ -1635,34 +1651,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "fromName": {
-          "name": "fromName",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "fromEmail": {
-          "name": "fromEmail",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "replyToEmail": {
-          "name": "replyToEmail",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "replyToName": {
-          "name": "replyToName",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "contentJson": {
           "name": "contentJson",
           "type": "json",
@@ -2186,6 +2174,13 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "senderIdentityId": {
+          "name": "senderIdentityId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -2206,6 +2201,15 @@
           "columnsFrom": ["emailContentId"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "emails_senderIdentityId_senderIdentities_id_fk": {
+          "name": "emails_senderIdentityId_senderIdentities_id_fk",
+          "tableFrom": "emails",
+          "tableTo": "senderIdentities",
+          "columnsFrom": ["senderIdentityId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
           "onUpdate": "no action"
         }
       },

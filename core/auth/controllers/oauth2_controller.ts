@@ -20,6 +20,19 @@ type Oauth2Params = {
   provider: 'github' | 'google'
 }
 
+/**
+ * Oauth2Controller handles third-party authentication via OAuth providers.
+ *
+ * This controller is responsible for:
+ * 1. Initiating OAuth flows with providers like GitHub and Google
+ * 2. Processing OAuth callbacks and authenticating users
+ * 3. Creating and linking OAuth accounts with Kibamail user accounts
+ * 4. Managing the OAuth state and security requirements
+ *
+ * OAuth authentication provides a secure and convenient way for users to
+ * access Kibamail without creating separate credentials, leveraging their
+ * existing accounts with trusted providers.
+ */
 export class Oauth2Controller extends VikeController {
   constructor(
     protected app = makeApp(),
@@ -31,8 +44,6 @@ export class Oauth2Controller extends VikeController {
     this.app.defineRoutes(
       [
         ['GET', '/:action/oauth2/:provider/authorize', this.authorize],
-
-        // callback
         ['GET', '/oauth2/:provider/callback', this.callback],
       ],
       {
@@ -42,6 +53,12 @@ export class Oauth2Controller extends VikeController {
     )
   }
 
+  /**
+   * Returns OAuth driver instances for supported providers.
+   *
+   * Creates and configures provider-specific OAuth client instances
+   * with the current HTTP context for state management.
+   */
   protected drivers(ctx: HonoContext) {
     return {
       github: container.make(GithubDriver).setCtx(ctx),
@@ -51,6 +68,16 @@ export class Oauth2Controller extends VikeController {
 
   protected OAUTH_2_ACTION_COOKIE_NAME = 'oauth2_action'
 
+  /**
+   * Handles OAuth callback requests from providers.
+   *
+   * Processes the OAuth response after a user has authenticated with a provider.
+   * This method:
+   * 1. Validates the OAuth state and response
+   * 2. Retrieves user information from the provider
+   * 3. Creates or retrieves the corresponding Kibamail user
+   * 4. Establishes a user session upon successful authentication
+   */
   callback = async (ctx: HonoContext) => {
     const params = ctx.req.param() as Oauth2Params
 
@@ -133,7 +160,6 @@ export class Oauth2Controller extends VikeController {
 
       return this.response(ctx).redirect(route('auth_register_profile')).send()
     } catch (error) {
-      d('GOOOOOOOOGLE', { error })
       this.flash(ctx, {
         title: `Failed to authenticate with ${params.provider}.`,
         description: 'Please try again or use another authentication method.',
@@ -145,6 +171,13 @@ export class Oauth2Controller extends VikeController {
     }
   }
 
+  /**
+   * Initiates the OAuth authorization flow with a provider.
+   *
+   * Redirects the user to the provider's authentication page and sets up
+   * the necessary state cookies to validate the callback request.
+   * This is the first step in the OAuth authentication process.
+   */
   authorize = async (ctx: HonoContext) => {
     const params = ctx.req.param() as Oauth2Params
 

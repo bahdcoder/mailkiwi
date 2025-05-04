@@ -56,7 +56,7 @@ export class RegisterUserAction {
       emailVerificationCode,
       emailVerificationCodeExpiresAt,
       plainEmailVerificationCode,
-    } = await this.userRepository.createUserEmailVerificationCode()
+    } = await this.userRepository.createEmailVerificationCode()
 
     await this.userRepository.update(userExists.id, {
       emailVerificationCode,

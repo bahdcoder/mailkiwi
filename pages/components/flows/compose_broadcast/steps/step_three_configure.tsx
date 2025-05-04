@@ -7,6 +7,7 @@ import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
+import * as SelectField from '@kibamail/owly/select-field'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 import React from 'react'
@@ -77,60 +78,25 @@ export function StepThreeConfigure() {
 
       {engageSendingDomain ? (
         <div className="mt-6 grid grid-cols-1 gap-4">
-          <TextField.Root
-            value={formState.fromEmail}
-            onChange={(event) =>
+          <SelectField.Root
+            value={formState.senderIdentityId}
+            onValueChange={(value) =>
               setFormState((current) => ({
                 ...current,
-                fromEmail: event.target.value,
+                senderIdentityId: value,
               }))
             }
           >
-            <TextField.Label>From email</TextField.Label>
-            <TextField.Slot side="right">
-              <Text>@{engageSendingDomain?.name}</Text>
-            </TextField.Slot>
-            {error?.errorsMap?.['emailContent.fromEmail'] && (
-              <TextField.Error>
-                {error.errorsMap['emailContent.fromEmail']}
-              </TextField.Error>
+            <SelectField.Label>Sender Identity</SelectField.Label>
+            <SelectField.Trigger />
+            <SelectField.Content>
+              {/* TODO: Fetch sender identities and populate this dropdown */}
+              <SelectField.Item value="default">Default Sender</SelectField.Item>
+            </SelectField.Content>
+            {error?.errorsMap?.['senderIdentityId'] && (
+              <SelectField.Error>{error.errorsMap['senderIdentityId']}</SelectField.Error>
             )}
-          </TextField.Root>
-
-          <TextField.Root
-            value={formState.fromName}
-            onChange={(event) =>
-              setFormState((current) => ({
-                ...current,
-                fromName: event.target.value,
-              }))
-            }
-          >
-            <TextField.Label>From name</TextField.Label>
-            {error?.errorsMap?.['emailContent.fromName'] && (
-              <TextField.Error>
-                {error.errorsMap['emailContent.fromName']}
-              </TextField.Error>
-            )}
-          </TextField.Root>
-
-          <TextField.Root
-            type="email"
-            value={formState.replyToEmail}
-            onChange={(event) =>
-              setFormState((current) => ({
-                ...current,
-                replyToEmail: event.target.value,
-              }))
-            }
-          >
-            <TextField.Label>Reply to</TextField.Label>
-            {error?.errorsMap?.['emailContent.replyToEmail'] && (
-              <TextField.Error>
-                {error.errorsMap['emailContent.replyToEmail']}
-              </TextField.Error>
-            )}
-          </TextField.Root>
+          </SelectField.Root>
         </div>
       ) : null}
 

@@ -3,6 +3,7 @@ import { and, eq } from 'drizzle-orm'
 import type {
   InsertSenderIdentity,
   SenderIdentity,
+  SenderIdentityWithSendingDomain,
   UpdateSenderIdentity,
 } from '@/database/database_schema_types.js'
 import { senderIdentities, sendingDomains } from '@/database/schema.js'
@@ -127,12 +128,14 @@ export class SenderIdentityRepository extends ScryptTokenRepository {
    * @param senderIdentityId - The ID of the sender identity to find
    * @returns The sender identity or undefined if not found
    */
-  async findById(senderIdentityId: string): Promise<SenderIdentity | undefined> {
+  async findById(
+    senderIdentityId: string,
+  ): Promise<SenderIdentityWithSendingDomain | undefined> {
     const [senderIdentity] = await this.belongsToSendingDomain()((query) =>
       query.where(eq(senderIdentities.id, senderIdentityId)),
     )
 
-    return senderIdentity
+    return senderIdentity as SenderIdentityWithSendingDomain
   }
 
   /**

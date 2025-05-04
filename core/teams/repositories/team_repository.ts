@@ -17,7 +17,7 @@ import { FREE_MONTHLY_CREDITS } from '@/app/env/app_env.js'
 import { makeDatabase, makeRedis } from '@/shared/container/index.js'
 import { BaseRepository } from '@/shared/repositories/base_repository.js'
 import { DateTime } from 'luxon'
-import { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '@/database/client.js'
 
 /**
  * TeamRepository handles database operations for team management.

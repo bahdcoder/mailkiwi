@@ -11,8 +11,6 @@ import {
 import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
 import { makeRequestAsUser } from '@/tests/utils/http.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-
 import { container } from '@/utils/typi.js'
 
 describe('@broadcasts update broadcasts', () => {
@@ -52,25 +50,9 @@ describe('@broadcasts update broadcasts', () => {
     expect(updatedBroadcast?.isAbTest).toBe(true)
 
     const variantsEmailContent = updatedBroadcast?.abTestVariants.map(
-      ({
+      ({ name, weight, emailContent: { subject, contentHtml, contentText } }) => ({
         name,
         weight,
-        emailContent: {
-          fromEmail,
-          fromName,
-          replyToEmail,
-          replyToName,
-          subject,
-          contentHtml,
-          contentText,
-        },
-      }) => ({
-        name,
-        weight,
-        fromEmail,
-        fromName,
-        replyToEmail,
-        replyToName,
         subject,
         contentHtml,
         contentText,
@@ -98,7 +80,6 @@ describe('@broadcasts update broadcasts', () => {
     expect,
   }) => {
     const { user, audience, broadcastGroupId, team } = await createUser()
-    const database = makeDatabase()
     const broadcastId = await createBroadcastForUser(
       user,
       team.id,

@@ -19,6 +19,7 @@ import { UserRepository } from '@/auth/users/repositories/user_repository.js'
 import { EmailContentSchemaDto } from '@/content/dto/create_email_content_dto.js'
 
 import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
+import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
 import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
@@ -48,29 +49,43 @@ export async function createBroadcastForUser(
     updateWithABTestsContent?: boolean
     weights?: number[]
     sendingDomainId?: string
+    senderIdentityId?: string
     emailContent?: {
       fromEmail?: string
       fromName?: string
     }
   } = {},
 ) {
-  // Create a local copy to avoid parameter reassignment
   const opts = options || {}
+
+  const requestBody = {
+    name: faker.lorem.words(3),
+    audienceId,
+    broadcastGroupId,
+    senderIdentityId: undefined as string | undefined,
+  }
+
+  if (options.senderIdentityId) {
+    requestBody.senderIdentityId = options.senderIdentityId
+  }
 
   const response = await makeRequestAsUser(user, {
     method: 'POST',
     path: '/broadcasts',
-    body: {
-      name: faker.lorem.words(3),
-      audienceId,
-      broadcastGroupId,
-    },
+    body: requestBody,
   })
 
   const json = await response.json()
 
   if (!options?.sendingDomainId) {
     options.sendingDomainId = await setupSendingDomainForTeam(teamId)
+  }
+
+  if (!options?.senderIdentityId) {
+    options.senderIdentityId = await createSenderIdentityForTeam(
+      teamId,
+      options.sendingDomainId,
+    )
   }
 
   if (!json.payload.id) {
@@ -150,6 +165,7 @@ export async function createBroadcastForUser(
           ...options?.emailContent,
         },
         sendingDomainId: options?.sendingDomainId,
+        senderIdentityId: options?.senderIdentityId,
         ...(options?.updateWithABTestsContent
           ? {
               emailContentVariants: options?.weights?.map((weight) => ({
@@ -426,4 +442,23 @@ export async function setupSendingDomainForTeam(teamId: string) {
   })
 
   return sendingDomainId
+}
+
+export async function createSenderIdentityForTeam(
+  teamId: string,
+  sendingDomainId?: string,
+) {
+  if (!sendingDomainId) {
+    sendingDomainId = await setupSendingDomainForTeam(teamId)
+  }
+
+  const { id: senderIdentityId } = await container.make(SenderIdentityRepository).create({
+    name: `${faker.person.firstName()}'s Newsletter`,
+    email: faker.internet.userName().toLowerCase(),
+    sendingDomainId,
+    teamId,
+    replyToEmail: faker.internet.email(),
+  })
+
+  return senderIdentityId
 }

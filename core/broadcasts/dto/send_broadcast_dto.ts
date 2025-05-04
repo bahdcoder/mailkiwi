@@ -6,7 +6,6 @@ import {
   boolean,
   check,
   checkAsync,
-  email,
   maxLength,
   minLength,
   nonEmpty,
@@ -21,7 +20,7 @@ import {
   uuid,
 } from 'valibot'
 
-import { audiences, sendingDomains } from '@/database/schema.js'
+import { audiences, senderIdentities, sendingDomains } from '@/database/schema.js'
 
 import { makeDatabase } from '@/shared/container/index.js'
 
@@ -32,16 +31,7 @@ export const SendBroadcastEmailContentSchema = object({
     minLength(8),
     maxLength(120),
   ),
-  fromName: pipe(string('Please provide a valid "from" name'), nonEmpty()),
-  fromEmail: pipe(string('Please provide a valid "from" email'), nonEmpty()),
-  replyToEmail: pipe(
-    string("Please provide a valid 'reply to' email"),
-    nonEmpty(),
-    email(),
-  ),
-
   contentJson: record(string(), any()),
-
   previewText: pipe(string('Please provide a valid preview text'), nonEmpty()),
 })
 
@@ -74,6 +64,19 @@ export const SendBroadcastSchema = objectAsync({
 
       return sendingDomain !== undefined
     }, 'The sending domain must be an engage domain'),
+  ),
+
+  senderIdentityId: pipeAsync(
+    string(),
+    checkAsync(async (value) => {
+      const database = makeDatabase()
+
+      const senderIdentity = await database.query.senderIdentities.findFirst({
+        where: eq(senderIdentities.id, value),
+      })
+
+      return senderIdentity !== undefined
+    }, 'The specified sender identity does not exist or is invalid.'),
   ),
 
   trackClicks: optional(nullable(boolean())),

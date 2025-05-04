@@ -15,7 +15,7 @@ import { TrackingController } from '@/kumomta/controllers/tracking_controller.js
 import { MediaDocumentController } from '@/media-library/controllers/media_library_controller.js'
 import { ClickTrackingController } from '@/tracking/controllers/click_tracking_controller.js'
 import { OpenTrackingController } from '@/tracking/controllers/open_tracking_controller.js'
-import { MailerWebhooksContorller } from '@/webhooks/controllers/mailer_webhooks_controller.js'
+import { MailerWebhooksController } from '@/webhooks/controllers/mailer_webhooks_controller.js'
 import { WebsiteController } from '@/websites/controllers/website_controller.js'
 import { showRoutes as _showRoutes } from 'hono/dev'
 import type { Redis } from 'ioredis'
@@ -181,7 +181,7 @@ export class Ignitor {
     container.resolve(ContactExportController)
     container.resolve(ContactImportController)
     container.resolve(TeamMembershipController)
-    container.resolve(MailerWebhooksContorller)
+    container.resolve(MailerWebhooksController)
     container.resolve(SendingDomainController)
     container.resolve(SenderIdentityController)
     container.resolve(MtaLogsController)
