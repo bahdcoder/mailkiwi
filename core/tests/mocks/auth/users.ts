@@ -1,5 +1,4 @@
 import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
-import { defaultChannels } from '@/cli/commands/chat/add_default_channels_comand.js'
 import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
 import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
@@ -7,7 +6,6 @@ import { DateTime } from 'luxon'
 import { update } from 'tar'
 import { createFakeAbTestEmailContent } from '../audiences/email_content.js'
 
-import { CreateAudienceAction } from '@/audiences/actions/audiences/create_audience_action.js'
 import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 
 import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
@@ -15,8 +13,6 @@ import { TeamRepository } from '@/teams/repositories/team_repository.js'
 
 import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
 import { UserRepository } from '@/auth/users/repositories/user_repository.js'
-
-import { EmailContentSchemaDto } from '@/content/dto/create_email_content_dto.js'
 
 import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
 import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
@@ -249,18 +245,6 @@ export const createUser = async ({
   })
 
   const channelRepository = container.make(ChannelRepository)
-
-  const channels = await channelRepository.defaultChannels()
-
-  await container
-    .make(ChannelRepository)
-    .memberships()
-    .bulkCreate(
-      channels.map((channel) => ({
-        channelId: channel.id,
-        userId: user.id,
-      })),
-    )
 
   await container.make(UserRepository).update(user.id, { password: 'password' })
 
