@@ -89,7 +89,7 @@ export const addDefaultChannelsCommand = command({
       .make(ChannelRepository)
       .channels()
       .bulkCreate(
-        defaultChannels.map((channel) => ({
+        nonExistingChannels.map((channel) => ({
           ...channel,
           createdAt: DateTime.now().toJSDate(),
         })),
