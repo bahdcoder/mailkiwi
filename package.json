@@ -16,7 +16,7 @@
     "build:clean": "del-cli build",
     "test:e2e": "./env.mjs  --env=test-playwright  pnpm exec playwright test",
     "ci:test:e2e": "pnpm exec playwright test",
-    "test:server:watch": "./env.mjs  --env=test pnpm mysql:migrate:test && ./env.mjs  --env=test vitest",
+    "test:server:watch": "pnpm test:seed_channels && ./env.mjs --env=test pnpm mysql:migrate:test && ./env.mjs  --env=test vitest",
     "ci:test:server:watch": "pnpm ci:mysql:migrate:test && vitest",
     "test:client:watch": "vitest --config vitest.client.config.ts",
     "test:client": "pnpm test:client:watch --run",
@@ -43,7 +43,10 @@
     "ci:mysql:migrate:make": "pnpm drizzle-kit generate",
     "mysql:studio": "pnpm drizzle-kit studio",
     "cli": "./env.mjs  --env=dev tsx cli/cli_root.ts",
-    "ci:cli": "tsx cli/cli_root.ts",
+    "cli:prod": "./env.mjs  --env=test tsx cli/cli_root.ts",
+    "ci:cli": "./env.mjs --env=test tsx cli/cli_root.ts",
+    "cli:test": "./env.mjs --env=test tsx cli/cli_root.ts",
+    "test:seed_channels": "./env.mjs --env=test tsx cli/cli_root.ts add_default_channels",
     "prepare": "husky"
   },
   "keywords": [

@@ -1,7 +1,6 @@
 import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { IgnitorDev } from '@/app/ignitor/ignitor_dev.js'
-import { addDefaultChannelsCommand } from '@/cli/commands/chat/add_default_channels_comand.js'
 import { seedDevSendingSourcesCommand } from '@/cli/commands/seed_dev_sending_sources_command.js'
 import { faker } from '@faker-js/faker'
 import { type FullConfig, chromium } from '@playwright/test'
@@ -90,8 +89,8 @@ export default async function globalSetup(config: FullConfig) {
   await refreshDatabase()
 
   await Promise.all([
-    addDefaultChannelsCommand.handler?.(),
     seedDevSendingSourcesCommand.handler?.(),
+    // other commands here.
   ])
 
   const teamMemberOwner = await createUser({})
