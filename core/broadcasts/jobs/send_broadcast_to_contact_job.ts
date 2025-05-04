@@ -101,11 +101,6 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
         .make(SendingDomainRepository)
         .findAllForTeam(broadcast.teamId)
 
-      // Determine the appropriate sending domain using a fallback hierarchy:
-      // 1. First try to use the domain specifically configured for this broadcast
-      // 2. If not found, look for any domain configured for marketing emails ('engage' product)
-      // 3. As a last resort, use the first available sending domain
-      // This ensures emails are always sent from a valid domain even if configurations change
       sendingDomain =
         teamSendingDomains.find(
           (sendingDomain) => broadcast.sendingDomainId === sendingDomain.id,
@@ -114,16 +109,6 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
         teamSendingDomains?.[0]
     }
 
-    // Determine tracking settings using a hierarchical configuration approach:
-    // 1. Start with domain-level defaults (may be undefined if not explicitly set)
-    // 2. Override with broadcast-specific settings if provided
-    //
-    // This allows for flexible tracking configuration:
-    // - Global defaults at the domain level for consistent tracking
-    // - Per-broadcast overrides for special cases (e.g., turning off tracking for certain campaigns)
-    // - Fallback to false if no configuration exists
-    //
-    // Tracking is essential for engagement metrics that power segmentation and automation features
     let openTrackingEnabled = sendingDomain.openTrackingEnabled ?? false
     let clickTrackingEnabled = sendingDomain.clickTrackingEnabled ?? false
 

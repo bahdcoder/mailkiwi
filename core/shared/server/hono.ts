@@ -63,6 +63,8 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
     this.onError((error, ctx) => {
       logger.error(error)
 
+      d({ error })
+
       const unknownErrorMessage = `We encountered an error trying to process your request. Our team has been notified and we're working on it right now. In the mean time, please try again.`
 
       const jsonPayload =

@@ -18,6 +18,7 @@ import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_
 import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
 import { container } from '@/utils/typi.js'
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 
 /**
  * SendEmailAutomationStepRunner handles the "Send Email" action in automation workflows.
@@ -76,13 +77,12 @@ export class SendEmailAutomationStepRunner implements AutomationStepRunnerContra
     const { contentHtml, contentText, subject } =
       email.emailContent as ValidatedEmailContent
 
-    // Get sender identity for this email
     const senderIdentity = await container
       .make(SenderIdentityRepository)
-      .findById(email.senderIdentityId || '')
+      .findById(email.senderIdentityId as string)
 
     if (!senderIdentity) {
-      throw new Error('No sender identity found for this email')
+      throw E_OPERATION_FAILED('No sender identity found for this email')
     }
 
     const sendingDomain = await container
@@ -90,7 +90,7 @@ export class SendEmailAutomationStepRunner implements AutomationStepRunnerContra
       .findById(senderIdentity.sendingDomainId)
 
     if (!sendingDomain) {
-      throw new Error('No sending domain found for this sender identity')
+      throw E_OPERATION_FAILED('No sending domain found for this sender identity')
     }
 
     const fromEmail = `${senderIdentity.email}@${sendingDomain.name}`

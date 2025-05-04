@@ -24,6 +24,17 @@ import { audiences, senderIdentities, sendingDomains } from '@/database/schema.j
 
 import { makeDatabase } from '@/shared/container/index.js'
 
+/**
+ * Schema for validating email content within a broadcast.
+ *
+ * This schema ensures that the email content meets quality standards:
+ * 1. Subject line is between 8-120 characters (optimal for deliverability)
+ * 2. Content JSON structure is present (for the email editor)
+ * 3. Preview text is provided (important for inbox engagement)
+ *
+ * These validations help maintain email quality and improve the likelihood
+ * of successful delivery and engagement.
+ */
 export const SendBroadcastEmailContentSchema = object({
   subject: pipe(
     string('Please provide a valid subject'),
@@ -35,6 +46,22 @@ export const SendBroadcastEmailContentSchema = object({
   previewText: pipe(string('Please provide a valid preview text'), nonEmpty()),
 })
 
+/**
+ * Schema for validating a broadcast send request.
+ *
+ * This comprehensive schema ensures that all required data for sending a broadcast
+ * is present and valid. It performs several critical validations:
+ *
+ * 1. Broadcast name meets length requirements
+ * 2. Target audience exists in the database
+ * 3. Sending domain (if specified) exists and is configured for marketing emails
+ * 4. Sender identity exists and is valid
+ * 5. Email content meets quality standards
+ * 6. Scheduled send time (if provided) is at least one hour in the future
+ *
+ * These validations help prevent errors in the email sending process and ensure
+ * that broadcasts meet quality and deliverability standards before being queued.
+ */
 export const SendBroadcastSchema = objectAsync({
   name: pipe(string(), nonEmpty(), minLength(8), maxLength(120)),
 

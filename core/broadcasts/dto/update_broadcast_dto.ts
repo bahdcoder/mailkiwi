@@ -33,6 +33,7 @@ import {
 import { makeDatabase } from '@/shared/container/index.js'
 
 import { isDateInPast } from '@/utils/dates.js'
+import { UUID_V1_REGEX } from '@/shared/utils/cuid/cuid.js'
 
 const emailContentFields = {
   contentJson: optional(record(string(), any())),
@@ -117,6 +118,10 @@ export const UpdateBroadcastDto = pipeAsync(
       optional(string()),
       checkAsync(async (value) => {
         if (!value) return true
+
+        if (!UUID_V1_REGEX.test(value)) {
+          return false
+        }
 
         const database = makeDatabase()
 

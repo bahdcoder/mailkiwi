@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import {
   type InferInput,
   checkAsync,
@@ -10,10 +10,22 @@ import {
   string,
 } from 'valibot'
 
-import { broadcastGroups, senderIdentities } from '@/database/schema.js'
+import { broadcastGroups } from '@/database/schema.js'
 
 import { makeDatabase } from '@/shared/container/index.js'
 
+/**
+ * Schema for creating a new broadcast campaign.
+ *
+ * This schema validates the input for creating a broadcast, ensuring:
+ * 1. The broadcast has a non-empty name
+ * 2. The broadcast group exists in the database
+ * 3. The sender identity (if provided) is a valid string
+ *
+ * The validation includes an asynchronous check to verify that the
+ * broadcast group exists, which prevents creating broadcasts in
+ * non-existent groups and maintains data integrity.
+ */
 export const CreateBroadcastDto = objectAsync({
   name: pipe(string(), nonEmpty()),
   broadcastGroupId: pipeAsync(

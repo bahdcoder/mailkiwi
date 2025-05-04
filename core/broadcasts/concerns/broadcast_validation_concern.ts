@@ -53,12 +53,10 @@ export class BroadcastValidationAndAuthorizationConcern {
     ctx: HonoContext,
     opts?: { loadAbTestVariants?: boolean },
   ) {
-    // Retrieve the broadcast using the ID from the request parameters
     const broadcast = await this.broadcastRepository.findById(
       ctx.req.param('broadcastId'),
     )
 
-    // If the broadcast doesn't exist, throw a validation error
     if (!broadcast) {
       throw E_VALIDATION_FAILED([{ message: 'Unknown broadcast.', field: 'id' }])
     }
@@ -88,18 +86,13 @@ export class BroadcastValidationAndAuthorizationConcern {
     ctx: HonoContext,
     broadcast?: BroadcastWithoutContent,
   ) {
-    // Get the current team context and user ID
     const team = ctx.get('team')
     const userId = ctx.get('accessToken').userId
 
-    // Verify that the broadcast belongs to the current team
-    // This prevents cross-team access to broadcasts
     if (broadcast && broadcast.teamId !== team.id) {
       throw E_UNAUTHORIZED()
     }
 
-    // Verify that the user has administrative permissions within the team
-    // This ensures only authorized users can perform sensitive operations
     if (!this.teamPolicy.canAdministrate(team, userId)) {
       throw E_UNAUTHORIZED()
     }

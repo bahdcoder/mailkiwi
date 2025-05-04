@@ -111,6 +111,19 @@ export class FoundationEmailBuilderTool {
     }
   }
 
+  /**
+   * Generates global CSS styles for the email template.
+   *
+   * This method creates the base styles that apply to the entire email,
+   * including responsive styles for different screen sizes. It:
+   * 1. Applies base styles for all devices
+   * 2. Adds media queries for larger screens (desktop view)
+   *
+   * The responsive approach ensures emails look good on both mobile
+   * and desktop clients, following email design best practices.
+   *
+   * @returns CSS string with global styles
+   */
   private generateGlobalStyles(): string {
     const { style, largeStyle } = this.schema.global
     let styles = this.styleObjectToCss(style)
@@ -124,6 +137,18 @@ export class FoundationEmailBuilderTool {
     return styles
   }
 
+  /**
+   * Generates web font import links for the email template.
+   *
+   * Web fonts are crucial for maintaining brand consistency across email clients
+   * that support them. This method creates the necessary HTML link tags to
+   * import web fonts from external sources like Google Fonts or custom CDNs.
+   *
+   * Note that not all email clients support web fonts, so fallback fonts
+   * should always be specified in the font-family declarations.
+   *
+   * @returns HTML string with font import links
+   */
   private generateWebFonts(): string {
     const { webFonts } = this.schema.global
     if (!webFonts || webFonts.length === 0) return ''
@@ -131,6 +156,18 @@ export class FoundationEmailBuilderTool {
     return webFonts.map((font) => `<link rel="stylesheet" href="${font}">`).join('\n')
   }
 
+  /**
+   * Converts a style object to CSS string format.
+   *
+   * This utility method transforms JavaScript style objects into properly
+   * formatted CSS declarations. It handles special cases like font-family,
+   * ensuring that global font definitions are properly cascaded and combined
+   * with element-specific fonts.
+   *
+   * @param style - Object containing CSS property/value pairs
+   * @param indent - Optional indentation for formatting nested CSS
+   * @returns Formatted CSS string
+   */
   private styleObjectToCss(style: GlobalStyle, indent = ''): string {
     let css = ''
 
@@ -143,15 +180,48 @@ export class FoundationEmailBuilderTool {
     return css
   }
 
+  /**
+   * Converts a section definition to HTML.
+   *
+   * Sections are the top-level containers in the email template.
+   * This method delegates the conversion to the element converter
+   * since sections are essentially specialized elements.
+   *
+   * @param section - The section definition to convert
+   * @returns HTML markup for the section
+   */
   private convertSection(section: Section): string {
     return this.convertElement(section)
   }
 
+  /**
+   * Converts an element definition to HTML with styles applied.
+   *
+   * This method orchestrates the element conversion process:
+   * 1. Converts the element structure to HTML
+   * 2. Applies inline styles to the generated HTML
+   *
+   * This two-step process ensures proper separation of structure and style
+   * while generating the final HTML with inline styles that email clients require.
+   *
+   * @param element - The element definition to convert
+   * @returns HTML markup with inline styles
+   */
   private convertElement(element: Element): string {
     const convertedElement = this.getConvertedElement(element)
     return this.applyInlineStyles(convertedElement, element)
   }
 
+  /**
+   * Determines the appropriate converter for an element based on its type.
+   *
+   * This method implements the strategy pattern, routing each element
+   * to its specialized converter based on the element type. This approach
+   * keeps the code modular and makes it easy to add new element types.
+   *
+   * @param element - The element to convert
+   * @returns HTML markup for the element
+   */
   private getConvertedElement(element: Element): string {
     switch (element.type) {
       case 'row':
@@ -179,6 +249,23 @@ export class FoundationEmailBuilderTool {
     }
   }
 
+  /**
+   * Applies inline styles to an HTML element.
+   *
+   * This method is crucial for email client compatibility, as many email clients
+   * strip out or ignore external and embedded CSS. By converting styles to inline
+   * attributes, we ensure consistent rendering across different email clients.
+   *
+   * The method handles two cases:
+   * 1. Elements with existing attributes - appends the style attribute
+   * 2. Elements without attributes - inserts the style attribute
+   *
+   * It also ensures font-family declarations include global font fallbacks.
+   *
+   * @param element - The HTML element string
+   * @param elementData - The element data containing style information
+   * @returns HTML with inline styles applied
+   */
   private applyInlineStyles(element: string, elementData: Element): string {
     const { style } = elementData
     if (!style) return element
@@ -195,10 +282,8 @@ export class FoundationEmailBuilderTool {
     const firstCloseTagIndex = element.indexOf('>')
 
     if (firstSpaceIndex === -1 || firstSpaceIndex > firstCloseTagIndex) {
-      // No attributes, insert style right before closing bracket
       return element.replace('>', ` style="${styleString}">`)
     }
-    // There are other attributes, append style
     return element.replace(' ', ` style="${styleString}" `)
   }
 
@@ -241,6 +326,17 @@ export class FoundationEmailBuilderTool {
     return `<columns${small}${large}>\n${children}\n</columns>`
   }
 
+  /**
+   * Converts an image element to Foundation for Emails HTML.
+   *
+   * Images are a key component of email marketing, and this method ensures
+   * they're properly formatted with accessibility attributes and alignment.
+   * The method supports center alignment by wrapping the image in a center tag,
+   * which is more reliable across email clients than CSS-based centering.
+   *
+   * @param element - The image element to convert
+   * @returns HTML markup for the image
+   */
   private convertImage(element: Element): string {
     const src = element.properties?.src || ''
     const alt = element.properties?.alt ? ` alt="${element.properties.alt}"` : ''
@@ -249,6 +345,17 @@ export class FoundationEmailBuilderTool {
     return `${align}<img src="${src}"${alt}>${alignEnd}`
   }
 
+  /**
+   * Converts a heading element to Foundation for Emails HTML.
+   *
+   * Headings provide structure and hierarchy to email content. This method
+   * creates properly formatted heading elements with configurable size and
+   * alignment. The alignment is applied using Foundation's text alignment
+   * classes for consistent rendering across email clients.
+   *
+   * @param element - The heading element to convert
+   * @returns HTML markup for the heading
+   */
   private convertHeading(element: Element): string {
     const size = element.properties?.size || 1
     const align = element.properties?.align
@@ -282,11 +389,33 @@ export class FoundationEmailBuilderTool {
     return `<button${className}${href}>${content}</button>`
   }
 
+  /**
+   * Converts a spacer element to Foundation for Emails HTML.
+   *
+   * Spacers create vertical spacing between elements in the email.
+   * They're essential for controlling layout and ensuring proper
+   * visual separation between content blocks. Foundation's spacer
+   * component provides consistent spacing across email clients.
+   *
+   * @param element - The spacer element to convert
+   * @returns HTML markup for the spacer
+   */
   private convertSpacer(element: Element): string {
     const size = element.properties?.height || 16
     return `<spacer size="${size}"></spacer>`
   }
 
+  /**
+   * Converts a paragraph element to Foundation for Emails HTML.
+   *
+   * Paragraphs are the basic text containers in emails. This method
+   * creates properly formatted paragraph elements with configurable
+   * alignment. The alignment is applied using Foundation's text alignment
+   * classes for consistent rendering across email clients.
+   *
+   * @param element - The paragraph element to convert
+   * @returns HTML markup for the paragraph
+   */
   private convertParagraph(element: Element): string {
     const align = element.properties?.align
       ? ` class="text-${element.properties.align}"`
@@ -296,11 +425,31 @@ export class FoundationEmailBuilderTool {
     return `<p${align}>${content}</p>`
   }
 
+  /**
+   * Converts a text element to Foundation for Emails HTML.
+   *
+   * Text elements represent inline text content. They're wrapped in
+   * span tags to allow for inline styling and proper nesting within
+   * other elements like paragraphs and headings.
+   *
+   * @param element - The text element to convert
+   * @returns HTML markup for the text
+   */
   private convertText(element: Element): string {
-    // Wrap the text in a span to allow for inline styling
     return `<span>${element.value || ''}</span>`
   }
 
+  /**
+   * Converts a menu element to Foundation for Emails HTML.
+   *
+   * Menus are used for navigation elements in emails, such as header
+   * or footer links. This method creates properly formatted menu elements
+   * with configurable alignment. Center alignment is achieved using the
+   * center tag for maximum compatibility across email clients.
+   *
+   * @param element - The menu element to convert
+   * @returns HTML markup for the menu
+   */
   private convertMenu(element: Element): string {
     const align = element.properties?.align === 'center' ? '<center>\n  ' : ''
     const alignEnd = element.properties?.align === 'center' ? '\n</center>' : ''
@@ -309,6 +458,16 @@ export class FoundationEmailBuilderTool {
     return `${align}<menu>\n${items}\n</menu>${alignEnd}`
   }
 
+  /**
+   * Converts a menu item element to Foundation for Emails HTML.
+   *
+   * Menu items represent individual links within a menu. They're formatted
+   * according to Foundation's menu component specifications, which ensures
+   * proper rendering and spacing in email clients.
+   *
+   * @param element - The menu item element to convert
+   * @returns HTML markup for the menu item
+   */
   private convertMenuItem(element: Element): string {
     const content =
       element.elements?.map((child) => this.convertElement(child)).join('') || ''

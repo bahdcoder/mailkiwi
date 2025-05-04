@@ -49,45 +49,33 @@ export class SendBroadcastAction {
    * @param broadcast - The broadcast to schedule for sending
    */
   async handle(broadcast: BroadcastWithoutContent) {
-    // Handle A/B test broadcasts
     if (broadcast.isAbTest) {
       await Queue.abTestsBroadcasts().add(
         SendAbTestBroadcastJob.id,
         { broadcastId: broadcast.id },
         {
-          // Calculate delay for scheduled broadcasts
           delay: broadcast.sendAt ? differenceInSeconds(new Date(), broadcast.sendAt) : 0,
         },
       )
     }
 
-    // Handle regular broadcasts
     if (!broadcast.isAbTest) {
-      // Create a consistent job ID for deduplication
       const jobId = `SEND_BROADCAST_${broadcast.id}`
-
-      // Check if a job already exists for this broadcast
       const existingJob: Job = await Queue.broadcasts().getJob(jobId)
 
-      // Remove the existing job to prevent duplicate sends
       if (existingJob) {
         await existingJob.remove()
       }
 
-      // Queue a new job for sending the broadcast
       await Queue.broadcasts().add(
         SendBroadcastJob.id,
         { broadcastId: broadcast.id },
         {
-          // Calculate delay for scheduled broadcasts
           delay: broadcast.sendAt ? differenceInSeconds(new Date(), broadcast.sendAt) : 0,
-          // Use consistent job ID for deduplication
           jobId,
         },
       )
     }
-
-    // Update the broadcast status to reflect the queued state
     await this.broadcastRepository.update(broadcast.id, {
       status: 'QUEUED_FOR_SENDING',
     })
