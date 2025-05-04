@@ -23,7 +23,7 @@
     "types:check": "tsc --noEmit",
     "build:client": "vite build",
     "test:server:coverage": "pnpm mysql:migrate:test && vitest --run --coverage",
-    "ci:test:server:coverage": "pnpm ci:mysql:migrate:test && vitest --run --coverage",
+    "ci:test:server:coverage": "./env.mjs --env=test pnpm ci:mysql:migrate:test && ./env.mjs --env=test vitest --run --coverage",
     "build": "pnpm test && pnpm types:check && pnpm build:quick",
     "ci:build": "pnpm ci:test && pnpm types:check && pnpm build:quick",
     "format": "pnpm biome format --write .",
