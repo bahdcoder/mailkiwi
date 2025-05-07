@@ -1,7 +1,7 @@
 import { ArrowUpRightIcon } from '@/pages/components/icons/arrow-up-right.svg.jsx'
 import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
 import { CheckSquareIcon } from '@/pages/components/icons/check-square.svg.jsx'
-import { HashtagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
+import { HashTagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
 import { InfoCircleIcon } from '@/pages/components/icons/info-circle.svg.jsx'
 import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
 import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
@@ -25,6 +25,7 @@ import type { Audience } from '@/database/database_schema_types.js'
 import type { KnownAudienceProperty } from '@/database/schema.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 
 const CreateCustomContactProperty = clientOnly(() =>
   import(
@@ -43,12 +44,12 @@ export function NewContactPropertyForm({
   open,
   setOpen,
 }: NewContactPropertyFormProps) {
-  const ctx = usePageContext()
+  const { audience } = usePageContextWithProps()
 
   const { isPending, serverFormProps, ServerErrorsList } =
     useServerFormMutation<Audience>({
       method: 'PUT',
-      action: route('audiences_update', { audienceId: ctx.audience?.id }),
+      action: route('audiences_update', { audienceId: audience?.id }),
       onSuccess(response) {
         // No need to reload, the parent component will handle this
         setOpen(false)
@@ -108,7 +109,7 @@ export function NewContactPropertyForm({
                   Text
                 </Select.Item>
                 <Select.Item value="number">
-                  <HashtagIcon />
+                  <HashTagIcon />
                   Number
                 </Select.Item>
                 <Select.Item value="date">

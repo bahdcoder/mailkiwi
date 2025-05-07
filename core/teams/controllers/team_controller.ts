@@ -5,6 +5,18 @@ import { BaseController } from '@/shared/controllers/base_controller.js'
 import { route } from '@/shared/routes/route_aliases.js'
 import type { HonoContext } from '@/shared/server/types.js'
 
+/**
+ * TeamController manages team information and team switching functionality.
+ *
+ * This controller is responsible for:
+ * 1. Retrieving team details for display in the UI
+ * 2. Handling team switching for users with multiple team memberships
+ * 3. Enforcing proper access control for team resources
+ *
+ * Teams are a fundamental organizational unit in Kibamail, providing
+ * multi-tenant isolation and enabling collaboration between users
+ * working on the same email marketing campaigns and audiences.
+ */
 export class TeamController extends BaseController {
   constructor(private app = makeApp()) {
     super()
@@ -19,6 +31,13 @@ export class TeamController extends BaseController {
     )
   }
 
+  /**
+   * Retrieves team information.
+   *
+   * Returns detailed information about a team if the authenticated user
+   * has permission to view it. This endpoint is used to display team
+   * details in the UI and verify team access.
+   */
   async show(ctx: HonoContext) {
     const team = this.ensureTeam(ctx)
 
@@ -35,6 +54,13 @@ export class TeamController extends BaseController {
     return ctx.json(team)
   }
 
+  /**
+   * Switches the user's active team.
+   *
+   * Changes the user's current active team context to the specified team,
+   * if they are a member or owner of that team. This enables users to
+   * work across multiple teams without needing to log out and back in.
+   */
   async switch(ctx: HonoContext) {
     const memberships = ctx.get('memberships')
 

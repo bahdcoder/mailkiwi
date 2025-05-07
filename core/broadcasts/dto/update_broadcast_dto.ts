@@ -6,7 +6,6 @@ import {
   boolean,
   check,
   checkAsync,
-  email,
   maxLength,
   minLength,
   nonEmpty,
@@ -22,54 +21,101 @@ import {
   uuid,
 } from 'valibot'
 
-import { abTestVariants, audiences, segments, sendingDomains } from '@/database/schema.js'
+import {
+  abTestVariants,
+  audiences,
+  segments,
+  senderIdentities,
+  sendingDomains,
+} from '@/database/schema.js'
 
 import { makeDatabase } from '@/shared/container/index.js'
 
 import { isDateInPast } from '@/utils/dates.js'
+import { UUID_V1_REGEX } from '@/shared/utils/cuid/cuid.js'
 
+/**
+ * Common fields for email content validation.
+ *
+ * These fields are used in both regular email content and A/B test variants.
+ */
 const emailContentFields = {
-  fromName: optional(string()),
-  fromEmail: optional(pipe(string(), maxLength(24))),
-  replyToEmail: optional(pipe(string(), email())),
-  replyToName: optional(string()),
+  contentJson: optional(record(string(), any(), 'Email content structure must be valid')),
+  contentText: optional(string('Plain text content must be a string')),
+  contentHtml: optional(string('HTML content must be a string')),
 
-  contentJson: optional(record(string(), any())),
-  contentText: optional(string()),
-  contentHtml: optional(string()),
+  subject: optional(
+    pipe(
+      string('Subject must be a text value'),
+      minLength(4, 'Subject must be at least 4 characters long'),
+      maxLength(128, 'Subject must be less than 128 characters to avoid truncation'),
+    ),
+  ),
 
-  subject: optional(pipe(string(), minLength(4), maxLength(128))),
-
-  previewText: optional(pipe(string(), minLength(4), maxLength(128))),
+  previewText: optional(
+    pipe(
+      string('Preview text must be a text value'),
+      minLength(4, 'Preview text must be at least 4 characters long'),
+      maxLength(
+        128,
+        'Preview text must be less than 128 characters to display properly in email clients',
+      ),
+    ),
+  ),
 }
 
 const EmailContent = object({
   ...emailContentFields,
 })
 
+/**
+ * Schema for A/B test email content variants.
+ *
+ * A/B test variants allow testing different email content versions
+ * to determine which performs better with your audience.
+ */
 const EmailContentVariant = object({
   ...emailContentFields,
 
   // for ab tests email content variants
-  name: pipe(string(), nonEmpty()),
-  weight: number(),
+  name: pipe(
+    string('Variant name must be a text value'),
+    nonEmpty('Please provide a name for this A/B test variant'),
+  ),
+  weight: number(
+    'Weight must be a number representing the percentage of recipients who will receive this variant',
+  ),
 
   // only when updating a variant email content.
-  abTestVariantId: optional(string()),
+  abTestVariantId: optional(string('Variant ID must be a text value')),
 })
 
+/**
+ * Schema for updating a broadcast campaign.
+ *
+ * This schema validates updates to broadcast settings, including:
+ * - Basic information like name
+ * - Email content for regular broadcasts or A/B test variants
+ * - Audience and segment targeting
+ * - Sending configuration (domain, identity, tracking)
+ * - Scheduling information
+ */
 export const UpdateBroadcastDto = pipeAsync(
   objectAsync({
-    name: optional(string()),
+    name: optional(string('Broadcast name must be a text value')),
 
     emailContent: optional(EmailContent),
 
     emailContentVariants: optional(
-      pipe(array(EmailContentVariant), minLength(1), maxLength(5)),
+      pipe(
+        array(EmailContentVariant),
+        minLength(1, 'At least one email content variant is required for A/B testing'),
+        maxLength(5, 'A maximum of 5 variants is allowed for A/B testing'),
+      ),
     ),
 
     audienceId: pipeAsync(
-      optional(string()),
+      optional(string('Audience ID must be a text value')),
       checkAsync(async (value) => {
         if (!value) return true
         const database = makeDatabase()
@@ -79,11 +125,16 @@ export const UpdateBroadcastDto = pipeAsync(
         })
 
         return audience !== undefined
-      }),
+      }, 'The selected audience does not exist. Please choose a valid audience.'),
     ),
 
     sendingDomainId: pipeAsync(
-      optional(pipe(string(), uuid())),
+      optional(
+        pipe(
+          string('Sending domain ID must be a text value'),
+          uuid('Sending domain ID must be a valid UUID format'),
+        ),
+      ),
       checkAsync(async (value) => {
         if (!value) return true
 
@@ -94,11 +145,18 @@ export const UpdateBroadcastDto = pipeAsync(
         })
 
         return sendingDomain !== undefined
-      }),
+      }, 'The selected sending domain does not exist. Please choose a valid sending domain.'),
     ),
 
     segmentId: pipeAsync(
-      optional(nullable(pipe(string(), uuid()))),
+      optional(
+        nullable(
+          pipe(
+            string('Segment ID must be a text value'),
+            uuid('Segment ID must be a valid UUID format'),
+          ),
+        ),
+      ),
       checkAsync(async (value) => {
         if (!value) return true
 
@@ -109,28 +167,47 @@ export const UpdateBroadcastDto = pipeAsync(
         })
 
         return segment !== undefined
-      }),
+      }, 'The selected segment does not exist. Please choose a valid segment.'),
     ),
 
-    trackClicks: optional(boolean()),
-    trackOpens: optional(boolean()),
+    senderIdentityId: pipeAsync(
+      optional(string('Sender identity ID must be a text value')),
+      checkAsync(async (value) => {
+        if (!value) return true
+
+        if (!UUID_V1_REGEX.test(value)) {
+          return false
+        }
+
+        const database = makeDatabase()
+
+        const senderIdentity = await database.query.senderIdentities.findFirst({
+          where: eq(senderIdentities.id, value),
+        })
+
+        return senderIdentity !== undefined
+      }, 'The specified sender identity does not exist. Please select a valid sender identity from your account.'),
+    ),
+
+    trackClicks: optional(boolean('Click tracking must be a boolean value')),
+    trackOpens: optional(boolean('Open tracking must be a boolean value')),
 
     sendAt: pipeAsync(
-      optional(string()),
+      optional(string('Schedule date must be a text value in ISO format')),
       check((input) => {
         if (!input) return true
 
         const date = new Date(input)
 
         return !Number.isNaN(date.getTime())
-      }),
+      }, 'Please provide a valid date and time for scheduling'),
       checkAsync((input) => {
         if (!input) return true
 
         return isDateInPast(input) === false
-      }, 'Please select a scheduled date at least six hours into the future.'),
+      }, 'Scheduled broadcasts must be set in the future. Please select a date and time that is at least six hours from now.'),
     ),
-    waitingTimeToPickWinner: optional(number()), // in hours
+    waitingTimeToPickWinner: optional(number('Waiting time must be a number of hours')), // in hours
   }),
   checkAsync(async (input) => {
     if (!input.audienceId || !input.segmentId) return true
@@ -145,7 +222,7 @@ export const UpdateBroadcastDto = pipeAsync(
     })
 
     return segment !== undefined
-  }, 'The Segment provided must part of the audience provided.'),
+  }, 'The selected segment does not belong to the selected audience. Please choose a segment that is part of the audience you selected.'),
   checkAsync(async (input) => {
     if (!input.emailContentVariants) {
       return true
@@ -167,7 +244,7 @@ export const UpdateBroadcastDto = pipeAsync(
       .where(inArray(abTestVariants.id, variantIds))
 
     return existingAbTestVariants === variantIds.length
-  }, 'One or more email content variants provided have an invalid ID.'),
+  }, 'One or more A/B test variants have invalid IDs. Please ensure all variants exist in the system.'),
   check((input) => {
     if (!input.emailContentVariants || input.emailContentVariants.length === 0) {
       return true
@@ -178,7 +255,7 @@ export const UpdateBroadcastDto = pipeAsync(
     }, 0)
 
     return sum < 100
-  }, 'The sum of all ab test variant weights must be less than 100.'),
+  }, 'The total weight of all A/B test variants must be less than 100%. Please adjust the weights so they sum to less than 100.'),
 )
 
 export type EmailContentVariant = InferInput<typeof EmailContentVariant>

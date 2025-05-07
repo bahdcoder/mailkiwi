@@ -94,7 +94,7 @@ export const PasswordField = React.forwardRef<
 
               return (
                 <TextField.Hint
-                  key={`password-rule-${rule}`}
+                  key={`password-rule-${rule.message}`}
                   className={cn({
                     'mt-8': idx === 0 && !hasError,
                     'kb-content-positive': passed,

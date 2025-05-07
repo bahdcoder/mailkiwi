@@ -81,29 +81,18 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
       .make(AudienceRepository)
       .findById(broadcast.audienceId)
 
-    // Build query conditions for audience segmentation if specified in the broadcast
-    // Segmentation allows targeting specific subsets of the audience based on properties,
-    // behaviors, or engagement metrics (e.g., "Contacts who opened an email in the last 30 days")
     const segmentQueryConditions: SQLWrapper[] = []
 
     if (broadcast.segment) {
-      // Use the SegmentBuilder to convert the declarative segment definition into SQL conditions
-      // This leverages the same powerful segmentation engine used throughout the platform
       segmentQueryConditions.push(
         new SegmentBuilder(broadcast.segment.filterGroups, audience).build(),
       )
     }
 
-    // Configure batch processing parameters for handling large contact lists efficiently
-    // Batching is crucial for performance and reliability when sending to large audiences
-    const batchSize = 75 // Number of contacts to process in each batch
-    const totalBatches = 1 // For testing/development; in production would be calculated based on audience size
+    const batchSize = 75
+    const totalBatches = 1
 
-    // Process contacts in batches and queue individual email sends for each recipient
-    // This distributed approach allows for horizontal scaling and better error handling
     for (let batch = 0; batch <= totalBatches; batch++) {
-      // Retrieve a batch of contacts that match both the audience and segment criteria
-      // Using limit and offset for pagination to handle large datasets efficiently
       const contactIds = await database
         .select({ id: contacts.id })
         .from(contacts)
@@ -113,17 +102,15 @@ export class SendBroadcastJob extends BaseJob<SendBroadcastJobPayload> {
         .limit(batchSize)
         .offset(batch * batchSize)
 
-      // Queue individual email send jobs for each contact in the batch
-      // Using BullMQ's addBulk for efficient job creation with minimal database operations
       await Queue.broadcasts().addBulk(
-        contactIds.map((contact, idx) => ({
+        contactIds.map((contact) => ({
           name: SendBroadcastToContact.id,
           data: {
             contactId: contact.id,
             broadcastId: broadcast.id,
           },
           opts: {
-            attempts: 3, // Retry failed sends up to 3 times for better delivery reliability
+            attempts: 3,
           },
         })),
       )

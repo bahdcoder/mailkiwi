@@ -9,6 +9,18 @@ import type { HonoContext } from '@/shared/server/types.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * TrackingController handles the injection of tracking elements into outgoing emails.
+ *
+ * This controller is responsible for:
+ * 1. Processing outgoing email messages before they're sent
+ * 2. Injecting tracking pixels and rewriting links for analytics
+ * 3. Ensuring tracking is only applied when enabled for a domain
+ *
+ * The controller works with the mail transfer agent (MTA) to modify email content
+ * during the sending process, enabling essential marketing features like open and
+ * click tracking without requiring manual implementation by users.
+ */
 export class TrackingController extends BaseController {
   constructor(protected app = makeApp()) {
     super()
@@ -19,6 +31,12 @@ export class TrackingController extends BaseController {
     })
   }
 
+  /**
+   * Processes an outgoing email message to inject tracking elements.
+   *
+   * Adds tracking pixels and rewrites links in the email content when tracking
+   * is enabled for the sending domain, otherwise returns the original message.
+   */
   async store(ctx: HonoContext) {
     const { message, domain } = await ctx.req.json()
 
@@ -27,7 +45,7 @@ export class TrackingController extends BaseController {
     const sendingDomain = await sendingDomainRepository.findByDomain(domain)
 
     if (!sendingDomainRepository.getTrackingStatus(sendingDomain).trackingEnabled) {
-      return ctx.json({ contnet: message })
+      return ctx.json({ content: message })
     }
 
     const content = await container

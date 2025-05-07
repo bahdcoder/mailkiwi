@@ -6,29 +6,30 @@ import { ContactRepository } from '@/audiences/repositories/contact_repository.j
 import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.js'
 
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { refreshDatabase, seedAutomation } from '@/tests/mocks/teams/teams.js'
+import { createSenderIdentityForTeam, createUser } from '@/tests/mocks/auth/users.js'
+import { seedAutomation } from '@/tests/mocks/teams/teams.js'
 
 import { contactAutomationSteps, contacts, tagsOnContacts } from '@/database/schema.js'
 
 import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
 import { MailBuilder, Mailer } from '@/shared/mailers/mailer.js'
 import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { fromQueryResultToPrimaryKey } from '@/shared/utils/database/primary_keys.js'
 
 import { container } from '@/utils/typi.js'
 import type { MailerDriverResponse } from '@/shared/mailers/mailer_types.js'
 import type { SentMessageInfo, Transporter } from 'nodemailer'
 
-describe('Run automation step for contact job', () => {
+describe('@run-automation-step-for-contact-job - Run automation step for contact job', () => {
   test('automation step action: send email for a contact', async ({ expect }) => {
-    const { audience } = await createUser()
+    const { audience, team } = await createUser()
 
     const database = makeDatabase()
     const redis = makeRedis()
+    const senderIdentityId = await createSenderIdentityForTeam(team.id)
 
     const { receiveWelcomeEmailautomationStepId } = await seedAutomation({
       audienceId: audience.id,
+      senderIdentityId,
     })
 
     const messageId = cuid()

@@ -6,9 +6,14 @@ import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_reposit
 
 import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
 
+import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
 import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
-import type { BroadcastWithEmailContent } from '@/database/database_schema_types.js'
+import type {
+  BroadcastWithEmailContent,
+  SenderIdentityWithSendingDomain,
+  SendingDomain,
+} from '@/database/database_schema_types.js'
 
 import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
 import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
@@ -76,32 +81,34 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
 
     const { emailContent } = broadcastWithContent
 
-    const teamSendingDomains = await container
-      .make(SendingDomainRepository)
-      .findAllForTeam(broadcast.teamId)
+    let sendingDomain: SendingDomain | undefined
+    let senderIdentity: SenderIdentityWithSendingDomain | undefined
 
-    // Determine the appropriate sending domain using a fallback hierarchy:
-    // 1. First try to use the domain specifically configured for this broadcast
-    // 2. If not found, look for any domain configured for marketing emails ('engage' product)
-    // 3. As a last resort, use the first available sending domain
-    // This ensures emails are always sent from a valid domain even if configurations change
-    const sendingDomain =
-      teamSendingDomains.find(
-        (sendingDomain) => broadcast.sendingDomainId === sendingDomain.id,
-      ) ||
-      teamSendingDomains.find((sendingDomain) => sendingDomain.product === 'engage') ||
-      teamSendingDomains?.[0]
+    if (broadcast.senderIdentityId) {
+      senderIdentity = await container
+        .make(SenderIdentityRepository)
+        .findById(broadcast.senderIdentityId)
 
-    // Determine tracking settings using a hierarchical configuration approach:
-    // 1. Start with domain-level defaults (may be undefined if not explicitly set)
-    // 2. Override with broadcast-specific settings if provided
-    //
-    // This allows for flexible tracking configuration:
-    // - Global defaults at the domain level for consistent tracking
-    // - Per-broadcast overrides for special cases (e.g., turning off tracking for certain campaigns)
-    // - Fallback to false if no configuration exists
-    //
-    // Tracking is essential for engagement metrics that power segmentation and automation features
+      if (senderIdentity) {
+        sendingDomain = await container
+          .make(SendingDomainRepository)
+          .findById(senderIdentity.sendingDomainId)
+      }
+    }
+
+    if (!sendingDomain) {
+      const teamSendingDomains = await container
+        .make(SendingDomainRepository)
+        .findAllForTeam(broadcast.teamId)
+
+      sendingDomain =
+        teamSendingDomains.find(
+          (sendingDomain) => broadcast.sendingDomainId === sendingDomain.id,
+        ) ||
+        teamSendingDomains.find((sendingDomain) => sendingDomain.product === 'engage') ||
+        teamSendingDomains?.[0]
+    }
+
     let openTrackingEnabled = sendingDomain.openTrackingEnabled ?? false
     let clickTrackingEnabled = sendingDomain.clickTrackingEnabled ?? false
 
@@ -115,12 +122,14 @@ export class SendBroadcastToContact extends BaseJob<SendBroadcastToContactPayloa
 
     const injectEmailPayload: InjectEmailSchemaDto = {
       from: {
-        name: emailContent.fromName ?? '',
-        email: `${emailContent.fromEmail}@${sendingDomain.name}`,
+        name: senderIdentity?.name || '',
+        email: senderIdentity
+          ? `${senderIdentity.email}@${sendingDomain.name}`
+          : `noreply@${sendingDomain.name}`,
       },
       replyTo: {
-        name: emailContent.replyToName ?? '',
-        email: emailContent.replyToEmail,
+        name: senderIdentity?.name || '',
+        email: senderIdentity?.replyToEmail || `noreply@${sendingDomain.name}`,
       },
       recipients: [
         {

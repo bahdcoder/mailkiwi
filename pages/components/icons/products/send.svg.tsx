@@ -6,23 +6,31 @@ export const SendIcon = React.forwardRef<
 >((props, forwardedRef) => {
   return (
     <svg
-      width="24px"
-      height="24px"
-      viewBox="0 0 24 24"
-      fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      role="img"
-      aria-label="Send"
+      width={14}
+      height={16}
+      viewBox="0 0 14 16"
+      fill="none"
       {...props}
       ref={forwardedRef}
     >
-      <title>Send</title>
+      <title>Send Icon</title>
+      <g clipPath="url(#clip0_196_762)">
+        <path
+          d="M13.6393 12.9466L8.29045 1.27523C8.04909 0.749544 7.54182 0.424316 6.965 0.424316C6.38818 0.424316 5.87886 0.749544 5.63954 1.27523L0.286589 12.9466C0.0963616 13.3618 0.174089 13.8466 0.482953 14.18C0.789771 14.5134 1.26023 14.63 1.68773 14.4786L5.16091 13.3352V12.0609L1.46682 13.278L6.73591 1.77841C6.79318 1.65159 6.90363 1.63318 6.96295 1.63318C7.02227 1.63318 7.13068 1.65159 7.19 1.77841L12.4591 13.2718L8.56659 11.8564L7.56841 13.1593V6.48091H6.35954V14.7589C6.35954 15.0452 6.54159 15.3009 6.81363 15.393C6.88318 15.4175 6.95682 15.4277 7.02841 15.4277C7.23295 15.4277 7.43136 15.3336 7.56023 15.1659L8.98795 13.3005L12.23 14.4786C12.6595 14.6341 13.1361 14.5195 13.445 14.1841C13.7539 13.8486 13.8316 13.3639 13.6414 12.9507L13.6393 12.9466Z"
+          fill="#EF4444"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_196_762">
+          <rect
+            width="13.5573"
+            height="15.0034"
+            fill="white"
+            transform="translate(0.183594 0.424316)"
+          />
+        </clipPath>
+      </defs>
     </svg>
   )
 })
-
-SendIcon.displayName = 'SendIcon'

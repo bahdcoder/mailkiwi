@@ -7,17 +7,18 @@ import * as Tabs from '@kibamail/owly/tabs'
 import { usePageContext } from 'vike-react/usePageContext'
 
 import { route } from '@/shared/routes/route_aliases.js'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 
 function SingleLetterLayout({ children }: React.PropsWithChildren) {
-  const ctx = usePageContext()
+  const { urlPathname, routeParams } = usePageContextWithProps()
 
   function getDefaultTabValue() {
-    if (ctx.urlPathname.includes('performance')) return 'performance'
+    if (urlPathname.includes('performance')) return 'performance'
 
     return 'overview'
   }
 
-  if (ctx.urlPathname.includes('composer')) {
+  if (urlPathname.includes('composer')) {
     return <>{children}</>
   }
 
@@ -36,10 +37,10 @@ function SingleLetterLayout({ children }: React.PropsWithChildren) {
                     Broadcasts
                   </a>
                   <SlashIcon className="w-4 h-4" />
-                  <span>This is the newsletter #{ctx.routeParams.uuid}</span>
+                  <span>This is the newsletter #{routeParams.uuid}</span>
                 </div>
                 <Heading variant="display" size="xs">
-                  This is the newsletter #{ctx.routeParams.uuid}
+                  This is the newsletter #{routeParams.uuid}
                 </Heading>
               </div>
 
@@ -55,7 +56,7 @@ function SingleLetterLayout({ children }: React.PropsWithChildren) {
                 <Tabs.Trigger asChild value="overview" className="px-0">
                   <a
                     href={route('engage_overview', {
-                      uuid: ctx.routeParams.uuid,
+                      uuid: routeParams.uuid,
                     })}
                   >
                     Overview
@@ -64,7 +65,7 @@ function SingleLetterLayout({ children }: React.PropsWithChildren) {
                 <Tabs.Trigger asChild value="performance" className="px-0">
                   <a
                     href={route('engage_performance', {
-                      uuid: ctx.routeParams.uuid,
+                      uuid: routeParams.uuid,
                     })}
                   >
                     Performance

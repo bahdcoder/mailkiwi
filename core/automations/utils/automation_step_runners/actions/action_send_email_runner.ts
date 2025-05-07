@@ -14,8 +14,11 @@ import type {
 import { type ACTION_SEND_EMAIL_CONFIGURATION, emails } from '@/database/schema.js'
 
 import { Mailer } from '@/shared/mailers/mailer.js'
+import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
+import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
 import { container } from '@/utils/typi.js'
+import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 
 /**
  * SendEmailAutomationStepRunner handles the "Send Email" action in automation workflows.
@@ -71,8 +74,27 @@ export class SendEmailAutomationStepRunner implements AutomationStepRunnerContra
       return
     }
 
-    const { fromEmail, fromName, contentHtml, contentText, subject } =
+    const { contentHtml, contentText, subject } =
       email.emailContent as ValidatedEmailContent
+
+    const senderIdentity = await container
+      .make(SenderIdentityRepository)
+      .findById(email.senderIdentityId as string)
+
+    if (!senderIdentity) {
+      throw E_OPERATION_FAILED('No sender identity found for this email')
+    }
+
+    const sendingDomain = await container
+      .make(SendingDomainRepository)
+      .findById(senderIdentity.sendingDomainId)
+
+    if (!sendingDomain) {
+      throw E_OPERATION_FAILED('No sending domain found for this sender identity')
+    }
+
+    const fromEmail = `${senderIdentity.email}@${sendingDomain.name}`
+    const fromName = senderIdentity.name
 
     const [response, error] = await Mailer.from(fromEmail, fromName)
       .to(this.contact.email, `${this.contact.firstName} ${this.contact.lastName}`)

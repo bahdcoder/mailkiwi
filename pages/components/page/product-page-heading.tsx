@@ -9,13 +9,14 @@ import { ImportContactsDialog } from '@/pages/components/flows/contacts/import_c
 import { MoreVertIcon } from '@/pages/components/icons/more-vert.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 import { usePageContext } from 'vike-react/usePageContext'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 
 export interface ProductPageHeadingProps extends React.PropsWithChildren {
   header?: React.ReactNode
 }
 
 export function ProductPageHeading({ children, header }: ProductPageHeadingProps) {
-  const ctx = usePageContext()
+  const { audience } = usePageContextWithProps()
 
   const {
     dropdownOpen,
@@ -57,7 +58,7 @@ export function ProductPageHeading({ children, header }: ProductPageHeadingProps
                 <DropdownMenu.Label />
 
                 <ImportContactsDialog
-                  audienceId={ctx.audience?.id}
+                  audienceId={audience?.id}
                   onOpenChange={handleDialogItemOpenChange}
                 >
                   <DropdownMenu.Item

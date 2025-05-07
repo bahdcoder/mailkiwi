@@ -16,7 +16,7 @@ import {
   type Message,
   MessageReaction,
 } from '@/database/database_schema_types.js'
-import { channels, messages } from '@/database/schema.js'
+import { channelMemberships, channels, messages } from '@/database/schema.js'
 
 import { makeDatabase } from '@/shared/container/index.js'
 import { cuid } from '@/shared/utils/cuid/cuid.js'
@@ -56,8 +56,11 @@ describe('@chat messages', () => {
       .from(channels)
       .where(eq(channels.name, 'support'))
 
-    // as a registered user, attempt to send message
-    // // messageContent, channel
+    await makeDatabase().insert(channelMemberships).values({
+      userId: user.id,
+      channelId: channel.id,
+    })
+
     const response = await makeRequestAsUser(user, {
       method: 'POST',
       path: `/channels/${channel.id}/messages`,

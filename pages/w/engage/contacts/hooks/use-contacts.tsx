@@ -16,14 +16,20 @@ import { usePageContext } from 'vike-react/usePageContext'
 
 import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
 
-import type { ContactWithTagsAndProperties } from '@/database/database_schema_types.js'
+import type {
+  ContactWithTagsAndProperties,
+  Tag,
+} from '@/database/database_schema_types.js'
 import type { KnownAudienceProperty } from '@/database/schema.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
 import dayjs from 'dayjs'
+import { DefaultPageProps } from '@/pages/types/page-context.js'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 
-export type ServerContactsPageProps = {
+export interface ServerContactsPageProps {
   contacts: { data: ContactWithTagsAndProperties[]; total: number }
+  tags: Tag[]
 }
 
 export function useContacts() {
@@ -32,26 +38,29 @@ export function useContacts() {
   const [deletedFilters, setDeletedFilters] = React.useState<Record<string, boolean>>({})
   const [rowSelection, setRowSelection] = React.useState({})
   const [search, setSearch] = React.useState<string>('')
-  const ctx = usePageContext()
+  const { pageProps: ctx } = usePageContext()
   const [isEditingProperty, setIsEditingProperty] =
     React.useState<KnownAudienceProperty | null>(null)
   const [isDeletingProperty, setIsDeletingProperty] =
     React.useState<KnownAudienceProperty | null>(null)
-  const pageProps = usePageContext().pageProps as ServerContactsPageProps
+  const {
+    pageProps: { tags, contacts },
+    audience,
+  } = usePageContextWithProps<ServerContactsPageProps>()
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 100,
   })
 
   const tagNames = React.useMemo(() => {
-    return ctx.tags.reduce(
+    return tags.reduce(
       (acc, tag) => {
         acc[tag.id] = tag.name
         return acc
       },
       {} as Record<string, string>,
     )
-  }, [ctx.tags])
+  }, [tags])
 
   const [debouncedSearch] = useDebounce(search, 300)
 
@@ -131,13 +140,13 @@ export function useContacts() {
         return undefined
       }
 
-      return { total: pageProps.contacts.total, data: pageProps.contacts.data }
+      return { total: contacts.total, data: contacts.data }
     },
     async queryFn() {
       const response = await fetch(
         route(
           'contacts_search',
-          { audienceId: ctx.audience.id },
+          { audienceId: audience.id },
           {
             page: (pagination.pageIndex + 1).toString(),
             perPage: pagination.pageSize.toString(),
@@ -168,7 +177,7 @@ export function useContacts() {
   const columns = React.useMemo(
     () => [
       ...defaultColumns,
-      ...(ctx.audience.knownProperties
+      ...(audience.knownProperties
         ?.filter((property) => !property.archived)
         .map((property) => {
           return columnHelper.accessor((row) => row.firstName, {
@@ -257,7 +266,7 @@ export function useContacts() {
           })
         }) ?? []),
     ],
-    [ctx.audience.knownProperties],
+    [audience.knownProperties],
   )
 
   const table = useReactTable({

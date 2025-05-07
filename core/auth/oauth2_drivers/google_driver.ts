@@ -26,9 +26,9 @@ export class GoogleDriver
 
   constructor() {
     super({
-      callbackUrl: appEnv.GOOGLE_CALLBACK_URL,
-      clientId: appEnv.GOOGLE_CLIENT_ID,
-      clientSecret: appEnv.GOOGLE_CLIENT_SECRET,
+      callbackUrl: appEnv.OAUTH_GOOGLE_CALLBACK_URL,
+      clientId: appEnv.OAUTH_GOOGLE_CLIENT_ID,
+      clientSecret: appEnv.OAUTH_GOOGLE_CLIENT_SECRET,
       authorizeUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
       accessTokenUrl: 'https://oauth2.googleapis.com/token',
     })

@@ -6,23 +6,36 @@ export const WebhookIcon = React.forwardRef<
 >((props, forwardedRef) => {
   return (
     <svg
-      width="24px"
-      height="24px"
-      viewBox="0 0 24 24"
+      width="18"
+      height="17"
+      viewBox="0 0 18 17"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      role="img"
-      aria-label="Webhook"
       {...props}
       ref={forwardedRef}
     >
-      <title>Webhook</title>
+      <title>Webhook Icon</title>
+      <path
+        d="M3.06333 9.34277C2.57186 9.65075 2.16926 10.0816 1.8953 10.5928C1.62134 11.1041 1.48551 11.6779 1.50122 12.2577C1.51694 12.8375 1.68367 13.4031 1.98492 13.8987C2.28618 14.3943 2.71154 14.8028 3.21897 15.0837C3.72641 15.3646 4.29835 15.5082 4.87829 15.5004C5.45823 15.4926 6.0261 15.3335 6.52577 15.0391C7.02544 14.7446 7.43963 14.3248 7.72741 13.8213C8.01519 13.3177 8.16659 12.7478 8.16667 12.1678H13.1667"
+        stroke="currentColor"
+        stroke-width="1.25"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M11.555 15.0853C12.0002 15.3311 12.4958 15.4717 13.0037 15.4964C13.5117 15.5211 14.0185 15.4293 14.4855 15.2279C14.9525 15.0266 15.3672 14.7211 15.6979 14.3347C16.0286 13.9484 16.2666 13.4916 16.3935 12.9991C16.5205 12.5067 16.5331 11.9917 16.4303 11.4937C16.3276 10.9956 16.1123 10.5276 15.8009 10.1256C15.4894 9.7236 15.0901 9.39817 14.6336 9.17423C14.177 8.9503 13.6752 8.8338 13.1667 8.83366C12.5783 8.83366 11.98 8.98283 11.5 9.25033L9 4.66699"
+        stroke="currentColor"
+        stroke-width="1.25"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M12.3359 4.66732C12.3359 3.78326 11.9847 2.93542 11.3596 2.31029C10.7345 1.68517 9.88666 1.33398 9.0026 1.33398C8.11855 1.33398 7.2707 1.68517 6.64558 2.31029C6.02046 2.93542 5.66927 3.78326 5.66927 4.66732C5.66927 5.92232 6.31094 7.01565 7.33594 7.58398L4.83594 12.1673"
+        stroke="currentColor"
+        stroke-width="1.25"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
     </svg>
   )
 })
-
-WebhookIcon.displayName = 'WebhookIcon'

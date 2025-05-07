@@ -15,7 +15,7 @@ import { TrackingController } from '@/kumomta/controllers/tracking_controller.js
 import { MediaDocumentController } from '@/media-library/controllers/media_library_controller.js'
 import { ClickTrackingController } from '@/tracking/controllers/click_tracking_controller.js'
 import { OpenTrackingController } from '@/tracking/controllers/open_tracking_controller.js'
-import { MailerWebhooksContorller } from '@/webhooks/controllers/mailer_webhooks_controller.js'
+import { MailerWebhooksController } from '@/webhooks/controllers/mailer_webhooks_controller.js'
 import { WebsiteController } from '@/websites/controllers/website_controller.js'
 import { showRoutes as _showRoutes } from 'hono/dev'
 import type { Redis } from 'ioredis'
@@ -43,6 +43,7 @@ import { PasswordResetsController } from '@/auth/password_resets/controllers/pas
 import { AutomationController } from '@/automations/controllers/automation_controller.js'
 
 import { SendingDomainController } from '@/sending_domains/controllers/sending_domain_controller.js'
+import { SenderIdentityController } from '@/sending_domains/controllers/sender_identity_controller.js'
 
 import { Queue } from '@/shared/queue/queue.js'
 import { createBullBoard } from '@bull-board/api'
@@ -81,8 +82,8 @@ export class Ignitor {
     container.register(ContainerKey.env, this.env)
 
     this.logger = pino({
-      level: appEnv.LOG_LEVEL,
-      transport: appEnv.isDev
+      level: this.env.LOG_LEVEL,
+      transport: this.env.isDev
         ? {
             target: 'pino-pretty',
             options: {
@@ -180,8 +181,9 @@ export class Ignitor {
     container.resolve(ContactExportController)
     container.resolve(ContactImportController)
     container.resolve(TeamMembershipController)
-    container.resolve(MailerWebhooksContorller)
+    container.resolve(MailerWebhooksController)
     container.resolve(SendingDomainController)
+    container.resolve(SenderIdentityController)
     container.resolve(MtaLogsController)
     container.resolve(DkimController)
     container.resolve(SmtpAuthController)

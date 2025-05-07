@@ -24,13 +24,15 @@ export class SendingDomainRepository extends BaseRepository {
     return this.crud(sendingDomains)
   }
 
-  protected belongsToSendingSource = belongsTo(this.database, {
-    from: sendingDomains,
-    to: sendingSources,
-    primaryKey: sendingSources.id,
-    foreignKey: sendingDomains.sendingSourceId,
-    relationName: 'sendingSource',
-  })
+  protected belongsToSendingSource() {
+    return belongsTo(this.database, {
+      from: sendingDomains,
+      to: sendingSources,
+      primaryKey: sendingSources.id,
+      foreignKey: sendingDomains.sendingSourceId,
+      relationName: 'sendingSource',
+    })
+  }
 
   async create(payload: InsertSendingDomain) {
     const id = this.cuid()

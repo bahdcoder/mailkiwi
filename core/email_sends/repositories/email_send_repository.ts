@@ -16,13 +16,15 @@ export class EmailSendRepository extends BaseRepository {
     super()
   }
 
-  protected hasManyEvents = hasMany(this.database, {
-    from: emailSends,
-    to: emailSendEvents,
-    foreignKey: emailSendEvents.emailSendId,
-    primaryKey: emailSends.id,
-    relationName: 'events',
-  })
+  protected hasManyEvents() {
+    return hasMany(this.database, {
+      from: emailSends,
+      to: emailSendEvents,
+      foreignKey: emailSendEvents.emailSendId,
+      primaryKey: emailSends.id,
+      relationName: 'events',
+    })
+  }
 
   async findBySendingId(sendingId: string) {
     const [emailSend] = await this.database
@@ -84,7 +86,7 @@ export class EmailSendRepository extends BaseRepository {
   }
 
   async findBySendingIdWithEvents(emailSendId: string) {
-    const [emailSend] = await this.hasManyEvents((query) =>
+    const [emailSend] = await this.hasManyEvents()((query) =>
       query.where(eq(emailSends.sendingId, emailSendId)),
     )
 
@@ -92,7 +94,7 @@ export class EmailSendRepository extends BaseRepository {
   }
 
   async findByIdWithEvents(emailSendId: string) {
-    const [emailSend] = await this.hasManyEvents((query) =>
+    const [emailSend] = await this.hasManyEvents()((query) =>
       query.where(eq(emailSends.id, emailSendId)),
     )
 

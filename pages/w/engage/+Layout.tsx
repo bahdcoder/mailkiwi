@@ -6,10 +6,10 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { route } from '@/shared/routes/route_aliases.js'
 
 function EngageLayout({ children }: React.PropsWithChildren) {
-  const ctx = usePageContext()
+  const { urlPathname, routeParams, engage } = usePageContext()
 
   function getDefaultTabValue() {
-    const pathname = ctx.urlPathname
+    const pathname = urlPathname
 
     if (pathname.includes('contacts')) return 'contacts'
 
@@ -18,15 +18,15 @@ function EngageLayout({ children }: React.PropsWithChildren) {
     return 'broadcasts'
   }
 
-  if (ctx.routeParams.uuid) {
+  if (routeParams.uuid) {
     return <>{children}</>
   }
 
-  if (!ctx.engage.onboarded) {
+  if (!engage.onboarded) {
     return <>{children}</>
   }
 
-  if (ctx.urlPathname.includes('composer')) {
+  if (urlPathname.includes('composer')) {
     return <>{children}</>
   }
 

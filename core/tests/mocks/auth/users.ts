@@ -1,5 +1,4 @@
 import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
-import { defaultChannels } from '@/cli/commands/chat/add_default_channels_comand.js'
 import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
 import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
@@ -7,7 +6,6 @@ import { DateTime } from 'luxon'
 import { update } from 'tar'
 import { createFakeAbTestEmailContent } from '../audiences/email_content.js'
 
-import { CreateAudienceAction } from '@/audiences/actions/audiences/create_audience_action.js'
 import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
 
 import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
@@ -16,9 +14,8 @@ import { TeamRepository } from '@/teams/repositories/team_repository.js'
 import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
 import { UserRepository } from '@/auth/users/repositories/user_repository.js'
 
-import { EmailContentSchemaDto } from '@/content/dto/create_email_content_dto.js'
-
 import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
+import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
 import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
 
 import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
@@ -48,29 +45,43 @@ export async function createBroadcastForUser(
     updateWithABTestsContent?: boolean
     weights?: number[]
     sendingDomainId?: string
+    senderIdentityId?: string
     emailContent?: {
       fromEmail?: string
       fromName?: string
     }
   } = {},
 ) {
-  // Create a local copy to avoid parameter reassignment
   const opts = options || {}
+
+  const requestBody = {
+    name: faker.lorem.words(3),
+    audienceId,
+    broadcastGroupId,
+    senderIdentityId: undefined as string | undefined,
+  }
+
+  if (options.senderIdentityId) {
+    requestBody.senderIdentityId = options.senderIdentityId
+  }
 
   const response = await makeRequestAsUser(user, {
     method: 'POST',
     path: '/broadcasts',
-    body: {
-      name: faker.lorem.words(3),
-      audienceId,
-      broadcastGroupId,
-    },
+    body: requestBody,
   })
 
   const json = await response.json()
 
   if (!options?.sendingDomainId) {
     options.sendingDomainId = await setupSendingDomainForTeam(teamId)
+  }
+
+  if (!options?.senderIdentityId) {
+    options.senderIdentityId = await createSenderIdentityForTeam(
+      teamId,
+      options.sendingDomainId,
+    )
   }
 
   if (!json.payload.id) {
@@ -150,6 +161,7 @@ export async function createBroadcastForUser(
           ...options?.emailContent,
         },
         sendingDomainId: options?.sendingDomainId,
+        senderIdentityId: options?.senderIdentityId,
         ...(options?.updateWithABTestsContent
           ? {
               emailContentVariants: options?.weights?.map((weight) => ({
@@ -225,7 +237,7 @@ export const createUser = async ({
 
   const registerUserAction = container.resolve(RegisterUserAction)
 
-  const { user } = await registerUserAction.handle({
+  const { user, teamId } = await registerUserAction.handle({
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     email: faker.number.int({ min: 0, max: 99 }) + faker.internet.exampleEmail(),
@@ -234,28 +246,10 @@ export const createUser = async ({
 
   const channelRepository = container.make(ChannelRepository)
 
-  const channels = await channelRepository.defaultChannels()
-
-  await container
-    .make(ChannelRepository)
-    .memberships()
-    .bulkCreate(
-      channels.map((channel) => ({
-        channelId: channel.id,
-        userId: user.id,
-      })),
-    )
-
   await container.make(UserRepository).update(user.id, { password: 'password' })
 
   const teamRepository = container.resolve(TeamRepository)
-  const team = await teamRepository.create(
-    {
-      name: faker.company.catchPhraseAdjective(),
-    },
-    user.id,
-  )
-  const teamObject = await teamRepository.findById(team.id)
+  const team = await teamRepository.findById(teamId)
 
   const broadcastGroupId = cuid()
 
@@ -404,7 +398,7 @@ export const createUser = async ({
 
   return {
     user: freshUser,
-    team: teamObject as Team,
+    team,
     audience: { id: audienceId as string },
     administratorUser,
     managerUser,
@@ -432,4 +426,22 @@ export async function setupSendingDomainForTeam(teamId: string) {
   })
 
   return sendingDomainId
+}
+
+export async function createSenderIdentityForTeam(
+  teamId: string,
+  defaultSendingDomainId?: string,
+) {
+  const sendingDomainId =
+    defaultSendingDomainId || (await setupSendingDomainForTeam(teamId))
+
+  const { id: senderIdentityId } = await container.make(SenderIdentityRepository).create({
+    name: `${faker.person.firstName()}'s Newsletter`,
+    email: faker.internet.userName().toLowerCase(),
+    sendingDomainId,
+    teamId,
+    replyToEmail: faker.internet.email(),
+  })
+
+  return senderIdentityId
 }

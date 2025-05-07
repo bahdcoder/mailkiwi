@@ -14,13 +14,15 @@ export class WebsiteRepository extends BaseRepository {
     super()
   }
 
-  protected hasManyPages = hasMany(this.database, {
-    relationName: 'pages',
-    from: websites,
-    to: websitePages,
-    primaryKey: websites.id,
-    foreignKey: websitePages.websiteId,
-  })
+  protected hasManyPages() {
+    return hasMany(this.database, {
+      relationName: 'pages',
+      from: websites,
+      to: websitePages,
+      primaryKey: websites.id,
+      foreignKey: websitePages.websiteId,
+    })
+  }
 
   async create(payload: InsertWebsite) {
     const id = this.cuid()
@@ -74,7 +76,7 @@ export class WebsiteRepository extends BaseRepository {
   }
 
   async findBySlugWithPages(slug: string) {
-    const [website] = await this.hasManyPages((query) =>
+    const [website] = await this.hasManyPages()((query) =>
       query.where(eq(websites.slug, slug)),
     )
 
@@ -91,7 +93,7 @@ export class WebsiteRepository extends BaseRepository {
   }
 
   async findByIdWithPages(websiteId: string) {
-    const [website] = await this.hasManyPages((query) =>
+    const [website] = await this.hasManyPages()((query) =>
       query.where(eq(websites.id, websiteId)),
     )
 

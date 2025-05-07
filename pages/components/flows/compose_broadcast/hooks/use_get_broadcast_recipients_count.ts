@@ -4,7 +4,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { route } from '@/shared/routes/route_aliases.js'
 
 export function useGetBroadcastRecipientsCount(segmentId: string) {
-  const ctx = usePageContext()
+  const { audience } = usePageContext()
 
   return useQuery<{ total: number }>({
     queryKey: ['broadcasts-recipients-count', segmentId],
@@ -12,7 +12,7 @@ export function useGetBroadcastRecipientsCount(segmentId: string) {
       const response = await fetch(
         route(
           'contacts_search',
-          { audienceId: ctx.audience?.id },
+          { audienceId: audience?.id },
           {
             perPage: '1',
           },

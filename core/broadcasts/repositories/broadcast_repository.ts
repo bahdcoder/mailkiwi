@@ -6,7 +6,6 @@ import type { CreateBroadcastDto } from '@/broadcasts/dto/create_broadcast_dto.j
 import type { DrizzleClient } from '@/database/client.js'
 import type {
   Broadcast,
-  BroadcastWithEmailContent,
   EmailContent,
   UpdateSetBroadcastInput,
 } from '@/database/database_schema_types.js'
@@ -61,13 +60,15 @@ export class BroadcastRepository extends BaseRepository {
    * allows for more efficient storage and retrieval of email content, especially
    * for A/B testing where multiple content variations may exist.
    */
-  protected hasOneEmailContent = hasOne(this.database, {
-    from: broadcasts,
-    to: emailContents,
-    primaryKey: broadcasts.id,
-    foreignKey: emailContents.id,
-    relationName: 'emailContent',
-  })
+  protected hasOneEmailContent() {
+    return hasOne(this.database, {
+      from: broadcasts,
+      to: emailContents,
+      primaryKey: broadcasts.id,
+      foreignKey: emailContents.id,
+      relationName: 'emailContent',
+    })
+  }
 
   broadcasts() {
     return this.crud(broadcasts)
@@ -105,8 +106,12 @@ export class BroadcastRepository extends BaseRepository {
     })
 
     // Create the broadcast record with basic metadata
+    // Ensure senderIdentityId is properly typed
+    const { senderIdentityId, ...restData } = data
+
     await this.database.insert(broadcasts).values({
-      ...data,
+      ...restData,
+      senderIdentityId: senderIdentityId as string | undefined,
       teamId,
       id,
       emailContentId,

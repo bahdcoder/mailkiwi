@@ -34,6 +34,20 @@ import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * WebsiteController manages website creation and rendering for landing pages.
+ *
+ * This controller is responsible for:
+ * 1. Managing website pages and their content
+ * 2. Handling website publishing and unpublishing
+ * 3. Serving published website content to visitors
+ * 4. Managing custom domains and SSL certificates
+ * 5. Handling contact authentication for gated content
+ *
+ * The controller enables Kibamail users to create and manage landing pages,
+ * subscription forms, and other web content that integrates with their
+ * email marketing campaigns.
+ */
 export class WebsiteController extends BaseController {
   constructor(
     protected app = makeApp(),
@@ -82,14 +96,18 @@ export class WebsiteController extends BaseController {
       ],
       {
         // TODO: wire this up to work with the reverse proxy.
-        // Example: website request comes in: fastmedia.kibasites.com/commerce-letter
-        // Reverse proxy proxies this request to: http://localhost:5000/__websites/fastmedia/commerce-letter
         prefix: '/__websites/:websiteSlug',
         middleware: [],
       },
     )
   }
 
+  /**
+   * Authorizes website and page operations.
+   *
+   * Verifies that the user has permission to manage the website and its pages,
+   * and ensures that requested resources exist and belong to the user's team.
+   */
   protected async authorize(ctx: HonoContext) {
     this.ensureTeam(ctx)
     this.ensureCanAdministrate(ctx)

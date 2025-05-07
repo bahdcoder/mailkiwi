@@ -1,13 +1,13 @@
 .w-node-wrapper {
-  @apply flex flex-col justify-end w-[300px] h-[104px] border border-transparent;
+  @apply flex flex-col justify-end w-[300px] h-[92px] border border-transparent;
 }
 
 .w-node-wrapper-with-configurations {
-  @apply flex flex-col items-center justify-start w-[300px] h-[104px];
+  @apply flex flex-col items-center justify-start w-[300px] h-[92px];
 }
 
 .w-node-wrapper-empty {
-  @apply flex flex-col justify-end items-center w-[300px] h-[104px] box-border border border-transparent;
+  @apply flex justify-center w-[300px] h-[92px] box-border border border-transparent;
 }
 
 .w-node-wrapper-inner-empty {

@@ -16,12 +16,12 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 export interface CreateAutomationFlowProps extends React.PropsWithChildren {}
 
 export function CreateAutomationFlow({ children }: CreateAutomationFlowProps) {
-  const ctx = usePageContext()
+  const { audience } = usePageContext()
 
   const { serverFormProps, isPending, error, ServerErrorsList } = useServerFormMutation<{
     id: string
   }>({
-    action: route('create_automation', { audienceId: ctx.audience?.id }),
+    action: route('create_automation', { audienceId: audience?.id }),
     async onSuccess(response) {
       await navigate(route('automation_composer', { uuid: response.payload.id }))
     },

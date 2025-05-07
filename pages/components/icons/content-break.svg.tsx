@@ -6,23 +6,29 @@ export const ContentBreakIcon = React.forwardRef<
 >((props, forwardedRef) => {
   return (
     <svg
-      width="24px"
-      height="24px"
-      viewBox="0 0 24 24"
+      width={18}
+      height={18}
+      viewBox="0 0 18 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      role="img"
-      aria-label="Content Break"
       {...props}
       ref={forwardedRef}
     >
-      <title>Content Break</title>
+      <title>Content Break Icon</title>
+      <path
+        d="M0 9.00015C0 9.35819 0.142232 9.70157 0.395406 9.95474C0.64858 10.2079 0.991958 10.3501 1.35 10.3501C1.70804 10.3501 2.05142 10.2079 2.30459 9.95474C2.55777 9.70157 2.7 9.35819 2.7 9.00015C2.7 8.6421 2.55777 8.29873 2.30459 8.04555C2.05142 7.79238 1.70804 7.65015 1.35 7.65015C0.991958 7.65015 0.64858 7.79238 0.395406 8.04555C0.142232 8.29873 0 8.6421 0 9.00015H0Z"
+        fill="#0F1214"
+      />
+      <path
+        d="M15.3 8.99999C15.3 9.35804 15.4423 9.70141 15.6955 9.95459C15.9486 10.2078 16.292 10.35 16.65 10.35C17.0081 10.35 17.3515 10.2078 17.6046 9.95459C17.8578 9.70141 18 9.35804 18 8.99999C18 8.64195 17.8578 8.29857 17.6046 8.0454C17.3515 7.79223 17.0081 7.64999 16.65 7.64999C16.292 7.64999 15.9486 7.79223 15.6955 8.0454C15.4423 8.29857 15.3 8.64195 15.3 8.99999V8.99999Z"
+        fill="#0F1214"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4 9C4 8.44772 4.44772 8 5 8H13C13.5523 8 14 8.44772 14 9C14 9.55228 13.5523 10 13 10H5C4.44772 10 4 9.55228 4 9Z"
+        fill="#0F1214"
+      />
     </svg>
   )
 })
-
-ContentBreakIcon.displayName = 'ContentBreakIcon'

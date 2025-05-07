@@ -90,6 +90,7 @@ export const seedAutomation = async (
     triggerConditions?: ContactFilterCondition[]
     trigger?: AUTOMATION_STEP_SUB_TYPES_TRIGGER
     triggerConfiguration?: AutomationStepConfiguration
+    senderIdentityId?: string
   },
   createSteps = true,
 ) => {
@@ -122,6 +123,7 @@ export const seedAutomation = async (
     type: 'AUTOMATION',
     audienceId: automation.audienceId,
     emailContentId,
+    senderIdentityId: automation.senderIdentityId,
   })
 
   // Now create sample data for a automation that looks like this:

@@ -13,12 +13,10 @@ export const CalendarIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
-      role="img"
-      aria-label="Calendar icon"
       {...props}
       ref={forwardedRef}
     >
-      <title>Calendar icon</title>
+      <title>Calendar Icon</title>
       <path
         d="M15 4V2M15 4V6M15 4H10.5M3 10V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V10H3Z"
         stroke="currentColor"

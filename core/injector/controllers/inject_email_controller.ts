@@ -9,6 +9,18 @@ import type { HonoContext } from '@/shared/server/types.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * InjectEmailController handles direct email injection into the sending system.
+ *
+ * This controller is responsible for:
+ * 1. Receiving email content through the API
+ * 2. Validating sender permissions for the specified domain
+ * 3. Injecting emails directly into the sending pipeline
+ *
+ * This controller provides a programmatic interface for applications to send emails
+ * through Kibamail without using SMTP, which is particularly useful for integrations
+ * and automated systems that need to send transactional or notification emails.
+ */
 export class InjectEmailController extends BaseController {
   constructor(private app = makeApp()) {
     super()
@@ -18,6 +30,12 @@ export class InjectEmailController extends BaseController {
     })
   }
 
+  /**
+   * Processes an email injection request.
+   *
+   * Validates the email payload, ensures the sender has permission to use
+   * the specified domain, and injects the email into the sending system.
+   */
   async index(ctx: HonoContext) {
     const payload = await this.validate(ctx, InjectEmailSchema)
 

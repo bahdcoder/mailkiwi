@@ -24,9 +24,7 @@ export interface ComposeBroadcastContextInterface {
     segmentId: string
     subject: string
     previewText: string
-    fromName: string
-    fromEmail: string
-    replyToEmail: string
+    senderIdentityId: string
     scheduledAt: ScheduleDateTime
   }
   setFormState: React.Dispatch<

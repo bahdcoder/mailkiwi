@@ -10,6 +10,18 @@ import { Encryption } from '@/shared/utils/encryption/encryption.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * DkimController provides DKIM (DomainKeys Identified Mail) information for email authentication.
+ *
+ * This controller is responsible for:
+ * 1. Retrieving DKIM configuration for a specific domain
+ * 2. Providing the necessary cryptographic keys and subdomain information
+ * 3. Supporting the email sending infrastructure with proper authentication data
+ *
+ * DKIM is a critical email authentication method that helps prevent email spoofing
+ * by allowing receiving mail servers to verify that messages were authorized by
+ * the domain owner and weren't altered in transit.
+ */
 export class DkimController extends BaseController {
   constructor(private app = makeApp()) {
     super()
@@ -20,6 +32,12 @@ export class DkimController extends BaseController {
     })
   }
 
+  /**
+   * Retrieves DKIM configuration for a specified domain.
+   *
+   * Returns the private key and subdomain information needed for
+   * properly signing outgoing emails with DKIM authentication.
+   */
   async index(ctx: HonoContext) {
     const { domain } = await ctx.req.json<{ domain: string }>()
 

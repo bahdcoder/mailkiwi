@@ -8,17 +8,7 @@ import type {
   UserWithTeams,
 } from '@/database/database_schema_types.js'
 
-export interface DefaultPageProps {
-  user: UserWithTeams
-  team: TeamWithMemberships & {
-    totalAvailableCredits: number
-    totalConsumedCredits: number
-  }
-  userAgent: UAParser.IResult
-  memberships: (TeamMembership & { team: Team })[]
-  audience: Audience
-  tags: Tag[]
-  pageProps: Record<string, unknown>
+export interface DefaultPageProps<T = object> {
   engage: {
     onboarded: boolean
   }
@@ -26,23 +16,26 @@ export interface DefaultPageProps {
     onboarded: boolean
   }
   sendingDomains: SendingDomain[]
+  user: UserWithTeams
+  team: TeamWithMemberships & {
+    totalAvailableCredits: number
+    totalConsumedCredits: number
+  }
+  pageProps: T
+  userAgent: UAParser.IResult
+  memberships: (TeamMembership & { team: Team })[]
+  audience: Audience
+  tags: Tag[]
+  isMobile: boolean
+  flash: string
+}
+
+export type DefaultPageContext = {
+  pageProps: DefaultPageProps
 }
 
 declare global {
   namespace Vike {
-    interface PageContext {
-      user: DefaultPageProps['user']
-      team: DefaultPageProps['team']
-      userAgent: DefaultPageProps['userAgent']
-      isMobile: boolean
-      flash: string
-      memberships: DefaultPageProps['memberships']
-      audience: DefaultPageProps['audience']
-      tags: DefaultPageProps['tags']
-      pageProps: DefaultPageProps['pageProps']
-      engage: DefaultPageProps['engage']
-      send: DefaultPageProps['send']
-      sendingDomains: DefaultPageProps['sendingDomains']
-    }
+    interface PageContext extends DefaultPageProps {}
   }
 }

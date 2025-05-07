@@ -45,26 +45,19 @@ export class ApiKeyMiddleware {
    * @returns The result of the next middleware
    */
   handle = async (ctx: HonoContext, next: Next) => {
-    // Extract the API key from the Authorization header
     const authorization = ctx.req.header('Authorization')
     const [apiKey] = authorization?.split('Bearer ') ?? []
 
-    // If no API key is present, continue to the next middleware
-    // This allows the request to potentially be authenticated by other means
     if (!apiKey) {
       return next()
     }
 
-    // Validate the API key against the database
     const accessToken = await this.accessTokenRepository.check(apiKey)
 
-    // If the API key is invalid, continue to the next middleware
-    // This allows the request to potentially be authenticated by other means
     if (!accessToken) {
       return next()
     }
 
-    // Make the access token available to downstream middleware and controllers
     ctx.set('accessToken', accessToken)
 
     await next()

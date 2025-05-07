@@ -4,6 +4,18 @@ import { makeApp } from '@/shared/container/index.js'
 import { Queue } from '@/shared/queue/queue.js'
 import type { HonoContext } from '@/shared/server/types.js'
 
+/**
+ * MtaLogsController handles mail transfer agent (MTA) log processing.
+ *
+ * This controller is responsible for:
+ * 1. Receiving log data from the mail server
+ * 2. Queuing logs for asynchronous processing
+ * 3. Enabling email delivery tracking and analytics
+ *
+ * MTA logs provide critical information about email delivery status,
+ * including bounces, deliveries, and other events that are essential
+ * for monitoring email campaign performance and deliverability.
+ */
 export class MtaLogsController {
   constructor(private app = makeApp()) {
     this.app.defineRoutes([['POST', '/mta/logs', this.index.bind(this)]], {
@@ -12,6 +24,13 @@ export class MtaLogsController {
     })
   }
 
+  /**
+   * Processes incoming MTA log events.
+   *
+   * Receives log data from the mail server and queues it for
+   * asynchronous processing to update email delivery status
+   * and analytics without blocking the mail server.
+   */
   async index(ctx: HonoContext) {
     const log = await ctx.req.json()
 

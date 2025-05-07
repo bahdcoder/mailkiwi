@@ -8,6 +8,7 @@ import { afterAll, beforeAll, describe, test } from 'vitest'
 import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.js'
 
 import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
 
 import {
   clearAllMailpitMessages,
@@ -568,7 +569,13 @@ describe.sequential('@mta', () => {
       teamId: team.id,
     })
 
-    const fromEmail = 'jonathan'
+    // Create a sender identity for this test
+    const senderIdentity = await container.make(SenderIdentityRepository).create({
+      name: 'Test Sender',
+      email: 'jonathan',
+      sendingDomainId,
+      teamId: team.id,
+    })
 
     const broadcastId = await createBroadcastForUser(
       user,
@@ -577,10 +584,8 @@ describe.sequential('@mta', () => {
       broadcastGroupId,
       {
         updateWithValidContent: true,
-        emailContent: {
-          fromEmail,
-        },
         sendingDomainId,
+        senderIdentityId: senderIdentity.id,
       },
     )
 
@@ -603,7 +608,7 @@ describe.sequential('@mta', () => {
       'The output from the MTA inject job was unsuccessful.',
     ).toBe(true)
 
-    const message = output as { messageId: string; ok: boolean }
+    const [message] = output as { messageId: string; ok: boolean }[]
 
     await sleep(2000)
 

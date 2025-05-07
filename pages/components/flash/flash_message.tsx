@@ -11,13 +11,13 @@ interface FlashMessageProps extends Alert.AlertRootProps {
 }
 
 export function FlashMessage({ alert: defaultAlert, ...rootProps }: FlashMessageProps) {
-  const ctx = usePageContext()
+  const { flash } = usePageContext()
 
   function parseFlashMessage() {
     let alert: FlashMessagePayload | undefined
 
     try {
-      alert = JSON.parse(ctx.flash)
+      alert = JSON.parse(flash)
     } catch (error) {}
 
     return alert

@@ -1,6 +1,8 @@
 import type { NodeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 import classNames from 'classnames'
 import { Handle, Position } from 'react-flow-renderer'
+import { SkeletonNode } from '../skeleton_node.jsx'
+import { Text } from '@kibamail/owly/text'
 
 export interface ActionSendEmailNodeProps {
   data: NodeElement['data']
@@ -18,7 +20,14 @@ export function ActionSendEmailNode({ data }: ActionSendEmailNodeProps) {
           'w-node-selected': data.selected,
         })}
       >
-        <p>send email</p>
+        <SkeletonNode step={data.step}>
+          <Text
+            size="sm"
+            className="overflow-hidden text-ellipsis text-left max-w-full whitespace-nowrap"
+          >
+            Download two free chapters of the Strategic Software Engineer book
+          </Text>
+        </SkeletonNode>
         <Handle type="source" position={Position.Bottom} />
         <Handle type="target" position={Position.Top} />
       </div>

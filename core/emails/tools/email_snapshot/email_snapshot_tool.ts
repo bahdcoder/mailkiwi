@@ -7,6 +7,18 @@ import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
 
 import { sleep } from '@/utils/sleep.js'
 
+/**
+ * EmailSnapshotTool generates visual snapshots of email templates across different devices.
+ *
+ * This tool is essential for email template development and testing, providing:
+ * 1. Visual verification of email rendering across different device types
+ * 2. Automated screenshot generation for responsive design testing
+ * 3. HTML output for manual inspection and debugging
+ *
+ * The tool uses Puppeteer to render emails in different viewport sizes and device
+ * configurations, ensuring that templates look correct across desktop and mobile
+ * environments before being sent to recipients.
+ */
 export class EmailSnapshotTool {
   private name = ''
   private toDirectory: string = path.resolve(
@@ -28,12 +40,24 @@ export class EmailSnapshotTool {
     // },
   ]
 
+  /**
+   * Sets the output directory for snapshot files.
+   *
+   * @param directory - Path where snapshot files will be saved
+   * @returns The tool instance for method chaining
+   */
   writeToDirectory(directory: string) {
     this.toDirectory = directory
 
     return this
   }
 
+  /**
+   * Sets the filename prefix for all generated snapshots.
+   *
+   * @param name - Prefix to use for snapshot filenames
+   * @returns The tool instance for method chaining
+   */
   prefix(name: string) {
     this.name = name
 
@@ -44,6 +68,18 @@ export class EmailSnapshotTool {
     return `${this.name}-${deviceName.toLowerCase().replace(' ', '-')}`
   }
 
+  /**
+   * Generates email snapshots for all configured devices.
+   *
+   * This method:
+   * 1. Saves the raw HTML content to a file for reference
+   * 2. Launches a headless browser to render the email
+   * 3. Captures screenshots of the email as rendered on different devices
+   * 4. Saves the screenshots to the configured directory
+   *
+   * The process includes a short delay after loading content to ensure
+   * all assets and styles are properly rendered before capturing.
+   */
   async snapshot() {
     await writeFile(path.resolve(this.toDirectory, `${this.name}.html`), this.content)
 

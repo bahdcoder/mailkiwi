@@ -28,6 +28,7 @@ import { excludeKeys } from '@/shared/utils/helpers/exclude_keys.js'
 import { TeamCreditRepository } from '@/teams/repositories/team_credit_repository.js'
 import { container } from '@/utils/typi.js'
 import type { DefaultPageProps } from '@/pages/types/page-context.js'
+import { DEFAULT_TEAM_NAME } from '@/database/constants.js'
 
 export class VikeController extends BaseController {
   vikePath = (
@@ -49,9 +50,11 @@ export class VikeController extends BaseController {
   renderVikePage = async (ctx: HonoContext, next: Next, pageProps?: unknown) => {
     const props = pageProps as DefaultPageProps
 
+    const resolvedPageProps = await container.make(PagePropsResolver).handle(ctx, props)
+
     const pageContext = await renderPage({
-      pageProps: await container.make(PagePropsResolver).handle(ctx, props),
-      // ...props,
+      ...props,
+      pageProps: resolvedPageProps,
       urlOriginal: ctx.req.url,
       headersOriginal: ctx.req.raw.headers,
     })
@@ -96,6 +99,13 @@ export class VikeController extends BaseController {
 
   redirectToWelcomeIfAuthenticatedPage = async (ctx: HonoContext, next: Next) => {
     const user = ctx.get('user')
+
+    if (
+      (user && !user.teams?.[0]?.name) ||
+      (user && user.teams?.[0]?.name === DEFAULT_TEAM_NAME)
+    ) {
+      return this.response(ctx).redirect(route('auth_register_profile')).send()
+    }
 
     if (user) {
       return this.response(ctx).redirect(route('welcome')).send()

@@ -4,8 +4,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import type { BroadcastPageProps } from '@/pages/types/broadcast-page-props.js'
 
 export function StepFivePreview() {
-  const ctx = usePageContext()
-  const { broadcast } = ctx.pageProps as BroadcastPageProps
+  const { broadcast } = usePageContext().pageProps as BroadcastPageProps
 
   return (
     <div className="w-full h-full overflow-y-auto">

@@ -13,6 +13,18 @@ import { cuid } from '@/shared/utils/cuid/cuid.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * FormController manages subscription and lead capture forms.
+ *
+ * This controller is responsible for:
+ * 1. Creating and managing form definitions for contact collection
+ * 2. Supporting customizable field configurations for different data needs
+ * 3. Enabling form integration with websites and landing pages
+ *
+ * Forms are a critical lead generation tool in Kibamail, allowing users
+ * to collect contact information and other data through customizable
+ * forms that can be embedded in websites, landing pages, or shared via links.
+ */
 export class FormController extends BaseController {
   constructor(
     protected app = makeApp(),
@@ -37,6 +49,13 @@ export class FormController extends BaseController {
     // we auto generate the form based on the selected form.
   }
 
+  /**
+   * Creates a new form for an audience.
+   *
+   * Validates the form definition and creates a new form with the specified
+   * fields and configuration. Each field is assigned a unique ID to ensure
+   * proper tracking and data mapping when the form is submitted.
+   */
   async create(ctx: HonoContext) {
     const audience = await this.ensureExists<Audience>(ctx, 'audienceId')
     const payload = await this.validate(ctx, CreateFormSchema, {
@@ -55,6 +74,13 @@ export class FormController extends BaseController {
     return ctx.json(form)
   }
 
+  /**
+   * Ensures that a requested form exists and belongs to the specified audience.
+   *
+   * Validates that the form ID is valid and that the form belongs to the
+   * audience specified in the request path. This prevents unauthorized
+   * access to forms across different audiences.
+   */
   async ensureFormExists(ctx: HonoContext) {
     const form = await this.formRepository.forms().findById(ctx.req.param('formId'))
 
@@ -79,6 +105,13 @@ export class FormController extends BaseController {
     return form
   }
 
+  /**
+   * Updates an existing form.
+   *
+   * Modifies a form's configuration, fields, or settings based on
+   * the provided update data. Ensures the user has permission to
+   * manage forms in the audience.
+   */
   async update(ctx: HonoContext) {
     this.ensureCanManage(ctx)
     await this.ensureExists<Audience>(ctx, 'audienceId')
@@ -92,6 +125,13 @@ export class FormController extends BaseController {
     return ctx.json({ id: form.id })
   }
 
+  /**
+   * Deletes a form.
+   *
+   * Permanently removes a form from the system. This operation cannot
+   * be undone, and any references to this form in websites or embeds
+   * will no longer function.
+   */
   async delete(ctx: HonoContext) {
     this.ensureCanManage(ctx)
     await this.ensureExists<Audience>(ctx, 'audienceId')
@@ -102,9 +142,21 @@ export class FormController extends BaseController {
     return ctx.json({ id: form.id })
   }
 
+  /**
+   * Lists all forms for an audience.
+   *
+   * Returns a collection of forms that belong to the specified audience.
+   * Currently only performs authorization check.
+   */
   async index(ctx: HonoContext) {
     this.ensureCanView(ctx)
   }
 
+  /**
+   * Retrieves a specific form.
+   *
+   * Method stub for retrieving detailed information about a specific form.
+   * Not yet implemented.
+   */
   async get(ctx: HonoContext) {}
 }

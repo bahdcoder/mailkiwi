@@ -1,37 +1,28 @@
 import * as Dropdown from '@/pages/components/dropdown/dropdown.jsx'
 import { CancelIcon } from '@/pages/components/icons/cancel.svg.jsx'
 import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
-import { SearchIcon } from '@/pages/components/icons/search.svg.jsx'
-import { NewContactProperty } from '@/pages/w/engage/contacts/components/actions/new_contact_property.jsx'
-import { SaveFilterAsSegmentForm } from '@/pages/w/engage/contacts/components/actions/save_filter_as_segment.jsx'
-import { UpdateContactProperty } from '@/pages/w/engage/contacts/components/actions/update_contact_property.jsx'
 import type { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
 import { TextFilterInputForm } from '@/pages/w/engage/contacts/components/filters.jsx'
-import { Pagination } from '@/pages/w/engage/contacts/components/pagination.jsx'
-import { useContacts } from '@/pages/w/engage/contacts/hooks/use-contacts.js'
-import { useFilterOperations } from '@/pages/w/engage/contacts/hooks/use-filter-operations.js'
 import { Button } from '@kibamail/owly/button'
 import { Checkbox } from '@kibamail/owly/checkbox'
-import * as Tabs from '@kibamail/owly/tabs'
 import { Text } from '@kibamail/owly/text'
-import * as TextField from '@kibamail/owly/text-field'
-import { flexRender } from '@tanstack/react-table'
-import cn from 'classnames'
+
 import * as React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 import type { PageContext } from 'vike/types'
 
-import {
-  ContactWithTagsAndProperties,
-  type Segment,
-  type Tag,
-} from '@/database/database_schema_types.js'
+import type { Segment, Tag } from '@/database/database_schema_types.js'
 
 const filterOperationLabels: Record<string, string> = {
   eq: 'Is',
   ne: 'Is not',
   contains: 'Contains',
   notContains: 'Does not contain',
+}
+
+type PageProps = PageContext['pageProps'] & {
+  segments: Segment[]
+  tags: Tag[]
 }
 
 type FilterOperationOptions = Record<
@@ -41,7 +32,7 @@ type FilterOperationOptions = Record<
     operationLabels?: Record<string, string>
     operations: { label: string; value: FilterCondition['operation'] }[]
     options?: React.FC<{
-      pageCtx: PageContext
+      pageCtx: PageProps
       children: React.ReactNode
       filter: FilterCondition
       onChange: (value: FilterCondition['value']) => void
@@ -118,8 +109,8 @@ const filterOperationOptions: FilterOperationOptions = {
       { label: 'Is in', value: 'eq' },
       { label: 'Is not in', value: 'ne' },
     ],
-    options({ pageCtx, children, onChange, filter }) {
-      const segments = pageCtx.pageProps?.segments as Segment[]
+    options({ pageCtx, filter }) {
+      const segments = pageCtx?.segments
 
       const selectedSegment = segments.find((segment) => segment.id === filter.value)
 
@@ -226,7 +217,7 @@ export function DisplayedFilterCondition({
   updateFilterValue,
   updateFilterOperation,
 }: DisplayedFilterConditionProps) {
-  const ctx = usePageContext()
+  const ctx = usePageContext().pageProps as PageProps
 
   const tagNames = React.useMemo(() => {
     return (

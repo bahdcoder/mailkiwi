@@ -8,6 +8,17 @@ import type { HonoContext } from '@/shared/server/types.js'
 
 import { container } from '@/utils/typi.js'
 
+/**
+ * BroadcastGroupController manages broadcast campaign grouping functionality.
+ *
+ * This controller is responsible for:
+ * 1. Creating logical groups for organizing related broadcast campaigns
+ * 2. Enabling better organization and management of email marketing campaigns
+ *
+ * Broadcast groups allow marketers to organize related campaigns together,
+ * such as grouping all newsletters, promotional emails, or onboarding
+ * sequences for better campaign management and reporting.
+ */
 export class BroadcastGroupController extends BaseController {
   constructor(protected app = makeApp()) {
     super()
@@ -15,6 +26,12 @@ export class BroadcastGroupController extends BaseController {
     app.defineRoutes([['POST', route('create_broadcast_group'), this.store]])
   }
 
+  /**
+   * Creates a new broadcast group.
+   *
+   * Validates the group data and creates a new organizational group
+   * for categorizing related broadcast campaigns.
+   */
   store = async (ctx: HonoContext) => {
     const data = await this.validate(ctx, CreateBroadcastGroupSchema)
 

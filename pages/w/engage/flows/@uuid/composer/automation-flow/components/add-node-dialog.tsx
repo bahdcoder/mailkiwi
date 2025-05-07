@@ -9,19 +9,19 @@ import {
   automationStepSubtypesRule,
   automationStepSubtypesTrigger,
 } from '@/database/types/automations.js'
-import { AxesIcon } from '@/pages/components/icons/axes.svg.jsx'
 import { BellOffIcon } from '@/pages/components/icons/bell-off.svg.jsx'
 import { BellIcon } from '@/pages/components/icons/bell.svg.jsx'
 import { LabelIcon } from '@/pages/components/icons/label.svg.jsx'
 import { MailIcon } from '@/pages/components/icons/mail.svg.jsx'
+import { NetworkReverseIcon } from '@/pages/components/icons/network-reverse.svg.jsx'
 import { PercentageIcon } from '@/pages/components/icons/percentage.svg.jsx'
 import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
 import { TimerIcon } from '@/pages/components/icons/timer.svg.jsx'
 import { UserPlusIcon } from '@/pages/components/icons/user-plus.svg.jsx'
-import { UserXmarkIcon } from '@/pages/components/icons/user-xmark.svg.jsx'
+import { UserXMarkIcon } from '@/pages/components/icons/user-xmark.svg.jsx'
 import { UserIcon } from '@/pages/components/icons/user.svg.jsx'
 import { WebhookIcon } from '@/pages/components/icons/webhook.svg.jsx'
-import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
 import {
   ServerForm,
   useServerFormMutation,
@@ -42,7 +42,7 @@ const nodes: Record<AutomationStepType, ReadonlyArray<AutomationStepSubType>> = 
   RULES: automationStepSubtypesRule,
 }
 
-const icons: Partial<
+export const icons: Partial<
   Record<AutomationStepSubType, React.FC<React.SVGProps<SVGSVGElement>>>
 > = {
   // actions
@@ -55,14 +55,14 @@ const icons: Partial<
 
   // triggers
   TRIGGER_CONTACT_SUBSCRIBED: UserPlusIcon,
-  TRIGGER_CONTACT_UNSUBSCRIBED: UserXmarkIcon,
+  TRIGGER_CONTACT_UNSUBSCRIBED: UserXMarkIcon,
   TRIGGER_CONTACT_TAG_ADDED: LabelIcon,
   TRIGGER_CONTACT_TAG_REMOVED: LabelIcon,
   TRIGGER_EMPTY: LabelIcon,
   TRIGGER_API_MANUAL: WebhookIcon,
 
   // rules
-  RULE_IF_ELSE: AxesIcon,
+  RULE_IF_ELSE: NetworkReverseIcon,
   RULE_PERCENTAGE_SPLIT: PercentageIcon,
   RULE_WAIT_FOR_DURATION: TimerIcon,
   RULE_WAIT_FOR_TRIGGER: TimerIcon,
@@ -84,17 +84,20 @@ export function AddNodeDialog({
   edge,
   onAddNodeSuccess,
 }: AddNodeDialogProps) {
-  const ctx = usePageContext()
+  const { pageProps: ctx } = usePageContext()
   const [selectedSubType, setSelectedSubType] =
     React.useState<AutomationStepSubType | null>()
-  const { automation } = usePageProps<{ automation: AutomationWithSteps }>()
+  const {
+    pageProps: { automation },
+    audience,
+  } = usePageContextWithProps<{ automation: AutomationWithSteps }>()
 
   const { serverFormProps, ServerErrorsList, isPending, reset } = useServerFormMutation<{
     automation: AutomationWithSteps
     step: AutomationStep
   }>({
     action: route('add_automation_step', {
-      audienceId: ctx.audience?.id,
+      audienceId: audience?.id,
       automationId: automation?.id,
     }),
     onSuccess(response) {
@@ -146,7 +149,7 @@ export function AddNodeDialog({
                         const Icon = icons[subtype] ? icons[subtype] : null
                         return (
                           <button
-                            type="button"
+                            type="submit"
                             key={subtype}
                             onClick={() => setSelectedSubType(subtype)}
                             disabled={isPending}

@@ -206,23 +206,19 @@ export class BroadcastController extends BaseController {
    * @throws E_VALIDATION_FAILED if any validation check fails
    */
   send = async (ctx: HonoContext) => {
-    // Verify the team context and user permissions
     const team = this.ensureTeam(ctx)
     this.ensureCanManage(ctx)
 
-    // Retrieve the broadcast with its A/B test variants
     let broadcast = await container
       .make(BroadcastRepository)
       .findByIdWithAbTestVariants(ctx.req.param('broadcastId'))
 
-    // Helper function to refresh the broadcast data after updates
     async function refreshBroadcast() {
       broadcast = await container
         .make(BroadcastRepository)
         .findByIdWithAbTestVariants(ctx.req.param('broadcastId'))
     }
 
-    // Validate that the broadcast exists
     if (!broadcast) {
       throw E_VALIDATION_FAILED([
         {
@@ -232,8 +228,6 @@ export class BroadcastController extends BaseController {
       ])
     }
 
-    // Validate the broadcast status
-    // Only drafts or already queued broadcasts can be sent
     const allowedStatuses: Broadcast['status'][] = ['DRAFT', 'QUEUED_FOR_SENDING']
 
     if (!allowedStatuses?.includes(broadcast.status))
@@ -244,15 +238,11 @@ export class BroadcastController extends BaseController {
         },
       ])
 
-    // Apply any final updates to the broadcast
     const data = await this.validate(ctx, UpdateBroadcastDto)
     await container.resolve(UpdateBroadcastAction).handle(broadcast, data)
 
-    // Refresh the broadcast data after updates
     await refreshBroadcast()
 
-    // Validate the broadcast against the sending schema
-    // This checks for required fields like subject, content, etc.
     const { success, issues } = await safeParseAsync(SendBroadcastSchema, {
       ...broadcast,
       sendAt: broadcast.sendAt?.toString(),
@@ -260,7 +250,6 @@ export class BroadcastController extends BaseController {
 
     if (!success) throw E_VALIDATION_FAILED(issues)
 
-    // Check if the team has sufficient credits for the recipient count
     const availableCredits = await container
       .make(TeamCreditRepository)
       .totalAvailableCredits(team.id)
@@ -278,7 +267,6 @@ export class BroadcastController extends BaseController {
       ])
     }
 
-    // For A/B tests, validate all variant content
     if (broadcast.isAbTest) {
       const validations = await Promise.all(
         broadcast.abTestVariants.map((variant) =>
@@ -298,10 +286,8 @@ export class BroadcastController extends BaseController {
       }
     }
 
-    // Queue the broadcast for sending
     await container.make(SendBroadcastAction).handle(broadcast)
 
     return ctx.json({ id: broadcast.id })
   }
 }
-;('')

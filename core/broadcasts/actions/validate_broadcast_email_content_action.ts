@@ -12,6 +12,20 @@ interface ValidationResult {
   error?: string
 }
 
+/**
+ * ValidateBroadcastEmailContentAction validates links and images in broadcast email content.
+ *
+ * This action is responsible for ensuring that all external resources referenced in an
+ * email broadcast are valid and accessible before the broadcast is sent. It:
+ *
+ * 1. Extracts all links and image URLs from the email content
+ * 2. Validates each URL by making HTTP requests to check accessibility
+ * 3. Verifies that image URLs actually point to valid image resources
+ *
+ * This validation is critical for maintaining email quality and preventing broken
+ * links or missing images that would negatively impact recipient experience and
+ * potentially harm sender reputation.
+ */
 export class ValidateBroadcastEmailContentAction {
   private readonly TIMEOUT = 5000
   private readonly CONCURRENT_REQUESTS = 10
@@ -22,6 +36,14 @@ export class ValidateBroadcastEmailContentAction {
     ),
   ) {}
 
+  /**
+   * Validates a URL by making an HTTP GET request to check if it's accessible.
+   *
+   * Uses a timeout to prevent hanging on slow or unresponsive endpoints.
+   *
+   * @param url - The URL to validate
+   * @returns ValidationResult with status and any error information
+   */
   private async validateUrl(url: string): Promise<ValidationResult> {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), this.TIMEOUT)
@@ -49,6 +71,16 @@ export class ValidateBroadcastEmailContentAction {
     }
   }
 
+  /**
+   * Validates an image URL by checking both accessibility and content type.
+   *
+   * Uses a HEAD request to efficiently check if the URL:
+   * 1. Is accessible (returns a successful HTTP status)
+   * 2. Actually points to an image resource (has image/* content type)
+   *
+   * @param imageUrl - The image URL to validate
+   * @returns ValidationResult with status and any error information
+   */
   private async validateImage(imageUrl: string): Promise<ValidationResult> {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), this.TIMEOUT)
@@ -87,6 +119,20 @@ export class ValidateBroadcastEmailContentAction {
     }
   }
 
+  /**
+   * Processes a list of items in batches to prevent overwhelming external services.
+   *
+   * This utility method enables controlled concurrency when making multiple HTTP requests,
+   * which helps to:
+   * - Prevent rate limiting from external services
+   * - Manage memory usage for large lists
+   * - Provide better error isolation between batches
+   *
+   * @param items - List of items to process
+   * @param processor - Function to process each item
+   * @param batchSize - Maximum number of concurrent operations
+   * @returns Combined results from all batches
+   */
   private async batchProcess<T>(
     items: string[],
     processor: (item: string) => Promise<T>,
@@ -103,6 +149,17 @@ export class ValidateBroadcastEmailContentAction {
     return results
   }
 
+  /**
+   * Validates all links and images in a broadcast's email content.
+   *
+   * This method:
+   * 1. Extracts all links and image URLs from the email content
+   * 2. Filters out template variables (links containing {{ }})
+   * 3. Validates all external resources in parallel with controlled concurrency
+   *
+   * @param broadcast - The broadcast with email content to validate
+   * @returns Object containing validation results for links and images
+   */
   async handle(broadcast: BroadcastWithEmailContent) {
     const emailContent = broadcast.emailContent?.contentJson as JSONContent
 
@@ -141,7 +198,6 @@ export class ValidateBroadcastEmailContentAction {
       (link) => !(link.includes('{{') && link.includes('}}')),
     )
 
-    // Validate links and images concurrently
     const [linkResults, imageResults] = await Promise.all([
       this.batchProcess(
         nonInternalLinks,

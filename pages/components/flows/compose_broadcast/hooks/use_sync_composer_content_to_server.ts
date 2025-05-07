@@ -21,12 +21,12 @@ export function useSyncComposerContentToServer({
   setStep,
   mutationOptions,
 }: UseSyncComposerContentToServerProps) {
-  const ctx = usePageContext()
+  const { routeParams } = usePageContext()
 
   const { onSuccess, ...restOfMutationOptions } = mutationOptions ?? {}
 
   const serverFormMutation = useServerFormMutation({
-    action: route('update_broadcast', { uuid: ctx?.routeParams?.uuid }),
+    action: route('update_broadcast', { uuid: routeParams?.uuid }),
     method: 'PUT',
     transform(form) {
       return form

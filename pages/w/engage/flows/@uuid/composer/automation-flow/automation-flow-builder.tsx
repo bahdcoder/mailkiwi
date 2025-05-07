@@ -1,6 +1,5 @@
 import React from 'react'
 import { Automation } from './automation.jsx'
-import 'antd/dist/antd.css'
 import './styles.css'
 import type {
   AutomationElement,
@@ -12,8 +11,23 @@ import type {
   AutomationStep,
   AutomationWithSteps,
 } from '@/database/database_schema_types.js'
-import { usePageProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps, usePageProps } from '@/pages/hooks/use_page_props.js'
 import { AddNodeDialog } from './components/add-node-dialog.jsx'
+import type { AutomationStepSubType } from '@/database/types/automations.js'
+import { useAutomationFlowBuilder } from './state/automation-flow-context.jsx'
+
+const nodeTypesToWidthAndHeightValues: Partial<
+  Record<AutomationStepSubType, { width: number; height: number }>
+> = {
+  ACTION_EMPTY: {
+    width: 300,
+    height: 56,
+  },
+  TRIGGER_EMPTY: {
+    width: 300,
+    height: 56,
+  },
+}
 
 function generateNodesAndEdgesFromAutomationSteps(
   steps: AutomationStep[],
@@ -23,6 +37,7 @@ function generateNodesAndEdgesFromAutomationSteps(
     onNodeClickCallback: (id: string) => void
     onAddNodeCallback: (id: string) => void
   },
+  setAsDefaultNode?: (step: AutomationStep) => boolean,
 ): AutomationElement[] {
   // Create a map of steps by ID for faster lookup
   const stepsMap = new Map<string, AutomationStep>()
@@ -36,14 +51,16 @@ function generateNodesAndEdgesFromAutomationSteps(
     type: step.subtype,
     data: {
       step,
-      selected: selectedNode ? selectedNode.id === step.id : false,
+      selected: selectedNode
+        ? selectedNode.id === step.id
+        : (setAsDefaultNode?.(step) ?? false),
       onDeleteNodeCallback: callbacks.onDeleteNodeCallback,
       onNodeClickCallback: callbacks.onNodeClickCallback,
     },
     position: { x: 0, y: 0 },
     style: {
-      width: 300,
-      height: 104,
+      width: nodeTypesToWidthAndHeightValues[step.subtype]?.width || 300,
+      height: nodeTypesToWidthAndHeightValues[step.subtype]?.height || 92,
     },
   }))
 
@@ -101,15 +118,15 @@ function generateNodesAndEdgesFromAutomationSteps(
 }
 
 export const Flow = () => {
-  const { automation } = usePageProps<{ automation: AutomationWithSteps }>()
-
-  const [automationSteps] = React.useState<AutomationStep[]>(automation.steps)
-
-  const [addNodeDialogOpen, setAddNodeDialogOpen] = React.useState(false)
-  const [selectedNode, setSelectedNode] = React.useState<NodeElement | null>(null)
-
-  const [selectedEdge, setSelectedEdge] = React.useState<EdgeElement | null>(null)
-
+  const {
+    setSelectedEdge,
+    setSelectedNode,
+    automationSteps,
+    setAddNodeDialogOpen,
+    selectedEdge,
+    selectedNode,
+    addNodeDialogOpen,
+  } = useAutomationFlowBuilder()
   const onAddNodeCallback = (id: string) => {
     const edge = elements.find((element) => element.id === id)
 
@@ -148,13 +165,22 @@ export const Flow = () => {
     )
   }
 
-  const [elements, setElements] = React.useState<AutomationElement[]>(
-    generateNodesAndEdgesFromAutomationSteps(automationSteps, selectedNode, {
-      onAddNodeCallback,
-      onDeleteNodeCallback,
-      onNodeClickCallback,
-    }),
-  )
+  const [elements, setElements] = React.useState<AutomationElement[]>(() => {
+    const elements = generateNodesAndEdgesFromAutomationSteps(
+      automationSteps,
+      selectedNode,
+      {
+        onAddNodeCallback,
+        onDeleteNodeCallback,
+        onNodeClickCallback,
+      },
+      function setAsDefaultNode(step) {
+        return step.subtype.includes('TRIGGER')
+      },
+    )
+
+    return elements
+  })
 
   return (
     <div className="h-screen fleelement items-center w-full justify-center">

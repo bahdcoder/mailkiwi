@@ -13,12 +13,10 @@ export const HomeAltSlimHorizIcon = React.forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color="currentColor"
-      role="img"
-      aria-label="Home icon"
       {...props}
       ref={forwardedRef}
     >
-      <title>Home icon</title>
+      <title>Home Icon</title>
       <path
         d="M10 16H14"
         stroke="currentColor"

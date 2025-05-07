@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "ae5aaafd-6609-4150-9c1e-9d70262f16e5",
+  "id": "2457b866-7f25-4bc7-986f-b111234e0ecd",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -551,6 +551,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "senderIdentityId": {
+          "name": "senderIdentityId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "sendingDomainId": {
           "name": "sendingDomainId",
           "type": "binary(16)",
@@ -670,6 +677,15 @@
           "columnsFrom": ["emailContentId"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "broadcasts_senderIdentityId_senderIdentities_id_fk": {
+          "name": "broadcasts_senderIdentityId_senderIdentities_id_fk",
+          "tableFrom": "broadcasts",
+          "tableTo": "senderIdentities",
+          "columnsFrom": ["senderIdentityId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
           "onUpdate": "no action"
         },
         "broadcasts_sendingDomainId_sendingDomains_id_fk": {
@@ -1635,34 +1651,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "fromName": {
-          "name": "fromName",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "fromEmail": {
-          "name": "fromEmail",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "replyToEmail": {
-          "name": "replyToEmail",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "replyToName": {
-          "name": "replyToName",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "contentJson": {
           "name": "contentJson",
           "type": "json",
@@ -2186,6 +2174,13 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "senderIdentityId": {
+          "name": "senderIdentityId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -2206,6 +2201,15 @@
           "columnsFrom": ["emailContentId"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "emails_senderIdentityId_senderIdentities_id_fk": {
+          "name": "emails_senderIdentityId_senderIdentities_id_fk",
+          "tableFrom": "emails",
+          "tableTo": "senderIdentities",
+          "columnsFrom": ["senderIdentityId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
@@ -2990,6 +2994,117 @@
       "compositePrimaryKeys": {
         "segments_id": {
           "name": "segments_id",
+          "columns": ["id"]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "senderIdentities": {
+      "name": "senderIdentities",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "sendingDomainId": {
+          "name": "sendingDomainId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "teamId": {
+          "name": "teamId",
+          "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "emailVerificationCode": {
+          "name": "emailVerificationCode",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "emailVerifiedAt": {
+          "name": "emailVerifiedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "emailVerificationCodeExpiresAt": {
+          "name": "emailVerificationCodeExpiresAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "replyToEmail": {
+          "name": "replyToEmail",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "senderIdentities_sendingDomainId_sendingDomains_id_fk": {
+          "name": "senderIdentities_sendingDomainId_sendingDomains_id_fk",
+          "tableFrom": "senderIdentities",
+          "tableTo": "sendingDomains",
+          "columnsFrom": ["sendingDomainId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "senderIdentities_teamId_teams_id_fk": {
+          "name": "senderIdentities_teamId_teams_id_fk",
+          "tableFrom": "senderIdentities",
+          "tableTo": "teams",
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "senderIdentities_id": {
+          "name": "senderIdentities_id",
           "columns": ["id"]
         }
       },

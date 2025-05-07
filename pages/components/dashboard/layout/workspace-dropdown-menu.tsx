@@ -1,5 +1,3 @@
-import { useApplicationLayoutContext } from '@/pages/components/dashboard/layout/application-layout-context.jsx'
-import { DEFAULT_SIDEBAR_WIDTH } from '@/pages/components/dashboard/layout/sidebar/left-sidebar.jsx'
 import { SignoutForm } from '@/pages/components/dashboard/layout/signout-form.jsx'
 import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
 import { NavArrowDownIcon } from '@/pages/components/icons/nav-arrow-down.svg.jsx'
@@ -20,11 +18,11 @@ interface WorkspacesDropdownMenuProps {
 }
 
 export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) {
-  const ctx = usePageContext()
+  const { user, memberships, team } = usePageContext()
 
   const allUserTeams = [
-    ...ctx.user.teams,
-    ...ctx.memberships.map((membership) => membership.team),
+    ...user.teams,
+    ...memberships.map((membership) => membership.team),
   ]
 
   return (
@@ -37,11 +35,9 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
           className="flex-grow flex items-center border transition ease-in-out border-transparent hover:bg-[var(--background-hover)] focus:outline-none focus-within:border-[var(--border-focus)] p-1 rounded-lg"
         >
           <span className="flex-grow flex items-center">
-            <TeamAvatar name={ctx?.team?.name} size="md" />
+            <TeamAvatar name={team?.name} size="md" />
 
-            <Text className="kb-content-primary truncate capitalize">
-              {ctx?.team?.name}
-            </Text>
+            <Text className="kb-content-primary truncate capitalize">{team?.name}</Text>
           </span>
 
           <NavArrowDownIcon
@@ -57,7 +53,7 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
         id={`${rootId}-dropdown-menu-content`}
         className="border workspaces-dropdown-menu kb-border-tertiary absolute rounded-xl p-1 shadow-[0px_16px_24px_-8px_var(--black-10)] kb-background-primary w-[17.5rem] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 z-50"
       >
-        <DropdownMenu.RadioGroup value={ctx.team?.id}>
+        <DropdownMenu.RadioGroup value={team?.id}>
           {allUserTeams?.map((team) => (
             <DropdownMenu.RadioItem key={team?.id} value={team?.id} asChild>
               <a

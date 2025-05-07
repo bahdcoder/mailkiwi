@@ -5,7 +5,7 @@ import * as Tabs from '@kibamail/owly/tabs'
 import { usePageContext } from 'vike-react/usePageContext'
 
 function EngageAutomationsPage() {
-  const ctx = usePageContext()
+  const { pageProps: ctx } = usePageContext()
 
   return (
     <EmptyState

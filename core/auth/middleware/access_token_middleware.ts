@@ -53,32 +53,25 @@ export class AccessTokenMiddleware {
    * @throws E_UNAUTHORIZED if authentication fails at any step
    */
   handle = async (ctx: HonoContext, next: Next) => {
-    // Extract the API key from the Authorization header
     const authorization = ctx.req.header('Authorization')
     const [apiKey] = authorization?.split('Bearer ') ?? []
 
-    // Reject the request if no API key is present
     if (!apiKey) {
       throw E_UNAUTHORIZED()
     }
 
-    // Validate the API key against the database
     const accessToken = await this.accessTokenRepository.check(apiKey)
 
-    // Reject the request if the API key is invalid
     if (!accessToken) {
       throw E_UNAUTHORIZED()
     }
 
-    // Load the associated user account
     const user = await this.userRepository.findById(accessToken.userId as string)
 
-    // Reject the request if the user account is not found
     if (!user) {
       throw E_UNAUTHORIZED()
     }
 
-    // Make the user and access token available to downstream middleware and controllers
     ctx.set('accessToken', accessToken)
     ctx.set('user', user)
 
