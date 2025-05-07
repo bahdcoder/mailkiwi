@@ -14,6 +14,7 @@ export const LinkIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Link Icon</title>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

@@ -12,6 +12,7 @@ export const GoogleIcon = React.forwardRef<React.ElementRef<'svg'>>(
         {...props}
         ref={forwardedRef}
       >
+        <title>Google Icon</title>
         <path
           d="M19.2511 10.1951C19.2511 9.47569 19.1915 8.95069 19.0626 8.40625H10.6797V11.6534H15.6003C15.5011 12.4604 14.9654 13.6757 13.7749 14.4923L13.7582 14.601L16.4087 16.6133L16.5924 16.6312C18.2788 15.1048 19.2511 12.859 19.2511 10.1951Z"
           fill="#4285F4"

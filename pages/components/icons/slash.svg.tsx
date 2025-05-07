@@ -16,6 +16,7 @@ export const SlashIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Slash Icon</title>
       <path
         d="M15 4L8 20"
         stroke="currentColor"

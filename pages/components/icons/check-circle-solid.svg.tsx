@@ -16,6 +16,7 @@ export const CheckCircleSolidIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Check Circle Solid Icon</title>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

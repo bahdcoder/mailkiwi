@@ -16,6 +16,7 @@ export const BookStackIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Book Stack Icon</title>
       <path
         d="M5 19.5V5C5 3.89543 5.89543 3 7 3H18.4C18.7314 3 19 3.26863 19 3.6V21"
         stroke="currentColor"

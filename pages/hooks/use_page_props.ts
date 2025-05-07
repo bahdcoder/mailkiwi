@@ -12,7 +12,7 @@ export function usePageProps<T extends DefaultPageProps>() {
   return pageProps
 }
 
-export function usePageContextWithProps<T extends object = {}>() {
+export function usePageContextWithProps<T extends object = object>() {
   const ctx = usePageContext() as PageContext & { pageProps: T }
 
   return ctx

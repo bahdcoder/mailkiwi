@@ -16,6 +16,7 @@ export const FastArrowLeftIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Fast Arrow Left Icon</title>
       <path
         d="M11 6L5 12L11 18"
         stroke="currentColor"

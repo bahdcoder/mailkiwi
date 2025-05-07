@@ -16,6 +16,7 @@ export const CheckCircleIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Check Circle Icon</title>
       <path
         d="M7 12.5L10 15.5L17 8.5"
         stroke="currentColor"

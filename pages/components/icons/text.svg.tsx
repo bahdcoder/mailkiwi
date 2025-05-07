@@ -16,6 +16,7 @@ export const TextIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Text Icon</title>
       <path
         d="M19 7V5L5 5V7"
         stroke="currentColor"

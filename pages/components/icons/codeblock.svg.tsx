@@ -14,6 +14,7 @@ export const CodeBlockIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Code Block Icon</title>
       <path
         d="M2 5V3.33333C2 2.59695 2.59695 2 3.33333 2L12.6667 2C13.403 2 14 2.59695 14 3.33333V5M14 11V12.6667C14 13.403 13.403 14 12.6667 14H3.33333C2.59695 14 2 13.403 2 12.6667V11"
         stroke="currentColor"

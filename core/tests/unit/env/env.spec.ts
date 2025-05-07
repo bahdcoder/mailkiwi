@@ -77,7 +77,7 @@ describe('@env-tests Environment variable loader', () => {
     const cachedSecrets = await redisClient.get(cacheKey)
     expect(cachedSecrets).not.toBeNull()
 
-    const secrets = JSON.parse(cachedSecrets!)
+    const secrets = JSON.parse(cachedSecrets || '[]')
     expect(Array.isArray(secrets)).toBe(true)
     expect(secrets.length).toBeGreaterThan(0)
 
@@ -159,7 +159,7 @@ describe('@env-tests Environment variable loader', () => {
     const cachedSecrets = await redisClient.get(cacheKey)
     expect(cachedSecrets).not.toBeNull()
 
-    const secrets = JSON.parse(cachedSecrets!)
+    const secrets = JSON.parse(cachedSecrets || '[]')
     expect(Array.isArray(secrets)).toBe(true)
     expect(secrets.length).toBeGreaterThan(0)
 

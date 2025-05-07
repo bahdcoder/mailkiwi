@@ -16,6 +16,7 @@ export const OneFingerSelectHandGestureIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>One Finger Select Hand Gesture Icon</title>
       <path
         d="M7.5 12L5.49591 14.6721C4.91845 15.4421 4.97127 16.5141 5.6216 17.2236L9.4055 21.3515C9.78431 21.7647 10.3183 22 10.8789 22C11.9651 22 13.7415 22 15.5 22C17.9 22 19.5 20 19.5 18C19.5 18 19.5 18 19.5 18C19.5 18 19.5 11.1429 19.5 9.42859"
         stroke="currentColor"

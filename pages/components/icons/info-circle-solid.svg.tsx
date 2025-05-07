@@ -16,6 +16,7 @@ export const InfoCircleSolidIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Info Circle Solid Icon</title>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

@@ -16,6 +16,7 @@ export const FillColorIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Fill Color Icon</title>
       <path
         d="M2.63596 10.2927L9.70703 3.22168L18.1923 11.707L11.1212 18.778C10.3402 19.5591 9.07387 19.5591 8.29282 18.778L2.63596 13.1212C1.85492 12.3401 1.85492 11.0738 2.63596 10.2927Z"
         stroke="currentColor"

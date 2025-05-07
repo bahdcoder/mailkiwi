@@ -14,6 +14,7 @@ export const BlockQuoteIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Block Quote Icon</title>
       <path
         d="M2.6665 4L2.6665 12"
         stroke="currentColor"

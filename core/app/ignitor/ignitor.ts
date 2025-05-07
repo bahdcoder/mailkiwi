@@ -82,8 +82,8 @@ export class Ignitor {
     container.register(ContainerKey.env, this.env)
 
     this.logger = pino({
-      level: appEnv.LOG_LEVEL,
-      transport: appEnv.isTest
+      level: this.env.LOG_LEVEL,
+      transport: this.env.isDev
         ? {
             target: 'pino-pretty',
             options: {

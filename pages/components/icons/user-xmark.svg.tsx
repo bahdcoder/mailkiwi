@@ -16,6 +16,7 @@ export const UserXMarkIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>User X Mark Icon</title>
       <path
         d="M18.6213 12.1213L20.7426 10M22.864 7.87868L20.7426 10M20.7426 10L18.6213 7.87868M20.7426 10L22.864 12.1213"
         stroke="currentColor"

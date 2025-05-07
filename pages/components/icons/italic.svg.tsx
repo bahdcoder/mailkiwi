@@ -16,6 +16,7 @@ export const ItalicIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Italic Icon</title>
       <path
         d="M11 5L14 5M17 5L14 5M14 5L10 19M10 19L7 19M10 19L13 19"
         stroke="currentColor"

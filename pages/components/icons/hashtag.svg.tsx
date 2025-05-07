@@ -16,6 +16,7 @@ export const HashTagIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Hash Tag Icon</title>
       <path
         d="M10 3L6 21"
         stroke="currentColor"

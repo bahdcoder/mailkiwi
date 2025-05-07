@@ -16,6 +16,7 @@ export const FilterListIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Filter List Icon</title>
       <path
         d="M3 6H21"
         stroke="currentColor"

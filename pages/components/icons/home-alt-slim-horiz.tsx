@@ -16,6 +16,7 @@ export const HomeAltSlimHorizIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Home Icon</title>
       <path
         d="M10 16H14"
         stroke="currentColor"

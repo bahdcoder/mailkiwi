@@ -16,6 +16,7 @@ export const PercentageIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Percentage Icon</title>
       <path
         d="M17 19C15.8954 19 15 18.1046 15 17C15 15.8954 15.8954 15 17 15C18.1046 15 19 15.8954 19 17C19 18.1046 18.1046 19 17 19Z"
         stroke="currentColor"

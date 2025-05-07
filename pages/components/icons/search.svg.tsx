@@ -16,6 +16,7 @@ export const SearchIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Search Icon</title>
       <path
         d="M17 17L21 21"
         stroke="currentColor"

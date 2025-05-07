@@ -17,6 +17,7 @@ export const UserPlusIcon = React.forwardRef<
         {...props}
         ref={forwardedRef}
       >
+        <title>User Plus Icon</title>
         <path
           d="M17 10H20M23 10H20M20 10V7M20 10V13"
           stroke="currentColor"

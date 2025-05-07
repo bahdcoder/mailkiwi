@@ -16,6 +16,7 @@ export const CompAlignCenterIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Comp Align Center Icon</title>
       <path
         d="M12 22L12 2"
         stroke="currentColor"

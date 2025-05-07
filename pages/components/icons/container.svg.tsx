@@ -14,6 +14,7 @@ export const ContainerIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Container Icon</title>
       <path
         d="M2.1 8.16675L11.9 8.16675C12.0933 8.16675 12.25 8.32345 12.25 8.51675L12.25 11.9001C12.25 12.0934 12.0933 12.2501 11.9 12.2501L2.1 12.2501C1.9067 12.2501 1.75 12.0934 1.75 11.9001L1.75 8.51675C1.75 8.32345 1.9067 8.16675 2.1 8.16675Z"
         stroke="currentColor"

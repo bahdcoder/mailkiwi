@@ -16,6 +16,7 @@ export const SidebarExpandIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Sidebar Expand Icon</title>
       <path
         d="M19 21L5 21C3.89543 21 3 20.1046 3 19L3 5C3 3.89543 3.89543 3 5 3L19 3C20.1046 3 21 3.89543 21 5L21 19C21 20.1046 20.1046 21 19 21Z"
         stroke="currentColor"

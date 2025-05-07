@@ -16,6 +16,7 @@ export const MailOutIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Mail Out Icon</title>
       <path
         d="M5 9L9.5 12L14 9"
         stroke="currentColor"

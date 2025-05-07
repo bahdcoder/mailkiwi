@@ -17,6 +17,7 @@ export const LogoutIcon = React.forwardRef<
         {...props}
         ref={forwardedRef}
       >
+        <title>Logout Icon</title>
         <path
           d="M12 12H19M19 12L16 15M19 12L16 9"
           stroke="currentColor"

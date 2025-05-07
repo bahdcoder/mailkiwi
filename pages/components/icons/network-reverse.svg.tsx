@@ -17,6 +17,7 @@ export const NetworkReverseIcon = React.forwardRef<
         {...props}
         ref={forwardedRef}
       >
+        <title>Network Reverse Icon</title>
         <rect
           width={7}
           height={5}

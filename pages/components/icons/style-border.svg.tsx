@@ -16,6 +16,7 @@ export const StyleBorderIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Style Border Icon</title>
       <path
         d="M16 2H8C4.68629 2 2 4.68629 2 8V16C2 19.3137 4.68629 22 8 22H16C19.3137 22 22 19.3137 22 16V8C22 4.68629 19.3137 2 16 2Z"
         stroke="currentColor"

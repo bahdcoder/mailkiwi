@@ -16,6 +16,7 @@ export const StrikeThroughIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Strike Through Icon</title>
       <path
         d="M3 12L21 12"
         stroke="currentColor"

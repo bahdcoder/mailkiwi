@@ -14,6 +14,7 @@ export const OptimiseIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Optimise Icon</title>
       <g clipPath="url(#clip0_196_1322)">
         <path
           d="M7.67572 8.91054H5.25391V1.64099C5.25391 0.974174 5.79595 0.432129 6.46277 0.432129H7.67777C8.34459 0.432129 8.88663 0.974174 8.88663 1.64099V6.48872H7.67572V1.64099H6.46277V7.69758H7.67368V8.90849L7.67572 8.91054Z"

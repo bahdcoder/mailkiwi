@@ -16,6 +16,7 @@ export const TextSizeIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Text Size Icon</title>
       <path
         d="M3 7L3 5L17 5V7"
         stroke="currentColor"

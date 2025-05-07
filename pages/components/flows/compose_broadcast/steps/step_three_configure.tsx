@@ -93,8 +93,8 @@ export function StepThreeConfigure() {
               {/* TODO: Fetch sender identities and populate this dropdown */}
               <SelectField.Item value="default">Default Sender</SelectField.Item>
             </SelectField.Content>
-            {error?.errorsMap?.['senderIdentityId'] && (
-              <SelectField.Error>{error.errorsMap['senderIdentityId']}</SelectField.Error>
+            {error?.errorsMap?.senderIdentityId && (
+              <SelectField.Error>{error.errorsMap.senderIdentityId}</SelectField.Error>
             )}
           </SelectField.Root>
         </div>

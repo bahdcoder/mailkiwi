@@ -16,6 +16,7 @@ export const GroupIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Group Icon</title>
       <path
         d="M1 20V19C1 15.134 4.13401 12 8 12V12C11.866 12 15 15.134 15 19V20"
         stroke="currentColor"

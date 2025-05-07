@@ -14,6 +14,7 @@ export const NumberedListIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Numbered List Icon</title>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

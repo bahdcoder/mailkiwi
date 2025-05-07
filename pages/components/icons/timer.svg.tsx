@@ -16,6 +16,7 @@ export const TimerIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Timer Icon</title>
       <path
         d="M9 2L15 2"
         stroke="currentColor"

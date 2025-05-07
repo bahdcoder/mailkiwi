@@ -16,6 +16,7 @@ export const NotesIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Notes Icon</title>
       <path
         d="M8 14L16 14"
         stroke="currentColor"

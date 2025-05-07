@@ -16,6 +16,7 @@ export const ArrowRightIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Arrow Right Icon</title>
       <path
         d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5"
         stroke="currentColor"

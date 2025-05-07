@@ -16,6 +16,7 @@ export const CloudUploadIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Cloud Upload Icon</title>
       <path
         d="M12 22V13M12 13L15.5 16.5M12 13L8.5 16.5"
         stroke="currentColor"

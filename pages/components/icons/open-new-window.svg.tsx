@@ -16,6 +16,7 @@ export const OpenNewWindowIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Open New Window Icon</title>
       <path
         d="M21 3L15 3M21 3L12 12M21 3V9"
         stroke="currentColor"

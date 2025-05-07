@@ -430,11 +430,10 @@ export async function setupSendingDomainForTeam(teamId: string) {
 
 export async function createSenderIdentityForTeam(
   teamId: string,
-  sendingDomainId?: string,
+  defaultSendingDomainId?: string,
 ) {
-  if (!sendingDomainId) {
-    sendingDomainId = await setupSendingDomainForTeam(teamId)
-  }
+  const sendingDomainId =
+    defaultSendingDomainId || (await setupSendingDomainForTeam(teamId))
 
   const { id: senderIdentityId } = await container.make(SenderIdentityRepository).create({
     name: `${faker.person.firstName()}'s Newsletter`,

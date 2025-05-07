@@ -14,6 +14,7 @@ export const UnorderedListIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Unordered List Icon</title>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

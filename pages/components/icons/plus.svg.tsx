@@ -17,6 +17,7 @@ export const PlusIcon = React.forwardRef<
         {...props}
         ref={forwardedRef}
       >
+        <title>Plus Icon</title>
         <path
           d="M6 12H12M18 12H12M12 12V6M12 12V18"
           stroke="currentColor"

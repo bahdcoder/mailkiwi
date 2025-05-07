@@ -16,6 +16,7 @@ export const XMarkCircleIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>X Mark Circle Icon</title>
       <path
         d="M9.17218 14.8284L12.0006 12M14.829 9.17157L12.0006 12M12.0006 12L9.17218 9.17157M12.0006 12L14.829 14.8284"
         stroke="currentColor"

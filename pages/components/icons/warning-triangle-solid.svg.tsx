@@ -16,6 +16,7 @@ export const WarningTriangleSolidIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Warning Triangle Solid Icon</title>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

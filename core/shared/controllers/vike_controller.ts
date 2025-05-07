@@ -100,7 +100,10 @@ export class VikeController extends BaseController {
   redirectToWelcomeIfAuthenticatedPage = async (ctx: HonoContext, next: Next) => {
     const user = ctx.get('user')
 
-    if ((user && !user.teams?.[0]?.name) || user.teams?.[0]?.name === DEFAULT_TEAM_NAME) {
+    if (
+      (user && !user.teams?.[0]?.name) ||
+      (user && user.teams?.[0]?.name === DEFAULT_TEAM_NAME)
+    ) {
       return this.response(ctx).redirect(route('auth_register_profile')).send()
     }
 

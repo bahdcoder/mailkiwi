@@ -17,6 +17,7 @@ export const BellOffIcon = React.forwardRef<
         {...props}
         ref={forwardedRef}
       >
+        <title>Bell Off Icon</title>
         <path
           d="M6.27049 6.5C6.09277 7.10971 6 7.74975 6 8.4C6 15.8667 3 18 3 18H18"
           stroke="currentColor"

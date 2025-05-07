@@ -16,6 +16,7 @@ export const MoreVertIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>More Vert Icon</title>
       <path
         d="M12 12.5C12.2761 12.5 12.5 12.2761 12.5 12C12.5 11.7239 12.2761 11.5 12 11.5C11.7239 11.5 11.5 11.7239 11.5 12C11.5 12.2761 11.7239 12.5 12 12.5Z"
         fill="currentColor"

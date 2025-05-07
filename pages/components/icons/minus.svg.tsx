@@ -16,6 +16,7 @@ export const MinusIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Minus Icon</title>
       <path
         d="M6 12H18"
         stroke="currentColor"

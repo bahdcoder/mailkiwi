@@ -116,7 +116,7 @@ const fields: FilterDefinition[] = [
         'ContactsFiltersBuilderTags',
       )
 
-      const { segments } = pageCtx?.pageProps
+      const { segments } = pageCtx.pageProps
 
       function onSegmentSelected(segment: Segment) {
         setFilterBuilderOpen(false)

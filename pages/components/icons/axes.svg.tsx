@@ -16,6 +16,7 @@ export const AxesIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Axes Icon</title>
       <path
         d="M21 19.4516L12 12.8428M12 12.8428L12 2.99999M12 12.8428L3 19.4516"
         stroke="currentColor"

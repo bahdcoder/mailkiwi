@@ -16,6 +16,7 @@ export const EyeClosedIcon = React.forwardRef<
       {...props}
       ref={forwardedRef}
     >
+      <title>Eye Closed Icon</title>
       <path
         d="M19.5 16L17.0248 12.6038"
         stroke="currentColor"
