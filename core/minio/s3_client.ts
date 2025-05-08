@@ -9,6 +9,7 @@ import { Upload } from '@aws-sdk/lib-storage'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 import { container } from '@/utils/typi.js'
+import { assetsPath } from '@/pages/utils/assets_path.js'
 
 export class S3Disk {
   protected client = new S3Client({
@@ -17,7 +18,7 @@ export class S3Disk {
       secretAccessKey: appEnv.FILE_UPLOADS_ACCESS_SECRET,
     },
     region: appEnv.FILE_UPLOADS_REGION,
-    endpoint: `https://${appEnv.FILE_UPLOADS_ENDPOINT}`,
+    endpoint: appEnv.FILE_UPLOADS_ENDPOINT,
   })
 
   async getSignedUrl(Key: string, expiresIn?: number) {
@@ -59,9 +60,7 @@ export class S3Disk {
 
     await upload.done()
 
-    const url = `https://${appEnv.FILE_UPLOADS_BUCKET}.${appEnv.FILE_UPLOADS_ENDPOINT}/${Key}`
-
-    return url
+    return assetsPath(Key)
   }
 }
 

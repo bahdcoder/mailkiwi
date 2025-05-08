@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "./env.mjs  --env=dev pnpm mysql:migrate:dev && pnpm quick:dev",
+    "server:dev": "./env.mjs  --env=dev pnpm mysql:migrate:dev && pnpm quick:dev",
+    "dev": "concurrently \"pnpm server:dev\" \"pnpm worker:dev\"",
     "ci:dev": "pnpm ci:mysql:migrate:dev && pnpm ci:quick:dev",
     "quick:dev": "./env.mjs  --env=dev tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/app/start/dev.ts",
     "ci:quick:dev": "tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/app/start/dev.ts",
@@ -129,6 +130,7 @@
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.16.0",
     "typescript": "^5.5.3",
+    "vike-server": "^1.0.15",
     "vite": "^5.3.3",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.6.0"

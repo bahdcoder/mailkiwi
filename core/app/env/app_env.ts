@@ -132,6 +132,11 @@ export const appEnv = makeExtraAppConfigurations(
       OAUTH_GOOGLE_CALLBACK_URL: str(),
 
       GOOGLE_FONTS_API_KEY: str(),
+
+      // assets
+      STORJ_ACCESS_GRANT: str(),
+      STORJ_ASSETS_PUBLIC_URL: str(),
+      ASSETS_URL: str(),
     }),
   ),
   {
