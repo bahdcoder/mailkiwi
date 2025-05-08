@@ -69,6 +69,7 @@ import '@/shared/utils/log/dump.js'
 import { createRedisDatabaseInstance } from '@/redis/redis_client.js'
 
 import { container } from '@/utils/typi.js'
+import { AssetController } from '@/assets/controllers/asset_controller.js'
 
 export class Ignitor {
   protected env: AppEnvVariables
@@ -204,6 +205,8 @@ export class Ignitor {
     container.resolve(BroadcastGroupController)
 
     container.resolve(MediaDocumentController)
+
+    container.resolve(AssetController)
   }
 
   async shutdown() {

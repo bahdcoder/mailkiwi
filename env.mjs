@@ -530,7 +530,6 @@ class Application {
       // Handle command execution or display secrets
       if (!this.config.command) {
         this.logger.info('No command provided, displaying secrets')
-        console.log(JSON.stringify(secrets, null, 2))
         return
       }
 
