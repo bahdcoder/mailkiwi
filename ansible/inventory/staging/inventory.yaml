@@ -1,41 +1,41 @@
 app:
   hosts:
     app-1:
-      ansible_host: 10.0.0.2
+      ansible_host: 172.16.0.3
     app-2:
-      ansible_host: 10.0.0.11
+      ansible_host: 172.16.0.2
 
 dragonfly:
   hosts:
     dragonfly:
-      ansible_host: 10.0.0.3
+      ansible_host: 172.16.0.11
 
 mail:
   hosts:
     mail-1:
-      ansible_host: 10.0.0.4
+      ansible_host: 172.16.0.10
     mail-2:
-      ansible_host: 10.0.0.10
+      ansible_host: 172.16.0.5
 
 mail_proxy:
   hosts:
     mail-proxy:
-      ansible_host: 10.0.0.6
+      ansible_host: 172.16.0.6
 
 mysql_master:
   hosts:
     mysql-master:
-      ansible_host: 10.0.0.7
+      ansible_host: 172.16.0.9
 
 mysql_slave:
   hosts:
     mysql-slave:
-      ansible_host: 10.0.0.8
+      ansible_host: 172.16.0.8
 
 monitoring:
   hosts:
     monitoring:
-      ansible_host: 10.0.0.5
+      ansible_host: 172.16.0.4
 
 mysql:
   children:

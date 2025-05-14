@@ -1,60 +1,96 @@
 ---
-# Verify required variables
-- name: verify nodejs_version is defined
-  assert:
-    that: nodejs_version is defined
-    msg: "nodejs_version must be defined"
 
-# Use become block to avoid repetition
-- name: install and configure nodejs
-  block:
-    - name: install dependencies
-      apt:
-        name:
-          - curl
-          - ca-certificates
-          - gnupg
-        state: present
-        update_cache: true
-
-    - name: create apt sources directory
-      file:
-        path: /etc/apt/keyrings
-        state: directory
-        mode: '0755'
-
-    - name: add nodejs apt key
-      shell: curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-      args:
-        creates: /etc/apt/keyrings/nodesource.gpg
-      changed_when: false
-
-    - name: add nodejs repository for version {{ nodejs_version }}
-      shell: echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_{{ nodejs_version.split('.')[0] }}.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-      args:
-        creates: /etc/apt/sources.list.d/nodesource.list
-      changed_when: false
-
-    - name: update apt cache
-      apt:
-        update_cache: true
-
-    - name: install nodejs
-      apt:
-        name: nodejs
-        state: present
+- name: install dependencies for nvm
+  apt:
+    name:
+      - curl
+      - git
+      - build-essential
+      - libssl-dev
+    state: present
+    update_cache: yes
   become: true
 
-- name: check nodejs version
-  command: node --version
-  register: nodejs_version_output
+- name: create .nvm directory
+  file:
+    path: "{{ ansible_env.HOME }}/.nvm"
+    state: directory
+    mode: '0755'
+
+- name: download and install nvm
+  shell: >
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  args:
+    creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+- name: add nvm to .bashrc
+  blockinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    marker: "# {mark} NVM CONFIGURATION"
+    block: |
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+- name: check if .zshrc exists
+  stat:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+  register: zshrc_file
+
+- name: add nvm to .zshrc if it exists
+  blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} NVM CONFIGURATION"
+    block: |
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  when: zshrc_file.stat.exists
+
+- name: source nvm for current Ansible run
+  shell: |
+    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  args:
+    executable: /bin/bash
+
+- name: install node.js v22.4.0
+  shell: |
+    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    nvm install 22.4.0
+    nvm alias default 22.4.0
+  args:
+    executable: /bin/bash
+    creates: "{{ ansible_env.HOME }}/.nvm/versions/node/v22.4.0/bin/node"
+
+- name: install pnpm v9
+  shell: |
+    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    npm install -g pnpm@9
+  args:
+    executable: /bin/bash
+    creates: "{{ ansible_env.HOME }}/.nvm/versions/node/v22.4.0/bin/pnpm"
+
+- name: verify Node.js installation
+  shell: |
+    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    node --version
+  register: node_version
   changed_when: false
 
-- name: verify installed nodejs version
-  assert:
-    that: "nodejs_version_output.stdout is version(nodejs_version, '>=')"
-    msg: "Installed Node.js version ({{ nodejs_version_output.stdout }}) is not compatible with required version ({{ nodejs_version }})"
+- name: verify pnpm installation
+  shell: |
+    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    pnpm --version
+  register: pnpm_version
+  changed_when: false
 
-- name: display nodejs version
+- name: display installed versions
   debug:
-    msg: "Installed Node.js version: {{ nodejs_version_output.stdout }}"
+    msg: 
+      - "Node.js version: {{ node_version.stdout }}"
+      - "pnpm version: {{ pnpm_version.stdout }}"

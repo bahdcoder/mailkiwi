@@ -1,4 +1,0 @@
----
-# This file should be encrypted with ansible-vault
-# Replace this with your actual service token
-pm2_infisical_service_token: "your-infisical-service-token-here"
