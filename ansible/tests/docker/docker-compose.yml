@@ -22,7 +22,7 @@ services:
       - "2322:22"
     volumes:
       - ../..:/root/ansible
-    command: tail -f /dev/null
+    command: /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null"
 
   app-1:
     <<: *ubuntu-ansible
@@ -31,7 +31,7 @@ services:
     networks:
       kibamail_ansible_network:
         ipv4_address: 172.16.0.3
-    command: tail -f /dev/null
+    command: /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null"
 
   app-2:
     <<: *ubuntu-ansible
@@ -40,7 +40,7 @@ services:
     networks:
       kibamail_ansible_network:
         ipv4_address: 172.16.0.2
-    command: tail -f /dev/null
+    command: /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null"
 
   dragonfly:
     <<: *ubuntu-ansible
@@ -49,7 +49,7 @@ services:
     networks:
       kibamail_ansible_network:
         ipv4_address: 172.16.0.11
-    command: tail -f /dev/null
+    command: /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null"
 
   mail-1:
     <<: *ubuntu-ansible
@@ -58,7 +58,7 @@ services:
     networks:
       kibamail_ansible_network:
         ipv4_address: 172.16.0.10
-    command: tail -f /dev/null
+    command: /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null"
 
   mail-2:
     <<: *ubuntu-ansible
@@ -67,7 +67,7 @@ services:
     networks:
       kibamail_ansible_network:
         ipv4_address: 172.16.0.5
-    command: tail -f /dev/null
+    command: /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null"
 
   mail-proxy:
     <<: *ubuntu-ansible
@@ -76,7 +76,7 @@ services:
     networks:
       kibamail_ansible_network:
         ipv4_address: 172.16.0.6
-    command: tail -f /dev/null
+    command: /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null"
 
   mysql-master:
     <<: *ubuntu-ansible
@@ -85,7 +85,7 @@ services:
     networks:
       kibamail_ansible_network:
         ipv4_address: 172.16.0.9
-    command: tail -f /dev/null
+    command: /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null"
 
   mysql-slave:
     <<: *ubuntu-ansible
@@ -94,7 +94,7 @@ services:
     networks:
       kibamail_ansible_network:
         ipv4_address: 172.16.0.8
-    command: tail -f /dev/null
+    command: /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null"
 
   monitoring:
     <<: *ubuntu-ansible
@@ -103,4 +103,4 @@ services:
     networks:
       kibamail_ansible_network:
         ipv4_address: 172.16.0.4
-    command: tail -f /dev/null
+    command: /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null"
