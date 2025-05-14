@@ -1,0 +1,5 @@
+---
+# Default variables for pnpm installation
+# Specify the pnpm version to install
+# This is the default version, but can be overridden in playbooks or group_vars
+pnpm_version: "9"

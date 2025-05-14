@@ -1,0 +1,60 @@
+---
+- name: setup app servers
+  hosts: app
+  gather_facts: true
+
+  pre_tasks:
+    - name: verify required variables are defined
+      assert:
+        that:
+          - deploy_app_user is defined
+          - deploy_app_group is defined
+          - deploy_base_path is defined
+        msg: "Required setup variables must be defined"
+
+  tasks:
+    - name: prepare system
+      block:
+        - name: update apt cache
+          apt:
+            update_cache: true
+
+        - name: install common packages
+          apt:
+            name:
+              - git
+              - build-essential
+              - python3-pip
+            state: present
+
+        - name: ensure app user and group exist
+          user:
+            name: "{{ deploy_app_user }}"
+            group: "{{ deploy_app_group }}"
+            state: present
+            system: true
+            create_home: true
+            shell: /bin/bash
+
+        - name: ensure base deployment directory exists
+          file:
+            path: "{{ deploy_base_path }}"
+            state: directory
+            owner: "{{ deploy_app_user }}"
+            group: "{{ deploy_app_group }}"
+            mode: '0755'
+      become: true
+      tags: [ system ]
+
+  roles:
+    - role: nodejs
+      tags: [ nodejs ]
+
+    - role: pnpm
+      tags: [ pnpm ]
+
+    - role: pm2
+      pm2_app_user: "{{ deploy_app_user }}"
+      pm2_app_group: "{{ deploy_app_group }}"
+      pm2_base_deploy_path: "{{ deploy_base_path }}"
+      tags: [ pm2 ]

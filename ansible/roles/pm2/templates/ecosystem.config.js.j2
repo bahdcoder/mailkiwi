@@ -1,0 +1,34 @@
+// {{ ansible_managed }}
+module.exports = {
+  apps: [
+    {
+      name: "{{ pm2_app_name }}",
+      script: "{{ pm2_base_deploy_path }}/current/build/core/core/app/start/prod.js",
+      instances: "{{ (ansible_processor_vcpus / 2) | int }}",
+      exec_mode: "cluster",
+      watch: false,
+      max_memory_restart: "1G",
+      env: {
+        PORT: "5566",
+        INFISICAL_ENV: "{{ pm2_infisical_env }}",
+        INFISICAL_SERVICE_TOKEN: "{{ pm2_infisical_service_token }}"
+      },
+      log_date_format: "YYYY-MM-DD HH:mm:ss Z",
+      combine_logs: true
+    },
+    {
+      name: "{{ pm2_worker_name }}",
+      script: "{{ pm2_base_deploy_path }}/current/build/core/core/worker/start.js",
+      instances: "{{ (ansible_processor_vcpus / 2) | int }}",
+      exec_mode: "cluster",
+      watch: false,
+      max_memory_restart: "1G",
+      env: {
+        INFISICAL_ENV: "{{ pm2_infisical_env }}",
+        INFISICAL_SERVICE_TOKEN: "{{ pm2_infisical_service_token }}"
+      },
+      log_date_format: "YYYY-MM-DD HH:mm:ss Z",
+      combine_logs: true
+    }
+  ]
+};

@@ -1,0 +1,5 @@
+---
+# Default variables for Node.js installation
+# Specify the Node.js version to install
+# This is the default version, but can be overridden in playbooks or group_vars
+nodejs_version: "22.4.0"

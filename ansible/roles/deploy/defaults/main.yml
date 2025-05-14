@@ -1,0 +1,19 @@
+---
+# Default variables for deployment
+# Application information
+deploy_app_name: kibamail
+deploy_git_repo: https://github.com/kibamail/kibamail.git
+deploy_git_branch: main
+# deploy_git_tag: ""  # Required parameter, no default - must be provided in playbook
+
+# Deployment paths
+deploy_base_path: /var/www/kibamail
+deploy_app_user: kibamail
+deploy_app_group: kibamail
+
+# PM2 configuration
+deploy_pm2_app_name: "kibamail-app"
+deploy_pm2_worker_name: "kibamail-worker"
+
+# Number of deployments to keep
+deploy_keep_releases: 5

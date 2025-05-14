@@ -1,0 +1,25 @@
+---
+- name: deploy kibamail application
+  hosts: app
+  gather_facts: true
+
+  vars_prompt:
+    - name: deploy_git_tag
+      prompt: "Enter the git tag to deploy"
+      private: false
+
+  pre_tasks:
+    - name: verify required variables are defined
+      assert:
+        that:
+          - deploy_git_tag is defined and deploy_git_tag != ""
+          - deploy_app_user is defined
+          - deploy_app_group is defined
+          - deploy_base_path is defined
+          - deploy_pm2_app_name is defined
+          - deploy_pm2_worker_name is defined
+        msg: "Required deployment variables must be defined"
+
+  roles:
+    - role: deploy
+      tags: [ deploy ]

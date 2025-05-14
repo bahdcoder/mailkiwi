@@ -1,58 +1,52 @@
 app:
   hosts:
-    app-staging:
-      ansible_host: 10.0.0.1
+    app-1:
+      ansible_host: 10.0.0.2
+    app-2:
+      ansible_host: 10.0.0.11
 
 dragonfly:
   hosts:
-    dragonfly-staging:
-      ansible_host: 10.0.0.2
-
-mail_primary:
-  hosts:
-    mail1-staging:
+    dragonfly:
       ansible_host: 10.0.0.3
 
-mail_secondary:
+mail:
   hosts:
-    mail2-staging:
+    mail-1:
       ansible_host: 10.0.0.4
+    mail-2:
+      ansible_host: 10.0.0.10
 
 mail_proxy:
   hosts:
-    mail-proxy-staging:
-      ansible_host: 10.0.0.5
+    mail-proxy:
+      ansible_host: 10.0.0.6
 
 mysql_master:
   hosts:
-    mysql-master-staging:
-      ansible_host: 10.0.0.6
+    mysql-master:
+      ansible_host: 10.0.0.7
 
 mysql_slave:
   hosts:
-    mysql-slave-staging:
-      ansible_host: 10.0.0.7
+    mysql-slave:
+      ansible_host: 10.0.0.8
 
 monitoring:
   hosts:
-    monitoring-staging:
-      ansible_host: 10.0.0.8
+    monitoring:
+      ansible_host: 10.0.0.5
 
 mysql:
   children:
     mysql_master:
     mysql_slave:
 
-mail:
-  children:
-    mail_primary:
-    mail_secondary:
-    mail_proxy:
-
 staging:
   children:
     app:
     dragonfly:
     mail:
+    mail_proxy:
     mysql:
     monitoring:
