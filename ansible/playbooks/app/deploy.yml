@@ -3,11 +3,6 @@
   hosts: app
   gather_facts: true
 
-  vars_prompt:
-    - name: deploy_git_tag
-      prompt: "Enter the git tag to deploy"
-      private: false
-
   pre_tasks:
     - name: verify required variables are defined
       assert:
@@ -18,7 +13,7 @@
           - deploy_base_path is defined
           - deploy_pm2_app_name is defined
           - deploy_pm2_worker_name is defined
-        msg: "Required deployment variables must be defined"
+        msg: "Required deployment variables must be defined. Run with -e deploy_git_tag=<tag>"
 
   roles:
     - role: deploy
