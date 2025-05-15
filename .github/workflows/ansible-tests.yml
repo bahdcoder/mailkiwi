@@ -62,6 +62,7 @@ jobs:
 
       - name: run ansible tests
         run: |
+          cp ansible/requirements.txt ansible/tests/docker/requirements.txt
           cd ansible
 
           chmod +x tests/scripts/*.sh
