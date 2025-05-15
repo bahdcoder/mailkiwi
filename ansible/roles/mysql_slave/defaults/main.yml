@@ -1,0 +1,19 @@
+---
+# mysql_slave role default variables
+
+# inherit all variables from mysql role
+mysql_server_id: 2  # slave server id
+
+# master connection settings
+mysql_master_host: "{{ hostvars[groups['mysql_master'][0]]['ansible_host'] | default('127.0.0.1') }}"
+mysql_master_port: 3306
+mysql_master_user: "{{ mysql_replication_user }}"
+mysql_master_password: "{{ mysql_replication_password }}"
+
+# replication settings
+mysql_replica_skip_errors: "1062,1032,1060"  # common replication errors to skip
+mysql_replica_read_only: true  # set slave to read-only mode
+
+# slave-specific performance settings
+mysql_replica_parallel_workers: 4  # number of parallel replication workers
+mysql_replica_parallel_type: "LOGICAL_CLOCK"  # parallel replication type

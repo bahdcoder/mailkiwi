@@ -1,0 +1,14 @@
+---
+# mysql role handlers
+
+- name: restart mysql
+  service:
+    name: mysql
+    state: restarted
+  become: true
+
+- name: reload mysql
+  service:
+    name: mysql
+    state: reloaded
+  become: true

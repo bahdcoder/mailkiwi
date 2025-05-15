@@ -1,0 +1,80 @@
+---
+# mysql_slave role tasks
+
+- name: include mysql role
+  include_role:
+    name: mysql
+
+- name: override mysql configuration for slave
+  template:
+    src: my.cnf.j2
+    dest: /etc/mysql/my.cnf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: restart mysql
+
+- name: wait for mysql to start
+  wait_for:
+    port: "{{ mysql_port }}"
+    delay: 5
+    timeout: 60
+  become: true
+
+- name: get master status
+  mysql_replication:
+    mode: getmaster
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  delegate_to: "{{ groups['mysql_master'][0] }}"
+  register: master_status
+  become: true
+
+- name: stop slave
+  mysql_replication:
+    mode: stopslave
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+  ignore_errors: true
+
+- name: reset slave
+  mysql_replication:
+    mode: resetslave
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+  ignore_errors: true
+
+- name: configure replication
+  mysql_replication:
+    mode: changemaster
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    master_host: "{{ mysql_master_host }}"
+    master_port: "{{ mysql_master_port }}"
+    master_user: "{{ mysql_master_user }}"
+    master_password: "{{ mysql_master_password }}"
+    master_use_gtid: current_pos
+  become: true
+
+- name: start slave
+  mysql_replication:
+    mode: startslave
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+
+- name: get slave status
+  mysql_replication:
+    mode: getslave
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  register: slave_status
+  become: true
+
+- name: display slave status
+  debug:
+    var: slave_status
+    verbosity: 1

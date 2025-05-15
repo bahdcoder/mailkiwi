@@ -1,0 +1,81 @@
+---
+# mysql role default variables
+
+# mysql version to install
+mysql_version: "8.0.43"
+
+# mysql root password - should be overridden with vault in production
+mysql_root_password: "{{ vault_mysql_root_password | default('change_me_in_production') }}"
+
+# mysql configuration
+mysql_bind_address: "0.0.0.0"
+mysql_port: 3306
+mysql_max_connections: 500
+mysql_innodb_buffer_pool_size: "1G"
+mysql_innodb_log_file_size: "256M"
+mysql_innodb_flush_log_at_trx_commit: 1
+mysql_max_allowed_packet: "64M"
+mysql_character_set_server: "utf8mb4"
+mysql_collation_server: "utf8mb4_0900_ai_ci"
+
+# replication settings
+mysql_server_id: 1  # master server id
+mysql_log_bin: "/var/log/mysql/binlogs/mysql-bin"
+mysql_binlog_format: "ROW"
+mysql_binlog_expire_logs_seconds: 604800  # 7 days
+mysql_binlog_row_image: "FULL"
+mysql_sync_binlog: 1
+mysql_gtid_mode: "ON"
+mysql_enforce_gtid_consistency: "ON"
+
+# point-in-time recovery settings
+mysql_binlog_checksum: "CRC32"
+mysql_binlog_cache_size: "32M"
+mysql_max_binlog_size: "1G"
+mysql_binlog_error_action: "ABORT_SERVER"
+mysql_log_bin_trust_function_creators: "ON"
+mysql_binlog_rows_query_log_events: "ON"
+mysql_binlog_transaction_dependency_tracking: "WRITESET"
+
+# replication user - should be overridden with vault in production
+mysql_replication_user: "replication"
+mysql_replication_password: "{{ vault_mysql_replication_password | default('change_me_in_production') }}"
+
+# database settings
+mysql_databases:
+  - name: "kibamail"
+    encoding: "utf8mb4"
+    collation: "utf8mb4_0900_ai_ci"
+
+# application user - should be overridden with vault in production
+mysql_app_user: "kibamail"
+mysql_app_password: "{{ vault_mysql_app_password | default(lookup('password', '/dev/null chars=ascii_letters,digits length=32')) }}"
+
+# backup settings
+mysql_backup_dir: "/var/backups/mysql"
+mysql_backup_retention_days: 7
+mysql_percona_version: "8.0.35-29"
+mysql_percona_backup_threads: 4
+mysql_percona_compress: true
+mysql_percona_compress_level: 6
+mysql_percona_use_memory: "1G"
+
+# security settings
+mysql_disable_remote_root: true
+mysql_remove_anonymous_users: true
+mysql_remove_test_database: true
+mysql_secure_installation: true
+
+# performance settings
+mysql_table_open_cache: 4000
+mysql_table_open_cache_instances: 16
+mysql_thread_cache_size: 128
+mysql_query_cache_type: 0
+mysql_query_cache_size: 0
+mysql_tmp_table_size: "64M"
+mysql_max_heap_table_size: "64M"
+mysql_join_buffer_size: "2M"
+mysql_sort_buffer_size: "4M"
+mysql_read_buffer_size: "2M"
+mysql_read_rnd_buffer_size: "1M"
+mysql_key_buffer_size: "32M"

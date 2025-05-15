@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# percona_recovery.sh - script to assist with point-in-time recovery using percona xtrabackup
+# usage: percona_recovery.sh [full_backup_dir] [incremental_backup_dir] [target_time]
+# example: percona_recovery.sh /var/backups/mysql/full/full-2023-01-01-00-00-00 /var/backups/mysql/incremental/inc-2023-01-02-00-00-00 "2023-01-02 12:34:56"
+
+# set -e to exit on error
+set -e
+
+# variables
+MYSQL_USER="root"
+MYSQL_PASSWORD="{{ mysql_root_password }}"
+RESTORE_DIR="/tmp/mysql_restore"
+DATADIR="/var/lib/mysql"
+
+# check arguments
+if [ $# -lt 1 ]; then
+  echo "usage: $0 [full_backup_dir] [incremental_backup_dir] [target_time]"
+  echo "example: $0 /var/backups/mysql/full/full-2023-01-01-00-00-00 /var/backups/mysql/incremental/inc-2023-01-02-00-00-00 \"2023-01-02 12:34:56\""
+  exit 1
+fi
+
+FULL_BACKUP_DIR=$1
+INCREMENTAL_BACKUP_DIR=$2
+TARGET_TIME=$3
+
+# create restore directory
+mkdir -p $RESTORE_DIR
+
+echo "starting point-in-time recovery process at $(date)"
+echo "full backup: $FULL_BACKUP_DIR"
+echo "incremental backup: $INCREMENTAL_BACKUP_DIR"
+echo "target time: $TARGET_TIME"
+
+# prepare the full backup
+echo "preparing full backup..."
+xtrabackup --prepare --apply-log-only --target-dir=$FULL_BACKUP_DIR
+
+# if incremental backup is provided, apply it
+if [ ! -z "$INCREMENTAL_BACKUP_DIR" ]; then
+  echo "applying incremental backup..."
+  xtrabackup --prepare --apply-log-only --target-dir=$FULL_BACKUP_DIR --incremental-dir=$INCREMENTAL_BACKUP_DIR
+fi
+
+# final prepare
+echo "final prepare..."
+xtrabackup --prepare --target-dir=$FULL_BACKUP_DIR
+
+# extract binary log information
+BINLOG_FILE=$(cat $FULL_BACKUP_DIR/xtrabackup_binlog_info | awk '{print $1}')
+BINLOG_POS=$(cat $FULL_BACKUP_DIR/xtrabackup_binlog_info | awk '{print $2}')
+
+echo "binary log file: $BINLOG_FILE"
+echo "binary log position: $BINLOG_POS"
+
+# if target time is provided, create recovery SQL file
+if [ ! -z "$TARGET_TIME" ]; then
+  echo "creating recovery SQL file for point-in-time recovery..."
+  
+  # create recovery SQL file
+  cat > $RESTORE_DIR/recovery.sql <<EOF
+CHANGE MASTER TO MASTER_LOG_FILE='$BINLOG_FILE', MASTER_LOG_POS=$BINLOG_POS;
+SET GLOBAL gtid_purged='$(cat $FULL_BACKUP_DIR/xtrabackup_binlog_info | awk '{print $3}')';
+EOF
+
+  # create mysqlbinlog command for point-in-time recovery
+  echo "# Run the following command to perform point-in-time recovery:" > $RESTORE_DIR/recovery_command.sh
+  echo "mysqlbinlog --start-position=$BINLOG_POS --stop-datetime=\"$TARGET_TIME\" /var/log/mysql/$BINLOG_FILE | mysql -u root -p" >> $RESTORE_DIR/recovery_command.sh
+  chmod +x $RESTORE_DIR/recovery_command.sh
+  
+  echo "recovery files created in $RESTORE_DIR"
+fi
+
+echo "to restore the database, stop mysql and run:"
+echo "rm -rf $DATADIR/*"
+echo "xtrabackup --copy-back --target-dir=$FULL_BACKUP_DIR"
+echo "chown -R mysql:mysql $DATADIR"
+echo "service mysql start"
+
+if [ ! -z "$TARGET_TIME" ]; then
+  echo "then run the recovery command in $RESTORE_DIR/recovery_command.sh"
+fi
+
+echo "point-in-time recovery preparation completed at $(date)"
+exit 0

@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# mysql_secure_installation.sh - automates the secure installation process
+
+# set -e to exit on error
+set -e
+
+# secure the mysql installation
+mysql --user=root --password="{{ mysql_root_password }}" <<EOF
+-- change root password method for mysql 8
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '{{ mysql_root_password }}';
+FLUSH PRIVILEGES;
+
+-- remove anonymous users
+{% if mysql_remove_anonymous_users %}
+DELETE FROM mysql.user WHERE User='';
+{% endif %}
+
+-- disallow remote root login
+{% if mysql_disable_remote_root %}
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+{% endif %}
+
+-- remove test database
+{% if mysql_remove_test_database %}
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+{% endif %}
+
+-- create application database if it doesn't exist
+{% for db in mysql_databases %}
+CREATE DATABASE IF NOT EXISTS `{{ db.name }}` 
+CHARACTER SET {{ db.encoding | default(mysql_character_set_server) }} 
+COLLATION {{ db.collation | default(mysql_collation_server) }};
+{% endfor %}
+
+-- create application user
+CREATE USER IF NOT EXISTS '{{ mysql_app_user }}'@'%' IDENTIFIED BY '{{ mysql_app_password }}';
+{% for db in mysql_databases %}
+GRANT ALL PRIVILEGES ON `{{ db.name }}`.* TO '{{ mysql_app_user }}'@'%';
+{% endfor %}
+
+-- create replication user
+CREATE USER IF NOT EXISTS '{{ mysql_replication_user }}'@'%' IDENTIFIED BY '{{ mysql_replication_password }}';
+GRANT REPLICATION SLAVE ON *.* TO '{{ mysql_replication_user }}'@'%';
+
+-- reload privileges
+FLUSH PRIVILEGES;
+EOF
+
+echo "mysql secure installation completed successfully"
+exit 0

@@ -1,0 +1,16 @@
+---
+- name: setup mysql master server
+  hosts: mysql_master
+  become: true
+  vars:
+    mysql_server_id: 1
+  roles:
+    - mysql
+
+- name: setup mysql slave server
+  hosts: mysql_slave
+  become: true
+  vars:
+    mysql_server_id: 2
+  roles:
+    - mysql_slave

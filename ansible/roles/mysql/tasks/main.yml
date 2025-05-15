@@ -1,0 +1,250 @@
+---
+# mysql role tasks
+
+- name: update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+
+- name: install mysql prerequisites
+  apt:
+    name:
+      - gnupg
+      - curl
+      - software-properties-common
+      - apt-transport-https
+      - ca-certificates
+      - lsb-release
+    state: present
+  become: true
+
+- name: add mysql apt key
+  apt_key:
+    url: https://dev.mysql.com/get/mysql-apt-config_0.8.29-1_all.deb
+    state: present
+  become: true
+
+- name: download mysql apt configuration package
+  get_url:
+    url: https://dev.mysql.com/get/mysql-apt-config_0.8.29-1_all.deb
+    dest: /tmp/mysql-apt-config.deb
+  become: true
+
+- name: install mysql apt configuration package
+  apt:
+    deb: /tmp/mysql-apt-config.deb
+  become: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+
+- name: update apt cache after adding mysql repository
+  apt:
+    update_cache: yes
+  become: true
+
+- name: install mysql server {{ mysql_version }}
+  apt:
+    name:
+      - mysql-server={{ mysql_version }}*
+      - mysql-client={{ mysql_version }}*
+      - python3-mysqldb
+    state: present
+  become: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+    MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
+
+- name: ensure mysql service is running and enabled
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+  become: true
+
+- name: create mysql configuration directory
+  file:
+    path: /etc/mysql/conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: create mysql binary log directory
+  file:
+    path: /var/log/mysql/binlogs
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: '0750'
+  become: true
+
+- name: configure mysql
+  template:
+    src: my.cnf.j2
+    dest: /etc/mysql/my.cnf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: restart mysql
+
+- name: create mysql secure installation script
+  template:
+    src: mysql_secure_installation.sh.j2
+    dest: /tmp/mysql_secure_installation.sh
+    owner: root
+    group: root
+    mode: '0700'
+  become: true
+  when: mysql_secure_installation
+
+- name: run mysql secure installation script
+  command: /tmp/mysql_secure_installation.sh
+  become: true
+  when: mysql_secure_installation
+  register: secure_installation
+  changed_when: secure_installation.rc == 0
+
+- name: remove mysql secure installation script
+  file:
+    path: /tmp/mysql_secure_installation.sh
+    state: absent
+  become: true
+  when: mysql_secure_installation
+
+- name: save mysql application user credentials to file
+  copy:
+    content: |
+      mysql application user: {{ mysql_app_user }}
+      mysql application password: {{ mysql_app_password }}
+      mysql database: kibamail
+    dest: "{{ ansible_env.HOME }}/mysql_app_credentials.txt"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+  become: false
+
+- name: ensure kibamail database exists
+  mysql_db:
+    name: kibamail
+    encoding: utf8mb4
+    collation: utf8mb4_0900_ai_ci
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+
+- name: ensure kibamail user exists with proper permissions
+  mysql_user:
+    name: "{{ mysql_app_user }}"
+    password: "{{ mysql_app_password }}"
+    host: '%'
+    priv: 'kibamail.*:ALL'
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+
+- name: add percona apt key
+  apt_key:
+    url: https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+    state: present
+  become: true
+
+- name: download percona apt configuration package
+  get_url:
+    url: https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+    dest: /tmp/percona-release.deb
+  become: true
+
+- name: install percona apt configuration package
+  apt:
+    deb: /tmp/percona-release.deb
+  become: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+
+- name: enable percona tools repository
+  command: percona-release setup ps80
+  become: true
+  changed_when: false
+
+- name: update apt cache after adding percona repository
+  apt:
+    update_cache: yes
+  become: true
+
+- name: install percona xtrabackup
+  apt:
+    name: percona-xtrabackup-80
+    state: present
+  become: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+
+- name: create mysql backup directory
+  file:
+    path: "{{ mysql_backup_dir }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: '0750'
+  become: true
+
+- name: create mysql backup subdirectories
+  file:
+    path: "{{ mysql_backup_dir }}/{{ item }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: '0750'
+  with_items:
+    - "full"
+    - "incremental"
+    - "logs"
+  become: true
+
+- name: create percona backup script
+  template:
+    src: percona_backup.sh.j2
+    dest: /usr/local/bin/percona_backup.sh
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: setup percona backup cron job
+  cron:
+    name: "mysql backup"
+    hour: "3"
+    minute: "0"
+    job: "/usr/local/bin/percona_backup.sh > {{ mysql_backup_dir }}/logs/backup-$(date +\\%Y-\\%m-\\%d-\\%H-\\%M-\\%S).log 2>&1"
+  become: true
+
+- name: create percona backup cleanup script
+  template:
+    src: percona_backup_cleanup.sh.j2
+    dest: /usr/local/bin/percona_backup_cleanup.sh
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: create percona recovery script
+  template:
+    src: percona_recovery.sh.j2
+    dest: /usr/local/bin/percona_recovery.sh
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: setup percona backup cleanup cron job
+  cron:
+    name: "mysql backup cleanup"
+    hour: "4"
+    minute: "0"
+    job: "/usr/local/bin/percona_backup_cleanup.sh > {{ mysql_backup_dir }}/logs/cleanup-$(date +\\%Y-\\%m-\\%d-\\%H-\\%M-\\%S).log 2>&1"
+  become: true

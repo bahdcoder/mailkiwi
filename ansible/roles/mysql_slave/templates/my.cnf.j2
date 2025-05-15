@@ -1,0 +1,76 @@
+[mysqld]
+# basic settings
+user                           = mysql
+pid-file                       = /var/run/mysqld/mysqld.pid
+socket                         = /var/run/mysqld/mysqld.sock
+port                           = {{ mysql_port }}
+basedir                        = /usr
+datadir                        = /var/lib/mysql
+tmpdir                         = /tmp
+lc-messages-dir                = /usr/share/mysql
+bind-address                   = {{ mysql_bind_address }}
+
+# character set and collation
+character-set-server           = {{ mysql_character_set_server }}
+collation-server               = {{ mysql_collation_server }}
+
+# connection and thread settings
+max_connections                = {{ mysql_max_connections }}
+max_allowed_packet             = {{ mysql_max_allowed_packet }}
+thread_cache_size              = {{ mysql_thread_cache_size }}
+table_open_cache               = {{ mysql_table_open_cache }}
+table_open_cache_instances     = {{ mysql_table_open_cache_instances }}
+
+# query cache - disabled in MySQL 8+
+query_cache_type               = {{ mysql_query_cache_type }}
+query_cache_size               = {{ mysql_query_cache_size }}
+
+# buffer settings
+join_buffer_size               = {{ mysql_join_buffer_size }}
+sort_buffer_size               = {{ mysql_sort_buffer_size }}
+read_buffer_size               = {{ mysql_read_buffer_size }}
+read_rnd_buffer_size           = {{ mysql_read_rnd_buffer_size }}
+key_buffer_size                = {{ mysql_key_buffer_size }}
+
+# temp tables
+tmp_table_size                 = {{ mysql_tmp_table_size }}
+max_heap_table_size            = {{ mysql_max_heap_table_size }}
+
+# innodb settings
+innodb_buffer_pool_size        = {{ mysql_innodb_buffer_pool_size }}
+innodb_log_file_size           = {{ mysql_innodb_log_file_size }}
+innodb_flush_log_at_trx_commit = {{ mysql_innodb_flush_log_at_trx_commit }}
+innodb_flush_method            = O_DIRECT
+innodb_file_per_table          = 1
+
+# replication settings
+server-id                      = {{ mysql_server_id }}
+log_bin                        = {{ mysql_log_bin }}
+binlog_format                  = {{ mysql_binlog_format }}
+binlog_expire_logs_seconds     = {{ mysql_binlog_expire_logs_seconds }}
+binlog_row_image               = {{ mysql_binlog_row_image }}
+sync_binlog                    = {{ mysql_sync_binlog }}
+gtid_mode                      = {{ mysql_gtid_mode }}
+enforce_gtid_consistency       = {{ mysql_enforce_gtid_consistency }}
+log_slave_updates              = ON
+
+# replica specific settings
+read_only                      = {{ mysql_replica_read_only | ternary('ON', 'OFF') }}
+super_read_only                = {{ mysql_replica_read_only | ternary('ON', 'OFF') }}
+slave_skip_errors              = {{ mysql_replica_skip_errors }}
+slave_parallel_workers         = {{ mysql_replica_parallel_workers }}
+slave_parallel_type            = {{ mysql_replica_parallel_type }}
+
+# error and slow query logging
+log_error                      = /var/log/mysql/error.log
+slow_query_log                 = 1
+slow_query_log_file            = /var/log/mysql/mysql-slow.log
+long_query_time                = 2
+
+[client]
+port                           = {{ mysql_port }}
+socket                         = /var/run/mysqld/mysqld.sock
+default-character-set          = {{ mysql_character_set_server }}
+
+[mysql]
+default-character-set          = {{ mysql_character_set_server }}

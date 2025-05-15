@@ -50,6 +50,7 @@ jobs:
 
       - name: run ansible tests
         run: |
+          ./ansible/scripts/setup-infisical.sh staging
           cp ansible/requirements.txt ansible/tests/docker/requirements.txt
           cd ansible
 
