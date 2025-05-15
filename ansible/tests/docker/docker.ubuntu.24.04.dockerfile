@@ -27,7 +27,7 @@ RUN mkdir -p /run/sshd \
   && echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 
 # Copy requirements file
-COPY requirements.txt /tmp/requirements.txt
+COPY ../../requirements.txt /tmp/requirements.txt
 
 # Install Ansible and dependencies using a virtual environment
 RUN python3 -m venv /opt/ansible-venv && \
