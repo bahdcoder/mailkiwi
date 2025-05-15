@@ -50,7 +50,6 @@ jobs:
 
       - name: run ansible tests
         run: |
-          cp ansible/requirements.txt ansible/tests/docker/requirements.txt
           cd ansible
 
           chmod +x tests/scripts/*.sh
@@ -61,8 +60,6 @@ jobs:
 
           mkdir -p tests/docker
           chmod +x tests/docker/entrypoint.sh
-
-          docker compose -f tests/docker/docker-compose.yml build --no-cache
 
           ./tests/scripts/run-tests.sh
         env:
