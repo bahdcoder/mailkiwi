@@ -61,6 +61,8 @@ jobs:
           mkdir -p tests/docker
           chmod +x tests/docker/entrypoint.sh
 
+          docker compose -f tests/docker/docker-compose.yml build --no-cache
+
           ./tests/scripts/run-tests.sh
         env:
           ANSIBLE_FORCE_COLOR: "1"
