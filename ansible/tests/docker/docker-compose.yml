@@ -1,7 +1,7 @@
 x-ubuntu-ansible: &ubuntu-ansible
   build:
-    context: .
-    dockerfile: docker.ubuntu.24.04.dockerfile
+    context: ../..
+    dockerfile: tests/docker/docker.ubuntu.24.04.dockerfile
 
 networks:
   kibamail_ansible_network:

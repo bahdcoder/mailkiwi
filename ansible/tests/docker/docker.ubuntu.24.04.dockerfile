@@ -26,9 +26,12 @@ RUN mkdir -p /run/sshd \
   && echo "PermitRootLogin yes" >> /etc/ssh/sshd_config \
   && echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 
+# Copy requirements file
+COPY requirements.txt /tmp/requirements.txt
+
 # Install Ansible and dependencies using a virtual environment
 RUN python3 -m venv /opt/ansible-venv && \
-    /opt/ansible-venv/bin/pip install --no-cache-dir ansible ansible-lint paramiko jmespath && \
+    /opt/ansible-venv/bin/pip install --no-cache-dir -r /tmp/requirements.txt && \
     ln -s /opt/ansible-venv/bin/ansible /usr/local/bin/ansible && \
     ln -s /opt/ansible-venv/bin/ansible-playbook /usr/local/bin/ansible-playbook && \
     ln -s /opt/ansible-venv/bin/ansible-lint /usr/local/bin/ansible-lint
