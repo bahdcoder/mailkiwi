@@ -33,7 +33,30 @@ if ! docker ps | grep -q "ansible-root"; then
     echo -e "${YELLOW}[INFO]${NC} ${BOLD}Containers not running.${NC}"
     echo -e "${BLUE}[TASK]${NC} ${BOLD}Starting Docker Compose...${NC}"
 
-    if ! docker-compose -f tests/docker/docker-compose.yml up -d --wait; then
+    # Create a symlink for docker-compose if it doesn't exist
+    if ! which docker-compose > /dev/null 2>&1; then
+        if which docker > /dev/null 2>&1 && docker compose version > /dev/null 2>&1; then
+            echo -e "${YELLOW}[INFO]${NC} ${BOLD}Creating docker-compose symlink...${NC}"
+            # Create a wrapper script for docker-compose
+            cat > /tmp/docker-compose << 'EOF'
+#!/bin/bash
+docker compose "$@"
+EOF
+            chmod +x /tmp/docker-compose
+            # Use the wrapper script
+            DOCKER_COMPOSE="/tmp/docker-compose"
+        else
+            echo -e "${RED}[ERROR]${NC} ${BOLD}Neither docker-compose nor docker compose is available!${NC}"
+            FAILURE=1
+            echo
+            exit $FAILURE
+        fi
+    else
+        DOCKER_COMPOSE="docker-compose"
+    fi
+
+    # Use the appropriate Docker Compose command
+    if ! $DOCKER_COMPOSE -f tests/docker/docker-compose.yml up -d --wait; then
         echo -e "${RED}[ERROR]${NC} ${BOLD}Failed to start Docker containers!${NC}"
         FAILURE=1
         echo

@@ -30,6 +30,18 @@ jobs:
       - name: set up docker
         uses: docker/setup-buildx-action@v3
 
+      - name: install docker compose
+        run: |
+          # Install Docker Compose v2
+          DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+          mkdir -p $DOCKER_CONFIG/cli-plugins
+          curl -SL https://github.com/docker/compose/releases/download/v2.23.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+          chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+          # Create symlink for backward compatibility
+          sudo ln -sf $DOCKER_CONFIG/cli-plugins/docker-compose /usr/local/bin/docker-compose
+          # Verify installation
+          docker compose version
+
       - name: cache docker images
         uses: actions/cache@v4
         with:
@@ -57,7 +69,7 @@ jobs:
           ansible-lint -v | tee ansible-lint-report.txt || true
         continue-on-error: true  # Don't fail the workflow on lint errors
 
-      - name: debug directory structure
+      - name: debug environment
         run: |
           echo "Current directory: $(pwd)"
           echo "Listing ansible directory:"
@@ -66,6 +78,12 @@ jobs:
           ls -la ansible/tests/
           echo "Listing ansible/tests/scripts directory:"
           ls -la ansible/tests/scripts/
+          echo "Docker version:"
+          docker --version
+          echo "Docker Compose version:"
+          docker compose version
+          echo "Docker Compose v1 version:"
+          docker-compose --version || echo "Docker Compose v1 not installed"
 
       - name: run ansible tests
         run: |
@@ -83,6 +101,17 @@ jobs:
 
           # Print current directory for debugging
           echo "Current directory before running tests: $(pwd)"
+
+          # Create a wrapper script for docker-compose to ensure it works
+          cat > docker-compose-wrapper.sh << 'EOF'
+          #!/bin/bash
+          # Try docker compose (v2) first, then fall back to docker-compose (v1)
+          docker compose "$@" || docker-compose "$@"
+          EOF
+          chmod +x docker-compose-wrapper.sh
+
+          # Add the wrapper to the PATH
+          export PATH="$PWD:$PATH"
 
           # Run the tests with increased verbosity
           ./tests/scripts/run-tests.sh
