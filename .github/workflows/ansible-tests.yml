@@ -49,20 +49,40 @@ jobs:
           pip install -r ansible/requirements.txt
 
       - name: lint ansible files
-        working-directory: ./ansible
         run: |
+          # Change to the ansible directory
+          cd ansible
+
           # Run ansible-lint and save output to a file
           ansible-lint -v | tee ansible-lint-report.txt || true
         continue-on-error: true  # Don't fail the workflow on lint errors
 
-      - name: run ansible tests
-        working-directory: ./ansible
+      - name: debug directory structure
         run: |
+          echo "Current directory: $(pwd)"
+          echo "Listing ansible directory:"
+          ls -la ansible/
+          echo "Listing ansible/tests directory:"
+          ls -la ansible/tests/
+          echo "Listing ansible/tests/scripts directory:"
+          ls -la ansible/tests/scripts/
+
+      - name: run ansible tests
+        run: |
+          # Change to the ansible directory
+          cd ansible
+
           # Make scripts executable
           chmod +x tests/scripts/*.sh
 
           # Create logs directory
           mkdir -p tests/logs
+
+          # Create SSH directory if it doesn't exist
+          mkdir -p tests/.ssh
+
+          # Print current directory for debugging
+          echo "Current directory before running tests: $(pwd)"
 
           # Run the tests with increased verbosity
           ./tests/scripts/run-tests.sh
@@ -72,7 +92,10 @@ jobs:
       - name: save docker images to cache
         if: always()
         run: |
+          # Create cache directory
           mkdir -p /tmp/docker-cache
+
+          # Save docker images to cache
           docker images -a --filter=reference='ansible*' --format '{{.Repository}}:{{.Tag}}' | xargs docker save -o /tmp/docker-cache/images.tar || true
 
       - name: upload test logs on failure
@@ -84,4 +107,5 @@ jobs:
             ansible/tests/logs/
             ansible/tests/inventory/
             ansible/ansible-lint-report.txt
+            ansible/tests/.ssh/
           retention-days: 5
