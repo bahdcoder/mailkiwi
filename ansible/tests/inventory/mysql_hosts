@@ -1,0 +1,4 @@
+[mysql_master]
+mysql-master
+[mysql_slave]
+mysql-slave

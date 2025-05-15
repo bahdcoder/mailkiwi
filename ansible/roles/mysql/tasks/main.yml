@@ -7,60 +7,48 @@
     cache_valid_time: 3600
   become: true
 
-- name: install mysql prerequisites
+- name: install mysql server and client
   apt:
     name:
-      - gnupg
-      - curl
-      - software-properties-common
-      - apt-transport-https
-      - ca-certificates
-      - lsb-release
-    state: present
-  become: true
-
-- name: add mysql apt key
-  apt_key:
-    url: https://dev.mysql.com/get/mysql-apt-config_0.8.29-1_all.deb
-    state: present
-  become: true
-
-- name: download mysql apt configuration package
-  get_url:
-    url: https://dev.mysql.com/get/mysql-apt-config_0.8.29-1_all.deb
-    dest: /tmp/mysql-apt-config.deb
-  become: true
-
-- name: install mysql apt configuration package
-  apt:
-    deb: /tmp/mysql-apt-config.deb
-  become: true
-  environment:
-    DEBIAN_FRONTEND: noninteractive
-
-- name: update apt cache after adding mysql repository
-  apt:
-    update_cache: yes
-  become: true
-
-- name: install mysql server {{ mysql_version }}
-  apt:
-    name:
-      - mysql-server={{ mysql_version }}*
-      - mysql-client={{ mysql_version }}*
+      - mysql-server
+      - mysql-client
       - python3-mysqldb
     state: present
   become: true
   environment:
     DEBIAN_FRONTEND: noninteractive
-    MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
 
-- name: ensure mysql service is running and enabled
-  service:
+- name: check mysql version
+  command: mysql --version
+  register: mysql_version_output
+  changed_when: false
+
+- name: display mysql version
+  debug:
+    var: mysql_version_output.stdout
+
+- name: enable mysql service to start at boot
+  systemd:
     name: mysql
-    state: started
     enabled: yes
   become: true
+
+- name: start mysql service
+  systemd:
+    name: mysql
+    state: started
+  become: true
+
+- name: check mysql service status
+  command: systemctl status mysql
+  register: mysql_status
+  changed_when: false
+  become: true
+
+- name: display mysql service status
+  debug:
+    var: mysql_status.stdout_lines
+  changed_when: false
 
 - name: create mysql configuration directory
   file:
@@ -106,6 +94,12 @@
   when: mysql_secure_installation
   register: secure_installation
   changed_when: secure_installation.rc == 0
+  ignore_errors: true
+
+- name: display mysql secure installation output
+  debug:
+    var: secure_installation.stdout_lines
+  when: mysql_secure_installation and secure_installation.stdout_lines is defined
 
 - name: remove mysql secure installation script
   file:

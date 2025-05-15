@@ -1,13 +1,17 @@
 #!/bin/bash
 
-# mysql_secure_installation.sh - automates the secure installation process
+# mysql_secure_installation.sh - automates the secure installation process for Ubuntu 24.04
+# Based on the Vultr guide: https://docs.vultr.com/how-to-install-mysql-on-ubuntu-24-04
 
 # set -e to exit on error
 set -e
 
-# secure the mysql installation
+# Set root password for the first time
+sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '{{ mysql_root_password }}';"
+
+# Secure the MySQL installation
 mysql --user=root --password="{{ mysql_root_password }}" <<EOF
--- change root password method for mysql 8
+-- change authentication plugin for root
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '{{ mysql_root_password }}';
 FLUSH PRIVILEGES;
 
@@ -29,8 +33,8 @@ DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
 
 -- create application database if it doesn't exist
 {% for db in mysql_databases %}
-CREATE DATABASE IF NOT EXISTS `{{ db.name }}` 
-CHARACTER SET {{ db.encoding | default(mysql_character_set_server) }} 
+CREATE DATABASE IF NOT EXISTS `{{ db.name }}`
+CHARACTER SET {{ db.encoding | default(mysql_character_set_server) }}
 COLLATION {{ db.collation | default(mysql_collation_server) }};
 {% endfor %}
 

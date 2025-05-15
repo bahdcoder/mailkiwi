@@ -1,8 +1,8 @@
 ---
 # mysql role default variables
 
-# mysql version to install
-mysql_version: "8.0.43"
+# mysql version - Ubuntu 24.04 uses MySQL 8.0.37 by default
+# Note: We're using the default version from Ubuntu repositories
 
 # mysql root password - should be overridden with vault in production
 mysql_root_password: "{{ vault_mysql_root_password | default('change_me_in_production') }}"

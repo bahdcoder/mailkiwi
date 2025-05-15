@@ -44,6 +44,31 @@ echo -e "${BLUE}[STEP 1]${NC} ${BOLD}Cleaning up any existing containers...${NC}
 ./tests/scripts/cleanup-tests.sh
 echo
 
+# Step 1.5: Check if vault_secrets.txt exists, if not run setup-infisical.sh
+echo -e "${BLUE}[STEP 1.5]${NC} ${BOLD}Checking for vault_secrets.txt...${NC}"
+if [ ! -f "vault_secrets.txt" ]; then
+    echo -e "${YELLOW}[WARNING]${NC} ${BOLD}vault_secrets.txt not found. Running setup-infisical.sh...${NC}"
+
+    # Check if ANSIBLE_INFISICAL_TOKEN is set
+    if [ -z "$ANSIBLE_INFISICAL_TOKEN" ]; then
+        echo -e "${RED}[ERROR]${NC} ${BOLD}ANSIBLE_INFISICAL_TOKEN environment variable not set.${NC}"
+        echo -e "${YELLOW}[INFO]${NC} ${BOLD}Please set ANSIBLE_INFISICAL_TOKEN environment variable or run ./scripts/setup-infisical.sh manually.${NC}"
+        FAILURE=1
+        exit $FAILURE
+    fi
+
+    # Run setup-infisical.sh with staging environment by default
+    if ! ./scripts/setup-infisical.sh staging; then
+        echo -e "${RED}[ERROR]${NC} ${BOLD}Failed to set up Infisical secrets!${NC}"
+        FAILURE=1
+        exit $FAILURE
+    fi
+    echo -e "${GREEN}[SUCCESS]${NC} ${BOLD}vault_secrets.txt created successfully.${NC}"
+else
+    echo -e "${GREEN}[SUCCESS]${NC} ${BOLD}vault_secrets.txt already exists.${NC}"
+fi
+echo
+
 # Step 2: Generate SSH keys
 echo -e "${BLUE}[STEP 2]${NC} ${BOLD}Generating SSH keys...${NC}"
 if ! ./tests/scripts/generate-ssh-key.sh; then
@@ -62,13 +87,27 @@ if ! ./tests/scripts/setup-ssh-keys.sh; then
 fi
 echo
 
-# Step 4: Run Ansible playbook
-echo -e "${BLUE}[STEP 4]${NC} ${BOLD}Running Ansible playbook...${NC}"
-if ! ./tests/scripts/run-ansible-playbook.sh; then
-    echo -e "${RED}[ERROR]${NC} ${BOLD}Ansible playbook execution failed!${NC}"
+# Step 4: Run Ansible playbooks
+echo -e "${BLUE}[STEP 4]${NC} ${BOLD}Running Ansible playbooks...${NC}"
+
+# Step 4.1: Run App playbook
+echo -e "${BLUE}[STEP 4.1]${NC} ${BOLD}Running App playbook...${NC}"
+if ! ./tests/scripts/playbooks/app/setup.sh; then
+    echo -e "${RED}[ERROR]${NC} ${BOLD}App playbook execution failed!${NC}"
     FAILURE=1
     exit $FAILURE
 fi
+echo -e "${GREEN}[SUCCESS]${NC} ${BOLD}App playbook executed successfully.${NC}"
+echo
+
+# Step 4.2: Run MySQL playbook
+echo -e "${BLUE}[STEP 4.2]${NC} ${BOLD}Running MySQL playbook...${NC}"
+if ! ./tests/scripts/playbooks/mysql/setup.sh; then
+    echo -e "${RED}[ERROR]${NC} ${BOLD}MySQL playbook execution failed!${NC}"
+    FAILURE=1
+    exit $FAILURE
+fi
+echo -e "${GREEN}[SUCCESS]${NC} ${BOLD}MySQL playbook executed successfully.${NC}"
 echo
 
 # Step 5: Validate Ansible setup
