@@ -54,7 +54,7 @@
   args:
     executable: /bin/bash
 
-- name: install node.js v22.4.0
+- name: install nodejs v22.4.0
   shell: |
     export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -73,7 +73,7 @@
     executable: /bin/bash
     creates: "{{ ansible_env.HOME }}/.nvm/versions/node/v22.4.0/bin/pnpm"
 
-- name: verify Node.js installation
+- name: verify nodejs installation
   shell: |
     export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -92,5 +92,5 @@
 - name: display installed versions
   debug:
     msg: 
-      - "Node.js version: {{ node_version.stdout }}"
+      - "nodejs version: {{ node_version.stdout }}"
       - "pnpm version: {{ pnpm_version.stdout }}"
