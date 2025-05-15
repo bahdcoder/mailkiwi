@@ -55,7 +55,7 @@ EOF2
         DOCKER_COMPOSE="docker-compose"
     fi
 
-    if ! $DOCKER_COMPOSE -f tests/docker/docker-compose.yml up -d --wait; then
+    if ! $DOCKER_COMPOSE -f tests/docker/docker-compose.yml build --no-cache && $DOCKER_COMPOSE -f tests/docker/docker-compose.yml up -d --wait; then
         echo -e "${RED}[ERROR]${NC} ${BOLD}Failed to start Docker containers!${NC}"
         FAILURE=1
         echo

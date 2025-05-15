@@ -64,3 +64,4 @@ jobs:
           ./tests/scripts/run-tests.sh
         env:
           ANSIBLE_FORCE_COLOR: "1"
+          DOCKER_BUILDKIT: "1"

@@ -35,6 +35,18 @@ if [ -z "$CONTAINERS" ]; then
 else
     # Stop and remove containers
     echo -e "${BLUE}[TASK]${NC} ${BOLD}Stopping and removing containers...${NC}"
+    
+    # First, kill any running containers to ensure clean shutdown
+    RUNNING_CONTAINERS=$(docker ps --filter "name=ansible-" --format "{{.Names}}")
+    if [ -n "$RUNNING_CONTAINERS" ]; then
+        echo -e "  ${CYAN}•${NC} Killing running containers first..."
+        for CONTAINER in $RUNNING_CONTAINERS; do
+            echo -e "    ${CYAN}›${NC} Killing container: ${YELLOW}$CONTAINER${NC}"
+            docker kill $CONTAINER > /dev/null 2>&1
+        done
+    fi
+    
+    # Then remove all containers
     for CONTAINER in $CONTAINERS; do
         echo -e "  ${CYAN}•${NC} Removing container: ${YELLOW}$CONTAINER${NC}"
         docker rm -f $CONTAINER > /dev/null 2>&1
