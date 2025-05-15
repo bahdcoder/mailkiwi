@@ -48,8 +48,15 @@ jobs:
           ansible-lint -v || true
         continue-on-error: true
 
+      - name: install infisical cli
+        run: |
+          curl -1sLf "https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh" | sudo -E bash
+          sudo apt-get update && sudo apt-get install -y infisical
+
       - name: run ansible tests
         run: |
+          
+          
           ./ansible/scripts/setup-infisical.sh staging
           cp ansible/requirements.txt ansible/tests/docker/requirements.txt
           cd ansible
