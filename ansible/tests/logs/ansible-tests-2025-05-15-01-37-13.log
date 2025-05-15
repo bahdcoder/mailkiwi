@@ -1,0 +1,569 @@
+Starting Ansible tests at Thu May 15 01:37:13 WAT 2025
+Log file: tests/logs/ansible-tests-2025-05-15-01-37-13.log
+
+[1m[0;35m╔════════════════════════════════════════════════════════╗[0m
+[1m[0;35m║                [0;36mKIBAMAIL ANSIBLE TEST RUNNER[0;35m                   ║[0m
+[1m[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+[0;34m[STEP 1][0m [1mChecking for existing containers...[0m
+[0;36m[INFO][0m [1mNo existing containers found. Will set up new containers.[0m
+[1m[0;35m╔════════════════════════════════════════════════════════╗[0m
+[1m[0;35m║                [0;36mKIBAMAIL TEST CLEANUP[0;35m                  ║[0m
+[1m[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+[0;34m[TASK][0m [1mChecking for test containers...[0m
+[1;33m[INFO][0m [1mNo test containers found.[0m
+[0;34m[TASK][0m [1mChecking for test network...[0m
+  [0;36m•[0m Removing network: [1;33mkibamail_ansible_network[0m
+[0;32m[SUCCESS][0m [1mNetwork removed.[0m
+[0;34m[TASK][0m [1mChecking for test volumes...[0m
+[1;33m[INFO][0m [1mNo test volumes found.[0m
+
+[0;32m[SUCCESS][0m [1mCleanup completed successfully![0m
+
+[0;35m╔════════════════════════════════════════════════════════╗[0m
+[0;35m║                [0;36mOPERATION COMPLETED[0;35m                     ║[0m
+[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+[0;34m[STEP 2][0m [1mGenerating SSH keys...[0m
+[1m[0;35m╔════════════════════════════════════════════════════════╗[0m
+[1m[0;35m║                [0;36mKIBAMAIL SSH KEY GENERATOR[0;35m               ║[0m
+[1m[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+[1;33m[INFO][0m [1mSSH key already generated.[0m
+[0;32m[SUCCESS][0m [1mExiting...[0m
+
+[0;34m[STEP 3][0m [1mSetting up SSH keys and containers...[0m
+[1m[0;35m╔════════════════════════════════════════════════════════╗[0m
+[1m[0;35m║                [0;36mKIBAMAIL SSH SETUP UTILITY[0;35m               ║[0m
+[1m[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+[1;33m[INFO][0m [1mContainers not running.[0m
+[0;34m[TASK][0m [1mStarting Docker Compose...[0m
+ Container ansible-mysql-master  Creating
+ Container ansible-app-1  Creating
+ Container ansible-dragonfly  Creating
+ Container ansible-app-2  Creating
+ Container ansible-mail-2  Creating
+ Container ansible-mail-proxy  Creating
+ Container ansible-monitoring  Creating
+ Container ansible-mail-1  Creating
+ Container ansible-mysql-slave  Creating
+ Container ansible-root  Creating
+ Container ansible-monitoring  Created
+ Container ansible-mysql-master  Created
+ Container ansible-mysql-slave  Created
+ Container ansible-dragonfly  Created
+ Container ansible-app-2  Created
+ Container ansible-mail-2  Created
+ Container ansible-root  Created
+ Container ansible-mail-proxy  Created
+ Container ansible-app-1  Created
+ Container ansible-mail-1  Created
+ Container ansible-root  Starting
+ Container ansible-mysql-slave  Starting
+ Container ansible-app-2  Starting
+ Container ansible-monitoring  Starting
+ Container ansible-mail-2  Starting
+ Container ansible-dragonfly  Starting
+ Container ansible-mysql-master  Starting
+ Container ansible-mail-1  Starting
+ Container ansible-app-1  Starting
+ Container ansible-mail-proxy  Starting
+ Container ansible-app-2  Started
+ Container ansible-mysql-slave  Started
+ Container ansible-app-1  Started
+ Container ansible-dragonfly  Started
+ Container ansible-root  Started
+ Container ansible-monitoring  Started
+ Container ansible-mail-proxy  Started
+ Container ansible-mail-2  Started
+ Container ansible-mail-1  Started
+ Container ansible-mysql-master  Started
+ Container ansible-mail-proxy  Waiting
+ Container ansible-dragonfly  Waiting
+ Container ansible-root  Waiting
+ Container ansible-mail-1  Waiting
+ Container ansible-monitoring  Waiting
+ Container ansible-app-2  Waiting
+ Container ansible-app-1  Waiting
+ Container ansible-mail-2  Waiting
+ Container ansible-mysql-master  Waiting
+ Container ansible-mysql-slave  Waiting
+ Container ansible-mysql-master  Healthy
+ Container ansible-mysql-slave  Healthy
+ Container ansible-app-2  Healthy
+ Container ansible-mail-1  Healthy
+ Container ansible-monitoring  Healthy
+ Container ansible-mail-2  Healthy
+ Container ansible-root  Healthy
+ Container ansible-app-1  Healthy
+ Container ansible-mail-proxy  Healthy
+ Container ansible-dragonfly  Healthy
+[0;32m[SUCCESS][0m [1mContainers started successfully![0m
+
+[0;34m[TASK][0m [1mReading SSH public key...[0m
+[0;32m[SUCCESS][0m [1mPublic key loaded.[0m
+
+[0;34m[TASK][0m [1mSetting up ansible-root container...[0m
+  [0;36m•[0m Created .ssh directory
+  [0;36m•[0m Copied SSH private key
+  [0;36m•[0m Created SSH config
+[0;32m[SUCCESS][0m [1mRoot container setup complete.[0m
+
+[0;34m[TASK][0m [1mSetting up SSH keys for all containers...[0m
+
+[0;36m[CONTAINER][0m [1mSetting up [1;33mansible-app-1[0m[1m...[0m
+  [0;36m•[0m Created .ssh directory
+  [0;36m•[0m Added public key to authorized_keys
+  [0;36m•[0m Set correct permissions
+  [0;36m•[0m Added host key to known_hosts
+  [0;32m✓[0m [1mSSH key setup completed for ansible-app-1[0m
+
+[0;36m[CONTAINER][0m [1mSetting up [1;33mansible-app-2[0m[1m...[0m
+  [0;36m•[0m Created .ssh directory
+  [0;36m•[0m Added public key to authorized_keys
+  [0;36m•[0m Set correct permissions
+  [0;36m•[0m Added host key to known_hosts
+  [0;32m✓[0m [1mSSH key setup completed for ansible-app-2[0m
+
+[0;36m[CONTAINER][0m [1mSetting up [1;33mansible-dragonfly[0m[1m...[0m
+  [0;36m•[0m Created .ssh directory
+  [0;36m•[0m Added public key to authorized_keys
+  [0;36m•[0m Set correct permissions
+  [0;36m•[0m Added host key to known_hosts
+  [0;32m✓[0m [1mSSH key setup completed for ansible-dragonfly[0m
+
+[0;36m[CONTAINER][0m [1mSetting up [1;33mansible-mail-1[0m[1m...[0m
+  [0;36m•[0m Created .ssh directory
+  [0;36m•[0m Added public key to authorized_keys
+  [0;36m•[0m Set correct permissions
+  [0;36m•[0m Added host key to known_hosts
+  [0;32m✓[0m [1mSSH key setup completed for ansible-mail-1[0m
+
+[0;36m[CONTAINER][0m [1mSetting up [1;33mansible-mail-2[0m[1m...[0m
+  [0;36m•[0m Created .ssh directory
+  [0;36m•[0m Added public key to authorized_keys
+  [0;36m•[0m Set correct permissions
+  [0;36m•[0m Added host key to known_hosts
+  [0;32m✓[0m [1mSSH key setup completed for ansible-mail-2[0m
+
+[0;36m[CONTAINER][0m [1mSetting up [1;33mansible-mail-proxy[0m[1m...[0m
+  [0;36m•[0m Created .ssh directory
+  [0;36m•[0m Added public key to authorized_keys
+  [0;36m•[0m Set correct permissions
+  [0;36m•[0m Added host key to known_hosts
+  [0;32m✓[0m [1mSSH key setup completed for ansible-mail-proxy[0m
+
+[0;36m[CONTAINER][0m [1mSetting up [1;33mansible-mysql-master[0m[1m...[0m
+  [0;36m•[0m Created .ssh directory
+  [0;36m•[0m Added public key to authorized_keys
+  [0;36m•[0m Set correct permissions
+  [0;36m•[0m Added host key to known_hosts
+  [0;32m✓[0m [1mSSH key setup completed for ansible-mysql-master[0m
+
+[0;36m[CONTAINER][0m [1mSetting up [1;33mansible-mysql-slave[0m[1m...[0m
+  [0;36m•[0m Created .ssh directory
+  [0;36m•[0m Added public key to authorized_keys
+  [0;36m•[0m Set correct permissions
+  [0;36m•[0m Added host key to known_hosts
+  [0;32m✓[0m [1mSSH key setup completed for ansible-mysql-slave[0m
+
+[0;36m[CONTAINER][0m [1mSetting up [1;33mansible-monitoring[0m[1m...[0m
+  [0;36m•[0m Created .ssh directory
+  [0;36m•[0m Added public key to authorized_keys
+  [0;36m•[0m Set correct permissions
+  [0;36m•[0m Added host key to known_hosts
+  [0;32m✓[0m [1mSSH key setup completed for ansible-monitoring[0m
+
+[0;34m[TASK][0m [1mSetting up hosts file in root container...[0m
+  [0;36m•[0m Added host entry: 172.16.0.3 app-1
+  [0;36m•[0m Added host entry: 172.16.0.2 app-2
+  [0;36m•[0m Added host entry: 172.16.0.11 dragonfly
+  [0;36m•[0m Added host entry: 172.16.0.10 mail-1
+  [0;36m•[0m Added host entry: 172.16.0.5 mail-2
+  [0;36m•[0m Added host entry: 172.16.0.6 mail-proxy
+  [0;36m•[0m Added host entry: 172.16.0.9 mysql-master
+  [0;36m•[0m Added host entry: 172.16.0.8 mysql-slave
+  [0;36m•[0m Added host entry: 172.16.0.4 monitoring
+[0;32m[SUCCESS][0m [1mHosts file updated.[0m
+
+[0;34m[TASK][0m [1mTesting SSH connections from root container...[0m
+
+  [0;36m•[0m Testing connection to [1;33mansible-app-1[0m...
+    [0;32m✓[0m [1mConnection successful![0m
+  [0;36m•[0m Testing connection to [1;33mansible-app-2[0m...
+    [0;32m✓[0m [1mConnection successful![0m
+  [0;36m•[0m Testing connection to [1;33mansible-dragonfly[0m...
+    [0;32m✓[0m [1mConnection successful![0m
+  [0;36m•[0m Testing connection to [1;33mansible-mail-1[0m...
+    [0;32m✓[0m [1mConnection successful![0m
+  [0;36m•[0m Testing connection to [1;33mansible-mail-2[0m...
+    [0;32m✓[0m [1mConnection successful![0m
+  [0;36m•[0m Testing connection to [1;33mansible-mail-proxy[0m...
+    [0;32m✓[0m [1mConnection successful![0m
+  [0;36m•[0m Testing connection to [1;33mansible-mysql-master[0m...
+    [0;32m✓[0m [1mConnection successful![0m
+  [0;36m•[0m Testing connection to [1;33mansible-mysql-slave[0m...
+    [0;32m✓[0m [1mConnection successful![0m
+  [0;36m•[0m Testing connection to [1;33mansible-monitoring[0m...
+    [0;32m✓[0m [1mConnection successful![0m
+
+[0;32m[SUCCESS][0m [1mSSH setup completed successfully![0m
+
+[0;35m╔════════════════════════════════════════════════════════╗[0m
+[0;35m║                [0;36mOPERATION COMPLETED[0;35m                     ║[0m
+[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+[0;34m[STEP 4][0m [1mRunning Ansible playbook...[0m
+[1m[0;35m╔════════════════════════════════════════════════════════╗[0m
+[1m[0;35m║              [0;36mKIBAMAIL ANSIBLE TEST RUNNER[0;35m              ║[0m
+[1m[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+Ansible log file: tests/logs/ansible-playbook-2025-05-15-01-37-21.log
+
+[0;34m[TASK][0m [1mChecking if ansible-root container is running...[0m
+[0;34m[TASK][0m [1mVerifying Ansible installation...[0m
+[0;32m[SUCCESS][0m [1mAnsible is properly installed.[0m
+
+[0;34m[TASK][0m [1mCreating inventory file for app servers...[0m
+[0;32m[SUCCESS][0m [1mInventory file created.[0m
+
+[0;34m[TASK][0m [1mRunning Ansible playbook...[0m
+[0;36m•[0m Playbook: [1;33mplaybooks/app/setup.yml[0m
+[0;36m•[0m Hosts: [1;33mapp-1, app-2[0m
+
+[0;36m•[0m Streaming playbook execution in real-time...
+
+[0;34mUsing /root/ansible/ansible.cfg as config file[0m
+
+PLAY [setup nodejs environment] ************************************************
+
+[0;34mTASK [Gathering Facts] *********************************************************[0m
+[1;35m[WARNING]: Platform linux on host app-1 is using the discovered Python[0m
+[1;35minterpreter at /usr/bin/python3.12, but future installation of another Python[0m
+[1;35minterpreter could change the meaning of that path. See[0m
+[1;35mhttps://docs.ansible.com/ansible-[0m
+[1;35mcore/2.18/reference_appendices/interpreter_discovery.html for more information.[0m
+[0;32m[0;32mok: [app-1][0m[0m
+[1;35m[WARNING]: Platform linux on host app-2 is using the discovered Python[0m
+[1;35minterpreter at /usr/bin/python3.12, but future installation of another Python[0m
+[1;35minterpreter could change the meaning of that path. See[0m
+[1;35mhttps://docs.ansible.com/ansible-[0m
+[1;35mcore/2.18/reference_appendices/interpreter_discovery.html for more information.[0m
+[0;32m[0;32mok: [app-2][0m[0m
+
+[0;34mTASK [nodejs : install dependencies for nvm] ***********************************[0m
+[1;33m[0;33mchanged: [app-1] => {"cache_update_time": 1747269454, "cache_updated": true, "changed": true, "stderr": "debconf: delaying package configuration, since apt-utils is not installed
+", "stderr_lines": ["debconf: delaying package configuration, since apt-utils is not installed"], "stdout": "Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  git-man less liberror-perl
+Suggested packages:
+  gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
+  gitk gitweb git-cvs git-mediawiki git-svn libssl-doc
+The following NEW packages will be installed:
+  git git-man less liberror-perl libssl-dev
+0 upgraded, 5 newly installed, 0 to remove and 0 not upgraded.
+Need to get 7380 kB of archives.
+After this operation, 38.0 MB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 less arm64 590-2ubuntu2.1 [142 kB]
+Get:2 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 liberror-perl all 0.17029-2 [25.6 kB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 git-man all 1:2.43.0-1ubuntu7.2 [1100 kB]
+Get:4 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 git arm64 1:2.43.0-1ubuntu7.2 [3776 kB]
+Get:5 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libssl-dev arm64 3.0.13-0ubuntu3.5 [2337 kB]
+Fetched 7380 kB in 3s (2119 kB/s)
+Selecting previously unselected package less.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 32394 files and directories currently installed.)
+Preparing to unpack .../less_590-2ubuntu2.1_arm64.deb ...
+Unpacking less (590-2ubuntu2.1) ...
+Selecting previously unselected package liberror-perl.
+Preparing to unpack .../liberror-perl_0.17029-2_all.deb ...
+Unpacking liberror-perl (0.17029-2) ...
+Selecting previously unselected package git-man.
+Preparing to unpack .../git-man_1%3a2.43.0-1ubuntu7.2_all.deb ...
+Unpacking git-man (1:2.43.0-1ubuntu7.2) ...
+Selecting previously unselected package git.
+Preparing to unpack .../git_1%3a2.43.0-1ubuntu7.2_arm64.deb ...
+Unpacking git (1:2.43.0-1ubuntu7.2) ...
+Selecting previously unselected package libssl-dev:arm64.
+Preparing to unpack .../libssl-dev_3.0.13-0ubuntu3.5_arm64.deb ...
+Unpacking libssl-dev:arm64 (3.0.13-0ubuntu3.5) ...
+Setting up less (590-2ubuntu2.1) ...
+Setting up liberror-perl (0.17029-2) ...
+Setting up libssl-dev:arm64 (3.0.13-0ubuntu3.5) ...
+Setting up git-man (1:2.43.0-1ubuntu7.2) ...
+Setting up git (1:2.43.0-1ubuntu7.2) ...
+", "stdout_lines": ["Reading package lists...", "Building dependency tree...", "Reading state information...", "The following additional packages will be installed:", "  git-man less liberror-perl", "Suggested packages:", "  gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui", "  gitk gitweb git-cvs git-mediawiki git-svn libssl-doc", "The following NEW packages will be installed:", "  git git-man less liberror-perl libssl-dev", "0 upgraded, 5 newly installed, 0 to remove and 0 not upgraded.", "Need to get 7380 kB of archives.", "After this operation, 38.0 MB of additional disk space will be used.", "Get:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 less arm64 590-2ubuntu2.1 [142 kB]", "Get:2 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 liberror-perl all 0.17029-2 [25.6 kB]", "Get:3 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 git-man all 1:2.43.0-1ubuntu7.2 [1100 kB]", "Get:4 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 git arm64 1:2.43.0-1ubuntu7.2 [3776 kB]", "Get:5 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libssl-dev arm64 3.0.13-0ubuntu3.5 [2337 kB]", "Fetched 7380 kB in 3s (2119 kB/s)", "Selecting previously unselected package less.", "(Reading database ... ", "(Reading database ... 5%", "(Reading database ... 10%", "(Reading database ... 15%", "(Reading database ... 20%", "(Reading database ... 25%", "(Reading database ... 30%", "(Reading database ... 35%", "(Reading database ... 40%", "(Reading database ... 45%", "(Reading database ... 50%", "(Reading database ... 55%", "(Reading database ... 60%", "(Reading database ... 65%", "(Reading database ... 70%", "(Reading database ... 75%", "(Reading database ... 80%", "(Reading database ... 85%", "(Reading database ... 90%", "(Reading database ... 95%", "(Reading database ... 100%", "(Reading database ... 32394 files and directories currently installed.)", "Preparing to unpack .../less_590-2ubuntu2.1_arm64.deb ...", "Unpacking less (590-2ubuntu2.1) ...", "Selecting previously unselected package liberror-perl.", "Preparing to unpack .../liberror-perl_0.17029-2_all.deb ...", "Unpacking liberror-perl (0.17029-2) ...", "Selecting previously unselected package git-man.", "Preparing to unpack .../git-man_1%3a2.43.0-1ubuntu7.2_all.deb ...", "Unpacking git-man (1:2.43.0-1ubuntu7.2) ...", "Selecting previously unselected package git.", "Preparing to unpack .../git_1%3a2.43.0-1ubuntu7.2_arm64.deb ...", "Unpacking git (1:2.43.0-1ubuntu7.2) ...", "Selecting previously unselected package libssl-dev:arm64.", "Preparing to unpack .../libssl-dev_3.0.13-0ubuntu3.5_arm64.deb ...", "Unpacking libssl-dev:arm64 (3.0.13-0ubuntu3.5) ...", "Setting up less (590-2ubuntu2.1) ...", "Setting up liberror-perl (0.17029-2) ...", "Setting up libssl-dev:arm64 (3.0.13-0ubuntu3.5) ...", "Setting up git-man (1:2.43.0-1ubuntu7.2) ...", "Setting up git (1:2.43.0-1ubuntu7.2) ..."]}[0m[0m
+[1;33m[0;33mchanged: [app-2] => {"cache_update_time": 1747269454, "cache_updated": true, "changed": true, "stderr": "debconf: delaying package configuration, since apt-utils is not installed
+", "stderr_lines": ["debconf: delaying package configuration, since apt-utils is not installed"], "stdout": "Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  git-man less liberror-perl
+Suggested packages:
+  gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
+  gitk gitweb git-cvs git-mediawiki git-svn libssl-doc
+The following NEW packages will be installed:
+  git git-man less liberror-perl libssl-dev
+0 upgraded, 5 newly installed, 0 to remove and 0 not upgraded.
+Need to get 7380 kB of archives.
+After this operation, 38.0 MB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 less arm64 590-2ubuntu2.1 [142 kB]
+Get:2 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 liberror-perl all 0.17029-2 [25.6 kB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 git-man all 1:2.43.0-1ubuntu7.2 [1100 kB]
+Get:4 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 git arm64 1:2.43.0-1ubuntu7.2 [3776 kB]
+Get:5 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libssl-dev arm64 3.0.13-0ubuntu3.5 [2337 kB]
+Fetched 7380 kB in 4s (1992 kB/s)
+Selecting previously unselected package less.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 32394 files and directories currently installed.)
+Preparing to unpack .../less_590-2ubuntu2.1_arm64.deb ...
+Unpacking less (590-2ubuntu2.1) ...
+Selecting previously unselected package liberror-perl.
+Preparing to unpack .../liberror-perl_0.17029-2_all.deb ...
+Unpacking liberror-perl (0.17029-2) ...
+Selecting previously unselected package git-man.
+Preparing to unpack .../git-man_1%3a2.43.0-1ubuntu7.2_all.deb ...
+Unpacking git-man (1:2.43.0-1ubuntu7.2) ...
+Selecting previously unselected package git.
+Preparing to unpack .../git_1%3a2.43.0-1ubuntu7.2_arm64.deb ...
+Unpacking git (1:2.43.0-1ubuntu7.2) ...
+Selecting previously unselected package libssl-dev:arm64.
+Preparing to unpack .../libssl-dev_3.0.13-0ubuntu3.5_arm64.deb ...
+Unpacking libssl-dev:arm64 (3.0.13-0ubuntu3.5) ...
+Setting up less (590-2ubuntu2.1) ...
+Setting up liberror-perl (0.17029-2) ...
+Setting up libssl-dev:arm64 (3.0.13-0ubuntu3.5) ...
+Setting up git-man (1:2.43.0-1ubuntu7.2) ...
+Setting up git (1:2.43.0-1ubuntu7.2) ...
+", "stdout_lines": ["Reading package lists...", "Building dependency tree...", "Reading state information...", "The following additional packages will be installed:", "  git-man less liberror-perl", "Suggested packages:", "  gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui", "  gitk gitweb git-cvs git-mediawiki git-svn libssl-doc", "The following NEW packages will be installed:", "  git git-man less liberror-perl libssl-dev", "0 upgraded, 5 newly installed, 0 to remove and 0 not upgraded.", "Need to get 7380 kB of archives.", "After this operation, 38.0 MB of additional disk space will be used.", "Get:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 less arm64 590-2ubuntu2.1 [142 kB]", "Get:2 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 liberror-perl all 0.17029-2 [25.6 kB]", "Get:3 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 git-man all 1:2.43.0-1ubuntu7.2 [1100 kB]", "Get:4 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 git arm64 1:2.43.0-1ubuntu7.2 [3776 kB]", "Get:5 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libssl-dev arm64 3.0.13-0ubuntu3.5 [2337 kB]", "Fetched 7380 kB in 4s (1992 kB/s)", "Selecting previously unselected package less.", "(Reading database ... ", "(Reading database ... 5%", "(Reading database ... 10%", "(Reading database ... 15%", "(Reading database ... 20%", "(Reading database ... 25%", "(Reading database ... 30%", "(Reading database ... 35%", "(Reading database ... 40%", "(Reading database ... 45%", "(Reading database ... 50%", "(Reading database ... 55%", "(Reading database ... 60%", "(Reading database ... 65%", "(Reading database ... 70%", "(Reading database ... 75%", "(Reading database ... 80%", "(Reading database ... 85%", "(Reading database ... 90%", "(Reading database ... 95%", "(Reading database ... 100%", "(Reading database ... 32394 files and directories currently installed.)", "Preparing to unpack .../less_590-2ubuntu2.1_arm64.deb ...", "Unpacking less (590-2ubuntu2.1) ...", "Selecting previously unselected package liberror-perl.", "Preparing to unpack .../liberror-perl_0.17029-2_all.deb ...", "Unpacking liberror-perl (0.17029-2) ...", "Selecting previously unselected package git-man.", "Preparing to unpack .../git-man_1%3a2.43.0-1ubuntu7.2_all.deb ...", "Unpacking git-man (1:2.43.0-1ubuntu7.2) ...", "Selecting previously unselected package git.", "Preparing to unpack .../git_1%3a2.43.0-1ubuntu7.2_arm64.deb ...", "Unpacking git (1:2.43.0-1ubuntu7.2) ...", "Selecting previously unselected package libssl-dev:arm64.", "Preparing to unpack .../libssl-dev_3.0.13-0ubuntu3.5_arm64.deb ...", "Unpacking libssl-dev:arm64 (3.0.13-0ubuntu3.5) ...", "Setting up less (590-2ubuntu2.1) ...", "Setting up liberror-perl (0.17029-2) ...", "Setting up libssl-dev:arm64 (3.0.13-0ubuntu3.5) ...", "Setting up git-man (1:2.43.0-1ubuntu7.2) ...", "Setting up git (1:2.43.0-1ubuntu7.2) ..."]}[0m[0m
+
+[0;34mTASK [nodejs : create .nvm directory] ******************************************[0m
+[1;33m[0;33mchanged: [app-2] => {"changed": true, "gid": 0, "group": "root", "mode": "0755", "owner": "root", "path": "/root/.nvm", "size": 0, "state": "directory", "uid": 0}[0m[0m
+[1;33m[0;33mchanged: [app-1] => {"changed": true, "gid": 0, "group": "root", "mode": "0755", "owner": "root", "path": "/root/.nvm", "size": 0, "state": "directory", "uid": 0}[0m[0m
+
+[0;34mTASK [nodejs : download and install nvm] ***************************************[0m
+[1;33m[0;33mchanged: [app-2] => {"changed": true, "cmd": "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+", "delta": "0:00:04.364741", "end": "2025-05-15 00:37:47.786247", "msg": "", "rc": 0, "start": "2025-05-15 00:37:43.421506", "stderr": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 16555  100 16555    0     0  23904      0 --:--:-- --:--:-- --:--:-- 23888
+Cloning into '/root/.nvm'...", "stderr_lines": ["  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current", "                                 Dload  Upload   Total   Spent    Left  Speed", "", "  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0", "  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0", "100 16555  100 16555    0     0  23904      0 --:--:-- --:--:-- --:--:-- 23888", "Cloning into '/root/.nvm'..."], "stdout": "=> Downloading nvm from git to '/root/.nvm'
+=> * (HEAD detached at FETCH_HEAD)
+  master
+=> Compressing and cleaning up git repository
+
+=> Appending nvm source string to /root/.bashrc
+=> Appending bash_completion source string to /root/.bashrc
+=> Close and reopen your terminal to start using nvm or run the following to use it now:
+
+export NVM_DIR=\"$HOME/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"  # This loads nvm
+[ -s \"$NVM_DIR/bash_completion\" ] && \. \"$NVM_DIR/bash_completion\"  # This loads nvm bash_completion", "stdout_lines": ["=> Downloading nvm from git to '/root/.nvm'", "", "=> * (HEAD detached at FETCH_HEAD)", "  master", "=> Compressing and cleaning up git repository", "", "=> Appending nvm source string to /root/.bashrc", "=> Appending bash_completion source string to /root/.bashrc", "=> Close and reopen your terminal to start using nvm or run the following to use it now:", "", "export NVM_DIR=\"$HOME/.nvm\"", "[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"  # This loads nvm", "[ -s \"$NVM_DIR/bash_completion\" ] && \. \"$NVM_DIR/bash_completion\"  # This loads nvm bash_completion"]}[0m[0m
+[1;33m[0;33mchanged: [app-1] => {"changed": true, "cmd": "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+", "delta": "0:00:04.543238", "end": "2025-05-15 00:37:47.962937", "msg": "", "rc": 0, "start": "2025-05-15 00:37:43.419699", "stderr": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 16555  100 16555    0     0  23919      0 --:--:-- --:--:-- --:--:-- 23888
+Cloning into '/root/.nvm'...", "stderr_lines": ["  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current", "                                 Dload  Upload   Total   Spent    Left  Speed", "", "  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0", "  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0", "100 16555  100 16555    0     0  23919      0 --:--:-- --:--:-- --:--:-- 23888", "Cloning into '/root/.nvm'..."], "stdout": "=> Downloading nvm from git to '/root/.nvm'
+=> * (HEAD detached at FETCH_HEAD)
+  master
+=> Compressing and cleaning up git repository
+
+=> Appending nvm source string to /root/.bashrc
+=> Appending bash_completion source string to /root/.bashrc
+=> Close and reopen your terminal to start using nvm or run the following to use it now:
+
+export NVM_DIR=\"$HOME/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"  # This loads nvm
+[ -s \"$NVM_DIR/bash_completion\" ] && \. \"$NVM_DIR/bash_completion\"  # This loads nvm bash_completion", "stdout_lines": ["=> Downloading nvm from git to '/root/.nvm'", "", "=> * (HEAD detached at FETCH_HEAD)", "  master", "=> Compressing and cleaning up git repository", "", "=> Appending nvm source string to /root/.bashrc", "=> Appending bash_completion source string to /root/.bashrc", "=> Close and reopen your terminal to start using nvm or run the following to use it now:", "", "export NVM_DIR=\"$HOME/.nvm\"", "[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"  # This loads nvm", "[ -s \"$NVM_DIR/bash_completion\" ] && \. \"$NVM_DIR/bash_completion\"  # This loads nvm bash_completion"]}[0m[0m
+
+[0;34mTASK [nodejs : add nvm to .bashrc] *********************************************[0m
+[1;33m[0;33mchanged: [app-2] => {"changed": true, "msg": "Block inserted"}[0m[0m
+[1;33m[0;33mchanged: [app-1] => {"changed": true, "msg": "Block inserted"}[0m[0m
+
+[0;34mTASK [nodejs : check if .zshrc exists] *****************************************[0m
+[0;32m[0;32mok: [app-1] => {"changed": false, "stat": {"exists": false}}[0m[0m
+[0;32m[0;32mok: [app-2] => {"changed": false, "stat": {"exists": false}}[0m[0m
+
+[0;34mTASK [nodejs : add nvm to .zshrc if it exists] *********************************[0m
+[0;36mskipping: [app-1] => {"changed": false, "false_condition": "zshrc_file.stat.exists", "skip_reason": "Conditional result was False"}[0m
+[0;36mskipping: [app-2] => {"changed": false, "false_condition": "zshrc_file.stat.exists", "skip_reason": "Conditional result was False"}[0m
+
+[0;34mTASK [nodejs : source nvm for current Ansible run] *****************************[0m
+[1;33m[0;33mchanged: [app-2] => {"changed": true, "cmd": "export NVM_DIR=\"/root/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+", "delta": "0:00:00.017867", "end": "2025-05-15 00:37:48.591582", "msg": "", "rc": 0, "start": "2025-05-15 00:37:48.573715", "stderr": "", "stderr_lines": [], "stdout": "", "stdout_lines": []}[0m[0m
+[1;33m[0;33mchanged: [app-1] => {"changed": true, "cmd": "export NVM_DIR=\"/root/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+", "delta": "0:00:00.017608", "end": "2025-05-15 00:37:48.590467", "msg": "", "rc": 0, "start": "2025-05-15 00:37:48.572859", "stderr": "", "stderr_lines": [], "stdout": "", "stdout_lines": []}[0m[0m
+
+[0;34mTASK [nodejs : install nodejs v22.4.0] *****************************************[0m
+[1;33m[0;33mchanged: [app-1] => {"changed": true, "cmd": "export NVM_DIR=\"/root/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+nvm install 22.4.0
+nvm alias default 22.4.0
+", "delta": "0:00:14.088458", "end": "2025-05-15 00:38:02.854167", "msg": "", "rc": 0, "start": "2025-05-15 00:37:48.765709", "stderr": "Downloading https://nodejs.org/dist/v22.4.0/node-v22.4.0-linux-arm64.tar.xz...
+#=#=#                                                                          ##O#-#                                                                         ##O=#  #                                                                       #=#=-#  #                                                                                                                                                 0.5%                                                                           0.9%#                                                                          2.2%#                                                                          2.7%###                                                                        4.2%####                                                                       6.1%#####                                                                      7.8%#####                                                                      8.2%######                                                                     8.7%######                                                                     8.8%######                                                                     9.0%######                                                                     9.1%########                                                                  11.3%#########                                                                 12.5%##########                                                                14.2%###########                                                               16.4%#############                                                             18.7%##############                                                            19.7%###############                                                           21.0%################                                                          23.5%##################                                                        25.2%###################                                                       27.1%#####################                                                     29.8%######################                                                    31.9%########################                                                  34.1%#########################                                                 35.6%##########################                                                36.3%###########################                                               37.8%#############################                                             40.8%##############################                                            42.7%###############################                                           44.3%################################                                          45.3%##################################                                        47.4%##################################                                        48.5%###################################                                       49.6%####################################                                      51.2%#####################################                                     52.3%#######################################                                   54.3%#######################################                                   55.1%########################################                                  56.2%#########################################                                 57.2%#########################################                                 58.3%###########################################                               60.1%############################################                              61.3%#############################################                             63.7%#############################################                             63.7%###################################################                       72.0%####################################################                      73.1%#####################################################                     74.0%######################################################                    75.3%######################################################                    76.1%#######################################################                   77.0%########################################################                  78.3%#########################################################                 80.0%##########################################################                80.8%###########################################################               82.2%############################################################              83.6%#############################################################             85.1%#############################################################             85.9%##############################################################            86.7%###############################################################           87.8%################################################################          89.0%################################################################          90.0%##################################################################        91.7%##################################################################        92.8%###################################################################       93.8%####################################################################      94.7%######################################################################    97.2%######################################################################    97.8%#######################################################################   99.8%######################################################################## 100.0%
+Computing checksum with sha256sum
+Checksums matched!", "stderr_lines": ["Downloading https://nodejs.org/dist/v22.4.0/node-v22.4.0-linux-arm64.tar.xz...", "#=#=#                                                                          ", "##O#-#                                                                         ", "##O=#  #                                                                       ", "#=#=-#  #                                                                      ", "", "                                                                           0.5%", "                                                                           0.9%", "#                                                                          2.2%", "#                                                                          2.7%", "###                                                                        4.2%", "####                                                                       6.1%", "#####                                                                      7.8%", "#####                                                                      8.2%", "######                                                                     8.7%", "######                                                                     8.8%", "######                                                                     9.0%", "######                                                                     9.1%", "########                                                                  11.3%", "#########                                                                 12.5%", "##########                                                                14.2%", "###########                                                               16.4%", "#############                                                             18.7%", "##############                                                            19.7%", "###############                                                           21.0%", "################                                                          23.5%", "##################                                                        25.2%", "###################                                                       27.1%", "#####################                                                     29.8%", "######################                                                    31.9%", "########################                                                  34.1%", "#########################                                                 35.6%", "##########################                                                36.3%", "###########################                                               37.8%", "#############################                                             40.8%", "##############################                                            42.7%", "###############################                                           44.3%", "################################                                          45.3%", "##################################                                        47.4%", "##################################                                        48.5%", "###################################                                       49.6%", "####################################                                      51.2%", "#####################################                                     52.3%", "#######################################                                   54.3%", "#######################################                                   55.1%", "########################################                                  56.2%", "#########################################                                 57.2%", "#########################################                                 58.3%", "###########################################                               60.1%", "############################################                              61.3%", "#############################################                             63.7%", "#############################################                             63.7%", "###################################################                       72.0%", "####################################################                      73.1%", "#####################################################                     74.0%", "######################################################                    75.3%", "######################################################                    76.1%", "#######################################################                   77.0%", "########################################################                  78.3%", "#########################################################                 80.0%", "##########################################################                80.8%", "###########################################################               82.2%", "############################################################              83.6%", "#############################################################             85.1%", "#############################################################             85.9%", "##############################################################            86.7%", "###############################################################           87.8%", "################################################################          89.0%", "################################################################          90.0%", "##################################################################        91.7%", "##################################################################        92.8%", "###################################################################       93.8%", "####################################################################      94.7%", "######################################################################    97.2%", "######################################################################    97.8%", "#######################################################################   99.8%", "######################################################################## 100.0%", "Computing checksum with sha256sum", "Checksums matched!"], "stdout": "Downloading and installing node v22.4.0...
+Now using node v22.4.0 (npm v10.8.1)
+Creating default alias: \u001b[0;32mdefault\u001b[0m \u001b[0;90m->\u001b[0m \u001b[0;32m22.4.0\u001b[0m (\u001b[0;90m->\u001b[0m \u001b[0;32mv22.4.0\u001b[0m)
+\u001b[0;32mdefault\u001b[0m \u001b[0;90m->\u001b[0m \u001b[0;32m22.4.0\u001b[0m (\u001b[0;90m->\u001b[0m \u001b[0;32mv22.4.0\u001b[0m)", "stdout_lines": ["Downloading and installing node v22.4.0...", "Now using node v22.4.0 (npm v10.8.1)", "Creating default alias: \u001b[0;32mdefault\u001b[0m \u001b[0;90m->\u001b[0m \u001b[0;32m22.4.0\u001b[0m (\u001b[0;90m->\u001b[0m \u001b[0;32mv22.4.0\u001b[0m)", "\u001b[0;32mdefault\u001b[0m \u001b[0;90m->\u001b[0m \u001b[0;32m22.4.0\u001b[0m (\u001b[0;90m->\u001b[0m \u001b[0;32mv22.4.0\u001b[0m)"]}[0m[0m
+[1;33m[0;33mchanged: [app-2] => {"changed": true, "cmd": "export NVM_DIR=\"/root/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+nvm install 22.4.0
+nvm alias default 22.4.0
+", "delta": "0:00:17.026150", "end": "2025-05-15 00:38:05.792688", "msg": "", "rc": 0, "start": "2025-05-15 00:37:48.766538", "stderr": "Downloading https://nodejs.org/dist/v22.4.0/node-v22.4.0-linux-arm64.tar.xz...
+#=#=#                                                                          ##O#-#                                                                         ##O=#  #                                                                                                                                                  0.0%                                                                           0.5%                                                                           1.0%#                                                                          2.1%##                                                                         3.4%###                                                                        4.4%###                                                                        4.9%####                                                                       6.4%#####                                                                      7.1%#####                                                                      7.2%#####                                                                      7.3%#####                                                                      7.4%#####                                                                      8.1%#######                                                                    9.9%#######                                                                   11.0%########                                                                  11.9%#########                                                                 13.4%##########                                                                14.2%##########                                                                15.3%###########                                                               15.7%############                                                              17.3%#############                                                             19.0%##############                                                            19.7%##############                                                            20.2%###############                                                           21.0%###############                                                           21.6%################                                                          22.5%#################                                                         25.0%##################                                                        26.1%###################                                                       26.9%####################                                                      28.0%####################                                                      28.7%#####################                                                     29.7%#####################                                                     30.2%######################                                                    30.8%######################                                                    31.4%#######################                                                   32.1%#######################                                                   32.7%########################                                                  33.7%########################                                                  34.0%########################                                                  34.6%#########################                                                 35.2%#########################                                                 36.0%##########################                                                36.7%###########################                                               37.9%###########################                                               38.0%##############################                                            42.1%##############################                                            42.9%###############################                                           43.5%###############################                                           43.7%###############################                                           44.1%################################                                          44.6%################################                                          45.3%#################################                                         46.4%#################################                                         46.7%##################################                                        47.4%##################################                                        47.8%###################################                                       48.7%###################################                                       49.0%####################################                                      50.0%####################################                                      50.9%####################################                                      51.3%#####################################                                     51.5%#####################################                                     52.6%######################################                                    53.2%#######################################                                   54.3%#######################################                                   55.4%########################################                                  55.8%#########################################                                 57.1%##########################################                                59.3%############################################                              61.7%#############################################                             62.8%#############################################                             63.7%##############################################                            64.8%###############################################                           65.9%################################################                          67.3%################################################                          68.0%##################################################                        69.5%##################################################                        70.2%###################################################                       71.7%####################################################                      73.2%#####################################################                     74.5%######################################################                    76.0%#######################################################                   77.2%########################################################                  78.4%#########################################################                 80.0%##########################################################                81.3%###########################################################               82.6%############################################################              84.1%#############################################################             85.1%##############################################################            86.6%###############################################################           88.1%################################################################          89.7%#################################################################         91.3%##################################################################        92.7%###################################################################       94.3%#####################################################################     96.1%######################################################################    97.6%#######################################################################   99.1%######################################################################## 100.0%
+Computing checksum with sha256sum
+Checksums matched!", "stderr_lines": ["Downloading https://nodejs.org/dist/v22.4.0/node-v22.4.0-linux-arm64.tar.xz...", "#=#=#                                                                          ", "##O#-#                                                                         ", "##O=#  #                                                                       ", "", "                                                                           0.0%", "                                                                           0.5%", "                                                                           1.0%", "#                                                                          2.1%", "##                                                                         3.4%", "###                                                                        4.4%", "###                                                                        4.9%", "####                                                                       6.4%", "#####                                                                      7.1%", "#####                                                                      7.2%", "#####                                                                      7.3%", "#####                                                                      7.4%", "#####                                                                      8.1%", "#######                                                                    9.9%", "#######                                                                   11.0%", "########                                                                  11.9%", "#########                                                                 13.4%", "##########                                                                14.2%", "##########                                                                15.3%", "###########                                                               15.7%", "############                                                              17.3%", "#############                                                             19.0%", "##############                                                            19.7%", "##############                                                            20.2%", "###############                                                           21.0%", "###############                                                           21.6%", "################                                                          22.5%", "#################                                                         25.0%", "##################                                                        26.1%", "###################                                                       26.9%", "####################                                                      28.0%", "####################                                                      28.7%", "#####################                                                     29.7%", "#####################                                                     30.2%", "######################                                                    30.8%", "######################                                                    31.4%", "#######################                                                   32.1%", "#######################                                                   32.7%", "########################                                                  33.7%", "########################                                                  34.0%", "########################                                                  34.6%", "#########################                                                 35.2%", "#########################                                                 36.0%", "##########################                                                36.7%", "###########################                                               37.9%", "###########################                                               38.0%", "##############################                                            42.1%", "##############################                                            42.9%", "###############################                                           43.5%", "###############################                                           43.7%", "###############################                                           44.1%", "################################                                          44.6%", "################################                                          45.3%", "#################################                                         46.4%", "#################################                                         46.7%", "##################################                                        47.4%", "##################################                                        47.8%", "###################################                                       48.7%", "###################################                                       49.0%", "####################################                                      50.0%", "####################################                                      50.9%", "####################################                                      51.3%", "#####################################                                     51.5%", "#####################################                                     52.6%", "######################################                                    53.2%", "#######################################                                   54.3%", "#######################################                                   55.4%", "########################################                                  55.8%", "#########################################                                 57.1%", "##########################################                                59.3%", "############################################                              61.7%", "#############################################                             62.8%", "#############################################                             63.7%", "##############################################                            64.8%", "###############################################                           65.9%", "################################################                          67.3%", "################################################                          68.0%", "##################################################                        69.5%", "##################################################                        70.2%", "###################################################                       71.7%", "####################################################                      73.2%", "#####################################################                     74.5%", "######################################################                    76.0%", "#######################################################                   77.2%", "########################################################                  78.4%", "#########################################################                 80.0%", "##########################################################                81.3%", "###########################################################               82.6%", "############################################################              84.1%", "#############################################################             85.1%", "##############################################################            86.6%", "###############################################################           88.1%", "################################################################          89.7%", "#################################################################         91.3%", "##################################################################        92.7%", "###################################################################       94.3%", "#####################################################################     96.1%", "######################################################################    97.6%", "#######################################################################   99.1%", "######################################################################## 100.0%", "Computing checksum with sha256sum", "Checksums matched!"], "stdout": "Downloading and installing node v22.4.0...
+Now using node v22.4.0 (npm v10.8.1)
+Creating default alias: \u001b[0;32mdefault\u001b[0m \u001b[0;90m->\u001b[0m \u001b[0;32m22.4.0\u001b[0m (\u001b[0;90m->\u001b[0m \u001b[0;32mv22.4.0\u001b[0m)
+\u001b[0;32mdefault\u001b[0m \u001b[0;90m->\u001b[0m \u001b[0;32m22.4.0\u001b[0m (\u001b[0;90m->\u001b[0m \u001b[0;32mv22.4.0\u001b[0m)", "stdout_lines": ["Downloading and installing node v22.4.0...", "Now using node v22.4.0 (npm v10.8.1)", "Creating default alias: \u001b[0;32mdefault\u001b[0m \u001b[0;90m->\u001b[0m \u001b[0;32m22.4.0\u001b[0m (\u001b[0;90m->\u001b[0m \u001b[0;32mv22.4.0\u001b[0m)", "\u001b[0;32mdefault\u001b[0m \u001b[0;90m->\u001b[0m \u001b[0;32m22.4.0\u001b[0m (\u001b[0;90m->\u001b[0m \u001b[0;32mv22.4.0\u001b[0m)"]}[0m[0m
+
+[0;34mTASK [nodejs : install pnpm v9] ************************************************[0m
+[1;33m[0;33mchanged: [app-1] => {"changed": true, "cmd": "export NVM_DIR=\"/root/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+npm install -g pnpm@9
+", "delta": "0:00:01.526360", "end": "2025-05-15 00:38:07.532704", "msg": "", "rc": 0, "start": "2025-05-15 00:38:06.006344", "stderr": "npm notice
+npm notice New major version of npm available! 10.8.1 -> 11.3.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.3.0
+npm notice To update run: npm install -g npm@11.3.0
+npm notice", "stderr_lines": ["npm notice", "npm notice New major version of npm available! 10.8.1 -> 11.3.0", "npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.3.0", "npm notice To update run: npm install -g npm@11.3.0", "npm notice"], "stdout": "
+added 1 package in 1s
+
+1 package is looking for funding
+  run `npm fund` for details", "stdout_lines": ["", "added 1 package in 1s", "", "1 package is looking for funding", "  run `npm fund` for details"]}[0m[0m
+[1;33m[0;33mchanged: [app-2] => {"changed": true, "cmd": "export NVM_DIR=\"/root/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+npm install -g pnpm@9
+", "delta": "0:00:02.153995", "end": "2025-05-15 00:38:08.160543", "msg": "", "rc": 0, "start": "2025-05-15 00:38:06.006548", "stderr": "npm notice
+npm notice New major version of npm available! 10.8.1 -> 11.3.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.3.0
+npm notice To update run: npm install -g npm@11.3.0
+npm notice", "stderr_lines": ["npm notice", "npm notice New major version of npm available! 10.8.1 -> 11.3.0", "npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.3.0", "npm notice To update run: npm install -g npm@11.3.0", "npm notice"], "stdout": "
+added 1 package in 2s
+
+1 package is looking for funding
+  run `npm fund` for details", "stdout_lines": ["", "added 1 package in 2s", "", "1 package is looking for funding", "  run `npm fund` for details"]}[0m[0m
+
+[0;34mTASK [nodejs : verify nodejs installation] *************************************[0m
+[0;32m[0;32mok: [app-2] => {"changed": false, "cmd": "export NVM_DIR=\"/root/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+node --version
+", "delta": "0:00:00.058960", "end": "2025-05-15 00:38:08.397906", "msg": "", "rc": 0, "start": "2025-05-15 00:38:08.338946", "stderr": "", "stderr_lines": [], "stdout": "v22.4.0", "stdout_lines": ["v22.4.0"]}[0m[0m
+[0;32m[0;32mok: [app-1] => {"changed": false, "cmd": "export NVM_DIR=\"/root/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+node --version
+", "delta": "0:00:00.060170", "end": "2025-05-15 00:38:08.397516", "msg": "", "rc": 0, "start": "2025-05-15 00:38:08.337346", "stderr": "", "stderr_lines": [], "stdout": "v22.4.0", "stdout_lines": ["v22.4.0"]}[0m[0m
+
+[0;34mTASK [nodejs : verify pnpm installation] ***************************************[0m
+[0;32m[0;32mok: [app-1] => {"changed": false, "cmd": "export NVM_DIR=\"/root/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+pnpm --version
+", "delta": "0:00:00.352628", "end": "2025-05-15 00:38:08.937976", "msg": "", "rc": 0, "start": "2025-05-15 00:38:08.585348", "stderr": "", "stderr_lines": [], "stdout": "9.15.9", "stdout_lines": ["9.15.9"]}[0m[0m
+[0;32m[0;32mok: [app-2] => {"changed": false, "cmd": "export NVM_DIR=\"/root/.nvm\"
+[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+pnpm --version
+", "delta": "0:00:00.360171", "end": "2025-05-15 00:38:08.951038", "msg": "", "rc": 0, "start": "2025-05-15 00:38:08.590867", "stderr": "", "stderr_lines": [], "stdout": "9.15.9", "stdout_lines": ["9.15.9"]}[0m[0m
+
+[0;34mTASK [nodejs : display installed versions] *************************************[0m
+[0;32m[0;32mok: [app-1] => {[0m[0m
+[0;32m    "msg": [[0m
+[0;32m        "nodejs version: v22.4.0",[0m
+[0;32m        "pnpm version: 9.15.9"[0m
+[0;32m    ][0m
+[0;32m}[0m
+[0;32m[0;32mok: [app-2] => {[0m[0m
+[0;32m    "msg": [[0m
+[0;32m        "nodejs version: v22.4.0",[0m
+[0;32m        "pnpm version: 9.15.9"[0m
+[0;32m    ][0m
+[0;32m}[0m
+
+[0;35mPLAY RECAP *********************************************************************[0m
+[0;33mapp-1[0m                      : [0;32mok=12  [0m [0;33mchanged=7   [0m unreachable=0    failed=0    [0;36mskipped=1   [0m rescued=0    ignored=0   
+[0;33mapp-2[0m                      : [0;32mok=12  [0m [0;33mchanged=7   [0m unreachable=0    failed=0    [0;36mskipped=1   [0m rescued=0    ignored=0   
+
+
+[0;32m[SUCCESS][0m [1mAnsible playbook executed successfully![0m
+
+[0;35m╔════════════════════════════════════════════════════════╗[0m
+[0;35m║                [0;36mOPERATION COMPLETED[0;35m                     ║[0m
+[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+[0;34m[STEP 5][0m [1mValidating Ansible setup...[0m
+[1m[0;35m╔════════════════════════════════════════════════════════╗[0m
+[1m[0;35m║            [0;36mKIBAMAIL ANSIBLE VALIDATION[0;35m             ║[0m
+[1m[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+Validation log file: tests/logs/ansible-validation-2025-05-15-01-38-09.log
+
+[0;34m[TASK][0m [1mChecking if app containers are running...[0m
+[0;32m[SUCCESS][0m [1mApp containers are running.[0m
+
+[0;34m[VALIDATING][0m [1mContainer: [1;33mansible-app-1[0m[1m...[0m
+[0;36m•[0m Checking Node.js installation...
+  [0;32m✓[0m Node.js is correctly installed: [0;32mv22.4.0[0m
+[0;36m•[0m Checking NVM installation...
+  [0;32m✓[0m NVM is correctly installed: [0;32m0.39.7[0m
+[0;36m•[0m Checking PNPM installation...
+  [0;32m✓[0m PNPM is correctly installed: [0;32m9.15.9[0m
+[0;36m•[0m Checking .nvm directory...
+  [0;32m✓[0m .nvm directory exists
+[0;36m•[0m Checking .bashrc NVM configuration...
+  [0;32m✓[0m .bashrc is properly configured for NVM
+
+[0;34m[VALIDATING][0m [1mContainer: [1;33mansible-app-2[0m[1m...[0m
+[0;36m•[0m Checking Node.js installation...
+  [0;32m✓[0m Node.js is correctly installed: [0;32mv22.4.0[0m
+[0;36m•[0m Checking NVM installation...
+  [0;32m✓[0m NVM is correctly installed: [0;32m0.39.7[0m
+[0;36m•[0m Checking PNPM installation...
+  [0;32m✓[0m PNPM is correctly installed: [0;32m9.15.9[0m
+[0;36m•[0m Checking .nvm directory...
+  [0;32m✓[0m .nvm directory exists
+[0;36m•[0m Checking .bashrc NVM configuration...
+  [0;32m✓[0m .bashrc is properly configured for NVM
+
+[0;32m[SUCCESS][0m [1mAll validation checks passed![0m
+
+[0;35m╔════════════════════════════════════════════════════════╗[0m
+[0;35m║                [0;36mVALIDATION SUCCESSFUL[0;35m                 ║[0m
+[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+[0;32m[SUCCESS][0m [1mAll tests completed successfully![0m
+
+[0;35m╔════════════════════════════════════════════════════════╗[0m
+[0;35m║                [0;36mALL TESTS PASSED[0;35m                       ║[0m
+[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+[0;34m[TASK][0m [1mRunning cleanup...[0m
+[1m[0;35m╔════════════════════════════════════════════════════════╗[0m
+[1m[0;35m║                [0;36mKIBAMAIL TEST CLEANUP[0;35m                  ║[0m
+[1m[0;35m╚════════════════════════════════════════════════════════╝[0m
+
+[0;34m[TASK][0m [1mChecking for test containers...[0m
+[0;34m[TASK][0m [1mStopping and removing containers...[0m
+  [0;36m•[0m Removing container: [1;33mansible-mysql-master[0m
+  [0;36m•[0m Removing container: [1;33mansible-mail-1[0m
+  [0;36m•[0m Removing container: [1;33mansible-mail-2[0m
+  [0;36m•[0m Removing container: [1;33mansible-mail-proxy[0m
+  [0;36m•[0m Removing container: [1;33mansible-app-1[0m
+  [0;36m•[0m Removing container: [1;33mansible-dragonfly[0m
+  [0;36m•[0m Removing container: [1;33mansible-root[0m
+  [0;36m•[0m Removing container: [1;33mansible-mysql-slave[0m
+  [0;36m•[0m Removing container: [1;33mansible-monitoring[0m
+  [0;36m•[0m Removing container: [1;33mansible-app-2[0m
+[0;32m[SUCCESS][0m [1mAll containers removed.[0m
+[0;34m[TASK][0m [1mChecking for test network...[0m
+  [0;36m•[0m Removing network: [1;33mkibamail_ansible_network[0m
+[0;32m[SUCCESS][0m [1mNetwork removed.[0m
+[0;34m[TASK][0m [1mChecking for test volumes...[0m
+[1;33m[INFO][0m [1mNo test volumes found.[0m
+
+[0;32m[SUCCESS][0m [1mCleanup completed successfully![0m
+
+[0;35m╔════════════════════════════════════════════════════════╗[0m
+[0;35m║                [0;36mOPERATION COMPLETED[0;35m                     ║[0m
+[0;35m╚════════════════════════════════════════════════════════╝[0m

@@ -13,10 +13,18 @@ NC='\033[0m' # No Color
 # Initialize failure flag
 FAILURE=0
 
+# Create logs directory if it doesn't exist
+mkdir -p tests/logs
+
+# Set up logging for Ansible output
+ANSIBLE_LOG_FILE="tests/logs/ansible-playbook-$(date +%Y-%m-%d-%H-%M-%S).log"
+
 # Print header
 echo -e "${BOLD}${MAGENTA}╔════════════════════════════════════════════════════════╗${NC}"
 echo -e "${BOLD}${MAGENTA}║              ${CYAN}KIBAMAIL ANSIBLE TEST RUNNER${MAGENTA}              ║${NC}"
 echo -e "${BOLD}${MAGENTA}╚════════════════════════════════════════════════════════╝${NC}"
+echo
+echo "Ansible log file: $ANSIBLE_LOG_FILE"
 echo
 
 # Check if ansible-root container is running
@@ -57,7 +65,7 @@ echo
 stream_with_colors() {
     # Use stdbuf to disable buffering for real-time output
     # Use -t instead of -it to ensure it works in non-interactive environments
-    docker exec -t ansible-root bash -c "cd /root/ansible && stdbuf -oL ansible-playbook -i tests/inventory/app_hosts playbooks/app/setup.yml -v" 2>&1 | while IFS= read -r line; do
+    docker exec -t ansible-root bash -c "cd /root/ansible && stdbuf -oL ansible-playbook -i tests/inventory/app_hosts playbooks/app/setup.yml -v" 2>&1 | tee -a "$ANSIBLE_LOG_FILE" | while IFS= read -r line; do
         if [[ $line == *"TASK"* ]]; then
             echo -e "${BLUE}$line${NC}"
         elif [[ $line == *"ok:"* ]]; then
@@ -90,7 +98,7 @@ if [ $EXIT_CODE -ne 0 ]; then
     echo
 
     # Try with absolute path
-    docker exec -t ansible-root bash -c "stdbuf -oL ansible-playbook -i /root/ansible/tests/inventory/app_hosts /root/ansible/playbooks/app/setup.yml -v" 2>&1 | while IFS= read -r line; do
+    docker exec -t ansible-root bash -c "stdbuf -oL ansible-playbook -i /root/ansible/tests/inventory/app_hosts /root/ansible/playbooks/app/setup.yml -v" 2>&1 | tee -a "$ANSIBLE_LOG_FILE" | while IFS= read -r line; do
         if [[ $line == *"TASK"* ]]; then
             echo -e "${BLUE}$line${NC}"
         elif [[ $line == *"ok:"* ]]; then
