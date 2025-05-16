@@ -17,6 +17,8 @@ echo -e "${BOLD}${MAGENTA}║                ${CYAN}KIBAMAIL SSH KEY GENERATOR${
 echo -e "${BOLD}${MAGENTA}╚════════════════════════════════════════════════════════╝${NC}"
 echo
 
+mkdir -p .ssh
+
 if [ -f tests/.ssh/kibamail-test ]; then
     echo -e "${YELLOW}[INFO]${NC} ${BOLD}SSH key already generated.${NC}"
     echo -e "${GREEN}[SUCCESS]${NC} ${BOLD}Exiting...${NC}"
@@ -24,12 +26,12 @@ if [ -f tests/.ssh/kibamail-test ]; then
 fi
 
 echo -e "${BLUE}[TASK]${NC} ${BOLD}Generating new ED25519 SSH key pair...${NC}"
-ssh-keygen -t ed25519 -C "engineering@kibamail.com" -f tests/.ssh/kibamail-test -N ""
+ssh-keygen -t ed25519 -C "engineering@kibamail.com" -f .ssh/kibamail-test -N ""
 echo
 
 echo -e "${GREEN}[SUCCESS]${NC} ${BOLD}SSH key generated successfully!${NC}"
-echo -e "  ${CYAN}•${NC} Private key: ${YELLOW}tests/.ssh/kibamail-test${NC}"
-echo -e "  ${CYAN}•${NC} Public key:  ${YELLOW}tests/.ssh/kibamail-test.pub${NC}"
+echo -e "  ${CYAN}•${NC} Private key: ${YELLOW}.ssh/kibamail-test${NC}"
+echo -e "  ${CYAN}•${NC} Public key:  ${YELLOW}.ssh/kibamail-test.pub${NC}"
 echo
 
 echo -e "${MAGENTA}╔════════════════════════════════════════════════════════╗${NC}"

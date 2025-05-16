@@ -26,7 +26,8 @@
       "**/pnpm-lock.yaml",
       "docker/tidb/data",
       "docker/data/",
-      "build/**"
+      "build/**",
+      "ansible/venv/**"
     ]
   },
   "organizeImports": {

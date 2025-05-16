@@ -25,3 +25,5 @@ logs/
 # os specific
 .DS_Store
 Thumbs.db
+.vagrant/
+.ssh/
