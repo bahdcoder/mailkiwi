@@ -1,96 +1,50 @@
 ---
 
-- name: install dependencies for nvm
+- name: refresh local package index
   apt:
-    name:
-      - curl
-      - git
-      - build-essential
-      - libssl-dev
-    state: present
     update_cache: yes
+    cache_valid_time: 3600
   become: true
 
-- name: create .nvm directory
+- name: download nodesource setup script
+  shell: curl -sL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource_setup.sh
+  args:
+    creates: /tmp/nodesource_setup.sh
+  become: true
+
+- name: run nodesource setup script
+  shell: bash /tmp/nodesource_setup.sh
+  become: true
+
+- name: install nodejs
+  apt:
+    name: nodejs
+    state: present
+    update_cache: no
+  become: true
+
+- name: install pnpm globally
+  shell: npm install -g pnpm@9.7.1
+  become: true
+
+- name: remove temporary files
   file:
-    path: "{{ ansible_env.HOME }}/.nvm"
-    state: directory
-    mode: '0755'
-
-- name: download and install nvm
-  shell: >
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-  args:
-    creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
-
-- name: add nvm to .bashrc
-  blockinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
-    marker: "# {mark} NVM CONFIGURATION"
-    block: |
-      export NVM_DIR="$HOME/.nvm"
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-- name: check if .zshrc exists
-  stat:
-    path: "{{ ansible_env.HOME }}/.zshrc"
-  register: zshrc_file
-
-- name: add nvm to .zshrc if it exists
-  blockinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
-    marker: "# {mark} NVM CONFIGURATION"
-    block: |
-      export NVM_DIR="$HOME/.nvm"
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-  when: zshrc_file.stat.exists
-
-- name: source nvm for current Ansible run
-  shell: |
-    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  args:
-    executable: /bin/bash
-
-- name: install nodejs v22.4.0
-  shell: |
-    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    nvm install 22.4.0
-    nvm alias default 22.4.0
-  args:
-    executable: /bin/bash
-    creates: "{{ ansible_env.HOME }}/.nvm/versions/node/v22.4.0/bin/node"
-
-- name: install pnpm v9
-  shell: |
-    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    npm install -g pnpm@9
-  args:
-    executable: /bin/bash
-    creates: "{{ ansible_env.HOME }}/.nvm/versions/node/v22.4.0/bin/pnpm"
+    path: /tmp/nodesource_setup.sh
+    state: absent
+  become: true
 
 - name: verify nodejs installation
-  shell: |
-    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    node --version
+  command: node -v
   register: node_version
   changed_when: false
 
 - name: verify pnpm installation
-  shell: |
-    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    pnpm --version
+  command: pnpm -v
   register: pnpm_version
   changed_when: false
 
 - name: display installed versions
   debug:
-    msg: 
+    msg:
       - "nodejs version: {{ node_version.stdout }}"
       - "pnpm version: {{ pnpm_version.stdout }}"

@@ -93,6 +93,11 @@ Vagrant.configure("2") do |config|
             echo "Host 172.16.*\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n  IdentityFile ~/.ssh/id_ed25519\n  User ansible" > /home/ansible/.ssh/config
             chmod 644 /home/ansible/.ssh/config || true
           fi
+
+          sudo apt update
+          sudo apt install -y software-properties-common
+          sudo add-apt-repository --yes --update ppa:ansible/ansible
+          sudo apt install -y ansible
         SHELL
       end
     end

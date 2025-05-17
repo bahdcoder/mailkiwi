@@ -13,6 +13,20 @@ NC='\033[0m' # no color
 # initialize failure flag
 FAILURE=0
 
+# parse command line arguments
+SPECIFIED_VMS=""
+for arg in "$@"; do
+  case $arg in
+    --vms=*)
+      SPECIFIED_VMS="${arg#*=}"
+      shift
+      ;;
+    *)
+      # unknown option
+      ;;
+  esac
+done
+
 # print header
 echo -e "${BOLD}${MAGENTA}╔════════════════════════════════════════════════════════╗${NC}"
 echo -e "${BOLD}${MAGENTA}║              ${CYAN}kibamail vagrant manager${MAGENTA}                ║${NC}"
@@ -21,8 +35,8 @@ echo
 
 echo -e "${BLUE}[task]${NC} ${BOLD}preparing to process vagrant vms...${NC}"
 
-# hardcoded list of vms
-vm_names=(
+# hardcoded list of all vms
+all_vm_names=(
   "app-1"
   "app-2"
   "dragonfly"
@@ -34,6 +48,17 @@ vm_names=(
   "monitoring"
   "ansible-root"
 )
+
+# determine which vms to process
+if [ -n "$SPECIFIED_VMS" ]; then
+  # convert comma-separated list to array
+  IFS=',' read -ra vm_names <<< "$SPECIFIED_VMS"
+  echo -e "${YELLOW}[info]${NC} processing specified vms: ${CYAN}${SPECIFIED_VMS}${NC}"
+else
+  # use all vms if none specified
+  vm_names=("${all_vm_names[@]}")
+  echo -e "${YELLOW}[info]${NC} processing all vms"
+fi
 
 # function to get ip for a vm
 get_ip() {
