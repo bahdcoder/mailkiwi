@@ -61,7 +61,6 @@ EOF
 # Initialize failure flag
 FETCH_FAILED=0
 
-# function to fetch a secret and add it to vault_secrets.txt
 fetch_secret() {
     local secret_name=$1
     local var_name=$2
@@ -95,14 +94,9 @@ fetch_secret() {
     return 0
 }
 
-# fetch required secrets
 fetch_secret "ANSIBLE_MYSQL_ROOT_USER_PASSWORD" "MYSQL_ROOT_USER_PASSWORD"
+fetch_secret "ANSIBLE_MYSQL_REPLICATION_PASSWORD" "MYSQL_REPLICATION_PASSWORD"
 fetch_secret "ANSIBLE_MYSQL_KIBAMAIL_USER_PASSWORD" "MYSQL_KIBAMAIL_USER_PASSWORD"
-
-# add macos python fork safety option (commented out by default)
-echo "" >> vault_secrets.txt
-echo "# fix for macos python fork issue (uncomment if needed)" >> vault_secrets.txt
-echo "# OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES" >> vault_secrets.txt
 
 # set secure permissions
 chmod 600 vault_secrets.txt
@@ -136,10 +130,6 @@ if [ $FETCH_FAILED -ne 0 ]; then
     exit 1
 fi
 
-echo -e "${GREEN}[success]${NC} infisical secrets setup complete."
-echo
-echo -e "${YELLOW}[info]${NC} to run playbooks with these secrets:"
-echo -e "  ./scripts/run-with-secrets.sh playbooks/mysql/setup.yml $ENV"
 echo
 echo -e "${YELLOW}[info]${NC} to add more secrets in the future, modify this script to include:"
 echo -e "  fetch_secret \"YOUR_SECRET_NAME\" \"YOUR_VARIABLE_NAME\""

@@ -98,6 +98,9 @@ Vagrant.configure("2") do |config|
           sudo apt install -y software-properties-common
           sudo add-apt-repository --yes --update ppa:ansible/ansible
           sudo apt install -y ansible
+          if [ -f /ansible/collections/requirements.yml ]; then
+            sudo -u ansible ansible-galaxy collection install -r /ansible/collections/requirements.yml
+          fi
         SHELL
       end
     end

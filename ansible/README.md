@@ -41,18 +41,15 @@ this project uses infisical for secret management. secrets are fetched from infi
 
 3. run playbooks with the fetched secrets:
    ```bash
-   ./scripts/run-with-secrets.sh playbooks/mysql/setup.yml staging  # or prod
+   ./scripts/run-with-secrets.sh playbooks/app/setup.yml staging  # or prod
    ```
 
 see [INFISICAL.md](INFISICAL.md) for detailed instructions.
 
 ## playbooks
 
-- `playbooks/mysql/setup.yml`: deploys mysql master and slave servers
 - `playbooks/app/setup.yml`: deploys application servers
 
 ## roles
 
-- `mysql`: installs and configures mysql 8.0.43 with percona xtrabackup
-- `mysql_slave`: configures mysql slave replication
 - `nodejs`: installs and configures nodejs environment

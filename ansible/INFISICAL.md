@@ -70,8 +70,7 @@ organize your secrets in infisical with the following structure:
 
 - environment: `staging` or `prod`
 - secrets:
-  - `ANSIBLE_MYSQL_ROOT_USER_PASSWORD`: root password for mysql
-  - `ANSIBLE_MYSQL_KIBAMAIL_USER_PASSWORD`: kibamail application user password
+  - add your application secrets here
 
 ## running playbooks
 
@@ -79,10 +78,10 @@ run playbooks using the provided script:
 
 ```bash
 # for staging environment
-./scripts/run-with-secrets.sh playbooks/mysql/setup.yml staging
+./scripts/run-with-secrets.sh playbooks/app/setup.yml staging
 
 # for production environment
-./scripts/run-with-secrets.sh playbooks/mysql/setup.yml prod
+./scripts/run-with-secrets.sh playbooks/app/setup.yml prod
 ```
 
 ## adding new secrets
@@ -130,7 +129,7 @@ for testing in docker containers:
 
 3. run ansible inside the container:
    ```bash
-   docker exec ansible-root /bin/bash -c "cd /ansible && ./scripts/run-with-secrets.sh playbooks/mysql/setup.yml staging"
+   docker exec ansible-root /bin/bash -c "cd /ansible && ./scripts/run-with-secrets.sh playbooks/app/setup.yml staging"
    ```
 
 ## troubleshooting
