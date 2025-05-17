@@ -1,34 +1,23 @@
 #!/bin/bash
 
-# verify.sh - script to verify app setup playbook implementation in vagrant vms
-
-# Source the common verification library
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "$SCRIPT_DIR/../common/verify.sh"
 
-# define check mark and x mark
 CHECK_MARK="\xE2\x9C\x94"
 X_MARK="\xE2\x9C\x96"
 
-# print header
 print_header "app setup playbook verification"
 
-# VMs are already checked and started by the main run.sh script
 cd "$ANSIBLE_DIR"
 
-# initialize verification results
 TOTAL_CHECKS=0
 PASSED_CHECKS=0
 FAILED_CHECKS=0
 
-# No VM reachability check - we'll directly run commands
-
-# function to run verification on a vm
 verify_vm() {
     local vm=$1
     echo -e "${BLUE}[task]${NC} verifying ${CYAN}$vm${NC}..."
 
-    # array of verification commands and descriptions
     declare -a verifications=(
         "test -f /usr/bin/node|node binary exists in /usr/bin"
         "test -f /usr/bin/npm|npm binary exists in /usr/bin"
@@ -42,31 +31,25 @@ verify_vm() {
     echo -e "${YELLOW}[info]${NC} running ${#verifications[@]} verification checks..."
     echo
 
-    # print verification table header
     echo -e "${BOLD}┌────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${BOLD}│ ${CYAN}Verification Check                                Status ${NC}│${NC}"
+    echo -e "${BOLD}│ ${CYAN}verification check                                status ${NC}│${NC}"
     echo -e "${BOLD}├────────────────────────────────────────────────────────┤${NC}"
 
-    # run each verification
     for verification in "${verifications[@]}"; do
         IFS='|' read -r command description <<< "$verification"
 
-        # log the command being run
         echo -e "${YELLOW}[command]${NC} running: ${CYAN}$command${NC} on ${CYAN}$vm${NC}"
 
-        # run the command on the vm with a timeout inside the VM
         timeout_seconds=5
         vagrant ssh $vm -c "timeout $timeout_seconds $command" > /dev/null 2>&1
         result=$?
 
-        # if the command timed out (exit code 124 from timeout) or other error, mark as failed
         if [ $result -ne 0 ]; then
             if [ $result -eq 124 ]; then
                 echo -e "${YELLOW}[warning]${NC} command timed out after ${timeout_seconds} seconds: $command"
             else
                 echo -e "${YELLOW}[warning]${NC} command failed with exit code ${result}: $command"
 
-                # If this is the pnpm check that failed, let's see what version is actually installed
                 if [[ "$command" == *"pnpm"* && "$command" == *"version"* ]]; then
                     echo -e "${YELLOW}[debug]${NC} checking actual pnpm version..."
                     vagrant ssh $vm -c "command -v pnpm && pnpm --version || echo 'pnpm not found'" 2>/dev/null
@@ -77,7 +60,6 @@ verify_vm() {
 
         TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
 
-        # print the result with checkmark or cross
         if [ $result -eq 0 ]; then
             echo -e "${BOLD}│ ${NC}${description}${NC}$(printf '%*s' $((48 - ${#description})) "") ${GREEN}${CHECK_MARK} PASS${NC} │${NC}"
             echo -e "${GREEN}[✓]${NC} ${BOLD}Test passed:${NC} ${description}"
@@ -89,32 +71,27 @@ verify_vm() {
         fi
     done
 
-    # print verification table footer
     echo -e "${BOLD}└────────────────────────────────────────────────────────┘${NC}"
     echo
 }
 
-# verify app-1 and app-2
 for vm in "app-1" "app-2"; do
     echo -e "${BLUE}[task]${NC} verifying ${CYAN}$vm${NC}..."
     verify_vm "$vm"
 done
 
-# print summary
 echo -e "${BLUE}[summary]${NC} verification results:"
 echo -e "${CYAN}•${NC} total checks: ${BOLD}$TOTAL_CHECKS${NC}"
 echo -e "${GREEN}•${NC} passed: ${GREEN}${BOLD}$PASSED_CHECKS${NC} ${GREEN}${CHECK_MARK}${NC}"
 echo -e "${RED}•${NC} failed: ${RED}${BOLD}$FAILED_CHECKS${NC} ${RED}${X_MARK}${NC}"
 echo
 
-# calculate pass percentage
 if [ $TOTAL_CHECKS -gt 0 ]; then
     PASS_PERCENTAGE=$((PASSED_CHECKS * 100 / TOTAL_CHECKS))
     echo -e "${CYAN}•${NC} pass rate: ${BOLD}${PASS_PERCENTAGE}%${NC}"
     echo
 fi
 
-# determine overall status
 if [ $FAILED_CHECKS -eq 0 ]; then
     echo -e "${GREEN}[✓]${NC} ${BOLD}SUCCESS:${NC} all verification checks passed!"
     FOOTER_COLOR=$MAGENTA
@@ -127,7 +104,6 @@ else
     EXIT_CODE=1
 fi
 
-# Print footer using common library function
 print_footer "$FOOTER_TEXT" "$FOOTER_COLOR"
 
 exit $EXIT_CODE

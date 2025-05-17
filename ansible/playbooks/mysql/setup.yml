@@ -5,19 +5,15 @@
   become: true
   roles:
     - geerlingguy.mysql
-  tasks:
-    - name: debug
-      debug:
-        var: mysql_slow_query_log_file
-      tags: debug
+
+- name: setup percona xtrabackup on mysql master
+  hosts: mysql_master
+  become: true
+  roles:
+    - percona
 
 - name: setup mysql slave server
   hosts: mysql_slave
   become: true
   roles:
     - geerlingguy.mysql
-  tasks:
-    - name: debug
-      debug:
-        var: mysql_slow_query_log_file
-      tags: debug

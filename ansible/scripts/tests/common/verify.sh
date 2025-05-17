@@ -1,12 +1,8 @@
 #!/bin/bash
 
-# verify.sh - common functions for ansible verification scripts
-
-# Source the test library for color codes and common functions
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "$SCRIPT_DIR/test.sh"
 
-# Host to IP address mappings from inventory
 APP_1_IP="172.16.0.3"
 APP_2_IP="172.16.0.2"
 DRAGONFLY_IP="172.16.0.11"
@@ -18,7 +14,6 @@ MYSQL_SLAVE_IP="172.16.0.8"
 MONITORING_IP="172.16.0.4"
 ANSIBLE_ROOT_IP="172.16.0.100"
 
-# Function to run a test and report result
 run_test() {
     local test_name="$1"
     local test_command="$2"
@@ -27,7 +22,6 @@ run_test() {
 
     echo -e "${BLUE}[test]${NC} $test_name on $host..."
 
-    # Run the test command with a timeout
     vagrant ssh $host -c "timeout $timeout $test_command"
     local exit_code=$?
 
@@ -40,7 +34,6 @@ run_test() {
     fi
 }
 
-# Function to run a command test with fallback
 run_command_test() {
     local test_name="$1"
     local primary_command="$2"
@@ -50,11 +43,9 @@ run_command_test() {
 
     echo -e "${BLUE}[test]${NC} $test_name on $host..."
 
-    # Try the primary command first
     vagrant ssh $host -c "timeout $timeout $primary_command" 2>/dev/null
     local exit_code=$?
 
-    # If primary command fails, try the fallback
     if [ $exit_code -ne 0 ] && [ -n "$fallback_command" ]; then
         echo -e "${YELLOW}[warning]${NC} primary command failed, trying fallback..."
         vagrant ssh $host -c "timeout $timeout $fallback_command" 2>/dev/null
@@ -70,7 +61,6 @@ run_command_test() {
     fi
 }
 
-# Function to print test summary
 print_test_summary() {
     local test_failures="$1"
     local test_type="$2"

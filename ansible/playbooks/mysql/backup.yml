@@ -1,0 +1,70 @@
+---
+# Playbook to run Percona XtraBackup on MySQL master server
+
+- name: run percona xtrabackup on mysql master
+  hosts: mysql_master
+  become: true
+  vars:
+    backup_timestamp: "{{ lookup('pipe', 'date +%Y-%m-%d-%H-%M-%S') }}"
+    backup_dir: "/var/backups/mysql/percona/backup-{{ backup_timestamp }}"
+  
+  tasks:
+    - name: ensure backup directory exists
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        owner: mysql
+        group: mysql
+        mode: '0750'
+    
+    - name: run full backup with xtrabackup
+      command: >
+        sudo xtrabackup --backup 
+        --target-dir={{ backup_dir }} 
+        --user=percona 
+        --password={{ vault_mysql_xtra_backup_password }}
+        --host=localhost
+      become: true
+      register: backup_result
+      failed_when: backup_result.rc != 0
+      no_log: true
+
+    - name: display backup result
+      debug:
+        msg: "backup completed successfully to {{ backup_dir }}"
+      when: backup_result.rc == 0
+      
+    - name: create latest backup symlink
+      file:
+        src: "{{ backup_dir }}"
+        dest: "/var/backups/mysql/percona/latest"
+        state: link
+        force: yes
+      when: backup_result.rc == 0
+
+    - name: prepare backup for consistency
+      command: >
+        xtrabackup --prepare 
+        --target-dir={{ backup_dir }}
+      become: true
+      become_user: mysql
+      register: prepare_result
+      failed_when: prepare_result.rc != 0
+      when: backup_result.rc == 0
+
+    - name: display prepare result
+      debug:
+        msg: "Backup prepared successfully at {{ backup_dir }}"
+      when: prepare_result.rc is defined and prepare_result.rc == 0
+
+    - name: cleanup old backups
+      shell: >
+        find /var/backups/mysql/percona -maxdepth 1 -type d -name "backup-*" -mtime +7 -exec rm -rf {} \;
+      args:
+        executable: /bin/bash
+      become: true
+      register: cleanup_result
+      
+    - name: display backup status
+      debug:
+        msg: "backup process completed. Check {{ backup_dir }} for the backup files."

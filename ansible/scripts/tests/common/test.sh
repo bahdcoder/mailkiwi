@@ -63,6 +63,12 @@ run_playbook() {
 
             # Create extra_vars string with the passwords
             extra_vars="-e vault_mysql_root_password='$MYSQL_ROOT_USER_PASSWORD' -e vault_mysql_kibamail_password='$MYSQL_KIBAMAIL_USER_PASSWORD' -e vault_mysql_replication_password='$MYSQL_REPLICATION_PASSWORD'"
+
+            # Add XtraBackup password if available
+            if [ -n "$MYSQL_XTRA_BACKUP_PASSWORD" ]; then
+                extra_vars="$extra_vars -e vault_mysql_xtra_backup_password='$MYSQL_XTRA_BACKUP_PASSWORD'"
+                echo -e "${GREEN}[success]${NC} MySQL XtraBackup password loaded from vault_secrets.txt"
+            fi
         else
             echo -e "${YELLOW}[warning]${NC} MySQL passwords not found in vault_secrets.txt"
         fi
@@ -73,9 +79,9 @@ run_playbook() {
     # Run the playbook with extra vars if available
     if [ -n "$extra_vars" ]; then
         echo -e "${BLUE}[task]${NC} running playbook with secrets..."
-        vagrant ssh ansible-root -c "cd /ansible && sudo -u ansible ansible-playbook -i ${inventory} ${playbook_path} ${extra_vars} -v"
+        vagrant ssh ansible-root -c "cd /ansible && sudo -u ansible ansible-playbook -i ${inventory} ${playbook_path} ${extra_vars} -vv"
     else
-        vagrant ssh ansible-root -c "cd /ansible && sudo -u ansible ansible-playbook -i ${inventory} ${playbook_path} -v"
+        vagrant ssh ansible-root -c "cd /ansible && sudo -u ansible ansible-playbook -i ${inventory} ${playbook_path} -vv"
     fi
     local exit_code=$?
 
