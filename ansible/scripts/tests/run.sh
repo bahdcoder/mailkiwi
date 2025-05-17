@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# run.sh - main script to run ansible tests
-
-# define color codes
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
@@ -10,19 +7,16 @@ RED='\033[0;31m'
 CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
 BOLD='\033[1m'
-NC='\033[0m' # no color
+NC='\033[0m'
 
-# print header
 echo -e "${BOLD}${MAGENTA}╔════════════════════════════════════════════════════════╗${NC}"
 echo -e "${BOLD}${MAGENTA}║                ${CYAN}ansible tests runner${MAGENTA}                  ║${NC}"
 echo -e "${BOLD}${MAGENTA}╚════════════════════════════════════════════════════════╝${NC}"
 echo
 
-# set script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ANSIBLE_DIR="$( cd "$SCRIPT_DIR/../../" && pwd )"
 
-# Function to get required VMs for a test
 get_required_vms() {
     local test_name=$1
     case "$test_name" in
@@ -34,7 +28,6 @@ get_required_vms() {
     esac
 }
 
-# Function to list available tests
 list_available_tests() {
     echo -e "${CYAN}•${NC} app ${YELLOW}(requires: $(get_required_vms "app"))${NC}"
     echo -e "${CYAN}•${NC} mysql ${YELLOW}(requires: $(get_required_vms "mysql"))${NC}"
@@ -42,7 +35,6 @@ list_available_tests() {
     echo -e "${CYAN}•${NC} dragonfly ${YELLOW}(requires: $(get_required_vms "dragonfly"))${NC}"
 }
 
-# check if test name is provided
 if [ $# -lt 1 ]; then
     echo -e "${RED}[error]${NC} usage: $0 <test_name>"
     echo -e "${YELLOW}[info]${NC} available tests:"
@@ -50,11 +42,9 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-# Get the test name
 TEST_NAME=$1
 TEST_DIR="$SCRIPT_DIR/$TEST_NAME"
 
-# Check if the test directory exists
 if [ ! -d "$TEST_DIR" ]; then
     echo -e "${RED}[error]${NC} test directory for '$TEST_NAME' not found"
     echo -e "${YELLOW}[info]${NC} available tests:"
@@ -62,10 +52,8 @@ if [ ! -d "$TEST_DIR" ]; then
     exit 1
 fi
 
-# Get required VMs for this test
 REQUIRED_VMS=$(get_required_vms "$TEST_NAME")
 
-# Check if the test is defined in our tests
 if [ -z "$REQUIRED_VMS" ]; then
     echo -e "${RED}[error]${NC} test '$TEST_NAME' not found in test requirements"
     echo -e "${YELLOW}[info]${NC} available tests:"
@@ -73,21 +61,15 @@ if [ -z "$REQUIRED_VMS" ]; then
     exit 1
 fi
 
-# check if run.sh exists in the test directory
 if [ ! -f "$TEST_DIR/run.sh" ]; then
     echo -e "${RED}[error]${NC} run.sh not found in test directory '$TEST_NAME'"
     exit 1
 fi
 
-# make sure run.sh is executable
 chmod +x "$TEST_DIR/run.sh"
 
-# We already have REQUIRED_VMS from earlier
-
-# ensure required VMs are running
 echo -e "${BLUE}[task]${NC} ensuring required vms are running: ${CYAN}$REQUIRED_VMS${NC}"
 
-# run vagrant.sh with the required VMs
 cd "$ANSIBLE_DIR"
 ./vagrant.sh --vms="$REQUIRED_VMS"
 
@@ -98,23 +80,18 @@ fi
 
 echo -e "${GREEN}[success]${NC} all required VMs are running"
 
-# run the test
 echo -e "${BLUE}[task]${NC} running test: ${CYAN}$TEST_NAME${NC}..."
 "$TEST_DIR/run.sh"
 RUN_EXIT_CODE=$?
 
-# check if verify.sh exists in the test directory
 if [ -f "$TEST_DIR/verify.sh" ]; then
-    # make sure verify.sh is executable
     chmod +x "$TEST_DIR/verify.sh"
 
-    # run verification if run was successful
     if [ $RUN_EXIT_CODE -eq 0 ]; then
         echo -e "${BLUE}[task]${NC} running verification for test: ${CYAN}$TEST_NAME${NC}..."
         "$TEST_DIR/verify.sh"
         VERIFY_EXIT_CODE=$?
 
-        # determine overall exit code
         if [ $VERIFY_EXIT_CODE -ne 0 ]; then
             EXIT_CODE=$VERIFY_EXIT_CODE
         else
@@ -128,7 +105,6 @@ else
     EXIT_CODE=$RUN_EXIT_CODE
 fi
 
-# print final status
 if [ $EXIT_CODE -eq 0 ]; then
     echo -e "${GREEN}[success]${NC} test '$TEST_NAME' completed successfully!"
     FOOTER_COLOR=$MAGENTA

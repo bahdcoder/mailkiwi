@@ -74,14 +74,16 @@ organize your secrets in infisical with the following structure:
 
 ## running playbooks
 
-run playbooks using the provided script:
+run playbooks with the appropriate environment variables:
 
 ```bash
 # for staging environment
-./scripts/run-with-secrets.sh playbooks/app/setup.yml staging
+ansible-playbook -i inventory/staging/inventory.yaml playbooks/app/setup.yml \
+  -e "var1=$VAR1" -e "var2=$VAR2"
 
 # for production environment
-./scripts/run-with-secrets.sh playbooks/app/setup.yml prod
+ansible-playbook -i inventory/prod/inventory.yaml playbooks/app/setup.yml \
+  -e "var1=$VAR1" -e "var2=$VAR2"
 ```
 
 ## adding new secrets
@@ -94,10 +96,10 @@ to add new secrets:
    # add this line in the script
    fetch_secret "YOUR_SECRET_NAME" "YOUR_VARIABLE_NAME"
    ```
-3. update the `run-with-secrets.sh` script to pass the new secret to ansible:
+3. pass the new secret to ansible when running playbooks:
    ```bash
-   # add this line in the ansible-playbook command
-   -e "your_ansible_var=$YOUR_VARIABLE_NAME" \
+   # add this to your ansible-playbook command
+   -e "your_ansible_var=$YOUR_VARIABLE_NAME"
    ```
 
 ## ci/cd integration
@@ -129,7 +131,7 @@ for testing in docker containers:
 
 3. run ansible inside the container:
    ```bash
-   docker exec ansible-root /bin/bash -c "cd /ansible && ./scripts/run-with-secrets.sh playbooks/app/setup.yml staging"
+   docker exec ansible-root /bin/bash -c "cd /ansible && ansible-playbook -i inventory/staging/inventory.yaml playbooks/app/setup.yml -e 'var1=\$VAR1' -e 'var2=\$VAR2'"
    ```
 
 ## troubleshooting

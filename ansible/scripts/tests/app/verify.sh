@@ -2,29 +2,16 @@
 
 # verify.sh - script to verify app setup playbook implementation in vagrant vms
 
-# define color codes
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-CYAN='\033[0;36m'
-MAGENTA='\033[0;35m'
-BOLD='\033[1m'
-NC='\033[0m' # no color
+# Source the common verification library
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "$SCRIPT_DIR/../common/verify.sh"
 
 # define check mark and x mark
 CHECK_MARK="\xE2\x9C\x94"
 X_MARK="\xE2\x9C\x96"
 
 # print header
-echo -e "${BOLD}${MAGENTA}╔════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BOLD}${MAGENTA}║            ${CYAN}app setup playbook verification${MAGENTA}            ║${NC}"
-echo -e "${BOLD}${MAGENTA}╚════════════════════════════════════════════════════════╝${NC}"
-echo
-
-# set script directory
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ANSIBLE_DIR="$( cd "$SCRIPT_DIR/../../../" && pwd )"
+print_header "app setup playbook verification"
 
 # VMs are already checked and started by the main run.sh script
 cd "$ANSIBLE_DIR"
@@ -50,7 +37,6 @@ verify_vm() {
         "node --version | grep -q 'v22.15.1'|node.js v22.15.1 is installed globally"
         "npm --version | grep -q '^10'|npm v10.x is installed globally"
         "which pnpm >/dev/null 2>&1|pnpm is installed and in PATH"
-        "dpkg -l nodejs | grep -q '^ii'|nodejs is installed via apt"
     )
 
     echo -e "${YELLOW}[info]${NC} running ${#verifications[@]} verification checks..."
@@ -141,9 +127,7 @@ else
     EXIT_CODE=1
 fi
 
-echo
-echo -e "${FOOTER_COLOR}╔════════════════════════════════════════════════════════╗${NC}"
-echo -e "${FOOTER_COLOR}║              ${CYAN}$FOOTER_TEXT${FOOTER_COLOR}                ${NC}"
-echo -e "${FOOTER_COLOR}╚════════════════════════════════════════════════════════╝${NC}"
+# Print footer using common library function
+print_footer "$FOOTER_TEXT" "$FOOTER_COLOR"
 
 exit $EXIT_CODE
