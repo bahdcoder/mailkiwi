@@ -6,6 +6,18 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "$SCRIPT_DIR/test.sh"
 
+# Host to IP address mappings from inventory
+APP_1_IP="172.16.0.3"
+APP_2_IP="172.16.0.2"
+DRAGONFLY_IP="172.16.0.11"
+MAIL_1_IP="172.16.0.10"
+MAIL_2_IP="172.16.0.5"
+MAIL_PROXY_IP="172.16.0.6"
+MYSQL_MASTER_IP="172.16.0.9"
+MYSQL_SLAVE_IP="172.16.0.8"
+MONITORING_IP="172.16.0.4"
+ANSIBLE_ROOT_IP="172.16.0.100"
+
 # Function to run a test and report result
 run_test() {
     local test_name="$1"

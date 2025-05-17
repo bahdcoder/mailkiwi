@@ -21,7 +21,7 @@ get_required_vms() {
     local test_name=$1
     case "$test_name" in
         "app") echo "ansible-root,app-1,app-2" ;;
-        "mysql") echo "ansible-root,mysql-master,mysql-slave" ;;
+        "mysql") echo "ansible-root,mysql-master,mysql-slave,app-1,app-2,mail-1" ;;
         "mail") echo "ansible-root,mail-1,mail-2,mail-proxy" ;;
         "dragonfly") echo "ansible-root,dragonfly" ;;
         *) echo "" ;;
