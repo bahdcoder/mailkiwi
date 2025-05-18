@@ -54,5 +54,106 @@ TEST_FAILURES=$((TEST_FAILURES + $?))
 run_test "pnpm is installed and in PATH" "which pnpm >/dev/null 2>&1" "app-2"
 TEST_FAILURES=$((TEST_FAILURES + $?))
 
+# NGINX verification for app-1
+echo -e "\n${BLUE}[task]${NC} verifying nginx on app-1..."
+
+run_test "nginx binary exists" "which nginx" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx service is running" "systemctl is-active nginx" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx service is enabled" "systemctl is-enabled nginx" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx configuration is valid" "sudo nginx -t 2>&1 | grep -q 'test is successful'" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx configuration syntax is ok" "sudo nginx -t 2>&1 | grep -q 'syntax is ok'" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx sites-available directory exists" "test -d /etc/nginx/sites-available" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx sites-enabled directory exists" "test -d /etc/nginx/sites-enabled" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "app.conf exists in sites-available" "test -f /etc/nginx/sites-available/app.conf" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "app.conf is symlinked in sites-enabled" "test -L /etc/nginx/sites-enabled/app.conf" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx is listening on port 80" "netstat -tuln | grep -q ':80 '" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "SSH is listening on port 22" "netstat -tuln | grep -q ':22 '" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "port 80 is allowed in UFW" "sudo ufw status | grep -q '80/tcp.*ALLOW'" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "port 22 is allowed in UFW" "sudo ufw status | grep -q '22/tcp.*ALLOW'" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "app.conf contains proxy_pass directive" "grep -q 'proxy_pass http://localhost:5566' /etc/nginx/sites-available/app.conf" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "app.conf contains healthz endpoint" "grep -q 'location /healthz' /etc/nginx/sites-available/app.conf" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "healthz endpoint returns 200" "curl -s -o /dev/null -w '%{http_code}' http://localhost/healthz | grep -q '200'" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+echo -e "\n${BLUE}[task]${NC} verifying nginx on app-2..."
+
+run_test "nginx binary exists" "which nginx" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx service is running" "systemctl is-active nginx" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx service is enabled" "systemctl is-enabled nginx" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx configuration is valid" "sudo nginx -t 2>&1 | grep -q 'test is successful'" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx configuration syntax is ok" "sudo nginx -t 2>&1 | grep -q 'syntax is ok'" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx sites-available directory exists" "test -d /etc/nginx/sites-available" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx sites-enabled directory exists" "test -d /etc/nginx/sites-enabled" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "app.conf exists in sites-available" "test -f /etc/nginx/sites-available/app.conf" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "app.conf is symlinked in sites-enabled" "test -L /etc/nginx/sites-enabled/app.conf" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "nginx is listening on port 80" "netstat -tuln | grep -q ':80 '" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "SSH is listening on port 22" "netstat -tuln | grep -q ':22 '" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "port 80 is allowed in ufw" "sudo ufw status | grep -q '80/tcp.*ALLOW'" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "port 22 is allowed in ufw" "sudo ufw status | grep -q '22/tcp.*ALLOW'" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "app.conf contains proxy_pass directive" "grep -q 'proxy_pass http://localhost:5566' /etc/nginx/sites-available/app.conf" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "app.conf contains healthz endpoint" "grep -q 'location /healthz' /etc/nginx/sites-available/app.conf" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "healthz endpoint returns 200" "curl -s -o /dev/null -w '%{http_code}' http://localhost/healthz | grep -q '200'" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
 print_test_summary $TEST_FAILURES "app"
 exit $?

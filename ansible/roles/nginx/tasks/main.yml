@@ -1,0 +1,132 @@
+---
+- name: check if nginx is already installed
+  command: which nginx
+  register: nginx_check
+  failed_when: false
+  changed_when: false
+
+- name: install nginx and dependencies
+  apt:
+    name:
+      - nginx
+      - curl
+      - gnupg2
+      - ssl-cert
+    state: present
+    update_cache: yes
+  when: nginx_check.rc != 0
+  notify: restart nginx
+
+- name: install ufw
+  apt:
+    name: ufw
+    state: present
+    update_cache: yes
+  when: nginx_firewall_enabled | bool
+
+- name: check if ufw is enabled
+  command: ufw status
+  register: ufw_status
+  changed_when: false
+  when: nginx_firewall_enabled | bool
+
+- name: allow ssh port
+  ufw:
+    rule: allow
+    port: "{{ nginx_ssh_port }}"
+    proto: tcp
+    from_ip: any
+  when: nginx_firewall_enabled | bool
+
+- name: enable ufw
+  command: ufw --force enable
+  when:
+    - nginx_firewall_enabled | bool
+    - ufw_status is defined
+    - "'inactive' in ufw_status.stdout"
+
+- name: allow http port
+  ufw:
+    rule: allow
+    port: "{{ nginx_port }}"
+    proto: tcp
+    from_ip: any
+  when: nginx_firewall_enabled | bool
+
+- name: create nginx log directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_group }}"
+    mode: 0775
+  with_items:
+    - "/var/log/nginx"
+
+- name: configure main nginx.conf
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload nginx
+
+- name: create nginx directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+  with_items:
+    - /etc/nginx/sites-available
+    - /etc/nginx/sites-enabled
+    - /etc/nginx/modules-enabled
+    - /etc/nginx/conf.d
+
+- name: remove default nginx site
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/nginx/sites-enabled/default
+    - /etc/nginx/conf.d/default.conf
+  notify: reload nginx
+  ignore_errors: true
+
+- name: configure app site
+  template:
+    src: app.conf.j2
+    dest: "{{ nginx_conf_path }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload nginx
+
+- name: enable app site
+  file:
+    src: "{{ nginx_conf_path }}"
+    dest: "{{ nginx_conf_link }}"
+    state: link
+  notify: reload nginx
+
+- name: ensure nginx service is enabled and started
+  systemd:
+    name: nginx
+    enabled: yes
+    state: started
+    daemon_reload: yes
+
+- name: verify nginx configuration
+  command: nginx -t
+  register: nginx_config_test
+  changed_when: false
+  failed_when: nginx_config_test.rc != 0
+
+- name: reload nginx if configuration is valid
+  systemd:
+    name: nginx
+    state: reloaded
+  when: nginx_config_test.rc == 0
+  changed_when: true

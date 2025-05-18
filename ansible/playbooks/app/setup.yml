@@ -4,3 +4,11 @@
   become: false
   roles:
     - nodejs
+ 
+- name: setup nginx reverse proxy
+  hosts: app
+  become: true
+  vars:
+    nginx_port: 80
+  roles:
+    - nginx
