@@ -49,6 +49,42 @@
   when: redis_check.rc != 0
   notify: restart redis
 
+- name: install ufw
+  apt:
+    name: ufw
+    state: present
+    update_cache: yes
+  when: redis_firewall_enabled | bool
+
+- name: check if ufw is enabled
+  command: ufw status
+  register: ufw_status
+  changed_when: false
+  when: redis_firewall_enabled | bool
+
+- name: allow ssh port
+  ufw:
+    rule: allow
+    port: "{{ redis_ssh_port }}"
+    proto: tcp
+    from_ip: any
+  when: redis_firewall_enabled | bool
+
+- name: enable ufw
+  command: ufw --force enable
+  when:
+    - redis_firewall_enabled | bool
+    - ufw_status is defined
+    - "'inactive' in ufw_status.stdout"
+
+- name: allow redis port
+  ufw:
+    rule: allow
+    port: "{{ redis_port }}"
+    proto: tcp
+    from_ip: any
+  when: redis_firewall_enabled | bool
+
 - name: create redis directories
   file:
     path: "{{ item }}"

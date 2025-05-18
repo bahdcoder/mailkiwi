@@ -35,3 +35,6 @@ redis_logfile: "/var/log/redis/redis-server.log"
 redis_tcp_backlog: 511
 redis_timeout: 0
 redis_supervised: "systemd"
+
+redis_firewall_enabled: true
+redis_ssh_port: 22

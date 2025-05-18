@@ -51,5 +51,17 @@ TEST_FAILURES=$((TEST_FAILURES + $?))
 run_redis_cli_test "redis is configured for AOF fsync always" "CONFIG GET appendfsync" "always"
 TEST_FAILURES=$((TEST_FAILURES + $?))
 
+run_test "ufw is installed" "which ufw" "redis"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "ufw is enabled" "sudo ufw status | grep -q 'Status: active'" "redis"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "ssh port is allowed in firewall" "sudo ufw status | grep -q '22/tcp.*ALLOW'" "redis"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "redis port is allowed in firewall" "sudo ufw status | grep -q '6379/tcp.*ALLOW'" "redis"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
 print_test_summary $TEST_FAILURES "redis"
 exit $?
