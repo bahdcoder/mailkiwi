@@ -5,107 +5,54 @@ source "$SCRIPT_DIR/../common/verify.sh"
 
 source_vault_secrets
 
-CHECK_MARK="\xE2\x9C\x94"
-X_MARK="\xE2\x9C\x96"
+print_header "app setup verification"
+echo -e "${BLUE}[task]${NC} verifying app setup..."
 
-print_header "app setup playbook verification"
+TEST_FAILURES=0
 
-cd "$ANSIBLE_DIR"
+# Node.js installation tests for app-1
+run_test "node binary exists in /usr/bin" "test -f /usr/bin/node" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-TOTAL_CHECKS=0
-PASSED_CHECKS=0
-FAILED_CHECKS=0
+run_test "npm binary exists in /usr/bin" "test -f /usr/bin/npm" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-verify_vm() {
-    local vm=$1
-    echo -e "${BLUE}[task]${NC} verifying ${CYAN}$vm${NC}..."
+run_test "npx binary exists in /usr/bin" "test -f /usr/bin/npx" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-    declare -a verifications=(
-        "test -f /usr/bin/node|node binary exists in /usr/bin"
-        "test -f /usr/bin/npm|npm binary exists in /usr/bin"
-        "test -f /usr/bin/npx|npx binary exists in /usr/bin"
-        "test -f /etc/apt/sources.list.d/nodesource.list|nodesource repository is configured"
-        "node --version | grep -q 'v22.15.1'|node.js v22.15.1 is installed globally"
-        "npm --version | grep -q '^10'|npm v10.x is installed globally"
-        "which pnpm >/dev/null 2>&1|pnpm is installed and in PATH"
-    )
+run_test "nodesource repository is configured" "test -f /etc/apt/sources.list.d/nodesource.list" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-    echo -e "${YELLOW}[info]${NC} running ${#verifications[@]} verification checks..."
-    echo
+run_test "node.js v22.15.1 is installed globally" "node --version | grep -q 'v22.15.1'" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-    echo -e "${BOLD}┌────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${BOLD}│ ${CYAN}verification check                                status ${NC}│${NC}"
-    echo -e "${BOLD}├────────────────────────────────────────────────────────┤${NC}"
+run_test "npm v10.x is installed globally" "npm --version | grep -q '^10'" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-    for verification in "${verifications[@]}"; do
-        IFS='|' read -r command description <<< "$verification"
+run_test "pnpm is installed and in PATH" "which pnpm >/dev/null 2>&1" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-        echo -e "${YELLOW}[command]${NC} running: ${CYAN}$command${NC} on ${CYAN}$vm${NC}"
+# Node.js installation tests for app-2
+run_test "node binary exists in /usr/bin" "test -f /usr/bin/node" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-        timeout_seconds=5
-        vagrant ssh $vm -c "timeout $timeout_seconds $command" > /dev/null 2>&1
-        result=$?
+run_test "npm binary exists in /usr/bin" "test -f /usr/bin/npm" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-        if [ $result -ne 0 ]; then
-            if [ $result -eq 124 ]; then
-                echo -e "${YELLOW}[warning]${NC} command timed out after ${timeout_seconds} seconds: $command"
-            else
-                echo -e "${YELLOW}[warning]${NC} command failed with exit code ${result}: $command"
+run_test "npx binary exists in /usr/bin" "test -f /usr/bin/npx" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-                if [[ "$command" == *"pnpm"* && "$command" == *"version"* ]]; then
-                    echo -e "${YELLOW}[debug]${NC} checking actual pnpm version..."
-                    vagrant ssh $vm -c "command -v pnpm && pnpm --version || echo 'pnpm not found'" 2>/dev/null
-                fi
-            fi
-            result=1
-        fi
+run_test "nodesource repository is configured" "test -f /etc/apt/sources.list.d/nodesource.list" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-        TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
+run_test "node.js v22.15.1 is installed globally" "node --version | grep -q 'v22.15.1'" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-        if [ $result -eq 0 ]; then
-            echo -e "${BOLD}│ ${NC}${description}${NC}$(printf '%*s' $((48 - ${#description})) "") ${GREEN}${CHECK_MARK} PASS${NC} │${NC}"
-            echo -e "${GREEN}[✓]${NC} ${BOLD}Test passed:${NC} ${description}"
-            PASSED_CHECKS=$((PASSED_CHECKS + 1))
-        else
-            echo -e "${BOLD}│ ${NC}${description}${NC}$(printf '%*s' $((48 - ${#description})) "") ${RED}${X_MARK} FAIL${NC} │${NC}"
-            echo -e "${RED}[✗]${NC} ${BOLD}Test failed:${NC} ${description}"
-            FAILED_CHECKS=$((FAILED_CHECKS + 1))
-        fi
-    done
+run_test "npm v10.x is installed globally" "npm --version | grep -q '^10'" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-    echo -e "${BOLD}└────────────────────────────────────────────────────────┘${NC}"
-    echo
-}
+run_test "pnpm is installed and in PATH" "which pnpm >/dev/null 2>&1" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
 
-for vm in "app-1" "app-2"; do
-    echo -e "${BLUE}[task]${NC} verifying ${CYAN}$vm${NC}..."
-    verify_vm "$vm"
-done
-
-echo -e "${BLUE}[summary]${NC} verification results:"
-echo -e "${CYAN}•${NC} total checks: ${BOLD}$TOTAL_CHECKS${NC}"
-echo -e "${GREEN}•${NC} passed: ${GREEN}${BOLD}$PASSED_CHECKS${NC} ${GREEN}${CHECK_MARK}${NC}"
-echo -e "${RED}•${NC} failed: ${RED}${BOLD}$FAILED_CHECKS${NC} ${RED}${X_MARK}${NC}"
-echo
-
-if [ $TOTAL_CHECKS -gt 0 ]; then
-    PASS_PERCENTAGE=$((PASSED_CHECKS * 100 / TOTAL_CHECKS))
-    echo -e "${CYAN}•${NC} pass rate: ${BOLD}${PASS_PERCENTAGE}%${NC}"
-    echo
-fi
-
-if [ $FAILED_CHECKS -eq 0 ]; then
-    echo -e "${GREEN}[✓]${NC} ${BOLD}SUCCESS:${NC} all verification checks passed!"
-    FOOTER_COLOR=$MAGENTA
-    FOOTER_TEXT="app setup verification completed"
-    EXIT_CODE=0
-else
-    echo -e "${RED}[✗]${NC} ${BOLD}FAILURE:${NC} $FAILED_CHECKS verification check(s) failed!"
-    FOOTER_COLOR=$RED
-    FOOTER_TEXT="app setup verification failed"
-    EXIT_CODE=1
-fi
-
-print_footer "$FOOTER_TEXT" "$FOOTER_COLOR"
-
-exit $EXIT_CODE
+print_test_summary $TEST_FAILURES "app"
+exit $?
