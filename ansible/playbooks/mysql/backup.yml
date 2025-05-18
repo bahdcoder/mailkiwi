@@ -1,0 +1,118 @@
+---
+# Playbook to run Percona XtraBackup on MySQL master server
+
+- name: run percona xtrabackup on mysql master
+  hosts: mysql_master
+  become: true
+  vars:
+    backup_timestamp: "{{ lookup('pipe', 'date +%Y-%m-%d-%H-%M-%S') }}"
+    percona_base_dir: "/var/backups/mysql/percona"
+    backup_dir: "{{ percona_base_dir }}/backup-{{ backup_timestamp }}"
+
+  tasks:
+    - name: create ansible temp directory for mysql user
+      file:
+        path: "/var/lib/mysql/.ansible/tmp"
+        state: directory
+        owner: mysql
+        group: mysql
+        mode: '0700'
+
+    - name: set environment variables for ansible
+      set_fact:
+        ansible_remote_tmp: "/var/lib/mysql/.ansible/tmp"
+
+    - name: ensure percona base directory exists
+      file:
+        path: "{{ percona_base_dir }}"
+        state: directory
+        owner: mysql
+        group: mysql
+        mode: '0750'
+
+    - name: ensure backup directory exists
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        owner: mysql
+        group: mysql
+        mode: '0750'
+
+    - name: check backup directory permissions
+      stat:
+        path: "{{ backup_dir }}"
+      register: backup_dir_perms
+
+    - name: debug backup directory permissions
+      debug:
+        msg: "backup directory permissions: owner={{ backup_dir_perms.stat.pw_name }}, group={{ backup_dir_perms.stat.gr_name }}, mode={{ backup_dir_perms.stat.mode }}"
+
+    - name: run full backup with xtrabackup
+      environment:
+        HOME: "/var/lib/mysql"
+        TMPDIR: "/var/lib/mysql/.ansible/tmp"
+      command: >
+        xtrabackup --backup
+        --target-dir={{ backup_dir }}
+        --user=percona
+        --password={{ vault_mysql_xtra_backup_password }}
+        --host=localhost
+      become: true
+      become_user: mysql
+      register: backup_result
+      failed_when: backup_result.rc != 0
+      # no_log: true
+
+    - name: display backup result
+      debug:
+        msg: "backup completed successfully to {{ backup_dir }}"
+      when: backup_result.rc == 0
+
+    - name: create latest backup symlink
+      file:
+        src: "{{ backup_dir }}"
+        dest: "/var/backups/mysql/percona/latest"
+        state: link
+        force: yes
+        follow: false
+      when: backup_result.rc == 0
+
+    - name: check if backup directory exists before prepare
+      stat:
+        path: "{{ backup_dir }}"
+      register: backup_dir_stat
+      when: backup_result.rc == 0
+
+    - name: debug backup directory status
+      debug:
+        msg: "backup directory exists: {{ backup_dir_stat.stat.exists | default(false) }}"
+      when: backup_result.rc == 0
+
+    - name: prepare backup for consistency
+      environment:
+        HOME: "/var/lib/mysql"
+        TMPDIR: "/var/lib/mysql/.ansible/tmp"
+      command: >
+        xtrabackup --prepare --target-dir={{ backup_dir }}
+      become: true
+      become_user: mysql
+      register: prepare_result
+      failed_when: prepare_result.rc != 0
+      when: backup_result.rc == 0 and backup_dir_stat.stat.exists | default(false)
+
+    - name: display prepare result
+      debug:
+        msg: "backup prepared successfully at {{ backup_dir }}"
+      when: prepare_result.rc is defined and prepare_result.rc == 0 and backup_dir_stat.stat.exists | default(false)
+
+    - name: cleanup old backups
+      shell: >
+        find /var/backups/mysql/percona -maxdepth 1 -type d -name "backup-*" -mtime +7 -exec rm -rf {} \;
+      args:
+        executable: /bin/bash
+      become: true
+      register: cleanup_result
+
+    - name: display backup status
+      debug:
+        msg: "backup process completed. Check {{ backup_dir }} for the backup files."

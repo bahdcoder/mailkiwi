@@ -1,0 +1,31 @@
+---
+
+nginx_port: 80
+nginx_user: "www-data"
+nginx_group: "www-data"
+nginx_worker_processes: "auto"
+nginx_worker_connections: 1024
+nginx_client_max_body_size: "64m"
+nginx_keepalive_timeout: 65
+
+app_server_port: 5566
+
+nginx_access_log: "/var/log/nginx/app_access.log"
+nginx_error_log: "/var/log/nginx/app_error.log"
+nginx_log_format: "main '$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\" \"$http_x_forwarded_for\"'"
+
+nginx_gzip: "on"
+nginx_gzip_comp_level: 6
+nginx_gzip_min_length: 1000
+nginx_gzip_types:
+  - "text/plain"
+  - "application/json"
+  - "text/css"
+  - "application/javascript"
+
+nginx_firewall_enabled: true
+nginx_ssh_port: 22
+
+nginx_site_name: "app"
+nginx_conf_path: "/etc/nginx/sites-available/app.conf"
+nginx_conf_link: "/etc/nginx/sites-enabled/app.conf"

@@ -1,0 +1,15 @@
+[Unit]
+Description=redis in-memory data store
+After=network.target
+
+[Service]
+Type=notify
+User={{ redis_user }}
+Group={{ redis_group }}
+ExecStart=/usr/bin/redis-server /etc/redis/redis.conf
+ExecStop=/usr/bin/redis-cli -h {{ redis_bind_address }} -p {{ redis_port }} -a {{ redis_password }} shutdown
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

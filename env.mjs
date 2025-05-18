@@ -101,10 +101,15 @@ class Config {
     this.REDIS_URL = 'redis://localhost:5570'
     this.CACHE_TTL = 60 * 60 * 48
 
-    this.INFISICAL_ENV =
-      args.env || process.env.INFISICAL_ENV || this.DEFAULT_INFISICAL_ENV
+    this.INFISICAL_ENV = process.env.INFISICAL_ENV || this.DEFAULT_INFISICAL_ENV
+
+    if (process.env.INFISICAL_ENV) {
+      this.INFISICAL_ENV = process.env.INFISICAL_ENV
+    }
+
     this.INFISICAL_SERVICE_TOKEN =
       process.env.INFISICAL_SERVICE_TOKEN || this.DEFAULT_INFISICAL_SERVICE_TOKEN
+
     this.CACHE_KEY = `infisical_secrets:${this.PROJECT_ID}:${this.INFISICAL_ENV}`
 
     this.command = args.command

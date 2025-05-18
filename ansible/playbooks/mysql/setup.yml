@@ -1,0 +1,19 @@
+---
+
+- name: setup mysql master server
+  hosts: mysql_master
+  become: true
+  roles:
+    - geerlingguy.mysql
+
+- name: setup percona xtrabackup on mysql master
+  hosts: mysql_master
+  become: true
+  roles:
+    - percona
+
+- name: setup mysql slave server
+  hosts: mysql_slave
+  become: true
+  roles:
+    - geerlingguy.mysql

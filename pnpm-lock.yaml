@@ -613,7 +613,7 @@ importers:
         specifier: ^10.4.19
         version: 10.4.21(postcss@8.5.3)
       concurrently:
-        specifier: ^9.1.2
+        specifier: ^9.0.1
         version: 9.1.2
       del-cli:
         specifier: ^5.1.0

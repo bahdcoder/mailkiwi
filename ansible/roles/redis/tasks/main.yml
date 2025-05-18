@@ -1,0 +1,151 @@
+---
+
+- name: check if redis is already installed
+  command: which redis-server
+  register: redis_check
+  failed_when: false
+  changed_when: false
+
+- name: install required dependencies
+  apt:
+    name:
+      - lsb-release
+      - curl
+      - gpg
+    state: present
+    update_cache: yes
+  when: redis_check.rc != 0
+
+- name: download redis gpg key
+  get_url:
+    url: "{{ redis_apt_key_url }}"
+    dest: /tmp/redis-archive-keyring.gpg
+  when: redis_check.rc != 0
+
+- name: import redis gpg key
+  shell: |
+    cat /tmp/redis-archive-keyring.gpg | gpg --dearmor -o {{ redis_apt_key_path }}
+    chmod 644 {{ redis_apt_key_path }}
+  args:
+    creates: "{{ redis_apt_key_path }}"
+  when: redis_check.rc != 0
+
+- name: add redis apt repository
+  apt_repository:
+    repo: "deb [signed-by={{ redis_apt_key_path }}] {{ redis_apt_repo }} {{ ansible_distribution_release }} main"
+    state: present
+    filename: redis
+  when: redis_check.rc != 0
+
+- name: update apt cache
+  apt:
+    update_cache: yes
+  when: redis_check.rc != 0
+
+- name: install redis
+  apt:
+    name: redis
+    state: present
+  when: redis_check.rc != 0
+  notify: restart redis
+
+- name: install ufw
+  apt:
+    name: ufw
+    state: present
+    update_cache: yes
+  when: redis_firewall_enabled | bool
+
+- name: check if ufw is enabled
+  command: ufw status
+  register: ufw_status
+  changed_when: false
+  when: redis_firewall_enabled | bool
+
+- name: allow ssh port
+  ufw:
+    rule: allow
+    port: "{{ redis_ssh_port }}"
+    proto: tcp
+    from_ip: any
+  when: redis_firewall_enabled | bool
+
+- name: enable ufw
+  command: ufw --force enable
+  when:
+    - redis_firewall_enabled | bool
+    - ufw_status is defined
+    - "'inactive' in ufw_status.stdout"
+
+- name: allow redis port
+  ufw:
+    rule: allow
+    port: "{{ redis_port }}"
+    proto: tcp
+    from_ip: any
+  when: redis_firewall_enabled | bool
+
+- name: create redis directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+    mode: 0755
+  with_items:
+    - "{{ redis_dir }}"
+    - "{{ redis_log_dir }}"
+    - "{{ redis_backup_dir }}"
+    - "/var/run/redis"
+
+- name: configure redis
+  template:
+    src: redis.conf.j2
+    dest: /etc/redis/redis.conf
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+    mode: 0644
+  notify: restart redis
+
+- name: configure redis service
+  template:
+    src: redis.service.j2
+    dest: /etc/systemd/system/{{ redis_service_name }}.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart redis
+
+- name: ensure redis service is enabled and started
+  systemd:
+    name: "{{ redis_service_name }}"
+    enabled: yes
+    state: started
+    daemon_reload: yes
+
+- name: wait for redis to start
+  wait_for:
+    port: "{{ redis_port }}"
+    host: "{{ redis_bind_address }}"
+    timeout: 30
+
+- name: check redis version
+  command: redis-server --version
+  register: redis_version_output
+  changed_when: false
+  failed_when: false
+
+- name: display redis version
+  debug:
+    msg: "redis version: {{ redis_version_output.stdout | default('Not installed') }}"
+
+- name: verify redis is running
+  command: redis-cli -h {{ redis_bind_address }} -p {{ redis_port }} -a {{ redis_password }} ping
+  register: ping_result
+  changed_when: false
+  failed_when: ping_result.stdout != "PONG"
+  no_log: true
+
+- name: display redis connection status
+  debug:
+    msg: "redis connection status: {{ ping_result.stdout }}"

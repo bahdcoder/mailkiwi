@@ -1,0 +1,107 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    BOX = "bento/ubuntu-24.04"
+    SSH_KEY_PATH = File.expand_path(".ssh/kibamail-test", Dir.pwd)
+    SSH_PUB_KEY_PATH = "#{SSH_KEY_PATH}.pub"
+    HOST_MOUNT_PATH = Dir.pwd
+    GUEST_MOUNT_PATH = "/ansible"
+
+    config.vm.boot_timeout = 300
+    config.vm.graceful_halt_timeout = 60
+    ENV["VAGRANT_NO_PARALLEL"] = "false"
+
+    unless File.exist?(SSH_KEY_PATH) && File.exist?(SSH_PUB_KEY_PATH)
+      raise "missing ssh key or public key at #{SSH_KEY_PATH} and #{SSH_PUB_KEY_PATH}"
+    end
+
+    SSH_KEY = File.read(SSH_KEY_PATH).strip
+    SSH_PUB_KEY = File.read(SSH_PUB_KEY_PATH).strip
+
+    vm_resources = {
+      "ansible-root" => { memory: 768, cpus: 1 },
+      "mysql-master" => { memory: 768, cpus: 1 },
+      "mysql-slave"  => { memory: 512, cpus: 1 },
+      "app-1"        => { memory: 1024, cpus: 2 },
+      "app-2"        => { memory: 1024, cpus: 2 },
+      "mail-1"       => { memory: 512, cpus: 1 },
+      "mail-2"       => { memory: 512, cpus: 1 },
+      "mail-proxy"   => { memory: 512, cpus: 1 },
+      "redis"    => { memory: 512, cpus: 1 },
+      "monitoring"   => { memory: 512, cpus: 1 }
+    }
+
+    hosts = {
+      "app-1"        => "172.16.0.3",
+      "app-2"        => "172.16.0.2",
+      "redis"    => "172.16.0.11",
+      "mail-1"       => "172.16.0.10",
+      "mail-2"       => "172.16.0.5",
+      "mail-proxy"   => "172.16.0.6",
+      "mysql-master" => "172.16.0.9",
+      "mysql-slave"  => "172.16.0.8",
+      "monitoring"   => "172.16.0.4",
+      "ansible-root" => "172.16.0.100"
+    }
+
+    hosts.each do |hostname, ip|
+      config.vm.define hostname, autostart: true do |vm|
+        vm.vm.box = BOX
+        vm.vm.hostname = hostname
+        vm.vm.network "private_network", ip: ip
+
+        if hostname == "ansible-root"
+          vm.vm.synced_folder HOST_MOUNT_PATH, GUEST_MOUNT_PATH, create: false
+        end
+
+        vm.vm.provider "parallels" do |prl|
+          resources = vm_resources[hostname] || { memory: 384, cpus: 1 }
+          prl.memory = resources[:memory]
+          prl.cpus = resources[:cpus]
+          prl.update_guest_tools = false
+        end
+
+        vm.vm.provision "shell", privileged: true, inline: <<-SHELL
+          mkdir -p /home/vagrant/.ssh
+          touch /home/vagrant/.ssh/authorized_keys
+          grep -qxF "#{SSH_PUB_KEY}" /home/vagrant/.ssh/authorized_keys || echo "#{SSH_PUB_KEY}" >> /home/vagrant/.ssh/authorized_keys
+          chmod 600 /home/vagrant/.ssh/authorized_keys
+          chown -R vagrant:vagrant /home/vagrant/.ssh
+
+          useradd -m -s /bin/bash ansible || echo "ansible user already exists"
+
+          echo "ansible ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible
+          chmod 440 /etc/sudoers.d/ansible
+
+          mkdir -p /home/ansible/.ssh
+          touch /home/ansible/.ssh/authorized_keys
+          grep -qxF "#{SSH_PUB_KEY}" /home/ansible/.ssh/authorized_keys || echo "#{SSH_PUB_KEY}" >> /home/ansible/.ssh/authorized_keys
+          chmod 600 /home/ansible/.ssh/authorized_keys
+          chown -R ansible:ansible /home/ansible/.ssh
+
+          if [ "#{hostname}" = "ansible-root" ]; then
+            echo "#{SSH_KEY}" > /home/vagrant/.ssh/id_ed25519
+            chmod 600 /home/vagrant/.ssh/id_ed25519
+            chown vagrant:vagrant /home/vagrant/.ssh/id_ed25519
+            echo "Host 172.16.*\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n  IdentityFile ~/.ssh/id_ed25519\n  User vagrant" > /home/vagrant/.ssh/config
+            chmod 644 /home/vagrant/.ssh/config || true
+
+            echo "#{SSH_KEY}" > /home/ansible/.ssh/id_ed25519
+            chmod 600 /home/ansible/.ssh/id_ed25519
+            chown ansible:ansible /home/ansible/.ssh/id_ed25519
+            echo "Host 172.16.*\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n  IdentityFile ~/.ssh/id_ed25519\n  User ansible" > /home/ansible/.ssh/config
+            chmod 644 /home/ansible/.ssh/config || true
+          fi
+
+          sudo apt update
+          sudo apt install -y software-properties-common
+          sudo add-apt-repository --yes --update ppa:ansible/ansible
+          sudo apt install -y ansible
+          if [ -f /ansible/collections/requirements.yml ]; then
+            sudo -u ansible ansible-galaxy collection install -r /ansible/collections/requirements.yml
+          fi
+        SHELL
+      end
+    end
+  end

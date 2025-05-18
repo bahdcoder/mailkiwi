@@ -1,0 +1,50 @@
+---
+
+- name: refresh local package index
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+
+- name: download nodesource setup script
+  shell: curl -sL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource_setup.sh
+  args:
+    creates: /tmp/nodesource_setup.sh
+  become: true
+
+- name: run nodesource setup script
+  shell: bash /tmp/nodesource_setup.sh
+  become: true
+
+- name: install nodejs
+  apt:
+    name: nodejs
+    state: present
+    update_cache: no
+  become: true
+
+- name: install pnpm globally
+  shell: npm install -g pnpm@9.7.1
+  become: true
+
+- name: remove temporary files
+  file:
+    path: /tmp/nodesource_setup.sh
+    state: absent
+  become: true
+
+- name: verify nodejs installation
+  command: node -v
+  register: node_version
+  changed_when: false
+
+- name: verify pnpm installation
+  command: pnpm -v
+  register: pnpm_version
+  changed_when: false
+
+- name: display installed versions
+  debug:
+    msg:
+      - "nodejs version: {{ node_version.stdout }}"
+      - "pnpm version: {{ pnpm_version.stdout }}"

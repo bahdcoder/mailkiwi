@@ -1,0 +1,75 @@
+---
+
+mysql_root_password: "{{ vault_mysql_root_password }}"
+
+mysql_hide_passwords: false
+mysql_root_password_update: true
+
+mysql_databases:
+  - name: kibamail
+    encoding: utf8mb4
+    collation: utf8mb4_0900_ai_ci
+
+mysql_users:
+  - name: kibamail
+    host: "{{ hostvars[groups['app'][0]]['ansible_host'] }}"
+    password: "{{ vault_mysql_kibamail_password }}"
+    priv: "kibamail.*:ALL"
+
+  - name: kibamail
+    host: "{{ hostvars[groups['app'][1]]['ansible_host'] }}"
+    password: "{{ vault_mysql_kibamail_password }}"
+    priv: "kibamail.*:ALL"
+
+  - name: kibamail
+    host: "localhost"
+    password: "{{ vault_mysql_kibamail_password }}"
+    priv: "kibamail.*:ALL"
+
+mysql_replication_role: 'slave'
+mysql_replication_master: "{{ hostvars[groups['mysql_master'][0]]['ansible_host'] }}"
+mysql_replication_user:
+  name: replication
+  password: "{{ vault_mysql_replication_password }}"
+mysql_server_id: "2"
+
+mysql_bind_address: "0.0.0.0"
+
+mysql_innodb_buffer_pool_size: "256M"
+mysql_innodb_log_file_size: "64M"
+mysql_max_connections: 150
+
+mysql_character_set_server: "utf8mb4"
+mysql_collation_server: "utf8mb4_0900_ai_ci"
+
+mysql_log_bin: "/var/log/mysql/binlogs/mysql-bin"
+mysql_binlog_format: "ROW"
+mysql_binlog_expire_logs_seconds: 604800
+mysql_binlog_row_image: "FULL"
+mysql_sync_binlog: 1
+mysql_disable_log_bin: false
+mysql_gtid_mode: "ON"
+mysql_enforce_gtid_consistency: "ON"
+
+mysql_disable_remote_root: true
+mysql_remove_anonymous_users: true
+mysql_remove_test_database: true
+mysql_secure_installation: true
+
+mysql_slow_query_log_enabled: true
+mysql_slow_query_time: "2"
+
+__mysql_slow_query_log_file: "/var/log/mysql/mysql-slow.log"
+__mysql_log_error: "/var/log/mysql/error.log"
+
+mysql_log_error: "/var/log/mysql/error.log"
+
+mysql_backup_dir: "/var/backups/mysql"
+mysql_backup_retention_days: 7
+
+mysql_replica_read_only: true
+mysql_replica_skip_errors: "1062,1032,1060"
+mysql_replica_parallel_workers: 2
+mysql_replica_parallel_type: "LOGICAL_CLOCK"
+
+
