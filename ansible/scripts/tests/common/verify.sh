@@ -34,6 +34,27 @@ run_test() {
     fi
 }
 
+run_test_as_user() {
+    local test_name="$1"
+    local test_command="$2"
+    local host="$3"
+    local user="$4"
+    local timeout="${5:-15}"
+
+    echo -e "${BLUE}[test]${NC} $test_name on $host as user $user..."
+
+    vagrant ssh $host -c "sudo -u $user timeout $timeout bash -c '$test_command'"
+    local exit_code=$?
+
+    if [ $exit_code -eq 0 ]; then
+        echo -e "${GREEN}[✓] Test passed:${NC} $test_name (as $user)"
+        return 0
+    else
+        echo -e "${RED}[✗] Test failed:${NC} $test_name (as $user)"
+        return 1
+    fi
+}
+
 run_command_test() {
     local test_name="$1"
     local primary_command="$2"
