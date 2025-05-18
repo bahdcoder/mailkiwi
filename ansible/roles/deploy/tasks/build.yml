@@ -1,0 +1,37 @@
+---
+# build tasks for deploy role
+
+- name: install dependencies
+  shell: "{{ install_command }}"
+  args:
+    chdir: "{{ deployment_path }}"
+  become: true
+  become_user: "{{ app_user }}"
+  register: install_result
+  changed_when: install_result.rc == 0
+  failed_when: install_result.rc != 0
+  environment:
+    INFISICAL_SERVICE_TOKEN: "{{ infisical_service_token }}"
+    PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
+
+- name: build application
+  shell: "{{ build_command }}"
+  args:
+    chdir: "{{ deployment_path }}"
+  become: true
+  become_user: "{{ app_user }}"
+  register: build_result
+  changed_when: build_result.rc == 0
+  failed_when: build_result.rc != 0
+  environment:
+    INFISICAL_SERVICE_TOKEN: "{{ infisical_service_token }}"
+    PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
+
+- name: create pm2 ecosystem file
+  template:
+    src: pm2-ecosystem.json.j2
+    dest: "{{ deployment_path }}/ecosystem.json"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: 0644
+  become: true

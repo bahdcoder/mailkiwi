@@ -29,7 +29,7 @@ mysql_replication_user:
   password: "{{ vault_mysql_replication_password }}"
 mysql_server_id: 1
 
-mysql_bind_address: "{{ ansible_host }}"
+mysql_bind_address: "0.0.0.0"
 
 mysql_innodb_buffer_pool_size: "1G"
 mysql_innodb_log_file_size: "256M"

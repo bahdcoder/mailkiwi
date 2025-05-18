@@ -27,7 +27,7 @@ mysql_replication_role: 'slave'
 mysql_replication_master: "{{ hostvars[groups['mysql_master'][0]]['ansible_host'] }}"
 mysql_server_id: 2
 
-mysql_bind_address: "{{ ansible_host }}"
+mysql_bind_address: "0.0.0.0"
 
 mysql_innodb_buffer_pool_size: "1G"
 mysql_innodb_log_file_size: "256M"

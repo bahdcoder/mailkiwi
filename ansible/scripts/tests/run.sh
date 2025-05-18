@@ -25,6 +25,7 @@ get_required_vms() {
         "mail") echo "ansible-root,mail-1,mail-2,mail-proxy" ;;
         "redis") echo "ansible-root,redis" ;;
         "backups") echo "ansible-root,mysql-master,mysql-slave" ;;
+        "deploy") echo "ansible-root,app-1,app-2" ;;
         *) echo "" ;;
     esac
 }

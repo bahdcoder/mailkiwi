@@ -1,0 +1,105 @@
+---
+
+- name: rollback kibamail application
+  hosts: app
+  become: true
+
+  pre_tasks:
+    - name: validate rollback_tag is provided
+      fail:
+        msg: "rollback_tag is required. Please provide a valid git tag with --extra-vars 'rollback_tag=v1.0.0'"
+      when: rollback_tag is not defined or rollback_tag == ""
+
+    - name: validate infisical_service_token is provided
+      fail:
+        msg: "infisical_service_token is required. Please provide a valid token with --extra-vars 'infisical_service_token=your_token'"
+      when: infisical_service_token is not defined or infisical_service_token == ""
+
+    - name: display rollback information
+      debug:
+        msg:
+          - "rolling back Kibamail"
+          - "tag: {{ rollback_tag }}"
+          - "hosts: {{ ansible_play_hosts | join(', ') }}"
+
+  tasks:
+    - name: set deployment variables
+      set_fact:
+        deployments_dir: "/var/www/kibamail/deployments"
+        deployment_prefix: "deployment-"
+        current_symlink: "/var/www/kibamail/current"
+        app_user: "{{ ansible_user }}"
+        app_group: "{{ ansible_user }}"
+        pm2_app_name: "kibamail"
+
+    - name: check if rollback deployment exists
+      stat:
+        path: "{{ deployments_dir }}/{{ deployment_prefix }}{{ rollback_tag }}"
+      register: rollback_dir_stat
+
+    - name: fail if rollback deployment doesn't exist
+      fail:
+        msg: "deployment directory {{ deployments_dir }}/{{ deployment_prefix }}{{ rollback_tag }} does not exist. Cannot rollback to this tag."
+      when: not rollback_dir_stat.stat.exists
+
+    - name: check if current symlink exists
+      stat:
+        path: "{{ current_symlink }}"
+      register: current_symlink_stat
+
+    - name: get current deployment path
+      shell: "readlink {{ current_symlink }}"
+      register: current_deployment_path
+      changed_when: false
+      failed_when: false
+      when: current_symlink_stat.stat.exists and current_symlink_stat.stat.islnk
+
+    - name: create temporary symlink
+      file:
+        src: "{{ deployments_dir }}/{{ deployment_prefix }}{{ rollback_tag }}"
+        dest: "{{ current_symlink }}.rollback"
+        state: link
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+      become: true
+
+    - name: atomically switch symlink
+      shell: "mv -Tf {{ current_symlink }}.rollback {{ current_symlink }}"
+      become: true
+      register: symlink_result
+      changed_when: symlink_result.rc == 0
+      failed_when: symlink_result.rc != 0
+
+    - name: restart application with pm2
+      shell: "cd {{ current_symlink }} && pm2 startOrRestart ecosystem.json"
+      become: true
+      become_user: "{{ app_user }}"
+      register: pm2_result
+      changed_when: pm2_result.rc == 0
+      failed_when: pm2_result.rc != 0
+      environment:
+        PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
+        INFISICAL_SERVICE_TOKEN: "{{ infisical_service_token }}"
+
+    - name: save pm2 process list
+      shell: "pm2 save"
+      become: true
+      become_user: "{{ app_user }}"
+      register: pm2_save_result
+      changed_when: pm2_save_result.rc == 0
+      failed_when: pm2_save_result.rc != 0
+      environment:
+        PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
+        INFISICAL_SERVICE_TOKEN: "{{ infisical_service_token }}"
+
+    - name: ensure pm2 starts on server boot
+      shell: "pm2 startup systemd -u {{ app_user }} --hp /home/{{ app_user }}"
+      become: true
+      register: pm2_startup_result
+      changed_when: pm2_startup_result.rc == 0
+      failed_when: false
+
+  post_tasks:
+    - name: display rollback status
+      debug:
+        msg: "Rollback completed on {{ inventory_hostname }}"

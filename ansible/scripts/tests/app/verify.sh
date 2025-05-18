@@ -10,6 +10,36 @@ echo -e "${BLUE}[task]${NC} verifying app setup..."
 
 TEST_FAILURES=0
 
+# Build dependencies tests for app-1
+echo -e "\n${BLUE}[task]${NC} verifying build dependencies on app-1..."
+
+run_test "build-essential is installed" "dpkg -l | grep -q 'build-essential'" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "python3 is installed" "which python3" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "g++ is installed" "which g++" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "make is installed" "which make" "app-1"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+# Build dependencies tests for app-2
+echo -e "\n${BLUE}[task]${NC} verifying build dependencies on app-2..."
+
+run_test "build-essential is installed" "dpkg -l | grep -q 'build-essential'" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "python3 is installed" "which python3" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "g++ is installed" "which g++" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "make is installed" "which make" "app-2"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
 # Node.js installation tests for app-1
 run_test "node binary exists in /usr/bin" "test -f /usr/bin/node" "app-1"
 TEST_FAILURES=$((TEST_FAILURES + $?))

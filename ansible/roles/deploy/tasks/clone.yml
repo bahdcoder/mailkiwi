@@ -1,0 +1,20 @@
+---
+
+- name: clone repository at specific tag
+  git:
+    repo: "{{ repo_url }}"
+    dest: "{{ deployment_path }}"
+    version: "{{ deploy_tag }}"
+    depth: "{{ git_depth }}"
+    force: yes
+  become: true
+  become_user: "{{ app_user }}"
+  register: git_clone
+  until: git_clone is succeeded
+  retries: 3
+  delay: 5
+
+- name: display git clone information
+  debug:
+    msg: "cloned {{ repo_url }} at tag {{ deploy_tag }} to {{ deployment_path }}"
+  when: git_clone is succeeded

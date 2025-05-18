@@ -19,6 +19,9 @@ TEST_FAILURES=$((TEST_FAILURES + $?))
 run_test "redis is listening on port 6379" "ss -tuln | grep -q ':6379'" "redis"
 TEST_FAILURES=$((TEST_FAILURES + $?))
 
+run_test "redis is bound to all IPs" "grep -q 'bind 0.0.0.0' /etc/redis/redis.conf" "redis"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
 run_redis_cli_test() {
     local test_name="$1"
     local redis_command="$2"
@@ -61,6 +64,9 @@ run_test "ssh port is allowed in firewall" "sudo ufw status | grep -q '22/tcp.*A
 TEST_FAILURES=$((TEST_FAILURES + $?))
 
 run_test "redis port is allowed in firewall" "sudo ufw status | grep -q '6379/tcp.*ALLOW'" "redis"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "redis port is allowed from any IP" "sudo ufw status | grep -q '6379/tcp.*ALLOW.*Anywhere'" "redis"
 TEST_FAILURES=$((TEST_FAILURES + $?))
 
 print_test_summary $TEST_FAILURES "redis"

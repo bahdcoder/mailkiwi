@@ -33,6 +33,8 @@ mysql_replication_user:
 mysql_replication_master: "{{ hostvars[groups['mysql_master'][0]]['ansible_host'] }}"
 mysql_server_id: "1"
 
+mysql_bind_address: "0.0.0.0"
+
 mysql_innodb_buffer_pool_size: "256M"
 mysql_innodb_log_file_size: "64M"
 mysql_max_connections: 150

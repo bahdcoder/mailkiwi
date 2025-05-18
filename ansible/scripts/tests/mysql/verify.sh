@@ -22,6 +22,12 @@ TEST_FAILURES=$((TEST_FAILURES + $?))
 run_test "kibamail database exists" "sudo mysql -e 'SHOW DATABASES;' | grep -q kibamail" "mysql-slave"
 TEST_FAILURES=$((TEST_FAILURES + $?))
 
+run_test "mysql master is bound to all IPs" "sudo mysql -e 'SHOW VARIABLES LIKE \"bind_address\";' | grep -q '0.0.0.0'" "mysql-master"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
+run_test "mysql slave is bound to all IPs" "sudo mysql -e 'SHOW VARIABLES LIKE \"bind_address\";' | grep -q '0.0.0.0'" "mysql-slave"
+TEST_FAILURES=$((TEST_FAILURES + $?))
+
 run_test "replication io is running" "sudo mysql -e 'SHOW SLAVE STATUS\\G' | grep -q 'Slave_IO_Running: Yes'" "mysql-slave"
 TEST_FAILURES=$((TEST_FAILURES + $?))
 
