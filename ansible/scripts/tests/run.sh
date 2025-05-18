@@ -23,7 +23,7 @@ get_required_vms() {
         "app") echo "ansible-root,app-1,app-2" ;;
         "mysql") echo "ansible-root,mysql-master,mysql-slave,app-1,app-2" ;;
         "mail") echo "ansible-root,mail-1,mail-2,mail-proxy" ;;
-        "dragonfly") echo "ansible-root,dragonfly" ;;
+        "redis") echo "ansible-root,redis" ;;
         "backups") echo "ansible-root,mysql-master,mysql-slave" ;;
         *) echo "" ;;
     esac
@@ -33,7 +33,7 @@ list_available_tests() {
     echo -e "${CYAN}•${NC} app ${YELLOW}(requires: $(get_required_vms "app"))${NC}"
     echo -e "${CYAN}•${NC} mysql ${YELLOW}(requires: $(get_required_vms "mysql"))${NC}"
     echo -e "${CYAN}•${NC} mail ${YELLOW}(requires: $(get_required_vms "mail"))${NC}"
-    echo -e "${CYAN}•${NC} dragonfly ${YELLOW}(requires: $(get_required_vms "dragonfly"))${NC}"
+    echo -e "${CYAN}•${NC} redis ${YELLOW}(requires: $(get_required_vms "redis"))${NC}"
 }
 
 if [ $# -lt 1 ]; then

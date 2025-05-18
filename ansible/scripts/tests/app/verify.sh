@@ -3,6 +3,8 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "$SCRIPT_DIR/../common/verify.sh"
 
+source_vault_secrets
+
 CHECK_MARK="\xE2\x9C\x94"
 X_MARK="\xE2\x9C\x96"
 

@@ -5,6 +5,8 @@ source "$SCRIPT_DIR/../common/test.sh"
 
 print_header "mysql backup playbook test"
 
+source_vault_secrets
+
 echo -e "${BLUE}[task]${NC} running mysql setup playbook first..."
 run_playbook "playbooks/mysql/setup.yml" "mysql setup playbook"
 

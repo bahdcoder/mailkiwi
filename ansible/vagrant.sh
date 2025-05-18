@@ -39,7 +39,7 @@ echo -e "${BLUE}[task]${NC} ${BOLD}preparing to process vagrant vms...${NC}"
 all_vm_names=(
   "app-1"
   "app-2"
-  "dragonfly"
+  "redis"
   "mail-1"
   "mail-2"
   "mail-proxy"
@@ -66,7 +66,7 @@ get_ip() {
   case $vm in
     "app-1")        echo "172.16.0.3" ;;
     "app-2")        echo "172.16.0.2" ;;
-    "dragonfly")    echo "172.16.0.11" ;;
+    "redis")    echo "172.16.0.11" ;;
     "mail-1")       echo "172.16.0.10" ;;
     "mail-2")       echo "172.16.0.5" ;;
     "mail-proxy")   echo "172.16.0.6" ;;

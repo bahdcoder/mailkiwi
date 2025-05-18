@@ -3,6 +3,8 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "$SCRIPT_DIR/../common/verify.sh"
 
+source_vault_secrets
+
 print_header "mysql setup verification"
 echo -e "${BLUE}[task]${NC} verifying mysql setup..."
 
