@@ -24,7 +24,7 @@ function WelcomePage() {
         </Text>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
-          <ProductCard.Root>
+          <ProductCard.Root href={route('engage')}>
             <EngageIcon className="w-10 h-10" />
 
             <Text size="lg" className="font-semibold">
@@ -36,7 +36,7 @@ function WelcomePage() {
               libero et velit interdum.
             </Text>
           </ProductCard.Root>
-          <ProductCard.Root>
+          <ProductCard.Root href={route('send')}>
             <SendIcon className="w-10 h-10" />
 
             <Text size="lg" className="font-semibold">
@@ -49,7 +49,7 @@ function WelcomePage() {
             </Text>
           </ProductCard.Root>
 
-          <ProductCard.Root>
+          <ProductCard.Root href={route('optimise')}>
             <OptimiseIcon className="w-10 h-10" />
 
             <Text size="lg" className="font-semibold">
@@ -62,7 +62,7 @@ function WelcomePage() {
             </Text>
           </ProductCard.Root>
 
-          <ProductCard.Root>
+          <ProductCard.Root href={route('insights')}>
             <InsightsIcon className="w-10 h-10" />
 
             <Text size="lg" className="font-semibold">
@@ -75,7 +75,7 @@ function WelcomePage() {
             </Text>
           </ProductCard.Root>
 
-          <ProductCard.Root>
+          <ProductCard.Root href={route('send')}>
             <EngageIcon className="w-10 h-10" />
 
             <Text size="lg" className="font-semibold">
