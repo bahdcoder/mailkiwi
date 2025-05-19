@@ -23,11 +23,15 @@ export class Session {
     return this.getUser(ctx, 'contact')
   }
 
+  protected getCookiePrefix() {
+    return appEnv.isDev ? '' : '__Secure-'
+  }
+
   async getCurrentSessionId(ctx: HonoContext, type: 'contact' | 'user' = 'user') {
     const sessionId = await getSignedCookie(
       ctx,
       this.encryptionKey,
-      `__Secure-${
+      `${this.getCookiePrefix()}${
         type === 'contact' ? this.CONTACT_SESSION_COOKIE_NAME : this.SESSION_COOKIE_NAME
       }`,
     )
@@ -100,7 +104,7 @@ export class Session {
       this.encryptionKey,
       {
         sameSite: 'Lax',
-        prefix: 'secure',
+        prefix: appEnv.isDev ? undefined : 'secure',
         secure: appEnv.isProd,
         httpOnly: true,
         path: '/',
