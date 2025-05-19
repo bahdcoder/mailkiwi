@@ -20,7 +20,7 @@ mail:
 mail_proxy:
   hosts:
     mail-proxy:
-      ansible_host: 172.16.0.6
+      ansible_host: 172.16.0.20
 
 mysql_master:
   hosts:
@@ -30,7 +30,7 @@ mysql_master:
 mysql_slave:
   hosts:
     mysql-slave:
-      ansible_host: 172.16.0.8
+      ansible_host: 172.16.0.21
 
 monitoring:
   hosts:
