@@ -38,7 +38,7 @@ export const aliases = {
   send: w('send'),
   optimise: w('optimise'),
   engage: w('engage'),
-  insights: w('insights'),
+  letters: w('letters'),
 
   // teams
   teams_switch: '/teams/:teamId/switch',

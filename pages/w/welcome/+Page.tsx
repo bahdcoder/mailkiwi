@@ -62,11 +62,11 @@ function WelcomePage() {
             </Text>
           </ProductCard.Root>
 
-          <ProductCard.Root href={route('insights')}>
-            <InsightsIcon className="w-10 h-10" />
+          <ProductCard.Root href={route('letters')}>
+            <LettersIcon className="w-10 h-10" />
 
             <Text size="lg" className="font-semibold">
-              Insights
+              Letters
             </Text>
 
             <Text className="kb-content-tertiary">
