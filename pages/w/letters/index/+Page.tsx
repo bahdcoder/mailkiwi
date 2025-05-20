@@ -11,7 +11,7 @@ function InsightsPage() {
       <div className="w-full border kb-border-tertiary h-80 kb-background-primary rounded-2xl" />
 
       <Heading size="xs" variant="display">
-        Insights
+        Letters
       </Heading>
 
       <Text className="kb-content-tertiary font-medium">
