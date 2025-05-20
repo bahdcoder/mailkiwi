@@ -11,13 +11,38 @@ import {
 } from '@/pages/components/dashboard/layout/sidebar/left-sidebar.jsx'
 import { Topbar } from '@/pages/components/dashboard/layout/sidebar/topbar.jsx'
 import cn from 'classnames'
-import React from 'react'
+import React, { useEffect } from 'react' // Import useEffect
 import { usePageContext } from 'vike-react/usePageContext'
+import * as Sentry from '@sentry/react' // Import Sentry
 
 interface ApplicationLayoutProps extends React.PropsWithChildren {}
 
 function ApplicationLayout({ children }: ApplicationLayoutProps) {
-  const { urlPathname, isMobile } = usePageContext()
+  const pageContext = usePageContext()
+  const { urlPathname, isMobile } = pageContext
+
+  // Attempt to get user and team from pageContext, trying common structures
+  const user = pageContext.user || pageContext.data?.user
+  const team = pageContext.team || pageContext.data?.team || pageContext.data?.currentTeam
+
+  useEffect(() => {
+    if (user) {
+      Sentry.setUser({
+        id: user.id,
+        email: user.email,
+        username: user.username, // Assuming username might exist
+        // Add any other relevant user attributes if available
+      })
+    }
+    if (team) {
+      Sentry.setTag('team_id', team.id)
+      Sentry.setContext('organization', { // Consistent with server-side context name
+        id: team.id,
+        name: team.name,
+        slug: team.slug, // Assuming slug might exist
+      })
+    }
+  }, [user, team]) // Rerun effect if user or team data changes
 
   const [sidebarState, setSidebarState] = React.useState<SidebarState>(() => ({
     width: DEFAULT_SIDEBAR_WIDTH,

@@ -1,5 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import * as Sentry from '@sentry/node'
+import { ProfilingIntegration } from '@sentry/profiling-node'
 import { type AppEnvVariables, appEnv } from '@/app/env/app_env.js'
 import { ChannelController } from '@/chat/controllers/channel_controller.js'
 import { ChatController } from '@/chat/controllers/chat_controller.js'
@@ -78,24 +80,65 @@ export class Ignitor {
   protected redis: Redis
   protected logger: Logger
 
-  boot() {
+  async boot() {
     this.env = appEnv
     container.register(ContainerKey.env, this.env)
 
-    this.logger = pino({
-      level: this.env.LOG_LEVEL,
-      transport: this.env.isDev
-        ? {
-            target: 'pino-pretty',
-            options: {
-              colorize: true,
-            },
-          }
-        : undefined,
-      enabled: !this.env.isTest,
-    })
+    // Initialize Sentry
+    try {
+      const packageJsonFile = await readFile(resolve('package.json'), 'utf-8')
+      const { version } = JSON.parse(packageJsonFile)
 
-    container.register(ContainerKey.logger, this.logger)
+      Sentry.init({
+        dsn: this.env.SENTRY_DSN,
+        environment: this.env.SENTRY_ENVIRONMENT || this.env.NODE_ENV,
+        release: `kibamail@${version}`,
+        integrations: [new ProfilingIntegration()],
+        tracesSampleRate: 1.0,
+        profilesSampleRate: 1.0,
+      })
+
+      // Initialize logger AFTER Sentry to capture potential pino errors in Sentry.
+      this.logger = pino({
+        level: this.env.LOG_LEVEL,
+        transport: this.env.isDev
+          ? {
+              target: 'pino-pretty',
+              options: {
+                colorize: true,
+              },
+            }
+          : undefined,
+        enabled: !this.env.isTest,
+      })
+      this.logger.info('Sentry initialized for server-side.')
+    } catch (error) {
+      // Fallback logger initialization if Sentry or pino initialization failed before this.logger was set.
+      if (!this.logger) {
+        this.logger = pino({
+          level: this.env.LOG_LEVEL || 'info',
+          transport: this.env.isDev
+            ? {
+                target: 'pino-pretty',
+                options: { colorize: true },
+              }
+            : undefined,
+          enabled: !this.env.isTest, // Ensure logging is enabled for this error message.
+        })
+      }
+      this.logger.error('Failed to initialize Sentry or pino logger:', error)
+    }
+
+    // Ensure logger is registered, even if Sentry init failed.
+    if (!container.has(ContainerKey.logger) && this.logger) {
+      container.register(ContainerKey.logger, this.logger)
+    } else if (!this.logger) {
+      // Critical fallback: if logger is still not initialized, create and register a basic one.
+      this.logger = pino({ level: 'info', enabled: true }) // Basic logger for critical errors
+      this.logger.error('Critical: Logger was not initialized during boot sequence.')
+      container.register(ContainerKey.logger, this.logger)
+    }
+
 
     this.app = new Hono()
 
@@ -134,6 +177,24 @@ export class Ignitor {
     container.register(ContainerKey.vikeRenderPage, new VikeController().renderVikePage)
 
     this.registerHttpControllers()
+
+    // Sentry Test Routes - START
+    this.app.get('/sentry-test-server-error', (c) => {
+      // const user = c.var.user; // For debugging if needed
+      // console.log("Test route user:", user);
+      throw new Error('Sentry Server Test Error - Kibamail - Timestamp: ' + Date.now());
+    });
+
+    this.app.get('/sentry-test-server-error-authenticated', [middleware('must_be_authenticated')], (c) => {
+      const user = c.var.user as any; // Assuming user is populated by middleware
+      if (user) {
+        Sentry.setUser({ id: user.id, email: user.email, username: user.username });
+      } else {
+        Sentry.setUser(null); // Clear user if not found, though middleware should handle this
+      }
+      throw new Error('Sentry Server Authenticated Test Error - Kibamail - User: ' + (user?.id || 'N/A') + ' - Timestamp: ' + Date.now());
+    });
+    // Sentry Test Routes - END
 
     this.setupBullmqDashboard()
     await this.startSinglePageApplication()
@@ -210,6 +271,7 @@ export class Ignitor {
   }
 
   async shutdown() {
+    await Sentry.close(2000)
     const connection = makeDatabaseConnection()
     const redis = makeRedis()
 
