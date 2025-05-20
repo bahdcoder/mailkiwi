@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { type AppEnvVariables, appEnv } from '@/app/env/app_env.js'
+import { initServerSentry, flushSentry } from '@/shared/sentry/index.js'
 import { ChannelController } from '@/chat/controllers/channel_controller.js'
 import { ChatController } from '@/chat/controllers/chat_controller.js'
 import { CommerceProviderController } from '@/commerce/controllers/commerce_provider_controller.js'
@@ -63,6 +64,7 @@ import {
 } from '@/shared/container/index.js'
 import { VikeController } from '@/shared/controllers/vike_controller.js'
 import { middleware } from '@/shared/middleware/middleware_aliases.js'
+import { sentryErrorHandler } from '@/shared/middleware/sentry_error_handler.js'
 import { Hono, type HonoInstance } from '@/shared/server/hono.js'
 import '@/shared/utils/log/dump.js'
 
@@ -127,8 +129,13 @@ export class Ignitor {
 
     container.register(ContainerKey.version, version)
 
+    // Initialize Sentry for server-side error tracking
+    initServerSentry(this.logger, version)
+
     await this.startDatabaseConnector()
 
+    // Add Sentry error handler middleware
+    this.app.use(sentryErrorHandler())
     this.app.use(middleware('user_session'))
 
     container.register(ContainerKey.vikeRenderPage, new VikeController().renderVikePage)
@@ -218,5 +225,8 @@ export class Ignitor {
     }
 
     redis.disconnect()
+    
+    // Flush any pending Sentry events before shutdown
+    await flushSentry()
   }
 }

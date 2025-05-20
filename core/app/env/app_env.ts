@@ -137,6 +137,9 @@ export const appEnv = makeExtraAppConfigurations(
       STORJ_ACCESS_GRANT: str(),
       STORJ_ASSETS_PUBLIC_URL: str(),
       ASSETS_URL: str(),
+
+      // error tracking
+      SENTRY_DSN: str({ default: '' }),
     }),
   ),
   {
