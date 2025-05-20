@@ -40,6 +40,7 @@
     "ci:build:quick": "pnpm build:clean && pnpm build:app && pnpm build:client && pnpm ci:cli fix_typescript_imports",
     "mysql:migrate:dev": "./env.mjs  --env=dev pnpm mysql:migrate",
     "ci:mysql:migrate:dev": "pnpm mysql:migrate",
+    "mysql:migrate:coder": "./env.mjs  --env=coder pnpm mysql:migrate",
     "mysql:migrate:test": "./env.mjs  --env=test pnpm mysql:migrate",
     "ci:mysql:migrate:test": "pnpm mysql:migrate",
     "mysql:migrate": "pnpm drizzle-kit migrate",
@@ -51,6 +52,10 @@
     "ci:cli": "./env.mjs --env=test tsx cli/cli_root.ts",
     "cli:test": "./env.mjs --env=test tsx cli/cli_root.ts",
     "test:seed_channels": "./env.mjs --env=test tsx cli/cli_root.ts add_default_channels",
+    "coder:dev": "concurrently \"pnpm coder:server:dev\" \"pnpm coder:worker:dev\"",
+    "coder:server:dev": "./env.mjs --env=coder pnpm mysql:migrate:coder && pnpm coder:quick:dev",
+    "coder:worker:dev": "./env.mjs  --env=coder  tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/worker/start.ts",
+    "coder:quick:dev": "./env.mjs  --env=coder tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/app/start/dev.ts",
     "prepare": "husky"
   },
   "keywords": [

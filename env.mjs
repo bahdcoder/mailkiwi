@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { InfisicalSDK } from '@infisical/sdk'
-import { createClient } from 'redis'
 import { spawn } from 'node:child_process'
 import consola from 'consola'
 
@@ -19,16 +18,13 @@ Usage: ./env.mjs [options] [command] [args...]
 Options:
   --env=<environment>  Specify the Infisical environment to use (default: dev)
                        Supported values: test, dev, test-playwright, staging or prod.
-  --reset              Force refresh of cached secrets, ignoring TTL
   --help               Show this help message
 
 Examples:
   ./env.mjs                                 # Display secrets from dev environment
   ./env.mjs --env=prod                      # Display secrets from prod environment
-  ./env.mjs --reset                         # Force refresh of dev secrets
-  ./env.mjs --env=staging --reset           # Force refresh of staging secrets
   ./env.mjs --env=staging node server.js    # Run node server.js with staging secrets
-  ./env.mjs --reset --env=prod npm start    # Run npm start with fresh prod secrets
+  ./env.mjs --env=prod npm start            # Run npm start with prod secrets
 `)
     process.exit(0)
   }
@@ -42,7 +38,6 @@ Examples:
 
     const parsedArgs = {
       env: 'dev',
-      resetCache: false,
       command: null,
       commandArgs: [],
     }
@@ -50,14 +45,6 @@ Examples:
     // Check for help flag first
     if (args.includes('--help') || args.includes('-h')) {
       this.showHelp()
-    }
-
-    // Process reset flag
-    const resetIndex = args.findIndex((arg) => arg === '--reset')
-
-    if (resetIndex !== -1) {
-      parsedArgs.resetCache = true
-      args.splice(resetIndex, 1)
     }
 
     // Process environment flag
@@ -95,27 +82,19 @@ class Config {
   constructor(args) {
     this.DEFAULT_INFISICAL_ENV = 'dev'
     this.DEFAULT_INFISICAL_SERVICE_TOKEN =
-      'st.26503e52-caf1-40e7-b981-88077f01fda8.615a966e735e6aedd57a84e74ca2e8a4.30842122aba5c42b1b1980e71548334f'
+      'st.49ee2b17-6184-497e-b0cb-b6980dee8484.09eb6135d923fb73562a7020fa8366a7.4d22740e830524564a074dfc48e6338c'
     this.PROJECT_ID = '3df67a8d-229b-4f34-bd5f-712a60e01d71'
     this.INFISICAL_DOMAIN = 'https://infisical.kibamail.com'
-    this.REDIS_URL = 'redis://localhost:5570'
-    this.CACHE_TTL = 60 * 60 * 48
 
-    this.INFISICAL_ENV = process.env.INFISICAL_ENV || this.DEFAULT_INFISICAL_ENV
-
-    if (process.env.INFISICAL_ENV) {
-      this.INFISICAL_ENV = process.env.INFISICAL_ENV
-    }
+    // Use the environment from command line args first, then from process.env, then the default
+    this.INFISICAL_ENV =
+      args.env || process.env.INFISICAL_ENV || this.DEFAULT_INFISICAL_ENV
 
     this.INFISICAL_SERVICE_TOKEN =
       process.env.INFISICAL_SERVICE_TOKEN || this.DEFAULT_INFISICAL_SERVICE_TOKEN
 
-    this.CACHE_KEY = `infisical_secrets:${this.PROJECT_ID}:${this.INFISICAL_ENV}`
-
     this.command = args.command
     this.commandArgs = args.commandArgs
-
-    this.resetCache = args.resetCache || false
   }
 }
 
@@ -250,184 +229,28 @@ class InfisicalClient {
 }
 
 /**
- * RedisClient class that provides a robust interface for Redis operations.
+ * SecretManager class responsible for retrieving secrets from Infisical.
  */
-class RedisClient {
+class SecretManager {
   /**
-   * Creates a new RedisClient instance.
-   * @param {Config} config - Configuration object containing Redis settings.
-   * @param {Logger} logger - Logger instance for logging operations.
-   */
-  constructor(config, logger) {
-    this.config = config
-    this.logger = logger
-    this.client = null
-  }
-
-  /**
-   * Connects to Redis if not already connected.
-   * @returns {Promise<void>} A promise that resolves when connected.
-   */
-  async connect() {
-    if (this.client?.isOpen) {
-      return
-    }
-
-    this.logger.info(`Connecting to Redis at ${this.config.REDIS_URL}`)
-
-    this.client = createClient({
-      url: this.config.REDIS_URL,
-    })
-
-    this.client.on('error', (err) => {
-      this.logger.error('Redis client error', err)
-    })
-
-    await this.client.connect().catch((error) => {
-      this.logger.error('Failed to connect to Redis', error)
-      throw new Error('Failed to connect to Redis')
-    })
-
-    this.logger.success('Successfully connected to Redis')
-  }
-
-  /**
-   * Disconnects from Redis if connected.
-   * @returns {Promise<void>} A promise that resolves when disconnected.
-   */
-  async disconnect() {
-    if (!this.client || !this.client.isOpen) {
-      return Promise.resolve()
-    }
-
-    this.logger.info('Disconnecting from Redis')
-
-    await this.client.quit().catch((error) => {
-      this.logger.error('Error disconnecting from Redis', error)
-    })
-
-    this.client = null
-    return Promise.resolve()
-  }
-
-  /**
-   * Gets a value from Redis.
-   * @param {string} key - The key to retrieve.
-   * @returns {Promise<string|null>} A promise that resolves to the value or null if not found.
-   */
-  async get(key) {
-    await this.connect()
-
-    this.logger.debug(`Getting value for key: ${key}`)
-    return this.client.get(key).catch((error) => {
-      this.logger.error(`Failed to get value for key: ${key}`, error)
-      throw new Error(`Failed to get value for key: ${key}`)
-    })
-  }
-
-  /**
-   * Sets a value in Redis with optional expiration.
-   * @param {string} key - The key to set.
-   * @param {string} value - The value to set.
-   * @param {Object} [options] - Options for the set operation.
-   * @returns {Promise<string>} A promise that resolves to "OK" if successful.
-   */
-  async set(key, value, options) {
-    await this.connect()
-
-    this.logger.debug(`Setting value for key: ${key}`)
-    return this.client.set(key, value, options).catch((error) => {
-      this.logger.error(`Failed to set value for key: ${key}`, error)
-      throw new Error(`Failed to set value for key: ${key}`)
-    })
-  }
-
-  /**
-   * Deletes a key from Redis.
-   * @param {string} key - The key to delete.
-   * @returns {Promise<number>} A promise that resolves to the number of keys deleted.
-   */
-  async del(key) {
-    await this.connect()
-
-    this.logger.debug(`Deleting key: ${key}`)
-    return this.client.del(key).catch((error) => {
-      this.logger.error(`Failed to delete key: ${key}`, error)
-      throw new Error(`Failed to delete key: ${key}`)
-    })
-  }
-}
-
-/**
- * CacheManager class responsible for caching and retrieving secrets using Redis.
- */
-class CacheManager {
-  /**
-   * Creates a new CacheManager instance.
-   * @param {Config} config - Configuration object containing Redis settings.
+   * Creates a new SecretManager instance.
+   * @param {Config} config - Configuration object.
    * @param {InfisicalClient} infisicalClient - Client for fetching secrets from Infisical.
-   * @param {RedisClient} redisClient - Client for Redis operations.
    * @param {Logger} logger - Logger instance for logging operations.
    */
-  constructor(config, infisicalClient, redisClient, logger) {
+  constructor(config, infisicalClient, logger) {
     this.config = config
     this.infisicalClient = infisicalClient
-    this.redisClient = redisClient
     this.logger = logger
   }
 
   /**
-   * Deletes the cached secrets for the current environment.
-   * @returns {Promise<void>} A promise that resolves when the cache is cleared.
-   */
-  async clearCache() {
-    this.logger.info(`Clearing cache for environment: ${this.config.INFISICAL_ENV}`)
-    await this.redisClient.del(this.config.CACHE_KEY).catch((error) => {
-      this.logger.error(`Failed to clear cache for key: ${this.config.CACHE_KEY}`, error)
-    })
-    this.logger.success('Cache cleared successfully')
-  }
-
-  /**
-   * Retrieves secrets, preferring cached values when available.
-   * If cache is empty or expired, fetches fresh secrets from Infisical and updates the cache.
+   * Retrieves secrets directly from Infisical.
    * @returns {Promise<Array>} A promise that resolves to an array of secret objects.
    */
   async getSecrets() {
-    // Handle cache reset if requested
-    if (this.config.resetCache) {
-      this.logger.info('Reset flag detected, clearing cache')
-      await this.clearCache()
-    }
-
-    // Try to get from cache if not resetting
-    if (!this.config.resetCache) {
-      const cachedSecrets = await this.redisClient.get(this.config.CACHE_KEY)
-
-      if (cachedSecrets) {
-        this.logger.info('Using cached secrets from Redis')
-        return JSON.parse(cachedSecrets)
-      }
-    }
-
-    // Cache miss or reset, fetch from Infisical
-    const logMessage = this.config.resetCache
-      ? 'Fetching fresh secrets from Infisical (cache reset)'
-      : 'No cached secrets found, fetching from Infisical'
-
-    this.logger.info(logMessage)
-
+    this.logger.info('Fetching secrets from Infisical')
     const secrets = await this.infisicalClient.fetchSecrets()
-
-    // Cache the fresh secrets
-    this.logger.info(
-      `Caching ${secrets.length} secrets in Redis with TTL: ${this.config.CACHE_TTL}s`,
-    )
-
-    await this.redisClient.set(this.config.CACHE_KEY, JSON.stringify(secrets), {
-      EX: this.config.CACHE_TTL,
-    })
-
     return secrets
   }
 }
@@ -505,14 +328,8 @@ class Application {
 
     this.logger = new Logger()
     this.config = new Config(args)
-    this.redisClient = new RedisClient(this.config, this.logger)
     this.infisicalClient = new InfisicalClient(this.config, this.logger)
-    this.cacheManager = new CacheManager(
-      this.config,
-      this.infisicalClient,
-      this.redisClient,
-      this.logger,
-    )
+    this.secretManager = new SecretManager(this.config, this.infisicalClient, this.logger)
     this.environmentManager = new EnvironmentManager(this.logger)
   }
 
@@ -529,8 +346,8 @@ class Application {
     let exitCode = 0
 
     try {
-      // Get secrets from cache or Infisical
-      const secrets = await this.cacheManager.getSecrets()
+      // Get secrets directly from Infisical
+      const secrets = await this.secretManager.getSecrets()
 
       // Handle command execution or display secrets
       if (!this.config.command) {
@@ -555,8 +372,6 @@ class Application {
       this.logger.error('Application error', error)
       exitCode = 1
     } finally {
-      // Clean up and exit
-      await this.redisClient.disconnect()
       this.logger.info(`Application exiting with code: ${exitCode}`)
       process.exit(exitCode)
     }
