@@ -8,7 +8,7 @@ import { ChatBubbleEmptyIcon } from '@/pages/components/icons/chat-bubble-empty.
 import { HelpCircleIcon } from '@/pages/components/icons/help-circle.svg.jsx'
 import { HomeAltSlimHorizIcon } from '@/pages/components/icons/home-alt-slim-horiz.jsx'
 import { EngageIcon } from '@/pages/components/icons/products/engage.svg.jsx'
-import { InsightsIcon } from '@/pages/components/icons/products/insights.svg.jsx'
+import { LettersIcon } from '@/pages/components/icons/products/letters.svg.jsx'
 import { OptimiseIcon } from '@/pages/components/icons/products/optimise.svg.jsx'
 import { SendIcon } from '@/pages/components/icons/products/send.svg.jsx'
 import { SidebarCollapseIcon } from '@/pages/components/icons/sidebar-collapse.svg.jsx'
@@ -125,9 +125,9 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
             <Text className="kb-content-secondary font-medium">Optimise</Text>
           </SubmenuItemLink>
 
-          <SubmenuItemLink href={route('insights')}>
-            <InsightsIcon className="w-5 h-5" />
-            <Text className="kb-content-secondary font-medium">Insights</Text>
+          <SubmenuItemLink href={route('letters')}>
+            <LettersIcon className="w-5 h-5" />
+            <Text className="kb-content-secondary font-medium">Letters</Text>
           </SubmenuItemLink>
         </div>
       </div>

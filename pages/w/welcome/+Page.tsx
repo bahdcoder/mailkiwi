@@ -1,5 +1,4 @@
 import { EngageIcon } from '@/pages/components/icons/products/engage.svg.jsx'
-import { InsightsIcon } from '@/pages/components/icons/products/insights.svg.jsx'
 import { LettersIcon } from '@/pages/components/icons/products/letters.svg.jsx'
 import { OptimiseIcon } from '@/pages/components/icons/products/optimise.svg.jsx'
 import { SendIcon } from '@/pages/components/icons/products/send.svg.jsx'
@@ -57,8 +56,8 @@ function WelcomePage() {
             </Text>
 
             <Text className="kb-content-tertiary">
-              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
-              libero et velit interdum.
+              Optimise the success of your email efforts, and send emails that reach
+              people, not the spam folder
             </Text>
           </ProductCard.Root>
 
@@ -70,16 +69,15 @@ function WelcomePage() {
             </Text>
 
             <Text className="kb-content-tertiary">
-              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
-              libero et velit interdum.
+              Letters is an all-in-one tool to build, grow and monetise your newsletter
             </Text>
           </ProductCard.Root>
 
-          <ProductCard.Root href={route('send')}>
+          <ProductCard.Root href={route('monetize')}>
             <EngageIcon className="w-10 h-10" />
 
             <Text size="lg" className="font-semibold">
-              Monetise
+              Monetize
             </Text>
 
             <Text className="kb-content-tertiary">
