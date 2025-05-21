@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pnpm quick:dev
+pnpm coder:server:dev

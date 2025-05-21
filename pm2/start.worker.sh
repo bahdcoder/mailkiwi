@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pnpm worker:dev
+pnpm coder:worker:dev
