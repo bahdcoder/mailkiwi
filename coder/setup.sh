@@ -51,6 +51,9 @@ node --version
 log "installing pnpm v9+..."
 npm install -g pnpm@9
 
+log "installing pm2 globally..."
+npm install -g pm2
+
 stage_log "INSTALLING WEB SERVER"
 log "installing nginx..."
 apt install -y nginx
@@ -109,11 +112,20 @@ service mysql restart
 
 stage_log "CONFIGURING CACHE SERVER"
 log "configuring redis..."
+
+# Create Redis log directory and set permissions
+log "setting up redis log directory..."
+mkdir -p /var/log/redis
+chmod 755 /var/log/redis
+touch /var/log/redis/redis-server.log
+chmod 664 /var/log/redis/redis-server.log
+chown -R $CURRENT_USER:redis /var/log/redis
+
 cat > /etc/redis/redis.conf << 'EOF'
 bind 0.0.0.0
 port 6379
 protected-mode no
-daemonize no
+daemonize yes
 supervised systemd
 pidfile /var/run/redis/redis-server.pid
 loglevel notice
@@ -135,6 +147,10 @@ timeout 0
 tcp-keepalive 300
 databases 16
 EOF
+
+# Restart Redis to apply configuration
+log "restarting redis service..."
+service redis-server restart
 
 stage_log "CONFIGURING WEB SERVER"
 log "configuring nginx..."
@@ -207,17 +223,12 @@ else
 fi
 
 log "starting redis service..."
-sudo service redis-server start
+sudo service redis-server restart
 if [ $? -eq 0 ]; then
   log "redis service started successfully"
 else
-  sudo redis-server /etc/redis/redis.conf &
-  if [ $? -eq 0 ]; then
-    log "redis service started successfully using direct command"
-  else
-    log "failed to start redis service"
-    exit 1
-  fi
+  log "failed to start redis service"
+  exit 1
 fi
 
 log "starting nginx service..."
