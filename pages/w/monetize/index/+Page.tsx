@@ -20,7 +20,7 @@ function MonetizePage() {
       </Text>
 
       <Button className="mt-2" size={'lg'} asChild>
-        <a href={'#'}>Coming soon...</a>
+        <a href={route('monetize')}>Coming soon...</a>
       </Button>
 
       <Divider />

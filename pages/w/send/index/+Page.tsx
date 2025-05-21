@@ -77,7 +77,7 @@ function SendPage() {
       </Text>
 
       <Button className="mt-2" size={'lg'} asChild>
-        <a href={'#'}>Coming soon...</a>
+        <a href={route('send')}>Coming soon...</a>
       </Button>
 
       <Divider />
