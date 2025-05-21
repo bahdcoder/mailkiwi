@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -6,11 +6,9 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # Copy package.json and pnpm-lock.yaml
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml .npmrc ./
 
 # Install dependencies
 RUN pnpm install
 
-COPY . .
-
-CMD ["pnpm", "docker:dev"]
+CMD ["pnpm", "coder:dev"]

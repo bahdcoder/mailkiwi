@@ -5,15 +5,16 @@ services:
       context: ..
       dockerfile: docker/app.dockerfile
     ports:
-      - "8112:5566"
-      - "8113:5666"
+      - "5566:5566"
     depends_on:
       - mysql
       - redis
       - kumomta-dev
+    environment:
+      - INFISICAL_ENV=coder
     volumes:
       - ..:/app
       - /app/node_modules
     networks:
       default:
-        ipv4_address: 172.20.0.55
+        ipv4_address: 172.20.0.165

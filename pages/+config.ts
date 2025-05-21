@@ -1,6 +1,6 @@
 import vikeReactQuery from 'vike-react-query/config'
 import vikeReact from 'vike-react/config'
-import type { Config } from 'vike/types'
+import type { Config, PageContext } from 'vike/types'
 
 export { config }
 
@@ -23,4 +23,5 @@ const config: Config = {
     'send',
     'sendingDomains',
   ],
+  bodyAttributes: { style: '--w-sidebar-width: 260px' },
 }

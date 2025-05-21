@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -27,4 +27,4 @@ WORKDIR /app
 COPY --from=builder /app/build ./build
 
 # Set the command to run the application
-CMD ["node", "build/main.js"]
+CMD ["pnpm", "staging:start"]

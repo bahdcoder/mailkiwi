@@ -1,0 +1,95 @@
+{
+  "name": "kibamail development environment using coder",
+  "dockerComposeFile": "../docker/compose.coder.yaml",
+  "service": "monolith",
+  "workspaceFolder": "/app",
+  "forwardPorts": [
+    5566, // app
+    5567, // mysql
+    5570, // redis
+    5572, // mailpit ui
+    5613, // kumomta api
+    14000, // pebble acme api
+    15000 // pebble management api
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "biomejs.biome",
+        "ms-azuretools.vscode-docker",
+        "github.copilot",
+        "github.copilot-chat",
+        "ms-vscode.vscode-typescript-next",
+        "ms-vscode.js-debug",
+        "ms-vscode.js-debug-companion",
+        "ms-vscode.vscode-js-profile-flame",
+        "ms-vscode.vscode-js-profile-table",
+        "ms-vscode.references-view",
+        "ms-vscode.vscode-js-profile-flame",
+        "ms-vscode.vscode-js-profile-table",
+        "ms-vscode.references-view",
+        "redhat.vscode-yaml",
+        "mikestead.dotenv",
+        "editorconfig.editorconfig",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "always"
+        },
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        "javascript.updateImportsOnFileMove.enabled": "always",
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "files.exclude": {
+          "**/.git": true,
+          "**/.svn": true,
+          "**/.hg": true,
+          "**/CVS": true,
+          "**/.DS_Store": true,
+          "**/Thumbs.db": true,
+          "**/node_modules": false,
+          "**/.next": true,
+          "**/dist": true,
+          "**/build": true
+        },
+        "search.exclude": {
+          "**/node_modules": true,
+          "**/bower_components": true,
+          "**/*.code-search": true,
+          "**/.next": true,
+          "**/dist": true,
+          "**/build": true
+        },
+        "files.watcherExclude": {
+          "**/.git/objects/**": true,
+          "**/.git/subtree-cache/**": true,
+          "**/node_modules/**": true,
+          "**/.next/**": true,
+          "**/dist/**": true,
+          "**/build/**": true
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/bin/zsh"
+          }
+        }
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22.15.1"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/coder/devcontainer-features/code-server:latest": {}
+  },
+  "remoteUser": "node"
+}

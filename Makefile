@@ -8,6 +8,7 @@ SHELL := /bin/bash
 
 # docker-compose files
 COMPOSE_DEV := -f docker/compose.dev.yaml
+COMPOSE_CODER := -f docker/compose.coder.yaml
 
 # Helper target to print available commands
 help:
@@ -28,6 +29,10 @@ build:
 down:
 	@echo "Destroying the application environment..."
 	docker-compose $(COMPOSE_DEV) down
+
+coder.down:
+	@echo "Destroying the application environment..."
+	docker-compose $(COMPOSE_CODER) down
 
 down-clean:
 	@echo "Destroying the application environment and cleaning volumes..."
@@ -63,7 +68,11 @@ run:
 # Start all services
 dev:
 	@echo "Starting all services..."
-	docker-compose $(COMPOSE_DEV) up -d 
+	docker-compose $(COMPOSE_DEV) up --wait
+
+coder.dev:
+	@echo "Starting all services..."
+	docker-compose $(COMPOSE_CODER) up --wait
 
 api.dev:
 	pnpm dev

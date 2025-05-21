@@ -1,0 +1,17 @@
+name: kibamail
+
+include:
+  - compose.app.yaml
+  - compose.acme.yaml
+  - compose.storage.yaml
+  - compose.databases.yaml
+  - compose.kumomta.yaml
+  - compose.mailserver.yaml
+  - compose.devcontainer.yaml
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
