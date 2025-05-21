@@ -15,8 +15,9 @@ function LettersWelcomePage() {
       </Heading>
 
       <Text className="kb-content-tertiary font-medium">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident similique earum
-        dicta repudiandae possimus expedita exercitationem quis odit minima dolore illo.
+        Grow your revenue with email and automation.
+        <br />
+        Engage helps you send and automate marketing emails that convert.
       </Text>
 
       <Button className="mt-2" size={'lg'} asChild>
