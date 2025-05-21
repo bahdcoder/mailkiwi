@@ -5,14 +5,22 @@ log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
 
-log "starting kibamail coder environment setup..."
+stage_log() {
+  echo ""
+  echo "--------------------------------------------"
+  echo "$1"
+  echo "--------------------------------------------"
+  echo ""
+}
+
+stage_log "STARTING KIBAMAIL CODER ENVIRONMENT SETUP"
 
 CURRENT_USER=$(logname || echo $SUDO_USER || echo $USER)
 HOME_DIR=$(eval echo ~$CURRENT_USER)
 
 log "setting up environment for user: $CURRENT_USER (home: $HOME_DIR)"
 
-log "installing common development tools and utilities..."
+stage_log "INSTALLING COMMON DEVELOPMENT TOOLS"
 apt update && apt install -y \
     gzip \
     git \
@@ -34,6 +42,7 @@ apt update && apt install -y \
     sudo \
     zsh
 
+stage_log "INSTALLING NODE.JS AND PNPM"
 log "installing node.js 22..."
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 apt install -y nodejs
@@ -42,22 +51,25 @@ node --version
 log "installing pnpm v9+..."
 npm install -g pnpm@9
 
+stage_log "INSTALLING WEB SERVER"
 log "installing nginx..."
 apt install -y nginx
 
+stage_log "INSTALLING DATABASE"
 log "installing mysql..."
-sudo gpg --keyserver keyserver.ubuntu.com --recv B7B3B788A8D3785C
-sudo gpg --export --armor B7B3B788A8D3785C | sudo apt-key add -
 
 log "adding mysql gpg key..."
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B7B3B788A8D3785C
+sudo gpg --keyserver keyserver.ubuntu.com --recv B7B3B788A8D3785C
+sudo gpg --export --armor B7B3B788A8D3785C | sudo apt-key add -
 
 apt update
 DEBIAN_FRONTEND=noninteractive apt install -y mysql-server
 
+stage_log "INSTALLING CACHE SERVER"
 log "installing redis..."
 apt install -y redis-server
 
+stage_log "INSTALLING MAIL TESTING TOOLS"
 log "installing mailpit..."
 curl -sL https://raw.githubusercontent.com/axllent/mailpit/develop/install.sh | bash
 chmod +x /usr/local/bin/mailpit
@@ -77,6 +89,7 @@ export API_HTTP_SERVER="http://localhost:5566"
 export API_HTTP_ACCESS_TOKEN="development_token"
 export TSA_DAEMON_HTTP_SERVER="http://localhost:8008"
 
+stage_log "CONFIGURING DATABASE"
 log "creating mysql initialization file..."
 mkdir -p /tmp
 cat > /tmp/mysql-init.sql << 'EOF'
@@ -109,6 +122,7 @@ fi
 
 service mysql restart
 
+stage_log "CONFIGURING CACHE SERVER"
 log "configuring redis..."
 cat > /etc/redis/redis.conf << 'EOF'
 bind 0.0.0.0
@@ -137,6 +151,7 @@ tcp-keepalive 300
 databases 16
 EOF
 
+stage_log "CONFIGURING WEB SERVER"
 log "configuring nginx..."
 cat > /etc/nginx/nginx.conf << 'EOF'
 worker_processes 1;
@@ -188,6 +203,7 @@ EOF
 
 rm -f /etc/nginx/sites-enabled/default
 
+stage_log "CREATING SERVICE MANAGEMENT SCRIPT"
 log "creating startup script..."
 cat > /usr/local/bin/kibamail-services.sh << 'EOF'
 #!/bin/bash
@@ -246,6 +262,7 @@ EOF
 
 chmod +x /usr/local/bin/kibamail-services.sh
 
+stage_log "SETTING UP ZSH ENVIRONMENT"
 log "installing zsh-syntax-highlighting..."
 echo 'deb http://download.opensuse.org/repositories/shells:/zsh-users:/zsh-syntax-highlighting/xUbuntu_22.04/ /' | tee /etc/apt/sources.list.d/shells:zsh-users:zsh-syntax-highlighting.list
 curl -fsSL https://download.opensuse.org/repositories/shells:zsh-users:zsh-syntax-highlighting/xUbuntu_22.04/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/shells_zsh-users_zsh-syntax-highlighting.gpg > /dev/null
@@ -294,3 +311,7 @@ echo "source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> 
 chown -R $CURRENT_USER:$CURRENT_USER ${HOME_DIR}/.oh-my-zsh ${HOME_DIR}/.zshrc
 
 log "setup complete! you can now start the services with sudo /usr/local/bin/kibamail-services.sh"
+
+stage_log "INSTALLATION COMPLETE"
+echo "Kibamail development environment has been successfully set up!"
+echo "Run 'sudo /usr/local/bin/kibamail-services.sh' to start all services"
