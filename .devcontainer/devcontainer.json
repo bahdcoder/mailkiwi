@@ -1,8 +1,8 @@
 {
   "name": "kibamail development environment using coder",
-  "dockerComposeFile": "../docker/compose.coder.yaml",
-  "service": "monolith",
-  "workspaceFolder": "/app",
+  "build": {
+    "dockerfile": "coder.dockerfile"
+  },
   "forwardPorts": [
     5566, // app
     5567, // mysql
