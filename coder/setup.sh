@@ -54,10 +54,6 @@ npm install -g pnpm@9
 log "installing pm2 globally..."
 npm install -g pm2
 
-stage_log "INSTALLING WEB SERVER"
-log "installing nginx..."
-apt install -y nginx
-
 stage_log "INSTALLING DATABASE"
 log "installing mysql..."
 
@@ -152,112 +148,6 @@ EOF
 log "restarting redis service..."
 service redis-server restart
 
-stage_log "CONFIGURING WEB SERVER"
-log "configuring nginx..."
-cat > /etc/nginx/nginx.conf << 'EOF'
-worker_processes 1;
-
-events {
-    worker_connections 1024;
-}
-
-http {
-    include /etc/nginx/mime.types;
-    default_type application/octet-stream;
-
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
-
-    server {
-        listen 80;
-        server_name _;
-
-        location /healthz {
-            add_header Content-Type text/plain;
-            return 200 "OK";
-        }
-
-        location /mailpit/ {
-            proxy_pass http://localhost:8025/;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection "upgrade";
-        }
-
-        location / {
-            proxy_pass http://localhost:5566;
-            proxy_http_version 1.1;
-            proxy_set_header Host $host;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection "upgrade";
-        }
-    }
-}
-
-stream {
-    server {
-        listen 25;
-        proxy_pass 127.0.0.1:1025;
-    }
-}
-EOF
-
-rm -f /etc/nginx/sites-enabled/default
-
-stage_log "CREATING SERVICE MANAGEMENT SCRIPT"
-log "creating startup script..."
-cat > /usr/local/bin/kibamail-services.sh << 'EOF'
-#!/bin/bash
-
-log() {
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
-}
-
-log "starting mysql service..."
-sudo service mysql start
-if [ $? -eq 0 ]; then
-  log "mysql service started successfully"
-else
-  log "failed to start mysql service"
-  exit 1
-fi
-
-log "starting redis service..."
-sudo service redis-server restart
-if [ $? -eq 0 ]; then
-  log "redis service started successfully"
-else
-  log "failed to start redis service"
-  exit 1
-fi
-
-log "starting nginx service..."
-sudo service nginx start
-if [ $? -eq 0 ]; then
-  log "nginx service started successfully"
-else
-  log "failed to start nginx service"
-  exit 1
-fi
-
-log "starting mailpit..."
-sudo mkdir -p /var/log
-sudo nohup mailpit --smtp-bind=0.0.0.0:1025 --ui-bind=0.0.0.0:8025 > /var/log/mailpit.log 2>&1 &
-if [ $? -eq 0 ]; then
-  log "mailpit started successfully"
-else
-  log "failed to start mailpit"
-  exit 1
-fi
-
-log "all services started successfully"
-log "you can access:"
-log "- main application: http://localhost"
-log "- mailpit ui: http://localhost/mailpit/"
-EOF
-
-chmod +x /usr/local/bin/kibamail-services.sh
-
 stage_log "SETTING UP ZSH ENVIRONMENT"
 
 log "setting up zsh for user: $CURRENT_USER..."
@@ -278,8 +168,24 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 export EDITOR='vim'
 EOF
 
-log "setup complete! you can now start the services with sudo /usr/local/bin/kibamail-services.sh"
+stage_log "STARTING SERVICES"
+
+log "starting mysql service..."
+service mysql restart
+log "mysql service started successfully"
+
+log "starting redis service..."
+service redis-server restart
+log "redis service started successfully"
+
+log "starting mailpit..."
+mkdir -p /var/log
+nohup mailpit --smtp-bind=0.0.0.0:1025 --ui-bind=0.0.0.0:8025 > /var/log/mailpit.log 2>&1 &
+log "mailpit started successfully"
+
+log "all services started successfully"
 
 stage_log "INSTALLATION COMPLETE"
-echo "Kibamail development environment has been successfully set up!"
-echo "Run 'sudo /usr/local/bin/kibamail-services.sh' to start all services"
+echo "kibamail development environment has been successfully set up!"
+echo "all services have been started automatically"
+echo "mailpit ui is available at: http://localhost:8025"
