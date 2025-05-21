@@ -11,8 +11,7 @@ RUN apk add --no-cache \
     python3 \
     make \
     g++ \
-    build-base \
-    gnupg
+    build-base
 
 # Install Oh My Zsh for better terminal experience
 RUN sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -28,8 +27,6 @@ COPY package.json pnpm-lock.yaml .npmrc ./
 
 # Install dependencies
 RUN pnpm install
-
-# Git configuration will be handled through Coder UI
 
 # Set environment variables
 # Note: Most environment variables are managed by Infisical
