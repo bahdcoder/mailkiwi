@@ -74,21 +74,6 @@ log "installing mailpit..."
 curl -sL https://raw.githubusercontent.com/axllent/mailpit/develop/install.sh | bash
 chmod +x /usr/local/bin/mailpit
 
-log "installing kumomta..."
-apt install -y curl gnupg ca-certificates
-curl -fsSL https://openrepo.kumomta.com/kumomta-debian-12/public.gpg | gpg --yes --dearmor -o /usr/share/keyrings/kumomta.gpg
-chmod 644 /usr/share/keyrings/kumomta.gpg
-echo "deb [signed-by=/usr/share/keyrings/kumomta.gpg] https://openrepo.kumomta.com/kumomta-debian-12 bookworm main" > /etc/apt/sources.list.d/kumomta.list
-apt update && apt install -y kumomta
-
-mkdir -p /opt/kumomta/etc/policy
-mkdir -p /var/log/kumomta /var/spool/kumomta
-chown -R kumod:kumod /var/log/kumomta /var/spool/kumomta
-
-export API_HTTP_SERVER="http://localhost:5566"
-export API_HTTP_ACCESS_TOKEN="development_token"
-export TSA_DAEMON_HTTP_SERVER="http://localhost:8008"
-
 stage_log "CONFIGURING DATABASE"
 log "creating mysql initialization file..."
 mkdir -p /tmp
@@ -267,7 +252,6 @@ stage_log "SETTING UP ZSH ENVIRONMENT"
 log "setting up zsh for user: $CURRENT_USER..."
 chsh -s /bin/zsh $CURRENT_USER
 
-l
 log "creating .zshrc file for $CURRENT_USER..."
 cat > ${HOME_DIR}/.zshrc << 'EOF'
 export ZSH=$HOME/.oh-my-zsh
@@ -277,13 +261,11 @@ plugins=(
   git
 )
 
-
 source $ZSH/oh-my-zsh.sh
 
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export EDITOR='vim'
 EOF
-
 
 log "setup complete! you can now start the services with sudo /usr/local/bin/kibamail-services.sh"
 
