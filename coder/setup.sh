@@ -263,21 +263,11 @@ EOF
 chmod +x /usr/local/bin/kibamail-services.sh
 
 stage_log "SETTING UP ZSH ENVIRONMENT"
-log "installing zsh-syntax-highlighting..."
-echo 'deb http://download.opensuse.org/repositories/shells:/zsh-users:/zsh-syntax-highlighting/xUbuntu_22.04/ /' | tee /etc/apt/sources.list.d/shells:zsh-users:zsh-syntax-highlighting.list
-curl -fsSL https://download.opensuse.org/repositories/shells:zsh-users:zsh-syntax-highlighting/xUbuntu_22.04/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/shells_zsh-users_zsh-syntax-highlighting.gpg > /dev/null
-apt update
-apt install -y zsh-syntax-highlighting
 
 log "setting up zsh for user: $CURRENT_USER..."
 chsh -s /bin/zsh $CURRENT_USER
 
-log "installing oh my zsh for $CURRENT_USER..."
-sudo -u $CURRENT_USER sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-
-log "installing zsh-autosuggestions..."
-sudo -u $CURRENT_USER git clone https://github.com/zsh-users/zsh-autosuggestions ${HOME_DIR}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-
+l
 log "creating .zshrc file for $CURRENT_USER..."
 cat > ${HOME_DIR}/.zshrc << 'EOF'
 export ZSH=$HOME/.oh-my-zsh
@@ -285,30 +275,15 @@ ZSH_THEME="robbyrussell"
 
 plugins=(
   git
-  zsh-autosuggestions
-  zsh-syntax-highlighting
 )
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#663399,standout"
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="20"
-ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 source $ZSH/oh-my-zsh.sh
 
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export EDITOR='vim'
-
-alias ll='ls -la'
-alias la='ls -A'
-alias l='ls -CF'
-
-HISTSIZE=10000
-SAVEHIST=10000
-HISTFILE=~/.zsh_history
 EOF
 
-echo "source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${HOME_DIR}/.zshrc
-chown -R $CURRENT_USER:$CURRENT_USER ${HOME_DIR}/.oh-my-zsh ${HOME_DIR}/.zshrc
 
 log "setup complete! you can now start the services with sudo /usr/local/bin/kibamail-services.sh"
 
