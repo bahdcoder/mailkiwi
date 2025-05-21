@@ -46,9 +46,8 @@ log "installing nginx..."
 apt install -y nginx
 
 log "installing mysql..."
-wget https://dev.mysql.com/get/mysql-apt-config_0.8.24-1_all.deb
-DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config_0.8.24-1_all.deb
-rm mysql-apt-config_0.8.24-1_all.deb
+sudo gpg --keyserver keyserver.ubuntu.com --recv B7B3B788A8D3785C
+sudo gpg --export --armor B7B3B788A8D3785C | sudo apt-key add -
 
 log "adding mysql gpg key..."
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B7B3B788A8D3785C
