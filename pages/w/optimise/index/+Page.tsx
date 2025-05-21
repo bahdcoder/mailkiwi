@@ -15,17 +15,11 @@ function OptimizePage() {
       </Heading>
 
       <Text className="kb-content-tertiary font-medium flex flex-col gap-3" as="p">
-        <Text>
-          Optimise the success of your email efforts, and send emails that reach people,
-          not the spam folder.
-        </Text>
-        <Text>
-          The Optimise product provides tools to validate and clean contacts, ensuring
-          deliverability and reducing email bounce rates.
-        </Text>
+        The Optimise product provides tools to validate and clean contacts, ensuring
+        deliverability and reducing email bounce rates.
       </Text>
 
-      <Button className="mt-2" size={'lg'} asChild>
+      <Button className="mt-2" size={'lg'} asChild disabled>
         <a href={route('optimise')}>Coming soon...</a>
       </Button>
 

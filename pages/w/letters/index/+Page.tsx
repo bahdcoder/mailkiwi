@@ -23,7 +23,7 @@ function InsightsPage() {
         </Text>
       </Text>
 
-      <Button className="mt-2" size={'lg'} asChild>
+      <Button className="mt-2" size={'lg'} asChild disabled>
         <a href={route('letters')}>Coming soon...</a>
       </Button>
 

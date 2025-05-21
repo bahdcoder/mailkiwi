@@ -20,8 +20,8 @@ function LettersWelcomePage() {
         Engage helps you send and automate marketing emails that convert.
       </Text>
 
-      <Button className="mt-2" size={'lg'} asChild>
-        <a href={route('engage_onboarding')}>Get started</a>
+      <Button className="mt-2" size={'lg'} asChild disabled>
+        <a href={route('engage_onboarding')}>Coming soon...</a>
       </Button>
 
       <Divider />

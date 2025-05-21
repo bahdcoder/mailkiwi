@@ -21,7 +21,7 @@ function SendPage() {
         searchable history of sent emails.
       </Text>
 
-      <Button className="mt-2" size={'lg'} asChild>
+      <Button className="mt-2" size={'lg'} asChild disabled>
         <a href={route('send')}>Coming soon...</a>
       </Button>
 
