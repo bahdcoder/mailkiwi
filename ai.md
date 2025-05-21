@@ -695,3 +695,364 @@ module/
 ├── repositories/      # Data access layer
 └── utils/             # Utility functions specific to the module
 ```
+
+## Frontend Architecture
+
+Kibamail uses a modern frontend architecture based on React and Vike for server-side rendering. This section explains how the frontend works and integrates with the backend.
+
+### Vike Framework
+
+Vike (formerly Vite-Plugin-SSR) is the server-side rendering framework used in Kibamail. It provides:
+
+1. **Server-Side Rendering (SSR)**: Pages are pre-rendered on the server for better performance and SEO
+2. **Hydration**: Client-side JavaScript takes over after initial server render
+3. **Route-based Code Splitting**: Each page loads only the JavaScript it needs
+4. **Data Passing**: Backend data is passed to the frontend through the `pageProps` system
+
+#### Configuration
+
+The Vike configuration is defined in `pages/+config.ts`:
+
+```typescript
+const config: Config = {
+  title: 'Kibamail - Transactional, marketing and email automation platform.',
+  stream: true,
+  ssr: true,
+  extends: [vikeReact, vikeReactQuery],
+  passToClient: [
+    'user',
+    'team',
+    'pageProps',
+    'userAgent',
+    'isMobile',
+    'memberships',
+    'flash',
+    'audience',
+    'tags',
+    'engage',
+    'send',
+    'sendingDomains',
+  ],
+  bodyAttributes: { style: '--w-sidebar-width: 260px' },
+}
+```
+
+The `passToClient` array defines which data is serialized and passed from the server to the client.
+
+### Page Rendering Process
+
+The page rendering process follows these steps:
+
+1. **HTTP Request**: A request comes in to a route like `/w/dashboard`
+2. **Controller Handling**: The request is handled by a controller extending `VikeController`
+3. **Data Preparation**: The controller prepares data to be passed as `pageProps`
+4. **Page Props Resolution**: The `PagePropsResolver` enhances the props with additional data
+5. **Server Rendering**: Vike's `renderPage` function renders the React components on the server
+6. **Client Hydration**: The client-side JavaScript takes over for interactivity
+
+#### VikeController
+
+The `VikeController` is the bridge between the backend and frontend:
+
+```typescript
+export class VikeController extends BaseController {
+  vikePath = (path, handler, middleware) => {
+    return [
+      ['GET', path, handler, middleware],
+      ['GET', `${path}/index.pageContext.json`, handler, middleware],
+    ]
+  }
+
+  renderVikePage = async (ctx, next, pageProps) => {
+    const resolvedPageProps = await container.make(PagePropsResolver).handle(ctx, props)
+
+    const pageContext = await renderPage({
+      pageProps: resolvedPageProps,
+      urlOriginal: ctx.req.url,
+      headersOriginal: ctx.req.raw.headers,
+    })
+
+    // Stream response to client
+    // ...
+  }
+}
+```
+
+#### PagePropsResolver
+
+The `PagePropsResolver` is a crucial component that enhances page props with additional data based on the current route:
+
+```typescript
+export class PagePropsResolver {
+  protected resolvers: Array<{
+    new (): PagePropsResolverContract
+    regex: (RegExp | string | ((pathname: string) => boolean))[]
+  }> = [
+    BroadcastsPropsResolver,
+    EngagePropsResolver,
+    EngageContactsPropsResolver,
+    FlowComposerPropsResolver,
+  ]
+
+  handle = async (ctx: HonoContext, defaultPageProps: DefaultPageProps) => {
+    const pathname = new URL(ctx.req.url)?.pathname.split('/index.pageContext.json')?.[0]
+
+    const resolver = this.makeResolver(pathname)
+
+    if (!resolver) {
+      return defaultPageProps
+    }
+
+    const props = await resolver.resolve(pathname, defaultPageProps, ctx)
+
+    return { ...props, ...defaultPageProps }
+  }
+
+  private makeResolver(pathname: string) {
+    const resolver = this.resolvers.find((resolver) =>
+      resolver.regex.some((route) => {
+        if (typeof route === 'string') {
+          return pathname === route
+        }
+
+        if (typeof route === 'function') {
+          return route(pathname)
+        }
+
+        return route.test(pathname)
+      }),
+    )
+
+    if (!resolver) {
+      return null
+    }
+
+    return new resolver()
+  }
+}
+```
+
+The PagePropsResolver works as follows:
+
+1. **Resolver Registration**: Each resolver is registered with a set of route patterns (regex, string, or function)
+2. **Route Matching**: When a request comes in, the resolver finds the appropriate props resolver for the current route
+3. **Props Enhancement**: The matched resolver adds additional data to the default page props
+4. **Props Merging**: The enhanced props are merged with the default props and returned
+
+Each props resolver extends the `PagePropsResolverContract` abstract class:
+
+```typescript
+export abstract class PagePropsResolverContract {
+  static get regex(): (RegExp | string | ((pathname: string) => boolean))[] {
+    throw new Error('Regex is not defined for this resolver.')
+  }
+
+  abstract resolve(
+    pathname: string,
+    defaultProps: DefaultPageProps,
+    ctx: HonoContext,
+  ): Promise<object>
+}
+```
+
+Example of a specific props resolver:
+
+```typescript
+export class BroadcastsPropsResolver extends PagePropsResolverContract {
+  static get regex() {
+    return [/\/w\/engage\/broadcasts/]
+  }
+
+  async resolve(pathname: string, defaultProps: DefaultPageProps) {
+    const broadcastId = pathname
+      .split('/w/engage/broadcasts/')?.[1]
+      ?.split('/composer')?.[0]
+
+    const broadcast = await container
+      .make(BroadcastRepository)
+      .findByIdWithAbTestVariants(broadcastId)
+    const segments = await container
+      .make(SegmentRepository)
+      .segments()
+      .findAll(eq(segmentsTable.audienceId, defaultProps.audience.id))
+
+    return {
+      broadcast: {
+        ...broadcast,
+        sendAt: broadcast?.sendAt ? broadcast.sendAt.toISOString() : null,
+      },
+      segments,
+    }
+  }
+}
+```
+
+### Route Guards
+
+Kibamail uses Vike's guard system to protect routes and implement navigation rules:
+
+1. **Guard Files**: Each route can have a `+guard.ts` file that controls access
+2. **Redirects**: Guards can redirect users based on authentication state or permissions
+3. **Data Requirements**: Guards can ensure required data is available before rendering
+
+Example guard for protected routes:
+
+```typescript
+// pages/w/+guard.ts
+export function guard({ user, team }: PageContext) {
+  if (!user) {
+    throw redirect(route('auth_login'))
+  }
+
+  if (!team || team.name === DEFAULT_TEAM_NAME) {
+    throw redirect(route('auth_register_profile'))
+  }
+}
+```
+
+### Data Flow
+
+Data flows from the backend to the frontend through several mechanisms:
+
+1. **Page Props**: Main data channel from server to client
+2. **Server Queries**: Client-side data fetching using React Query
+3. **Server Forms**: Form submissions with validation and error handling
+
+#### Page Props
+
+Page props are passed from the server to the client during the initial render:
+
+```typescript
+// In a controller
+async index(ctx: HonoContext) {
+  return this.page(ctx, {
+    contacts: await this.contactRepository.getContacts(),
+    // Other data...
+  })
+}
+
+// In a React component
+function ContactsPage() {
+  const { contacts } = usePageProps()
+  // Use contacts data...
+}
+```
+
+#### Server Queries
+
+For client-side data fetching, Kibamail uses custom hooks built on React Query:
+
+```typescript
+// Custom hook for server queries
+export function useServerQuery<TData>(queryOptions) {
+  return useQuery({
+    queryKey: [queryOptions.queryKey],
+    async queryFn() {
+      const response = await fetch(queryOptions.queryKey)
+      const json = await response.json()
+      return json.payload
+    },
+    // Other options...
+  })
+}
+
+// Usage in a component
+function ContactsList() {
+  const { data, isLoading } = useServerQuery({
+    queryKey: `/api/contacts?page=${page}`,
+    initialData: pageProps.contacts,
+  })
+
+  // Render contacts...
+}
+```
+
+#### Server Forms
+
+For form submissions, Kibamail uses a custom `ServerForm` component and `useServerFormMutation` hook:
+
+```typescript
+function LoginForm() {
+  const { serverFormProps, isPending, error } = useServerFormMutation({
+    action: '/auth/login',
+    method: 'POST',
+  })
+
+  return (
+    <ServerForm {...serverFormProps}>
+      <TextField.Root>
+        <TextField.Label>Email</TextField.Label>
+        <TextField.Input name="email" type="email" required />
+      </TextField.Root>
+      {/* Other form fields */}
+      <Button type="submit" loading={isPending}>Login</Button>
+    </ServerForm>
+  )
+}
+```
+
+### Component Architecture
+
+Kibamail's frontend components follow a hierarchical structure:
+
+1. **Page Components**: Top-level components for each route
+2. **Layout Components**: Shared layouts like dashboard, sidebar, etc.
+3. **Feature Components**: Components specific to features like email composer
+4. **UI Components**: Reusable UI elements from the Owly design system
+
+#### Component Organization
+
+```
+pages/
+├── components/           # Shared components
+│   ├── composer/         # Email composer components
+│   ├── dashboard/        # Dashboard layout components
+│   ├── flows/            # Workflow components
+│   └── tiptap/           # Rich text editor components
+├── hooks/                # Custom React hooks
+├── utils/                # Frontend utilities
+└── w/                    # Workspace pages
+    ├── dashboard/        # Dashboard pages
+    └── engage/           # Email marketing pages
+```
+
+### State Management
+
+Kibamail uses a combination of state management approaches:
+
+1. **React Context**: For feature-specific state that needs to be shared
+2. **React Query**: For server state and data fetching
+3. **Local Component State**: For UI state specific to a component
+
+Example of context-based state management:
+
+```typescript
+// Context definition
+export const [OnboardingProvider, useOnboardingContext] = createContext<{
+  step: number
+  setStep: React.Dispatch<React.SetStateAction<number>>
+  formState: FormState
+  setFormState: React.Dispatch<React.SetStateAction<FormState>>
+}>('OnboardingContext')
+
+// Provider usage
+function OnboardingFlow() {
+  const [step, setStep] = useState(1)
+  const [formState, setFormState] = useState(initialState)
+
+  return (
+    <OnboardingProvider step={step} setStep={setStep} formState={formState} setFormState={setFormState}>
+      {step === 1 && <StepOne />}
+      {step === 2 && <StepTwo />}
+      {/* Other steps */}
+    </OnboardingProvider>
+  )
+}
+
+// Consumer usage
+function StepOne() {
+  const { formState, setFormState, setStep } = useOnboardingContext()
+
+  // Component logic...
+}
+```
