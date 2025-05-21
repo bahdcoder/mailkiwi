@@ -1,5 +1,4 @@
 import { EngageIcon } from '@/pages/components/icons/products/engage.svg.jsx'
-import { InsightsIcon } from '@/pages/components/icons/products/insights.svg.jsx'
 import { LettersIcon } from '@/pages/components/icons/products/letters.svg.jsx'
 import { OptimiseIcon } from '@/pages/components/icons/products/optimise.svg.jsx'
 import { SendIcon } from '@/pages/components/icons/products/send.svg.jsx'
@@ -22,72 +21,6 @@ function WelcomePage() {
           Select a product to get started with. Don't worry, you can get started with any
           other product at any time later on.
         </Text>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
-          <ProductCard.Root>
-            <EngageIcon className="w-10 h-10" />
-
-            <Text size="lg" className="font-semibold">
-              Engage
-            </Text>
-
-            <Text className="kb-content-tertiary">
-              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
-              libero et velit interdum.
-            </Text>
-          </ProductCard.Root>
-          <ProductCard.Root>
-            <SendIcon className="w-10 h-10" />
-
-            <Text size="lg" className="font-semibold">
-              Send
-            </Text>
-
-            <Text className="kb-content-tertiary">
-              Send unlimited transactional emails that are delivered instantly to the
-              inbox.
-            </Text>
-          </ProductCard.Root>
-
-          <ProductCard.Root>
-            <OptimiseIcon className="w-10 h-10" />
-
-            <Text size="lg" className="font-semibold">
-              Optimise
-            </Text>
-
-            <Text className="kb-content-tertiary">
-              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
-              libero et velit interdum.
-            </Text>
-          </ProductCard.Root>
-
-          <ProductCard.Root>
-            <InsightsIcon className="w-10 h-10" />
-
-            <Text size="lg" className="font-semibold">
-              Insights
-            </Text>
-
-            <Text className="kb-content-tertiary">
-              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
-              libero et velit interdum.
-            </Text>
-          </ProductCard.Root>
-
-          <ProductCard.Root>
-            <EngageIcon className="w-10 h-10" />
-
-            <Text size="lg" className="font-semibold">
-              Monetise
-            </Text>
-
-            <Text className="kb-content-tertiary">
-              Korem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
-              libero et velit interdum.
-            </Text>
-          </ProductCard.Root>
-        </div>
       </div>
     </div>
   )
