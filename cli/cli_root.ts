@@ -1,7 +1,6 @@
 import { addSendingSourceCommand } from '@/cli/commands/add_sending_source_command.js'
 import { addChannelCommand } from '@/cli/commands/chat/add_channel_command.js'
 import { downloadGeolite2Database } from '@/cli/commands/download_geolite2_database_command.js'
-import { fixTypescriptImportsCommand } from '@/cli/commands/fix_typescript_imports_command.js'
 import { generateAcmeAccountIdentityCommand } from '@/cli/commands/generate_acme_account_identity.js'
 import { addDefaultChannelsCommand } from './commands/chat/add_default_channels_comand.js'
 
@@ -18,7 +17,6 @@ await run([
   seedDevSendingSourcesCommand,
   downloadGeolite2Database,
   generateAcmeAccountIdentityCommand,
-  fixTypescriptImportsCommand,
 
   // chat
   addChannelCommand,
