@@ -1,7 +1,7 @@
-import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
-import { Surface } from '@/pages/components/tiptap/ui/Surface.jsx'
-import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
-import Tooltip from '@/pages/components/tiptap/ui/Tooltip/index.jsx'
+import { Icon } from '@pages/components/tiptap/ui/Icon.jsx'
+import { Surface } from '@pages/components/tiptap/ui/Surface.jsx'
+import { Toolbar } from '@pages/components/tiptap/ui/Toolbar.jsx'
+import Tooltip from '@pages/components/tiptap/ui/Tooltip/index.jsx'
 
 export type LinkPreviewPanelProps = {
   url: string

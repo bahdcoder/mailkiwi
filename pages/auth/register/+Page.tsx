@@ -3,12 +3,12 @@ import {
   Oauth2Methods,
   PageContainer,
   PageTitle,
-} from '@/pages/components/auth/auth.jsx'
-import { FlashMessage } from '@/pages/components/flash/flash_message.jsx'
+} from '@pages/components/auth/auth.jsx'
+import { FlashMessage } from '@pages/components/flash/flash_message.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/hooks/use_server_form_mutation.jsx'
+} from '@pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'

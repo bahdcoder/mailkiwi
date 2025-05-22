@@ -1,10 +1,10 @@
 import {
   DropdownButton,
   DropdownCategoryTitle,
-} from '@/pages/components/tiptap/ui/Dropdown/Dropdown.jsx'
-import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
-import { Surface } from '@/pages/components/tiptap/ui/Surface.jsx'
-import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
+} from '@pages/components/tiptap/ui/Dropdown/Dropdown.jsx'
+import { Icon } from '@pages/components/tiptap/ui/Icon.jsx'
+import { Surface } from '@pages/components/tiptap/ui/Surface.jsx'
+import { Toolbar } from '@pages/components/tiptap/ui/Toolbar.jsx'
 import * as Dropdown from '@radix-ui/react-dropdown-menu'
 import type { icons } from 'lucide-react'
 import { useMemo } from 'react'

@@ -1,4 +1,4 @@
-import { SearchIcon } from '@/pages/components/icons/search.svg.jsx'
+import { SearchIcon } from '@pages/components/icons/search.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 
 export function SearchBoxTrigger() {

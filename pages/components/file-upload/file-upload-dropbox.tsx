@@ -1,8 +1,8 @@
 import {
   type UseFileUploadProps,
   useFileUpload,
-} from '@/pages/components/file-upload/hooks/use_file_upload.js'
-import { CloudUploadIcon } from '@/pages/components/icons/cloud-upload.svg.jsx'
+} from '@pages/components/file-upload/hooks/use_file_upload.js'
+import { CloudUploadIcon } from '@pages/components/icons/cloud-upload.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { InputError } from '@kibamail/owly/input-hint'
 import { Progress } from '@kibamail/owly/progress'

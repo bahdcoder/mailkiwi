@@ -1,5 +1,5 @@
-import { LabelIcon } from '@/pages/components/icons/label.svg.jsx'
-import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
+import { LabelIcon } from '@pages/components/icons/label.svg.jsx'
+import { PlusIcon } from '@pages/components/icons/plus.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Checkbox } from '@kibamail/owly/checkbox'
 import { Text } from '@kibamail/owly/text'

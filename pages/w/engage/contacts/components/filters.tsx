@@ -1,5 +1,5 @@
-import * as Dropdown from '@/pages/components/dropdown/dropdown.jsx'
-import { FilterListIcon } from '@/pages/components/icons/filter-list.svg.jsx'
+import * as Dropdown from '@pages/components/dropdown/dropdown.jsx'
+import { FilterListIcon } from '@pages/components/icons/filter-list.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Checkbox } from '@kibamail/owly/checkbox'
 import { Text } from '@kibamail/owly/text'
@@ -19,7 +19,7 @@ import type { Segment, Tag } from '@/database/database_schema_types.js'
 import {
   type PageContextWithPageProps,
   usePageContextWithProps,
-} from '@/pages/hooks/use_page_props.js'
+} from '@pages/hooks/use_page_props.js'
 
 export type FilterCondition =
   CreateSegmentDto['filterGroups']['groups'][number]['conditions'][number] & {

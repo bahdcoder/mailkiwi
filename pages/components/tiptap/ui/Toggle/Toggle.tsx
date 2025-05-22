@@ -1,4 +1,4 @@
-import { cn } from '@/pages/components/tiptap/utils/index.js'
+import { cn } from '@pages/components/tiptap/utils/index.js'
 import { useCallback } from 'react'
 
 export type ToggleProps = {

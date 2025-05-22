@@ -1,8 +1,8 @@
-import { FileUploadDropbox } from '@/pages/components/file-upload/file-upload-dropbox.jsx'
+import { FileUploadDropbox } from '@pages/components/file-upload/file-upload-dropbox.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/hooks/use_server_form_mutation.jsx'
+} from '@pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { InputError } from '@kibamail/owly/input-hint'

@@ -1,13 +1,13 @@
-import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { useComposeBroadcastContext } from '@pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
 import {
   SCHEDULED_DATE_READABLE_FORMAT,
   scheduledDateTimeToDayJsInstance,
-} from '@/pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
-import { CalendarIcon } from '@/pages/components/icons/calendar.svg.jsx'
-import { EditPencilIcon } from '@/pages/components/icons/edit-pencil.svg.jsx'
-import { GroupIcon } from '@/pages/components/icons/group.svg.jsx'
-import { NotesIcon } from '@/pages/components/icons/notes.svg.jsx'
-import { formatCount } from '@/pages/utils/number_formatter.js'
+} from '@pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
+import { CalendarIcon } from '@pages/components/icons/calendar.svg.jsx'
+import { EditPencilIcon } from '@pages/components/icons/edit-pencil.svg.jsx'
+import { GroupIcon } from '@pages/components/icons/group.svg.jsx'
+import { NotesIcon } from '@pages/components/icons/notes.svg.jsx'
+import { formatCount } from '@pages/utils/number_formatter.js'
 import { Text } from '@kibamail/owly/text'
 
 export function BroadcastDetails() {

@@ -1,10 +1,10 @@
-import { TrashIcon } from '@/pages/components/icons/trash.svg.jsx'
+import { TrashIcon } from '@pages/components/icons/trash.svg.jsx'
 import { Button } from '@kibamail/owly/button'
-import { icons } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/components/add-node-dialog.jsx'
+import { icons } from '@pages/w/engage/flows/@uuid/composer/automation-flow/components/add-node-dialog.jsx'
 import type { PropsWithChildren } from 'react'
 import type { AutomationStep } from '@/database/database_schema_types.js'
 import { Text } from '@kibamail/owly/text'
-import { nodeLabels } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/nodes/skeleton_node.jsx'
+import { nodeLabels } from '@pages/w/engage/flows/@uuid/composer/automation-flow/nodes/skeleton_node.jsx'
 
 export interface SkeletonNodeOnSidebarProps {
   step: AutomationStep

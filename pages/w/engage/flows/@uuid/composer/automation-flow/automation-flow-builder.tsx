@@ -4,14 +4,14 @@ import './styles.css'
 import type {
   AutomationElement,
   EdgeElement,
-} from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+} from '@pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 import type { NodeElement } from './types/elements.js'
 
 import type {
   AutomationStep,
   AutomationWithSteps,
 } from '@/database/database_schema_types.js'
-import { usePageContextWithProps, usePageProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps, usePageProps } from '@pages/hooks/use_page_props.js'
 import { AddNodeDialog } from './components/add-node-dialog.jsx'
 import type { AutomationStepSubType } from '@/database/types/automations.js'
 import { useAutomationFlowBuilder } from './state/automation-flow-context.jsx'

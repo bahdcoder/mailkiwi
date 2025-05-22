@@ -1,8 +1,8 @@
-import { LogoutIcon } from '@/pages/components/icons/logout.svg.jsx'
+import { LogoutIcon } from '@pages/components/icons/logout.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/hooks/use_server_form_mutation.jsx'
+} from '@pages/hooks/use_server_form_mutation.jsx'
 import { Text } from '@kibamail/owly/text'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 

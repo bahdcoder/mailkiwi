@@ -1,5 +1,5 @@
-import { Button } from '@/pages/components/button/button.jsx'
-import { MetricCard } from '@/pages/components/performance/metric-card.jsx'
+import { Button } from '@pages/components/button/button.jsx'
+import { MetricCard } from '@pages/components/performance/metric-card.jsx'
 import { Heading } from '@kibamail/owly/heading'
 import * as Tabs from '@kibamail/owly/tabs'
 import { Text } from '@kibamail/owly/text'

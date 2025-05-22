@@ -1,10 +1,10 @@
-import { ArrowUpRightIcon } from '@/pages/components/icons/arrow-up-right.svg.jsx'
-import { InfoCircleIcon } from '@/pages/components/icons/info-circle.svg.jsx'
+import { ArrowUpRightIcon } from '@pages/components/icons/arrow-up-right.svg.jsx'
+import { InfoCircleIcon } from '@pages/components/icons/info-circle.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/hooks/use_server_form_mutation.jsx'
-import { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
+} from '@pages/hooks/use_server_form_mutation.jsx'
+import { FilterCondition } from '@pages/w/engage/contacts/components/filters.jsx'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
@@ -19,7 +19,7 @@ import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_d
 import type { Audience } from '@/database/database_schema_types.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
-import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
 
 export interface SaveFilterAsSegmentFormProps extends React.PropsWithChildren {
   filterGroups: CreateSegmentDto['filterGroups']

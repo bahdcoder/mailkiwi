@@ -1,15 +1,15 @@
-import { ComposeBroadcastTopBarActions } from '@/pages/components/flows/compose_broadcast/components/compose_broadcast_top_bar_actions.jsx'
-import { ComposeBroadcastSteps } from '@/pages/components/flows/compose_broadcast/compose_broadcast_types.js'
-import { useComposeBroadcastContext } from '@/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
-import { CancelIcon } from '@/pages/components/icons/cancel.svg.jsx'
-import { CheckIcon } from '@/pages/components/icons/check.svg.jsx'
-import { MinusIcon } from '@/pages/components/icons/minus.svg.jsx'
-import { WarningCircleSolidIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
+import { ComposeBroadcastTopBarActions } from '@pages/components/flows/compose_broadcast/components/compose_broadcast_top_bar_actions.jsx'
+import { ComposeBroadcastSteps } from '@pages/components/flows/compose_broadcast/compose_broadcast_types.js'
+import { useComposeBroadcastContext } from '@pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { CancelIcon } from '@pages/components/icons/cancel.svg.jsx'
+import { CheckIcon } from '@pages/components/icons/check.svg.jsx'
+import { MinusIcon } from '@pages/components/icons/minus.svg.jsx'
+import { WarningCircleSolidIcon } from '@pages/components/icons/warning-circle-solid.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Spinner } from '@kibamail/owly/spinner'
 import React from 'react'
 
-import { ComposeBroadcastPreview } from '@/pages/components/flows/compose_broadcast/components/compose_broadcast_preview.jsx'
+import { ComposeBroadcastPreview } from '@pages/components/flows/compose_broadcast/components/compose_broadcast_preview.jsx'
 import { route } from '@/shared/routes/route_aliases.js'
 
 export function ComposeBroadcastTopBar() {

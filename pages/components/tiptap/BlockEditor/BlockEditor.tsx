@@ -3,14 +3,14 @@
 // import { EditorHeader } from "./components/EditorHeader.jsx"
 // import { useBlockEditor } from "@/hooks/useBlockEditor.js"
 // import { useSidebar } from "@/hooks/useSidebar.js"
-// import ImageBlockMenu from "@/pages/components/composer/extensions/ImageBlock/components/ImageBlockMenu.jsx"
-// import { ColumnsMenu } from "@/pages/components/composer/extensions/MultiColumn/menus.jsx"
+// import ImageBlockMenu from "@pages/components/composer/extensions/ImageBlock/components/ImageBlockMenu.jsx"
+// import { ColumnsMenu } from "@pages/components/composer/extensions/MultiColumn/menus.jsx"
 // import {
 //   TableColumnMenu,
 //   TableRowMenu,
-// } from "@/pages/components/composer/extensions/Table/menus.js"
-// import { Sidebar } from "@/pages/components/tiptap/Sidebar.js"
-// import { LinkMenu } from "@/pages/components/tiptap/menus.js"
+// } from "@pages/components/composer/extensions/Table/menus.js"
+// import { Sidebar } from "@pages/components/tiptap/Sidebar.js"
+// import { LinkMenu } from "@pages/components/tiptap/menus.js"
 // import "@/styles/index.css"
 // import { TiptapCollabProvider } from "@hocuspocus/provider"
 // import { EditorContent } from "@tiptap/react"

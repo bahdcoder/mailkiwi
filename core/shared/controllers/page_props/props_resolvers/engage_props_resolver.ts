@@ -1,7 +1,7 @@
 import { BroadcastGroupRepository } from '@/broadcasts/repositories/broadcast_group_repository.js'
 import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
 import { broadcastGroups } from '@/database/schema.js'
-import type { DefaultPageProps } from '@/pages/types/page-context.js'
+import type { DefaultPageProps } from '@pages/types/page-context.js'
 import { PagePropsResolverContract } from '@/shared/controllers/page_props/page_props_resolver_contract.js'
 import { route } from '@/shared/routes/route_aliases.js'
 import { container } from '@/utils/typi.js'

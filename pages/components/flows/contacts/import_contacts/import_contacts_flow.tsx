@@ -1,5 +1,5 @@
-import { StepsRenderer } from '@/pages/components/flows/steps_renderer.jsx'
-import { CancelIcon } from '@/pages/components/icons/cancel.svg.jsx'
+import { StepsRenderer } from '@pages/components/flows/steps_renderer.jsx'
+import { CancelIcon } from '@pages/components/icons/cancel.svg.jsx'
 import * as Dialog from '@radix-ui/react-dialog'
 import { FocusScope } from '@radix-ui/react-focus-scope'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'

@@ -1,4 +1,4 @@
-import type { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
+import type { FilterCondition } from '@pages/w/engage/contacts/components/filters.jsx'
 import type { Table } from '@tanstack/react-table'
 import type React from 'react'
 

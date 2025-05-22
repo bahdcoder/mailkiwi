@@ -1,4 +1,4 @@
-import type { NodeElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import type { NodeElement } from '@pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 import classNames from 'classnames'
 import { Handle, Position } from 'react-flow-renderer'
 import { SkeletonNode } from '../skeleton_node.jsx'

@@ -1,4 +1,4 @@
-import type { AutomationElement } from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import type { AutomationElement } from '@pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from './clone_deep.js'
 

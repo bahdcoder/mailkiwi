@@ -1,4 +1,4 @@
-import { Divider } from '@/pages/components/divider/divider.jsx'
+import { Divider } from '@pages/components/divider/divider.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'

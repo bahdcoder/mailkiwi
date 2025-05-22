@@ -1,8 +1,8 @@
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/hooks/use_server_form_mutation.jsx'
-import { navigate } from '@/pages/utils/navigate.js'
+} from '@pages/hooks/use_server_form_mutation.jsx'
+import { navigate } from '@pages/utils/navigate.js'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
 import { Text } from '@kibamail/owly/text'

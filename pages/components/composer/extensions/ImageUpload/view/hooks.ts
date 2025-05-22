@@ -1,4 +1,4 @@
-import { useServerFormMutation } from '@/pages/hooks/use_server_form_mutation.jsx'
+import { useServerFormMutation } from '@pages/hooks/use_server_form_mutation.jsx'
 import { type DragEvent, useCallback, useEffect, useRef, useState } from 'react'
 
 import { route } from '@/shared/routes/route_aliases.js'
