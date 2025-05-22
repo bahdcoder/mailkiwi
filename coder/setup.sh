@@ -119,10 +119,9 @@ chown -R redis:redis /var/log/redis
 usermod -a -G redis $CURRENT_USER
 
 log "setting up redis data directories..."
-mkdir -p /var/lib/redis/appendonlydir
+mkdir -p /var/lib/redis
 chown -R redis:redis /var/lib/redis
 chmod -R 770 /var/lib/redis
-
 chmod -R g+rwx /var/lib/redis
 
 log "setting up redis run directory..."
@@ -142,14 +141,7 @@ logfile /var/log/redis/redis-server.log
 requirepass password
 maxmemory 256mb
 maxmemory-policy allkeys-lru
-appendonly yes
-appendfilename "appendonly.aof"
-appendfsync everysec
-appendonlydir /var/lib/redis/appendonlydir
-auto-aof-rewrite-percentage 100
-auto-aof-rewrite-min-size 64mb
-aof-load-truncated yes
-aof-use-rdb-preamble yes
+appendonly no
 save 900 1
 save 300 10
 save 60 10000
