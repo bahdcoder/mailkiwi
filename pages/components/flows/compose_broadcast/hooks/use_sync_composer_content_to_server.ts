@@ -1,10 +1,10 @@
-import { ComposeBroadcastSteps } from '@/pages/components/flows/compose_broadcast/compose_broadcast_types.js'
+import { ComposeBroadcastSteps } from '@pages/components/flows/compose_broadcast/compose_broadcast_types.js'
 import { useDebounceCallback } from '@react-hook/debounce'
 import type { MutationOptions } from '@tanstack/react-query'
 import type React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { useServerFormMutation } from '@/pages/hooks/use_server_form_mutation.jsx'
+import { useServerFormMutation } from '@pages/hooks/use_server_form_mutation.jsx'
 import { route } from '@/shared/routes/route_aliases.js'
 
 export interface UseSyncComposerContentToServerProps {

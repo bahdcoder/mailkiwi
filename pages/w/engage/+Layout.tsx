@@ -1,5 +1,5 @@
-import { PageLayout } from '@/pages/components/page/page-layout.jsx'
-import { ProductPageHeading } from '@/pages/components/page/product-page-heading.jsx'
+import { PageLayout } from '@pages/components/page/page-layout.jsx'
+import { ProductPageHeading } from '@pages/components/page/product-page-heading.jsx'
 import * as Tabs from '@kibamail/owly/tabs'
 import { usePageContext } from 'vike-react/usePageContext'
 

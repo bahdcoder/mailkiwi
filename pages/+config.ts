@@ -1,6 +1,11 @@
 import vikeReactQuery from 'vike-react-query/config'
 import vikeReact from 'vike-react/config'
-import type { Config, PageContext } from 'vike/types'
+import type { Config } from 'vike/types'
+import { initSentry } from './utils/sentry.js'
+
+if (typeof window !== 'undefined') {
+  initSentry()
+}
 
 export { config }
 

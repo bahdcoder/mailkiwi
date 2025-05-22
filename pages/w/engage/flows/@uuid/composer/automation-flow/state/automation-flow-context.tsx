@@ -2,7 +2,7 @@ import type {
   AutomationStep,
   AutomationWithSteps,
 } from '@/database/database_schema_types.js'
-import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
 import { createContext } from '@radix-ui/react-context'
 import React, { type PropsWithChildren } from 'react'
 import type { EdgeElement, NodeElement } from '../types/elements.js'

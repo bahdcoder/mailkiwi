@@ -1,4 +1,4 @@
-import { convertToReactStyles } from '@/pages/components/composer/utils/convert-styles-to-react-styles.js'
+import { convertToReactStyles } from '@pages/components/composer/utils/convert-styles-to-react-styles.js'
 import { type NodeViewProps, NodeViewWrapper } from '@tiptap/react'
 
 export type HorizontalRuleNodeViewProps = NodeViewProps

@@ -1,4 +1,4 @@
-import { cn } from '@/pages/components/tiptap/utils/index.js'
+import { cn } from '@pages/components/tiptap/utils/index.js'
 import React, { type ButtonHTMLAttributes, type HTMLProps, forwardRef } from 'react'
 import { Button, type ButtonProps } from './Button/Button.jsx'
 import { Surface } from './Surface.jsx'

@@ -1,12 +1,12 @@
 import type { BroadcastWithEmailContent } from '@/database/database_schema_types.js'
-import { MailOpenIcon } from '@/pages/components/icons/mail-open.svg.jsx'
-import { MailOutIcon } from '@/pages/components/icons/mail-out.svg.jsx'
-import { MoreVertIcon } from '@/pages/components/icons/more-vert.svg.jsx'
-import { OneFingerSelectHandGestureIcon } from '@/pages/components/icons/one-finger-select-hand-gesture.svg.jsx'
+import { MailOpenIcon } from '@pages/components/icons/mail-open.svg.jsx'
+import { MailOutIcon } from '@pages/components/icons/mail-out.svg.jsx'
+import { MoreVertIcon } from '@pages/components/icons/more-vert.svg.jsx'
+import { OneFingerSelectHandGestureIcon } from '@pages/components/icons/one-finger-select-hand-gesture.svg.jsx'
 import {
   BroadcastStatus,
   isSendingStatus,
-} from '@/pages/w/engage/components/broadcast_status.jsx'
+} from '@pages/w/engage/components/broadcast_status.jsx'
 import { route } from '@/shared/routes/route_aliases.js'
 import { Button } from '@kibamail/owly/button'
 import { Text } from '@kibamail/owly/text'

@@ -1,10 +1,10 @@
-import * as Dropdown from '@/pages/components/dropdown/dropdown.jsx'
-import { MoreVertIcon } from '@/pages/components/icons/more-vert.svg.jsx'
+import * as Dropdown from '@pages/components/dropdown/dropdown.jsx'
+import { MoreVertIcon } from '@pages/components/icons/more-vert.svg.jsx'
 import {
   columnHelper,
   columns as defaultColumns,
-} from '@/pages/w/engage/contacts/components/columns.js'
-import type { FilterCondition } from '@/pages/w/engage/contacts/components/filters.jsx'
+} from '@pages/w/engage/contacts/components/columns.js'
+import type { FilterCondition } from '@pages/w/engage/contacts/components/filters.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Text } from '@kibamail/owly/text'
 import { useQuery } from '@tanstack/react-query'
@@ -24,8 +24,8 @@ import type { KnownAudienceProperty } from '@/database/schema.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
 import dayjs from 'dayjs'
-import { DefaultPageProps } from '@/pages/types/page-context.js'
-import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
+import { DefaultPageProps } from '@pages/types/page-context.js'
+import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
 
 export interface ServerContactsPageProps {
   contacts: { data: ContactWithTagsAndProperties[]; total: number }

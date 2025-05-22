@@ -1,4 +1,5 @@
 import type { HttpBindings } from '@hono/node-server'
+import * as Sentry from '@sentry/node'
 import { Hono as BaseHono, type Handler, type MiddlewareHandler } from 'hono'
 import { pinoLogger } from 'hono-pino'
 import { compress } from 'hono/compress'
@@ -10,6 +11,8 @@ import type { HonoContext, HonoRouteDefinition } from './types.js'
 import { EnsureUserAndTeamSessionsMiddleware } from '@/auth/middleware/ensure_user_and_team_sessions_middleware.js'
 import { UserSessionMiddleware } from '@/auth/middleware/user_session_middleware.js'
 
+import { sentryConfig, isSentryEnabled } from '@/app/env/sentry.js'
+
 import { E_REQUEST_EXCEPTION } from '@/http/responses/errors.js'
 
 import { makeLogger } from '@/shared/container/index.js'
@@ -18,6 +21,15 @@ import { FlashMiddleware } from '@/shared/middleware/flash_middleware.js'
 import { route } from '@/shared/routes/route_aliases.js'
 
 import { container } from '@/utils/typi.js'
+
+if (isSentryEnabled()) {
+  Sentry.init({
+    dsn: sentryConfig.dsn,
+    environment: sentryConfig.environment,
+    release: sentryConfig.release,
+    tracesSampleRate: sentryConfig.tracesSampleRate,
+  })
+}
 
 export type RouteOptions = {
   middleware?: MiddlewareHandler[]
@@ -62,6 +74,32 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
 
     this.onError((error, ctx) => {
       logger.error(error)
+
+      if (isSentryEnabled()) {
+        const user = ctx.get('user')
+        const team = ctx.get('team')
+
+        if (user) {
+          Sentry.setUser({
+            id: user.id,
+            email: user.email,
+          })
+        }
+
+        if (team) {
+          Sentry.setTag('team_id', team.id)
+          Sentry.setTag('team_name', team.name)
+        }
+
+        Sentry.setContext('request', {
+          url: ctx.req.url,
+          method: ctx.req.method,
+          headers: ctx.req.raw.headers,
+          requestId: ctx.get('requestId'),
+        })
+
+        Sentry.captureException(error)
+      }
 
       const unknownErrorMessage = `We encountered an error trying to process your request. Our team has been notified and we're working on it right now. In the mean time, please try again.`
 

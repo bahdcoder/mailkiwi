@@ -74,7 +74,7 @@ export const appEnv = makeExtraAppConfigurations(
 
       // Environment
       NODE_ENV: str({
-        choices: ['development', 'test', 'production'],
+        choices: ['development', 'test', 'production', 'staging'],
         default: 'test',
       }),
       APP_URL: url(),

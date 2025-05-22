@@ -1,15 +1,15 @@
-import { ArrowUpRightIcon } from '@/pages/components/icons/arrow-up-right.svg.jsx'
-import { CalendarIcon } from '@/pages/components/icons/calendar.jsx'
-import { CheckSquareIcon } from '@/pages/components/icons/check-square.svg.jsx'
-import { HashTagIcon } from '@/pages/components/icons/hashtag.svg.jsx'
-import { InfoCircleIcon } from '@/pages/components/icons/info-circle.svg.jsx'
-import { PlusIcon } from '@/pages/components/icons/plus.svg.jsx'
-import { TextIcon } from '@/pages/components/icons/text.svg.jsx'
+import { ArrowUpRightIcon } from '@pages/components/icons/arrow-up-right.svg.jsx'
+import { CalendarIcon } from '@pages/components/icons/calendar.jsx'
+import { CheckSquareIcon } from '@pages/components/icons/check-square.svg.jsx'
+import { HashTagIcon } from '@pages/components/icons/hashtag.svg.jsx'
+import { InfoCircleIcon } from '@pages/components/icons/info-circle.svg.jsx'
+import { PlusIcon } from '@pages/components/icons/plus.svg.jsx'
+import { TextIcon } from '@pages/components/icons/text.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/hooks/use_server_form_mutation.jsx'
-import { slugify } from '@/pages/utils/slugify.js'
+} from '@pages/hooks/use_server_form_mutation.jsx'
+import { slugify } from '@pages/utils/slugify.js'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
@@ -25,11 +25,11 @@ import type { Audience } from '@/database/database_schema_types.js'
 import type { KnownAudienceProperty } from '@/database/schema.js'
 
 import { route } from '@/shared/routes/route_aliases.js'
-import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
 
 const CreateCustomContactProperty = clientOnly(() =>
   import(
-    '@/pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx'
+    '@pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx'
   ).then(({ CreateCustomContactProperty }) => CreateCustomContactProperty),
 )
 

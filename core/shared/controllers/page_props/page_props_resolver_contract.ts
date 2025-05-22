@@ -1,4 +1,4 @@
-import type { DefaultPageProps } from '@/pages/types/page-context.js'
+import type { DefaultPageProps } from '@pages/types/page-context.js'
 import type { HonoContext } from '@/shared/server/types.js'
 
 export abstract class PagePropsResolverContract {

@@ -1,4 +1,4 @@
-import { Slider } from '@/pages/components/slider/slider.jsx'
+import { Slider } from '@pages/components/slider/slider.jsx'
 import { memo, useCallback, useEffect, useState } from 'react'
 
 export type ImageBlockWidthProps = {

@@ -15,7 +15,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./core/*", "./*"],
-      "@components/*": ["./core/components/*", "./components/*"]
+      "@components/*": ["./core/components/*", "./components/*"],
+      "@pages/*": ["./pages/*"],
+      "@shared/*": ["./shared/*"],
+      "@database/*": ["./database/*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -24,6 +27,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["./core/**/*.ts", "./core/**/*.tsx", "./**/*.ts", "./**/*.tsx"],
+  "include": ["./core/**/*.ts", "./core/**/*.tsx", "./**/*.ts", "./**/*.tsx", "env.d.ts"],
   "exclude": ["node_modules", "build", "vitest.config.ts", "vite.config.ts"]
 }

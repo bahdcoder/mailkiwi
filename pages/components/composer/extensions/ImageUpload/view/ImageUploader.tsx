@@ -1,5 +1,5 @@
-import { CloudUploadIcon } from '@/pages/components/icons/cloud-upload.svg.jsx'
-import { cn } from '@/pages/components/tiptap/utils/index.js'
+import { CloudUploadIcon } from '@pages/components/icons/cloud-upload.svg.jsx'
+import { cn } from '@pages/components/tiptap/utils/index.js'
 import { Spinner } from '@kibamail/owly/spinner'
 import { Text } from '@kibamail/owly/text'
 import { type ChangeEvent, useCallback } from 'react'

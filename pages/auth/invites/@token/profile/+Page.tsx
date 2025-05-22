@@ -1,4 +1,4 @@
-import { PageContainer, PageTitle } from '@/pages/components/auth/auth.jsx'
+import { PageContainer, PageTitle } from '@pages/components/auth/auth.jsx'
 import { Button } from '@kibamail/owly/button'
 import * as TextField from '@kibamail/owly/text-field'
 import React from 'react'

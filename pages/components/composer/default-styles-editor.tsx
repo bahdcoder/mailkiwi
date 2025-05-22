@@ -1,4 +1,4 @@
-import { EditPencilIcon } from '@/pages/components/icons/edit-pencil.svg.jsx'
+import { EditPencilIcon } from '@pages/components/icons/edit-pencil.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Label } from '@kibamail/owly/text-field'

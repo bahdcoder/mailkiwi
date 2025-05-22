@@ -1,4 +1,4 @@
-import { TableOfContents } from '@/pages/components/tiptap/TableOfContents/TableOfContents.jsx'
+import { TableOfContents } from '@pages/components/tiptap/TableOfContents/TableOfContents.jsx'
 import { Node, type NodeViewRendererProps } from '@tiptap/core'
 import { NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react'
 

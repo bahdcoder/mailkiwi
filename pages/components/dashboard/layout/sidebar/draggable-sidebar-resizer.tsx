@@ -1,4 +1,4 @@
-import { useApplicationLayoutContext } from '@/pages/components/dashboard/layout/application-layout-context.jsx'
+import { useApplicationLayoutContext } from '@pages/components/dashboard/layout/application-layout-context.jsx'
 import cn from 'classnames'
 import React from 'react'
 

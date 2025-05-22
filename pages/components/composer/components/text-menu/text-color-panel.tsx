@@ -1,13 +1,13 @@
 import {
   FillPanel,
   type FillValue,
-} from '@/pages/components/composer/components/fill-panel/fill-panel.jsx'
+} from '@pages/components/composer/components/fill-panel/fill-panel.jsx'
 import {
   ToolbarButton,
   getToolbarClassNames,
-} from '@/pages/components/composer/components/toolbar/toolbar.jsx'
-import { getDefaultStylesForNode } from '@/pages/components/composer/themes/default-theme.js'
-import { NavArrowDownIcon } from '@/pages/components/icons/nav-arrow-down.svg.jsx'
+} from '@pages/components/composer/components/toolbar/toolbar.jsx'
+import { getDefaultStylesForNode } from '@pages/components/composer/themes/default-theme.js'
+import { NavArrowDownIcon } from '@pages/components/icons/nav-arrow-down.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 import type { Editor } from '@tiptap/core'
 import cn from 'classnames'

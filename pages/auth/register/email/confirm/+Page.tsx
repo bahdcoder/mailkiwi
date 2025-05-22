@@ -1,9 +1,9 @@
 import './page.css'
-import { PageContainer, PageTitle } from '@/pages/components/auth/auth.jsx'
+import { PageContainer, PageTitle } from '@pages/components/auth/auth.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/hooks/use_server_form_mutation.jsx'
+} from '@pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import * as CodeInput from '@kibamail/owly/code-input'
 import { Text } from '@kibamail/owly/text'

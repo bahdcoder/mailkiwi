@@ -2,7 +2,7 @@ import { redirect } from 'vike/abort'
 import type { PageContext } from 'vike/types'
 
 import { route } from '@/shared/routes/route_aliases.js'
-import { DEFAULT_TEAM_NAME } from '@/database/constants.js'
+import { DEFAULT_TEAM_NAME } from '@database/constants.js'
 
 export function guard(ctx: PageContext) {
   const { user, team } = ctx

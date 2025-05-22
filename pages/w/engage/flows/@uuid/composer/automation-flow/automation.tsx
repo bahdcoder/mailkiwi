@@ -12,7 +12,7 @@ import 'react-flow-renderer/dist/style.css'
 import type {
   AutomationElement,
   NodeElement,
-} from '@/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+} from '@pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 
 export interface AutomationProps {
   elements: AutomationElement[]

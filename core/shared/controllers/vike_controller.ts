@@ -27,7 +27,7 @@ import { excludeKeys } from '@/shared/utils/helpers/exclude_keys.js'
 
 import { TeamCreditRepository } from '@/teams/repositories/team_credit_repository.js'
 import { container } from '@/utils/typi.js'
-import type { DefaultPageProps } from '@/pages/types/page-context.js'
+import type { DefaultPageProps } from '@pages/types/page-context.js'
 import { DEFAULT_TEAM_NAME } from '@/database/constants.js'
 
 export class VikeController extends BaseController {

@@ -1,5 +1,5 @@
 import './flash_message.css'
-import { WarningCircleSolidIcon } from '@/pages/components/icons/warning-circle-solid.svg.jsx'
+import { WarningCircleSolidIcon } from '@pages/components/icons/warning-circle-solid.svg.jsx'
 import * as Alert from '@kibamail/owly/alert'
 import { Text } from '@kibamail/owly/text'
 import { usePageContext } from 'vike-react/usePageContext'

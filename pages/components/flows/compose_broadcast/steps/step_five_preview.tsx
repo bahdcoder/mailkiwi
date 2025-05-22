@@ -1,7 +1,7 @@
-import { BroadcastDetails } from '@/pages/w/engage/broadcasts/@uuid/components/broadcast-details.jsx'
+import { BroadcastDetails } from '@pages/w/engage/broadcasts/@uuid/components/broadcast-details.jsx'
 import { Heading } from '@kibamail/owly/heading'
 import { usePageContext } from 'vike-react/usePageContext'
-import type { BroadcastPageProps } from '@/pages/types/broadcast-page-props.js'
+import type { BroadcastPageProps } from '@pages/types/broadcast-page-props.js'
 
 export function StepFivePreview() {
   const { broadcast } = usePageContext().pageProps as BroadcastPageProps

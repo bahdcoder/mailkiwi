@@ -1,7 +1,7 @@
 import { GetContactsAction } from '@/audiences/actions/contacts/get_contacts_action.js'
 import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
 import { segments as segmentsTable } from '@/database/schema.js'
-import type { DefaultPageProps } from '@/pages/types/page-context.js'
+import type { DefaultPageProps } from '@pages/types/page-context.js'
 import { PagePropsResolverContract } from '@/shared/controllers/page_props/page_props_resolver_contract.js'
 import { route } from '@/shared/routes/route_aliases.js'
 import type { HonoContext } from '@/shared/server/types.js'

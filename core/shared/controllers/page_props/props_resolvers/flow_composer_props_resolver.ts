@@ -1,5 +1,5 @@
 import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
-import type { DefaultPageProps } from '@/pages/types/page-context.js'
+import type { DefaultPageProps } from '@pages/types/page-context.js'
 import { PagePropsResolverContract } from '@/shared/controllers/page_props/page_props_resolver_contract.js'
 
 import type { HonoContext } from '@/shared/server/types.js'

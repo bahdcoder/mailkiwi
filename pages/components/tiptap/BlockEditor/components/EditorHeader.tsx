@@ -1,5 +1,5 @@
-import { Icon } from '@/pages/components/tiptap/ui/Icon.jsx'
-import { Toolbar } from '@/pages/components/tiptap/ui/Toolbar.jsx'
+import { Icon } from '@pages/components/tiptap/ui/Icon.jsx'
+import { Toolbar } from '@pages/components/tiptap/ui/Toolbar.jsx'
 import type { Editor } from '@tiptap/core'
 import { useEditorState } from '@tiptap/react'
 import type { EditorUser } from '../types.jsx'

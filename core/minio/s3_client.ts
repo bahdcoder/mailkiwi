@@ -9,7 +9,7 @@ import { Upload } from '@aws-sdk/lib-storage'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 import { container } from '@/utils/typi.js'
-import { assetsPath } from '@/pages/utils/assets_path.js'
+import { assetsPath } from '@pages/utils/assets_path.js'
 
 export class S3Disk {
   protected client = new S3Client({

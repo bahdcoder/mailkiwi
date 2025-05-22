@@ -1,4 +1,4 @@
-import { cn } from '@/pages/components/tiptap/utils/index.js'
+import { cn } from '@pages/components/tiptap/utils/index.js'
 import * as Popover from '@radix-ui/react-popover'
 import { icons } from 'lucide-react'
 import { forwardRef } from 'react'

@@ -1,4 +1,4 @@
-import { Divider } from '@/pages/components/divider/divider.jsx'
+import { Divider } from '@pages/components/divider/divider.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'
@@ -21,7 +21,7 @@ function SendPage() {
         searchable history of sent emails.
       </Text>
 
-      <Button className="mt-2" size={'lg'} asChild disabled>
+      <Button className="mt-2" size={'lg'} asChild>
         <a href={route('send')}>Coming soon...</a>
       </Button>
 

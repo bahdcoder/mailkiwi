@@ -1,10 +1,10 @@
-import { NavArrowRightIcon } from '@/pages/components/icons/nav-arrow-right.svg.jsx'
+import { NavArrowRightIcon } from '@pages/components/icons/nav-arrow-right.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@/pages/hooks/use_server_form_mutation.jsx'
-import { navigate } from '@/pages/utils/navigate.js'
-import type { EngagePageProps } from '@/pages/w/engage/+Page.jsx'
+} from '@pages/hooks/use_server_form_mutation.jsx'
+import { navigate } from '@pages/utils/navigate.js'
+import type { EngagePageProps } from '@pages/w/engage/+Page.jsx'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
 import * as SelectField from '@kibamail/owly/select-field'
@@ -14,9 +14,9 @@ import { usePageContext } from 'vike-react/usePageContext'
 
 import { route } from '@/shared/routes/route_aliases.js'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
-import { DefaultPageProps } from '@/pages/types/page-context.js'
+import { DefaultPageProps } from '@pages/types/page-context.js'
 import type { BroadcastGroupWithBroadcasts } from '@/database/database_schema_types.js'
-import { usePageContextWithProps } from '@/pages/hooks/use_page_props.js'
+import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
 
 export interface CreateBroadcastFlowProps extends React.PropsWithChildren {}
 

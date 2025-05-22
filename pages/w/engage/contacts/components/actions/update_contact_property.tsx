@@ -1,4 +1,4 @@
-import { NewContactPropertyForm } from '@/pages/w/engage/contacts/components/actions/new_contact_property_form.jsx'
+import { NewContactPropertyForm } from '@pages/w/engage/contacts/components/actions/new_contact_property_form.jsx'
 
 import type { KnownAudienceProperty } from '@/database/schema.js'
 

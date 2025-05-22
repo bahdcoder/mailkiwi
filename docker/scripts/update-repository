@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Define the target directory
+TARGET_DIR="/workspaces/kibamail"
+
+# Function to log messages with timestamp
+log() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+}
+
+# Check if the target directory exists
+if [ -d "$TARGET_DIR" ]; then
+  log "Changing to directory: $TARGET_DIR"
+  cd "$TARGET_DIR"
+  
+  # Configure safe directory
+  log "Configuring Git safe directory"
+  git config --global --add safe.directory "$TARGET_DIR"
+  
+  # Initialize sparse checkout
+  log "Initializing sparse checkout"
+  git sparse-checkout init --cone
+  
+  # Set sparse checkout for .devcontainer
+  log "Setting sparse checkout for .devcontainer"
+  git sparse-checkout set .devcontainer
+  
+  # Pull changes from the specified branch
+  log "Pulling changes from main branch"
+  git pull origin main
+  
+  # Disable sparse checkout
+  log "Disabling sparse checkout"
+  git sparse-checkout disable
+  
+  log "Repository update completed successfully"
+else
+  log "ERROR: $TARGET_DIR folder does not exist"
+  exit 1
+fi
