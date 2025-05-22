@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react'
 
 export function isSentryEnabled(): boolean {
-  return import.meta.env.MODE === 'production'
+  return false
 }
 
 /**
@@ -14,7 +14,7 @@ export function initSentry() {
   if (isSentryEnabled()) {
     Sentry.init({
       dsn: 'https://de939b1583e043d561bfaecc64189b22@sentry.kibamail.com/2',
-      environment: process.env.NODE_ENV,
+      environment: 'development',
       release: 'kibamail@1.0.0',
       tracesSampleRate: 0.2,
       replaysSessionSampleRate: 0.1,
