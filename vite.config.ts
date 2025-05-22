@@ -38,6 +38,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       cors: false,
+      allowedHosts: ['.coder.kibamail.com', '.kibamail.com', '.preview.kibamail.com'],
     },
     define: {
       'import.meta.env.PUBLIC_ENV__NODE_ENV': process.env.NODE_ENV,
