@@ -109,13 +109,26 @@ service mysql restart
 stage_log "CONFIGURING CACHE SERVER"
 log "configuring redis..."
 
-# Create Redis log directory and set permissions
 log "setting up redis log directory..."
 mkdir -p /var/log/redis
 chmod 755 /var/log/redis
 touch /var/log/redis/redis-server.log
 chmod 664 /var/log/redis/redis-server.log
-chown -R $CURRENT_USER:redis /var/log/redis
+chown -R redis:redis /var/log/redis
+
+usermod -a -G redis $CURRENT_USER
+
+log "setting up redis data directories..."
+mkdir -p /var/lib/redis/appendonlydir
+chown -R redis:redis /var/lib/redis
+chmod -R 770 /var/lib/redis
+
+chmod -R g+rwx /var/lib/redis
+
+log "setting up redis run directory..."
+mkdir -p /var/run/redis
+chown redis:redis /var/run/redis
+chmod 770 /var/run/redis
 
 cat > /etc/redis/redis.conf << 'EOF'
 bind 0.0.0.0
@@ -132,6 +145,7 @@ maxmemory-policy allkeys-lru
 appendonly yes
 appendfilename "appendonly.aof"
 appendfsync everysec
+appendonlydir /var/lib/redis/appendonlydir
 auto-aof-rewrite-percentage 100
 auto-aof-rewrite-min-size 64mb
 aof-load-truncated yes
@@ -143,6 +157,11 @@ timeout 0
 tcp-keepalive 300
 databases 16
 EOF
+
+# Set vm.overcommit_memory to 1 as recommended by Redis
+log "setting vm.overcommit_memory to 1..."
+sysctl vm.overcommit_memory=1
+echo "vm.overcommit_memory = 1" >> /etc/sysctl.conf
 
 # Restart Redis to apply configuration
 log "restarting redis service..."
