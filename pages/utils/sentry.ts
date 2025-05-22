@@ -14,6 +14,7 @@ export function initSentry() {
   if (isSentryEnabled()) {
     Sentry.init({
       dsn: 'https://de939b1583e043d561bfaecc64189b22@sentry.kibamail.com/2',
+      // todo: make this dynamic
       environment: 'development',
       release: 'kibamail@1.0.0',
       tracesSampleRate: 0.2,
