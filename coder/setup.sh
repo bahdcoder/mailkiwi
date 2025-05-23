@@ -142,9 +142,7 @@ requirepass password
 maxmemory 256mb
 maxmemory-policy allkeys-lru
 appendonly no
-save 900 1
-save 300 10
-save 60 10000
+save ""
 timeout 0
 tcp-keepalive 300
 databases 16

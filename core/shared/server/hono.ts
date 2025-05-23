@@ -21,6 +21,7 @@ import { FlashMiddleware } from '#root/core/shared/middleware/flash_middleware.j
 import { route } from '#root/core/shared/routes/route_aliases.js'
 
 import { container } from '#root/core/utils/typi.js'
+import { appEnv } from '#root/core/app/env/app_env'
 
 if (isSentryEnabled()) {
   Sentry.init({
@@ -74,6 +75,10 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
 
     this.onError((error, ctx) => {
       logger.error(error)
+
+      if (appEnv.isDev) {
+        d({ error })
+      }
 
       if (isSentryEnabled()) {
         const user = ctx.get('user')

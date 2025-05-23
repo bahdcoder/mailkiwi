@@ -16,15 +16,18 @@ import * as TextField from '@kibamail/owly/text-field'
 import React from 'react'
 
 import { route } from '#root/core/shared/routes/route_aliases.js'
+import { usePageContext } from 'vike-react/usePageContext'
 
 interface LoginPageProps {
   teamInviteToken?: string
 }
 
-function LoginPage({ teamInviteToken, ...rest }: LoginPageProps) {
+function LoginPage({ teamInviteToken }: LoginPageProps) {
   const isAnInvitedUser = teamInviteToken !== undefined
 
-  console.log({ rest })
+  const props = usePageContext()
+
+  console.log({ props })
 
   const linkToRegisterPage = isAnInvitedUser
     ? `/auth/invites/${teamInviteToken}/`
