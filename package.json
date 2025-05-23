@@ -50,13 +50,6 @@
     "test:e2e": "./env.mjs  --env=test-playwright  pnpm exec playwright test",
     "test:seed_channels": "./env.mjs --env=test tsx cli/cli_root.ts add_default_channels",
 
-    "//ci-test": "=== CI TEST SCRIPTS ===",
-    "ci:test": "pnpm ci:test:server && pnpm test:client",
-    "ci:test:server": "pnpm ci:test:server:watch --run",
-    "ci:test:server:watch": "pnpm ci:test:mysql:migrate && vitest",
-    "ci:test:server:coverage": "./env.mjs --env=test pnpm ci:test:mysql:migrate && ./env.mjs --env=test vitest --run --coverage",
-    "ci:test:e2e": "pnpm exec playwright test",
-
     "//coder-test": "=== CODER TEST SCRIPTS ===",
     "coder:test": "pnpm coder:test:server && pnpm test:client",
     "coder:test:server": "pnpm coder:test:server:watch --run",
