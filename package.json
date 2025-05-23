@@ -28,12 +28,11 @@
     "//test": "=== TEST SCRIPTS ===",
     "test": "pnpm test:server && pnpm test:client",
     "test:server": "./env.mjs --env=test pnpm test:server:watch --run",
-    "test:server:watch": "./env.mjs --env=test pnpm test:mysql:migrate && ./env.mjs --env=test pnpm test:seed_channels && ./env.mjs --env=test vitest",
+    "test:server:watch": "./env.mjs --env=test pnpm test:mysql:migrate && ./env.mjs --env=test vitest",
     "test:server:coverage": "pnpm test:mysql:migrate && vitest --run --coverage",
     "test:client": "pnpm test:client:watch --run",
     "test:client:watch": "vitest --config vitest.client.config.ts",
     "test:e2e": "./env.mjs  --env=test-playwright  pnpm exec playwright test",
-    "test:seed_channels": "./env.mjs --env=test tsx cli/cli_root.ts add_default_channels",
 
     "//coder-test": "=== CODER TEST SCRIPTS ===",
     "coder:test": "pnpm coder:test:server && pnpm test:client",
