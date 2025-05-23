@@ -18,6 +18,8 @@ export class WorkerIgnitor extends Ignitor {
     await this.startDatabaseConnector()
 
     this.registerJobs()
+
+    return this
   }
 
   registerJobs() {

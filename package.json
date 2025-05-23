@@ -65,7 +65,14 @@
     "coder:worker:dev": "./env.mjs  --env=coder  tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/worker/start.ts",
     "coder:quick:dev": "./env.mjs  --env=coder vike dev",
     "prepare": "husky",
-    "pm2:dev": "pm2 start ./pm2/ecosystem.config.cjs"
+    "pm2:dev": "pm2 start ./pm2/ecosystem.config.cjs",
+    "commit": "cz",
+    "commit:check": "commitlint --from HEAD~1 --to HEAD --verbose"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "keywords": [
     "open source",
@@ -79,6 +86,8 @@
   "devDependencies": {
     "@ant-design/icons": "4.7.0",
     "@biomejs/biome": "1.9.4",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@drizzle-team/brocli": "^0.9.2",
     "@faker-js/faker": "^8.4.1",
     "@fastify/vite": "^6.0.6",
@@ -126,7 +135,9 @@
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/coverage-v8": "^1.6.0",
     "autoprefixer": "^10.4.19",
+    "commitizen": "^4.3.1",
     "concurrently": "^9.0.1",
+    "cz-conventional-changelog": "^3.3.0",
     "del-cli": "^5.1.0",
     "drizzle-kit": "^0.24.2",
     "drizzle-orm": "^0.33.0",
@@ -314,7 +325,8 @@
     "node": ">=v22.4.0"
   },
   "lint-staged": {
-    "**/*": "pnpm format"
+    "*.{js,jsx,ts,tsx,json,css,md}": ["pnpm biome format --write"],
+    "*.{js,jsx,ts,tsx}": ["pnpm biome lint --write --unsafe"]
   },
   "imports": {
     "#root/*": "./*.ts"

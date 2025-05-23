@@ -60,7 +60,6 @@ import {
   makeDatabaseConnection,
   makeRedis,
 } from '#root/core/shared/container/index.js'
-import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
 import { middleware } from '#root/core/shared/middleware/middleware_aliases.js'
 import { Hono, type HonoInstance } from '#root/core/shared/server/hono.js'
 import '#root/core/shared/utils/log/dump.js'
@@ -119,7 +118,7 @@ export class Ignitor {
     // _showRoutes(this.app)
   }
 
-  async start(callback?: (ignitor: Ignitor) => void) {
+  async start() {
     const packageJsonFile = await readFile(resolve('package.json'), 'utf-8')
 
     const { version } = JSON.parse(packageJsonFile)
@@ -130,14 +129,12 @@ export class Ignitor {
 
     this.app.use(middleware('user_session'))
 
-    container.register(ContainerKey.vikeRenderPage, new VikeController().renderVikePage)
-
     this.registerHttpControllers()
 
     this.setupBullmqDashboard()
     await this.startSinglePageApplication()
 
-    callback?.(this)
+    return this
   }
 
   async startSinglePageApplication() {

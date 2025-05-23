@@ -7,7 +7,7 @@ import { DefaultPropsResolver } from '#root/core/shared/controllers/page_props/p
 import { PagePropsResolver } from '#root/core/shared/controllers/page_props/page_props_resolver'
 import type { DefaultPageProps } from '#root/pages/types/page-context'
 
-const ignitor = new Ignitor().boot()
+const ignitor = await new Ignitor().boot().start()
 
 apply(ignitor.app, {
   async pageContext({ hono: ctx }) {
@@ -22,4 +22,4 @@ apply(ignitor.app, {
   },
 })
 
-await ignitor.start(({ env, app }) => serve(app, { port: env.PORT })).catch(console.error)
+serve(ignitor.app, { port: ignitor.env.PORT })

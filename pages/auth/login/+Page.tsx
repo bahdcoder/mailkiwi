@@ -27,8 +27,6 @@ function LoginPage({ teamInviteToken }: LoginPageProps) {
 
   const props = usePageContext()
 
-  console.log({ props })
-
   const linkToRegisterPage = isAnInvitedUser
     ? `/auth/invites/${teamInviteToken}/`
     : '/auth/register'
