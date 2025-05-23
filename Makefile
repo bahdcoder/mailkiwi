@@ -73,7 +73,7 @@ dev:
 
 dev.essential:
 	@echo "starting all essential services..."
-	docker compose $(COMPOSE_DEV_ESSENTIAL) up --wait
+	docker compose $(COMPOSE_DEV_ESSENTIAL) up --build --wait
 
 coder.dev:
 	@echo "Starting all services..."

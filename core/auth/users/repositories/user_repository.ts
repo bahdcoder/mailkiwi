@@ -319,4 +319,104 @@ export class UserRepository extends ScryptTokenRepository {
 
     return { user, memberships }
   }
+
+  /**
+   * Initiates an email change process for a user.
+   *
+   * This method starts the email change workflow by:
+   * 1. Storing the new email in the unconfirmedEmail field
+   * 2. Generating a verification code using existing infrastructure
+   * 3. Setting up expiration for the verification process
+   *
+   * The current email remains unchanged and verified throughout this process,
+   * ensuring users can abandon the change without losing their verified status.
+   *
+   * @param userId - The ID of the user requesting the email change
+   * @param newEmail - The new email address to change to
+   * @returns Object containing the verification code to send to the new email
+   */
+  async initiateEmailChange(userId: string, newEmail: string) {
+    const {
+      emailVerificationCode,
+      emailVerificationCodeExpiresAt,
+      plainEmailVerificationCode,
+    } = await this.createEmailVerificationCode()
+
+    await this.database
+      .update(users)
+      .set({
+        unconfirmedEmail: newEmail,
+        emailVerificationCode,
+        emailVerificationCodeExpiresAt,
+      })
+      .where(eq(users.id, userId))
+
+    return { emailVerificationCode: plainEmailVerificationCode }
+  }
+
+  /**
+   * Confirms an email change with verification code.
+   *
+   * This method completes the email change process by:
+   * 1. Verifying the provided code against the stored hash
+   * 2. Atomically moving unconfirmedEmail to email
+   * 3. Updating emailVerifiedAt to mark the new email as verified
+   * 4. Clearing all verification fields
+   *
+   * The operation is atomic to prevent inconsistent states during the email swap.
+   *
+   * @param userId - The ID of the user confirming the email change
+   * @param code - The verification code provided by the user
+   * @returns True if verification succeeded and email was updated
+   */
+  async confirmEmailChange(userId: string, code: string) {
+    const user = await this.findById(userId)
+
+    if (!user?.unconfirmedEmail) {
+      return false
+    }
+
+    const isValidCode = await this.confirmEmailVerificationCode(user, code)
+
+    if (!isValidCode) {
+      return false
+    }
+
+    await this.database
+      .update(users)
+      .set({
+        email: user.unconfirmedEmail,
+        unconfirmedEmail: null,
+        emailVerifiedAt: DateTime.now().toJSDate(),
+        emailVerificationCode: null,
+        emailVerificationCodeExpiresAt: null,
+      })
+      .where(eq(users.id, userId))
+
+    return true
+  }
+
+  /**
+   * Cancels a pending email change request.
+   *
+   * This method allows users to abandon an email change process by:
+   * 1. Clearing the unconfirmedEmail field
+   * 2. Clearing verification code fields
+   *
+   * The current email and its verification status remain completely unchanged.
+   *
+   * @param userId - The ID of the user canceling the email change
+   */
+  async cancelEmailChange(userId: string) {
+    await this.database
+      .update(users)
+      .set({
+        unconfirmedEmail: null,
+        emailVerificationCode: null,
+        emailVerificationCodeExpiresAt: null,
+      })
+      .where(eq(users.id, userId))
+
+    return { id: userId }
+  }
 }

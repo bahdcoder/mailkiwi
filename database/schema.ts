@@ -171,6 +171,7 @@ export const settings = mysqlTable('settings', {
 export const users = mysqlTable('users', {
   id,
   email: varchar('email', { length: 80 }).unique().notNull(),
+  unconfirmedEmail: varchar('unconfirmedEmail', { length: 80 }),
   firstName: varchar('firstName', { length: 80 }),
   lastName: varchar('lastName', { length: 80 }),
   avatarUrl: varchar('avatarUrl', { length: 256 }),

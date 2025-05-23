@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `unconfirmedEmail` varchar(80);
