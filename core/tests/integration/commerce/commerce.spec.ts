@@ -11,8 +11,8 @@ import { ContactRepository } from '#root/core/audiences/repositories/contact_rep
 
 import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import type {
   Audience,

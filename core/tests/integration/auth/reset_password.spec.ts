@@ -5,8 +5,8 @@ import { describe, expect, it } from 'vitest'
 
 import { PasswordResetRepository } from '#root/core/auth/password_resets/repositories/password_reset_repository.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequest } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequest } from '#root/core/tests/utils/http.js'
 
 import { passwordResets } from '#root/database/schema.js'
 

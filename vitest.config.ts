@@ -1,4 +1,4 @@
-import tsconfigPaths from 'vite-tsconfig-paths'
+import { resolve } from 'node:path'
 import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -28,5 +28,9 @@ export default defineConfig({
     retry: 1,
     environment: 'node',
   },
-  plugins: [tsconfigPaths()],
+  resolve: {
+    alias: {
+      '#root': resolve(process.cwd()),
+    },
+  },
 })

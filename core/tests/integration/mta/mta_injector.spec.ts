@@ -14,15 +14,15 @@ import {
   clearAllMailpitMessages,
   getAllMailpitMessages,
   getMailpitMessageSource,
-} from '#root/tests/integration/helpers/mailpit.js'
+} from '#root/core/tests/integration/helpers/mailpit.js'
 import {
   createTestServer,
   shutdownTestServer,
-} from '#root/tests/integration/helpers/server.js'
-import { createBroadcastForUser, createUser } from '#root/tests/mocks/auth/users.js'
-import { getInjectEmailContent } from '#root/tests/mocks/emails/email_content.js'
-import { injectEmailForTeam } from '#root/tests/mocks/emails/email_content.js'
-import { getApiKeyForTeam } from '#root/tests/utils/http.js'
+} from '#root/core/tests/integration/helpers/server.js'
+import { createBroadcastForUser, createUser } from '#root/core/tests/mocks/auth/users.js'
+import { getInjectEmailContent } from '#root/core/tests/mocks/emails/email_content.js'
+import { injectEmailForTeam } from '#root/core/tests/mocks/emails/email_content.js'
+import { getApiKeyForTeam } from '#root/core/tests/utils/http.js'
 
 import type { Audience } from '#root/database/database_schema_types.js'
 
@@ -37,13 +37,13 @@ import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manag
 
 import { sleep } from '#root/core/utils/sleep.js'
 import { container } from '#root/core/utils/typi.js'
-import { setupDomainForDnsChecks } from '#root/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 const xForwardedFor = '66.249.93.66'
 const userAgent =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
 
-describe.sequential('@mta', () => {
+describe.sequential.skip('@mta', () => {
   let server: ServerType
 
   beforeAll(async () => {

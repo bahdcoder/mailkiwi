@@ -7,8 +7,8 @@ import { ContactRepository } from '#root/core/audiences/repositories/contact_rep
 
 import { CreateSendingDomainAction } from '#root/core/sending_domains/actions/create_sending_domain_action.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequest } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequest } from '#root/core/tests/utils/http.js'
 
 import type { Audience } from '#root/database/database_schema_types.js'
 

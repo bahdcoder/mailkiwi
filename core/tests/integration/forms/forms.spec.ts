@@ -5,8 +5,8 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequest, makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequest, makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import type { InsertForm } from '#root/database/database_schema_types.js'
 import { contacts, formResponses, forms } from '#root/database/schema.js'
@@ -16,7 +16,7 @@ import { Queue } from '#root/core/shared/queue/queue.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 import { container } from '#root/core/utils/typi.js'
-import { survey } from '#root/tests/integration/helpers/forms/survey.js'
+import { survey } from '#root/core/tests/integration/helpers/forms/survey.js'
 
 describe('@forms', () => {
   test('can create a sign up form', async ({ expect }) => {

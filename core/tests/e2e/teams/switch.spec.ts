@@ -1,4 +1,4 @@
-import { expect, test } from '#root/tests/e2e/fixtures/users.js'
+import { expect, test } from '#root/core/tests/e2e/fixtures/users.js'
 
 import { route } from '#root/core/shared/routes/route_aliases.js'
 

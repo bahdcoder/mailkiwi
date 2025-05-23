@@ -11,7 +11,7 @@ import { SendingDomainRepository } from '#root/core/sending_domains/repositories
 
 import { DnsConfigurationTool } from '#root/core/tools/dns/dns_configuration_tool.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
 
 import type { UpdateSendingDomain } from '#root/database/database_schema_types.js'
 

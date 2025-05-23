@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-import { owner } from '#root/tests/e2e/helpers/storage_state_paths.js'
+import { owner } from '#root/core/tests/e2e/helpers/storage_state_paths.js'
 
 /**
  * See https://playwright.dev/docs/test-configuration.

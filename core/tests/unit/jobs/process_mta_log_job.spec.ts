@@ -7,7 +7,7 @@ import { describe, it } from 'vitest'
 
 import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { createBroadcastForUser, createUser } from '#root/tests/mocks/auth/users.js'
+import { createBroadcastForUser, createUser } from '#root/core/tests/mocks/auth/users.js'
 
 import type { Audience } from '#root/database/database_schema_types.js'
 
@@ -15,7 +15,7 @@ import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container
 import type { MtaLog } from '#root/core/shared/types/mta.js'
 
 import { container } from '#root/core/utils/typi.js'
-import { setupDomainForDnsChecks } from '#root/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 const xForwardedFor = '66.249.93.66'
 const userAgent =

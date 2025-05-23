@@ -4,9 +4,9 @@ import { describe, test } from 'vitest'
 
 import { AutomationRepository } from '#root/core/automations/repositories/automation_repository.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { seedAutomation } from '#root/tests/mocks/teams/teams.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { seedAutomation } from '#root/core/tests/mocks/teams/teams.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import {
   audiences,

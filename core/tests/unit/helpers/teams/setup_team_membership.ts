@@ -4,8 +4,8 @@ import { faker } from '@faker-js/faker'
 import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
 import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 

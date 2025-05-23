@@ -5,8 +5,8 @@ import { describe, test } from 'vitest'
 import { SendAbTestBroadcastJob } from '#root/core/broadcasts/jobs/send_ab_test_broadcast_job.js'
 import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import { createFakeContact } from '#root/tests/mocks/audiences/contacts.js'
-import { createBroadcastForUser, createUser } from '#root/tests/mocks/auth/users.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { createBroadcastForUser, createUser } from '#root/core/tests/mocks/auth/users.js'
 
 import { abTestVariants, contacts } from '#root/database/schema.js'
 

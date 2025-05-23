@@ -4,8 +4,8 @@ import { describe, test } from 'vitest'
 
 import { ReportBuilder } from '#root/core/audiences/utils/report_builder/report_builder.js'
 
-import { createFakeContact } from '#root/tests/mocks/audiences/contacts.js'
-import { createBroadcastForUser } from '#root/tests/mocks/auth/users.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { createBroadcastForUser } from '#root/core/tests/mocks/auth/users.js'
 
 import type { InsertEmailSendEvent } from '#root/database/database_schema_types.js'
 import {
@@ -19,7 +19,7 @@ import { makeDatabase } from '#root/core/shared/container/index.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 import { container } from '#root/core/utils/typi.js'
-import { setupDomainForDnsChecks } from '#root/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 describe('@report-builder', () => {
   async function prepareBatchOfContactsForReport({

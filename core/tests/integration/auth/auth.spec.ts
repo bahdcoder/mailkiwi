@@ -8,8 +8,8 @@ import { GithubDriver } from '#root/core/auth/oauth2_drivers/github_driver.js'
 import { GoogleDriver } from '#root/core/auth/oauth2_drivers/google_driver.js'
 import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequest, makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequest, makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { oauth2Accounts, users } from '#root/database/schema.js'
 

@@ -4,8 +4,11 @@ import { describe, test } from 'vitest'
 import { RunAutomationForContactJob } from '#root/core/automations/jobs/run_automation_for_contact_job.js'
 import { TriggerAutomationsForContactJob } from '#root/core/automations/jobs/trigger_automation_for_contact_job.js'
 
-import { createContactsForAudience, createUser } from '#root/tests/mocks/auth/users.js'
-import { seedAutomation } from '#root/tests/mocks/teams/teams.js'
+import {
+  createContactsForAudience,
+  createUser,
+} from '#root/core/tests/mocks/auth/users.js'
+import { seedAutomation } from '#root/core/tests/mocks/teams/teams.js'
 
 import { tags, tagsOnContacts } from '#root/database/schema.js'
 

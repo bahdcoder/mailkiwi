@@ -4,8 +4,11 @@ import { describe, test } from 'vitest'
 
 import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 
-import { createUser, setupSendingDomainForTeam } from '#root/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+import {
+  createUser,
+  setupSendingDomainForTeam,
+} from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { senderIdentities } from '#root/database/schema.js'
 

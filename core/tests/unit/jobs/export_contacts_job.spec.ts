@@ -9,9 +9,9 @@ import { ExportContactsJob } from '#root/core/audiences/jobs/export_contacts_job
 import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
 import { TagRepository } from '#root/core/audiences/repositories/tag_repository.js'
 
-import { createFakeContact } from '#root/tests/mocks/audiences/contacts.js'
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { FakeMinioClient } from '#root/tests/mocks/container/minio_client_mock.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { FakeMinioClient } from '#root/core/tests/mocks/container/minio_client_mock.js'
 
 import { contacts, emails, tagsOnContacts } from '#root/database/schema.js'
 

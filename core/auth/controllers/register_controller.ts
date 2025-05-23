@@ -165,23 +165,6 @@ export class RegisterController extends BaseController {
   }
 
   /**
-   * Handles the password setup page rendering.
-   *
-   * Checks if the user already has a password set and redirects
-   * to the profile setup if they do, otherwise renders the
-   * password setup page.
-   */
-  passwordPage = async (ctx: HonoContext, next: Next) => {
-    const user = ctx.get('user')
-
-    if (user.password) {
-      return this.response(ctx).redirect(route('auth_register_profile')).send()
-    }
-
-    return this.page(ctx, next)
-  }
-
-  /**
    * Sets the user's password.
    *
    * Validates and stores the user's password, ensuring it meets

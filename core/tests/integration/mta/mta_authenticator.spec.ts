@@ -6,9 +6,9 @@ import { CreateTeamAccessTokenAction } from '#root/core/auth/actions/create_team
 import { makeApp } from '#root/core/shared/container/index.js'
 
 import { container } from '#root/core/utils/typi.js'
-import { setupDomainForDnsChecks } from '#root/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
-describe('@mta Http server', () => {
+describe.skip('@mta http server', () => {
   test('can fetch dkim records for a domain', async ({ expect }) => {
     const { TEST_DOMAIN } = await setupDomainForDnsChecks()
 

@@ -4,9 +4,9 @@ import { describe, test, vi } from 'vitest'
 
 import { RunAutomationStepJob } from '#root/core/automations/jobs/run_automation_step_job.js'
 
-import { createFakeContact } from '#root/tests/mocks/audiences/contacts.js'
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { seedAutomation } from '#root/tests/mocks/teams/teams.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { seedAutomation } from '#root/core/tests/mocks/teams/teams.js'
 
 import {
   automationSteps,

@@ -7,8 +7,8 @@ import { SendTeamMemberInviteJob } from '#root/core/teams/jobs/send_team_member_
 import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
 import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { Queue } from '#root/core/shared/queue/queue.js'
 import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'

@@ -2,8 +2,8 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { tags, tagsOnContacts } from '#root/database/schema.js'
 

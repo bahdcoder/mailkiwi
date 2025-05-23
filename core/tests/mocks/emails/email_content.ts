@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker'
 
 import type { EmailContentSchemaDto } from '#root/core/content/dto/create_email_content_dto.js'
 
-import { getApiKeyForTeam } from '#root/tests/utils/http.js'
+import { getApiKeyForTeam } from '#root/core/tests/utils/http.js'
 
 import { makeApp } from '#root/core/shared/container/index.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'

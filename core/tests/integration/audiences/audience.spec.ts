@@ -5,8 +5,8 @@ import { describe, test } from 'vitest'
 
 import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequest, makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequest, makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { audiences, websites } from '#root/database/schema.js'
 

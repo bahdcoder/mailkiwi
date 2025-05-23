@@ -5,7 +5,10 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { createContactsForAudience, createUser } from '#root/tests/mocks/auth/users.js'
+import {
+  createContactsForAudience,
+  createUser,
+} from '#root/core/tests/mocks/auth/users.js'
 
 import { tags, tagsOnContacts } from '#root/database/schema.js'
 
@@ -13,7 +16,7 @@ import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 import { container } from '#root/core/utils/typi.js'
-import { survey } from '#root/tests/integration/helpers/forms/survey.js'
+import { survey } from '#root/core/tests/integration/helpers/forms/survey.js'
 
 describe('@tag-contact', () => {
   const setup = async () => {

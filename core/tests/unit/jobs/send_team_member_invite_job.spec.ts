@@ -4,7 +4,7 @@ import { SendTeamMemberInviteJob } from '#root/core/teams/jobs/send_team_member_
 
 import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 import { Mailer } from '#root/core/shared/mailers/mailer.js'
-import { setupTeamMemberships } from '#root/tests/unit/helpers/teams/setup_team_membership.js'
+import { setupTeamMemberships } from '#root/core/tests/unit/helpers/teams/setup_team_membership.js'
 
 describe('Send team member invite', () => {
   test('sends an email with a unique hashed link for joining the team', async ({

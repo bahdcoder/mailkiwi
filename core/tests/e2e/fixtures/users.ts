@@ -9,12 +9,12 @@ import {
   guest,
   manager,
   owner,
-} from '#root/tests/e2e/helpers/storage_state_paths.js'
-import { AdministratorPage } from '#root/tests/e2e/pages/roles/administrator_page.js'
-import { AuthorPage } from '#root/tests/e2e/pages/roles/author_page.js'
-import { GuestPage } from '#root/tests/e2e/pages/roles/guest_page.js'
-import { ManagerPage } from '#root/tests/e2e/pages/roles/manager_page.js'
-import { OwnerPage } from '#root/tests/e2e/pages/roles/owner_page.js'
+} from '#root/core/tests/e2e/helpers/storage_state_paths.js'
+import { AdministratorPage } from '#root/core/tests/e2e/pages/roles/administrator_page.js'
+import { AuthorPage } from '#root/core/tests/e2e/pages/roles/author_page.js'
+import { GuestPage } from '#root/core/tests/e2e/pages/roles/guest_page.js'
+import { ManagerPage } from '#root/core/tests/e2e/pages/roles/manager_page.js'
+import { OwnerPage } from '#root/core/tests/e2e/pages/roles/owner_page.js'
 
 import type { User } from '#root/database/database_schema_types.js'
 

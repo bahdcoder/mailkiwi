@@ -18,8 +18,8 @@ import { CreateSendingDomainAction } from '#root/core/sending_domains/actions/cr
 import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { createFakeContact } from '#root/tests/mocks/audiences/contacts.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import type {
   Team,

@@ -11,7 +11,7 @@ import { SendingDomainRepository } from '#root/core/sending_domains/repositories
 
 import { DnsConfigurationTool } from '#root/core/tools/dns/dns_configuration_tool.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
 
 import type { UpdateSendingDomain } from '#root/database/database_schema_types.js'
 import { sendingDomains } from '#root/database/schema.js'
@@ -20,7 +20,7 @@ import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container
 import { Queue } from '#root/core/shared/queue/queue.js'
 
 import { container } from '#root/core/utils/typi.js'
-import { setupDomainForDnsChecks } from '#root/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 describe('@sending-domains-dns Sending domain dns configuration check', () => {
   test('marks sending domain as verified when dns records are correctly configured', async ({

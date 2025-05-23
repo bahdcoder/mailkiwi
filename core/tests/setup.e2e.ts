@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { IgnitorDev } from '#root/core/app/ignitor/ignitor_dev.js'
+import { Ignitor } from '#root/core/app/ignitor/ignitor.js'
 import { seedDevSendingSourcesCommand } from '#root/cli/commands/seed_dev_sending_sources_command.js'
 import { faker } from '@faker-js/faker'
 import { type FullConfig, chromium } from '@playwright/test'
@@ -12,8 +12,8 @@ import { TeamRepository } from '#root/core/teams/repositories/team_repository.js
 import { RegisterUserAction } from '#root/core/auth/actions/register_user_action.js'
 import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { basePath } from '#root/tests/e2e/helpers/storage_state_paths.js'
-import { refreshDatabase } from '#root/tests/mocks/teams/teams.js'
+import { basePath } from '#root/core/tests/e2e/helpers/storage_state_paths.js'
+import { refreshDatabase } from '#root/core/tests/mocks/teams/teams.js'
 
 import type { Team, TeamMembership, User } from '#root/database/database_schema_types.js'
 
@@ -82,7 +82,7 @@ export default async function globalSetup(config: FullConfig) {
     }`
   }
 
-  const ignitor = new IgnitorDev().boot()
+  const ignitor = new Ignitor().boot()
 
   await ignitor.start()
 

@@ -6,7 +6,7 @@ import { faker } from '@faker-js/faker'
 import { DateTime } from 'luxon'
 import { describe, test } from 'vitest'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
 
 import { settings } from '#root/database/schema.js'
 

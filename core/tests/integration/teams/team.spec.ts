@@ -1,7 +1,7 @@
 import { describe, test } from 'vitest'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { teamMemberships } from '#root/database/schema.js'
 

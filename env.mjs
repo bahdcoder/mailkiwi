@@ -82,7 +82,7 @@ class Config {
   constructor(args) {
     this.DEFAULT_INFISICAL_ENV = 'dev'
     this.DEFAULT_INFISICAL_SERVICE_TOKEN =
-      'st.49ee2b17-6184-497e-b0cb-b6980dee8484.09eb6135d923fb73562a7020fa8366a7.4d22740e830524564a074dfc48e6338c'
+      'st.8b716665-5949-4c67-af84-da88a4360b35.8848f40d0308da5c52f54dc91a937029.0420989a588d510adcc602ab8b532749'
     this.PROJECT_ID = '3df67a8d-229b-4f34-bd5f-712a60e01d71'
     this.INFISICAL_DOMAIN = 'https://infisical.kibamail.com'
 

@@ -13,12 +13,12 @@ import { AudienceRepository } from '#root/core/audiences/repositories/audience_r
 import { ContactImportRepository } from '#root/core/audiences/repositories/contact_import_repository.js'
 import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
 import {
   getCookieSessionForUser,
   makeRequest,
   makeRequestAsUser,
-} from '#root/tests/utils/http.js'
+} from '#root/core/tests/utils/http.js'
 
 import type { ContactImport } from '#root/database/database_schema_types.js'
 import {
@@ -33,7 +33,7 @@ import { Queue } from '#root/core/shared/queue/queue.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 import { container } from '#root/core/utils/typi.js'
-import { setupDomainForDnsChecks } from '#root/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 export const setupImport = async (fileName: string, updateSettings = false) => {
   const form = new FormData()

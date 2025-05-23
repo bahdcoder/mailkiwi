@@ -11,7 +11,7 @@ import { audiences, contacts, tagsOnContacts } from '#root/database/schema.js'
 import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 
 import { container } from '#root/core/utils/typi.js'
-import { setupImport } from '#root/tests/integration/helpers/contacts/setup_imports.js'
+import { setupImport } from '#root/core/tests/integration/helpers/contacts/setup_imports.js'
 
 describe('@contacts import job', () => {
   test('reads the csv content from storage and syncs all values to contacts', async ({

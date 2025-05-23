@@ -7,9 +7,9 @@ import { AllowedFilterFieldPickList } from '#root/core/audiences/dto/segments/cr
 import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
 import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { createFakeContact } from '#root/tests/mocks/audiences/contacts.js'
-import { createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import {
   type ContactFilterCondition,

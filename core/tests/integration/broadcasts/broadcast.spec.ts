@@ -9,9 +9,9 @@ import {
   createUser,
   setupSendingDomainForTeam,
   createSenderIdentityForTeam,
-} from '#root/tests/mocks/auth/users.js'
-import { refreshRedisDatabase } from '#root/tests/mocks/teams/teams.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+} from '#root/core/tests/mocks/auth/users.js'
+import { refreshRedisDatabase } from '#root/core/tests/mocks/teams/teams.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { broadcasts, emailContents } from '#root/database/schema.js'
 

@@ -91,10 +91,10 @@ export class ChatController extends BaseController {
     return publicChannels
   }
 
-  index = async (ctx: HonoContext, next: Next) => {
+  index = async (ctx: HonoContext) => {
     const publicChannels = await this.getChannels()
 
-    return this.page(ctx, next, { channels: publicChannels })
+    return this.response(ctx).json({ channels: publicChannels })
   }
 
   channel = async (ctx: HonoContext, next: Next) => {
@@ -110,7 +110,7 @@ export class ChatController extends BaseController {
       direction,
     )
 
-    return this.page(ctx, next, {
+    return this.response(ctx).json({
       channel,
       messages,
       channels: publicChannels,
@@ -120,7 +120,7 @@ export class ChatController extends BaseController {
   message = async (ctx: HonoContext, next: Next) => {
     const { messages, channel, messageId } = await this.getMessage(ctx)
 
-    return this.page(ctx, next, { messages, messageId, channel })
+    return this.response(ctx).json({ messages, messageId, channel })
   }
 
   getReplies = async (
@@ -159,7 +159,7 @@ export class ChatController extends BaseController {
 
     const replies = await this.getReplies(ctx, cursor, direction)
 
-    return this.page(ctx, next, replies)
+    return this.response(ctx).json({ cursor, replies })
   }
 
   reply = async (ctx: HonoContext, next: Next) => {
@@ -185,6 +185,6 @@ export class ChatController extends BaseController {
       message.id,
     )
 
-    return this.page(ctx, next, { replies, channel, messages })
+    return this.response(ctx).json(replies)
   }
 }

@@ -6,7 +6,7 @@ import type { CreateAutomationStepDto } from '#root/core/automations/dto/create_
 import { AutomationRepository } from '#root/core/automations/repositories/automation_repository.js'
 import { AutomationStepRepository } from '#root/core/automations/repositories/automation_step_repository.js'
 
-import { createUser } from '#root/tests/mocks/auth/users.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
 
 import { automationSteps } from '#root/database/schema.js'
 

@@ -139,8 +139,8 @@ pidfile /var/run/redis/redis-server.pid
 loglevel notice
 logfile /var/log/redis/redis-server.log
 requirepass password
-maxmemory 256mb
-maxmemory-policy allkeys-lru
+maxmemory 512mb
+maxmemory-policy noeviction
 appendonly no
 save ""
 timeout 0

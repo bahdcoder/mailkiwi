@@ -7,9 +7,9 @@ import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcas
 import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
-} from '#root/tests/mocks/audiences/email_content.js'
-import { createBroadcastForUser, createUser } from '#root/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '#root/tests/utils/http.js'
+} from '#root/core/tests/mocks/audiences/email_content.js'
+import { createBroadcastForUser, createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { container } from '#root/core/utils/typi.js'
 
