@@ -1,12 +1,12 @@
 import { AddMediaDocumentAction } from '#root/core/media-library/dto/add_media_document_action.js'
 
 import { makeApp } from '#root/core/shared/container/index.js'
-import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
 import { container } from '#root/core/utils/typi.js'
 
-export class MediaDocumentController extends VikeController {
+export class MediaDocumentController extends BaseController {
   constructor(protected app = makeApp()) {
     super()
 
