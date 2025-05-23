@@ -10,12 +10,12 @@ import { channels } from '#root/database/schema.js'
 import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
 import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
-import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
 import { container } from '#root/core/utils/typi.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 
-export class ChatController extends VikeController {
+export class ChatController extends BaseController {
   constructor(
     protected app = makeApp(),
     protected database = makeDatabase(),
@@ -24,23 +24,15 @@ export class ChatController extends VikeController {
   ) {
     super()
 
-    this.app.defineRoutes([...this.vikePath('/community', this.index)], {
+    this.app.defineRoutes([], {
       prefix: '',
       middleware: [],
     })
 
-    this.app.defineRoutes(
-      [
-        ...this.vikePath('/m/:messageId/replies/:replyId', this.reply),
-        ...this.vikePath('/m/:messageId/replies', this.replies),
-        ...this.vikePath('/m/:messageId', this.message),
-        ...this.vikePath('/', this.channel),
-      ],
-      {
-        prefix: '/community/:slug',
-        middleware: [],
-      },
-    )
+    this.app.defineRoutes([], {
+      prefix: '/community/:slug',
+      middleware: [],
+    })
   }
 
   protected getChannel = async (ctx: HonoContext) => {

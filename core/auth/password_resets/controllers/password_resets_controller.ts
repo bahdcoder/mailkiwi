@@ -8,7 +8,7 @@ import { UserRepository } from '#root/core/auth/users/repositories/user_reposito
 import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
 import { makeApp } from '#root/core/shared/container/index.js'
-import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
 import { container } from '#root/core/utils/typi.js'
@@ -25,7 +25,7 @@ import { container } from '#root/core/utils/typi.js'
  * to their accounts when they've forgotten their passwords, while maintaining
  * security and preventing unauthorized access.
  */
-export class PasswordResetsController extends VikeController {
+export class PasswordResetsController extends BaseController {
   constructor(
     protected app = makeApp(),
     protected passwordResetsRepository = container.make(PasswordResetRepository),
@@ -34,8 +34,6 @@ export class PasswordResetsController extends VikeController {
 
     this.app.defineRoutes(
       [
-        ...this.vikePath('forgot', this.redirectToWelcomeIfAuthenticatedPage),
-        ...this.vikePath('/reset/:token', this.redirectToWelcomeIfAuthenticatedPage),
         ['POST', 'forgot', this.request],
         ['POST', 'reset/:token', this.reset],
       ],

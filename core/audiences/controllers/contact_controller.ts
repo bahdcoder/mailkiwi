@@ -17,11 +17,11 @@ import type {
 } from '#root/database/database_schema_types.js'
 
 import { makeApp } from '#root/core/shared/container/index.js'
-import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
 import type { HonoInstance } from '#root/core/shared/server/hono.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
 import { container } from '#root/core/utils/typi.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 /**
  * ContactController manages contact resources within audiences.
@@ -35,7 +35,7 @@ import { container } from '#root/core/utils/typi.js'
  * provides comprehensive functionality for managing contact data, including personal
  * information, custom properties, tags, and engagement history.
  */
-export class ContactController extends VikeController {
+export class ContactController extends BaseController {
   constructor(private app: HonoInstance = makeApp()) {
     super()
 

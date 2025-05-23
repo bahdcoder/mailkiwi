@@ -9,11 +9,11 @@ import { UserRepository } from '#root/core/auth/users/repositories/user_reposito
 import { oauth2Accounts } from '#root/database/schema.js'
 
 import { makeApp } from '#root/core/shared/container/index.js'
-import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
 import { container } from '#root/core/utils/typi.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 type Oauth2Params = {
   action: 'login' | 'register'
@@ -33,7 +33,7 @@ type Oauth2Params = {
  * access Kibamail without creating separate credentials, leveraging their
  * existing accounts with trusted providers.
  */
-export class Oauth2Controller extends VikeController {
+export class Oauth2Controller extends BaseController {
   constructor(
     protected app = makeApp(),
     protected userRepository = container.make(UserRepository),

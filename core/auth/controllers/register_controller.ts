@@ -15,13 +15,13 @@ import { UserRepository } from '#root/core/auth/users/repositories/user_reposito
 import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
 import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
-import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
 import { middleware } from '#root/core/shared/middleware/middleware_aliases.js'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 import { Session } from '#root/core/shared/sessions/sessions.js'
 
 import { container } from '#root/core/utils/typi.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 /**
  * RegisterController handles the user registration process.
@@ -36,31 +36,20 @@ import { container } from '#root/core/utils/typi.js'
  * users complete all necessary steps while maintaining security and
  * data integrity throughout the account creation process.
  */
-export class RegisterController extends VikeController {
+export class RegisterController extends BaseController {
   constructor(
     private userRepository = container.make(UserRepository),
     private app = makeApp(),
   ) {
     super()
 
-    this.app.defineRoutes(
-      [
-        ...this.vikePath(
-          route('auth_register'),
-          this.redirectToWelcomeIfAuthenticatedPage,
-        ),
-        ['POST', route('auth_register'), this.register.bind(this)],
-      ],
-      {
-        prefix: '',
-        middleware: [],
-      },
-    )
+    this.app.defineRoutes([['POST', route('auth_register'), this.register.bind(this)]], {
+      prefix: '',
+      middleware: [],
+    })
 
     this.app.defineRoutes(
       [
-        ...this.vikePath(route('auth_register_password'), this.passwordPage),
-        ...this.vikePath(route('auth_register_email_confirm'), this.page),
         ['POST', route('auth_register_password'), this.password.bind(this)],
         ['POST', route('auth_register_profile'), this.profile.bind(this)],
         ['POST', route('auth_register_email_confirm'), this.emailConfirm.bind(this)],

@@ -14,9 +14,8 @@ import { UserSessionMiddleware } from '#root/core/auth/middleware/user_session_m
 import { sentryConfig, isSentryEnabled } from '#root/core/app/env/sentry.js'
 
 import { E_REQUEST_EXCEPTION } from '#root/core/http/responses/errors.js'
-
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 import { makeLogger } from '#root/core/shared/container/index.js'
-import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
 import { FlashMiddleware } from '#root/core/shared/middleware/flash_middleware.js'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 
@@ -116,7 +115,7 @@ export class Hono extends BaseHono<{ Bindings: HttpBindings }> implements HonoIn
             }
           : { message: unknownErrorMessage }
 
-      const controller = container.make(VikeController)
+      const controller = container.make(BaseController)
       const requestContext = ctx as unknown as HonoContext
 
       let redirectToPath = route('auth_login')
