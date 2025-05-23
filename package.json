@@ -22,28 +22,13 @@
     "coder:quick:dev": "./env.mjs  --env=coder vike dev",
 
     "//build": "=== BUILD SCRIPTS ===",
-    "build": "pnpm test && pnpm types:check && pnpm build:quick",
+    "build": "pnpm build:clean && vike build",
     "build:clean": "del-cli build",
-    "build:app": "vike build",
-    "build:client": "vite build",
-    "build:quick": "pnpm build:clean && pnpm build:app",
-
-    "//ci-build": "=== CI BUILD SCRIPTS ===",
-    "ci:build": "pnpm ci:test && pnpm types:check && pnpm build:quick",
-    "ci:build:quick": "pnpm build:clean && pnpm build:app",
-
-    "//staging-build": "=== STAGING BUILD SCRIPTS ===",
-    "staging:build:client": "./env.mjs --env=staging vite build",
-    "staging:build:quick": "pnpm build:clean && pnpm build:app",
-
-    "//prod-build": "=== PRODUCTION BUILD SCRIPTS ===",
-    "prod:build:client": "./env.mjs --env=staging vite build",
-    "prod:build:quick": "pnpm build:clean && pnpm build:app",
 
     "//test": "=== TEST SCRIPTS ===",
     "test": "pnpm test:server && pnpm test:client",
-    "test:server": "./env.mjs  --env=test pnpm test:server:watch --run",
-    "test:server:watch": "pnpm test:seed_channels && ./env.mjs --env=test pnpm test:mysql:migrate && ./env.mjs  --env=test vitest",
+    "test:server": "./env.mjs --env=test pnpm test:server:watch --run",
+    "test:server:watch": "./env.mjs --env=test pnpm test:mysql:migrate && ./env.mjs --env=test pnpm test:seed_channels && ./env.mjs --env=test vitest",
     "test:server:coverage": "pnpm test:mysql:migrate && vitest --run --coverage",
     "test:client": "pnpm test:client:watch --run",
     "test:client:watch": "vitest --config vitest.client.config.ts",

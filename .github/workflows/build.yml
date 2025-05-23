@@ -22,4 +22,4 @@ jobs:
       - uses: ./.github/actions/run-command
         with:
           name: build project
-          command: pnpm ci:build:quick
+          command: pnpm build
