@@ -26,19 +26,19 @@
     "build:clean": "del-cli build",
     "build:app": "vike build",
     "build:client": "vite build",
-    "build:quick": "pnpm build:clean && pnpm build:app && pnpm cli:no-connections fix_typescript_imports",
+    "build:quick": "pnpm build:clean && pnpm build:app",
 
     "//ci-build": "=== CI BUILD SCRIPTS ===",
     "ci:build": "pnpm ci:test && pnpm types:check && pnpm build:quick",
-    "ci:build:quick": "pnpm build:clean && pnpm build:app && pnpm ci:cli:no-connections fix_typescript_imports",
+    "ci:build:quick": "pnpm build:clean && pnpm build:app",
 
     "//staging-build": "=== STAGING BUILD SCRIPTS ===",
     "staging:build:client": "./env.mjs --env=staging vite build",
-    "staging:build:quick": "pnpm build:clean && pnpm build:app && pnpm staging:cli:no-connections fix_typescript_imports",
+    "staging:build:quick": "pnpm build:clean && pnpm build:app",
 
     "//prod-build": "=== PRODUCTION BUILD SCRIPTS ===",
     "prod:build:client": "./env.mjs --env=staging vite build",
-    "prod:build:quick": "pnpm build:clean && pnpm build:app && pnpm ci:cli:no-connections fix_typescript_imports",
+    "prod:build:quick": "pnpm build:clean && pnpm build:app",
 
     "//test": "=== TEST SCRIPTS ===",
     "test": "pnpm test:server && pnpm test:client",
@@ -105,14 +105,7 @@
     "lint": "pnpm biome lint --write --unsafe .",
 
     "//git": "=== GIT & COMMIT SCRIPTS ===",
-    "prepare": "husky",
-    "commit": "cz",
-    "commit:check": "commitlint --from HEAD~1 --to HEAD --verbose"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
+    "prepare": "husky"
   },
   "keywords": [
     "open source",
@@ -126,8 +119,6 @@
   "devDependencies": {
     "@ant-design/icons": "4.7.0",
     "@biomejs/biome": "1.9.4",
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
     "@drizzle-team/brocli": "^0.9.2",
     "@faker-js/faker": "^8.4.1",
     "@fastify/vite": "^6.0.6",
@@ -175,9 +166,7 @@
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/coverage-v8": "^1.6.0",
     "autoprefixer": "^10.4.19",
-    "commitizen": "^4.3.1",
     "concurrently": "^9.0.1",
-    "cz-conventional-changelog": "^3.3.0",
     "del-cli": "^5.1.0",
     "drizzle-kit": "^0.24.2",
     "drizzle-orm": "^0.33.0",

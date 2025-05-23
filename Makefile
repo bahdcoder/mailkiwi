@@ -9,6 +9,7 @@ SHELL := /bin/bash
 # docker compose files
 COMPOSE_DEV := -f docker/compose.dev.yaml
 COMPOSE_CODER := -f docker/compose.coder.yaml
+COMPOSE_DEV_ESSENTIAL := -f docker/compose.dev.essential.yaml
 
 # Helper target to print available commands
 help:
@@ -34,7 +35,7 @@ coder.down:
 	@echo "Destroying the application environment..."
 	docker compose $(COMPOSE_CODER) down
 
-down-clean:
+down.clean:
 	@echo "Destroying the application environment and cleaning volumes..."
 	docker compose $(COMPOSE_DEV) down -v
 
@@ -69,6 +70,10 @@ run:
 dev:
 	@echo "Starting all services..."
 	docker compose $(COMPOSE_DEV) up --wait
+
+dev.essential:
+	@echo "starting all essential services..."
+	docker compose $(COMPOSE_DEV_ESSENTIAL) up --wait
 
 coder.dev:
 	@echo "Starting all services..."

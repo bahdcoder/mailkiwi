@@ -13,9 +13,4 @@ runs:
     - name: start docker services
       shell: bash
       run: |
-        make dev
-
-    - name: wait for docker services
-      shell: bash
-      run: |
-        sleep ${{ inputs.wait-seconds }}
+        make dev.essential
