@@ -1,5 +1,5 @@
-import { CheckIcon } from '@pages/components/icons/check.svg.jsx'
-import { LinkIcon } from '@pages/components/icons/link.svg.jsx'
+import { CheckIcon } from '#root/pages/components/icons/check.svg.jsx'
+import { LinkIcon } from '#root/pages/components/icons/link.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 import * as Popover from '@radix-ui/react-popover'

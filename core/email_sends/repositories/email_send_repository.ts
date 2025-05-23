@@ -4,12 +4,12 @@ import type {
   EmailSend,
   InsertEmailSend,
   UpdateEmailSend,
-} from '@/database/database_schema_types.js'
-import { emailSendEvents, emailSends } from '@/database/schema.js'
-import { hasMany } from '@/database/utils/relationships.js'
+} from '#root/database/database_schema_types.js'
+import { emailSendEvents, emailSends } from '#root/database/schema.js'
+import { hasMany } from '#root/database/utils/relationships.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 export class EmailSendRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {

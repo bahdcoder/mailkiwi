@@ -1,10 +1,10 @@
 import type { Next } from 'hono'
 
-import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
+import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories/access_token_repository.js'
 
-import type { HonoContext } from '@/shared/server/types.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * ApiKeyMiddleware handles optional API key authentication for requests.

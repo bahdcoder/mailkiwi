@@ -1,11 +1,11 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { SettingRepository } from '@/settings/repositories/setting_repository.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { SettingRepository } from '#root/core/settings/repositories/setting_repository.js'
 import { command } from '@drizzle-team/brocli'
 
-import { AcmeCertificatesTool } from '@/tools/ssl/acme_certificates_tool.js'
+import { AcmeCertificatesTool } from '#root/core/tools/ssl/acme_certificates_tool.js'
 
-import { makeLogger } from '@/shared/container/index.js'
-import { container } from '@/utils/typi.js'
+import { makeLogger } from '#root/core/shared/container/index.js'
+import { container } from '#root/core/utils/typi.js'
 
 export const generateAcmeAccountIdentityCommand = command({
   name: 'generate_acme_account_identity',

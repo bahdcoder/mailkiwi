@@ -1,18 +1,18 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import type { Next } from 'hono'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import type { UserWithTeams } from '@/database/database_schema_types.js'
+import type { UserWithTeams } from '#root/database/database_schema_types.js'
 
-import type { HonoContext } from '@/shared/server/types.js'
-import { Session } from '@/shared/sessions/sessions.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
+import { Session } from '#root/core/shared/sessions/sessions.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * UserSessionMiddleware handles user authentication and session management.

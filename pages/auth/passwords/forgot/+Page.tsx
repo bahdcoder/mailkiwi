@@ -1,13 +1,13 @@
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 function ForgotPasswordPage() {
   const { serverFormProps, error, isSuccess } = useServerFormMutation({

@@ -1,15 +1,15 @@
 import { and, eq } from 'drizzle-orm'
 
-import type { CreateBroadcastDto } from '@/broadcasts/dto/create_broadcast_dto.js'
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import type { CreateBroadcastDto } from '#root/core/broadcasts/dto/create_broadcast_dto.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { sendingDomains } from '@/database/schema.js'
+import { sendingDomains } from '#root/database/schema.js'
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
-import { container } from '@/utils/typi.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * CreateBroadcastAction handles the creation of new email marketing campaigns.

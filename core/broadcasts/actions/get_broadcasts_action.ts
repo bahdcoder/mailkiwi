@@ -1,6 +1,6 @@
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class GetBroadcastsAction {
   constructor(

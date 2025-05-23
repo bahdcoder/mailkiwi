@@ -1,18 +1,18 @@
-import { ArrowLeftIcon } from '@pages/components/icons/arrow-left.svg.jsx'
+import { ArrowLeftIcon } from '#root/pages/components/icons/arrow-left.svg.jsx'
 import {
   type FormState,
   OnboardingProvider,
-} from '@pages/w/engage/onboarding/steps/context_provider.jsx'
-import { CreateBroadcastGroupStep } from '@pages/w/engage/onboarding/steps/step_one_create_broadcast_group.jsx'
-import { WriteYourFirstLetterStep } from '@pages/w/engage/onboarding/steps/step_three_write_your_first_letter.jsx'
-import { AddContactsStep } from '@pages/w/engage/onboarding/steps/step_two_add_contacts.jsx'
+} from '#root/pages/w/engage/onboarding/steps/context_provider.jsx'
+import { CreateBroadcastGroupStep } from '#root/pages/w/engage/onboarding/steps/step_one_create_broadcast_group.jsx'
+import { WriteYourFirstLetterStep } from '#root/pages/w/engage/onboarding/steps/step_three_write_your_first_letter.jsx'
+import { AddContactsStep } from '#root/pages/w/engage/onboarding/steps/step_two_add_contacts.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Progress } from '@kibamail/owly/progress'
 import '@kibamail/owly/styles/select-field.css'
 import { Text } from '@kibamail/owly/text'
 import React from 'react'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 function LettersOnboarding() {
   const [step, setStep] = React.useState(0)

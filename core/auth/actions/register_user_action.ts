@@ -1,13 +1,13 @@
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
-import { DEFAULT_TEAM_NAME } from '@/database/constants.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
+import { DEFAULT_TEAM_NAME } from '#root/database/constants.js'
 
-import type { InsertUser } from '@/database/database_schema_types.js'
+import type { InsertUser } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class RegisterUserAction {
   constructor(private userRepository = container.make(UserRepository)) {}

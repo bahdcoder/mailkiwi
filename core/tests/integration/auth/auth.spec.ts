@@ -1,25 +1,25 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 import { describe, test } from 'vitest'
 
-import { GithubDriver } from '@/auth/oauth2_drivers/github_driver.js'
-import { GoogleDriver } from '@/auth/oauth2_drivers/google_driver.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { GithubDriver } from '#root/core/auth/oauth2_drivers/github_driver.js'
+import { GoogleDriver } from '#root/core/auth/oauth2_drivers/google_driver.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequest, makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
+import { makeRequest, makeRequestAsUser } from '#root/tests/utils/http.js'
 
-import { oauth2Accounts, users } from '@/database/schema.js'
+import { oauth2Accounts, users } from '#root/database/schema.js'
 
-import { makeApp, makeDatabase } from '@/shared/container/index.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import { RedisSessionStore } from '@/shared/sessions/stores/redis_session_store.js'
-import { OtpGenerator } from '@/shared/tokens/otp_generator.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_session_store.js'
+import { OtpGenerator } from '#root/core/shared/tokens/otp_generator.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 describe('@auth user registration', () => {
   test('can register a new user account', async ({ expect }) => {

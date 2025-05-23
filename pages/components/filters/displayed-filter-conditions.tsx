@@ -1,8 +1,8 @@
-import * as Dropdown from '@pages/components/dropdown/dropdown.jsx'
-import { CancelIcon } from '@pages/components/icons/cancel.svg.jsx'
-import { CheckIcon } from '@pages/components/icons/check.svg.jsx'
-import type { FilterCondition } from '@pages/w/engage/contacts/components/filters.jsx'
-import { TextFilterInputForm } from '@pages/w/engage/contacts/components/filters.jsx'
+import * as Dropdown from '#root/pages/components/dropdown/dropdown.jsx'
+import { CancelIcon } from '#root/pages/components/icons/cancel.svg.jsx'
+import { CheckIcon } from '#root/pages/components/icons/check.svg.jsx'
+import type { FilterCondition } from '#root/pages/w/engage/contacts/components/filters.jsx'
+import { TextFilterInputForm } from '#root/pages/w/engage/contacts/components/filters.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Checkbox } from '@kibamail/owly/checkbox'
 import { Text } from '@kibamail/owly/text'
@@ -11,7 +11,7 @@ import * as React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 import type { PageContext } from 'vike/types'
 
-import type { Segment, Tag } from '@/database/database_schema_types.js'
+import type { Segment, Tag } from '#root/database/database_schema_types.js'
 
 const filterOperationLabels: Record<string, string> = {
   eq: 'Is',

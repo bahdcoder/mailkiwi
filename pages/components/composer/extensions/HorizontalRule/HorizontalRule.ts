@@ -1,9 +1,9 @@
-import { HorizontalRuleNodeView } from '@pages/components/composer/extensions/HorizontalRule/horizontal-rule-node-view.jsx'
+import { HorizontalRuleNodeView } from '#root/pages/components/composer/extensions/HorizontalRule/horizontal-rule-node-view.jsx'
 import {
   getStyleAttributeDefaultCommands,
   getStyleAttributeDefinition,
-} from '@pages/components/composer/extensions/NodeStyles/NodeStyles.js'
-import { getDefaultStylesForNode } from '@pages/components/composer/themes/default-theme.js'
+} from '#root/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
+import { getDefaultStylesForNode } from '#root/pages/components/composer/themes/default-theme.js'
 import { mergeAttributes } from '@tiptap/core'
 import TiptapHorizontalRule from '@tiptap/extension-horizontal-rule'
 import { ReactNodeViewRenderer } from '@tiptap/react'

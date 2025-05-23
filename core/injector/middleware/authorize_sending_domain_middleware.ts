@@ -1,10 +1,10 @@
 import type { Next } from 'hono'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import type { HonoContext } from '@/shared/server/types.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class AuthorizeSendingDomainMiddleware {
   constructor(private teamRepository = container.make(TeamRepository)) {}

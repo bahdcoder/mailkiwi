@@ -1,9 +1,9 @@
-import { PageLayout } from '@pages/components/page/page-layout.jsx'
-import { ProductPageHeading } from '@pages/components/page/product-page-heading.jsx'
+import { PageLayout } from '#root/pages/components/page/page-layout.jsx'
+import { ProductPageHeading } from '#root/pages/components/page/product-page-heading.jsx'
 import * as Tabs from '@kibamail/owly/tabs'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 function EngageLayout({ children }: React.PropsWithChildren) {
   const { urlPathname, routeParams, engage } = usePageContext()

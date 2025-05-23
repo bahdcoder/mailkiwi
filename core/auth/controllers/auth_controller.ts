@@ -1,17 +1,17 @@
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.js'
-import { LoginUserSchema } from '@/auth/users/dto/login_user_dto.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { CreateTeamAccessTokenAction } from '#root/core/auth/actions/create_team_access_token.js'
+import { LoginUserSchema } from '#root/core/auth/users/dto/login_user_dto.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { VikeController } from '@/shared/controllers/vike_controller.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * AuthController handles user authentication and API key management.

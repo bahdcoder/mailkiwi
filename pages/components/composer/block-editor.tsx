@@ -1,4 +1,4 @@
-import { TextSizeIcon } from '@pages/components/icons/text-size.svg.jsx'
+import { TextSizeIcon } from '#root/pages/components/icons/text-size.svg.jsx'
 import * as SelectField from '@kibamail/owly/select-field'
 import * as Tabs from '@kibamail/owly/tabs'
 import { Text } from '@kibamail/owly/text'

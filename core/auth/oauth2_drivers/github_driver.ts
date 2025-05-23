@@ -1,4 +1,4 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { Oauth2Client } from '@poppinss/oauth-client/oauth2'
 import type {
   Oauth2AccessToken,
@@ -6,10 +6,13 @@ import type {
 } from '@poppinss/oauth-client/types'
 import { getCookie } from 'hono/cookie'
 
-import type { Oauth2Driver, Oauth2Params } from '@/auth/oauth2_drivers/base_driver.js'
+import type {
+  Oauth2Driver,
+  Oauth2Params,
+} from '#root/core/auth/oauth2_drivers/base_driver.js'
 
-import { makeHttpClient } from '@/shared/http/http_client.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeHttpClient } from '#root/core/shared/http/http_client.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
 export class GithubDriver
   extends Oauth2Client<Oauth2AccessToken>

@@ -1,15 +1,15 @@
-import { AssignSendingSourceToSendingDomainAction } from '@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { AssignSendingSourceToSendingDomainAction } from '#root/core/sending_domains/actions/assign_sending_source_to_sending_domain_action.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { DnsResolverTool } from '@/tools/dns/dns_resolver_tool.js'
+import { DnsResolverTool } from '#root/core/tools/dns/dns_resolver_tool.js'
 
-import { sendingDomains } from '@/database/schema.js'
+import { sendingDomains } from '#root/database/schema.js'
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export interface CheckSendingDomainDnsConfigurationJobPayload {
   sendingDomainId: string

@@ -3,11 +3,11 @@ import { aliasedTableColumn, and, count, eq, sql } from 'drizzle-orm'
 import {
   type InsertSendingSource,
   SendingSource,
-} from '@/database/database_schema_types.js'
-import { emailSends, sendingSources } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import { emailSends, sendingSources } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 export class SendingSourceRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {

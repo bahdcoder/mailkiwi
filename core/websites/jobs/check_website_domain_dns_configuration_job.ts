@@ -1,13 +1,13 @@
-import { IssueSSLCertificateForWebsiteJob } from '@/websites/jobs/issue_ssl_certificate_for_website_job.js'
-import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { IssueSSLCertificateForWebsiteJob } from '#root/core/websites/jobs/issue_ssl_certificate_for_website_job.js'
+import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
 
-import { DnsWebsiteResolverTool } from '@/tools/dns/dns_website_resolver_tool.js'
+import { DnsWebsiteResolverTool } from '#root/core/tools/dns/dns_website_resolver_tool.js'
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export interface CheckWebsiteDomainDnsConfigurationPayload {
   websiteId: string

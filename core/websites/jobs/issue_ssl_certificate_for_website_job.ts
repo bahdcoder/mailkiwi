@@ -1,14 +1,14 @@
-import { SettingRepository } from '@/settings/repositories/setting_repository.js'
-import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { SettingRepository } from '#root/core/settings/repositories/setting_repository.js'
+import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
 import { DateTime } from 'luxon'
 
-import { AcmeCertificatesTool } from '@/tools/ssl/acme_certificates_tool.js'
+import { AcmeCertificatesTool } from '#root/core/tools/ssl/acme_certificates_tool.js'
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { Encryption } from '@/shared/utils/encryption/encryption.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
+import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export interface IssueSSLCertificateForWebsiteJobPayload {
   websiteId: string

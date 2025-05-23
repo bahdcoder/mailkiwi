@@ -1,19 +1,19 @@
-import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
-import { MessageRepository } from '@/chat/repositories/message_repository.js'
+import { ChannelRepository } from '#root/core/chat/repositories/channel_repository.js'
+import { MessageRepository } from '#root/core/chat/repositories/message_repository.js'
 import { eq } from 'drizzle-orm'
 import type { Next } from 'hono'
 import type { NonOptional } from 'valibot'
 
-import type { Message } from '@/database/database_schema_types.js'
-import { channels } from '@/database/schema.js'
+import type { Message } from '#root/database/database_schema_types.js'
+import { channels } from '#root/database/schema.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { makeApp, makeDatabase } from '@/shared/container/index.js'
-import { VikeController } from '@/shared/controllers/vike_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
+import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class ChatController extends VikeController {
   constructor(

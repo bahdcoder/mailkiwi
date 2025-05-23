@@ -1,11 +1,11 @@
-import { getProgressBarVariant } from '@pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
-import { DisplayedFilterCondition } from '@pages/components/filters/displayed-filter-conditions.jsx'
-import { SlashesDivider } from '@pages/components/flows/compose_broadcast/components/slashes_divider.jsx'
-import { useComposeBroadcastContext } from '@pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
-import { MinusIcon } from '@pages/components/icons/minus.svg.jsx'
-import { WarningTriangleSolidIcon } from '@pages/components/icons/warning-triangle-solid.svg.jsx'
-import { formatCount } from '@pages/utils/number_formatter.js'
-import type { FilterCondition } from '@pages/w/engage/contacts/components/filters.jsx'
+import { getProgressBarVariant } from '#root/pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
+import { DisplayedFilterCondition } from '#root/pages/components/filters/displayed-filter-conditions.jsx'
+import { SlashesDivider } from '#root/pages/components/flows/compose_broadcast/components/slashes_divider.jsx'
+import { useComposeBroadcastContext } from '#root/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { MinusIcon } from '#root/pages/components/icons/minus.svg.jsx'
+import { WarningTriangleSolidIcon } from '#root/pages/components/icons/warning-triangle-solid.svg.jsx'
+import { formatCount } from '#root/pages/utils/number_formatter.js'
+import type { FilterCondition } from '#root/pages/w/engage/contacts/components/filters.jsx'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
@@ -14,8 +14,11 @@ import * as SelectField from '@kibamail/owly/select-field'
 import { Spinner } from '@kibamail/owly/spinner'
 import { Text } from '@kibamail/owly/text'
 import React from 'react'
-import type { BroadcastPageProps, Segment } from '@pages/types/broadcast-page-props.js'
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+import type {
+  BroadcastPageProps,
+  Segment,
+} from '#root/pages/types/broadcast-page-props.js'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
 export function StepTwoRecipients() {
   const {

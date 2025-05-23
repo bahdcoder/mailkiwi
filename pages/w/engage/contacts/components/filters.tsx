@@ -1,5 +1,5 @@
-import * as Dropdown from '@pages/components/dropdown/dropdown.jsx'
-import { FilterListIcon } from '@pages/components/icons/filter-list.svg.jsx'
+import * as Dropdown from '#root/pages/components/dropdown/dropdown.jsx'
+import { FilterListIcon } from '#root/pages/components/icons/filter-list.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Checkbox } from '@kibamail/owly/checkbox'
 import { Text } from '@kibamail/owly/text'
@@ -13,13 +13,13 @@ import type { PageContext } from 'vike/types'
 import type {
   AllowedFilterField,
   CreateSegmentDto,
-} from '@/audiences/dto/segments/create_segment_dto.js'
+} from '#root/core/audiences/dto/segments/create_segment_dto.js'
 
-import type { Segment, Tag } from '@/database/database_schema_types.js'
+import type { Segment, Tag } from '#root/database/database_schema_types.js'
 import {
   type PageContextWithPageProps,
   usePageContextWithProps,
-} from '@pages/hooks/use_page_props.js'
+} from '#root/pages/hooks/use_page_props.js'
 
 export type FilterCondition =
   CreateSegmentDto['filterGroups']['groups'][number]['conditions'][number] & {

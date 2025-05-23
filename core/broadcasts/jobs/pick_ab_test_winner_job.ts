@@ -1,5 +1,5 @@
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 
 /**
  * Payload for the PickAbTestWinnerJob.

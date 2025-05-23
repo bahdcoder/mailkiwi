@@ -1,4 +1,4 @@
-import { convertToReactStyles } from '@pages/components/composer/utils/convert-styles-to-react-styles.js'
+import { convertToReactStyles } from '#root/pages/components/composer/utils/convert-styles-to-react-styles.js'
 import { NodeViewContent, type NodeViewProps, NodeViewWrapper } from '@tiptap/react'
 import cn from 'classnames'
 

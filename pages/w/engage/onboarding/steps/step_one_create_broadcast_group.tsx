@@ -1,9 +1,9 @@
-import { ArrowLeftIcon } from '@pages/components/icons/arrow-left.svg.jsx'
+import { ArrowLeftIcon } from '#root/pages/components/icons/arrow-left.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
-import { slugify } from '@pages/utils/slugify.js'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
+import { slugify } from '#root/pages/utils/slugify.js'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Progress } from '@kibamail/owly/progress'
@@ -14,7 +14,7 @@ import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 import { useOnboardingContext } from './context_provider.js'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 export function CreateBroadcastGroupStep() {
   const { pageProps: ctx } = usePageContext()

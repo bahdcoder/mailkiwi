@@ -1,6 +1,6 @@
-import { NewContactPropertyForm } from '@pages/w/engage/contacts/components/actions/new_contact_property_form.jsx'
+import { NewContactPropertyForm } from '#root/pages/w/engage/contacts/components/actions/new_contact_property_form.jsx'
 
-import type { KnownAudienceProperty } from '@/database/schema.js'
+import type { KnownAudienceProperty } from '#root/database/schema.js'
 
 export interface UpdateContactPropertyProps {
   property: KnownAudienceProperty | null

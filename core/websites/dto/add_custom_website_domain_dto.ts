@@ -10,9 +10,9 @@ import {
   string,
 } from 'valibot'
 
-import { websites } from '@/database/schema.js'
+import { websites } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 /**
  * Schema for adding a custom domain to a newsletter website.

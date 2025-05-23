@@ -1,14 +1,14 @@
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import { TeamPolicy } from '@/audiences/policies/team_policy.js'
+import { TeamPolicy } from '#root/core/audiences/policies/team_policy.js'
 
-import type { BroadcastWithoutContent } from '@/database/database_schema_types.js'
+import type { BroadcastWithoutContent } from '#root/database/database_schema_types.js'
 
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import type { HonoContext } from '@/shared/server/types.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * BroadcastValidationAndAuthorizationConcern handles validation and authorization for broadcast operations.

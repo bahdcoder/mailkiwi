@@ -1,6 +1,6 @@
-import { expect, test } from '@/tests/e2e/fixtures/users.js'
+import { expect, test } from '#root/tests/e2e/fixtures/users.js'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 test('can switch teams', async ({ managerPage, seed }) => {
   await managerPage.page.goto(route('dashboard'))

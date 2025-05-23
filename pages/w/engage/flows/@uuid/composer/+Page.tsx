@@ -1,17 +1,17 @@
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 import { Flow } from './automation-flow/automation-flow-builder.jsx'
 
 import './flow_composer_styles.css'
-import type { AutomationWithSteps } from '@/database/database_schema_types.js'
-import { CancelIcon } from '@pages/components/icons/cancel.svg.jsx'
-import { EditPencilIcon } from '@pages/components/icons/edit-pencil.svg.jsx'
-import { FlowComposerSidebar } from '@pages/w/engage/flows/@uuid/composer/components/flow_composer_sidebar/flow_composer_sidebar.jsx'
+import type { AutomationWithSteps } from '#root/database/database_schema_types.js'
+import { CancelIcon } from '#root/pages/components/icons/cancel.svg.jsx'
+import { EditPencilIcon } from '#root/pages/components/icons/edit-pencil.svg.jsx'
+import { FlowComposerSidebar } from '#root/pages/w/engage/flows/@uuid/composer/components/flow_composer_sidebar/flow_composer_sidebar.jsx'
 import { Badge } from '@kibamail/owly/badge'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import React from 'react'
 import { AutomationFlowProvider } from './automation-flow/state/automation-flow-context.jsx'
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 function EngageCreateFlowPage() {
   const { pageProps } = usePageContextWithProps<{ automation: AutomationWithSteps }>()

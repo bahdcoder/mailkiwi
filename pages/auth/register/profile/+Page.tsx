@@ -1,13 +1,13 @@
-import { PageContainer, PageTitle } from '@pages/components/auth/auth.jsx'
+import { PageContainer, PageTitle } from '#root/pages/components/auth/auth.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import * as TextField from '@kibamail/owly/text-field'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 function RegisterProfile() {
   const { user } = usePageContext()

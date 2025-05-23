@@ -1,9 +1,9 @@
-import { AddSendingSourceAction } from '@/settings/actions/add_sending_source_action.js'
-import { CreateSendingSourceSchema } from '@/settings/dtos/create_sending_source_dto.js'
+import { AddSendingSourceAction } from '#root/core/settings/actions/add_sending_source_action.js'
+import { CreateSendingSourceSchema } from '#root/core/settings/dtos/create_sending_source_dto.js'
 import { command, string } from '@drizzle-team/brocli'
 import { parseAsync } from 'valibot'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export const addSendingSourceCommand = command({
   name: 'add_sending_source',

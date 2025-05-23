@@ -1,4 +1,4 @@
-import { makeRedis } from '@/shared/container/index.js'
+import { makeRedis } from '#root/core/shared/container/index.js'
 
 type CacheNamespace = 'domains' | 'teams' | 'access_tokens' | 'websites' | 'audiences'
 

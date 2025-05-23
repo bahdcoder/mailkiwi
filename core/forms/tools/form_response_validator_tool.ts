@@ -1,7 +1,7 @@
-import type { FormFieldDto } from '@/forms/dto/create_form_dto.js'
+import type { FormFieldDto } from '#root/core/forms/dto/create_form_dto.js'
 import { email, pipe, safeParse, string } from 'valibot'
 
-import type { Form, FormResponse } from '@/database/database_schema_types.js'
+import type { Form, FormResponse } from '#root/database/database_schema_types.js'
 
 export class FormResponseValidatorTool {
   constructor(

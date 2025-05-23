@@ -1,8 +1,8 @@
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
-import { navigate } from '@pages/utils/navigate.js'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
+import { navigate } from '#root/pages/utils/navigate.js'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
 import { Text } from '@kibamail/owly/text'
@@ -10,7 +10,7 @@ import React from 'react'
 import { toast } from 'sonner'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 interface CancelScheduledBroadcastProps {
   sendAt: string

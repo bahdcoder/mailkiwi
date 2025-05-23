@@ -1,8 +1,8 @@
 import { Readable } from 'node:stream'
-import { makeS3Client } from '@/minio/s3_client.js'
+import { makeS3Client } from '#root/core/minio/s3_client.js'
 import mime from 'mime-types'
 
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 export class AddMediaDocumentAction {
   handle = async (file: File, teamId: string) => {

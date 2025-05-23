@@ -8,19 +8,19 @@ import { requestId } from 'hono/request-id'
 import type { ContentfulStatusCode, StatusCode } from 'hono/utils/http-status'
 import type { HonoContext, HonoRouteDefinition } from './types.js'
 
-import { EnsureUserAndTeamSessionsMiddleware } from '@/auth/middleware/ensure_user_and_team_sessions_middleware.js'
-import { UserSessionMiddleware } from '@/auth/middleware/user_session_middleware.js'
+import { EnsureUserAndTeamSessionsMiddleware } from '#root/core/auth/middleware/ensure_user_and_team_sessions_middleware.js'
+import { UserSessionMiddleware } from '#root/core/auth/middleware/user_session_middleware.js'
 
-import { sentryConfig, isSentryEnabled } from '@/app/env/sentry.js'
+import { sentryConfig, isSentryEnabled } from '#root/core/app/env/sentry.js'
 
-import { E_REQUEST_EXCEPTION } from '@/http/responses/errors.js'
+import { E_REQUEST_EXCEPTION } from '#root/core/http/responses/errors.js'
 
-import { makeLogger } from '@/shared/container/index.js'
-import { VikeController } from '@/shared/controllers/vike_controller.js'
-import { FlashMiddleware } from '@/shared/middleware/flash_middleware.js'
-import { route } from '@/shared/routes/route_aliases.js'
+import { makeLogger } from '#root/core/shared/container/index.js'
+import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
+import { FlashMiddleware } from '#root/core/shared/middleware/flash_middleware.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 if (isSentryEnabled()) {
   Sentry.init({

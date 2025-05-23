@@ -1,8 +1,8 @@
 import type { Readable } from 'node:stream'
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { Client } from 'minio'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 type BucketName = 'contacts' | 'attachments' | 'emails' | 'media'
 

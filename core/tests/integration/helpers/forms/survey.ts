@@ -1,5 +1,5 @@
-import type { InsertForm } from '@/database/database_schema_types.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import type { InsertForm } from '#root/database/database_schema_types.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 export const survey = {
   type: 'survey',

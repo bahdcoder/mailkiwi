@@ -1,19 +1,19 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { InjectEmailAction } from '@/injector/actions/inject_email_action.js'
-import type { InjectEmailSchemaDto } from '@/injector/dto/inject_email_dto.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { InjectEmailAction } from '#root/core/injector/actions/inject_email_action.js'
+import type { InjectEmailSchemaDto } from '#root/core/injector/dto/inject_email_dto.js'
 import { DateTime } from 'luxon'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import type { Contact, Website } from '@/database/database_schema_types.js'
+import type { Contact, Website } from '#root/database/database_schema_types.js'
 
-import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
+import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class CreateContactSessionAction {
   async handle(

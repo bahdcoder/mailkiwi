@@ -1,4 +1,4 @@
-import type { TeamWithMembers } from '@/shared/types/team.js'
+import type { TeamWithMembers } from '#root/core/shared/types/team.js'
 
 export class AudiencePolicy {
   canCreate(team: TeamWithMembers, userId: string | null) {

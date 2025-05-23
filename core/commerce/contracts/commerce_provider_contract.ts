@@ -1,4 +1,4 @@
-import type { Product } from '@/database/database_schema_types.js'
+import type { Product } from '#root/database/database_schema_types.js'
 
 /**
  * PayoutInformation defines the banking details for receiving payments.

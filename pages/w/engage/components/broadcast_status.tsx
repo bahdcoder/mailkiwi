@@ -1,4 +1,4 @@
-import type { Broadcast } from '@/database/database_schema_types.js'
+import type { Broadcast } from '#root/database/database_schema_types.js'
 import { Badge, type BadgeProps } from '@kibamail/owly/badge'
 
 export interface BroadcastStatusProps {

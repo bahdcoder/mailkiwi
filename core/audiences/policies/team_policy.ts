@@ -1,4 +1,4 @@
-import type { TeamWithMembers } from '@/shared/types/team.js'
+import type { TeamWithMembers } from '#root/core/shared/types/team.js'
 
 /**
  * TeamPolicy implements the authorization rules for team-based permissions.

@@ -1,8 +1,8 @@
-import { WEBSITES_DOMAIN, appEnv } from '@/app/env/app_env.js'
-import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
-import { ProductRepository } from '@/commerce/repositories/product_repository.js'
-import { WebsitePageRepository } from '@/websites/repositories/website_page_repository.js'
-import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { WEBSITES_DOMAIN, appEnv } from '#root/core/app/env/app_env.js'
+import { ChannelRepository } from '#root/core/chat/repositories/channel_repository.js'
+import { ProductRepository } from '#root/core/commerce/repositories/product_repository.js'
+import { WebsitePageRepository } from '#root/core/websites/repositories/website_page_repository.js'
+import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
 import type {
   ContentfulStatusCode,
   RedirectStatusCode,
@@ -15,32 +15,32 @@ import {
   safeParseAsync,
 } from 'valibot'
 
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import { TeamPolicy } from '@/audiences/policies/team_policy.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
-import { TagRepository } from '@/audiences/repositories/tag_repository.js'
+import { TeamPolicy } from '#root/core/audiences/policies/team_policy.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { ContactImportRepository } from '#root/core/audiences/repositories/contact_import_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
+import { TagRepository } from '#root/core/audiences/repositories/tag_repository.js'
 
-import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
+import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
 
-import type { Website } from '@/database/database_schema_types.js'
+import type { Website } from '#root/database/database_schema_types.js'
 
 import {
   E_OPERATION_FAILED,
   E_UNAUTHORIZED,
   E_VALIDATION_FAILED,
-} from '@/http/responses/errors.js'
+} from '#root/core/http/responses/errors.js'
 
-import { FlashController } from '@/shared/controllers/flash_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
-import { Session } from '@/shared/sessions/sessions.js'
-import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
+import { FlashController } from '#root/core/shared/controllers/flash_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
+import { Session } from '#root/core/shared/sessions/sessions.js'
+import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
-import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
-import { type Constructor, container } from '@/utils/typi.js'
-import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
+import { AutomationRepository } from '#root/core/automations/repositories/automation_repository.js'
+import { type Constructor, container } from '#root/core/utils/typi.js'
+import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 
 type ControllerParams =
   | 'importId'

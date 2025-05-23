@@ -1,7 +1,7 @@
 import { command } from '@drizzle-team/brocli'
 
-import { makeLogger } from '@/shared/container/index.js'
-import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
+import { makeLogger } from '#root/core/shared/container/index.js'
+import { refreshDatabase } from '#root/core/tests/mocks/teams/teams.js'
 
 export const resetDatabaseCommand = command({
   name: 'reset_database',

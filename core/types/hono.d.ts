@@ -8,9 +8,9 @@ import type {
   TeamWithSendingDomains,
   User,
   UserWithTeams,
-} from '@/database/database_schema_types.ts'
+} from '#root/database/database_schema_types.ts'
 
-import type { TeamWithMembers } from '@/shared/types/team.js'
+import type { TeamWithMembers } from '#root/core/shared/types/team.js'
 
 declare module 'hono' {
   interface ContextVariableMap {

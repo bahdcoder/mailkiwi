@@ -1,7 +1,7 @@
 import { type AnyColumn, type InferSelectModel, eq, getTableName } from 'drizzle-orm'
 import type { AnyMySqlTable, MySqlSelect } from 'drizzle-orm/mysql-core'
 
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
 
 type RelationshipConfig<
   T extends AnyMySqlTable,

@@ -10,9 +10,9 @@ import {
   string,
 } from 'valibot'
 
-import { broadcastGroups } from '@/database/schema.js'
+import { broadcastGroups } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 /**
  * Schema for creating a new broadcast campaign.

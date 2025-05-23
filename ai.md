@@ -164,7 +164,7 @@ export type CreateUserDto = InferInput<typeof CreateUserSchema>
 - Different environments: dev, test, staging, prod, coder
 
 ```typescript
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 
 // Correct
 const apiUrl = appEnv.API_URL
@@ -262,7 +262,7 @@ this.app.defineRoutes(
 
 ```typescript
 // Using predefined route aliases
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 this.app.defineRoutes([
   ['GET', route('dashboard'), this.dashboard.bind(this)],
@@ -318,7 +318,7 @@ Common middleware is registered with aliases for easy use:
 
 ```typescript
 // Using middleware aliases
-import { middleware } from '@/shared/middleware/middleware_aliases.js'
+import { middleware } from '#root/core/shared/middleware/middleware_aliases.js'
 
 this.app.defineRoutes([
   ['GET', '/profile', this.profile.bind(this)],
@@ -716,7 +716,6 @@ The Vike configuration is defined in `pages/+config.ts`:
 ```typescript
 const config: Config = {
   title: 'Kibamail - Transactional, marketing and email automation platform.',
-  stream: true,
   ssr: true,
   extends: [vikeReact, vikeReactQuery],
   passToClient: [

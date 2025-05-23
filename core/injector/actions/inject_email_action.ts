@@ -1,14 +1,17 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { EmailSendRepository } from '@/email_sends/repositories/email_send_repository.js'
-import type { InjectEmailSchemaDto } from '@/injector/dto/inject_email_dto.js'
-import { InjectTrackingLinksIntoEmailAction } from '@/kumomta/actions/inject_tracking_links_into_email_action.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { EmailSendRepository } from '#root/core/email_sends/repositories/email_send_repository.js'
+import type { InjectEmailSchemaDto } from '#root/core/injector/dto/inject_email_dto.js'
+import { InjectTrackingLinksIntoEmailAction } from '#root/core/kumomta/actions/inject_tracking_links_into_email_action.js'
 
-import type { InsertEmailSend, SendingDomain } from '@/database/database_schema_types.js'
+import type {
+  InsertEmailSend,
+  SendingDomain,
+} from '#root/database/database_schema_types.js'
 
-import { makeHttpClient } from '@/shared/http/http_client.js'
-import { generateMessageIdForDomain } from '@/shared/utils/string.js'
+import { makeHttpClient } from '#root/core/shared/http/http_client.js'
+import { generateMessageIdForDomain } from '#root/core/shared/utils/string.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * InjectEmailAction is responsible for preparing and injecting emails into the Mail Transfer Agent (MTA).

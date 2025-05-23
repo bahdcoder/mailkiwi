@@ -1,22 +1,26 @@
 import { and, eq } from 'drizzle-orm'
 import { describe, test, vi } from 'vitest'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.js'
+import { RunAutomationStepForContactJob } from '#root/core/automations/jobs/run_automation_step_for_contact_job.js'
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createSenderIdentityForTeam, createUser } from '@/tests/mocks/auth/users.js'
-import { seedAutomation } from '@/tests/mocks/teams/teams.js'
+import { createFakeContact } from '#root/tests/mocks/audiences/contacts.js'
+import { createSenderIdentityForTeam, createUser } from '#root/tests/mocks/auth/users.js'
+import { seedAutomation } from '#root/tests/mocks/teams/teams.js'
 
-import { contactAutomationSteps, contacts, tagsOnContacts } from '@/database/schema.js'
+import {
+  contactAutomationSteps,
+  contacts,
+  tagsOnContacts,
+} from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import { MailBuilder, Mailer } from '@/shared/mailers/mailer.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
+import { MailBuilder, Mailer } from '#root/core/shared/mailers/mailer.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
-import type { MailerDriverResponse } from '@/shared/mailers/mailer_types.js'
+import { container } from '#root/core/utils/typi.js'
+import type { MailerDriverResponse } from '#root/core/shared/mailers/mailer_types.js'
 import type { SentMessageInfo, Transporter } from 'nodemailer'
 
 describe('@run-automation-step-for-contact-job - Run automation step for contact job', () => {

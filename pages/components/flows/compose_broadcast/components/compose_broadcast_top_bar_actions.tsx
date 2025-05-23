@@ -1,22 +1,22 @@
 import './compose_broadcast_top_bar_actions.styles.css'
-import { CancelScheduledBroadcast } from '@pages/components/flows/compose_broadcast/components/compose_broadcast_cancel_scheduled_broadcast.jsx'
-import { ComposeBroadcastSteps } from '@pages/components/flows/compose_broadcast/compose_broadcast_types.js'
-import { useComposeBroadcastContext } from '@pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { CancelScheduledBroadcast } from '#root/pages/components/flows/compose_broadcast/components/compose_broadcast_cancel_scheduled_broadcast.jsx'
+import { ComposeBroadcastSteps } from '#root/pages/components/flows/compose_broadcast/compose_broadcast_types.js'
+import { useComposeBroadcastContext } from '#root/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
 import {
   SCHEDULED_DATE_READABLE_FORMAT,
   type ScheduleDateTime,
   scheduledDateTimeToDayJsInstance,
-} from '@pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
-import { ArrowRightIcon } from '@pages/components/icons/arrow-right.svg.jsx'
-import { CalendarIcon } from '@pages/components/icons/calendar.jsx'
-import { InfoCircleIcon } from '@pages/components/icons/info-circle.svg.jsx'
-import * as Popover from '@pages/components/popover/popover.jsx'
-import { RadioGroupCardItem } from '@pages/components/radio-group/radio-group-card-item.jsx'
+} from '#root/pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
+import { ArrowRightIcon } from '#root/pages/components/icons/arrow-right.svg.jsx'
+import { CalendarIcon } from '#root/pages/components/icons/calendar.jsx'
+import { InfoCircleIcon } from '#root/pages/components/icons/info-circle.svg.jsx'
+import * as Popover from '#root/pages/components/popover/popover.jsx'
+import { RadioGroupCardItem } from '#root/pages/components/radio-group/radio-group-card-item.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
-import { navigate } from '@pages/utils/navigate.js'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
+import { navigate } from '#root/pages/utils/navigate.js'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import { Calendar } from '@kibamail/owly/calendar'
@@ -28,10 +28,10 @@ import dayjs from 'dayjs'
 import advancedFormat from 'dayjs/plugin/advancedFormat.js'
 import React from 'react'
 import { toast } from 'sonner'
-import type { BroadcastPageProps } from '@pages/types/broadcast-page-props.js'
+import type { BroadcastPageProps } from '#root/pages/types/broadcast-page-props.js'
 
-import { route } from '@/shared/routes/route_aliases.js'
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
 dayjs.extend(advancedFormat)
 

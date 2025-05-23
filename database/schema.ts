@@ -1,7 +1,7 @@
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
-import type { CreateFormDto } from '@/forms/dto/create_form_dto.js'
-import type { SubmitFormDto } from '@/forms/dto/submit_form_dto.js'
-import type { UpdateWebsitePageDto } from '@/websites/dto/update_website_page_dto.js'
+import type { CreateSegmentDto } from '#root/core/audiences/dto/segments/create_segment_dto.js'
+import type { CreateFormDto } from '#root/core/forms/dto/create_form_dto.js'
+import type { SubmitFormDto } from '#root/core/forms/dto/submit_form_dto.js'
+import type { UpdateWebsitePageDto } from '#root/core/websites/dto/update_website_page_dto.js'
 import { relations, sql } from 'drizzle-orm'
 import {
   type AnyMySqlColumn,

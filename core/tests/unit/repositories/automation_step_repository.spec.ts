@@ -2,18 +2,18 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
-import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
-import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
+import type { CreateAutomationStepDto } from '#root/core/automations/dto/create_automation_step_dto.js'
+import { AutomationRepository } from '#root/core/automations/repositories/automation_repository.js'
+import { AutomationStepRepository } from '#root/core/automations/repositories/automation_step_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
 
-import { automationSteps } from '@/database/schema.js'
+import { automationSteps } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 describe('@automation-step-repository', () => {
   test('creates a standard automation step', async ({ expect }) => {

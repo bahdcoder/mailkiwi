@@ -1,7 +1,7 @@
 import {
   isCustomNodeSelected,
   isTextSelected,
-} from '@pages/components/tiptap/utils/index.js'
+} from '#root/pages/components/tiptap/utils/index.js'
 import { type Editor, useEditorState } from '@tiptap/react'
 import { useCallback } from 'react'
 import type { ShouldShowProps } from '../../types.js'

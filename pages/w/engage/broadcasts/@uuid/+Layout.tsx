@@ -1,13 +1,13 @@
-import { SlashIcon } from '@pages/components/icons/slash.svg.jsx'
-import { PageLayout } from '@pages/components/page/page-layout.jsx'
-import { ProductPageHeading } from '@pages/components/page/product-page-heading.jsx'
+import { SlashIcon } from '#root/pages/components/icons/slash.svg.jsx'
+import { PageLayout } from '#root/pages/components/page/page-layout.jsx'
+import { ProductPageHeading } from '#root/pages/components/page/product-page-heading.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import * as Tabs from '@kibamail/owly/tabs'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
 function SingleLetterLayout({ children }: React.PropsWithChildren) {
   const { urlPathname, routeParams } = usePageContextWithProps()

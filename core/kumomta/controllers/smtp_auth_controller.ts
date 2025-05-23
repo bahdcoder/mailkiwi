@@ -1,11 +1,11 @@
-import { AuthorizeInjectorApiKeyMiddleware } from '@/injector/middleware/authorize_injector_api_key_middleware.js'
-import { AuthorizeMtaCallsMiddleware } from '@/kumomta/middleware/authorize_mta_calls_middleware.js'
+import { AuthorizeInjectorApiKeyMiddleware } from '#root/core/injector/middleware/authorize_injector_api_key_middleware.js'
+import { AuthorizeMtaCallsMiddleware } from '#root/core/kumomta/middleware/authorize_mta_calls_middleware.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * SmtpAuthController handles SMTP authentication for email sending.

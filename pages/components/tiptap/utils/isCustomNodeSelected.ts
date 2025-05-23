@@ -1,4 +1,4 @@
-import { TableOfContentsNode } from '@pages/components/composer/extensions/TableOfContentsNode/TableOfContentsNode.jsx'
+import { TableOfContentsNode } from '#root/pages/components/composer/extensions/TableOfContentsNode/TableOfContentsNode.jsx'
 import {
   CodeBlock,
   Figcaption,
@@ -6,7 +6,7 @@ import {
   ImageBlock,
   ImageUpload,
   Link,
-} from '@pages/components/composer/extensions/index.js'
+} from '#root/pages/components/composer/extensions/index.js'
 import type { Editor } from '@tiptap/react'
 
 export const isTableGripSelected = (node: HTMLElement) => {

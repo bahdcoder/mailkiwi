@@ -1,17 +1,17 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { and, eq, or, sql } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 
 import type {
   InsertTeamMembership,
   UpdateSetTeamMembershipInput,
-} from '@/database/database_schema_types.js'
-import { teamMemberships, teams, users } from '@/database/schema.js'
-import { belongsTo } from '@/database/utils/relationships.js'
+} from '#root/database/database_schema_types.js'
+import { teamMemberships, teams, users } from '#root/database/schema.js'
+import { belongsTo } from '#root/database/utils/relationships.js'
 
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
+import { makeDatabase, makeRedis } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
+import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
 export class TeamMembershipRepository extends BaseRepository {
   constructor(

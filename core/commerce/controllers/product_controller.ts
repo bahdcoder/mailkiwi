@@ -1,19 +1,19 @@
-import { CreateProductSchema } from '@/commerce/dto/create_product_dto.js'
-import { InitialiseProductPaymentSchema } from '@/commerce/dto/initialise_product_payment_dto.js'
-import { ProductRepository } from '@/commerce/repositories/product_repository.js'
-import { CommerceProviderTool } from '@/commerce/tools/commerce_provider_tool.js'
+import { CreateProductSchema } from '#root/core/commerce/dto/create_product_dto.js'
+import { InitialiseProductPaymentSchema } from '#root/core/commerce/dto/initialise_product_payment_dto.js'
+import { ProductRepository } from '#root/core/commerce/repositories/product_repository.js'
+import { CommerceProviderTool } from '#root/core/commerce/tools/commerce_provider_tool.js'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { type Audience, Product } from '@/database/database_schema_types.js'
+import { type Audience, Product } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * ProductController handles API endpoints for managing commerce products.

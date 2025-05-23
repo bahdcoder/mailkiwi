@@ -14,9 +14,9 @@ import {
   string,
 } from 'valibot'
 
-import { audiences } from '@/database/schema.js'
+import { audiences } from '#root/database/schema.js'
 
-import { entityIdValidator } from '@/shared/utils/validators/entity_id_validator.js'
+import { entityIdValidator } from '#root/core/shared/utils/validators/entity_id_validator.js'
 
 export const CreateProductSchema = pipeAsync(
   objectAsync({

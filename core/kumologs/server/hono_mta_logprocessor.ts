@@ -1,6 +1,6 @@
 import { logger } from 'hono/logger'
 
-import { Hono } from '@/shared/server/hono.js'
+import { Hono } from '#root/core/shared/server/hono.js'
 
 export class HonoMtaLogProcessor extends Hono {
   constructor() {

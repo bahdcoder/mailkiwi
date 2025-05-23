@@ -1,6 +1,6 @@
 import './styles.css'
-import type { AutomationStepSubType } from '@/database/types/automations.js'
-import { ActionUnsubscribeToAudienceNode } from '@pages/w/engage/flows/@uuid/composer/automation-flow/nodes/actions/action_unsubscribe_from_audience.jsx'
+import type { AutomationStepSubType } from '#root/database/types/automations.js'
+import { ActionUnsubscribeToAudienceNode } from '#root/pages/w/engage/flows/@uuid/composer/automation-flow/nodes/actions/action_unsubscribe_from_audience.jsx'
 import { ActionAddTagNode } from './actions/action_add_tag_node.jsx'
 import { ActionEmptyNode } from './actions/action_empty_node.jsx'
 import { ActionRemoveTagNode } from './actions/action_remove_tag_node.jsx'

@@ -1,13 +1,13 @@
 // import {
 //   ToolbarButton,
 //   ToolbarContainer,
-// } from "@pages/components/composer/components/toolbar/toolbar.jsx"
-// import { EditPencilIcon } from "@pages/components/icons/edit-pencil.svg.jsx"
-// import { TrashIcon } from "@pages/components/icons/trash.svg.jsx"
-// import { Icon } from "@pages/components/tiptap/ui/Icon.jsx"
-// import { Surface } from "@pages/components/tiptap/ui/Surface.jsx"
-// import { Toolbar } from "@pages/components/tiptap/ui/Toolbar.jsx"
-// import Tooltip from "@pages/components/tiptap/ui/Tooltip/index.jsx"
+// } from "#root/pages/components/composer/components/toolbar/toolbar.jsx"
+// import { EditPencilIcon } from "#root/pages/components/icons/edit-pencil.svg.jsx"
+// import { TrashIcon } from "#root/pages/components/icons/trash.svg.jsx"
+// import { Icon } from "#root/pages/components/tiptap/ui/Icon.jsx"
+// import { Surface } from "#root/pages/components/tiptap/ui/Surface.jsx"
+// import { Toolbar } from "#root/pages/components/tiptap/ui/Toolbar.jsx"
+// import Tooltip from "#root/pages/components/tiptap/ui/Tooltip/index.jsx"
 // import { Text } from "@kibamail/owly/text"
 
 // export type LinkPreviewPanelProps = {

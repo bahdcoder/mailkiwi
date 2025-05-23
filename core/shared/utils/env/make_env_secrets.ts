@@ -1,9 +1,17 @@
 import { Secret } from '@poppinss/utils'
 
+export type NODE_ENV_OPTIONS =
+  | 'development'
+  | 'test'
+  | 'production'
+  | 'staging'
+  | 'test-playwright'
+
 export function makeEnvSecrets<
   T extends {
     APP_KEY?: string
     REDIS_URL?: string
+    NODE_ENV?: NODE_ENV_OPTIONS
     MTA_ACCESS_TOKEN?: string
     isProd: boolean
     isDev: boolean
@@ -11,12 +19,13 @@ export function makeEnvSecrets<
     isProduction: boolean
   },
 >(value: T) {
-  const { MTA_ACCESS_TOKEN, APP_KEY, REDIS_URL } = { ...value }
+  const { MTA_ACCESS_TOKEN, APP_KEY, REDIS_URL, NODE_ENV } = { ...value }
   return {
     ...value,
     isProd: value.isProd,
     isTest: value.isTest,
     isDev: value.isDev,
+    isStaging: NODE_ENV === 'staging',
     isProduction: value.isProduction,
     APP_KEY: APP_KEY ? new Secret(APP_KEY) : undefined,
     REDIS_URL: REDIS_URL ? new Secret(REDIS_URL) : undefined,

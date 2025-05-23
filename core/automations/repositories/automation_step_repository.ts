@@ -1,14 +1,17 @@
 import { eq } from 'drizzle-orm'
 
-import type { DrizzleClient } from '@/database/client.js'
-import { type AutomationStepConfiguration, automationSteps } from '@/database/schema.js'
+import type { DrizzleClient } from '#root/database/client.js'
+import {
+  type AutomationStepConfiguration,
+  automationSteps,
+} from '#root/database/schema.js'
 
-import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
-import type { UpdateAutomationStepDto } from '@/automations/dto/update_automation_step_dto.js'
-import { AutomationStep } from '@/database/database_schema_types.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { AUTOMATION_STEP_BRANCH_TYPES } from '@/database/constants.js'
+import type { CreateAutomationStepDto } from '#root/core/automations/dto/create_automation_step_dto.js'
+import type { UpdateAutomationStepDto } from '#root/core/automations/dto/update_automation_step_dto.js'
+import { AutomationStep } from '#root/database/database_schema_types.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
+import { AUTOMATION_STEP_BRANCH_TYPES } from '#root/database/constants.js'
 
 export class AutomationStepRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

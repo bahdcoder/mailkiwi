@@ -1,15 +1,15 @@
-import { CreateTagAction } from '@/audiences/actions/tags/create_tag_action.js'
-import { DeleteTagAction } from '@/audiences/actions/tags/delete_tag_action.js'
-import { CreateTagSchema } from '@/audiences/dto/tags/create_tag_dto.js'
+import { CreateTagAction } from '#root/core/audiences/actions/tags/create_tag_action.js'
+import { DeleteTagAction } from '#root/core/audiences/actions/tags/delete_tag_action.js'
+import { CreateTagSchema } from '#root/core/audiences/dto/tags/create_tag_dto.js'
 
-import type { Audience, Tag } from '@/database/database_schema_types.js'
+import type { Audience, Tag } from '#root/database/database_schema_types.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoInstance } from '@/shared/server/hono.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoInstance } from '#root/core/shared/server/hono.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * TagController manages contact tagging functionality.

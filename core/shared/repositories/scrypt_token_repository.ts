@@ -2,10 +2,10 @@ import { type BinaryLike, randomBytes, scrypt } from 'node:crypto'
 import { promisify } from 'node:util'
 import { eq } from 'drizzle-orm'
 
-import { accessTokens } from '@/database/schema.js'
+import { accessTokens } from '#root/database/schema.js'
 
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { container } from '@/utils/typi.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
+import { container } from '#root/core/utils/typi.js'
 import { OtpGenerator } from '../tokens/otp_generator.js'
 import { DateTime } from 'luxon'
 

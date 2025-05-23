@@ -1,7 +1,7 @@
 import './styles.css'
 import type React from 'react'
 import { Toaster } from 'sonner'
-import { SentryErrorBoundary } from './utils/sentry.js'
+import { ErrorBoundary } from '@sentry/react'
 
 /**
  * Error fallback component displayed when an error occurs in the application.
@@ -28,11 +28,11 @@ function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <>
       <Toaster />
-      <SentryErrorBoundary fallback={<ErrorFallback />}>
+      <ErrorBoundary fallback={<ErrorFallback />}>
         <div className="w-full h-screen border-l border-r kb-border-tertiary">
           {children}
         </div>
-      </SentryErrorBoundary>
+      </ErrorBoundary>
     </>
   )
 }

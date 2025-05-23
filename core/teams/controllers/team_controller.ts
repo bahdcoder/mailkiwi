@@ -1,9 +1,9 @@
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
 /**
  * TeamController manages team information and team switching functionality.

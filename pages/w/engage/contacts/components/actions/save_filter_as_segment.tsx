@@ -1,10 +1,10 @@
-import { ArrowUpRightIcon } from '@pages/components/icons/arrow-up-right.svg.jsx'
-import { InfoCircleIcon } from '@pages/components/icons/info-circle.svg.jsx'
+import { ArrowUpRightIcon } from '#root/pages/components/icons/arrow-up-right.svg.jsx'
+import { InfoCircleIcon } from '#root/pages/components/icons/info-circle.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
-import { FilterCondition } from '@pages/w/engage/contacts/components/filters.jsx'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
+import { FilterCondition } from '#root/pages/w/engage/contacts/components/filters.jsx'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
@@ -14,12 +14,12 @@ import * as React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 import { reload } from 'vike/client/router'
 
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
+import type { CreateSegmentDto } from '#root/core/audiences/dto/segments/create_segment_dto.js'
 
-import type { Audience } from '@/database/database_schema_types.js'
+import type { Audience } from '#root/database/database_schema_types.js'
 
-import { route } from '@/shared/routes/route_aliases.js'
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
 export interface SaveFilterAsSegmentFormProps extends React.PropsWithChildren {
   filterGroups: CreateSegmentDto['filterGroups']

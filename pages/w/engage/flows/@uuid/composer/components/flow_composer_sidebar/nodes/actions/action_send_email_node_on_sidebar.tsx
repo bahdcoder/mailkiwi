@@ -1,4 +1,4 @@
-import type { AutomationStep } from '@/database/database_schema_types.js'
+import type { AutomationStep } from '#root/database/database_schema_types.js'
 import { SkeletonNodeOnSidebar } from '../skeleton_node_on_sidebar.jsx'
 
 import * as TextField from '@kibamail/owly/text-field'

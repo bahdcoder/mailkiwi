@@ -3,17 +3,17 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, expect, it } from 'vitest'
 
-import { PasswordResetRepository } from '@/auth/password_resets/repositories/password_reset_repository.js'
+import { PasswordResetRepository } from '#root/core/auth/password_resets/repositories/password_reset_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequest } from '@/tests/utils/http.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
+import { makeRequest } from '#root/tests/utils/http.js'
 
-import { passwordResets } from '@/database/schema.js'
+import { passwordResets } from '#root/database/schema.js'
 
-import { route } from '@/shared/routes/route_aliases.js'
-import { TokenGenerator } from '@/shared/tokens/token_generator.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import { TokenGenerator } from '#root/core/shared/tokens/token_generator.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 describe('@auth password resets', () => {
   it('a user can request and reset their password', async ({ expect }) => {

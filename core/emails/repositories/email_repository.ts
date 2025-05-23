@@ -1,10 +1,10 @@
 import { eq } from 'drizzle-orm'
 
-import { emailContents, emails } from '@/database/schema.js'
-import { belongsTo } from '@/database/utils/relationships.js'
+import { emailContents, emails } from '#root/database/schema.js'
+import { belongsTo } from '#root/database/utils/relationships.js'
 
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase, makeRedis } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 /**
  * EmailRepository provides data access methods for email records.

@@ -1,21 +1,21 @@
 import dns from 'node:dns/promises'
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 import { describe, test, vi } from 'vitest'
 
-import { AssignSendingSourceToSendingDomainAction } from '@/sending_domains/actions/assign_sending_source_to_sending_domain_action.js'
-import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { AssignSendingSourceToSendingDomainAction } from '#root/core/sending_domains/actions/assign_sending_source_to_sending_domain_action.js'
+import { CreateSendingDomainAction } from '#root/core/sending_domains/actions/create_sending_domain_action.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { DnsConfigurationTool } from '@/tools/dns/dns_configuration_tool.js'
+import { DnsConfigurationTool } from '#root/core/tools/dns/dns_configuration_tool.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
 
-import type { UpdateSendingDomain } from '@/database/database_schema_types.js'
+import type { UpdateSendingDomain } from '#root/database/database_schema_types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export const setupDomainForDnsChecks = async (
   domain?: string,

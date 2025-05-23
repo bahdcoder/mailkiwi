@@ -1,4 +1,4 @@
-import { cn } from '@pages/components/tiptap/utils/index.js'
+import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import { type HTMLProps, forwardRef } from 'react'
 
 export const Spinner = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(

@@ -1,8 +1,8 @@
-import { FileUploadDropbox } from '@pages/components/file-upload/file-upload-dropbox.jsx'
+import { FileUploadDropbox } from '#root/pages/components/file-upload/file-upload-dropbox.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { InputError } from '@kibamail/owly/input-hint'
@@ -15,7 +15,7 @@ import {
   useImportcontactsContext,
 } from '../state/import_contacts_context.jsx'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 export function StepOneUploadACsv() {
   const [uploadProgress, setUploadProgress] = React.useState(0)

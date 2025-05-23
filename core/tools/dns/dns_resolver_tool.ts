@@ -1,11 +1,11 @@
 import dns from 'node:dns/promises'
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 
-import { DnsConfigurationTool } from '@/tools/dns/dns_configuration_tool.js'
+import { DnsConfigurationTool } from '#root/core/tools/dns/dns_configuration_tool.js'
 
-import type { SendingDomain } from '@/database/database_schema_types.js'
+import type { SendingDomain } from '#root/database/database_schema_types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class DnsResolverTool {
   private domain: string

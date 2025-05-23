@@ -1,24 +1,24 @@
-import { EmailRepository } from '@/emails/repositories/email_repository.js'
+import { EmailRepository } from '#root/core/emails/repositories/email_repository.js'
 import { eq } from 'drizzle-orm'
 
 import type {
   AutomationStepRunnerContext,
   AutomationStepRunnerContract,
-} from '@/automations/utils/automation_step_runners/automation_runner_contract.js'
+} from '#root/core/automations/utils/automation_step_runners/automation_runner_contract.js'
 
 import type {
   AutomationStep,
   Contact,
   ValidatedEmailContent,
-} from '@/database/database_schema_types.js'
-import { type ACTION_SEND_EMAIL_CONFIGURATION, emails } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import { type ACTION_SEND_EMAIL_CONFIGURATION, emails } from '#root/database/schema.js'
 
-import { Mailer } from '@/shared/mailers/mailer.js'
-import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { Mailer } from '#root/core/shared/mailers/mailer.js'
+import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { container } from '@/utils/typi.js'
-import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import { container } from '#root/core/utils/typi.js'
+import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
 
 /**
  * SendEmailAutomationStepRunner handles the "Send Email" action in automation workflows.

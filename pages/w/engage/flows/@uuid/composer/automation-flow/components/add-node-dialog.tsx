@@ -1,33 +1,33 @@
 import type {
   AutomationStep,
   AutomationWithSteps,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 import {
   type AutomationStepSubType,
   type AutomationStepType,
   automationStepSubtypesAction,
   automationStepSubtypesRule,
   automationStepSubtypesTrigger,
-} from '@database/types/automations.js'
-import { BellOffIcon } from '@pages/components/icons/bell-off.svg.jsx'
-import { BellIcon } from '@pages/components/icons/bell.svg.jsx'
-import { LabelIcon } from '@pages/components/icons/label.svg.jsx'
-import { MailIcon } from '@pages/components/icons/mail.svg.jsx'
-import { NetworkReverseIcon } from '@pages/components/icons/network-reverse.svg.jsx'
-import { PercentageIcon } from '@pages/components/icons/percentage.svg.jsx'
-import { PlusIcon } from '@pages/components/icons/plus.svg.jsx'
-import { TimerIcon } from '@pages/components/icons/timer.svg.jsx'
-import { UserPlusIcon } from '@pages/components/icons/user-plus.svg.jsx'
-import { UserXMarkIcon } from '@pages/components/icons/user-xmark.svg.jsx'
-import { UserIcon } from '@pages/components/icons/user.svg.jsx'
-import { WebhookIcon } from '@pages/components/icons/webhook.svg.jsx'
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+} from '#root/database/types/automations.js'
+import { BellOffIcon } from '#root/pages/components/icons/bell-off.svg.jsx'
+import { BellIcon } from '#root/pages/components/icons/bell.svg.jsx'
+import { LabelIcon } from '#root/pages/components/icons/label.svg.jsx'
+import { MailIcon } from '#root/pages/components/icons/mail.svg.jsx'
+import { NetworkReverseIcon } from '#root/pages/components/icons/network-reverse.svg.jsx'
+import { PercentageIcon } from '#root/pages/components/icons/percentage.svg.jsx'
+import { PlusIcon } from '#root/pages/components/icons/plus.svg.jsx'
+import { TimerIcon } from '#root/pages/components/icons/timer.svg.jsx'
+import { UserPlusIcon } from '#root/pages/components/icons/user-plus.svg.jsx'
+import { UserXMarkIcon } from '#root/pages/components/icons/user-xmark.svg.jsx'
+import { UserIcon } from '#root/pages/components/icons/user.svg.jsx'
+import { WebhookIcon } from '#root/pages/components/icons/webhook.svg.jsx'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
-import type { EdgeElement } from '@pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
-import { route } from '@/shared/routes/route_aliases.js'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
+import type { EdgeElement } from '#root/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
 import { Spinner } from '@kibamail/owly/spinner'

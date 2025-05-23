@@ -1,4 +1,4 @@
-import { PlusIcon } from '@pages/components/icons/plus.svg.jsx'
+import { PlusIcon } from '#root/pages/components/icons/plus.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import React, { type HTMLAttributes, type PropsWithChildren } from 'react'
 

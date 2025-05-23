@@ -1,4 +1,4 @@
-import { themeColors } from '@pages/components/tiptap/constants.js'
+import { themeColors } from '#root/pages/components/tiptap/constants.js'
 import { useCallback, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { Icon } from '../../ui/Icon.jsx'

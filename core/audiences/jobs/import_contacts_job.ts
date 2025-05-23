@@ -1,29 +1,32 @@
-import { makeS3Client } from '@/minio/s3_client.js'
+import { makeS3Client } from '#root/core/minio/s3_client.js'
 import CsvParser from 'csv-parser'
 import { sql } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
-import { TagRepository } from '@/audiences/repositories/tag_repository.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { ContactImportRepository } from '#root/core/audiences/repositories/contact_import_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
+import { TagRepository } from '#root/core/audiences/repositories/tag_repository.js'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { ContactImport, type ContactProperty } from '@/database/database_schema_types.js'
+import {
+  ContactImport,
+  type ContactProperty,
+} from '#root/database/database_schema_types.js'
 import {
   KnownAudienceProperty,
   contactProperties,
   contacts,
   tagsOnContacts,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { guessValueType } from '@/shared/utils/helpers/guess_value_type.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
+import { guessValueType } from '#root/core/shared/utils/helpers/guess_value_type.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export interface ImportContactsJobPayload {
   contactImportId: string

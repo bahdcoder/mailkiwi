@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'
-import { WarningTriangleSolidIcon } from '@pages/components/icons/warning-triangle-solid.svg.js'
+import { WarningTriangleSolidIcon } from '#root/pages/components/icons/warning-triangle-solid.svg.js'
 
 /**
  * Error page component displayed when an error occurs in the application.

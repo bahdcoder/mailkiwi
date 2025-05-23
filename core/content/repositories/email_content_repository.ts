@@ -3,14 +3,14 @@ import { eq } from 'drizzle-orm'
 import type {
   EmailContentVariant,
   UpdateBroadcastDto,
-} from '@/broadcasts/dto/update_broadcast_dto.js'
+} from '#root/core/broadcasts/dto/update_broadcast_dto.js'
 
-import type { DrizzleClient } from '@/database/client.js'
-import type { Broadcast } from '@/database/database_schema_types.js'
-import { broadcasts, emailContents } from '@/database/schema.js'
+import type { DrizzleClient } from '#root/database/client.js'
+import type { Broadcast } from '#root/database/database_schema_types.js'
+import { broadcasts, emailContents } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 import { DateTime } from 'luxon'
 
 export class EmailContentRepository extends BaseRepository {

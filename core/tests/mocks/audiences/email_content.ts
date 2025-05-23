@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 
-import type { EmailContent } from '@/database/database_schema_types.js'
+import type { EmailContent } from '#root/database/database_schema_types.js'
 
 export function createFakeEmailContent(overrides?: Partial<EmailContent>) {
   return {

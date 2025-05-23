@@ -6,10 +6,10 @@ import type {
   AutomationStepRunnerContractConstructor,
 } from './automation_runner_contract.js'
 
-import type { AutomationStep, Contact } from '@/database/database_schema_types.js'
-import { contactAutomationSteps } from '@/database/schema.js'
+import type { AutomationStep, Contact } from '#root/database/database_schema_types.js'
+import { contactAutomationSteps } from '#root/database/schema.js'
 
-import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
 
 /**
  * AutomationStepRunner is the central orchestrator for executing automation workflow steps.

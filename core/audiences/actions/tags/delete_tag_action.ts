@@ -1,6 +1,6 @@
-import { TagRepository } from '@/audiences/repositories/tag_repository.js'
+import { TagRepository } from '#root/core/audiences/repositories/tag_repository.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class DeleteTagAction {
   constructor(private tagRepository = container.make(TagRepository)) {}

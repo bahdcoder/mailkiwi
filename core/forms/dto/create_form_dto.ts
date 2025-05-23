@@ -16,9 +16,9 @@ import {
   uuid,
 } from 'valibot'
 
-import { audiences } from '@/database/schema.js'
+import { audiences } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 export const QuestionEnabledConditionSchema = object({
   questionId: pipe(string(), uuid()),

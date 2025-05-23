@@ -1,5 +1,5 @@
-import { PlusIcon } from '@pages/components/icons/plus.svg.jsx'
-import { NewContactPropertyForm } from '@pages/w/engage/contacts/components/actions/new_contact_property_form.jsx'
+import { PlusIcon } from '#root/pages/components/icons/plus.svg.jsx'
+import { NewContactPropertyForm } from '#root/pages/w/engage/contacts/components/actions/new_contact_property_form.jsx'
 import { Button } from '@kibamail/owly/button'
 import * as React from 'react'
 

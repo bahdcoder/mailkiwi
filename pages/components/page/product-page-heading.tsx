@@ -1,15 +1,15 @@
-import { ComposeBroadcastFlow } from '@pages/components/flows/compose_broadcast/compose_broadcast_flow.jsx'
-import { CreateBroadcastFlow } from '@pages/components/flows/compose_broadcast/create_broadcast_flow.jsx'
+import { ComposeBroadcastFlow } from '#root/pages/components/flows/compose_broadcast/compose_broadcast_flow.jsx'
+import { CreateBroadcastFlow } from '#root/pages/components/flows/compose_broadcast/create_broadcast_flow.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import React from 'react'
 
-import * as DropdownMenu from '@pages/components/dropdown/dropdown.jsx'
-import { ImportContactsDialog } from '@pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
-import { MoreVertIcon } from '@pages/components/icons/more-vert.svg.jsx'
+import * as DropdownMenu from '#root/pages/components/dropdown/dropdown.jsx'
+import { ImportContactsDialog } from '#root/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
+import { MoreVertIcon } from '#root/pages/components/icons/more-vert.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 import { usePageContext } from 'vike-react/usePageContext'
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
 export interface ProductPageHeadingProps extends React.PropsWithChildren {
   header?: React.ReactNode

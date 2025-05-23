@@ -1,19 +1,19 @@
-import { TagContactBasedOnResponseJob } from '@/forms/jobs/tag_contact_based_on_response_job.js'
-import { FormRepository } from '@/forms/repositories/form_repository.js'
-import { FormResponseRepository } from '@/forms/repositories/form_response_repository.js'
+import { TagContactBasedOnResponseJob } from '#root/core/forms/jobs/tag_contact_based_on_response_job.js'
+import { FormRepository } from '#root/core/forms/repositories/form_repository.js'
+import { FormResponseRepository } from '#root/core/forms/repositories/form_response_repository.js'
 import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { createContactsForAudience, createUser } from '@/tests/mocks/auth/users.js'
+import { createContactsForAudience, createUser } from '#root/tests/mocks/auth/users.js'
 
-import { tags, tagsOnContacts } from '@/database/schema.js'
+import { tags, tagsOnContacts } from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
-import { survey } from '@/tests/integration/helpers/forms/survey.js'
+import { container } from '#root/core/utils/typi.js'
+import { survey } from '#root/tests/integration/helpers/forms/survey.js'
 
 describe('@tag-contact', () => {
   const setup = async () => {

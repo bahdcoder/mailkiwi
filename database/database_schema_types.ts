@@ -39,7 +39,7 @@ import type {
   websites,
 } from './schema.js'
 
-import type { makeDatabase } from '@/shared/container/index.js'
+import type { makeDatabase } from '#root/core/shared/container/index.js'
 
 export type Audience = InferSelectModel<typeof audiences>
 export type Website = InferSelectModel<typeof websites>

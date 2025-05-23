@@ -2,17 +2,21 @@ import { faker } from '@faker-js/faker'
 import { and, eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { RunAutomationStepJob } from '@/automations/jobs/run_automation_step_job.js'
+import { RunAutomationStepJob } from '#root/core/automations/jobs/run_automation_step_job.js'
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { seedAutomation } from '@/tests/mocks/teams/teams.js'
+import { createFakeContact } from '#root/tests/mocks/audiences/contacts.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
+import { seedAutomation } from '#root/tests/mocks/teams/teams.js'
 
-import { automationSteps, contactAutomationSteps, contacts } from '@/database/schema.js'
+import {
+  automationSteps,
+  contactAutomationSteps,
+  contacts,
+} from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import * as queues from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
+import * as queues from '#root/core/shared/queue/queue.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 describe('Run automation job', () => {
   test('dispatches a run automation step job for each step in the automation', async ({

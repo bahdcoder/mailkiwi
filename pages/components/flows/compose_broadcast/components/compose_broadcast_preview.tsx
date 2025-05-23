@@ -1,9 +1,12 @@
-import { CancelIcon } from '@pages/components/icons/cancel.svg.jsx'
-import { cn } from '@pages/components/tiptap/utils/index.js'
-import { usePageContextWithProps, usePageProps } from '@pages/hooks/use_page_props.js'
-import { useServerQuery } from '@pages/hooks/use_server_query.js'
-import type { EngageBroadcastsComposerPageProps } from '@pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
-import { route } from '@/shared/routes/route_aliases.js'
+import { CancelIcon } from '#root/pages/components/icons/cancel.svg.jsx'
+import { cn } from '#root/pages/components/tiptap/utils/index.js'
+import {
+  usePageContextWithProps,
+  usePageProps,
+} from '#root/pages/hooks/use_page_props.js'
+import { useServerQuery } from '#root/pages/hooks/use_server_query.js'
+import type { EngageBroadcastsComposerPageProps } from '#root/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 import { Button } from '@kibamail/owly/button'
 import * as Tabs from '@kibamail/owly/tabs'
 import * as Dialog from '@radix-ui/react-dialog'

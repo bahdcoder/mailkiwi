@@ -1,17 +1,17 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { asc, count, eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { ImportContactsJob } from '@/audiences/jobs/import_contacts_job.js'
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ImportContactsJob } from '#root/core/audiences/jobs/import_contacts_job.js'
+import { ContactImportRepository } from '#root/core/audiences/repositories/contact_import_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { audiences, contacts, tagsOnContacts } from '@/database/schema.js'
+import { audiences, contacts, tagsOnContacts } from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 
-import { container } from '@/utils/typi.js'
-import { setupImport } from '@/tests/integration/helpers/contacts/setup_imports.js'
+import { container } from '#root/core/utils/typi.js'
+import { setupImport } from '#root/tests/integration/helpers/contacts/setup_imports.js'
 
 describe('@contacts import job', () => {
   test('reads the csv content from storage and syncs all values to contacts', async ({

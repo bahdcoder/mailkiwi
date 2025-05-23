@@ -1,14 +1,14 @@
 import { eq } from 'drizzle-orm'
 
-import type { CreateAutomationDto } from '@/automations/dto/create_automation_dto.js'
+import type { CreateAutomationDto } from '#root/core/automations/dto/create_automation_dto.js'
 
-import type { DrizzleClient } from '@/database/client.js'
-import { automationSteps, automations } from '@/database/schema.js'
-import { hasMany } from '@/database/utils/relationships.js'
+import type { DrizzleClient } from '#root/database/client.js'
+import { automationSteps, automations } from '#root/database/schema.js'
+import { hasMany } from '#root/database/utils/relationships.js'
 
-import { automationStepSubtypesTriggerMap } from '@/database/types/automations.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { automationStepSubtypesTriggerMap } from '#root/database/types/automations.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 /**
  * AutomationRepository handles database operations for automation workflows.

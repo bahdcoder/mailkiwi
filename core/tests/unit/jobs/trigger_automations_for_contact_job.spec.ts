@@ -1,19 +1,19 @@
 import { faker } from '@faker-js/faker'
 import { describe, test } from 'vitest'
 
-import { RunAutomationForContactJob } from '@/automations/jobs/run_automation_for_contact_job.js'
-import { TriggerAutomationsForContactJob } from '@/automations/jobs/trigger_automation_for_contact_job.js'
+import { RunAutomationForContactJob } from '#root/core/automations/jobs/run_automation_for_contact_job.js'
+import { TriggerAutomationsForContactJob } from '#root/core/automations/jobs/trigger_automation_for_contact_job.js'
 
-import { createContactsForAudience, createUser } from '@/tests/mocks/auth/users.js'
-import { seedAutomation } from '@/tests/mocks/teams/teams.js'
+import { createContactsForAudience, createUser } from '#root/tests/mocks/auth/users.js'
+import { seedAutomation } from '#root/tests/mocks/teams/teams.js'
 
-import { tags, tagsOnContacts } from '@/database/schema.js'
+import { tags, tagsOnContacts } from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 describe('@automations-trigger', () => {
   test('can trigger automations for a contact', async ({ expect }) => {

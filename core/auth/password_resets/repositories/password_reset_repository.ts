@@ -2,14 +2,14 @@ import { randomBytes } from 'node:crypto'
 import { eq } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { passwordResets, users } from '@/database/schema.js'
+import { passwordResets, users } from '#root/database/schema.js'
 
-import { ScryptTokenRepository } from '@/shared/repositories/scrypt_token_repository.js'
-import { TokenGenerator } from '@/shared/tokens/token_generator.js'
+import { ScryptTokenRepository } from '#root/core/shared/repositories/scrypt_token_repository.js'
+import { TokenGenerator } from '#root/core/shared/tokens/token_generator.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class PasswordResetRepository extends ScryptTokenRepository {
   protected PASSWORD_RESETS_DEFAULT_EXPIRATION_TIME_IN_MINUTES = 15

@@ -1,18 +1,18 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import type { CreateSendingDomainDto } from '@/sending_domains/dto/create_sending_domain_dto.js'
-import { CheckSendingDomainDnsConfigurationJob } from '@/sending_domains/jobs/check_sending_domain_dns_configuration_job.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import type { CreateSendingDomainDto } from '#root/core/sending_domains/dto/create_sending_domain_dto.js'
+import { CheckSendingDomainDnsConfigurationJob } from '#root/core/sending_domains/jobs/check_sending_domain_dns_configuration_job.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { DkimHostNameTool } from '@/tools/dkim/dkim_hostname_tool.js'
-import { DkimKeyPairTool } from '@/tools/dkim/dkim_keypair_tool.js'
+import { DkimHostNameTool } from '#root/core/tools/dkim/dkim_hostname_tool.js'
+import { DkimKeyPairTool } from '#root/core/tools/dkim/dkim_keypair_tool.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class CreateSendingDomainAction {
   constructor(

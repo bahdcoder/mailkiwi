@@ -1,12 +1,12 @@
-import { LogoutIcon } from '@pages/components/icons/logout.svg.jsx'
+import { LogoutIcon } from '#root/pages/components/icons/logout.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { Text } from '@kibamail/owly/text'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 export function SignoutForm() {
   const { serverFormProps } = useServerFormMutation({

@@ -1,25 +1,25 @@
 import { resolve } from 'node:path'
-import { appEnv } from '@/app/env/app_env.js'
-import { EmailSendEventRepository } from '@/email_sends/repositories/email_send_event_repository.js'
-import { EmailSendRepository } from '@/email_sends/repositories/email_send_repository.js'
-import { SendingSourceRepository } from '@/settings/repositories/sending_source_repository.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { EmailSendEventRepository } from '#root/core/email_sends/repositories/email_send_event_repository.js'
+import { EmailSendRepository } from '#root/core/email_sends/repositories/email_send_repository.js'
+import { SendingSourceRepository } from '#root/core/settings/repositories/sending_source_repository.js'
 import { Reader as MaxMindReader } from '@maxmind/geoip2-node'
 import { DateTime } from 'luxon'
 import { UAParser } from 'ua-parser-js'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import type { EmailSend, SendingDomain } from '@/database/database_schema_types.js'
+import type { EmailSend, SendingDomain } from '#root/database/database_schema_types.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import type { MtaLog } from '@/shared/types/mta.js'
-import { ipv4AdressFromIpAndPort } from '@/shared/utils/string.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
+import type { MtaLog } from '#root/core/shared/types/mta.js'
+import { ipv4AdressFromIpAndPort } from '#root/core/shared/utils/string.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export interface ProcessMtaLogJobPayload {
   log: MtaLog

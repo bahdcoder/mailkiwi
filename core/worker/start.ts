@@ -1,10 +1,12 @@
-import { WorkerIgnitor } from '@/worker/worker_ignitor.js'
+import { WorkerIgnitor } from '#root/core/worker/worker_ignitor.js'
 
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 
-import { ArgParser } from '@/utils/args_parser.js'
+import { ArgParser } from '#root/core/utils/args_parser.js'
 
-const ignitor = await new WorkerIgnitor().boot().start()
+const ignitor = new WorkerIgnitor().boot()
+
+await ignitor.start()
 
 ignitor.listen(
   new ArgParser(process.argv)

@@ -13,12 +13,9 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
+    "rootDir": ".",
     "paths": {
-      "@/*": ["./core/*", "./*"],
-      "@components/*": ["./core/components/*", "./components/*"],
-      "@pages/*": ["./pages/*"],
-      "@shared/*": ["./shared/*"],
-      "@database/*": ["./database/*"]
+      "#root/*": ["./*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

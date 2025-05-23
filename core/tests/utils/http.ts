@@ -1,18 +1,18 @@
 import { randomBytes } from 'node:crypto'
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { setSignedCookie } from 'hono/cookie'
 
-import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
-import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.js'
+import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories/access_token_repository.js'
+import { CreateTeamAccessTokenAction } from '#root/core/auth/actions/create_team_access_token.js'
 
-import type { Team, User } from '@/database/database_schema_types.js'
+import type { Team, User } from '#root/database/database_schema_types.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import type { HTTPMethods, HonoContext } from '@/shared/server/types.js'
-import { RedisSessionStore } from '@/shared/sessions/stores/redis_session_store.js'
-import { getAuthenticationHeaders } from '@/shared/utils/auth/get_auth_headers.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import type { HTTPMethods, HonoContext } from '#root/core/shared/server/types.js'
+import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_session_store.js'
+import { getAuthenticationHeaders } from '#root/core/shared/utils/auth/get_auth_headers.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export async function makeRequest(
   path: string,

@@ -17,9 +17,9 @@ import {
   string,
 } from 'valibot'
 
-import { tags } from '@/database/schema.js'
+import { tags } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 const PropertiesObjectSchema = record(
   string(),

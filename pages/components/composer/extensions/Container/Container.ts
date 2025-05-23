@@ -1,9 +1,9 @@
-import { ContainerNodeView } from '@pages/components/composer/extensions/Container/container-node-view.jsx'
+import { ContainerNodeView } from '#root/pages/components/composer/extensions/Container/container-node-view.jsx'
 import {
   getStyleAttributeDefaultCommands,
   getStyleAttributeDefinition,
-} from '@pages/components/composer/extensions/NodeStyles/NodeStyles.js'
-import { getDefaultStylesForNode } from '@pages/components/composer/themes/default-theme.js'
+} from '#root/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
+import { getDefaultStylesForNode } from '#root/pages/components/composer/themes/default-theme.js'
 import { Node, mergeAttributes } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
 

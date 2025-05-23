@@ -8,9 +8,9 @@ import {
 } from 'drizzle-orm'
 import type { AnyMySqlColumn, AnyMySqlTable, MySqlSelect } from 'drizzle-orm/mysql-core'
 
-import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 export type QueryModifierFn = (
   // biome-ignore lint/suspicious/noExplicitAny: MySQL query types require any

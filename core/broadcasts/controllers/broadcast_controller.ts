@@ -1,35 +1,35 @@
 import { safeParseAsync } from 'valibot'
 
-import { CreateBroadcastAction } from '@/broadcasts/actions/create_broadcast_action.js'
-import { DeleteBroadcastAction } from '@/broadcasts/actions/delete_broadcast_action.js'
-import { GetBroadcastsAction } from '@/broadcasts/actions/get_broadcasts_action.js'
-import { SendBroadcastAction } from '@/broadcasts/actions/send_broadcast_action.js'
-import { UnsendBroadcastAction } from '@/broadcasts/actions/unsend_broadcast_action.js'
-import { UpdateBroadcastAction } from '@/broadcasts/actions/update_broadcast_action.js'
-import { ValidateBroadcastEmailContentAction } from '@/broadcasts/actions/validate_broadcast_email_content_action.js'
-import { BroadcastValidationAndAuthorizationConcern } from '@/broadcasts/concerns/broadcast_validation_concern.js'
-import { CreateBroadcastDto } from '@/broadcasts/dto/create_broadcast_dto.js'
+import { CreateBroadcastAction } from '#root/core/broadcasts/actions/create_broadcast_action.js'
+import { DeleteBroadcastAction } from '#root/core/broadcasts/actions/delete_broadcast_action.js'
+import { GetBroadcastsAction } from '#root/core/broadcasts/actions/get_broadcasts_action.js'
+import { SendBroadcastAction } from '#root/core/broadcasts/actions/send_broadcast_action.js'
+import { UnsendBroadcastAction } from '#root/core/broadcasts/actions/unsend_broadcast_action.js'
+import { UpdateBroadcastAction } from '#root/core/broadcasts/actions/update_broadcast_action.js'
+import { ValidateBroadcastEmailContentAction } from '#root/core/broadcasts/actions/validate_broadcast_email_content_action.js'
+import { BroadcastValidationAndAuthorizationConcern } from '#root/core/broadcasts/concerns/broadcast_validation_concern.js'
+import { CreateBroadcastDto } from '#root/core/broadcasts/dto/create_broadcast_dto.js'
 import {
   SendBroadcastEmailContentSchema,
   SendBroadcastSchema,
-} from '@/broadcasts/dto/send_broadcast_dto.js'
-import { UpdateBroadcastDto } from '@/broadcasts/dto/update_broadcast_dto.js'
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+} from '#root/core/broadcasts/dto/send_broadcast_dto.js'
+import { UpdateBroadcastDto } from '#root/core/broadcasts/dto/update_broadcast_dto.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
 import type {
   Broadcast,
   BroadcastWithEmailContent,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { RenderBroadcastContentAction } from '@/broadcasts/actions/render_broadcast_content_action.js'
-import { TeamCreditRepository } from '@/teams/repositories/team_credit_repository.js'
-import { container } from '@/utils/typi.js'
+import { RenderBroadcastContentAction } from '#root/core/broadcasts/actions/render_broadcast_content_action.js'
+import { TeamCreditRepository } from '#root/core/teams/repositories/team_credit_repository.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * BroadcastController handles API endpoints for managing email marketing campaigns.

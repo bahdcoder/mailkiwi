@@ -1,15 +1,15 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import type {
   AccountInformation,
   CommerceProviderContract,
-} from '@/commerce/contracts/commerce_provider_contract.js'
+} from '#root/core/commerce/contracts/commerce_provider_contract.js'
 import Stripe from 'stripe'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { rootPath } from '@/shared/utils/routes/root_path.js'
+import { rootPath } from '#root/core/shared/utils/routes/root_path.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * StripeCommerceProvider implements the payment provider contract for Stripe.

@@ -1,23 +1,23 @@
 import { createSign, createVerify } from 'node:crypto'
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/tests/utils/http.js'
 
-import { sendingDomains } from '@/database/schema.js'
+import { sendingDomains } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { Encryption } from '@/shared/utils/encryption/encryption.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
+import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 describe('@domains', () => {
   test('can create unique sending domains for a team', async ({ expect }) => {

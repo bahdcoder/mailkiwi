@@ -1,11 +1,11 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { getSignedCookie, setSignedCookie } from 'hono/cookie'
 
-import type { HonoContext } from '@/shared/server/types.js'
-import { RedisSessionStore } from '@/shared/sessions/stores/redis_session_store.js'
-import { Encryption } from '@/shared/utils/encryption/encryption.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
+import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_session_store.js'
+import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class Session {
   protected SESSION_COOKIE_NAME = 'session'

@@ -1,7 +1,7 @@
-import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
+import { ChannelRepository } from '#root/core/chat/repositories/channel_repository.js'
 import { command, string } from '@drizzle-team/brocli'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export const addChannelCommand = command({
   name: 'add_channel',

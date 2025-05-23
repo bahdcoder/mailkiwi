@@ -1,7 +1,7 @@
-import { Button } from '@pages/components/tiptap/ui/Button/Button.jsx'
-import { Icon } from '@pages/components/tiptap/ui/Icon.jsx'
-import { Surface } from '@pages/components/tiptap/ui/Surface.jsx'
-import { Toggle } from '@pages/components/tiptap/ui/Toggle/Toggle.jsx'
+import { Button } from '#root/pages/components/tiptap/ui/Button/Button.jsx'
+import { Icon } from '#root/pages/components/tiptap/ui/Icon.jsx'
+import { Surface } from '#root/pages/components/tiptap/ui/Surface.jsx'
+import { Toggle } from '#root/pages/components/tiptap/ui/Toggle/Toggle.jsx'
 import { useCallback, useMemo, useState } from 'react'
 
 export type LinkEditorPanelProps = {

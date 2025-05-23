@@ -2,12 +2,12 @@ import { type SQL, type SQLWrapper, and, or } from 'drizzle-orm'
 import { FieldSegmentBuilder } from './fields/base_field_segment_builder.js'
 import { TagsSegmentBuilder } from './fields/tags_segment_builder.js'
 
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
-import { ActivitySegmentBuilder } from '@/audiences/utils/segment_builder/fields/activity_segment_builder.js'
-import { PropertiesSegmentBuilder } from '@/audiences/utils/segment_builder/fields/properties_segment_builder.js'
+import type { CreateSegmentDto } from '#root/core/audiences/dto/segments/create_segment_dto.js'
+import { ActivitySegmentBuilder } from '#root/core/audiences/utils/segment_builder/fields/activity_segment_builder.js'
+import { PropertiesSegmentBuilder } from '#root/core/audiences/utils/segment_builder/fields/properties_segment_builder.js'
 
-import type { Audience } from '@/database/database_schema_types.js'
-import { contacts } from '@/database/schema.js'
+import type { Audience } from '#root/database/database_schema_types.js'
+import { contacts } from '#root/database/schema.js'
 
 /**
  * SegmentBuilder is a sophisticated query builder for creating complex audience segments.

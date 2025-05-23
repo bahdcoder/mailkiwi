@@ -1,27 +1,27 @@
 import { setTimeout } from 'node:timers/promises'
-import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
-import { MessageRepository } from '@/chat/repositories/message_repository.js'
+import { ChannelRepository } from '#root/core/chat/repositories/channel_repository.js'
+import { MessageRepository } from '#root/core/chat/repositories/message_repository.js'
 import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 import { describe, test } from 'vitest'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
-import { makeRequest, makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
+import { refreshDatabase } from '#root/tests/mocks/teams/teams.js'
+import { makeRequest, makeRequestAsUser } from '#root/tests/utils/http.js'
 
 import {
   type Channel,
   type InsertMessageReaction,
   type Message,
   MessageReaction,
-} from '@/database/database_schema_types.js'
-import { channelMemberships, channels, messages } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import { channelMemberships, channels, messages } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 const database = makeDatabase()
 

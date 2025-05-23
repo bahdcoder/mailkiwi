@@ -3,9 +3,9 @@ import path from 'node:path'
 import mjml from 'mjml'
 import puppeteer, { KnownDevices } from 'puppeteer'
 
-import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { sleep } from '@/utils/sleep.js'
+import { sleep } from '#root/core/utils/sleep.js'
 
 /**
  * EmailSnapshotTool generates visual snapshots of email templates across different devices.

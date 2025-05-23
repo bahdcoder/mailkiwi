@@ -1,5 +1,5 @@
 import './styles.css'
-import { SearchIcon } from '@pages/components/icons/search.svg.jsx'
+import { SearchIcon } from '#root/pages/components/icons/search.svg.jsx'
 import { Heading } from '@kibamail/owly/heading'
 import * as Tabs from '@kibamail/owly/tabs'
 import * as TextField from '@kibamail/owly/text-field'
@@ -9,14 +9,14 @@ import { usePageContext } from 'vike-react/usePageContext'
 import type {
   BroadcastGroup,
   BroadcastWithEmailContent,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 
-import { EmptyState } from '@pages/components/empty-state/empty_state.jsx'
-import { CreateBroadcastFlow } from '@pages/components/flows/compose_broadcast/create_broadcast_flow.jsx'
-import { BroadcastRow } from '@pages/w/engage/components/broadcast_row.jsx'
-import { route } from '@/shared/routes/route_aliases.js'
+import { EmptyState } from '#root/pages/components/empty-state/empty_state.jsx'
+import { CreateBroadcastFlow } from '#root/pages/components/flows/compose_broadcast/create_broadcast_flow.jsx'
+import { BroadcastRow } from '#root/pages/w/engage/components/broadcast_row.jsx'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 import { Button } from '@kibamail/owly/button'
-import type { DefaultPageProps } from '@pages/types/page-context.js'
+import type { DefaultPageProps } from '#root/pages/types/page-context.js'
 
 enum BroadcastStatusFilters {
   DRAFT = 'draft',

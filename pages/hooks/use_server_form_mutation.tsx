@@ -1,4 +1,4 @@
-import { navigate } from '@pages/utils/navigate.js'
+import { navigate } from '#root/pages/utils/navigate.js'
 import { InputError } from '@kibamail/owly/input-hint'
 import { composeRefs } from '@radix-ui/react-compose-refs'
 import {

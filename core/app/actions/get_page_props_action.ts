@@ -1,4 +1,4 @@
-import type { HonoContext } from '@/shared/server/types.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
 export class GetPagePropsAction {
   async handle(ctx: HonoContext) {

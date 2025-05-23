@@ -1,4 +1,4 @@
-import { SettingsIcon } from '@pages/components/icons/settings.svg.jsx'
+import { SettingsIcon } from '#root/pages/components/icons/settings.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 
 export function FooterMenuItems() {

@@ -1,21 +1,21 @@
 import { and, eq, isNotNull } from 'drizzle-orm'
 
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
+import { SegmentBuilder } from '#root/core/audiences/utils/segment_builder/segment_builder.js'
 
-import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.js'
+import { RunAutomationStepForContactJob } from '#root/core/automations/jobs/run_automation_step_for_contact_job.js'
 import type {
   AutomationStepRunnerContext,
   AutomationStepRunnerContract,
-} from '@/automations/utils/automation_step_runners/automation_runner_contract.js'
+} from '#root/core/automations/utils/automation_step_runners/automation_runner_contract.js'
 
 import type {
   Audience,
   AutomationStep,
   Contact,
-} from '@/database/database_schema_types.js'
-import { automationSteps, contacts } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import { automationSteps, contacts } from '#root/database/schema.js'
 
-import { Queue } from '@/shared/queue/queue.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
 /**
  * Implements the IF/ELSE conditional logic in automation workflows.

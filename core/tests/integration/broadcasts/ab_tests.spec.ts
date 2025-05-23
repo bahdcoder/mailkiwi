@@ -2,16 +2,16 @@ import { faker } from '@faker-js/faker'
 import { asc, eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
 import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
-} from '@/tests/mocks/audiences/email_content.js'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+} from '#root/tests/mocks/audiences/email_content.js'
+import { createBroadcastForUser, createUser } from '#root/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/tests/utils/http.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 describe('@broadcasts update broadcasts', () => {
   test('can update a broadcast with ab test variants', async ({ expect }) => {

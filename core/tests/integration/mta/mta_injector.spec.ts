@@ -1,38 +1,43 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { EmailSendRepository } from '@/email_sends/repositories/email_send_repository.js'
-import { ProcessMtaLogJob } from '@/kumologs/jobs/process_mta_log_job.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { EmailSendRepository } from '#root/core/email_sends/repositories/email_send_repository.js'
+import { ProcessMtaLogJob } from '#root/core/kumologs/jobs/process_mta_log_job.js'
 import type { ServerType } from '@hono/node-server'
 import { v1 } from 'uuid'
 import { afterAll, beforeAll, describe, test } from 'vitest'
 
-import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.js'
+import { SendBroadcastToContact } from '#root/core/broadcasts/jobs/send_broadcast_to_contact_job.js'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
-import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
+import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 
 import {
   clearAllMailpitMessages,
   getAllMailpitMessages,
   getMailpitMessageSource,
-} from '@/tests/integration/helpers/mailpit.js'
+} from '#root/tests/integration/helpers/mailpit.js'
 import {
   createTestServer,
   shutdownTestServer,
-} from '@/tests/integration/helpers/server.js'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
-import { getInjectEmailContent } from '@/tests/mocks/emails/email_content.js'
-import { injectEmailForTeam } from '@/tests/mocks/emails/email_content.js'
-import { getApiKeyForTeam } from '@/tests/utils/http.js'
+} from '#root/tests/integration/helpers/server.js'
+import { createBroadcastForUser, createUser } from '#root/tests/mocks/auth/users.js'
+import { getInjectEmailContent } from '#root/tests/mocks/emails/email_content.js'
+import { injectEmailForTeam } from '#root/tests/mocks/emails/email_content.js'
+import { getApiKeyForTeam } from '#root/tests/utils/http.js'
 
-import type { Audience } from '@/database/database_schema_types.js'
+import type { Audience } from '#root/database/database_schema_types.js'
 
-import { makeApp, makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
+import {
+  makeApp,
+  makeDatabase,
+  makeLogger,
+  makeRedis,
+} from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
-import { sleep } from '@/utils/sleep.js'
-import { container } from '@/utils/typi.js'
-import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { sleep } from '#root/core/utils/sleep.js'
+import { container } from '#root/core/utils/typi.js'
+import { setupDomainForDnsChecks } from '#root/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 const xForwardedFor = '66.249.93.66'
 const userAgent =

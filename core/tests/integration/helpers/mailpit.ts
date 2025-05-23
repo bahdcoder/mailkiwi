@@ -1,8 +1,8 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import * as cheerio from 'cheerio'
 import { simpleParser } from 'mailparser'
 
-import { makeHttpClient } from '@/shared/http/http_client.js'
+import { makeHttpClient } from '#root/core/shared/http/http_client.js'
 
 export const clearAllMailpitMessages = async () => {
   await makeHttpClient().url(`${appEnv.MAILPIT_API_URL}/api/v1/messages`).delete().send()

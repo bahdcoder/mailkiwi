@@ -1,8 +1,8 @@
-import type { CommerceProviderContract } from '@/commerce/contracts/commerce_provider_contract.js'
-import { PaystackCommerceProvider } from '@/commerce/providers/paystack/paystack_commerce_provider.js'
-import { StripeCommerceProvider } from '@/commerce/providers/stripe/stripe_commerce_provider.js'
+import type { CommerceProviderContract } from '#root/core/commerce/contracts/commerce_provider_contract.js'
+import { PaystackCommerceProvider } from '#root/core/commerce/providers/paystack/paystack_commerce_provider.js'
+import { StripeCommerceProvider } from '#root/core/commerce/providers/stripe/stripe_commerce_provider.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * CommerceProviderTool is a factory for creating payment provider implementations.

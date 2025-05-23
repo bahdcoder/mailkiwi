@@ -2,17 +2,17 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
-import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.js'
+import { SendBroadcastJob } from '#root/core/broadcasts/jobs/send_broadcast_job.js'
+import { SendBroadcastToContact } from '#root/core/broadcasts/jobs/send_broadcast_to_contact_job.js'
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
+import { createFakeContact } from '#root/tests/mocks/audiences/contacts.js'
+import { createBroadcastForUser, createUser } from '#root/tests/mocks/auth/users.js'
 
-import { broadcasts, contacts, segments } from '@/database/schema.js'
+import { broadcasts, contacts, segments } from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import * as queues from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
+import * as queues from '#root/core/shared/queue/queue.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 describe('@broadcasts send job', () => {
   test('queues send email jobs for all contacts in audience for the broadcast', async ({

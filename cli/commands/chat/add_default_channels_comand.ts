@@ -1,15 +1,15 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { ChannelRepository } from '#root/core/chat/repositories/channel_repository.js'
 import { command } from '@drizzle-team/brocli'
 import { eq, inArray } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 
-import type { InsertChannel } from '@/database/database_schema_types.js'
-import { channels } from '@/database/schema.js'
+import type { InsertChannel } from '#root/database/database_schema_types.js'
+import { channels } from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger } from '@/shared/container/index.js'
+import { makeDatabase, makeLogger } from '#root/core/shared/container/index.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export const defaultChannels: InsertChannel[] = [
   {

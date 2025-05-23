@@ -5,12 +5,12 @@ import type {
   SendingDomain,
   SendingSource,
   UpdateSendingDomain,
-} from '@/database/database_schema_types.js'
-import { sendingDomains, sendingSources } from '@/database/schema.js'
-import { belongsTo } from '@/database/utils/relationships.js'
+} from '#root/database/database_schema_types.js'
+import { sendingDomains, sendingSources } from '#root/database/schema.js'
+import { belongsTo } from '#root/database/utils/relationships.js'
 
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase, makeRedis } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 export class SendingDomainRepository extends BaseRepository {
   constructor(

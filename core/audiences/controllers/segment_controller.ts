@@ -1,13 +1,13 @@
-import { CreateSegmentSchema } from '@/audiences/dto/segments/create_segment_dto.js'
-import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
+import { CreateSegmentSchema } from '#root/core/audiences/dto/segments/create_segment_dto.js'
+import { SegmentRepository } from '#root/core/audiences/repositories/segment_repository.js'
 
-import type { Audience } from '@/database/database_schema_types.js'
+import type { Audience } from '#root/database/database_schema_types.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * SegmentController manages audience segmentation functionality.

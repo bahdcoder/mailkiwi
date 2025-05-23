@@ -1,5 +1,5 @@
 import type { Readable } from 'node:stream'
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import {
   GetObjectCommand,
   type PutObjectCommandInput,
@@ -8,8 +8,8 @@ import {
 import { Upload } from '@aws-sdk/lib-storage'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-import { container } from '@/utils/typi.js'
-import { assetsPath } from '@pages/utils/assets_path.js'
+import { container } from '#root/core/utils/typi.js'
+import { assetsPath } from '#root/pages/utils/assets_path.js'
 
 export class S3Disk {
   protected client = new S3Client({

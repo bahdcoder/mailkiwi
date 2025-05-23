@@ -1,15 +1,15 @@
-import { PasswordField } from '@pages/components/input/password-field.jsx'
+import { PasswordField } from '#root/pages/components/input/password-field.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 function ResetPasswordPage() {
   const { routeParams } = usePageContext()

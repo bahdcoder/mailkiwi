@@ -1,39 +1,39 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { Readable } from 'node:stream'
-import { appEnv } from '@/app/env/app_env.js'
-import { S3Disk } from '@/minio/s3_client.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { S3Disk } from '#root/core/minio/s3_client.js'
 import { S3Client } from '@aws-sdk/client-s3'
 import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test, vi } from 'vitest'
 
-import { CreateTagAction } from '@/audiences/actions/tags/create_tag_action.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { CreateTagAction } from '#root/core/audiences/actions/tags/create_tag_action.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { ContactImportRepository } from '#root/core/audiences/repositories/contact_import_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
 import {
   getCookieSessionForUser,
   makeRequest,
   makeRequestAsUser,
-} from '@/tests/utils/http.js'
+} from '#root/tests/utils/http.js'
 
-import type { ContactImport } from '@/database/database_schema_types.js'
+import type { ContactImport } from '#root/database/database_schema_types.js'
 import {
   audiences,
   contactImports,
   emailSendEvents,
   emailSends,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { makeApp, makeDatabase } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
-import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { container } from '#root/core/utils/typi.js'
+import { setupDomainForDnsChecks } from '#root/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 export const setupImport = async (fileName: string, updateSettings = false) => {
   const form = new FormData()

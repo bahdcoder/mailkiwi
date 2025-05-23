@@ -1,19 +1,19 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
 import { DateTime } from 'luxon'
 import { describe, test } from 'vitest'
 
-import { SendTeamMemberInviteJob } from '@/teams/jobs/send_team_member_invite_job.js'
-import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { SendTeamMemberInviteJob } from '#root/core/teams/jobs/send_team_member_invite_job.js'
+import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/tests/utils/http.js'
 
-import { Queue } from '@/shared/queue/queue.js'
-import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 const setup = async (email?: string, role?: string) => {
   const { user, team } = await createUser()

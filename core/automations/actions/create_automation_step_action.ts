@@ -1,7 +1,7 @@
-import type { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
-import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
+import type { CreateAutomationStepDto } from '#root/core/automations/dto/create_automation_step_dto.js'
+import { AutomationStepRepository } from '#root/core/automations/repositories/automation_step_repository.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 interface EdgeInfo {
   sourceId: string

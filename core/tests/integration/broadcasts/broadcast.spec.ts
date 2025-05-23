@@ -2,24 +2,24 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
 import {
   createBroadcastForUser,
   createUser,
   setupSendingDomainForTeam,
   createSenderIdentityForTeam,
-} from '@/tests/mocks/auth/users.js'
-import { refreshRedisDatabase } from '@/tests/mocks/teams/teams.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+} from '#root/tests/mocks/auth/users.js'
+import { refreshRedisDatabase } from '#root/tests/mocks/teams/teams.js'
+import { makeRequestAsUser } from '#root/tests/utils/http.js'
 
-import { broadcasts, emailContents } from '@/database/schema.js'
+import { broadcasts, emailContents } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 describe('@broadcasts create', () => {
   test('can create a broadcast for an audience', async ({ expect }) => {

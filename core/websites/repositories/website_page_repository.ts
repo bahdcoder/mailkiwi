@@ -1,11 +1,14 @@
-import type { CreateWebsitePageDto } from '@/websites/dto/create_website_page_dto.js'
+import type { CreateWebsitePageDto } from '#root/core/websites/dto/create_website_page_dto.js'
 import { eq } from 'drizzle-orm'
 
-import type { UpdateWebsitePage, WebsitePage } from '@/database/database_schema_types.js'
-import { websitePages } from '@/database/schema.js'
+import type {
+  UpdateWebsitePage,
+  WebsitePage,
+} from '#root/database/database_schema_types.js'
+import { websitePages } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 export class WebsitePageRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {

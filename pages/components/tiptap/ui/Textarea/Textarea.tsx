@@ -1,4 +1,4 @@
-import { cn } from '@pages/components/tiptap/utils/index.js'
+import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import { forwardRef } from 'react'
 
 export const Textarea = forwardRef<

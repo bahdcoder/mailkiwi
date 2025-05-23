@@ -13,9 +13,9 @@ import {
   string,
 } from 'valibot'
 
-import { container } from '@/utils/typi.js'
-import { UUID_V1_REGEX } from '@/shared/utils/cuid/cuid.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { container } from '#root/core/utils/typi.js'
+import { UUID_V1_REGEX } from '#root/core/shared/utils/cuid/cuid.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
 /**
  * Schema for creating a new sender identity.

@@ -1,7 +1,7 @@
-import type { ResetPasswordDto } from '@/auth/dto/reset_password_dto.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import type { ResetPasswordDto } from '#root/core/auth/dto/reset_password_dto.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class ResetPasswordAction {
   constructor(private userRepository: UserRepository = container.make(UserRepository)) {}

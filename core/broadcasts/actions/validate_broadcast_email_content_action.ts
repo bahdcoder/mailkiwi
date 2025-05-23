@@ -1,10 +1,10 @@
 import type { JSONContent } from '@tiptap/core'
 
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import type { BroadcastWithEmailContent } from '@/database/database_schema_types.js'
+import type { BroadcastWithEmailContent } from '#root/database/database_schema_types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 interface ValidationResult {
   url: string

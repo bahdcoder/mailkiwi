@@ -1,8 +1,8 @@
 import type { Next } from 'hono'
 
-import { E_UNAUTHORIZED } from '@/http/responses/errors.js'
+import { E_UNAUTHORIZED } from '#root/core/http/responses/errors.js'
 
-import type { HonoContext } from '@/shared/server/types.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
 /**
  * MustBeAuthenticatedMiddleware enforces user authentication for protected routes.

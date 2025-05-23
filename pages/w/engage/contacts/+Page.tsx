@@ -1,22 +1,22 @@
 import { getCommonPinningStyles } from './components/columns.js'
 import * as Table from './components/table.js'
 import './styles.css'
-import * as Dropdown from '@pages/components/dropdown/dropdown.jsx'
-import { DisplayedFilterCondition } from '@pages/components/filters/displayed-filter-conditions.jsx'
-import { CancelIcon } from '@pages/components/icons/cancel.svg.jsx'
-import { CheckIcon } from '@pages/components/icons/check.svg.jsx'
-import { SearchIcon } from '@pages/components/icons/search.svg.jsx'
-import { NewContactProperty } from '@pages/w/engage/contacts/components/actions/new_contact_property.jsx'
-import { SaveFilterAsSegmentForm } from '@pages/w/engage/contacts/components/actions/save_filter_as_segment.jsx'
-import { UpdateContactProperty } from '@pages/w/engage/contacts/components/actions/update_contact_property.jsx'
+import * as Dropdown from '#root/pages/components/dropdown/dropdown.jsx'
+import { DisplayedFilterCondition } from '#root/pages/components/filters/displayed-filter-conditions.jsx'
+import { CancelIcon } from '#root/pages/components/icons/cancel.svg.jsx'
+import { CheckIcon } from '#root/pages/components/icons/check.svg.jsx'
+import { SearchIcon } from '#root/pages/components/icons/search.svg.jsx'
+import { NewContactProperty } from '#root/pages/w/engage/contacts/components/actions/new_contact_property.jsx'
+import { SaveFilterAsSegmentForm } from '#root/pages/w/engage/contacts/components/actions/save_filter_as_segment.jsx'
+import { UpdateContactProperty } from '#root/pages/w/engage/contacts/components/actions/update_contact_property.jsx'
 import {
   type FilterCondition,
   FiltersBuilder,
   TextFilterInputForm,
-} from '@pages/w/engage/contacts/components/filters.jsx'
-import { Pagination } from '@pages/w/engage/contacts/components/pagination.jsx'
-import { useContacts } from '@pages/w/engage/contacts/hooks/use-contacts.js'
-import { useFilterOperations } from '@pages/w/engage/contacts/hooks/use-filter-operations.js'
+} from '#root/pages/w/engage/contacts/components/filters.jsx'
+import { Pagination } from '#root/pages/w/engage/contacts/components/pagination.jsx'
+import { useContacts } from '#root/pages/w/engage/contacts/hooks/use-contacts.js'
+import { useFilterOperations } from '#root/pages/w/engage/contacts/hooks/use-filter-operations.js'
 import { Button } from '@kibamail/owly/button'
 import { Checkbox } from '@kibamail/owly/checkbox'
 import * as Tabs from '@kibamail/owly/tabs'
@@ -28,15 +28,15 @@ import * as React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 import type { PageContext } from 'vike/types'
 
-import type { Segment, Tag } from '@/database/database_schema_types.js'
-import { EmptyState } from '@pages/components/empty-state/empty_state.jsx'
-import { ImportContactsDialog } from '@pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
-import { formatCount } from '@pages/utils/number_formatter.js'
+import type { Segment, Tag } from '#root/database/database_schema_types.js'
+import { EmptyState } from '#root/pages/components/empty-state/empty_state.jsx'
+import { ImportContactsDialog } from '#root/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
+import { formatCount } from '#root/pages/utils/number_formatter.js'
 import {
   type PageContextWithPageProps,
   usePageContextWithProps,
-} from '@pages/hooks/use_page_props.js'
-import { DefaultPageContext } from '@pages/types/page-context.js'
+} from '#root/pages/hooks/use_page_props.js'
+import { DefaultPageContext } from '#root/pages/types/page-context.js'
 
 const filterOperationLabels: Record<string, string> = {
   eq: 'Is',

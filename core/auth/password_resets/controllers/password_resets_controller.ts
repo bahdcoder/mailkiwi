@@ -1,17 +1,17 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 
-import { RequestPasswordResetSchema } from '@/auth/password_resets/dto/request_password_reset_dto.js'
-import { ResetPasswordSchema } from '@/auth/password_resets/dto/reset_password_dto.js'
-import { PasswordResetRepository } from '@/auth/password_resets/repositories/password_reset_repository.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { RequestPasswordResetSchema } from '#root/core/auth/password_resets/dto/request_password_reset_dto.js'
+import { ResetPasswordSchema } from '#root/core/auth/password_resets/dto/reset_password_dto.js'
+import { PasswordResetRepository } from '#root/core/auth/password_resets/repositories/password_reset_repository.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { VikeController } from '@/shared/controllers/vike_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { VikeController } from '#root/core/shared/controllers/vike_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * PasswordResetsController handles password recovery and reset functionality.

@@ -1,15 +1,15 @@
 import { describe, test } from 'vitest'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/tests/utils/http.js'
 
-import { teamMemberships } from '@/database/schema.js'
+import { teamMemberships } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import { RedisSessionStore } from '@/shared/sessions/stores/redis_session_store.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_session_store.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 describe('@teams', () => {
   test('can fetch a single team', async ({ expect }) => {

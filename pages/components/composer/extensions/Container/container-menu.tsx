@@ -1,23 +1,23 @@
 import {
   FillPanel,
   type FillValue,
-} from '@pages/components/composer/components/fill-panel/fill-panel.jsx'
-import { LinkEditorPanel } from '@pages/components/composer/components/link-menu/link-editor-panel.jsx'
+} from '#root/pages/components/composer/components/fill-panel/fill-panel.jsx'
+import { LinkEditorPanel } from '#root/pages/components/composer/components/link-menu/link-editor-panel.jsx'
 import {
   ToolbarButton,
   ToolbarContainer,
   ToolbarSection,
   getToolbarClassNames,
-} from '@pages/components/composer/components/toolbar/toolbar.jsx'
-import { CompAlignCenterIcon } from '@pages/components/icons/comp-align-center.svg.jsx'
-import { CompAlignLeftIcon } from '@pages/components/icons/comp-align-left.svg.jsx'
-import { CompAlignRightIcon } from '@pages/components/icons/comp-align-right.svg.jsx'
-import { FillColorIcon } from '@pages/components/icons/fill-color.svg.jsx'
-import { FullWidthIcon } from '@pages/components/icons/full-width.svg.jsx'
-import { LinkIcon } from '@pages/components/icons/link.svg.jsx'
-import { OpenNewWindowIcon } from '@pages/components/icons/open-new-window.svg.jsx'
-import { TrashIcon } from '@pages/components/icons/trash.svg.jsx'
-import getRenderContainer from '@pages/components/tiptap/utils/getRenderContainer.js'
+} from '#root/pages/components/composer/components/toolbar/toolbar.jsx'
+import { CompAlignCenterIcon } from '#root/pages/components/icons/comp-align-center.svg.jsx'
+import { CompAlignLeftIcon } from '#root/pages/components/icons/comp-align-left.svg.jsx'
+import { CompAlignRightIcon } from '#root/pages/components/icons/comp-align-right.svg.jsx'
+import { FillColorIcon } from '#root/pages/components/icons/fill-color.svg.jsx'
+import { FullWidthIcon } from '#root/pages/components/icons/full-width.svg.jsx'
+import { LinkIcon } from '#root/pages/components/icons/link.svg.jsx'
+import { OpenNewWindowIcon } from '#root/pages/components/icons/open-new-window.svg.jsx'
+import { TrashIcon } from '#root/pages/components/icons/trash.svg.jsx'
+import getRenderContainer from '#root/pages/components/tiptap/utils/getRenderContainer.js'
 import { BubbleMenu, type Editor } from '@tiptap/react'
 import type React from 'react'
 import { useCallback } from 'react'

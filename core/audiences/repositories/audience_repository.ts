@@ -1,19 +1,19 @@
-import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
 import { and, eq } from 'drizzle-orm'
 
-import type { CreateAudienceDto } from '@/audiences/dto/audiences/create_audience_dto.js'
+import type { CreateAudienceDto } from '#root/core/audiences/dto/audiences/create_audience_dto.js'
 
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
 import {
   Audience,
   type UpdateSetAudienceInput,
-} from '@/database/database_schema_types.js'
-import { type KnownAudienceProperty, audiences } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import { type KnownAudienceProperty, audiences } from '#root/database/schema.js'
 
-import { ContainerKey } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { ContainerKey } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class AudienceRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = container.make(ContainerKey.database)) {

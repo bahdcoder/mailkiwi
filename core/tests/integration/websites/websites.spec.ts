@@ -1,20 +1,20 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type { HTMLJsonBlock } from '@/websites/dto/update_website_page_dto.js'
-import { CheckWebsiteDomainDnsConfiguration } from '@/websites/jobs/check_website_domain_dns_configuration_job.js'
-import { WebsitePageRepository } from '@/websites/repositories/website_page_repository.js'
-import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import type { HTMLJsonBlock } from '#root/core/websites/dto/update_website_page_dto.js'
+import { CheckWebsiteDomainDnsConfiguration } from '#root/core/websites/jobs/check_website_domain_dns_configuration_job.js'
+import { WebsitePageRepository } from '#root/core/websites/repositories/website_page_repository.js'
+import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
 import { faker } from '@faker-js/faker'
 import { load as cheerioLoad } from 'cheerio'
 import { describe, test } from 'vitest'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/tests/utils/http.js'
 
-import { ContainerKey, makeApp } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { ContainerKey, makeApp } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 describe('@websites', () => {
   test('can add a custom domain to a newsletter website', async ({ expect }) => {

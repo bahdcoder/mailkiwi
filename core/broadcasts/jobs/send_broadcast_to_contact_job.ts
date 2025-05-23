@@ -1,24 +1,24 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { InjectEmailAction } from '@/injector/actions/inject_email_action.js'
-import type { InjectEmailSchemaDto } from '@/injector/dto/inject_email_dto.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { InjectEmailAction } from '#root/core/injector/actions/inject_email_action.js'
+import type { InjectEmailSchemaDto } from '#root/core/injector/dto/inject_email_dto.js'
 
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
 import type {
   BroadcastWithEmailContent,
   SenderIdentityWithSendingDomain,
   SendingDomain,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export interface SendBroadcastToContactPayload {
   broadcastId: string

@@ -1,17 +1,17 @@
-import { SignoutForm } from '@pages/components/dashboard/layout/signout-form.jsx'
-import { CheckIcon } from '@pages/components/icons/check.svg.jsx'
-import { NavArrowDownIcon } from '@pages/components/icons/nav-arrow-down.svg.jsx'
-import { PlusIcon } from '@pages/components/icons/plus.svg.jsx'
-import { SettingsIcon } from '@pages/components/icons/settings.svg.jsx'
-import { UserPlusIcon } from '@pages/components/icons/user-plus.svg.jsx'
-import { UserIcon } from '@pages/components/icons/user.svg.jsx'
+import { SignoutForm } from '#root/pages/components/dashboard/layout/signout-form.jsx'
+import { CheckIcon } from '#root/pages/components/icons/check.svg.jsx'
+import { NavArrowDownIcon } from '#root/pages/components/icons/nav-arrow-down.svg.jsx'
+import { PlusIcon } from '#root/pages/components/icons/plus.svg.jsx'
+import { SettingsIcon } from '#root/pages/components/icons/settings.svg.jsx'
+import { UserPlusIcon } from '#root/pages/components/icons/user-plus.svg.jsx'
+import { UserIcon } from '#root/pages/components/icons/user.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import cn from 'classnames'
 import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 interface WorkspacesDropdownMenuProps {
   rootId: string

@@ -1,4 +1,4 @@
-import { CheckCircleSolidIcon } from '@pages/components/icons/check-circle-solid.svg.jsx'
+import { CheckCircleSolidIcon } from '#root/pages/components/icons/check-circle-solid.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 import type React from 'react'
 

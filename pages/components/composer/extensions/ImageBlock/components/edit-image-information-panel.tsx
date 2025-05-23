@@ -1,9 +1,9 @@
 import {
   ToolbarButton,
   getToolbarClassNames,
-} from '@pages/components/composer/components/toolbar/toolbar.jsx'
-import { EditPencilIcon } from '@pages/components/icons/edit-pencil.svg.jsx'
-import * as Popover from '@pages/components/popover/popover.jsx'
+} from '#root/pages/components/composer/components/toolbar/toolbar.jsx'
+import { EditPencilIcon } from '#root/pages/components/icons/edit-pencil.svg.jsx'
+import * as Popover from '#root/pages/components/popover/popover.jsx'
 import * as TextField from '@kibamail/owly/text-field'
 import type { Editor } from '@tiptap/core'
 import React from 'react'

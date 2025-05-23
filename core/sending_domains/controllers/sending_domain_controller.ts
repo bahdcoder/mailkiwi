@@ -1,11 +1,11 @@
-import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
-import { CreateSendingDomainSchema } from '@/sending_domains/dto/create_sending_domain_dto.js'
+import { CreateSendingDomainAction } from '#root/core/sending_domains/actions/create_sending_domain_action.js'
+import { CreateSendingDomainSchema } from '#root/core/sending_domains/dto/create_sending_domain_dto.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * SendingDomainController manages domain verification for email sending.

@@ -1,18 +1,18 @@
 import { type SQLWrapper, and, eq } from 'drizzle-orm'
 import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
 
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { SegmentBuilder } from '#root/core/audiences/utils/segment_builder/segment_builder.js'
 
-import { broadcasts, contacts } from '@/database/schema.js'
+import { broadcasts, contacts } from '#root/database/schema.js'
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * Payload for the SendBroadcastJob.

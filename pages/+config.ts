@@ -1,17 +1,12 @@
 import vikeReactQuery from 'vike-react-query/config'
 import vikeReact from 'vike-react/config'
 import type { Config } from 'vike/types'
-import { initSentry } from './utils/sentry.js'
-
-if (typeof window !== 'undefined') {
-  initSentry()
-}
 
 export { config }
 
 const config: Config = {
-  title: 'Kibamail - Transactional, marketing and email automation platform.',
-  stream: true,
+  title: 'kibamail - transactional, marketing and email automation platform.',
+  stream: 'web',
   ssr: true,
   extends: [vikeReact, vikeReactQuery],
   passToClient: [

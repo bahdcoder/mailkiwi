@@ -7,10 +7,10 @@
 import { type SQLWrapper, and, count, countDistinct, eq, sql } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 
-import type { EmailSendEvent } from '@/database/database_schema_types.js'
-import { emailSendEvents, emailSends } from '@/database/schema.js'
+import type { EmailSendEvent } from '#root/database/database_schema_types.js'
+import { emailSendEvents, emailSends } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 export class ReportBuilder {
   protected configuration: {

@@ -1,19 +1,19 @@
-import { AcceptTeamMemberInviteAction } from '@/teams/actions/accept_team_member_invite_action.js'
-import { InviteTeamMemberAction } from '@/teams/actions/invite_team_member_action.js'
-import { RejectTeamMemberInviteAction } from '@/teams/actions/reject_team_member_invite_action.js'
-import { RevokeTeamMemberAccessAction } from '@/teams/actions/revoke_team_member_access_action.js'
-import { InviteTeamMember } from '@/teams/dto/invite_team_member_dto.js'
-import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
+import { AcceptTeamMemberInviteAction } from '#root/core/teams/actions/accept_team_member_invite_action.js'
+import { InviteTeamMemberAction } from '#root/core/teams/actions/invite_team_member_action.js'
+import { RejectTeamMemberInviteAction } from '#root/core/teams/actions/reject_team_member_invite_action.js'
+import { RevokeTeamMemberAccessAction } from '#root/core/teams/actions/revoke_team_member_access_action.js'
+import { InviteTeamMember } from '#root/core/teams/dto/invite_team_member_dto.js'
+import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
 
-import type { TeamMembership } from '@/database/database_schema_types.js'
+import type { TeamMembership } from '#root/database/database_schema_types.js'
 
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * TeamMembershipController handles API endpoints for managing team memberships.

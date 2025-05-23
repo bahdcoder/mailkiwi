@@ -1,14 +1,14 @@
-import { FastArrowLeftIcon } from '@pages/components/icons/fast-arrow-left.svg.jsx'
-import { FastArrowRightIcon } from '@pages/components/icons/fast-arrow-right.svg.jsx'
-import { NavArrowLeftIcon } from '@pages/components/icons/nav-arrow-left.svg.jsx'
-import { NavArrowRightIcon } from '@pages/components/icons/nav-arrow-right.svg.jsx'
+import { FastArrowLeftIcon } from '#root/pages/components/icons/fast-arrow-left.svg.jsx'
+import { FastArrowRightIcon } from '#root/pages/components/icons/fast-arrow-right.svg.jsx'
+import { NavArrowLeftIcon } from '#root/pages/components/icons/nav-arrow-left.svg.jsx'
+import { NavArrowRightIcon } from '#root/pages/components/icons/nav-arrow-right.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Text } from '@kibamail/owly/text'
 import type { Table } from '@tanstack/react-table'
 
-import type { ContactWithTagsAndProperties } from '@/database/database_schema_types.js'
+import type { ContactWithTagsAndProperties } from '#root/database/database_schema_types.js'
 
-import { formatCount } from '@pages/utils/number_formatter.js'
+import { formatCount } from '#root/pages/utils/number_formatter.js'
 
 export interface PaginationProps {
   table: Table<ContactWithTagsAndProperties>

@@ -1,10 +1,10 @@
-import type { UpdateFormDto } from '@/forms/dto/update_form_dto.js'
+import type { UpdateFormDto } from '#root/core/forms/dto/update_form_dto.js'
 import { DateTime } from 'luxon'
 
-import type { Form } from '@/database/database_schema_types.js'
-import { forms } from '@/database/schema.js'
+import type { Form } from '#root/database/database_schema_types.js'
+import { forms } from '#root/database/schema.js'
 
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 export class FormRepository extends BaseRepository {
   forms() {

@@ -1,13 +1,13 @@
 import type { Next } from 'hono'
 
-import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories/access_token_repository.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { E_UNAUTHORIZED } from '@/http/responses/errors.js'
+import { E_UNAUTHORIZED } from '#root/core/http/responses/errors.js'
 
-import type { HonoContext } from '@/shared/server/types.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * AccessTokenMiddleware enforces API key authentication for protected API routes.

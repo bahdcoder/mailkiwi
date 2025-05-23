@@ -1,9 +1,9 @@
-import { ButtonNodeView } from '@pages/components/composer/extensions/Button/button-node-view.jsx'
+import { ButtonNodeView } from '#root/pages/components/composer/extensions/Button/button-node-view.jsx'
 import {
   getStyleAttributeDefaultCommands,
   getStyleAttributeDefinition,
-} from '@pages/components/composer/extensions/NodeStyles/NodeStyles.js'
-import { getDefaultStylesForNode } from '@pages/components/composer/themes/default-theme.js'
+} from '#root/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
+import { getDefaultStylesForNode } from '#root/pages/components/composer/themes/default-theme.js'
 import { Node, type NodeViewProps } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
 import type { Node as ProseMirrorNode } from 'prosemirror-model'

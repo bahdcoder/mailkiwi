@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react'
 
-export function isSentryEnabled(): boolean {
+function isSentryEnabled() {
   return false
 }
 
@@ -10,19 +10,17 @@ export function isSentryEnabled(): boolean {
  * This function sets up Sentry with the appropriate configuration for the client environment.
  * It should be called as early as possible in the application lifecycle.
  */
-export function initSentry() {
-  if (isSentryEnabled()) {
-    Sentry.init({
-      dsn: 'https://de939b1583e043d561bfaecc64189b22@sentry.kibamail.com/2',
-      // todo: make this dynamic
-      environment: 'development',
-      release: 'kibamail@1.0.0',
-      tracesSampleRate: 0.2,
-      replaysSessionSampleRate: 0.1,
-      replaysOnErrorSampleRate: 1.0,
-      integrations: [Sentry.replayIntegration()],
-    })
-  }
+if (isSentryEnabled()) {
+  Sentry.init({
+    dsn: 'https://de939b1583e043d561bfaecc64189b22@sentry.kibamail.com/2',
+    // todo: make this dynamic
+    environment: 'development',
+    release: 'kibamail@1.0.0',
+    tracesSampleRate: 0.2,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+    integrations: [Sentry.replayIntegration()],
+  })
 }
 
 /**

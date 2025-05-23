@@ -1,14 +1,14 @@
-import { Ignitor } from '@/app/ignitor/ignitor.js'
-import { SendTransactionalEmailJob } from '@/transactional/jobs/send_transactional_email_job.js'
+import { Ignitor } from '#root/core/app/ignitor/ignitor.js'
+import { SendTransactionalEmailJob } from '#root/core/transactional/jobs/send_transactional_email_job.js'
 import { type Job, Worker } from 'bullmq'
 
-import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
-import { SendBroadcastToContact } from '@/broadcasts/jobs/send_broadcast_to_contact_job.js'
+import { SendBroadcastJob } from '#root/core/broadcasts/jobs/send_broadcast_job.js'
+import { SendBroadcastToContact } from '#root/core/broadcasts/jobs/send_broadcast_to_contact_job.js'
 
-import { ImportContactsJob } from '@/audiences/jobs/import_contacts_job.js'
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import type { BaseJob, JobHandlerResponse } from '@/shared/queue/abstract_job.js'
-import { container } from '@/utils/typi.js'
+import { ImportContactsJob } from '#root/core/audiences/jobs/import_contacts_job.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
+import type { BaseJob, JobHandlerResponse } from '#root/core/shared/queue/abstract_job.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<object, JobHandlerResponse | undefined, string>[] = []
@@ -18,8 +18,6 @@ export class WorkerIgnitor extends Ignitor {
     await this.startDatabaseConnector()
 
     this.registerJobs()
-
-    return this
   }
 
   registerJobs() {

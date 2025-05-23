@@ -1,4 +1,4 @@
-import { cn } from '@pages/components/tiptap/utils/index.js'
+import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import { memo, useCallback } from 'react'
 
 export type ColorButtonProps = {

@@ -1,7 +1,10 @@
-import type { MenuProps, ShouldShowProps } from '@pages/components/tiptap/menus/types.js'
-import { Icon } from '@pages/components/tiptap/ui/Icon.jsx'
-import * as PopoverMenu from '@pages/components/tiptap/ui/PopoverMenu.jsx'
-import { Toolbar } from '@pages/components/tiptap/ui/Toolbar.jsx'
+import type {
+  MenuProps,
+  ShouldShowProps,
+} from '#root/pages/components/tiptap/menus/types.js'
+import { Icon } from '#root/pages/components/tiptap/ui/Icon.jsx'
+import * as PopoverMenu from '#root/pages/components/tiptap/ui/PopoverMenu.jsx'
+import { Toolbar } from '#root/pages/components/tiptap/ui/Toolbar.jsx'
 import { BubbleMenu as BaseBubbleMenu } from '@tiptap/react'
 import React, { useCallback } from 'react'
 import { isColumnGripSelected } from './utils.js'

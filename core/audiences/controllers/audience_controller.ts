@@ -1,20 +1,20 @@
 import { and, eq } from 'drizzle-orm'
 
-import { CreateAudienceAction } from '@/audiences/actions/audiences/create_audience_action.js'
-import { UpdateAudienceAction } from '@/audiences/actions/audiences/update_audience_action.js'
-import { CreateAudienceSchema } from '@/audiences/dto/audiences/create_audience_dto.js'
-import { UpdateAudienceSchema } from '@/audiences/dto/audiences/update_audience_dto.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { CreateAudienceAction } from '#root/core/audiences/actions/audiences/create_audience_action.js'
+import { UpdateAudienceAction } from '#root/core/audiences/actions/audiences/update_audience_action.js'
+import { CreateAudienceSchema } from '#root/core/audiences/dto/audiences/create_audience_dto.js'
+import { UpdateAudienceSchema } from '#root/core/audiences/dto/audiences/update_audience_dto.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
 
-import type { Audience } from '@/database/database_schema_types.js'
-import { audiences } from '@/database/schema.js'
+import type { Audience } from '#root/database/database_schema_types.js'
+import { audiences } from '#root/database/schema.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
-import { Paginator } from '@/shared/utils/pagination/paginator.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
+import { Paginator } from '#root/core/shared/utils/pagination/paginator.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * AudienceController manages audience resources for email marketing.

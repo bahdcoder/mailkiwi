@@ -3,21 +3,21 @@ import { ContactsConcern } from '../concerns/broadcast_contacts_concern.js'
 import { PickAbTestWinnerJob } from './pick_ab_test_winner_job.js'
 import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
 
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
 import type {
   AbTestVariant,
   BroadcastWithSegmentAndAbTestVariants,
-} from '@/database/database_schema_types.js'
-import { contacts } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import { contacts } from '#root/database/schema.js'
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { hoursToSeconds } from '@/utils/dates.js'
-import { container } from '@/utils/typi.js'
+import { hoursToSeconds } from '#root/core/utils/dates.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * Payload for the SendAbTestBroadcastJob.

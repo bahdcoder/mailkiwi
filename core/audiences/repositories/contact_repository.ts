@@ -2,12 +2,12 @@ import { type SQL, and, eq, inArray } from 'drizzle-orm'
 import type { MySqlInsertOnDuplicateKeyUpdateConfig } from 'drizzle-orm/mysql-core'
 import { DateTime } from 'luxon'
 
-import type { CreateContactDto } from '@/audiences/dto/contacts/create_contact_dto.js'
-import type { UpdateContactDto } from '@/audiences/dto/contacts/update_contact_dto.js'
+import type { CreateContactDto } from '#root/core/audiences/dto/contacts/create_contact_dto.js'
+import type { UpdateContactDto } from '#root/core/audiences/dto/contacts/update_contact_dto.js'
 
-import { TriggerAutomationsForContactJob } from '@/automations/jobs/trigger_automation_for_contact_job.js'
+import { TriggerAutomationsForContactJob } from '#root/core/automations/jobs/trigger_automation_for_contact_job.js'
 
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
 import type {
   Audience,
   Contact,
@@ -16,7 +16,7 @@ import type {
   ContactWithTags,
   InsertContact,
   UpdateSetContactInput,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 import {
   audiences,
   contactProperties,
@@ -24,14 +24,14 @@ import {
   emailSendEvents,
   tags,
   tagsOnContacts,
-} from '@/database/schema.js'
-import { hasMany } from '@/database/utils/relationships.js'
+} from '#root/database/schema.js'
+import { hasMany } from '#root/database/utils/relationships.js'
 
-import { automationStepSubtypesTriggerMap } from '@/database/types/automations.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { Paginator } from '@/shared/utils/pagination/paginator.js'
+import { automationStepSubtypesTriggerMap } from '#root/database/types/automations.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
+import { Paginator } from '#root/core/shared/utils/pagination/paginator.js'
 
 export class ContactRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

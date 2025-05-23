@@ -1,10 +1,10 @@
-import * as Dropdown from '@pages/components/dropdown/dropdown.jsx'
-import { MoreVertIcon } from '@pages/components/icons/more-vert.svg.jsx'
+import * as Dropdown from '#root/pages/components/dropdown/dropdown.jsx'
+import { MoreVertIcon } from '#root/pages/components/icons/more-vert.svg.jsx'
 import {
   columnHelper,
   columns as defaultColumns,
-} from '@pages/w/engage/contacts/components/columns.js'
-import type { FilterCondition } from '@pages/w/engage/contacts/components/filters.jsx'
+} from '#root/pages/w/engage/contacts/components/columns.js'
+import type { FilterCondition } from '#root/pages/w/engage/contacts/components/filters.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Text } from '@kibamail/owly/text'
 import { useQuery } from '@tanstack/react-query'
@@ -14,18 +14,18 @@ import React from 'react'
 import { useDebounce } from 'use-debounce'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
+import type { CreateSegmentDto } from '#root/core/audiences/dto/segments/create_segment_dto.js'
 
 import type {
   ContactWithTagsAndProperties,
   Tag,
-} from '@/database/database_schema_types.js'
-import type { KnownAudienceProperty } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import type { KnownAudienceProperty } from '#root/database/schema.js'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 import dayjs from 'dayjs'
-import { DefaultPageProps } from '@pages/types/page-context.js'
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+import { DefaultPageProps } from '#root/pages/types/page-context.js'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
 export interface ServerContactsPageProps {
   contacts: { data: ContactWithTagsAndProperties[]; total: number }

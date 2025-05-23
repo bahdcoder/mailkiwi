@@ -1,5 +1,5 @@
-import { useApplicationLayoutContext } from '@pages/components/dashboard/layout/application-layout-context.jsx'
-import { SidebarContent } from '@pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
+import { useApplicationLayoutContext } from '#root/pages/components/dashboard/layout/application-layout-context.jsx'
+import { SidebarContent } from '#root/pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
 import cn from 'classnames'
 import { useEffect } from 'react'
 

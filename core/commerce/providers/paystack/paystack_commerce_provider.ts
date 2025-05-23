@@ -1,18 +1,18 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import type {
   AccountInformation,
   CommerceProviderContract,
   ConfirmOneTimePaymentPayload,
   InitializeOneTimePaymentPayload,
-} from '@/commerce/contracts/commerce_provider_contract.js'
+} from '#root/core/commerce/contracts/commerce_provider_contract.js'
 import { DateTime } from 'luxon'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { makeHttpClient } from '@/shared/http/http_client.js'
-import { commercePath, rootPath } from '@/shared/utils/routes/root_path.js'
+import { makeHttpClient } from '#root/core/shared/http/http_client.js'
+import { commercePath, rootPath } from '#root/core/shared/utils/routes/root_path.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class PaystackCommerceProvider implements CommerceProviderContract {
   requiresExternalOnboarding = false

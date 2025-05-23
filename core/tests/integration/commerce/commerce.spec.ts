@@ -1,31 +1,31 @@
-import { appEnv } from '@/app/env/app_env.js'
-import type { AccountInformation } from '@/commerce/contracts/commerce_provider_contract.js'
-import { ProductRepository } from '@/commerce/repositories/product_repository.js'
-import { CommerceProviderTool } from '@/commerce/tools/commerce_provider_tool.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import type { AccountInformation } from '#root/core/commerce/contracts/commerce_provider_contract.js'
+import { ProductRepository } from '#root/core/commerce/repositories/product_repository.js'
+import { CommerceProviderTool } from '#root/core/commerce/tools/commerce_provider_tool.js'
 import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 import { describe, test, vi } from 'vitest'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/tests/utils/http.js'
 
 import type {
   Audience,
   InsertProduct,
   Team,
   User,
-} from '@/database/database_schema_types.js'
-import { products } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import { products } from '#root/database/schema.js'
 
-import { makeApp, makeDatabase } from '@/shared/container/index.js'
+import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
 
-import { sleep } from '@/utils/sleep.js'
-import { container } from '@/utils/typi.js'
+import { sleep } from '#root/core/utils/sleep.js'
+import { container } from '#root/core/utils/typi.js'
 
 describe('@commerce', () => {
   const connectCommerceProvider = async (user: User, team: Team) => {

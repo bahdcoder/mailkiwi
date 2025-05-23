@@ -1,1 +1,1 @@
-export { guard } from '@pages/w/engage/welcome/+guard.js'
+export { guard } from '#root/pages/w/engage/welcome/+guard.js'

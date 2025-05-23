@@ -7,28 +7,28 @@ import { renderPage } from 'vike/server'
 import { ContainerKey } from '../container/index.js'
 import type { VikePageRenderer } from '../types/vike.js'
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { TagRepository } from '@/audiences/repositories/tag_repository.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { TagRepository } from '#root/core/audiences/repositories/tag_repository.js'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
 import {
   sendingDomains as sendingDomainsTable,
   tags as tagsTable,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import { PagePropsResolver } from '@/shared/controllers/page_props/page_props_resolver.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import type { HonoContext, HonoRouteDefinition } from '@/shared/server/types.js'
-import { excludeKeys } from '@/shared/utils/helpers/exclude_keys.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import { PagePropsResolver } from '#root/core/shared/controllers/page_props/page_props_resolver.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import type { HonoContext, HonoRouteDefinition } from '#root/core/shared/server/types.js'
+import { excludeKeys } from '#root/core/shared/utils/helpers/exclude_keys.js'
 
-import { TeamCreditRepository } from '@/teams/repositories/team_credit_repository.js'
-import { container } from '@/utils/typi.js'
-import type { DefaultPageProps } from '@pages/types/page-context.js'
-import { DEFAULT_TEAM_NAME } from '@/database/constants.js'
+import { TeamCreditRepository } from '#root/core/teams/repositories/team_credit_repository.js'
+import { container } from '#root/core/utils/typi.js'
+import type { DefaultPageProps } from '#root/pages/types/page-context.js'
+import { DEFAULT_TEAM_NAME } from '#root/database/constants.js'
 
 export class VikeController extends BaseController {
   vikePath = (

@@ -1,13 +1,13 @@
 import { type SQL, type SQLWrapper, and, asc, eq, sql } from 'drizzle-orm'
 
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
+import { SegmentBuilder } from '#root/core/audiences/utils/segment_builder/segment_builder.js'
 
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
 import type {
   Audience,
   BroadcastWithSegmentAndAbTestVariants,
-} from '@/database/database_schema_types.js'
-import { contacts } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import { contacts } from '#root/database/schema.js'
 
 /**
  * ContactsConcern handles contact selection and filtering for broadcast campaigns.

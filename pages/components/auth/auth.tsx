@@ -1,13 +1,13 @@
-import { GithubIcon } from '@pages/components/icons/github.svg.jsx'
-import { GoogleIcon } from '@pages/components/icons/google.svg.jsx'
-import { PasswordField } from '@pages/components/input/password-field.jsx'
+import { GithubIcon } from '#root/pages/components/icons/github.svg.jsx'
+import { GoogleIcon } from '#root/pages/components/icons/google.svg.jsx'
+import { PasswordField } from '#root/pages/components/input/password-field.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 import type React from 'react'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 export function PageContainer({ children }: React.PropsWithChildren) {
   return (

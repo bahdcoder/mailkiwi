@@ -1,25 +1,25 @@
 import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { IgnitorDev } from '@/app/ignitor/ignitor_dev.js'
-import { seedDevSendingSourcesCommand } from '@/cli/commands/seed_dev_sending_sources_command.js'
+import { IgnitorDev } from '#root/core/app/ignitor/ignitor_dev.js'
+import { seedDevSendingSourcesCommand } from '#root/cli/commands/seed_dev_sending_sources_command.js'
 import { faker } from '@faker-js/faker'
 import { type FullConfig, chromium } from '@playwright/test'
 import { DateTime } from 'luxon'
 
-import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { RegisterUserAction } from '#root/core/auth/actions/register_user_action.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { basePath } from '@/tests/e2e/helpers/storage_state_paths.js'
-import { refreshDatabase } from '@/tests/mocks/teams/teams.js'
+import { basePath } from '#root/tests/e2e/helpers/storage_state_paths.js'
+import { refreshDatabase } from '#root/tests/mocks/teams/teams.js'
 
-import type { Team, TeamMembership, User } from '@/database/database_schema_types.js'
+import type { Team, TeamMembership, User } from '#root/database/database_schema_types.js'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 async function createUser({
   addtoTeam,

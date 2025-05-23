@@ -1,5 +1,5 @@
-import { IgnitorDev } from '@/app/ignitor/ignitor_dev.js'
-import { makeLogger } from '@/shared/container/index.js'
+import { IgnitorDev } from '#root/core/app/ignitor/ignitor_dev.js'
+import { makeLogger } from '#root/core/shared/container/index.js'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { compress } from 'hono/compress'

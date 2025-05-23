@@ -1,21 +1,21 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { EmailSendRepository } from '@/email_sends/repositories/email_send_repository.js'
-import { ProcessMtaLogJob } from '@/kumologs/jobs/process_mta_log_job.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { EmailSendRepository } from '#root/core/email_sends/repositories/email_send_repository.js'
+import { ProcessMtaLogJob } from '#root/core/kumologs/jobs/process_mta_log_job.js'
 import { DateTime } from 'luxon'
 import { v1 } from 'uuid'
 import { describe, it } from 'vitest'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
+import { createBroadcastForUser, createUser } from '#root/tests/mocks/auth/users.js'
 
-import type { Audience } from '@/database/database_schema_types.js'
+import type { Audience } from '#root/database/database_schema_types.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import type { MtaLog } from '@/shared/types/mta.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
+import type { MtaLog } from '#root/core/shared/types/mta.js'
 
-import { container } from '@/utils/typi.js'
-import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { container } from '#root/core/utils/typi.js'
+import { setupDomainForDnsChecks } from '#root/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 const xForwardedFor = '66.249.93.66'
 const userAgent =

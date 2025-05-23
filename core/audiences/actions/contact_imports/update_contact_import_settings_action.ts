@@ -1,16 +1,16 @@
-import type { UpdateContactImportSettingsDto } from '@/audiences/dto/contact_imports/update_contact_import_settings_dto.js'
-import { ImportContactsJob } from '@/audiences/jobs/import_contacts_job.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
+import type { UpdateContactImportSettingsDto } from '#root/core/audiences/dto/contact_imports/update_contact_import_settings_dto.js'
+import { ImportContactsJob } from '#root/core/audiences/jobs/import_contacts_job.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { ContactImportRepository } from '#root/core/audiences/repositories/contact_import_repository.js'
 
-import type { ContactImport } from '@/database/database_schema_types.js'
+import type { ContactImport } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export class UpdateContactImportSettingsAction {
   constructor(

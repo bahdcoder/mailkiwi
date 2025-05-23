@@ -1,10 +1,10 @@
 import './flash_message.css'
-import { WarningCircleSolidIcon } from '@pages/components/icons/warning-circle-solid.svg.jsx'
+import { WarningCircleSolidIcon } from '#root/pages/components/icons/warning-circle-solid.svg.jsx'
 import * as Alert from '@kibamail/owly/alert'
 import { Text } from '@kibamail/owly/text'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import type { FlashMessagePayload } from '@/shared/controllers/flash_controller.js'
+import type { FlashMessagePayload } from '#root/core/shared/controllers/flash_controller.js'
 
 interface FlashMessageProps extends Alert.AlertRootProps {
   alert?: FlashMessagePayload

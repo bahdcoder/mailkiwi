@@ -1,34 +1,34 @@
 import { eq } from 'drizzle-orm'
 import { DateTime } from 'luxon'
 
-import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
+import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
 
 import {
   Oauth2Driver,
   type Oauth2Response,
   Oauth2UserResponse,
-} from '@/auth/oauth2_drivers/base_driver.js'
+} from '#root/core/auth/oauth2_drivers/base_driver.js'
 
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
 import type {
   InsertUser,
   UpdateUser,
   UserWithTeams,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 import {
   channelMemberships,
   oauth2Accounts,
   teamMemberships,
   teams,
   users,
-} from '@/database/schema.js'
-import { hasMany } from '@/database/utils/relationships.js'
+} from '#root/database/schema.js'
+import { hasMany } from '#root/database/utils/relationships.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { ScryptTokenRepository } from '@/shared/repositories/scrypt_token_repository.js'
-import { OtpGenerator } from '@/shared/tokens/otp_generator.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { ScryptTokenRepository } from '#root/core/shared/repositories/scrypt_token_repository.js'
+import { OtpGenerator } from '#root/core/shared/tokens/otp_generator.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 /**
  * UserRepository manages user accounts and authentication operations.

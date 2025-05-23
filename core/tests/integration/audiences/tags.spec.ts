@@ -2,13 +2,13 @@ import { faker } from '@faker-js/faker'
 import { eq } from 'drizzle-orm'
 import { describe, test } from 'vitest'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/tests/utils/http.js'
 
-import { tags, tagsOnContacts } from '@/database/schema.js'
+import { tags, tagsOnContacts } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 describe('@tags create', () => {
   test('can create a tag into the database', async ({ expect }) => {

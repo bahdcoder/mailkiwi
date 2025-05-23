@@ -20,9 +20,9 @@ import {
   uuid,
 } from 'valibot'
 
-import { audiences, senderIdentities, sendingDomains } from '@/database/schema.js'
+import { audiences, senderIdentities, sendingDomains } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 /**
  * Schema for validating email content within a broadcast.

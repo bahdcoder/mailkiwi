@@ -16,9 +16,9 @@ import {
   union,
 } from 'valibot'
 
-import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
+import { AutomationStepRepository } from '#root/core/automations/repositories/automation_step_repository.js'
 
-import { audiences, emails, tags } from '@/database/schema.js'
+import { audiences, emails, tags } from '#root/database/schema.js'
 import {
   automationStepSubtypes,
   automationStepSubtypesAction,
@@ -26,11 +26,11 @@ import {
   automationStepSubtypesRule,
   automationStepSubtypesTrigger,
   automationStepTypes,
-} from '@/database/types/automations.js'
+} from '#root/database/types/automations.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 const configurationSchema = record(
   string(),

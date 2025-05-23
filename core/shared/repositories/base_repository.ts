@@ -1,4 +1,4 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { type SQLWrapper, and, eq } from 'drizzle-orm'
 import type {
   AnyMySqlColumn,
@@ -7,14 +7,14 @@ import type {
 } from 'drizzle-orm/mysql-core'
 import type { MySqlRawQueryResult } from 'drizzle-orm/mysql2'
 
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
 
-import { Cache } from '@/shared/cache/cache.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { Encryption } from '@/shared/utils/encryption/encryption.js'
+import { Cache } from '#root/core/shared/cache/cache.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
+import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 type ObjectWithNullable<T> = { [K in keyof T]: T[K] | null | undefined }
 

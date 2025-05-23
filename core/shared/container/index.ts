@@ -2,11 +2,11 @@ import type { Redis } from 'ioredis'
 import type { Connection } from 'mysql2'
 import type { Logger } from 'pino'
 
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
 
-import type { HonoInstance } from '@/shared/server/hono.js'
+import type { HonoInstance } from '#root/core/shared/server/hono.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '#root/core/utils/typi.js'
 
 export enum ContainerKey {
   app = 'app',

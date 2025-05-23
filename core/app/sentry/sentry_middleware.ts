@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/node'
-import type { HonoContext } from '@/shared/server/types.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 import type { Next } from 'hono'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
-import { container } from '@/utils/typi.js'
-import { ContainerKey } from '@/shared/container/index.js'
+import { container } from '#root/core/utils/typi.js'
+import { ContainerKey } from '#root/core/shared/container/index.js'
 import type { Logger } from 'pino'
 
 /**

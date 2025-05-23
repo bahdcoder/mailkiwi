@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
 
-import type { SenderIdentity } from '@/database/database_schema_types.js'
-import type { VerifySenderIdentityEmailDto } from '@/sending_domains/dto/sender_identities/verify_sender_identity_email_dto.js'
-import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
+import type { SenderIdentity } from '#root/database/database_schema_types.js'
+import type { VerifySenderIdentityEmailDto } from '#root/core/sending_domains/dto/sender_identities/verify_sender_identity_email_dto.js'
+import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 
-import { container } from '@/utils/typi.js'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { container } from '#root/core/utils/typi.js'
+import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
 
 /**
  * Action for verifying a sender identity email using a verification code.

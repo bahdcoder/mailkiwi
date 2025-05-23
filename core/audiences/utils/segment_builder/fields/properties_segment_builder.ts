@@ -1,15 +1,15 @@
 import { and, eq, gte, inArray } from 'drizzle-orm'
 
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
+import type { CreateSegmentDto } from '#root/core/audiences/dto/segments/create_segment_dto.js'
 
-import type { Audience } from '@/database/database_schema_types.js'
+import type { Audience } from '#root/database/database_schema_types.js'
 import {
   type KnownAudienceProperty,
   contactProperties,
   contacts,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 export class PropertiesSegmentBuilder {
   constructor(
