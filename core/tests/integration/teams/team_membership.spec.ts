@@ -12,6 +12,7 @@ import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { Queue } from '#root/core/shared/queue/queue.js'
 import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
+import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_session_store.js'
 
 import { container } from '#root/core/utils/typi.js'
 
@@ -379,6 +380,114 @@ describe('@memberships', () => {
         .findById(team.id)
 
       expect(teamWithMembersAfterRevokedAccess?.members).toHaveLength(1)
+    })
+  })
+
+  describe('Leave team', () => {
+    test('a team member can leave a team', async ({ expect }) => {
+      const { user: teamOwner, team } = await createUser()
+      const { user: teamMember } = await createUser()
+
+      const membershipId = await container.make(TeamMembershipRepository).create({
+        email: teamMember.email,
+        userId: teamMember.id,
+        status: 'ACTIVE',
+        teamId: team.id,
+        expiresAt: new Date(),
+        role: 'MANAGER',
+      })
+
+      const teamWithMembersBefore = await container.make(TeamRepository).findById(team.id)
+      expect(teamWithMembersBefore?.members).toHaveLength(1)
+
+      const response = await makeRequestAsUser(
+        teamMember,
+        {
+          method: 'DELETE',
+          path: '/memberships/leave',
+        },
+        team.id,
+      )
+
+      expect(response.status).toBe(200)
+
+      const json = await response.json()
+      expect(json.id).toBe(membershipId.id)
+
+      const teamWithMembersAfter = await container.make(TeamRepository).findById(team.id)
+      expect(teamWithMembersAfter?.members).toHaveLength(0)
+    })
+
+    test('team owner cannot leave their own team', async ({ expect }) => {
+      const { user: teamOwner, team } = await createUser()
+
+      const response = await makeRequestAsUser(
+        teamOwner,
+        {
+          method: 'DELETE',
+          path: '/memberships/leave',
+        },
+        team.id,
+      )
+
+      expect(response.status).toBe(401)
+    })
+
+    test('non-member cannot leave a team', async ({ expect }) => {
+      const { team } = await createUser()
+      const { user: nonMember } = await createUser()
+
+      const response = await makeRequestAsUser(
+        nonMember,
+        {
+          method: 'DELETE',
+          path: '/memberships/leave',
+        },
+        team.id,
+      )
+
+      expect(response.status).toBe(422)
+
+      const json = await response.json()
+      expect(json.payload.errors[0].message).toBe('You are not a member of this team.')
+    })
+
+    test('leaving a team removes membership successfully', async ({ expect }) => {
+      const { team: ownerTeam } = await createUser()
+      const { user: teamMember } = await createUser()
+
+      const membershipId = await container.make(TeamMembershipRepository).create({
+        email: teamMember.email,
+        userId: teamMember.id,
+        status: 'ACTIVE',
+        teamId: ownerTeam.id,
+        expiresAt: new Date(),
+        role: 'MANAGER',
+      })
+
+      const teamWithMembersBefore = await container
+        .make(TeamRepository)
+        .findById(ownerTeam.id)
+      expect(teamWithMembersBefore?.members).toHaveLength(1)
+
+      const response = await makeRequestAsUser(
+        teamMember,
+        {
+          method: 'DELETE',
+          path: '/memberships/leave',
+        },
+        ownerTeam.id,
+      )
+
+      expect(response.status).toBe(200)
+
+      const json = await response.json()
+      expect(json.id).toBe(membershipId.id)
+
+      const teamWithMembersAfter = await container
+        .make(TeamRepository)
+        .findById(ownerTeam.id)
+      expect(teamWithMembersAfter?.members).toHaveLength(0)
     })
   })
 })

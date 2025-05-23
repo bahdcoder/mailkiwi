@@ -4,6 +4,7 @@ import { RejectTeamMemberInviteAction } from '#root/core/teams/actions/reject_te
 import { RevokeTeamMemberAccessAction } from '#root/core/teams/actions/revoke_team_member_access_action.js'
 import { InviteTeamMember } from '#root/core/teams/dto/invite_team_member_dto.js'
 import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
 import type { TeamMembership } from '#root/database/database_schema_types.js'
 
@@ -34,6 +35,7 @@ import { container } from '#root/core/utils/typi.js'
 export class TeamMembershipController extends BaseController {
   constructor(
     private teamMembershipRepository = container.make(TeamMembershipRepository),
+    private teamRepository = container.make(TeamRepository),
     private app = makeApp(),
   ) {
     super()
@@ -41,6 +43,8 @@ export class TeamMembershipController extends BaseController {
       [
         // Invite a new member to the team
         ['POST', '/', this.invite.bind(this)],
+        // Leave the current team (must come before /:token to avoid conflicts)
+        ['DELETE', '/leave', this.leaveTeam.bind(this)],
         // Accept a team invitation
         ['PUT', '/:token', this.acceptInvite.bind(this)],
         // Reject a team invitation
@@ -270,5 +274,55 @@ export class TeamMembershipController extends BaseController {
     }
 
     return invite
+  }
+
+  /**
+   * Allows a user to leave the current team.
+   *
+   * This method implements the team departure process:
+   * 1. Validates that the user is a member of the current team
+   * 2. Ensures the team owner cannot leave their own team
+   * 3. Removes the user's membership from the team
+   * 4. Switches the user's active session to their default team
+   *
+   * The method prevents team owners from leaving their own teams to ensure
+   * teams always have an owner. Regular team members can leave at any time.
+   * After leaving, the user's session is automatically switched to their
+   * default team (first owned team) to maintain a valid team context.
+   *
+   * @param ctx - The HTTP context containing the request data
+   * @returns JSON response with the deleted membership ID
+   * @throws E_UNAUTHORIZED if the user is the team owner
+   * @throws E_VALIDATION_FAILED if the user is not a member of the team
+   */
+  async leaveTeam(ctx: HonoContext) {
+    const currentTeam = this.team(ctx)
+    const user = this.user(ctx)
+
+    if (currentTeam.userId === user.id) {
+      throw E_UNAUTHORIZED('Team owners cannot leave their own team.')
+    }
+
+    const membership = currentTeam.members.find(
+      (member) => member.userId === user.id && member.status === 'ACTIVE',
+    )
+
+    if (!membership) {
+      throw E_VALIDATION_FAILED([
+        {
+          message: 'You are not a member of this team.',
+        },
+      ])
+    }
+
+    await container.make(RevokeTeamMemberAccessAction).handle(membership)
+
+    const defaultTeam = await this.teamRepository.findUserDefaultTeam(user.id)
+
+    if (defaultTeam) {
+      await this.session.updateCurrentSessionTeamId(ctx, defaultTeam.id)
+    }
+
+    return ctx.json({ id: membership.id })
   }
 }
