@@ -601,7 +601,6 @@ describe('@memberships', () => {
       const { user: teamOwner, team } = await createUser()
       const { user: teamMember } = await createUser()
 
-      // Add a team member with PENDING status
       const membershipId = await container.make(TeamMembershipRepository).create({
         email: teamMember.email,
         userId: teamMember.id,

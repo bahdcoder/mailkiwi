@@ -243,13 +243,10 @@ export class TeamMembershipController extends BaseController {
    * @throws E_VALIDATION_FAILED if the membership is not pending or invalid
    */
   async resendInvite(ctx: HonoContext) {
-    // Ensure the current user has administrative permissions
     const team = this.ensureCanAdministrate(ctx)
 
-    // Validate the membership ID and ensure it exists
     const membership = await this.ensureExists<TeamMembership>(ctx, 'membershipId')
 
-    // Resend the invitation
     const { id } = await container
       .make(ResendTeamMemberInviteAction)
       .handle(membership, team.id)
