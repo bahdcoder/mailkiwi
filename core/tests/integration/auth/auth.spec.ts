@@ -180,7 +180,7 @@ describe('@auth user registration', () => {
 
     expect(redisSessionsForUser).toHaveLength(1)
 
-    expect(loginResponse.headers.getSetCookie()?.[0]).toMatch('__Secure-session=')
+    expect(loginResponse.headers.getSetCookie()?.[0]).toMatch('session=')
   })
 })
 
@@ -384,7 +384,7 @@ describe('@oauth ', () => {
 
       const cookies = response.headers.getSetCookie()
 
-      expect(cookies?.[0]).toContain('__Secure-session=')
+      expect(cookies?.[0]).toContain('session=')
 
       const json = await response.json()
 

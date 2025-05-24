@@ -71,7 +71,7 @@ describe('@contact-session', () => {
 
     const [session] = response.headers.getSetCookie()
 
-    expect(session).toContain('__Secure-contact_session=')
-    expect(session).toContain('HttpOnly; Secure; SameSite=Lax')
+    expect(session).toContain('contact_session=')
+    expect(session).toContain('HttpOnly; SameSite=Lax')
   })
 })

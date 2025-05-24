@@ -58,8 +58,8 @@ export async function getCookieSessionForUser(user: User) {
     appEnv.APP_KEY.release(),
     {
       sameSite: 'Lax',
-      prefix: 'secure',
-      secure: appEnv.isProd,
+      prefix: undefined,
+      secure: false,
       httpOnly: true,
       path: '/',
     },
