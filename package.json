@@ -30,7 +30,7 @@
     "test": "pnpm test:server && pnpm test:client",
     "test:server": "./env.mjs --env=test pnpm test:server:watch --run",
     "test:server:watch": "./env.mjs --env=test pnpm test:mysql:migrate && ./env.mjs --env=test vitest",
-    "test:server:coverage": "pnpm test:mysql:migrate && vitest --run --coverage",
+    "test:server:coverage": "pnpm test:mysql:migrate && ./env.mjs --env=test vitest --run --coverage",
     "test:client": "pnpm test:client:watch --run",
     "test:client:watch": "vitest --config vitest.client.config.ts",
     "test:e2e": "./env.mjs --env=test-playwright pnpm mysql:migrate && pnpm pm2:playwright && ./env.mjs --env=test-playwright ./scripts/wait-for-server-to-be-ready.sh && ./env.mjs  --env=test-playwright  pnpm exec playwright test",
