@@ -22,4 +22,6 @@ jobs:
       - uses: ./.github/actions/run-command
         with:
           name: run end to end tests with coverage
-          command: pnpm test:e2e
+          command: |
+            pnpm exec playwright install
+            pnpm test:e2e
