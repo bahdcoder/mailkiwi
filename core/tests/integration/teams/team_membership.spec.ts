@@ -33,7 +33,9 @@ const setup = async (email?: string, role?: string) => {
   const json = await response.json()
 
   const getInvite = async () => {
-    const invite = await container.make(TeamMembershipRepository).findById(json?.id)
+    const invite = await container
+      .make(TeamMembershipRepository)
+      .findById(json?.payload?.id)
 
     const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
@@ -412,7 +414,7 @@ describe('@memberships', () => {
       expect(response.status).toBe(200)
 
       const json = await response.json()
-      expect(json.id).toBe(membershipId.id)
+      expect(json.payload.id).toBe(membershipId.id)
 
       const teamWithMembersAfter = await container.make(TeamRepository).findById(team.id)
       expect(teamWithMembersAfter?.members).toHaveLength(0)
@@ -482,7 +484,7 @@ describe('@memberships', () => {
       expect(response.status).toBe(200)
 
       const json = await response.json()
-      expect(json.id).toBe(membershipId.id)
+      expect(json.payload.id).toBe(membershipId.id)
 
       const teamWithMembersAfter = await container
         .make(TeamRepository)
@@ -518,7 +520,7 @@ describe('@memberships', () => {
       expect(response.status).toBe(200)
 
       const json = await response.json()
-      expect(json.id).toBe(membershipId.id)
+      expect(json.payload.id).toBe(membershipId.id)
 
       const updatedMembership = await container
         .make(TeamMembershipRepository)
@@ -655,7 +657,7 @@ describe('@memberships', () => {
       expect(response.status).toBe(200)
 
       const json = await response.json()
-      expect(json.id).toBe(membershipId.id)
+      expect(json.payload.id).toBe(membershipId.id)
 
       const updatedMembership = await container
         .make(TeamMembershipRepository)
@@ -794,7 +796,7 @@ describe('@memberships', () => {
       expect(response.status).toBe(200)
 
       const json = await response.json()
-      expect(json.id).toBe(membershipId.id)
+      expect(json.payload.id).toBe(membershipId.id)
 
       const updatedMembership = await container
         .make(TeamMembershipRepository)

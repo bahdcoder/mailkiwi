@@ -102,7 +102,7 @@ export class TeamMembershipController extends BaseController {
     // Create the invitation and send an email to the invitee
     const { id } = await container.make(InviteTeamMemberAction).handle(data, team.id)
 
-    return ctx.json({ id })
+    return this.response(ctx).json({ id }, 200, true).send()
   }
 
   /**
@@ -148,7 +148,7 @@ export class TeamMembershipController extends BaseController {
     // Activate the team membership
     const { id } = await container.make(AcceptTeamMemberInviteAction).handle(invite)
 
-    return ctx.json({ id })
+    return this.response(ctx).json({ id }, 200, true).send()
   }
 
   /**
@@ -182,7 +182,7 @@ export class TeamMembershipController extends BaseController {
     // Delete the invitation
     const { id } = await container.make(RejectTeamMemberInviteAction).handle(invite)
 
-    return ctx.json({ id })
+    return this.response(ctx).json({ id }, 200, true).send()
   }
 
   /**
@@ -214,7 +214,7 @@ export class TeamMembershipController extends BaseController {
       .make(UpdateTeamMemberRoleAction)
       .handle(membership, data, team.id)
 
-    return ctx.json({ id })
+    return this.response(ctx).json({ id }, 200, true).send()
   }
 
   /**
@@ -245,7 +245,7 @@ export class TeamMembershipController extends BaseController {
       .make(ResendTeamMemberInviteAction)
       .handle(membership, team.id)
 
-    return ctx.json({ id })
+    return this.response(ctx).json({ id }, 200, true).send()
   }
 
   /**
@@ -279,7 +279,7 @@ export class TeamMembershipController extends BaseController {
     // Deactivate the team membership
     const { id } = await container.make(RevokeTeamMemberAccessAction).handle(invite)
 
-    return ctx.json({ id })
+    return this.response(ctx).json({ id }, 200, true).send()
   }
 
   /**
@@ -387,6 +387,6 @@ export class TeamMembershipController extends BaseController {
       await this.session.updateCurrentSessionTeamId(ctx, defaultTeam.id)
     }
 
-    return ctx.json({ id: membership.id })
+    return this.response(ctx).json({ id: membership.id }, 200, true).send()
   }
 }
