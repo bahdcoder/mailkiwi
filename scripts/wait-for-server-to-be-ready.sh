@@ -14,7 +14,7 @@ if [[ -z "${PORT:-}" ]]; then
 fi
 
 # configuration
-readonly MAX_WAIT_TIME=15
+readonly MAX_WAIT_TIME=30
 readonly CHECK_INTERVAL=2
 readonly HOST="localhost"
 
