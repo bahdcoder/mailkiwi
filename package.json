@@ -13,7 +13,6 @@
     "playwright:quick:dev": "./env.mjs  --env=test-playwright vike dev",
     "pm2:dev": "pm2 startOrRestart ./pm2/ecosystem.config.cjs",
     "pm2:playwright": "pm2 startOrRestart ./pm2/ecosystem.playwright.config.cjs",
-
     "//ci": "=== CI DEVELOPMENT SCRIPTS ===",
     "ci:dev": "pnpm ci:mysql:migrate:dev && pnpm ci:quick:dev",
     "ci:quick:dev": "tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/app/start/dev.ts",
@@ -292,6 +291,7 @@
     "path-to-regexp": "^8.2.0",
     "pino": "^9.5.0",
     "pino-pretty": "^13.0.0",
+    "pm2": "^6.0.6",
     "prosemirror-model": "^1.25.0",
     "react-colorful": "^5.6.1",
     "react-flow-renderer": "^10.3.17",
