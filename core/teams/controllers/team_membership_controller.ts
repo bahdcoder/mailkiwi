@@ -1,6 +1,7 @@
 import { AcceptTeamMemberInviteAction } from '#root/core/teams/actions/accept_team_member_invite_action.js'
 import { InviteTeamMemberAction } from '#root/core/teams/actions/invite_team_member_action.js'
 import { RejectTeamMemberInviteAction } from '#root/core/teams/actions/reject_team_member_invite_action.js'
+import { ResendTeamMemberInviteAction } from '#root/core/teams/actions/resend_team_member_invite_action.js'
 import { RevokeTeamMemberAccessAction } from '#root/core/teams/actions/revoke_team_member_access_action.js'
 import { UpdateTeamMemberRoleAction } from '#root/core/teams/actions/update_team_member_role_action.js'
 import { InviteTeamMember } from '#root/core/teams/dto/invite_team_member_dto.js'
@@ -53,6 +54,8 @@ export class TeamMembershipController extends BaseController {
         ['DELETE', '/:token', this.rejectInvite.bind(this)],
         // Update a team member's role
         ['PUT', '/:membershipId/role', this.updateRole.bind(this)],
+        // Resend invitation to a pending team member
+        ['POST', '/:membershipId/resend', this.resendInvite.bind(this)],
         // Revoke access for an existing team member
         ['DELETE', '/:membershipId/access', this.revokeAccess.bind(this)],
       ],
@@ -204,22 +207,52 @@ export class TeamMembershipController extends BaseController {
    * @param ctx - The HTTP context containing the request data
    * @returns JSON response with the membership ID
    * @throws E_UNAUTHORIZED if the user doesn't have administrative permissions
-   * @throws E_VALIDATION_FAILED if the membership is invalid or belongs to team owner
+   * @throws E_VALIDATION_FAILED if the membership is invalid
    */
   async updateRole(ctx: HonoContext) {
-    // Validate the role update data
     const data = await this.validate(ctx, UpdateTeamMemberRole)
 
+    const team = this.ensureCanAdministrate(ctx)
+
+    const membership = await this.ensureExists<TeamMembership>(ctx, 'membershipId')
+
+    const { id } = await container
+      .make(UpdateTeamMemberRoleAction)
+      .handle(membership, data, team.id)
+
+    return ctx.json({ id })
+  }
+
+  /**
+   * Resends an invitation to a pending team member.
+   *
+   * This method implements the invitation resend process:
+   * 1. Validates the membership ID and ensures it exists
+   * 2. Ensures the current user has administrative permissions
+   * 3. Validates that the membership is pending and belongs to the team
+   * 4. Extends the invitation expiration and resends the email
+   *
+   * Only team administrators can resend invitations, and only pending
+   * memberships can have their invitations resent. This helps manage
+   * expired invitations and provides a way to remind users about
+   * pending team invitations.
+   *
+   * @param ctx - The HTTP context containing the request data
+   * @returns JSON response with the membership ID
+   * @throws E_UNAUTHORIZED if the user doesn't have administrative permissions
+   * @throws E_VALIDATION_FAILED if the membership is not pending or invalid
+   */
+  async resendInvite(ctx: HonoContext) {
     // Ensure the current user has administrative permissions
     const team = this.ensureCanAdministrate(ctx)
 
     // Validate the membership ID and ensure it exists
     const membership = await this.ensureExists<TeamMembership>(ctx, 'membershipId')
 
-    // Update the membership role
+    // Resend the invitation
     const { id } = await container
-      .make(UpdateTeamMemberRoleAction)
-      .handle(membership, data, team.id)
+      .make(ResendTeamMemberInviteAction)
+      .handle(membership, team.id)
 
     return ctx.json({ id })
   }
