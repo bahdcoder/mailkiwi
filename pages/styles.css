@@ -30,6 +30,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@theme inline {
+  --font-sans: var(--font-manrope);
+}
+
 body {
   @apply font-sans;
   --w-sidebar-width: 260px;
