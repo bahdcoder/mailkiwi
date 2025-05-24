@@ -27,6 +27,13 @@ export default defineConfig({
     reporters: ['verbose'],
     retry: 1,
     environment: 'node',
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        maxThreads: 2,
+        minThreads: 1,
+      },
+    },
   },
   resolve: {
     alias: {
