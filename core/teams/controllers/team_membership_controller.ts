@@ -44,19 +44,13 @@ export class TeamMembershipController extends BaseController {
     super()
     this.app.defineRoutes(
       [
-        // Invite a new member to the team
         ['POST', '/', this.invite.bind(this)],
         // Leave the current team (must come before /:token to avoid conflicts)
         ['DELETE', '/leave', this.leaveTeam.bind(this)],
-        // Accept a team invitation
         ['PUT', '/:token', this.acceptInvite.bind(this)],
-        // Reject a team invitation
         ['DELETE', '/:token', this.rejectInvite.bind(this)],
-        // Update a team member's role
         ['PUT', '/:membershipId/role', this.updateRole.bind(this)],
-        // Resend invitation to a pending team member
         ['POST', '/:membershipId/resend', this.resendInvite.bind(this)],
-        // Revoke access for an existing team member
         ['DELETE', '/:membershipId/access', this.revokeAccess.bind(this)],
       ],
       {
