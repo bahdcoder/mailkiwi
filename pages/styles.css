@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
 @import "@kibamail/owly/styles/tokens.css";
 
 @import "@kibamail/owly/styles/text.css";
