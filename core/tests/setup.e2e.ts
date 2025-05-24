@@ -1,9 +1,9 @@
-import { writeFile, stat } from 'node:fs/promises'
+import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { Ignitor } from '#root/core/app/ignitor/ignitor.js'
 import { seedDevSendingSourcesCommand } from '#root/cli/commands/seed_dev_sending_sources_command.js'
 import { faker } from '@faker-js/faker'
-import { type FullConfig, chromium } from '@playwright/test'
+import type { FullConfig } from '@playwright/test'
 import { DateTime } from 'luxon'
 
 import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
@@ -17,10 +17,7 @@ import { refreshDatabase } from '#root/core/tests/mocks/teams/teams.js'
 
 import type { TeamMembership, User } from '#root/database/database_schema_types.js'
 
-import { route } from '#root/core/shared/routes/route_aliases.js'
-
 import { container } from '#root/core/utils/typi.js'
-import { sleep } from '#root/core/utils/sleep.js'
 import { Session } from '#root/core/shared/sessions/sessions.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
@@ -85,14 +82,6 @@ export default async function globalSetup(config: FullConfig) {
       path.startsWith('/') ? path : `/${path}`
     }`
   }
-
-  try {
-    const seededUsersExist = await stat(resolve(basePath, 'seed.users.json'))
-
-    if (seededUsersExist) {
-      return
-    }
-  } catch (error) {}
 
   await new Ignitor().boot().start()
 
