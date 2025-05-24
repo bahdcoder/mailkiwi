@@ -2,7 +2,9 @@ import { AcceptTeamMemberInviteAction } from '#root/core/teams/actions/accept_te
 import { InviteTeamMemberAction } from '#root/core/teams/actions/invite_team_member_action.js'
 import { RejectTeamMemberInviteAction } from '#root/core/teams/actions/reject_team_member_invite_action.js'
 import { RevokeTeamMemberAccessAction } from '#root/core/teams/actions/revoke_team_member_access_action.js'
+import { UpdateTeamMemberRoleAction } from '#root/core/teams/actions/update_team_member_role_action.js'
 import { InviteTeamMember } from '#root/core/teams/dto/invite_team_member_dto.js'
+import { UpdateTeamMemberRole } from '#root/core/teams/dto/update_team_member_role_dto.js'
 import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
 import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
@@ -49,6 +51,8 @@ export class TeamMembershipController extends BaseController {
         ['PUT', '/:token', this.acceptInvite.bind(this)],
         // Reject a team invitation
         ['DELETE', '/:token', this.rejectInvite.bind(this)],
+        // Update a team member's role
+        ['PUT', '/:membershipId/role', this.updateRole.bind(this)],
         // Revoke access for an existing team member
         ['DELETE', '/:membershipId/access', this.revokeAccess.bind(this)],
       ],
@@ -180,6 +184,42 @@ export class TeamMembershipController extends BaseController {
 
     // Delete the invitation
     const { id } = await container.make(RejectTeamMemberInviteAction).handle(invite)
+
+    return ctx.json({ id })
+  }
+
+  /**
+   * Updates a team member's role.
+   *
+   * This method implements the role update process:
+   * 1. Validates the membership ID and role data
+   * 2. Ensures the current user has administrative permissions
+   * 3. Validates that the membership is active and belongs to the team
+   * 4. Prevents changing the role of team owners
+   * 5. Updates the membership role
+   *
+   * Only team administrators can update member roles, and team owners
+   * cannot have their roles changed to maintain team ownership integrity.
+   *
+   * @param ctx - The HTTP context containing the request data
+   * @returns JSON response with the membership ID
+   * @throws E_UNAUTHORIZED if the user doesn't have administrative permissions
+   * @throws E_VALIDATION_FAILED if the membership is invalid or belongs to team owner
+   */
+  async updateRole(ctx: HonoContext) {
+    // Validate the role update data
+    const data = await this.validate(ctx, UpdateTeamMemberRole)
+
+    // Ensure the current user has administrative permissions
+    const team = this.ensureCanAdministrate(ctx)
+
+    // Validate the membership ID and ensure it exists
+    const membership = await this.ensureExists<TeamMembership>(ctx, 'membershipId')
+
+    // Update the membership role
+    const { id } = await container
+      .make(UpdateTeamMemberRoleAction)
+      .handle(membership, data, team.id)
 
     return ctx.json({ id })
   }
