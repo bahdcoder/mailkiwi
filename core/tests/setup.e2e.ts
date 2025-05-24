@@ -1,4 +1,4 @@
-import { writeFile } from 'node:fs/promises'
+import { writeFile, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { Ignitor } from '#root/core/app/ignitor/ignitor.js'
 import { seedDevSendingSourcesCommand } from '#root/cli/commands/seed_dev_sending_sources_command.js'
@@ -15,13 +15,14 @@ import { UserRepository } from '#root/core/auth/users/repositories/user_reposito
 import { basePath } from '#root/core/tests/e2e/helpers/storage_state_paths.js'
 import { refreshDatabase } from '#root/core/tests/mocks/teams/teams.js'
 
-import type { Team, TeamMembership, User } from '#root/database/database_schema_types.js'
+import type { TeamMembership, User } from '#root/database/database_schema_types.js'
 
 import { route } from '#root/core/shared/routes/route_aliases.js'
 
 import { container } from '#root/core/utils/typi.js'
 import { sleep } from '#root/core/utils/sleep.js'
-import { makeLogger } from '#root/core/shared/container/index.js'
+import { Session } from '#root/core/shared/sessions/sessions.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
 async function createUser({
   addtoTeam,
@@ -53,12 +54,13 @@ async function createUser({
 
   const teamName = faker.company.buzzAdjective()
 
-  const team: Partial<Team> = await container.make(TeamRepository).create(
-    {
-      name: teamName,
-    },
-    user.id,
-  )
+  const teamRepository = container.make(TeamRepository)
+
+  const team = await teamRepository.findUserDefaultTeam(user.id)
+
+  await teamRepository.teams().update(team.id, {
+    name: teamName,
+  })
 
   if (addtoTeam) {
     await container.make(TeamMembershipRepository).create({
@@ -84,12 +86,15 @@ export default async function globalSetup(config: FullConfig) {
     }`
   }
 
+  try {
+    const seededUsersExist = await stat(resolve(basePath, 'seed.users.json'))
+
+    if (seededUsersExist) {
+      return
+    }
+  } catch (error) {}
+
   await new Ignitor().boot().start()
-
-  const logger = makeLogger()
-
-  logger.info('waiting for the development server to start...')
-  await sleep(5000)
 
   await refreshDatabase()
 
@@ -100,25 +105,17 @@ export default async function globalSetup(config: FullConfig) {
 
   const teamMemberOwner = await createUser({})
 
-  console.log({ teamMemberOwner })
-
   const teamMemberGuest = await createUser({
     addtoTeam: { teamId: teamMemberOwner?.team?.id as string, role: 'GUEST' },
   })
-
-  console.log({ teamMemberGuest })
 
   const teamMemberAuthor = await createUser({
     addtoTeam: { teamId: teamMemberOwner?.team?.id as string, role: 'AUTHOR' },
   })
 
-  console.log({ teamMemberAuthor })
-
   const teamMemberManager = await createUser({
     addtoTeam: { teamId: teamMemberOwner?.team?.id as string, role: 'MANAGER' },
   })
-
-  console.log({ teamMemberManager })
 
   const teamMemberAdministrator = await createUser({
     addtoTeam: {
@@ -126,8 +123,6 @@ export default async function globalSetup(config: FullConfig) {
       role: 'ADMINISTRATOR',
     },
   })
-
-  console.log({ teamMemberAdministrator })
 
   const users = [
     { name: 'owner', user: teamMemberOwner },
@@ -148,53 +143,60 @@ export default async function globalSetup(config: FullConfig) {
     administrator: teamMemberAdministrator,
   }
 
-  const browser = await chromium.launch()
-
   for (const {
-    user: { user },
+    user: { user, team },
     name,
   } of users) {
-    const page = await browser.newPage()
+    console.log('[setup-e2e] setting up state for owner:', user?.email)
 
-    await page.goto(browserRoute(route('auth_login')))
+    let sessionContent = ''
 
-    await page.getByLabel('Email address').fill(user.email)
-    await page.getByLabel('Password', { exact: true }).fill(user.password)
-
-    await page.getByText('Continue', { exact: true }).click()
-
-    await page.waitForTimeout(1000)
-
-    await page.screenshot({ path: resolve(basePath, `login.${name}.png`) })
-
-    await page.waitForURL(browserRoute(route('dashboard')), { timeout: 5000 })
-
-    if (name !== 'owner') {
-      // make all users switch to the owner's team, so they are all on the team we will focus our testing on.
-
-      const openTeamSwitcherDropdown = page.getByTestId(
-        'offscreen-sidebar-dropdown-menu-trigger',
-      )
-
-      await openTeamSwitcherDropdown.click()
-
-      const switchTeamLink = page.getByTestId(
-        `offscreen-sidebar-switch-team-id-${teamMemberOwner?.team?.id}`,
-      )
-
-      await switchTeamLink.click()
-
-      await page.waitForURL(browserRoute(route('dashboard')), {
-        timeout: 5000,
-      })
+    function header(_name: string, value: string) {
+      sessionContent = value?.split(';')?.[0]?.split('session=')?.[1]
     }
 
-    await page.context().storageState({ path: resolve(basePath, `auth.${name}.json`) })
+    await new Session().createForUser(
+      {
+        header,
+        req: {
+          header(name: string) {
+            if (name === 'user-agent') {
+              return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'
+            }
 
-    await page.close()
+            if (name === 'x-forwarded-for') {
+              return '160.212.38.149'
+            }
+
+            return undefined
+          },
+        },
+      } as unknown as HonoContext,
+      {
+        userId: user.id,
+        currentTeamId: team?.id as string,
+      },
+    )
+
+    await writeFile(
+      resolve(basePath, `auth.${name}.json`),
+      JSON.stringify({
+        cookies: [
+          {
+            name: 'session',
+            value: sessionContent,
+            domain: 'localhost',
+            path: '/',
+            expires: 2147483647,
+            httpOnly: true,
+            secure: false,
+            sameSite: 'Lax',
+          },
+        ],
+        origins: [],
+      }),
+    )
   }
 
   await writeFile(resolve(basePath, 'seed.users.json'), JSON.stringify(usersMap))
-
-  await browser.close()
 }

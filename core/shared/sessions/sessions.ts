@@ -24,7 +24,7 @@ export class Session {
   }
 
   protected getCookiePrefix() {
-    return appEnv.isDev ? '' : '__Secure-'
+    return appEnv.isProdOrStaging ? '__Secure-' : ''
   }
 
   async getCurrentSessionId(ctx: HonoContext, type: 'contact' | 'user' = 'user') {
@@ -104,8 +104,8 @@ export class Session {
       this.encryptionKey,
       {
         sameSite: 'Lax',
-        prefix: appEnv.isDev ? undefined : 'secure',
-        secure: appEnv.isProd,
+        prefix: appEnv.isProdOrStaging ? 'secure' : undefined,
+        secure: appEnv.isProdOrStaging,
         httpOnly: true,
         path: '/',
         maxAge: 3600 * 24 * 30, // 30 days

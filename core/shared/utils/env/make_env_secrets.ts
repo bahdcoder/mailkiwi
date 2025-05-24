@@ -27,6 +27,7 @@ export function makeEnvSecrets<
     isDev: value.isDev,
     isStaging: NODE_ENV === 'staging',
     isProduction: value.isProduction,
+    isProdOrStaging: value.isProd || NODE_ENV === 'staging',
     APP_KEY: APP_KEY ? new Secret(APP_KEY) : undefined,
     REDIS_URL: REDIS_URL ? new Secret(REDIS_URL) : undefined,
     MTA_ACCESS_TOKEN: MTA_ACCESS_TOKEN ? new Secret(MTA_ACCESS_TOKEN) : undefined,
