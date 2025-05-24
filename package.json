@@ -6,25 +6,26 @@
     "//": "=== DEVELOPMENT SCRIPTS ===",
     "dev": "concurrently \"pnpm server:dev\" \"pnpm worker:dev\"",
     "server:dev": "./env.mjs  --env=dev pnpm mysql:migrate:dev && pnpm quick:dev",
+    "playwright:server:dev": "./env.mjs  --env=test-playwright pnpm mysql:migrate:dev && pnpm quick:dev",
     "worker:dev": "./env.mjs  --env=dev  tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/worker/start.ts",
+    "playwright:worker:dev": "./env.mjs  --env=test-playwright  tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/worker/start.ts",
     "quick:dev": "./env.mjs  --env=dev vike dev",
-    "pm2:dev": "pm2 start ./pm2/ecosystem.config.cjs",
+    "playwright:quick:dev": "./env.mjs  --env=test-playwright vike dev",
+    "pm2:dev": "pm2 startOrRestart ./pm2/ecosystem.config.cjs",
+    "pm2:playwright": "pm2 startOrRestart ./pm2/ecosystem.playwright.config.cjs",
 
     "//ci": "=== CI DEVELOPMENT SCRIPTS ===",
     "ci:dev": "pnpm ci:mysql:migrate:dev && pnpm ci:quick:dev",
     "ci:quick:dev": "tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/app/start/dev.ts",
     "ci:worker:dev": "tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/worker/start.ts",
-
     "//coder": "=== CODER ENVIRONMENT SCRIPTS ===",
     "coder:dev": "concurrently \"pnpm coder:server:dev\" \"pnpm coder:worker:dev\"",
     "coder:server:dev": "./env.mjs --env=coder pnpm coder:mysql:migrate && pnpm coder:quick:dev",
     "coder:worker:dev": "./env.mjs  --env=coder  tsx watch --clear-screen=false --ignore views/app --ignore build/ --ignore ./vite.config.ts*.*.mjs --ignore ./**/+config.ts.build-*.mjs core/worker/start.ts",
     "coder:quick:dev": "./env.mjs  --env=coder vike dev",
-
     "//build": "=== BUILD SCRIPTS ===",
     "build": "pnpm build:clean && vike build",
     "build:clean": "del-cli build",
-
     "//test": "=== TEST SCRIPTS ===",
     "test": "pnpm test:server && pnpm test:client",
     "test:server": "./env.mjs --env=test pnpm test:server:watch --run",
@@ -32,26 +33,21 @@
     "test:server:coverage": "pnpm test:mysql:migrate && vitest --run --coverage",
     "test:client": "pnpm test:client:watch --run",
     "test:client:watch": "vitest --config vitest.client.config.ts",
-    "test:e2e": "./env.mjs  --env=test-playwright  pnpm exec playwright test",
-
+    "test:e2e": "./env.mjs --env=test-playwright pnpm mysql:migrate && pnpm pm2:playwright && ./env.mjs  --env=test-playwright  pnpm exec playwright test",
     "//coder-test": "=== CODER TEST SCRIPTS ===",
     "coder:test": "pnpm coder:test:server && pnpm test:client",
     "coder:test:server": "pnpm coder:test:server:watch --run",
     "coder:test:server:watch": "pnpm test-coder:mysql:migrate && ./env.mjs --env=test-coder vitest",
     "coder:test:server:coverage": "pnpm test-coder:mysql:migrate && ./env.mjs --env=test-coder vitest --run --coverage",
     "coder:test:e2e": "pnpm exec playwright test",
-
     "//start": "=== START SCRIPTS ===",
     "start": "./env.mjs  --env=prod node build/core/core/app/start/prod.js",
     "start:worker": "./env.mjs --env=prod node build/core/core/worker/start.js",
-
     "//staging-start": "=== STAGING START SCRIPTS ===",
     "staging:start": "./env.mjs --env=staging node build/core/core/app/start/prod.js",
     "staging:worker": "./env.mjs --env=staging node build/core/core/worker/start.js",
-
     "//ci-start": "=== CI START SCRIPTS ===",
     "ci:start": "node build/core/core/app/start/prod.js",
-
     "//database": "=== DATABASE SCRIPTS ===",
     "mysql:migrate": "pnpm drizzle-kit migrate",
     "mysql:migrate:dev": "./env.mjs  --env=dev pnpm mysql:migrate",
@@ -60,27 +56,22 @@
     "test:mysql:migrate": "./env.mjs  --env=test pnpm mysql:migrate",
     "mysql:migrate:make": "./env.mjs  --env=test pnpm drizzle-kit generate",
     "mysql:studio": "pnpm drizzle-kit studio",
-
     "//cli": "=== CLI SCRIPTS ===",
     "cli": "./env.mjs  --env=dev tsx cli/cli_root.ts",
     "cli:no-connections": "./env.mjs  --env=dev tsx cli/cli_root.ts",
     "cli:test": "./env.mjs --env=test tsx cli/cli_root.ts",
     "cli:prod": "./env.mjs  --env=test tsx cli/cli_root.ts",
-
     "//staging-cli": "=== STAGING CLI SCRIPTS ===",
     "staging:cli": "./env.mjs  --env=staging tsx cli/cli_root.ts",
     "staging:cli:no-connections": "./env.mjs  --env=staging tsx cli/cli_root_no_connections.ts",
-
     "//ci-cli": "=== CI CLI SCRIPTS ===",
     "ci:cli": "./env.mjs --env=test tsx cli/cli_root.ts",
     "ci:cli:no-connections": "./env.mjs --env=test tsx cli/cli_root_no_connections.ts",
-
     "//quality": "=== CODE QUALITY SCRIPTS ===",
     "types:check": "tsc --noEmit",
     "format": "pnpm biome format --write .",
     "format:check": "pnpm biome format",
     "lint": "pnpm biome lint --write --unsafe .",
-
     "//git": "=== GIT & COMMIT SCRIPTS ===",
     "prepare": "husky"
   },
@@ -207,7 +198,6 @@
     "@radix-ui/react-visually-hidden": "^1.1.2",
     "@react-email/components": "0.0.33",
     "@react-hook/debounce": "^4.0.0",
-    "@remix-run/node": "^2.12.1",
     "@sentry/node": "^9.22.0",
     "@sentry/profiling-node": "^9.22.0",
     "@sentry/react": "^9.22.0",

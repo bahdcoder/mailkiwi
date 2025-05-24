@@ -20,6 +20,8 @@ import type { Team, TeamMembership, User } from '#root/database/database_schema_
 import { route } from '#root/core/shared/routes/route_aliases.js'
 
 import { container } from '#root/core/utils/typi.js'
+import { sleep } from '#root/core/utils/sleep.js'
+import { makeLogger } from '#root/core/shared/container/index.js'
 
 async function createUser({
   addtoTeam,
@@ -82,9 +84,12 @@ export default async function globalSetup(config: FullConfig) {
     }`
   }
 
-  const ignitor = new Ignitor().boot()
+  await new Ignitor().boot().start()
 
-  await ignitor.start()
+  const logger = makeLogger()
+
+  logger.info('waiting for the development server to start...')
+  await sleep(5000)
 
   await refreshDatabase()
 
@@ -95,16 +100,25 @@ export default async function globalSetup(config: FullConfig) {
 
   const teamMemberOwner = await createUser({})
 
+  console.log({ teamMemberOwner })
+
   const teamMemberGuest = await createUser({
     addtoTeam: { teamId: teamMemberOwner?.team?.id as string, role: 'GUEST' },
   })
+
+  console.log({ teamMemberGuest })
+
   const teamMemberAuthor = await createUser({
     addtoTeam: { teamId: teamMemberOwner?.team?.id as string, role: 'AUTHOR' },
   })
 
+  console.log({ teamMemberAuthor })
+
   const teamMemberManager = await createUser({
     addtoTeam: { teamId: teamMemberOwner?.team?.id as string, role: 'MANAGER' },
   })
+
+  console.log({ teamMemberManager })
 
   const teamMemberAdministrator = await createUser({
     addtoTeam: {
@@ -112,6 +126,8 @@ export default async function globalSetup(config: FullConfig) {
       role: 'ADMINISTRATOR',
     },
   })
+
+  console.log({ teamMemberAdministrator })
 
   const users = [
     { name: 'owner', user: teamMemberOwner },
@@ -148,6 +164,8 @@ export default async function globalSetup(config: FullConfig) {
     await page.getByText('Continue', { exact: true }).click()
 
     await page.waitForTimeout(1000)
+
+    await page.screenshot({ path: resolve(basePath, `login.${name}.png`) })
 
     await page.waitForURL(browserRoute(route('dashboard')), { timeout: 5000 })
 
