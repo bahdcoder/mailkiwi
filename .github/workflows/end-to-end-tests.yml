@@ -1,4 +1,4 @@
-name: server tests
+name: end to end tests tests
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   server-tests:
-    name: server tests
+    name: end to end tests
     runs-on: ubuntu-latest
 
     steps:
@@ -21,5 +21,5 @@ jobs:
 
       - uses: ./.github/actions/run-command
         with:
-          name: run server tests with coverage
+          name: run end to end tests with coverage
           command: pnpm test:e2e
