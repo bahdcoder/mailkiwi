@@ -21,7 +21,7 @@ export function SkeletonNodeOnSidebar({
       <div className="w-full flex flex-col gap-1">
         <div className="w-full flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {Icon ? <Icon className="!w-4 !h-4 font-medium kb-content-tertiary" /> : null}
+            {Icon ? <Icon className="w-4! h-4! font-medium kb-content-tertiary" /> : null}
             <Text className="text-sm capitalize">
               {nodeLabels[step.subtype]?.toLowerCase()}
             </Text>
@@ -33,7 +33,7 @@ export function SkeletonNodeOnSidebar({
         </div>
       </div>
 
-      <div className="my-2 h-px bg-[var(--border-tertiary)] w-full" />
+      <div className="my-2 h-px bg-(--border-tertiary) w-full" />
       {children}
     </div>
   )

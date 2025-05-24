@@ -106,7 +106,7 @@ export const columns = [
               <Button
                 asChild
                 variant="secondary"
-                className={cn('flex-shrink-0 pointer-events-none', {
+                className={cn('shrink-0 pointer-events-none', {
                   'mr-4': idx === tags.length - 1,
                 })}
                 size="sm"
@@ -134,10 +134,10 @@ export const columns = [
     ),
     meta: {
       header: {
-        className: '!bg-[var(--background-hover)]',
+        className: 'bg-(--background-hover)!',
       },
       cell: {
-        className: '!bg-[var(--background-hover)] pr-0',
+        className: 'bg-(--background-hover)! pr-0',
       },
       style: {
         width: '320px',

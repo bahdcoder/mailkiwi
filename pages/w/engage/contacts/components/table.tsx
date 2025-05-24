@@ -65,7 +65,7 @@ export const TableCell = React.forwardRef<TableCellProps, React.ComponentProps<'
         {...props}
         className={cn(
           'kb-table-cell',
-          'px-4 h-12 box-border border-b border-r kb-border-tertiary bg-[var(--background-secondary)]',
+          'px-4 h-12 box-border border-b border-r kb-border-tertiary bg-(--background-secondary)',
           className,
         )}
       >

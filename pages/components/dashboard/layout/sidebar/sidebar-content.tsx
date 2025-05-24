@@ -57,7 +57,7 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
 
   return (
     <>
-      <div id={`${rootId}-content`} className="flex-grow w-full">
+      <div id={`${rootId}-content`} className="grow w-full">
         <div className="py-2 px-1 flex items-center gap-x-2">
           <WorkspacesDropdownMenu rootId={rootId} />
 
@@ -92,7 +92,7 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
 
             {/* TODO: Change border color here to use semantic color: kb-border-negative. Would require updating owly package.*/}
             <span
-              className="w-6 h-5 kb-background-negative kb-content-primary-inverse flex items-center justify-center text-sm font-sans ml-auto rounded-full border border-[var(--red-200)]
+              className="w-6 h-5 kb-background-negative kb-content-primary-inverse flex items-center justify-center text-sm font-sans ml-auto rounded-full border border-(--red-200)
               shadow-[0px_2px_0px_0px_var(--white-5)_inset,0px_1px_0px_0px_var(--black-10)]
               "
             >
@@ -150,7 +150,7 @@ export function SidebarContent({ rootId }: SidebarContentProps) {
 
         <Progress
           value={percentageSpent}
-          className="flex-shrink-0"
+          className="shrink-0"
           variant={getProgressBarVariant(percentageSpent)}
         />
 

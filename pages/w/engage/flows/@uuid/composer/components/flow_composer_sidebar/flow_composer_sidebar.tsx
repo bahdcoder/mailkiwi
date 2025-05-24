@@ -18,7 +18,7 @@ export function FlowComposerSidebar() {
     : null
 
   return (
-    <div className="w-[360px] box-border p-4 flex-shrink-0 h-full border-l kb-border-tertiary">
+    <div className="w-[360px] box-border p-4 shrink-0 h-full border-l kb-border-tertiary">
       {Node && selectedNode ? <Node step={selectedNode?.data?.step} /> : null}
     </div>
   )

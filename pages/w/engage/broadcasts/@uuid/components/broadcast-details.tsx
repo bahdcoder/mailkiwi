@@ -24,11 +24,11 @@ export function BroadcastDetails() {
   return (
     <div className="flex flex-col gap-6">
       <dl className="w-full flex gap-4">
-        <dt className="w-full max-w-36 flex-shrink-0 flex items-center gap-2">
+        <dt className="w-full max-w-36 shrink-0 flex items-center gap-2">
           <EditPencilIcon className="w-5 h-5 kb-content-disabled" />
           <Text className="kb-content-tertiary">Subject</Text>
         </dt>
-        <dd className="w-full flex-grow">
+        <dd className="w-full grow">
           <Text className="kb-content-secondary">
             {broadcast?.emailContent?.subject ?? '---'}
           </Text>
@@ -36,11 +36,11 @@ export function BroadcastDetails() {
       </dl>
 
       <dl className="w-full flex gap-4">
-        <dt className="w-full max-w-36 flex-shrink-0 flex items-center gap-2">
+        <dt className="w-full max-w-36 shrink-0 flex items-center gap-2">
           <NotesIcon className="w-5 h-5 kb-content-disabled" />
           <Text className="kb-content-tertiary">Preview text</Text>
         </dt>
-        <dd className="w-full flex-grow">
+        <dd className="w-full grow">
           <Text className="kb-content-secondary">
             {broadcast?.emailContent?.previewText ?? '---'}
           </Text>
@@ -48,11 +48,11 @@ export function BroadcastDetails() {
       </dl>
 
       <dl className="w-full flex gap-4">
-        <dt className="w-full max-w-36 flex-shrink-0 flex items-center gap-2">
+        <dt className="w-full max-w-36 shrink-0 flex items-center gap-2">
           <GroupIcon className="w-5 h-5 kb-content-disabled" />
           <Text className="kb-content-tertiary">Contacts</Text>
         </dt>
-        <dd className="w-full flex-grow flex gap-2">
+        <dd className="w-full grow flex gap-2">
           <Text className="kb-content-secondary">
             {formatCount(getBroadcastRecipientsCount?.data?.total ?? 0)} contacts
           </Text>
@@ -60,11 +60,11 @@ export function BroadcastDetails() {
       </dl>
 
       <dl className="w-full flex gap-4">
-        <dt className="w-full max-w-36 flex-shrink-0 flex items-center gap-2">
+        <dt className="w-full max-w-36 shrink-0 flex items-center gap-2">
           <CalendarIcon className="w-5 h-5 kb-content-disabled" />
           <Text className="kb-content-tertiary">Scheduled date</Text>
         </dt>
-        <dd className="w-full flex-grow">
+        <dd className="w-full grow">
           <Text className="kb-content-secondary">
             {broadcast?.sendAt ? scheduledAt : '---'}
           </Text>

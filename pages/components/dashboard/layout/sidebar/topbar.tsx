@@ -47,7 +47,7 @@ export function Topbar() {
         <SidebarExpandIcon className="kb-content-tertiary-inverse" />
       </button>
 
-      <div className="ml-2 max-w-[8.25rem]">
+      <div className="ml-2 max-w-33">
         <WorkspacesDropdownMenu rootId="topbar-workspaces" />
       </div>
 

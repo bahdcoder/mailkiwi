@@ -48,7 +48,7 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
       }}
     >
       <ToolbarContainer>
-        <div className="flex items-center px-2 border-r border-[var(--white-10)]">
+        <div className="flex items-center px-2 border-r border-(--white-10)">
           {presetLink ? (
             <p className="text-white text-sm">{presetLink?.name}</p>
           ) : (
@@ -56,7 +56,7 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="cursor-pointer text-white underline underline-offset-2 decoration-[var(--content-tertiary-inverse)]"
+              className="cursor-pointer text-white underline underline-offset-2 decoration-(--content-tertiary-inverse)"
             >
               <Text className="text-white">{link}</Text>
             </a>

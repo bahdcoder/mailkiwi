@@ -139,7 +139,7 @@ const filterOperationOptions: FilterOperationOptions = {
           <Dropdown.Trigger asChild>
             <button
               type="button"
-              className="gap-4 box-border px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] flex items-center justify-between cursor-pointer"
+              className="gap-4 box-border px-2 w-full bg-transparent rounded-lg hover:bg-(--background-secondary) flex items-center justify-between cursor-pointer"
             >
               <Text className="text-xs">{selectedSegment?.name}</Text>
             </button>
@@ -149,7 +149,7 @@ const filterOperationOptions: FilterOperationOptions = {
             {segments.map((segment) => (
               <Dropdown.Item
                 key={segment.id}
-                className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-[var(--background-hover)] rounded-lg"
+                className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-(--background-hover) rounded-lg"
               >
                 <Text className="kb-content-tertiary">{segment.name}</Text>
 
@@ -197,7 +197,7 @@ const filterOperationOptions: FilterOperationOptions = {
                 <label
                   key={tag.id}
                   htmlFor={id}
-                  className="gap-2 px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] h-8 flex items-center justify-start cursor-pointer"
+                  className="gap-2 px-2 w-full bg-transparent rounded-lg hover:bg-(--background-secondary) h-8 flex items-center justify-start cursor-pointer"
                 >
                   <Checkbox
                     id={id}
@@ -283,7 +283,7 @@ function ContactsPage() {
 
       {activeFilters.length > 0 ? (
         <div className="w-full flex items-start justify-between pt-3 gap-4">
-          <div className="flex flex-grow flex-wrap gap-2">
+          <div className="flex grow flex-wrap gap-2">
             <DisplayedFilterCondition
               readOnly={false}
               filters={activeFilters}
@@ -293,7 +293,7 @@ function ContactsPage() {
             />
           </div>
 
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <div className="flex items-center gap-2">
               <SaveFilterAsSegmentForm filterGroups={filterGroups}>
                 <Button
@@ -317,7 +317,7 @@ function ContactsPage() {
         </div>
       ) : null}
 
-      <div className="mt-4 border-t border-b border-[var(--black-5)] h-12 box-border pl-6 flex items-center justify-between">
+      <div className="mt-4 border-t border-b border-(--black-5) h-12 box-border pl-6 flex items-center justify-between">
         <Text className="kb-content-tertiary" data-testid="w-contacts-filters-showing">
           Showing {startOfPage}-{endOfPage} of {formatCount(data?.total ?? 0)} contacts
         </Text>
@@ -368,7 +368,7 @@ function ContactsPage() {
         </Table.Root>
       </div>
 
-      <div className="sticky bottom-0 kb-background-secondary z-[2] py-2">
+      <div className="sticky bottom-0 kb-background-secondary z-2 py-2">
         <Pagination table={table} />
       </div>
     </Tabs.Content>

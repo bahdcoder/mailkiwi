@@ -93,7 +93,7 @@ const fields: FilterDefinition[] = [
               <label
                 key={tag.id}
                 htmlFor={id}
-                className="gap-2 px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] h-8 flex items-center justify-start cursor-pointer"
+                className="gap-2 px-2 w-full bg-transparent rounded-lg hover:bg-(--background-secondary) h-8 flex items-center justify-start cursor-pointer"
               >
                 <Checkbox
                   id={id}
@@ -161,7 +161,7 @@ const fields: FilterDefinition[] = [
                 id={id}
                 key={segment.id}
                 onClick={() => onSegmentSelected(segment)}
-                className="gap-4 px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] h-8 flex items-center justify-between cursor-pointer"
+                className="gap-4 px-2 w-full bg-transparent rounded-lg hover:bg-(--background-secondary) h-8 flex items-center justify-between cursor-pointer"
               >
                 <Text className="">{segment.name}</Text>
               </button>
@@ -271,7 +271,7 @@ export function TextFilterInputForm({
         </TextField.Root>
       </div>
 
-      <div className="p-2 flex justify-end gap-2 border-t border-[var(--border-tertiary)] -mx-1">
+      <div className="p-2 flex justify-end gap-2 border-t border-(--border-tertiary) -mx-1">
         <Button
           type="button"
           variant="tertiary"
@@ -373,7 +373,7 @@ function FiltersBuilder() {
       <Dropdown.Trigger asChild>
         <Button
           variant="secondary"
-          className="flex-shrink-0 w-contacts-filter-button"
+          className="shrink-0 w-contacts-filter-button"
           data-testid="w-contacts-filters-builder-trigger"
         >
           <FilterListIcon />
@@ -393,7 +393,7 @@ function FiltersBuilder() {
                     <Dropdown.Item
                       key={field.name}
                       className={cn(
-                        'w-full bg-transparent rounded-lg px-2 cursor-pointer hover:bg-[var(--background-secondary)] h-8 flex items-center justify-start',
+                        'w-full bg-transparent rounded-lg px-2 cursor-pointer hover:bg-(--background-secondary) h-8 flex items-center justify-start',
                       )}
                       asChild
                       onSelect={(event) => onFilterSelected(event, field)}
@@ -407,9 +407,7 @@ function FiltersBuilder() {
                       </Button>
                     </Dropdown.Item>
                   ))}
-                  {idx < 2 && (
-                    <Dropdown.Separator className="my-1 h-px bg-[var(--black-5)]" />
-                  )}
+                  {idx < 2 && <Dropdown.Separator className="my-1 h-px bg-(--black-5)" />}
                 </React.Fragment>
               )
             })}

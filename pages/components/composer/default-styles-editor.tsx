@@ -10,7 +10,7 @@ export function DefaultStylesEditor() {
 
   return (
     <div
-      className={cn('w-[16.25rem] h-full border-l transition-[border-color]', {
+      className={cn('w-65 h-full border-l transition-[border-color]', {
         'kb-border-tertiary': editingDefaultStyles,
         'border-transparent': !editingDefaultStyles,
       })}

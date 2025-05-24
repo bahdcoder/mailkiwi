@@ -20,10 +20,10 @@ export function MetricCard({ rate, value }: MetricCardProps) {
       <Text className="kb-content-secondary text-2xl font-semibold">{value.value}</Text>
 
       <div className="flex items-center gap-2">
-        <Text className="kb-content-tertiary flex-shrink-0">{rate.label}</Text>
+        <Text className="kb-content-tertiary shrink-0">{rate.label}</Text>
 
-        <div className=" w-full flex-grow flex items-center">
-          <div className="h-px w-full bg-[var(--border-tertiary)]" />
+        <div className=" w-full grow flex items-center">
+          <div className="h-px w-full bg-(--border-tertiary)" />
         </div>
 
         <Text className="kb-content-secondary">{rate.value}</Text>

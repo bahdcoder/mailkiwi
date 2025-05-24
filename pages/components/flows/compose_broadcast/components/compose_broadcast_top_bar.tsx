@@ -21,22 +21,22 @@ export function ComposeBroadcastTopBar() {
   } = useComposeBroadcastContext('ComposeBroadcastTopBar')
 
   return (
-    <header className="h-[3.75rem] w-full box-border flex justify-between items-center px-2">
+    <header className="h-15 w-full box-border flex justify-between items-center px-2">
       <div className="flex items-center gap-4">
         <Button variant="tertiary" className="p-0" asChild>
           <a href={route('broadcasts')}>
-            <CancelIcon className="!w-6 !h-6" />
+            <CancelIcon className="w-6! h-6!" />
           </a>
         </Button>
 
         <Button variant="tertiary" disabled={isPending}>
           Save draft
           {isSuccess && !isPending && !isError ? (
-            <CheckIcon className="kb-content-positive !w-5 !h-5" />
+            <CheckIcon className="kb-content-positive w-5! h-5!" />
           ) : null}
           {isPending ? <Spinner size="md" /> : null}
           {isError ? (
-            <WarningCircleSolidIcon className="kb-content-negative !w-5 !h-5" />
+            <WarningCircleSolidIcon className="kb-content-negative w-5! h-5!" />
           ) : null}
         </Button>
       </div>
@@ -49,7 +49,7 @@ export function ComposeBroadcastTopBar() {
           Compose
         </Button>
 
-        <MinusIcon className="text-[var(--border-tertiary)]" />
+        <MinusIcon className="text-(--border-tertiary)" />
 
         <Button
           variant={step === ComposeBroadcastSteps.CONTACTS ? 'secondary' : 'tertiary'}
@@ -58,7 +58,7 @@ export function ComposeBroadcastTopBar() {
         >
           Contacts
         </Button>
-        <MinusIcon className="text-[var(--border-tertiary)]" />
+        <MinusIcon className="text-(--border-tertiary)" />
         <Button
           variant={step === ComposeBroadcastSteps.CONFIGURE ? 'secondary' : 'tertiary'}
           className="rounded-full"
@@ -66,7 +66,7 @@ export function ComposeBroadcastTopBar() {
         >
           Configure
         </Button>
-        <MinusIcon className="text-[var(--border-tertiary)]" />
+        <MinusIcon className="text-(--border-tertiary)" />
         <Button
           variant={step === ComposeBroadcastSteps.TRACKING ? 'secondary' : 'tertiary'}
           className="rounded-full"
@@ -74,7 +74,7 @@ export function ComposeBroadcastTopBar() {
         >
           Tracking
         </Button>
-        <MinusIcon className="text-[var(--border-tertiary)]" />
+        <MinusIcon className="text-(--border-tertiary)" />
         <Button
           variant={step === ComposeBroadcastSteps.PREVIEW ? 'secondary' : 'tertiary'}
           className="rounded-full"

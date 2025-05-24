@@ -35,7 +35,7 @@ export function RadioGroupCardItem({
       {...props}
     >
       <Checkbox variant="circle" checked={checked} disabled={disabled} />
-      <div className="flex flex-col gap-1 -mt-1 flex-grow">
+      <div className="flex flex-col gap-1 -mt-1 grow">
         <Heading
           size="xs"
           className={cn('text-left', {

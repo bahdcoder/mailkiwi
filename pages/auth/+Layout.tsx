@@ -19,7 +19,7 @@ function PasswordResetsFlowLayout({
         <img src="/logos/full-light.svg" className="h-8" alt="Kibamail Logo" />
       </div>
 
-      <div className="flex-grow">{children}</div>
+      <div className="grow">{children}</div>
 
       <AgreeToTermsAndPolicy />
     </div>
@@ -43,7 +43,7 @@ function AuthLayout({ children }: React.PropsWithChildren<AuthLayoutProps>) {
             <img src="/logos/full-light.svg" className="h-8" alt="Kibamail Logo" />
           </a>
         </div>
-        <div className="flex-grow px-5 lg:px-0">{children}</div>
+        <div className="grow px-5 lg:px-0">{children}</div>
 
         <AgreeToTermsAndPolicy />
       </div>
@@ -88,9 +88,9 @@ interface ProductFeatureProps {
 function ProductFeature({ title, description }: ProductFeatureProps) {
   return (
     <div className="flex items-start gap-x-2">
-      <CheckCircleSolidIcon className="kb-content-notice flex-shrink-0" />
+      <CheckCircleSolidIcon className="kb-content-notice shrink-0" />
 
-      <div className="flex flex-col flex-grow gap-y-2">
+      <div className="flex flex-col grow gap-y-2">
         <Text className="kb-content-primary-inverse" size="lg">
           {title}
         </Text>

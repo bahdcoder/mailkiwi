@@ -509,7 +509,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
               key={match.column.name}
               className="flex flex-col md:flex-row items-start w-full md:gap-x-24"
             >
-              <Text className="flex-shrink-0 mb-6 md:mb-0 md:mt-2">
+              <Text className="shrink-0 mb-6 md:mb-0 md:mt-2">
                 Column {idx + 1}/{matches.length}
               </Text>
 
@@ -527,7 +527,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                 <div className="h-16 kb-background-secondary w-full flex flex-col justify-center relative">
                   <div className="absolute w-px border-l kb-border-tertiary  h-14 top-1 left-4" />
 
-                  <div className="w-full py-1 kb-background-secondary z-[1] flex items-center justify-between">
+                  <div className="w-full py-1 kb-background-secondary z-1 flex items-center justify-between">
                     <Text size="sm" className="hidden md:inline kb-content-secondary">
                       Matches to the following property on your Kibamail account:
                     </Text>
@@ -555,7 +555,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                   }
                 >
                   <Select.Trigger placeholder="Select a property" />
-                  <Select.Content className="z-[3]">
+                  <Select.Content className="z-3">
                     <Select.Item value="skip">None - Skip this column</Select.Item>
                     <Select.Separator />
 
@@ -569,7 +569,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                     <button
                       type="button"
                       value="create-new-property"
-                      className="kb-select-item kb-reset sticky bottom-0 bg-[var(--background-primary)]"
+                      className="kb-select-item kb-reset sticky bottom-0 bg-(--background-primary)"
                       onClick={() => {
                         onCreateNewProperty(match.column.name)
                       }}
