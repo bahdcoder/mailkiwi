@@ -31,8 +31,9 @@
 @tailwind utilities;
 
 body {
-  @apply kb-background-brand-hover;
+  @apply font-sans;
   --w-sidebar-width: 260px;
+  background: var(--background-brand-hover);
 }
 
 #root {
