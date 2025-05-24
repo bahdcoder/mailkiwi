@@ -78,19 +78,15 @@ export class TeamMembershipController extends BaseController {
    * @throws E_VALIDATION_FAILED if the user is already a team member
    */
   async invite(ctx: HonoContext) {
-    // Validate the invitation data
     const data = await this.validate(ctx, InviteTeamMember)
 
-    // Ensure the current user has administrative permissions
     const team = this.ensureCanAdministrate(ctx)
 
-    // Check if the user is already a team member
     const membershipExists = await this.teamMembershipRepository.membershipExists(
       data.email,
       team.id,
     )
 
-    // Prevent duplicate invitations
     if (membershipExists) {
       throw E_VALIDATION_FAILED([
         {
@@ -99,7 +95,6 @@ export class TeamMembershipController extends BaseController {
       ])
     }
 
-    // Create the invitation and send an email to the invitee
     const { id } = await container.make(InviteTeamMemberAction).handle(data, team.id)
 
     return this.response(ctx).json({ id }, 200, true).send()
@@ -124,13 +119,10 @@ export class TeamMembershipController extends BaseController {
    * @throws E_UNAUTHORIZED if the user is not the intended recipient
    */
   async acceptInvite(ctx: HonoContext) {
-    // Validate the invitation token
     const invite = await this.ensureValidInvite(ctx)
 
-    // Get the authenticated user
     const authenticatedUser = this.user(ctx)
 
-    // Ensure the current user is the intended recipient
     if (invite.email !== authenticatedUser?.email) {
       throw E_UNAUTHORIZED('You are not authorized to perform this action.')
     }
@@ -145,7 +137,6 @@ export class TeamMembershipController extends BaseController {
       invite.userId = authenticatedUser.id
     }
 
-    // Activate the team membership
     const { id } = await container.make(AcceptTeamMemberInviteAction).handle(invite)
 
     return this.response(ctx).json({ id }, 200, true).send()
@@ -168,18 +159,14 @@ export class TeamMembershipController extends BaseController {
    * @throws E_UNAUTHORIZED if the user is not the intended recipient
    */
   async rejectInvite(ctx: HonoContext) {
-    // Validate the invitation token
     const invite = await this.ensureValidInvite(ctx)
 
-    // Get the authenticated user
     const authenticatedUser = this.user(ctx)
 
-    // Ensure the current user is the intended recipient
     if (invite.email !== authenticatedUser?.email) {
       throw E_UNAUTHORIZED('You are not authorized to perform this action.')
     }
 
-    // Delete the invitation
     const { id } = await container.make(RejectTeamMemberInviteAction).handle(invite)
 
     return this.response(ctx).json({ id }, 200, true).send()
@@ -268,7 +255,6 @@ export class TeamMembershipController extends BaseController {
    * @throws E_UNAUTHORIZED if the user doesn't have permission
    */
   async revokeAccess(ctx: HonoContext) {
-    // Validate the membership ID
     const invite = await this.ensureExists<TeamMembership>(ctx, 'membershipId')
 
     // Check if the user is revoking their own access or has administrative permissions
@@ -276,7 +262,6 @@ export class TeamMembershipController extends BaseController {
       this.ensureCanAdministrate(ctx)
     }
 
-    // Deactivate the team membership
     const { id } = await container.make(RevokeTeamMemberAccessAction).handle(invite)
 
     return this.response(ctx).json({ id }, 200, true).send()
@@ -299,19 +284,16 @@ export class TeamMembershipController extends BaseController {
    * @throws E_UNAUTHORIZED if the invitation is for a different team
    */
   async ensureValidInvite(ctx: HonoContext) {
-    // Retrieve the invitation using the signed URL token
     const invite = await this.teamMembershipRepository.findBySignedUrlToken(
       ctx.req.param('token'),
     )
 
-    // Validate that the token corresponds to a valid invitation
     if (!invite) {
       throw E_VALIDATION_FAILED([
         { message: 'Invite token provided is invalid', field: 'token' },
       ])
     }
 
-    // Ensure the invitation belongs to the current team context
     if (invite.teamId !== this.team(ctx).id) {
       throw E_UNAUTHORIZED()
     }
