@@ -6,6 +6,10 @@ function w(path: string) {
   return `/w/${trimLastSlash(path)}`
 }
 
+function settings(path: string) {
+  return w(`settings/${path}`)
+}
+
 function engage(path: string) {
   return w(`engage/${path}`)
 }
@@ -40,6 +44,9 @@ export const aliases = {
   engage: w('engage'),
   letters: w('letters'),
   monetize: w('monetize'),
+
+  // Settings
+  setttings: w('settings'),
 
   // teams
   teams_switch: '/teams/:teamId/switch',
