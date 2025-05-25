@@ -1,5 +1,0 @@
----
-
-nginx_port: 80
-app_server_port: 5566
-nginx_firewall_enabled: true
