@@ -1,4 +1,4 @@
-import { BroadcastDetails } from '#root/pages/w/engage/broadcasts/@uuid/components/broadcast-details.jsx'
+import { BroadcastDetails } from '#root/build/core/pages/w/(products)/engage/broadcasts/@uuid/components/broadcast-details.js'
 import { Heading } from '@kibamail/owly/heading'
 import { usePageContext } from 'vike-react/usePageContext'
 import type { BroadcastPageProps } from '#root/pages/types/broadcast-page-props.js'

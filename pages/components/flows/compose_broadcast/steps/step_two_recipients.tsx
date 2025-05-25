@@ -5,7 +5,7 @@ import { useComposeBroadcastContext } from '#root/pages/components/flows/compose
 import { MinusIcon } from '#root/pages/components/icons/minus.svg.jsx'
 import { WarningTriangleSolidIcon } from '#root/pages/components/icons/warning-triangle-solid.svg.jsx'
 import { formatCount } from '#root/pages/utils/number_formatter.js'
-import type { FilterCondition } from '#root/pages/w/engage/contacts/components/filters.jsx'
+import type { FilterCondition } from '#root/build/core/pages/w/(products)/engage/contacts/components/filters.js'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
