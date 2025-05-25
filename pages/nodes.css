@@ -1,0 +1,23 @@
+.w-node-wrapper {
+  @apply flex flex-col justify-end w-[300px] h-[92px] border border-transparent;
+}
+
+.w-node-wrapper-with-configurations {
+  @apply flex flex-col items-center justify-start w-[300px] h-[92px];
+}
+
+.w-node-wrapper-empty {
+  @apply flex justify-center w-[300px] h-[92px] box-border border border-transparent;
+}
+
+.w-node-wrapper-inner-empty {
+  @apply w-[200px] h-[56px] bg-[var(--background-subtle)] border border-[var(--border-tertiary)] box-border rounded-xl p-1;
+}
+
+.w-node-selected {
+  @apply !border-[var(--border-focus)];
+}
+
+.w-node-wrapper-inner {
+  @apply rounded-lg bg-white border border-[var(--border-tertiary)] p-3 box-border w-[300px] h-[92px];
+}

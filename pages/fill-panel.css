@@ -1,0 +1,11 @@
+.w-composer-color-picker {
+  @apply !w-full;
+
+  .react-colorful__saturation {
+    @apply rounded-none;
+  }
+
+  .react-colorful__last-control {
+    @apply mt-3 h-3 rounded-l-3xl rounded-r-3xl;
+  }
+}
