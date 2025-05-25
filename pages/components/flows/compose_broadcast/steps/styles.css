@@ -18,7 +18,8 @@
 }
 
 .tiptap p.is-empty::before {
-  @apply text-[var(--content-tertiary-inverse)] float-left h-0 pointer-events-none;
+  @apply text-[var(--content-tertiary-inverse)] float-left pointer-events-none;
+  height: 0;
   content: attr(data-placeholder);
 }
 
@@ -27,7 +28,7 @@
   margin-left: 0.5em;
 }
 
-/* 
+/*
 .tiptap p,
 .tiptap h1,
 .tiptap h2,
