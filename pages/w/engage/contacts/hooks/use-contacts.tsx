@@ -228,9 +228,9 @@ export function useContacts() {
                           <Dropdown.Item
                             key={action.name}
                             className={cn(
-                              'w-full bg-transparent rounded-lg px-2 cursor-pointer hover:bg-[var(--background-secondary)] h-8 flex items-center justify-start',
+                              'w-full bg-transparent rounded-lg px-2 cursor-pointer hover:bg-(--background-secondary) h-8 flex items-center justify-start',
                               {
-                                'text-[var(--kb-content-negative)]':
+                                'text-(--kb-content-negative)':
                                   action.type === 'destructive',
                               },
                             )}
@@ -243,7 +243,7 @@ export function useContacts() {
                             >
                               <Text
                                 className={cn({
-                                  'text-[var(--content-negative)]':
+                                  'text-(--content-negative)':
                                     action.type === 'destructive',
                                 })}
                               >

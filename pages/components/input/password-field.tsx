@@ -80,7 +80,7 @@ export const PasswordField = React.forwardRef<
         <TextField.Slot side="right">
           <button
             type="button"
-            className="kb-reset focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-[var(--border-focus)] rounded-sm"
+            className="kb-reset focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-(--border-focus) rounded-sm"
             aria-label={`${visible ? 'Hide' : 'Show'} password`}
             onClick={onTogglePasswordVisibilityClick}
           >
@@ -112,7 +112,7 @@ export const PasswordField = React.forwardRef<
       </TextField.Root>
 
       {strengthIndicator ? (
-        <div className="absolute top-[4.5rem] w-full">
+        <div className="absolute top-18 w-full">
           <Progress
             variant={indicator.variant}
             value={indicator.percentage}

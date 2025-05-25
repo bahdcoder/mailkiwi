@@ -18,7 +18,7 @@ export function StepFivePreview() {
         </div>
 
         <div className="mt-4">
-          <div className="w-full bg-white border border-[var(--black-10)] min-h-[896px]" />
+          <div className="w-full bg-white border border-(--black-10) min-h-[896px]" />
         </div>
       </div>
     </div>

@@ -119,7 +119,7 @@ const filterOperationOptions: FilterOperationOptions = {
           <Dropdown.Trigger asChild>
             <button
               type="button"
-              className="gap-4 box-border px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] flex items-center justify-between cursor-pointer"
+              className="gap-4 box-border px-2 w-full bg-transparent rounded-lg hover:bg-(--background-secondary) flex items-center justify-between cursor-pointer"
             >
               <Text className="text-xs">{selectedSegment?.name}</Text>
             </button>
@@ -129,7 +129,7 @@ const filterOperationOptions: FilterOperationOptions = {
             {segments.map((segment) => (
               <Dropdown.Item
                 key={segment.id}
-                className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-[var(--background-hover)] rounded-lg"
+                className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-(--background-hover) rounded-lg"
               >
                 <Text className="kb-content-tertiary">{segment.name}</Text>
 
@@ -177,7 +177,7 @@ const filterOperationOptions: FilterOperationOptions = {
                 <label
                   key={tag.id}
                   htmlFor={id}
-                  className="gap-2 px-2 w-full bg-transparent rounded-lg hover:bg-[var(--background-secondary)] h-8 flex items-center justify-start cursor-pointer"
+                  className="gap-2 px-2 w-full bg-transparent rounded-lg hover:bg-(--background-secondary) h-8 flex items-center justify-start cursor-pointer"
                 >
                   <Checkbox
                     id={id}
@@ -243,7 +243,7 @@ export function DisplayedFilterCondition({
         const filterValue = (
           <button
             type="button"
-            className="kb-reset text-xs border-r border-[var(--border-tertiary)] px-2.5 h-full max-w-48 truncate text-ellipsis"
+            className="kb-reset text-xs border-r border-(--border-tertiary) px-2.5 h-full max-w-48 truncate text-ellipsis"
             key={`${filter.value}-${filter.field}`}
           >
             <Text className="text-xs kb-content-secondary font-medium">
@@ -257,11 +257,11 @@ export function DisplayedFilterCondition({
         return (
           <div
             key={filter.id}
-            className="h-7 border border-[var(--border-tertiary)] flex items-center bg-[var(--background-secondary)] shadow-[0px_-2px_0px_0px_var(--black-5)_inset,0px_2px_0px_0px_var(--white-100)_inset] rounded-lg"
+            className="h-7 border border-(--border-tertiary) flex items-center bg-(--background-secondary) shadow-[0px_-2px_0px_0px_var(--black-5)_inset,0px_2px_0px_0px_var(--white-100)_inset] rounded-lg"
           >
             <span
               data-testid={`w-contacts-filters-select-field-trigger-${filter.field}`}
-              className="kb-reset flex h-full items-center capitalize text-xs border-r border-[var(--border-tertiary)] px-2.5"
+              className="kb-reset flex h-full items-center capitalize text-xs border-r border-(--border-tertiary) px-2.5"
             >
               <Text className="text-xs kb-content-tertiary">
                 {filterOperationOptions[filter.field].name}
@@ -273,7 +273,7 @@ export function DisplayedFilterCondition({
                 <button
                   type="button"
                   data-testid={`w-contacts-filters-select-operation-trigger-${filter.field}`}
-                  className="kb-reset text-xs cursor-pointer border-r border-[var(--border-tertiary)] hover:bg-[var(--background-hover)] transition ease-linear px-2.5 h-full flex-shrink-0"
+                  className="kb-reset text-xs cursor-pointer border-r border-(--border-tertiary) hover:bg-(--background-hover) transition ease-linear px-2.5 h-full shrink-0"
                 >
                   <Text className="text-xs kb-content-tertiary lowercase">
                     {filterOperationLabels[filter.operation]}
@@ -283,7 +283,7 @@ export function DisplayedFilterCondition({
 
               <Dropdown.Content
                 data-testid={`w-contacts-filters-select-operation-content-${filter.field}`}
-                className="flex-shrink-0"
+                className="shrink-0"
               >
                 {filterOperationOptions[filter.field].operations.map((option) => (
                   <Dropdown.Item asChild key={`${option.value}-${option.label}`}>
@@ -331,7 +331,7 @@ export function DisplayedFilterCondition({
                 type="button"
                 onClick={() => removeFilter?.(filter)}
                 data-testid={`w-contacts-filters-select-remove-filter-${filter.field}`}
-                className="px-2.5 cursor-pointer hover:bg-[var(--background-hover)] transition ease-linear h-full rounded-r-lg"
+                className="px-2.5 cursor-pointer hover:bg-(--background-hover) transition ease-linear h-full rounded-r-lg"
               >
                 <CancelIcon className="w-4 h-4 kb-content-tertiary" />
               </button>

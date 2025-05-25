@@ -93,7 +93,7 @@ export function SaveFilterAsSegmentForm({
                     rel="noopener noreferrer"
                   >
                     Learn more about segments here.
-                    <ArrowUpRightIcon className="!w-4 !h-4" />
+                    <ArrowUpRightIcon className="w-4! h-4!" />
                   </a>
                 </Text>
               </div>

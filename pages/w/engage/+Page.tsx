@@ -70,7 +70,7 @@ function EngagePage() {
           </div>
 
           <div className="w-full lg:w-auto">
-            <Tabs.List className="lg:w-[fit-content]">
+            <Tabs.List className="lg:w-fit">
               <Tabs.Trigger value={BroadcastStatusFilters.ALL} asChild>
                 <a href={route('engage')}>All</a>
               </Tabs.Trigger>

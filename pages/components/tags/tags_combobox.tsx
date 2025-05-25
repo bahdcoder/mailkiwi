@@ -140,7 +140,7 @@ export function TagsCombobox({
       </TextField.Root>
       <ul
         className={cn(
-          'kb-combobox-popover-content absolute p-1 w-[inherit] bg-[var(--background-primary)] mt-1 rounded-xl border kb-border-tertiary shadow-[0px_16px_24px_-8px_var(--black-10)] max-h-60 overflow-scroll z-10',
+          'kb-combobox-popover-content absolute p-1 w-[inherit] bg-(--background-primary) mt-1 rounded-xl border kb-border-tertiary shadow-[0px_16px_24px_-8px_var(--black-10)] max-h-60 overflow-scroll z-10',
           { hidden: !isOpen },
         )}
         style={{ maxWidth }}
@@ -195,7 +195,7 @@ export function TagsCombobox({
                     }
                   }}
                   aria-label={`Create new tag "${inputValue}"`}
-                  className="h-9 box-border select-none bg-[var(--background-primary)] rounded-lg hover:bg-[var(--background-secondary)] flex items-center cursor-pointer px-2 transition-[background] ease-in-out"
+                  className="h-9 box-border select-none bg-(--background-primary) rounded-lg hover:bg-(--background-secondary) flex items-center cursor-pointer px-2 transition-[background] ease-in-out"
                 >
                   <PlusIcon className="w-5 h-5 mr-2" />
                   <Text className="kb-content-secondary">
@@ -212,7 +212,7 @@ export function TagsCombobox({
         {selectedItems.map(function renderSelectedItem(selectedItemForRender, index) {
           return (
             <span
-              className="flex items-center border kb-border-tertiary font-medium bg-[var(--background-primary)] px-2 py-1 rounded-lg shadow-[0px_2px_0px_0px_var(--white-5)_inset,0px_1px_0px_0px_var(--black-10)]"
+              className="flex items-center border kb-border-tertiary font-medium bg-(--background-primary) px-2 py-1 rounded-lg shadow-[0px_2px_0px_0px_var(--white-5)_inset,0px_1px_0px_0px_var(--black-10)]"
               key={`selected-item-${
                 selectedItemForRender.id || selectedItemForRender.value
               }`}

@@ -50,7 +50,7 @@ export function DefaultEdge(props: EdgeProps<EdgeElement['data']>) {
           <Button
             variant="primary"
             onClick={() => data?.onAddNodeCallback(id)}
-            className="kb-background-info border-[var(--black-5)] rounded-lg w-7 h-7 p-0 flex items-center justify-center"
+            className="kb-background-info border-(--black-5) rounded-lg w-7 h-7 p-0 flex items-center justify-center"
             style={{ pointerEvents: 'all' }}
           >
             <PlusIcon />

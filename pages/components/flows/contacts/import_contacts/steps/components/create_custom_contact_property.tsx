@@ -60,7 +60,7 @@ export function CreateCustomContactProperty({
                 placeholder="Select a property type"
                 id="custom-property-type"
               />
-              <Select.Content className="z-[99]">
+              <Select.Content className="z-99">
                 <Select.Item value="text">
                   <TextIcon />
                   Text

@@ -38,17 +38,17 @@ export function ComposeBroadcastPreview() {
         <Button variant="secondary">Preview</Button>
       </Dialog.Trigger>
 
-      <Dialog.Content className="w-screen h-screen px-2 pb-2 box-border kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out z-[3]">
+      <Dialog.Content className="w-screen h-screen px-2 pb-2 box-border kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out z-3">
         <VisuallyHidden>
           <Dialog.Title>Preview broadcast email content</Dialog.Title>
           <Dialog.Description>Preview broadcast email content</Dialog.Description>
         </VisuallyHidden>
 
-        <header className="h-[3.75rem] w-full box-border flex justify-between items-center px-2">
+        <header className="h-15 w-full box-border flex justify-between items-center px-2">
           <div className="flex items-center gap-4">
             <Dialog.Close aria-label="Close preview" asChild>
-              <Button variant="tertiary" className="flex-shrink-0">
-                <CancelIcon className="!w-6 !h-6" />
+              <Button variant="tertiary" className="shrink-0">
+                <CancelIcon className="w-6! h-6!" />
               </Button>
             </Dialog.Close>
           </div>
@@ -68,7 +68,7 @@ export function ComposeBroadcastPreview() {
           <Button variant="secondary">Send test email</Button>
         </header>
 
-        <div className="flex flex-grow w-full h-[calc(100vh-4.25rem)] box-border border kb-border-tertiary rounded-xl kb-background-hover px-24 py-16">
+        <div className="flex grow w-full h-[calc(100vh-4.25rem)] box-border border kb-border-tertiary rounded-xl kb-background-hover px-24 py-16">
           <iframe
             sandbox="allow-same-origin"
             srcDoc={previewQuery.data?.preview}

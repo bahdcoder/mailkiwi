@@ -17,7 +17,7 @@ export function LeftSidebar() {
 
   return (
     <nav
-      className={cn('flex flex-col box-border flex-shrink-0 px-2 duration-200')}
+      className={cn('flex flex-col box-border shrink-0 px-2 duration-200')}
       style={{
         width: `${sidebar.width}px`,
         transition: 'margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1)',

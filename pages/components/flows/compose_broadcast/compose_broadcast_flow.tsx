@@ -101,7 +101,7 @@ export function ComposeBroadcastFlow() {
       <div className="w-screen h-screen px-2 pb-2 box-border kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out">
         <div className="flex flex-col">
           <ComposeBroadcastTopBar />
-          <div className="flex flex-grow w-full h-[calc(100vh-4.25rem)] box-border border kb-border-tertiary rounded-xl kb-background-hover">
+          <div className="flex grow w-full h-[calc(100vh-4.25rem)] box-border border kb-border-tertiary rounded-xl kb-background-hover">
             <StepsRenderer
               current={step}
               steps={{

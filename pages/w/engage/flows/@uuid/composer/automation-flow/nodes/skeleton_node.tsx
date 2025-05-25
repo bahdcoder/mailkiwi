@@ -44,9 +44,9 @@ export function SkeletonNode({ step, children }: PropsWithChildren<SkeletonNodeP
     <div className="w-full h-full flex flex-col">
       <div className=" border-b pb-2 box-border border-black/5 w-full items-center flex justify-between">
         <div className="flex items-center gap-2">
-          {Icon ? <Icon className="!w-4 !h-4 font-medium kb-content-tertiary" /> : null}
+          {Icon ? <Icon className="w-4! h-4! font-medium kb-content-tertiary" /> : null}
 
-          <Text className="flex-shrink-0 text-sm">{nodeLabels[step.subtype]}</Text>
+          <Text className="shrink-0 text-sm">{nodeLabels[step.subtype]}</Text>
         </div>
 
         <Badge
@@ -57,7 +57,7 @@ export function SkeletonNode({ step, children }: PropsWithChildren<SkeletonNodeP
           {step.type.toLowerCase()}
         </Badge>
       </div>
-      <div className="flex-grow flex items-center py-2 box-border">{children}</div>
+      <div className="grow flex items-center py-2 box-border">{children}</div>
     </div>
   )
 }

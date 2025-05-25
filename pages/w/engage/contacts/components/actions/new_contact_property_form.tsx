@@ -103,7 +103,7 @@ export function NewContactPropertyForm({
                 placeholder="Select a property type"
                 id="custom-property-type"
               />
-              <Select.Content className="z-[99]">
+              <Select.Content className="z-99">
                 <Select.Item value="text">
                   <TextIcon />
                   Text
@@ -140,7 +140,7 @@ export function NewContactPropertyForm({
                     rel="noopener noreferrer"
                   >
                     Read more about custom properties here.
-                    <ArrowUpRightIcon className="!w-4 !h-4" />
+                    <ArrowUpRightIcon className="w-4! h-4!" />
                   </a>
                 </Text>
               </div>

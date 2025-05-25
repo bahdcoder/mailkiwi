@@ -43,7 +43,7 @@ function LettersOnboarding() {
           </Button>
         </div>
 
-        <div className="w-full mt-12 lg:mt-60 mx-auto max-w-[30rem]">
+        <div className="w-full mt-12 lg:mt-60 mx-auto max-w-120">
           <Text className="kb-content-tertiary-inverse">Step {step + 1} of 3</Text>
 
           <div className="my-4 flex items-center gap-x-1">

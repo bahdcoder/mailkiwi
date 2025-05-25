@@ -1,42 +1,51 @@
-@import "@kibamail/owly/styles/tokens.css";
+@plugin "tailwindcss-animate";
 
-@import "@kibamail/owly/styles/text.css";
-@import "@kibamail/owly/styles/alert.css";
-@import "@kibamail/owly/styles/button.css";
-@import "@kibamail/owly/styles/badge.css";
-@import "@kibamail/owly/styles/heading.css";
-@import "@kibamail/owly/styles/spinner.css";
-@import "@kibamail/owly/styles/dialog.css";
-@import "@kibamail/owly/styles/checkbox.css";
-@import "@kibamail/owly/styles/progress.css";
-@import "@kibamail/owly/styles/text-field.css";
-@import "@kibamail/owly/styles/select-field.css";
+@import "tailwindcss" layer(base);
 
-@import "@kibamail/owly/styles/semantic-classes.css";
+@import "@kibamail/owly/styles/tokens.css" layer(base);
 
-@import "./animations.css";
+@import "@kibamail/owly/styles/text.css" layer(base);
+@import "@kibamail/owly/styles/alert.css" layer(base);
+@import "@kibamail/owly/styles/button.css" layer(base);
+@import "@kibamail/owly/styles/badge.css" layer(base);
+@import "@kibamail/owly/styles/heading.css" layer(base);
+@import "@kibamail/owly/styles/spinner.css" layer(base);
+@import "@kibamail/owly/styles/dialog.css" layer(base);
+@import "@kibamail/owly/styles/checkbox.css" layer(base);
+@import "@kibamail/owly/styles/progress.css" layer(base);
+@import "@kibamail/owly/styles/text-field.css" layer(base);
+@import "@kibamail/owly/styles/select-field.css" layer(base);
 
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+@import "@kibamail/owly/styles/semantic-classes.css" layer(base);
 
-@font-face {
-  font-family: "RocaTwo";
-  src: url("/fonts/roca-two-rg.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
+@import "./animations.css" layer(base);
+
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap")
+  layer(base);
+
+@theme inline {
+  --font-sans: var(--font-manrope);
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer base {
+  @font-face {
+    font-family: "RocaTwo";
+    src: url("/fonts/roca-two-rg.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+}
 
 body {
-  @apply kb-background-brand-hover;
+  @apply font-sans;
   --w-sidebar-width: 260px;
+  background: var(--background-brand-hover);
 }
 
 #root {
-  @apply h-screen w-full flex flex-col overflow-y-auto kb-background-secondary;
+  background-color: var(--background-secondary);
+  @apply h-screen w-full flex flex-col overflow-y-auto;
 }
 
 .vike-router-transition-in .w-layout-container {
@@ -59,7 +68,7 @@ body {
 }
 
 .kb-dialog-overlay {
-  @apply data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-[5];
+  @apply data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-5;
 }
 
 .kb-dialog-content {

@@ -65,17 +65,17 @@ export function Composer({ editor }: ComposerProps) {
   return (
     <div className="w-full flex items-center justify-center h-full">
       <div
-        className="flex-grow h-full p-6 overflow-y-auto w-composer-inter"
+        className="grow h-full p-6 overflow-y-auto w-composer-inter"
         ref={menuContainerRef}
       >
-        <div className="w-full max-w-[45rem] mx-auto h-full flex flex-col gap-2">
+        <div className="w-full max-w-180 mx-auto h-full flex flex-col gap-2">
           {/* TODO: Make this an auto expandable textarea */}
           {/* <textarea
-            className="text-4xl font-bold text-[var(--content-secondary)] placeholder:text-[var(--content-tertiary-inverse)] bg-transparent border-none focus:outline-none focus:border-none w-full w-composer-inter resize-none"
+            className="text-4xl font-bold text-(--content-secondary) placeholder:text-(--content-tertiary-inverse) bg-transparent border-none focus:outline-none focus:border-none w-full w-composer-inter resize-none"
             placeholder="Broadcast title"
           /> */}
 
-          <div className="w-full w-composer-content flex-grow p-8 bg-white shadow-[0px_16px_24px_-8px_var(--black-10)]">
+          <div className="w-full w-composer-content grow p-8 bg-white shadow-[0px_16px_24px_-8px_var(--black-10)]">
             <ComposerMenus container={menuContainerRef} editor={editor} />
             <EditorContent editor={editor} />
           </div>

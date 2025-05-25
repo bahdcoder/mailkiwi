@@ -86,7 +86,7 @@ export function StepTwoRecipients() {
 
           <SelectField.Trigger />
 
-          <SelectField.Content className="relative z-[50]">
+          <SelectField.Content className="relative z-50">
             <SelectField.Item value="all">All contacts</SelectField.Item>
             {segments.map((segment: Segment) => (
               <SelectField.Item key={segment.id} value={segment.id}>
@@ -99,7 +99,7 @@ export function StepTwoRecipients() {
 
       {filters && filters.length > 0 ? (
         <div className="mt-5 border border-dashed rounded-lg p-4 kb-border-tertiary">
-          <div className="flex flex-grow flex-wrap gap-4">
+          <div className="flex grow flex-wrap gap-4">
             <DisplayedFilterCondition readOnly filters={filters} />
           </div>
         </div>
@@ -118,7 +118,7 @@ export function StepTwoRecipients() {
         {!hasEnoughCredits ? (
           <>
             <div className="flex items-center gap-px">
-              <div className="w-full flex-grow">
+              <div className="w-full grow">
                 <Progress value={100} />
               </div>
               <MinusIcon className="transform rotate-90" />

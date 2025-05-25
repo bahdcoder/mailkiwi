@@ -29,7 +29,7 @@ export function ProductPageHeading({ children, header }: ProductPageHeadingProps
   } = useDialogInDropdownMenuItem()
 
   return (
-    <div className="w-full pt-6 flex flex-col sticky top-0 kb-background-secondary z-[2]">
+    <div className="w-full pt-6 flex flex-col sticky top-0 kb-background-secondary z-2">
       {header ? (
         header
       ) : (
@@ -63,7 +63,7 @@ export function ProductPageHeading({ children, header }: ProductPageHeadingProps
                 >
                   <DropdownMenu.Item
                     onSelect={handleDialogItemSelect}
-                    className="h-9 box-border flex px-2 items-center cursor-pointer hover:bg-[var(--background-hover)]"
+                    className="h-9 box-border flex px-2 items-center cursor-pointer hover:bg-(--background-hover)"
                   >
                     <Text>Import contacts</Text>
                   </DropdownMenu.Item>

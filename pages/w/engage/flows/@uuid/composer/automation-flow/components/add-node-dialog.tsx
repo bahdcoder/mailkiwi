@@ -158,7 +158,7 @@ export function AddNodeDialog({
                               {
                                 'var(--background-pressed)':
                                   isPending && selectedSubType === subtype,
-                                'hover:bg-[var(--background-hover)] active:bg-[var(--background-pressed)]':
+                                'hover:bg-(--background-hover) active:bg-(--background-pressed)':
                                   selectedSubType !== subtype && !isPending,
                               },
                             )}

@@ -33,7 +33,7 @@ export function TextColorPanel({ editor }: TextColorPanelProps) {
           <span
             className={cn(
               getToolbarClassNames(true),
-              '!w-5 !h-5 border box-border border-[var(--content-tertiary-inverse)]',
+              'w-5! h-5! border box-border border-(--content-tertiary-inverse)',
             )}
             style={{
               background: textColor ?? 'transparent',
