@@ -85,7 +85,7 @@ export function DraggableSidebarResizer() {
     <div
       onMouseDown={onMouseDown}
       className={cn(
-        'draggable-sidebar-resizer cursor-col-resize rounded-t-xl rounded-b-xl my-auto ease-in-out transition-[background] w-1 hover:bg-[var(--border-focus)]',
+        'draggable-sidebar-resizer cursor-col-resize rounded-t-xl rounded-b-xl my-auto ease-in-out transition-[background] w-1 hover:bg-(--border-focus)',
         {
           'h-[calc(100vh-2.5rem)]': !offscreen,
           'h-[calc(100vh-6.5rem)]': offscreen,

@@ -175,7 +175,7 @@ function ChangePasswordForm() {
   })
 
   return (
-    <div className="w-full max-w-[25rem] mx-auto mt-24">
+    <div className="w-full max-w-100 mx-auto mt-24">
       <Heading>Change Password</Heading>
 
       <Text className="kb-content-tertiary mt-2">

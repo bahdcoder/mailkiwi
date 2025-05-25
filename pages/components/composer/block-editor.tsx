@@ -78,7 +78,7 @@ export function BlockEditor({ editor }: BlockEditorProps) {
           >
             <SelectField.Label>Text Align</SelectField.Label>
             <SelectField.Trigger placeholder="Select alignment" />
-            <SelectField.Content className="z-[3]">
+            <SelectField.Content className="z-3">
               {['left', 'center', 'right', 'justify'].map((align) => (
                 <SelectField.Item key={align} value={align}>
                   {align}
@@ -101,7 +101,7 @@ export function BlockEditor({ editor }: BlockEditorProps) {
               <TextSizeIcon className="w-4 h-4" />
             </TextField.Slot>
             <TextField.Slot side="right">
-              <Text className="text-[var(--content-disabled)]">px</Text>
+              <Text className="text-(--content-disabled)">px</Text>
             </TextField.Slot>
           </TextField.Root>
         </div>
@@ -114,7 +114,7 @@ export function BlockEditor({ editor }: BlockEditorProps) {
           >
             <SelectField.Label>Font size</SelectField.Label>
             <SelectField.Trigger placeholder="Select a font size" />
-            <SelectField.Content className="z-[3]">
+            <SelectField.Content className="z-3">
               {[10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36].map(
                 (fontSize) => (
                   <SelectField.Item key={fontSize} value={`${fontSize}px`}>

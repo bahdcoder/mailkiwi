@@ -21,12 +21,12 @@
 
 //   return (
 //     <ToolbarContainer>
-//       <div className="flex items-center px-2 border-r border-[var(--white-10)]">
+//       <div className="flex items-center px-2 border-r border-(--white-10)">
 //         <a
 //           href={sanitizedLink}
 //           target="_blank"
 //           rel="noopener noreferrer"
-//           className="cursor-pointer text-white underline underline-offset-2 decoration-[var(--content-tertiary-inverse)]"
+//           className="cursor-pointer text-white underline underline-offset-2 decoration-(--content-tertiary-inverse)"
 //         >
 //           <Text className="kb-content-tertiary-inverse">{sanitizedLink}</Text>
 //         </a>

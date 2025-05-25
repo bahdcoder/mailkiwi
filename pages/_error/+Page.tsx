@@ -12,17 +12,17 @@ import { WarningTriangleSolidIcon } from '#root/pages/components/icons/warning-t
  */
 function Page() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--background-primary)] px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-(--background-primary) px-4">
       <div className="max-w-lg w-full text-center">
         <div className="mb-8 flex justify-center">
-          <WarningTriangleSolidIcon className="w-20 h-20 text-[var(--color-warning)]" />
+          <WarningTriangleSolidIcon className="w-20 h-20 text-(--color-warning)" />
         </div>
 
-        <Heading size="lg" className="mb-4 text-[var(--text-primary)]">
+        <Heading size="lg" className="mb-4 text-(--text-primary)">
           Something went wrong
         </Heading>
 
-        <Text className="mb-8 text-[var(--text-secondary)]">
+        <Text className="mb-8 text-(--text-secondary)">
           We've encountered an unexpected error and our team has been notified. We're
           working to fix the issue as quickly as possible.
         </Text>
@@ -43,7 +43,7 @@ function Page() {
           </Button>
         </div>
 
-        <Text className="mt-8 text-sm text-[var(--text-tertiary)]">
+        <Text className="mt-8 text-sm text-(--text-tertiary)">
           If the problem persists, please contact support.
         </Text>
       </div>

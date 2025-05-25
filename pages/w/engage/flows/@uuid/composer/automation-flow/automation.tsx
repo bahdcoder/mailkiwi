@@ -49,7 +49,7 @@ export const Automation = ({ elements }: AutomationProps) => {
           fitView
         >
           <Background
-            className="!z-[2]"
+            className="z-2!"
             variant={BackgroundVariant.Dots}
             color="var(--content-secondary)"
           />

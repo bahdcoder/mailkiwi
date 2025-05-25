@@ -97,7 +97,7 @@ const EmojiList = forwardRef(
     }
 
     return (
-      <Panel className="overflow-y-auto max-w-[18rem] max-h-[18rem]">
+      <Panel className="overflow-y-auto max-w-[18rem] max-h-72">
         {props.items.map((item: EmojiItem, index: number) => (
           <Button
             active={index === selectedIndex}

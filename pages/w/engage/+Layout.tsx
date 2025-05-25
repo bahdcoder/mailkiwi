@@ -41,7 +41,7 @@ function EngageLayout({ children }: React.PropsWithChildren) {
         <ProductPageHeading>
           <div className="w-full flex">
             <div className="w-full lg:w-auto">
-              <Tabs.List className="lg:w-[fit-content] gap-x-4">
+              <Tabs.List className="lg:w-fit gap-x-4">
                 <Tabs.Trigger asChild value="broadcasts" className="px-0">
                   <a href={route('engage')}>Broadcasts</a>
                 </Tabs.Trigger>
@@ -54,7 +54,7 @@ function EngageLayout({ children }: React.PropsWithChildren) {
                 <Tabs.Indicator />
               </Tabs.List>
             </div>
-            <div className="flex-grow hidden lg:block h-px bg-[var(--black-5)] w-full self-end" />
+            <div className="grow hidden lg:block h-px bg-(--black-5) w-full self-end" />
           </div>
         </ProductPageHeading>
         <div className="w-layout-container">{children}</div>

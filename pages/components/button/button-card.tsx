@@ -14,7 +14,7 @@ export const ButtonCard = React.forwardRef<React.ElementRef<'button'>, ButtonCar
         {...buttonProps}
         ref={forwardedRef}
         className={cn(
-          'w-full p-5 flex flex-col rounded-xl hover:bg-[var(--background-hover)] border-t border-l border-r border-b-2 shadow-[0_2px_0px_0px_var(--white-5)_inset,0px_1px_0px_0px_var(--black-10)] kb-border-tertiary',
+          'w-full p-5 flex flex-col rounded-xl hover:bg-(--background-hover) border-t border-l border-r border-b-2 shadow-[0_2px_0px_0px_var(--white-5)_inset,0px_1px_0px_0px_var(--black-10)] kb-border-tertiary',
           className,
         )}
       />

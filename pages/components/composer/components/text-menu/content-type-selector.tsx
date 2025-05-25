@@ -28,7 +28,7 @@ export function ContentTypeSelector({ editor }: ContentTypeSelectorProps) {
       <Dropdown.Trigger asChild>
         <button
           type="button"
-          className="flex items-center justify-center gap-1 transition-colors duration-100 ease-in-out h-6 text-[var(--content-tertiary-inverse)] hover:bg-white hover:text-white hover:bg-opacity-[0.08] rounded-md"
+          className="flex items-center justify-center gap-1 transition-colors duration-100 ease-in-out h-6 text-(--content-tertiary-inverse) hover:bg-white hover:text-white hover:bg-opacity-[0.08] rounded-md"
         >
           {activeItem?.icon}
           <Text className="kb-content-tertiary-inverse font-sans">
@@ -40,11 +40,11 @@ export function ContentTypeSelector({ editor }: ContentTypeSelectorProps) {
       <Dropdown.Content
         sideOffset={6}
         align="start"
-        className="z-50 w-40 overflow-hidden border kb-border-tertiary rounded-xl p-1 shadow-[0px_16px_24px_-8px_var(--black-10)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-[var(--background-primary)] gap-1 -ml-1"
+        className="z-50 w-40 overflow-hidden border kb-border-tertiary rounded-xl p-1 shadow-[0px_16px_24px_-8px_var(--black-10)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-(--background-primary) gap-1 -ml-1"
       >
         {options.map((option) => {
           if (option.type !== 'option') {
-            return <div className="w-full h-px bg-[var(--black-5)]" />
+            return <div className="w-full h-px bg-(--black-5)" />
           }
 
           return (
@@ -52,7 +52,7 @@ export function ContentTypeSelector({ editor }: ContentTypeSelectorProps) {
               key={option.label}
               onSelect={option.onClick}
               disabled={option.disabled()}
-              className="flex items-center justify-between w-full h-8 box-border p-2 gap-1 hover:bg-[var(--background-secondary)] cursor-pointer rounded-lg"
+              className="flex items-center justify-between w-full h-8 box-border p-2 gap-1 hover:bg-(--background-secondary) cursor-pointer rounded-lg"
             >
               <span className="flex items-center gap-1">
                 {option.icon}

@@ -43,11 +43,11 @@ export function BroadcastRow({ broadcast }: BroadcastRowProps) {
           ? route('engage_overview', { uuid: broadcast.id })
           : route('broadcasts_composer', { uuid: broadcast.id })
       }
-      className="h-[4.5rem] hidden lg:flex w-full py-4 px-2 box-border border-b border-[var(--black-5)] ease-in-out duration-300 transition-[background-color] hover:bg-[var(--background-hover)] cursor-pointer"
+      className="h-18 hidden lg:flex w-full py-4 px-2 box-border border-b border-(--black-5) ease-in-out duration-300 transition-[background-color] hover:bg-(--background-hover) cursor-pointer"
     >
       <div className="w-full max-w-[40%] flex flex-col">
         <Text className="kb-content-secondary font-medium">{broadcast.name}</Text>
-        <Text className="kb-content-tertiary truncate overflow-ellipsis">
+        <Text className="kb-content-tertiary truncate text-ellipsis">
           {subtitle ?? 'Add a preview text or subject'}
         </Text>
       </div>
@@ -81,7 +81,7 @@ export function BroadcastRow({ broadcast }: BroadcastRowProps) {
         </div>
       </div>
       <div className="w-full max-w-[10%] flex items-center justify-end">
-        <Text className="kb-content-tertiary truncate overflow-ellipsis">
+        <Text className="kb-content-tertiary truncate text-ellipsis">
           Edited {lastEdited}
         </Text>
       </div>

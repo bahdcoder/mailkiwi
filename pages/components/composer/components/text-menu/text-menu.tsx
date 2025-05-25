@@ -116,7 +116,7 @@ export function TextMenu({ editor, pluginKey, tippyProps, shouldShow }: TextMenu
     >
       <ToolbarContainer>
         {isInsideButton ? null : (
-          <div className="flex box-border border-r border-[var(--white-10)] pr-1">
+          <div className="flex box-border border-r border-(--white-10) pr-1">
             <ContentTypeSelector editor={editor} />
           </div>
         )}
@@ -145,7 +145,7 @@ export function TextMenu({ editor, pluginKey, tippyProps, shouldShow }: TextMenu
         </ToolbarSection>
 
         {isInsideButton ? null : (
-          <div className="flex box-border border-l border-[var(--white-10)] px-1">
+          <div className="flex box-border border-l border-(--white-10) px-1">
             <LinkEditorPanel onSubmit={onValidUrlSubmitted}>
               <button type="button">
                 <LinkIcon className="w-4 h-4" />

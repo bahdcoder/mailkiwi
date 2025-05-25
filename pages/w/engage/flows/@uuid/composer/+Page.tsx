@@ -19,11 +19,11 @@ function EngageCreateFlowPage() {
   return (
     <AutomationFlowProvider>
       <div className="w-full h-screen flex box-border flex-col px-2 pb-2">
-        <div className="h-[60px] w-full flex items-center justify-between px-3 flex-shrink-0">
+        <div className="h-[60px] w-full flex items-center justify-between px-3 shrink-0">
           <div className="flex items-center gap-4">
             <Button variant="tertiary" asChild>
               <a href={route('engage_automations')}>
-                <CancelIcon className="!w-6 !h-6" />
+                <CancelIcon className="w-6! h-6!" />
               </a>
             </Button>
 
@@ -42,9 +42,9 @@ function EngageCreateFlowPage() {
           </div>
         </div>
 
-        <div className="flex-grow border kb-border-tertiary rounded-lg flex max-w-full">
+        <div className="grow border kb-border-tertiary rounded-lg flex max-w-full">
           <div
-            className="flex-grow h-full max-h-[90vh] overflow-hidden"
+            className="grow h-full max-h-[90vh] overflow-hidden"
             id="automation-flow-container-wrapper"
           >
             <Flow />

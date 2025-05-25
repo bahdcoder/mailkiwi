@@ -240,7 +240,7 @@ export function PreviewStepActions() {
                         </TextField.Root>
                       </Popover.Trigger>
 
-                      <Popover.Content className="!border-none !p-0 !rounded-[20px]">
+                      <Popover.Content className="border-none! p-0! rounded-[20px]!">
                         <Calendar
                           dates={[formState.scheduledAt.value as Date]}
                           datePickerProps={{
@@ -270,7 +270,7 @@ export function PreviewStepActions() {
                       }
                     >
                       <SelectField.Trigger />
-                      <SelectField.Content className="z-[50] relative">
+                      <SelectField.Content className="z-50 relative">
                         {hours.map((hour) => (
                           <SelectField.Item value={hour} key={hour}>
                             <span className="pr-3">{hour}</span>
@@ -290,7 +290,7 @@ export function PreviewStepActions() {
                       }
                     >
                       <SelectField.Trigger />
-                      <SelectField.Content className="z-[50] relative">
+                      <SelectField.Content className="z-50 relative">
                         {minutes.map((minute) => (
                           <SelectField.Item value={minute} key={minute}>
                             <span className="pr-3">{minute}</span>
@@ -307,7 +307,7 @@ export function PreviewStepActions() {
                       }
                     >
                       <SelectField.Trigger />
-                      <SelectField.Content className="z-[50] relative">
+                      <SelectField.Content className="z-50 relative">
                         <SelectField.Item value={'AM'}>
                           <span className="pr-3">{'AM'}</span>
                         </SelectField.Item>

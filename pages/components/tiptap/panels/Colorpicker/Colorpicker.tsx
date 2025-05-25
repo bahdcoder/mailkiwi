@@ -45,7 +45,7 @@ export const ColorPicker = ({ color, onChange, onClear }: ColorPickerProps) => {
         onChange={handleColorUpdate}
         onBlur={handleColorChange}
       />
-      <div className="flex flex-wrap items-center gap-1 max-w-[15rem]">
+      <div className="flex flex-wrap items-center gap-1 max-w-60">
         {themeColors.map((currentColor) => (
           <ColorButton
             active={currentColor === color}

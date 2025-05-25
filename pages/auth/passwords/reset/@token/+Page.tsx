@@ -20,7 +20,7 @@ function ResetPasswordPage() {
 
   if (isSuccess) {
     return (
-      <div className="w-full max-w-[25rem] mx-auto mt-24">
+      <div className="w-full max-w-100 mx-auto mt-24">
         <img
           src="/icons/email-send.svg"
           className="mb-4"
@@ -40,7 +40,7 @@ function ResetPasswordPage() {
   }
 
   return (
-    <div className="w-full max-w-[25rem] mx-auto mt-24">
+    <div className="w-full max-w-100 mx-auto mt-24">
       <Heading>Create a new password</Heading>
 
       <Text className="kb-content-tertiary mt-2">

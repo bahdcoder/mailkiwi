@@ -38,12 +38,12 @@ export function FillPanel({
 
       <div className="mt-4 flex gap-1 w-full items-center ">
         <TextField.Root
-          className="flex-shrink-0 w-2/5"
+          className="shrink-0 w-2/5"
           value={value ?? ''}
           onChange={(event) => onHexColorManuallyChanged(event.target.value)}
         >
           <TextField.Slot side="left">
-            <Text className="text-[var(--content-disabled)]">HEX</Text>
+            <Text className="text-(--content-disabled)">HEX</Text>
           </TextField.Slot>
         </TextField.Root>
         <div className="flex items-center gap-1 w-3/5">
@@ -51,10 +51,10 @@ export function FillPanel({
             <TextField.Root
               readOnly
               key={codeLetter}
-              className="flex-shrink-0 w-auto max-w-[32%]"
+              className="shrink-0 w-auto max-w-[32%]"
             >
               <TextField.Slot side="left">
-                <Text className="text-[var(--content-disabled)]">{codeLetter}</Text>
+                <Text className="text-(--content-disabled)">{codeLetter}</Text>
               </TextField.Slot>
             </TextField.Root>
           ))}
@@ -64,7 +64,7 @@ export function FillPanel({
       <div className="mt-4">
         <button
           type="button"
-          className="rounded-lg border-[var(--black-10)] flex items-center gap-1.5 relative"
+          className="rounded-lg border-(--black-10) flex items-center gap-1.5 relative"
           onClick={() => onChange?.({ type: 'color', value: undefined })}
         >
           <img
@@ -73,7 +73,7 @@ export function FillPanel({
             alt="checkers grid"
           />
 
-          <Text className="flex-shrink-0">Remove fill</Text>
+          <Text className="shrink-0">Remove fill</Text>
 
           <div className="absolute h-6 w-[2px] bg-[#FF0000] transform rotate-45 left-[11px]" />
         </button>
@@ -88,7 +88,7 @@ export function FillPanel({
         align="center"
         sideOffset={sideOffset}
         side="bottom"
-        className="z-50 w-96 overflow-hidden border kb-border-tertiary rounded-xl shadow-[0px_16px_24px_-8px_var(--black-10)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-[var(--background-primary)] p-4"
+        className="z-50 w-96 overflow-hidden border kb-border-tertiary rounded-xl shadow-[0px_16px_24px_-8px_var(--black-10)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-(--background-primary) p-4"
       >
         {allowImageFills ? (
           <Tabs.Root defaultValue="color" width="full">

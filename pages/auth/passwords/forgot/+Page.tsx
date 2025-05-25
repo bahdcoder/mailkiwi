@@ -15,7 +15,7 @@ function ForgotPasswordPage() {
   })
 
   return (
-    <div className="w-full max-w-[25rem] mx-auto mt-24">
+    <div className="w-full max-w-100 mx-auto mt-24">
       {isSuccess ? (
         <img src="/icons/email-send.svg" className="mb-4" alt="Email sent icon" />
       ) : null}

@@ -33,7 +33,7 @@ export function FileUploadDropbox({
     <div className="w-full" {...getRootProps()}>
       <div
         {...getDropzoneProps()}
-        className="w-full h-72 rounded-3xl kb-background-hover border border-dashed kb-border-secondary data-[dragging]:border-[var(--border-focus)] data-[dragging]:bg-[var(--background-info-subtle)] transition-[border,background] ease-in-out flex items-center justify-center flex-col"
+        className="w-full h-72 rounded-3xl kb-background-hover border border-dashed kb-border-secondary data-dragging:border-(--border-focus) data-dragging:bg-(--background-info-subtle) transition-[border,background] ease-in-out flex items-center justify-center flex-col"
       >
         <CloudUploadIcon />
 

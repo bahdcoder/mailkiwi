@@ -11,7 +11,7 @@ import { route } from '#root/core/shared/routes/route_aliases.js'
 
 export function PageContainer({ children }: React.PropsWithChildren) {
   return (
-    <div className="w-full max-w-lg lg:max-w-[25rem] mx-auto flex flex-col py-12 sm:py-16 lg:py-24">
+    <div className="w-full max-w-lg lg:max-w-100 mx-auto flex flex-col py-12 sm:py-16 lg:py-24">
       {children}
     </div>
   )
@@ -45,7 +45,7 @@ export function AuthMethodsDivider({
   return (
     <div className="mt-4 flex items-center">
       <div className="w-full h-px border-t kb-border-tertiary" />
-      <Text className="flex-shrink-0 px-4 kb-content-secondary">{children}</Text>
+      <Text className="shrink-0 px-4 kb-content-secondary">{children}</Text>
       <div className="w-full h-px border-t kb-border-tertiary" />
     </div>
   )

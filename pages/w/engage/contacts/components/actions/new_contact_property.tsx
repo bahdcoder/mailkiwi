@@ -15,7 +15,7 @@ export function NewContactProperty(_props: NewContactPropertyProps) {
         data-testid="w-contacts-filters-new-contact-property"
         onClick={() => setOpen(true)}
       >
-        <PlusIcon className="!w-5 !h-5" />
+        <PlusIcon className="w-5! h-5!" />
         New contact property
       </Button>
       <NewContactPropertyForm open={open} setOpen={setOpen} />
