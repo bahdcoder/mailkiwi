@@ -38,7 +38,7 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
           'h-[calc(100vh-4.25rem)] overflow-y-hidden': sidebarState.offscreen,
         })}
       >
-        <LeftSidebar />
+        <LeftSidebar variant="settings" />
         <div
           className={cn('w-full py-2 pr-2 flex', {
             'pl-2': sidebarState.offscreen,
@@ -54,7 +54,7 @@ function ApplicationLayout({ children }: ApplicationLayoutProps) {
           </div>
         </div>
       </div>
-      <FloatingSidebar />
+      <FloatingSidebar variant="settings" />
     </ApplicationLayoutProvider>
   )
 }

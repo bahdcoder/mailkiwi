@@ -3,8 +3,13 @@ import { SidebarContent } from '#root/pages/components/dashboard/layout/sidebar/
 import cn from 'classnames'
 import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
+import { SidebarSettingsContent } from './sidebar-settings-content.jsx'
 
-export function FloatingSidebar() {
+interface FloatingSidebarProps {
+  variant?: 'dashboard' | 'settings'
+}
+
+export function FloatingSidebar({ variant = 'dashboard' }: FloatingSidebarProps) {
   const ctx = usePageContext()
 
   const menuRef = React.useRef<HTMLDivElement | null>(null)
@@ -106,7 +111,8 @@ export function FloatingSidebar() {
         }}
         className="h-[calc(100vh-2rem)] mt-4 absolute left-4 top-0 z-20 transition-transform duration-300 kb-background-secondary w-64 p-2 flex flex-col rounded-2xl shadow-[0px_16px_24px_-8px_var(--black-10)]"
       >
-        <SidebarContent rootId="floating-sidebar" />
+        {variant === 'dashboard' && <SidebarContent rootId="floating-sidebar" />}
+        {variant === 'settings' && <SidebarSettingsContent rootId="floating-sidebar" />}
       </div>
     </>
   )

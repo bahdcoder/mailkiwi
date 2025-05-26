@@ -12,6 +12,7 @@ import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 
 import { route } from '#root/core/shared/routes/route_aliases.js'
+import { navigate } from '#root/pages/utils/navigate'
 
 interface WorkspacesDropdownMenuProps {
   rootId: string
@@ -91,7 +92,10 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
           <Text>Team settings</Text>
         </DropdownMenu.Item>
 
-        <DropdownMenu.Item className="p-2 flex items-center hover:bg-(--background-secondary) rounded-lg cursor-pointer">
+        <DropdownMenu.Item
+          className="p-2 flex items-center hover:bg-(--background-secondary) rounded-lg cursor-pointer"
+          onClick={() => navigate(route('settings'))}
+        >
           <UserIcon className="mr-1.5 w-5 h-5 kb-content-tertiary" />
           <Text>Account settings</Text>
         </DropdownMenu.Item>

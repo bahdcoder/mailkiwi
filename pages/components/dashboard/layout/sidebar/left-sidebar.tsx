@@ -2,10 +2,15 @@ import { useApplicationLayoutContext } from '#root/pages/components/dashboard/la
 import { SidebarContent } from '#root/pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
 import cn from 'classnames'
 import { useEffect } from 'react'
+import { SidebarSettingsContent } from './sidebar-settings-content.jsx'
 
 export const DEFAULT_SIDEBAR_WIDTH = 260
 
-export function LeftSidebar() {
+interface SidebarVariant {
+  variant?: 'dashboard' | 'settings'
+}
+
+export function LeftSidebar({ variant = 'dashboard' }: SidebarVariant) {
   const { sidebar } = useApplicationLayoutContext('Sidebar')
 
   useEffect(() => {
@@ -24,7 +29,8 @@ export function LeftSidebar() {
         marginLeft: sidebar.offscreen ? `${-sidebar.width}px` : undefined,
       }}
     >
-      <SidebarContent rootId="offscreen-sidebar" />
+      {variant === 'dashboard' && <SidebarContent rootId="offscreen-sidebar" />}
+      {variant === 'settings' && <SidebarSettingsContent rootId="offscreen-sidebar" />}
     </nav>
   )
 }

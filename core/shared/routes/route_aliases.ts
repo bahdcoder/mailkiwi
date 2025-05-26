@@ -46,7 +46,7 @@ export const aliases = {
   monetize: w('monetize'),
 
   // Settings
-  setttings: w('settings'),
+  settings: w('settings'),
 
   // teams
   teams_switch: '/teams/:teamId/switch',
