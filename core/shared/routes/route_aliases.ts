@@ -42,6 +42,7 @@ export const aliases = {
   monetize: w('monetize'),
 
   // teams
+  create_team: '/teams',
   teams_switch: '/teams/:teamId/switch',
 
   // error pages

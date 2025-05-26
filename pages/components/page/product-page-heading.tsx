@@ -1,14 +1,13 @@
-import { ComposeBroadcastFlow } from '#root/pages/components/flows/compose_broadcast/compose_broadcast_flow.jsx'
 import { CreateBroadcastFlow } from '#root/pages/components/flows/compose_broadcast/create_broadcast_flow.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
-import React from 'react'
+import type React from 'react'
 
 import * as DropdownMenu from '#root/pages/components/dropdown/dropdown.jsx'
 import { ImportContactsDialog } from '#root/pages/components/flows/contacts/import_contacts/import_contacts_flow.jsx'
 import { MoreVertIcon } from '#root/pages/components/icons/more-vert.svg.jsx'
+import { useDialogInDropdownMenuItem } from '#root/pages/hooks/use_dialog_in_dropdown_menu_item.jsx'
 import { Text } from '@kibamail/owly/text'
-import { usePageContext } from 'vike-react/usePageContext'
 import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
 export interface ProductPageHeadingProps extends React.PropsWithChildren {
@@ -77,45 +76,4 @@ export function ProductPageHeading({ children, header }: ProductPageHeadingProps
       {children}
     </div>
   )
-}
-
-export function useDialogInDropdownMenuItem() {
-  const [dropdownOpen, setDropdownOpen] = React.useState(false)
-  const [hasOpenDialog, setHasOpenDialog] = React.useState(false)
-
-  const dropdownTriggerRef = React.useRef<HTMLButtonElement | null>(null)
-  const focusRef = React.useRef<HTMLButtonElement | null>(null)
-
-  function handleDialogItemSelect(event: Event) {
-    event.preventDefault()
-
-    focusRef.current = dropdownTriggerRef.current
-  }
-
-  function handleDialogItemOpenChange(open: boolean) {
-    setHasOpenDialog(open)
-    if (open === false) {
-      setDropdownOpen(false)
-    }
-  }
-
-  function onCloseAutoFocus(event: Event) {
-    if (focusRef.current) {
-      focusRef.current.focus()
-      focusRef.current = null
-      event.preventDefault()
-    }
-  }
-
-  return {
-    focusRef,
-    dropdownOpen,
-    hasOpenDialog,
-    setDropdownOpen,
-    setHasOpenDialog,
-    dropdownTriggerRef,
-    handleDialogItemSelect,
-    handleDialogItemOpenChange,
-    onCloseAutoFocus,
-  }
 }
