@@ -47,6 +47,12 @@ export const aliases = {
 
   // Settings
   settings: w('settings'),
+  settings_notifications: w('settings/notifications'),
+  settings_workspace: w('settings/workspace'),
+  settings_domains: w('settings/domains'),
+  settings_members: w('settings/members'),
+  settings_apikeys: w('settings/api-keys'),
+  settings_billing: w('settings/billing'),
 
   // teams
   teams_switch: '/teams/:teamId/switch',
