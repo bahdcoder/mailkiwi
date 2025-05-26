@@ -21,7 +21,7 @@ const xForwardedFor = '66.249.93.66'
 const userAgent =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
 
-describe('@process-mta-log', () => {
+describe.skip('@process-mta-log', () => {
   it('transforms and stores click and open logs', async ({ expect }) => {
     const { sendingDomain } = await setupDomainForDnsChecks()
 

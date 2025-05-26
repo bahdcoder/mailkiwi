@@ -53,8 +53,8 @@ function AuthLayout({ children }: React.PropsWithChildren<AuthLayoutProps>) {
           <ProductFeatureGrid />
         </div>
 
-        <div className="absolute h-px border-t border-white border-opacity-10 bottom-48 w-full" />
-        <div className="w-full absolute h-10 bottom-36 bg-black bg-opacity-5 border-t border-b border-white border-opacity-10" />
+        <div className="absolute h-px border-t border-white/10 bottom-48 w-full" />
+        <div className="w-full absolute h-10 bottom-36 bg-black/5 border-t border-b border-white/10" />
       </div>
     </div>
   )

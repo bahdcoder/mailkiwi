@@ -28,7 +28,9 @@ export const setupTeamMemberships = async (email?: string, role?: string) => {
   const json = await response.json()
 
   const getInvite = async () => {
-    const invite = await container.make(TeamMembershipRepository).findById(json?.id)
+    const invite = await container
+      .make(TeamMembershipRepository)
+      .findById(json?.payload?.id)
 
     const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 
