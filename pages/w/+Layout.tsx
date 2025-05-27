@@ -13,7 +13,7 @@ import { Topbar } from '#root/pages/components/dashboard/layout/sidebar/topbar.j
 import cn from 'classnames'
 import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
-import SettingsLayout from '../components/layouts/settings-layout.jsx'
+import SettingsLayout from '#root/pages/components/layouts/settings-layout.jsx'
 
 const SETTINGS_PATH = 'settings'
 

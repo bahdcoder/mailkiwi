@@ -3,7 +3,7 @@ import { SidebarContent } from '#root/pages/components/dashboard/layout/sidebar/
 import cn from 'classnames'
 import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
-import { SidebarSettingsContent } from './sidebar-settings-content.jsx'
+import { SidebarSettingsContent } from '#root/pages/components/dashboard/layout/sidebar/sidebar-settings-content.jsx'
 
 interface FloatingSidebarProps {
   variant?: 'dashboard' | 'settings'
