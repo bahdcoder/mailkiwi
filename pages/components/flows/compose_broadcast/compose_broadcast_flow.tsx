@@ -9,7 +9,7 @@ import {
   usePageProps,
 } from '#root/pages/hooks/use_page_props.js'
 import { useServerQuery } from '#root/pages/hooks/use_server_query.js'
-import type { EngageBroadcastsComposerPageProps } from '#root/build/core/pages/w/(products)/engage/broadcasts/@uuid/composer/+Page.js'
+import type { EngageBroadcastsComposerPageProps } from '#root/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import dayjs from 'dayjs'
 import React from 'react'

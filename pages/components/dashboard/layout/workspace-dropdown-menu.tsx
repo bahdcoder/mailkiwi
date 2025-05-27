@@ -92,12 +92,11 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
           <Text>Team settings</Text>
         </DropdownMenu.Item>
 
-        <DropdownMenu.Item
-          className="p-2 flex items-center hover:bg-(--background-secondary) rounded-lg cursor-pointer"
-          onClick={() => navigate(route('settings'))}
-        >
-          <UserIcon className="mr-1.5 w-5 h-5 kb-content-tertiary" />
-          <Text>Account settings</Text>
+        <DropdownMenu.Item className="p-2 flex items-center hover:bg-(--background-secondary) rounded-lg cursor-pointer">
+          <a href={route('settings')} className="flex items-center">
+            <UserIcon className="mr-1.5 w-5 h-5 kb-content-tertiary" />
+            <Text>Account settings</Text>
+          </a>
         </DropdownMenu.Item>
 
         <DropdownMenu.Separator className="my-1 h-px bg-(--black-5)" />

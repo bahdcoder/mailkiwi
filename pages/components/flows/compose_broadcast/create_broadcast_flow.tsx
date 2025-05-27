@@ -4,7 +4,7 @@ import {
   useServerFormMutation,
 } from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { navigate } from '#root/pages/utils/navigate.js'
-import type { EngagePageProps } from '#root/build/core/pages/w/(products)/engage/+Page.js'
+import type { EngagePageProps } from '#root/pages/w/engage/+Page.jsx'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
 import * as SelectField from '@kibamail/owly/select-field'
