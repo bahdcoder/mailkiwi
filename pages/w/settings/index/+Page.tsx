@@ -11,6 +11,8 @@ import {
 } from '#root/pages/hooks/use_server_form_mutation.jsx'
 
 import { route } from '#root/core/shared/routes/route_aliases.js'
+import { ChangeEmailDialog } from './components/change-email-dialog.jsx'
+import { ChangePasswordDialog } from './components/change-password-dialog.jsx'
 
 function ProfilePage() {
   const { user } = usePageContext()
@@ -70,9 +72,9 @@ function ProfilePage() {
           </div>
 
           <div className="flex items-end w-40 justify-end">
-            <Button variant="secondary" type="submit" onClick={() => ''}>
-              Change email
-            </Button>
+            <ChangeEmailDialog>
+              <Button variant="secondary">Change email</Button>
+            </ChangeEmailDialog>
           </div>
         </div>
 
@@ -85,9 +87,9 @@ function ProfilePage() {
           </div>
 
           <div className="flex items-end w-40 justify-end">
-            <Button variant="secondary" type="submit" onClick={() => ''}>
-              Change password
-            </Button>
+            <ChangePasswordDialog>
+              <Button variant="secondary">Change password</Button>
+            </ChangePasswordDialog>
           </div>
         </div>
       </div>

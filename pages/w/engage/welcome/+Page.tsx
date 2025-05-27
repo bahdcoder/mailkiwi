@@ -5,7 +5,7 @@ import { Text } from '@kibamail/owly/text'
 
 import { route } from '#root/core/shared/routes/route_aliases.js'
 
-function LettersWelcomePage() {
+function EngagePage() {
   return (
     <div className="w-full max-w-2xl mx-auto py-4 lg:py-16 grid grid-cols-1 gap-y-4 p-4">
       <div className="w-full border kb-border-tertiary h-80 kb-background-primary rounded-2xl" />
@@ -29,4 +29,4 @@ function LettersWelcomePage() {
   )
 }
 
-export { LettersWelcomePage as Page }
+export { EngagePage as Page }
