@@ -1,7 +1,3 @@
-@plugin "tailwindcss-animate";
-
-@import "tailwindcss" layer(base);
-
 @import "@kibamail/owly/styles/tokens.css" layer(base);
 
 @import "@kibamail/owly/styles/text.css" layer(base);
@@ -19,9 +15,16 @@
 @import "@kibamail/owly/styles/semantic-classes.css" layer(base);
 
 @import "./animations.css" layer(base);
+@import "./nodes.css" layer(base);
+@import "./composer.css" layer(base);
+@import "./fill-panel.css" layer(base);
+
+@import "tailwindcss" layer(base);
 
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap")
   layer(base);
+
+@plugin "tailwindcss-animate";
 
 @theme inline {
   --font-sans: var(--font-manrope);
