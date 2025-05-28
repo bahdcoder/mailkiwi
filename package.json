@@ -321,12 +321,8 @@
     "node": ">=v22.4.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,css,md}": [
-      "pnpm biome format --write"
-    ],
-    "*.{js,jsx,ts,tsx}": [
-      "pnpm biome lint --write --unsafe"
-    ]
+    "*.{js,jsx,ts,tsx,json,css,md}": ["pnpm biome format --write"],
+    "*.{js,jsx,ts,tsx}": ["pnpm biome lint --write --unsafe"]
   },
   "imports": {
     "#root/*": "./*.ts",

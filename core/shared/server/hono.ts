@@ -25,8 +25,11 @@ if (isSentryEnabled()) {
 }
 
 export class Hono extends FrameworkHono {
-
-  constructor(protected appEnv: typeof env, logger: Logger, options?: HonoOptions<{ Bindings: HttpBindings }>) {
+  constructor(
+    protected appEnv: typeof env,
+    logger: Logger,
+    options?: HonoOptions<{ Bindings: HttpBindings }>,
+  ) {
     super(appEnv, logger, options)
   }
 

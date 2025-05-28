@@ -11,7 +11,7 @@ export class AddMediaDocumentAction {
 
     const fileKey = `${teamId}/media/${fileIdentifier}.${extension}`
 
-    const writeOptions =  {
+    const writeOptions = {
       ACL: 'public-read' as const,
       ContentType: `${mime.contentType(file.type)}`,
     }
@@ -19,7 +19,7 @@ export class AddMediaDocumentAction {
     const url = await makeS3Client().putObject(
       fileKey,
       Readable.from(file.stream() as unknown as NodeJS.ReadableStream),
-      writeOptions
+      writeOptions,
     )
 
     return { url }

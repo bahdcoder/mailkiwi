@@ -1,5 +1,15 @@
 import { defaultChannels } from '#root/cli/commands/chat/add_default_channels_comand.js'
-import { and, asc, desc, eq, gt, inArray, isNull, lt, sql } from '@kibamail/framework/mysql'
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gt,
+  inArray,
+  isNull,
+  lt,
+  sql,
+} from '@kibamail/framework/mysql'
 import { MessageRepository } from './message_repository.js'
 
 import type { Channel, Message } from '#root/database/database_schema_types.js'

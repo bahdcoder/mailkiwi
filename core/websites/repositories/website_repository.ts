@@ -1,6 +1,6 @@
 import { appEnv } from '#root/core/app/env/app_env.js'
 import { and, eq } from '@kibamail/framework/mysql'
-import {Encryption} from '@kibamail/framework'
+import { Encryption } from '@kibamail/framework'
 import type {
   InsertWebsite,
   UpdateWebsite,

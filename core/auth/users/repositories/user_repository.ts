@@ -1,10 +1,5 @@
 import type { DrizzleClient } from '#root/database/client.js'
-import {
-  oauth2Accounts,
-  teamMemberships,
-  teams,
-  users,
-} from '#root/database/schema.js'
+import { oauth2Accounts, teamMemberships, teams, users } from '#root/database/schema.js'
 import { Cache } from '#root/core/shared/cache/cache.js'
 import { appEnv, type AppEnvVariables } from '#root/core/app/env/app_env'
 import { makeDatabase } from '#root/core/shared/container/index.js'

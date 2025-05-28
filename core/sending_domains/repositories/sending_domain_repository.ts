@@ -13,9 +13,7 @@ import { makeRedis } from '#root/core/shared/container/index.js'
 import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 export class SendingDomainRepository extends BaseRepository {
-  constructor(
-    protected redis = makeRedis(),
-  ) {
+  constructor(protected redis = makeRedis()) {
     super()
   }
 

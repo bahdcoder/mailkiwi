@@ -7,7 +7,11 @@ import { makeDatabase } from '#root/core/shared/container/index.js'
 
 import { BaseRepository as FrameworkBaseRepository } from '@kibamail/framework'
 
-export class BaseRepository extends FrameworkBaseRepository<DrizzleClient, Cache, AppEnvVariables> {
+export class BaseRepository extends FrameworkBaseRepository<
+  DrizzleClient,
+  Cache,
+  AppEnvVariables
+> {
   constructor() {
     super(makeDatabase(), new Cache(), appEnv)
   }

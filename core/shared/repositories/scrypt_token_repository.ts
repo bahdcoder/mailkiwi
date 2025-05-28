@@ -5,7 +5,11 @@ import type { DrizzleClient } from '#root/database/client.js'
 import { makeDatabase } from '#root/core/shared/container/index.js'
 import { appEnv, type AppEnvVariables } from '#root/core/app/env/app_env'
 
-export class ScryptTokenRepository extends FrameworkScryptTokenRepository<DrizzleClient, Cache, AppEnvVariables> {
+export class ScryptTokenRepository extends FrameworkScryptTokenRepository<
+  DrizzleClient,
+  Cache,
+  AppEnvVariables
+> {
   constructor() {
     super(makeDatabase(), new Cache(), appEnv)
   }
