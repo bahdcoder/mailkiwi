@@ -27,7 +27,7 @@ function ErrorFallback() {
 function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <>
-      <Toaster />
+      <Toaster position="top-right" richColors />
       <ErrorBoundary fallback={<ErrorFallback />}>
         <div className="w-full h-screen border-l border-r kb-border-tertiary">
           {children}

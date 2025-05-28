@@ -295,7 +295,7 @@ function LeaveTeamDialog({ isOpen, onClose, team }: LeaveTeamDialogProps) {
           </div>
         ) : (
           <div className="mt-6">
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg"> 
               <Text className="text-red-800">
                 This action cannot be undone. You will lose access to all team resources.
               </Text>

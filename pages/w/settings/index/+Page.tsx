@@ -13,12 +13,15 @@ import {
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import { ChangeEmailDialog } from './components/change-email-dialog.jsx'
 import { ChangePasswordDialog } from './components/change-password-dialog.jsx'
+import { LeaveWorkspaceDialog } from './components/leave-workspace-dialog.jsx'
 
 function ProfilePage() {
-  const { user } = usePageContext()
+  const { user, team } = usePageContext()
+
   const { serverFormProps, error, isPending } = useServerFormMutation({
     action: route('auth_register_profile'),
   })
+
   return (
     <div className="w-full max-w-2xl mx-auto py-4 lg:py-16 grid grid-cols-1 gap-y-4 p-4">
       <Heading size="md" variant="heading" className="kb-content-secondary">
@@ -28,7 +31,7 @@ function ProfilePage() {
         Forem ipsum dolor sit amet, consectetur adipiscing elit
       </Text>
 
-      <Divider className="my-4 border-e-red-500" />
+      <Divider className="my-4" />
 
       <div className="flex flex-col gap-6 pt-5">
         <div className="flex gap-5">
@@ -72,7 +75,7 @@ function ProfilePage() {
           </div>
 
           <div className="flex items-end w-40 justify-end">
-            <ChangeEmailDialog>
+            <ChangeEmailDialog user={user}>
               <Button variant="secondary">Change email</Button>
             </ChangeEmailDialog>
           </div>
@@ -90,6 +93,25 @@ function ProfilePage() {
             <ChangePasswordDialog>
               <Button variant="secondary">Change password</Button>
             </ChangePasswordDialog>
+          </div>
+        </div>
+
+        <Divider className="my-4" />
+
+        <div className="flex gap-5">
+          <div className="flex flex-col gap-2 flex-1">
+            <span className="kb-content-secondary">Leave workspace</span>
+            <Text className="kb-content-tertiary">
+              Remove yourself from this workspace
+            </Text>
+          </div>
+
+          <div className="flex items-end w-40 justify-end">
+            <LeaveWorkspaceDialog>
+              <Button variant="destructive" disabled={false}>
+                Leave workspace
+              </Button>
+            </LeaveWorkspaceDialog>
           </div>
         </div>
       </div>

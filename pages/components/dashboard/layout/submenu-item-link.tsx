@@ -7,10 +7,17 @@ interface SubmenuItemLinkProps
 
 export function SubmenuItemLink({ children, ...linkProps }: SubmenuItemLinkProps) {
   const { urlOriginal } = usePageContext()
+  let isActive: boolean
 
-  const isActive =
-    urlOriginal.includes(linkProps.href as string) ||
-    `${urlOriginal}/`.includes(linkProps.href as string)
+  if (urlOriginal.includes('settings')) {
+    isActive =
+      urlOriginal === (linkProps.href as string) ||
+      `${urlOriginal}/` === (linkProps.href as string)
+  } else {
+    isActive =
+      urlOriginal.includes(linkProps.href as string) ||
+      `${urlOriginal}/`.includes(linkProps.href as string)
+  }
 
   return (
     <a

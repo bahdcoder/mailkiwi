@@ -80,7 +80,7 @@ export const PasswordField = React.forwardRef<
         <TextField.Slot side="right">
           <button
             type="button"
-            className="kb-reset focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-(--border-focus) rounded-sm"
+            className="kb-reset focus:outline-none focus-visible:outline focus-visible:outline-(--border-focus) rounded-sm"
             aria-label={`${visible ? 'Hide' : 'Show'} password`}
             onClick={onTogglePasswordVisibilityClick}
           >

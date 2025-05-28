@@ -39,6 +39,7 @@ export interface UseServerFormMutationProps<TResponse = Record<'path' | string, 
   > {
   action: string
   baseId?: string
+  customHeaders?: Record<string, string>
   method?: 'POST' | 'PUT' | 'DELETE' | 'PATCH'
   onProgress?: XHRHelperConfig['onProgress']
   transform?: (form: FormPayload) => FormPayload
@@ -49,6 +50,7 @@ export function useServerFormMutation<T extends Record<'path' | string, unknown>
   method = 'POST',
   onProgress,
   transform,
+  customHeaders,
   baseId: defaultBaseId,
   ...mutationOptions
 }: UseServerFormMutationProps<T>) {
@@ -77,6 +79,15 @@ export function useServerFormMutation<T extends Record<'path' | string, unknown>
         }
       }
 
+      const defaultJsonHeaders: HeadersInit = {
+        'Content-Type': 'application/json',
+      }
+
+      const mergedJsonHeaders = {
+        ...defaultJsonHeaders,
+        ...(customHeaders || {}),
+      }
+
       let response: Response
 
       if (isAMultiPartRequest) {
@@ -90,9 +101,7 @@ export function useServerFormMutation<T extends Record<'path' | string, unknown>
         response = await fetch(action, {
           method,
           body: JSON.stringify(form),
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: mergedJsonHeaders,
         })
       }
 
