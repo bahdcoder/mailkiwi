@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.js'
 
 import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
@@ -17,7 +17,7 @@ import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.j
 import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export interface RunAutomationForContactJobPayload {
   automationId: string

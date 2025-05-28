@@ -9,7 +9,7 @@ import type {
 import type { AutomationStep, Contact } from '#root/database/database_schema_types.js'
 import { contactAutomationSteps } from '#root/database/schema.js'
 
-import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_OPERATION_FAILED } from '@kibamail/framework'
 
 /**
  * AutomationStepRunner is the central orchestrator for executing automation workflow steps.

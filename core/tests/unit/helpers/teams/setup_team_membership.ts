@@ -9,7 +9,7 @@ import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export const setupTeamMemberships = async (email?: string, role?: string) => {
   const { user, team } = await createUser()

@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { CreateMessageSchema } from '../dto/create_message_dto.js'
 import { ChannelRepository } from '../repositories/channel_repository.js'
@@ -7,14 +7,14 @@ import { MessageRepository } from '../repositories/message_repository.js'
 import type { Channel } from '#root/database/database_schema_types.js'
 import { channelMemberships } from '#root/database/schema.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { makeApp } from '#root/core/shared/container/index.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class ChannelController extends BaseController {
   constructor(protected app = makeApp()) {

@@ -1,18 +1,18 @@
 import { ChannelRepository } from '#root/core/chat/repositories/channel_repository.js'
 import { MessageRepository } from '#root/core/chat/repositories/message_repository.js'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import type { Next } from 'hono'
 import type { NonOptional } from 'valibot'
 
 import type { Message } from '#root/database/database_schema_types.js'
 import { channels } from '#root/database/schema.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 export class ChatController extends BaseController {

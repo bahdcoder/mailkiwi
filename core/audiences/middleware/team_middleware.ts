@@ -6,7 +6,7 @@ import { TeamRepository } from '#root/core/teams/repositories/team_repository.js
 import type { HonoContext } from '#root/core/shared/server/types.js'
 import type { TeamWithMembers } from '#root/core/shared/types/team.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class TeamMiddleware {
   constructor(private teamRepository: TeamRepository = container.make(TeamRepository)) {}

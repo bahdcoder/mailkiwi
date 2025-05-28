@@ -4,11 +4,11 @@ import { TeamRepository } from '#root/core/teams/repositories/team_repository.js
 
 import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories/access_token_repository.js'
 
-import { E_UNAUTHORIZED } from '#root/core/http/responses/errors.js'
+import { E_UNAUTHORIZED } from '@kibamail/framework'
 
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class AuthorizeInjectorApiKeyMiddleware {
   constructor(private teamRepository = container.make(TeamRepository)) {}

@@ -8,7 +8,7 @@ import { UserRepository } from '#root/core/auth/users/repositories/user_reposito
 
 import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class InviteTeamMemberAction {
   constructor(

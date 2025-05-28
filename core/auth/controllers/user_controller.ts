@@ -4,13 +4,13 @@ import { InitiateEmailChangeSchema } from '#root/core/auth/users/dto/initiate_em
 import { UpdateUserPreferencesSchema } from '#root/core/auth/users/dto/update_user_preferences_dto.js'
 import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { makeApp } from '#root/core/shared/container/index.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * UserController manages user profile information.

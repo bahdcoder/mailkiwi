@@ -1,7 +1,7 @@
 import type { Readable } from 'node:stream'
 import { MinioClient } from '#root/core/minio/minio_client.js'
 import { faker } from '@faker-js/faker'
-import { like } from 'drizzle-orm'
+import { like } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import type { CreateContactExportDto } from '#root/core/audiences/dto/contact_exports/create_contact_export_dto.js'
@@ -17,7 +17,7 @@ import { contacts, emails, tagsOnContacts } from '#root/database/schema.js'
 
 import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@contacts exports job', () => {
   test('exports only contacts that match the filter groups criteria', async ({

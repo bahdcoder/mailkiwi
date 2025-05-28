@@ -1,4 +1,4 @@
-import { type SQLWrapper, and, eq, gte, like, lte, not } from 'drizzle-orm'
+import { type SQLWrapper, and, eq, gte, like, lte, not } from '@kibamail/framework/mysql'
 import type { AnyMySqlColumn } from 'drizzle-orm/mysql-core'
 
 import type { CreateSegmentDto } from '#root/core/audiences/dto/segments/create_segment_dto.js'

@@ -2,7 +2,7 @@ import { WEBSITES_PATH } from '#root/core/app/env/app_env.js'
 import { TagContactBasedOnResponseJob } from '#root/core/forms/jobs/tag_contact_based_on_response_job.js'
 import { FormRepository } from '#root/core/forms/repositories/form_repository.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import { createUser } from '#root/core/tests/mocks/auth/users.js'
@@ -15,7 +15,7 @@ import { makeDatabase } from '#root/core/shared/container/index.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { survey } from '#root/core/tests/integration/helpers/forms/survey.js'
 
 describe('@forms', () => {

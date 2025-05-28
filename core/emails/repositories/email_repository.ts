@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 
 import { emailContents, emails } from '#root/database/schema.js'
 import { belongsTo } from '#root/database/utils/relationships.js'

@@ -3,7 +3,7 @@ import { logger } from 'hono/logger'
 
 import { Hono } from '#root/core/shared/server/hono.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class HonoMtaInjector extends Hono {
   protected defaultMiddleware() {

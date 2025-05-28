@@ -1,5 +1,5 @@
 import { appEnv } from '#root/core/app/env/app_env.js'
-import { and, eq, or, sql } from 'drizzle-orm'
+import { and, eq, or, sql } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 
 import type {

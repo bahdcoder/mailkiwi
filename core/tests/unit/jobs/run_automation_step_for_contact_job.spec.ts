@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { describe, test, vi } from 'vitest'
 
 import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
@@ -22,7 +22,7 @@ import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container
 import { MailBuilder, Mailer } from '#root/core/shared/mailers/mailer.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import type { MailerDriverResponse } from '#root/core/shared/mailers/mailer_types.js'
 import type { SentMessageInfo, Transporter } from 'nodemailer'
 

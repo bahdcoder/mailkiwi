@@ -4,14 +4,14 @@ import { FormRepository } from '#root/core/forms/repositories/form_repository.js
 
 import type { Audience } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { makeApp } from '#root/core/shared/container/index.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * FormController manages subscription and lead capture forms.

@@ -6,7 +6,7 @@ import type {
   ContactWithProperties,
 } from '#root/database/database_schema_types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class UpdateContactAction {
   constructor(private contactRepository = container.make(ContactRepository)) {}

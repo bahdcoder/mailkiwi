@@ -1,7 +1,7 @@
 import type { CreateAutomationDto } from '#root/core/automations//dto/create_automation_dto.js'
 import { AutomationRepository } from '#root/core/automations/repositories/automation_repository.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class CreateAutomationAction {
   constructor(

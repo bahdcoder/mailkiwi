@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import { RunAutomationStepJob } from '#root/core/automations/jobs/run_automation_step_job.js'

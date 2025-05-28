@@ -5,8 +5,8 @@ import type { DefaultPageProps } from '#root/pages/types/page-context.js'
 import { PagePropsResolverContract } from '#root/core/shared/controllers/page_props/page_props_resolver_contract.js'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
-import { container } from '#root/core/utils/typi.js'
-import { eq } from 'drizzle-orm'
+import { container } from '@kibamail/framework'
+import { eq } from '@kibamail/framework/mysql'
 
 export class EngageContactsPropsResolver extends PagePropsResolverContract {
   static get regex() {

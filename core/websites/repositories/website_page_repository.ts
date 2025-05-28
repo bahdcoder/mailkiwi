@@ -1,5 +1,5 @@
 import type { CreateWebsitePageDto } from '#root/core/websites/dto/create_website_page_dto.js'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 
 import type {
   UpdateWebsitePage,

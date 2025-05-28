@@ -1,5 +1,5 @@
 import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 
 import type { CreateAudienceDto } from '#root/core/audiences/dto/audiences/create_audience_dto.js'
 
@@ -13,7 +13,7 @@ import { type KnownAudienceProperty, audiences } from '#root/database/schema.js'
 import { ContainerKey } from '#root/core/shared/container/index.js'
 import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class AudienceRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = container.make(ContainerKey.database)) {

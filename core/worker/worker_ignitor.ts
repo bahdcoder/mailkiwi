@@ -8,7 +8,7 @@ import { SendBroadcastToContact } from '#root/core/broadcasts/jobs/send_broadcas
 import { ImportContactsJob } from '#root/core/audiences/jobs/import_contacts_job.js'
 import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 import type { BaseJob, JobHandlerResponse } from '#root/core/shared/queue/abstract_job.js'
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<object, JobHandlerResponse | undefined, string>[] = []

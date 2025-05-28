@@ -12,7 +12,7 @@ import { makeDatabase } from '#root/core/shared/container/index.js'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_session_store.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@teams', () => {
   test('can create a new team', async ({ expect }) => {

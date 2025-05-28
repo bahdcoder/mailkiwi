@@ -1,4 +1,4 @@
-import { type SQL, and, eq, inArray } from 'drizzle-orm'
+import { type SQL, and, eq, inArray } from '@kibamail/framework/mysql'
 import type { MySqlInsertOnDuplicateKeyUpdateConfig } from 'drizzle-orm/mysql-core'
 import { DateTime } from 'luxon'
 

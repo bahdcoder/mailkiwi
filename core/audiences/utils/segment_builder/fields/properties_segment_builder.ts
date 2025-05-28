@@ -1,4 +1,4 @@
-import { and, eq, gte, inArray } from 'drizzle-orm'
+import { and, eq, gte, inArray } from '@kibamail/framework/mysql'
 
 import type { CreateSegmentDto } from '#root/core/audiences/dto/segments/create_segment_dto.js'
 

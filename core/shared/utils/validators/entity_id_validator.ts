@@ -3,7 +3,7 @@ import { checkAsync, pipeAsync, string } from 'valibot'
 
 import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export function entityIdValidator(
   table: AnyMySqlTable & { id: AnyMySqlColumn },

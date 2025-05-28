@@ -4,11 +4,11 @@ import { TeamPolicy } from '#root/core/audiences/policies/team_policy.js'
 
 import type { BroadcastWithoutContent } from '#root/database/database_schema_types.js'
 
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * BroadcastValidationAndAuthorizationConcern handles validation and authorization for broadcast operations.

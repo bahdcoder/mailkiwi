@@ -9,7 +9,7 @@ import { BaseController } from '#root/core/shared/controllers/base_controller.js
 import type { HonoInstance } from '#root/core/shared/server/hono.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * TagController manages contact tagging functionality.

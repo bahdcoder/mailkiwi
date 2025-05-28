@@ -5,11 +5,11 @@ import { TeamMembershipRepository } from '#root/core/teams/repositories/team_mem
 
 import type { TeamMembership } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class ResendTeamMemberInviteAction {
   constructor(

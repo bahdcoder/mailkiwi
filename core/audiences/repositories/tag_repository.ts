@@ -1,4 +1,4 @@
-import { type SQL, and, eq, or } from 'drizzle-orm'
+import { type SQL, and, eq, or } from '@kibamail/framework/mysql'
 
 import type { CreateTagDto } from '#root/core/audiences/dto/tags/create_tag_dto.js'
 

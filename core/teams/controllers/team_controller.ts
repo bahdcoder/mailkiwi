@@ -1,4 +1,4 @@
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { makeApp } from '#root/core/shared/container/index.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller.js'

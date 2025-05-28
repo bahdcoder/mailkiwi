@@ -1,5 +1,5 @@
 import { EmailRepository } from '#root/core/emails/repositories/email_repository.js'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 
 import type {
   AutomationStepRunnerContext,
@@ -17,8 +17,8 @@ import { Mailer } from '#root/core/shared/mailers/mailer.js'
 import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { container } from '#root/core/utils/typi.js'
-import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
+import { container } from '@kibamail/framework'
+import { E_OPERATION_FAILED } from '@kibamail/framework'
 
 /**
  * SendEmailAutomationStepRunner handles the "Send Email" action in automation workflows.

@@ -31,7 +31,7 @@ import {
   E_OPERATION_FAILED,
   E_UNAUTHORIZED,
   E_VALIDATION_FAILED,
-} from '#root/core/http/responses/errors.js'
+} from '@kibamail/framework'
 
 import { FlashController } from '#root/core/shared/controllers/flash_controller.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
@@ -39,7 +39,7 @@ import { Session } from '#root/core/shared/sessions/sessions.js'
 import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
 import { AutomationRepository } from '#root/core/automations/repositories/automation_repository.js'
-import { type Constructor, container } from '#root/core/utils/typi.js'
+import { type Constructor, container } from '@kibamail/framework'
 import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 
 type ControllerParams =

@@ -1,4 +1,4 @@
-import { and, eq, isNotNull } from 'drizzle-orm'
+import { and, eq, isNotNull } from '@kibamail/framework/mysql'
 
 import { SegmentBuilder } from '#root/core/audiences/utils/segment_builder/segment_builder.js'
 

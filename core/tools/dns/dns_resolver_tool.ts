@@ -5,7 +5,7 @@ import { DnsConfigurationTool } from '#root/core/tools/dns/dns_configuration_too
 
 import type { SendingDomain } from '#root/database/database_schema_types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class DnsResolverTool {
   private domain: string

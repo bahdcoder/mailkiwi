@@ -1,4 +1,4 @@
-import { type SQL, type SQLWrapper, and, asc, eq, sql } from 'drizzle-orm'
+import { type SQL, type SQLWrapper, and, asc, eq, sql } from '@kibamail/framework/mysql'
 
 import { SegmentBuilder } from '#root/core/audiences/utils/segment_builder/segment_builder.js'
 

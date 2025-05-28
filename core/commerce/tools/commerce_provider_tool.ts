@@ -2,7 +2,7 @@ import type { CommerceProviderContract } from '#root/core/commerce/contracts/com
 import { PaystackCommerceProvider } from '#root/core/commerce/providers/paystack/paystack_commerce_provider.js'
 import { StripeCommerceProvider } from '#root/core/commerce/providers/stripe/stripe_commerce_provider.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * CommerceProviderTool is a factory for creating payment provider implementations.

@@ -12,7 +12,7 @@ import { DkimKeyPairTool } from '#root/core/tools/dkim/dkim_keypair_tool.js'
 import { makeDatabase } from '#root/core/shared/container/index.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class CreateSendingDomainAction {
   constructor(

@@ -14,7 +14,7 @@ import type { Audience } from '#root/database/database_schema_types.js'
 
 import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@contact-session', () => {
   test('can create a contact session', async ({ expect }) => {

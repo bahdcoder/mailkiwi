@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { sql } from 'drizzle-orm'
+import { sql } from '@kibamail/framework/mysql'
 import { createFakeEmailContent } from '../audiences/email_content.js'
 
 import {

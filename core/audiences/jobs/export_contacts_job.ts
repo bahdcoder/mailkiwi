@@ -3,7 +3,7 @@ import { appEnv } from '#root/core/app/env/app_env.js'
 import { makeMinioClient } from '#root/core/minio/minio_client.js'
 import { sentenceCase } from 'change-case'
 import { stringify as csvStringify } from 'csv-stringify'
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 
 import type { CreateContactExportDto } from '#root/core/audiences/dto/contact_exports/create_contact_export_dto.js'
@@ -25,7 +25,7 @@ import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.j
 import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export interface ExportContactsJobPayload {
   filterGroups: CreateContactExportDto['filterGroups']

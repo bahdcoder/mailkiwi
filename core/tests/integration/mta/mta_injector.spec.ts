@@ -36,7 +36,7 @@ import { Queue } from '#root/core/shared/queue/queue.js'
 import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
 import { sleep } from '#root/core/utils/sleep.js'
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 const xForwardedFor = '66.249.93.66'

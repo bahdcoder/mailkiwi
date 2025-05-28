@@ -14,7 +14,7 @@ import { Queue } from '#root/core/shared/queue/queue.js'
 import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_session_store.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 const setup = async (email?: string, role?: string) => {
   const { user, team } = await createUser()

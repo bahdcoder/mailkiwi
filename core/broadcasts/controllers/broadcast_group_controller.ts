@@ -6,7 +6,7 @@ import { BaseController } from '#root/core/shared/controllers/base_controller.js
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * BroadcastGroupController manages broadcast campaign grouping functionality.

@@ -3,7 +3,7 @@ import { UserSessionMiddleware } from '#root/core/auth/middleware/user_session_m
 import { makeApp } from '#root/core/shared/container/index.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * WebsiteContactController manages contact interactions on websites.

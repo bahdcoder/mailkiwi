@@ -2,7 +2,7 @@ import type { SenderIdentity } from '#root/database/database_schema_types.js'
 
 import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * Action for generating an email verification code for a sender identity.

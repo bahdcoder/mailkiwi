@@ -12,7 +12,7 @@ import type { HTTPMethods, HonoContext } from '#root/core/shared/server/types.js
 import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_session_store.js'
 import { getAuthenticationHeaders } from '#root/core/shared/utils/auth/get_auth_headers.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export async function makeRequest(
   path: string,

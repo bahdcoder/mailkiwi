@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
@@ -19,7 +19,7 @@ import { makeDatabase } from '#root/core/shared/container/index.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@broadcasts create', () => {
   test('can create a broadcast for an audience', async ({ expect }) => {

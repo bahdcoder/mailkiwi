@@ -2,7 +2,7 @@ import { SendingSourceRepository } from '#root/core/settings/repositories/sendin
 
 import type { InsertSendingSource } from '#root/database/database_schema_types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class AddSendingSourceAction {
   async handle(payload: InsertSendingSource) {

@@ -1,4 +1,4 @@
-import { type SQLWrapper, and, eq, inArray } from 'drizzle-orm'
+import { type SQLWrapper, and, eq, inArray } from '@kibamail/framework/mysql'
 
 import type { SearchContactsDto } from '#root/core/audiences/dto/contacts/search_contacts_dto.js'
 import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
@@ -19,12 +19,12 @@ import {
   tagsOnContacts,
 } from '#root/database/schema.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { makeDatabase } from '#root/core/shared/container/index.js'
 import { Paginator } from '#root/core/shared/utils/pagination/paginator.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class GetContactsAction {
   constructor(

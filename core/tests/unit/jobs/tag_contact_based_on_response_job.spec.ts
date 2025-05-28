@@ -2,7 +2,7 @@ import { TagContactBasedOnResponseJob } from '#root/core/forms/jobs/tag_contact_
 import { FormRepository } from '#root/core/forms/repositories/form_repository.js'
 import { FormResponseRepository } from '#root/core/forms/repositories/form_response_repository.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import {
@@ -15,7 +15,7 @@ import { tags, tagsOnContacts } from '#root/database/schema.js'
 import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { survey } from '#root/core/tests/integration/helpers/forms/survey.js'
 
 describe('@tag-contact', () => {

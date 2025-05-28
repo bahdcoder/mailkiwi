@@ -17,7 +17,7 @@ import { BaseController } from '#root/core/shared/controllers/base_controller.js
 import { Queue } from '#root/core/shared/queue/queue.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class FormResponsesController extends BaseController {
   constructor(

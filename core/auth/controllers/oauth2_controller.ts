@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { setCookie } from 'hono/cookie'
 
 import { GithubDriver } from '#root/core/auth/oauth2_drivers/github_driver.js'
@@ -12,7 +12,7 @@ import { makeApp } from '#root/core/shared/container/index.js'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 type Oauth2Params = {

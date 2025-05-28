@@ -10,8 +10,6 @@ CREATE TABLE `abTestVariants` (
 --> statement-breakpoint
 CREATE TABLE `accessTokens` (
 	`id` binary(16) NOT NULL,
-	`userId` binary(16),
-	`teamId` binary(16),
 	`name` varchar(32),
 	`accessKey` varchar(255),
 	`capabilities` json,
@@ -19,6 +17,8 @@ CREATE TABLE `accessTokens` (
 	`createdAt` timestamp NOT NULL DEFAULT (now()),
 	`lastUsedAt` timestamp NOT NULL DEFAULT (now()),
 	`expiresAt` timestamp NOT NULL DEFAULT (now()),
+	`userId` binary(16) NOT NULL,
+	`teamId` binary(16) NOT NULL,
 	CONSTRAINT `accessTokens_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -357,10 +357,10 @@ CREATE TABLE `messages` (
 --> statement-breakpoint
 CREATE TABLE `oauth2Accounts` (
 	`id` binary(16) NOT NULL,
-	`userId` binary(16) NOT NULL,
 	`provider` enum('github','google') NOT NULL,
 	`providerId` varchar(80) NOT NULL,
 	`accessToken` text NOT NULL,
+	`userId` binary(16) NOT NULL,
 	CONSTRAINT `oauth2Accounts_id` PRIMARY KEY(`id`),
 	CONSTRAINT `oauth2Accounts_providerId_unique` UNIQUE(`providerId`),
 	CONSTRAINT `Oauth2AccountProviderUserIdKey` UNIQUE(`userId`,`provider`)
@@ -368,13 +368,12 @@ CREATE TABLE `oauth2Accounts` (
 --> statement-breakpoint
 CREATE TABLE `passwordResets` (
 	`id` binary(16) NOT NULL,
-	`userId` binary(16) NOT NULL,
 	`token` varchar(255) NOT NULL,
 	`expiresAt` timestamp NOT NULL,
 	`usedAt` timestamp,
 	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`userId` binary(16) NOT NULL,
 	CONSTRAINT `passwordResets_id` PRIMARY KEY(`id`),
-	CONSTRAINT `passwordResets_userId_unique` UNIQUE(`userId`),
 	CONSTRAINT `passwordResets_token_unique` UNIQUE(`token`)
 );
 --> statement-breakpoint
@@ -482,28 +481,28 @@ CREATE TABLE `tagsOnContacts` (
 	`contactId` binary(16) NOT NULL,
 	`assignedAt` timestamp,
 	CONSTRAINT `tagsOnContacts_id` PRIMARY KEY(`id`),
-	CONSTRAINT `tagsOnContactsTagIdContactIdKey` UNIQUE(`tagId`,`contactId`)
+	CONSTRAINT `tagsOnContactsTagIdContactIdUniqueKey` UNIQUE(`tagId`,`contactId`)
 );
 --> statement-breakpoint
 CREATE TABLE `teamMemberships` (
 	`id` binary(16) NOT NULL,
-	`userId` binary(16),
 	`email` varchar(50) NOT NULL,
-	`teamId` binary(16) NOT NULL,
 	`role` enum('ADMINISTRATOR','MANAGER','AUTHOR','GUEST'),
 	`status` enum('PENDING','ACTIVE'),
 	`invitedAt` timestamp NOT NULL DEFAULT (now()),
 	`expiresAt` timestamp NOT NULL,
+	`userId` binary(16) NOT NULL,
+	`teamId` binary(16) NOT NULL,
 	CONSTRAINT `teamMemberships_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `teams` (
 	`id` binary(16) NOT NULL,
 	`name` varchar(100) NOT NULL,
+	`broadcastEditor` enum('DEFAULT','MARKDOWN'),
 	`userId` binary(16) NOT NULL,
 	`trackClicks` boolean,
 	`trackOpens` boolean,
-	`broadcastEditor` enum('DEFAULT','MARKDOWN'),
 	`commerceProvider` enum('stripe','paystack','flutterwave'),
 	`commerceProviderAccountId` varchar(255),
 	`commerceProviderConfirmedAt` timestamp,
@@ -513,6 +512,7 @@ CREATE TABLE `teams` (
 CREATE TABLE `users` (
 	`id` binary(16) NOT NULL,
 	`email` varchar(80) NOT NULL,
+	`unconfirmedEmail` varchar(80),
 	`firstName` varchar(80),
 	`lastName` varchar(80),
 	`avatarUrl` varchar(256),
@@ -649,4 +649,4 @@ ALTER TABLE `websites` ADD CONSTRAINT `websites_teamId_teams_id_fk` FOREIGN KEY 
 ALTER TABLE `websites` ADD CONSTRAINT `websites_audienceId_audiences_id_fk` FOREIGN KEY (`audienceId`) REFERENCES `audiences`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX `messageChannelIdIndex` ON `messages` (`channelId`);--> statement-breakpoint
 CREATE INDEX `messageCreatedAtIndex` ON `messages` (`createdAt`);--> statement-breakpoint
-CREATE INDEX `tagsOnContactsTagIdContactIdIdx` ON `tagsOnContacts` (`tagId`,`contactId`);
+CREATE INDEX `tagsOnContactsTagIdContactIdIndexKey` ON `tagsOnContacts` (`tagId`,`contactId`);

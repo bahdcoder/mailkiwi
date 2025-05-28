@@ -1,4 +1,4 @@
-import { and, count, eq, inArray } from 'drizzle-orm'
+import { and, count, eq, inArray } from '@kibamail/framework/mysql'
 import {
   type InferInput,
   any,

@@ -3,7 +3,7 @@ import type { MiddlewareHandler } from 'hono'
 import { MustBeAuthenticatedMiddleware } from '#root/core/auth/middleware/must_be_authenticated_middleware.js'
 import { UserSessionMiddleware } from '#root/core/auth/middleware/user_session_middleware.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 const aliases = () =>
   ({

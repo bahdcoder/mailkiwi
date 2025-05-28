@@ -11,7 +11,7 @@ import type {
 import { makeHttpClient } from '#root/core/shared/http/http_client.js'
 import { generateMessageIdForDomain } from '#root/core/shared/utils/string.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * InjectEmailAction is responsible for preparing and injecting emails into the Mail Transfer Agent (MTA).

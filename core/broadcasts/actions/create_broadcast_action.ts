@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 
 import type { CreateBroadcastDto } from '#root/core/broadcasts/dto/create_broadcast_dto.js'
 import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
@@ -8,8 +8,8 @@ import { SendingDomainRepository } from '#root/core/sending_domains/repositories
 import { sendingDomains } from '#root/database/schema.js'
 
 import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
-import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
-import { container } from '#root/core/utils/typi.js'
+import { E_OPERATION_FAILED } from '@kibamail/framework'
+import { container } from '@kibamail/framework'
 
 /**
  * CreateBroadcastAction handles the creation of new email marketing campaigns.

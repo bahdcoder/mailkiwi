@@ -7,7 +7,7 @@ import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories
 import { createUser } from '#root/core/tests/mocks/auth/users.js'
 import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@auth API Token Generation', () => {
   test('can generate an api token for api and smtp access', async ({ expect }) => {

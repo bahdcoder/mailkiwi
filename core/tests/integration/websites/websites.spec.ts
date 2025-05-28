@@ -14,7 +14,7 @@ import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 import { ContainerKey, makeApp } from '#root/core/shared/container/index.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@websites', () => {
   test('can add a custom domain to a newsletter website', async ({ expect }) => {

@@ -17,7 +17,7 @@ import { refreshDatabase } from '#root/core/tests/mocks/teams/teams.js'
 
 import type { TeamMembership, User } from '#root/database/database_schema_types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { Session } from '#root/core/shared/sessions/sessions.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 

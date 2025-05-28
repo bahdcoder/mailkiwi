@@ -1,13 +1,13 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 
 import type { CreateTagDto } from '#root/core/audiences/dto/tags/create_tag_dto.js'
 import { TagRepository } from '#root/core/audiences/repositories/tag_repository.js'
 
 import { tags } from '#root/database/schema.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class CreateTagAction {
   constructor(private tagRepository = container.make(TagRepository)) {}

@@ -4,7 +4,7 @@ import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcas
 
 import type { BroadcastWithEmailContent } from '#root/database/database_schema_types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 interface ValidationResult {
   url: string

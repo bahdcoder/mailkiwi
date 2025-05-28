@@ -8,7 +8,7 @@ import {
 import { Upload } from '@aws-sdk/lib-storage'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { assetsPath } from '#root/pages/utils/assets_path.js'
 
 export class S3Disk {

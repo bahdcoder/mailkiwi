@@ -5,10 +5,10 @@ import {
   and,
   count,
   gt,
-} from 'drizzle-orm'
+} from '@kibamail/framework/mysql'
 import type { AnyMySqlColumn, AnyMySqlTable, MySqlSelect } from 'drizzle-orm/mysql-core'
 
-import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_OPERATION_FAILED } from '@kibamail/framework'
 
 import { makeDatabase } from '#root/core/shared/container/index.js'
 

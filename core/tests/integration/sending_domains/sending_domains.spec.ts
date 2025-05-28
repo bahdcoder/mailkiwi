@@ -1,6 +1,6 @@
 import { createSign, createVerify } from 'node:crypto'
 import { appEnv } from '#root/core/app/env/app_env.js'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
@@ -18,7 +18,7 @@ import { Queue } from '#root/core/shared/queue/queue.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@domains', () => {
   test('can create unique sending domains for a team', async ({ expect }) => {

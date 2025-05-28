@@ -1,9 +1,9 @@
 import type { CreateAudienceDto } from '#root/core/audiences/dto/audiences/create_audience_dto.js'
 import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class CreateAudienceAction {
   constructor(private audienceRepository = container.make(AudienceRepository)) {}

@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 
 import { CreateAudienceAction } from '#root/core/audiences/actions/audiences/create_audience_action.js'
 import { UpdateAudienceAction } from '#root/core/audiences/actions/audiences/update_audience_action.js'
@@ -14,7 +14,7 @@ import { BaseController } from '#root/core/shared/controllers/base_controller.js
 import type { HonoContext } from '#root/core/shared/server/types.js'
 import { Paginator } from '#root/core/shared/utils/pagination/paginator.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * AudienceController manages audience resources for email marketing.

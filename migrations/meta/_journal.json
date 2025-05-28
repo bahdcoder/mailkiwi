@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1746331573717,
-      "tag": "0000_public_warstar",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1748023190877,
-      "tag": "0001_safe_wasp",
+      "when": 1748433009348,
+      "tag": "0000_initialize_database",
       "breakpoints": true
     },
     {

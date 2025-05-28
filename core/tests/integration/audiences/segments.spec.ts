@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { describe, test } from 'vitest'
 
@@ -22,7 +22,7 @@ import {
 import { makeDatabase } from '#root/core/shared/container/index.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@audience segments', () => {
   test('can create an audience segment', async ({ expect }) => {

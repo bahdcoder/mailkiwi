@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import { ReportBuilder } from '#root/core/audiences/utils/report_builder/report_builder.js'
@@ -18,7 +18,7 @@ import {
 import { makeDatabase } from '#root/core/shared/container/index.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 describe('@report-builder', () => {

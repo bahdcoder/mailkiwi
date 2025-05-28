@@ -18,7 +18,7 @@ import {
   automationStepTypes,
 } from '#root/database/types/automations.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 async function automationStepIdRequirement(input: string): Promise<boolean> {
   if (!input) return true
