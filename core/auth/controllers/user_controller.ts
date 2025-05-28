@@ -1,6 +1,7 @@
 import { ChangePasswordSchema } from '#root/core/auth/users/dto/change_password_dto.js'
 import { ConfirmEmailChangeSchema } from '#root/core/auth/users/dto/confirm_email_change_dto.js'
 import { InitiateEmailChangeSchema } from '#root/core/auth/users/dto/initiate_email_change_dto.js'
+import { UpdateUserPreferencesSchema } from '#root/core/auth/users/dto/update_user_preferences_dto.js'
 import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
 import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
@@ -19,6 +20,7 @@ import { container } from '#root/core/utils/typi.js'
  * 2. Providing endpoints for user self-service
  * 3. Managing password changes for authenticated users
  * 4. Managing email address changes with verification
+ * 5. Managing notification preferences and email subscriptions
  *
  * The controller enables users to access and manage their own account
  * information, supporting user autonomy and self-service capabilities.
@@ -36,6 +38,7 @@ export class UserController extends BaseController {
         ['POST', '/email/change/initiate', this.initiateEmailChange.bind(this)],
         ['POST', '/email/change/confirm', this.confirmEmailChange.bind(this)],
         ['DELETE', '/email/change/cancel', this.cancelEmailChange.bind(this)],
+        ['PATCH', '/preferences', this.updatePreferences.bind(this)],
       ],
       {
         prefix: 'auth',
@@ -228,5 +231,26 @@ export class UserController extends BaseController {
         message: 'Email change request cancelled successfully',
       })
       .send()
+  }
+
+  /**
+   * Updates user notification preferences.
+   *
+   * This method allows users to control their email notification settings by:
+   * 1. Validating the preference update payload
+   * 2. Updating only the specified notification preferences
+   * 3. Preserving existing preferences for unspecified fields
+   *
+   * The method supports partial updates, allowing users to toggle individual
+   * notification types without affecting others. This provides granular control
+   * over email communications while maintaining a simple API interface.
+   */
+  async updatePreferences(ctx: HonoContext) {
+    const data = await this.validate(ctx, UpdateUserPreferencesSchema)
+    const userId = this.user(ctx).id
+
+    await this.userRepository.update(userId, data)
+
+    return this.response(ctx).json({ id: userId }, 200, true).send()
   }
 }

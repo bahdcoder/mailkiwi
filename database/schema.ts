@@ -188,6 +188,9 @@ export const users = mysqlTable('users', {
     'github',
     'google',
   ]),
+  newContactNotifications: boolean('newContactNotifications').default(true),
+  accountSummaryNotifications: boolean('accountSummaryNotifications').default(true),
+  changelogNewsletters: boolean('changelogNewsletters').default(true),
 })
 
 export const oauth2Accounts = mysqlTable(

@@ -15,6 +15,13 @@
       "when": 1748023190877,
       "tag": "0001_safe_wasp",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1748186778172,
+      "tag": "0002_many_scalphunter",
+      "breakpoints": true
     }
   ]
 }
