@@ -1,5 +1,5 @@
-import { AgreeToTermsAndPolicy } from '@pages/components/auth/agree-to-terms-and-policy.jsx'
-import { CheckCircleSolidIcon } from '@pages/components/icons/check-circle-solid.svg.jsx'
+import { AgreeToTermsAndPolicy } from '#root/pages/components/auth/agree-to-terms-and-policy.jsx'
+import { CheckCircleSolidIcon } from '#root/pages/components/icons/check-circle-solid.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 import type React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
@@ -19,7 +19,7 @@ function PasswordResetsFlowLayout({
         <img src="/logos/full-light.svg" className="h-8" alt="Kibamail Logo" />
       </div>
 
-      <div className="flex-grow">{children}</div>
+      <div className="grow">{children}</div>
 
       <AgreeToTermsAndPolicy />
     </div>
@@ -43,7 +43,7 @@ function AuthLayout({ children }: React.PropsWithChildren<AuthLayoutProps>) {
             <img src="/logos/full-light.svg" className="h-8" alt="Kibamail Logo" />
           </a>
         </div>
-        <div className="flex-grow px-5 lg:px-0">{children}</div>
+        <div className="grow px-5 lg:px-0">{children}</div>
 
         <AgreeToTermsAndPolicy />
       </div>
@@ -53,8 +53,8 @@ function AuthLayout({ children }: React.PropsWithChildren<AuthLayoutProps>) {
           <ProductFeatureGrid />
         </div>
 
-        <div className="absolute h-px border-t border-white border-opacity-10 bottom-48 w-full" />
-        <div className="w-full absolute h-10 bottom-36 bg-black bg-opacity-5 border-t border-b border-white border-opacity-10" />
+        <div className="absolute h-px border-t border-white/10 bottom-48 w-full" />
+        <div className="w-full absolute h-10 bottom-36 bg-black/5 border-t border-b border-white/10" />
       </div>
     </div>
   )
@@ -88,9 +88,9 @@ interface ProductFeatureProps {
 function ProductFeature({ title, description }: ProductFeatureProps) {
   return (
     <div className="flex items-start gap-x-2">
-      <CheckCircleSolidIcon className="kb-content-notice flex-shrink-0" />
+      <CheckCircleSolidIcon className="kb-content-notice shrink-0" />
 
-      <div className="flex flex-col flex-grow gap-y-2">
+      <div className="flex flex-col grow gap-y-2">
         <Text className="kb-content-primary-inverse" size="lg">
           {title}
         </Text>

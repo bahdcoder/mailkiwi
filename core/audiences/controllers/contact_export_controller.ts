@@ -1,10 +1,10 @@
-import { CreateContactExportSchema } from '@/audiences/dto/contact_exports/create_contact_export_dto.js'
-import { ExportContactsJob } from '@/audiences/jobs/export_contacts_job.js'
+import { CreateContactExportSchema } from '#root/core/audiences/dto/contact_exports/create_contact_export_dto.js'
+import { ExportContactsJob } from '#root/core/audiences/jobs/export_contacts_job.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import { Queue } from '@/shared/queue/queue.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
 /**
  * ContactExportController handles the export of contact data.

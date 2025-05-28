@@ -1,12 +1,12 @@
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
-import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
+import { AutomationRepository } from '#root/core/automations/repositories/automation_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { seedAutomation } from '@/tests/mocks/teams/teams.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { seedAutomation } from '#root/core/tests/mocks/teams/teams.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import {
   audiences,
@@ -14,14 +14,14 @@ import {
   automations,
   emails,
   tags,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
-import type { AutomationStep } from '@/database/database_schema_types.js'
-import { container } from '@/utils/typi.js'
+import { AutomationStepRepository } from '#root/core/automations/repositories/automation_step_repository.js'
+import type { AutomationStep } from '#root/database/database_schema_types.js'
+import { container } from '@kibamail/framework'
 
 describe('@automations', () => {
   test('experimenting with automations', async ({ expect }) => {

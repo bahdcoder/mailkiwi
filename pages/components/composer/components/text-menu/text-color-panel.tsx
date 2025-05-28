@@ -1,13 +1,13 @@
 import {
   FillPanel,
   type FillValue,
-} from '@pages/components/composer/components/fill-panel/fill-panel.jsx'
+} from '#root/pages/components/composer/components/fill-panel/fill-panel.jsx'
 import {
   ToolbarButton,
   getToolbarClassNames,
-} from '@pages/components/composer/components/toolbar/toolbar.jsx'
-import { getDefaultStylesForNode } from '@pages/components/composer/themes/default-theme.js'
-import { NavArrowDownIcon } from '@pages/components/icons/nav-arrow-down.svg.jsx'
+} from '#root/pages/components/composer/components/toolbar/toolbar.jsx'
+import { getDefaultStylesForNode } from '#root/pages/components/composer/themes/default-theme.js'
+import { NavArrowDownIcon } from '#root/pages/components/icons/nav-arrow-down.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 import type { Editor } from '@tiptap/core'
 import cn from 'classnames'
@@ -33,7 +33,7 @@ export function TextColorPanel({ editor }: TextColorPanelProps) {
           <span
             className={cn(
               getToolbarClassNames(true),
-              '!w-5 !h-5 border box-border border-[var(--content-tertiary-inverse)]',
+              'w-5! h-5! border box-border border-(--content-tertiary-inverse)',
             )}
             style={{
               background: textColor ?? 'transparent',

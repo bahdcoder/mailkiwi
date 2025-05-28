@@ -1,9 +1,9 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { type SentMessageInfo, type Transporter, createTransport } from 'nodemailer'
 import { v4 as uuidV4 } from 'uuid'
 import type { MailObject, MailerDriverResponse } from './mailer_types.js'
 
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 export class MailerClass {
   // a transport must be created for the team making this mail send call.

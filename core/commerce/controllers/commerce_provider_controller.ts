@@ -1,17 +1,17 @@
 import {
   ConnectCommerceProviderDto,
   ConnectCommerceProviderSchema,
-} from '@/commerce/dto/connect_commerce_provider_dto.js'
-import { StripeWebhookController } from '@/commerce/providers/stripe/controllers/stripe_webhook_controller.js'
-import { CommerceProviderTool } from '@/commerce/tools/commerce_provider_tool.js'
+} from '#root/core/commerce/dto/connect_commerce_provider_dto.js'
+import { StripeWebhookController } from '#root/core/commerce/providers/stripe/controllers/stripe_webhook_controller.js'
+import { CommerceProviderTool } from '#root/core/commerce/tools/commerce_provider_tool.js'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * CommerceProviderController handles API endpoints for payment provider integration.

@@ -139,12 +139,10 @@ pidfile /var/run/redis/redis-server.pid
 loglevel notice
 logfile /var/log/redis/redis-server.log
 requirepass password
-maxmemory 256mb
-maxmemory-policy allkeys-lru
+maxmemory 512mb
+maxmemory-policy noeviction
 appendonly no
-save 900 1
-save 300 10
-save 60 10000
+save ""
 timeout 0
 tcp-keepalive 300
 databases 16

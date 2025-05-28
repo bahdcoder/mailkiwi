@@ -1,6 +1,6 @@
 import type { WebSocket } from 'ws'
 
-import type { UserWithChannelMemberships } from '@/database/database_schema_types.js'
+import type { UserWithChannelMemberships } from '#root/database/database_schema_types.js'
 
 export type MapOfConnections = Map<
   string,

@@ -1,25 +1,25 @@
-import { CreateAutomationAction } from '@/automations/actions/create_automation_action.js'
-import { CreateAutomationStepAction } from '@/automations/actions/create_automation_step_action.js'
-import { GetAutomationAction } from '@/automations/actions/get_automation_action.js'
-import { UpdateAutomationStepAction } from '@/automations/actions/update_automation_step_action.js'
-import { CreateAutomationSchema } from '@/automations/dto/create_automation_dto.js'
-import { CreateAutomationStepDto } from '@/automations/dto/create_automation_step_dto.js'
-import { UpdateAutomationStepDto } from '@/automations/dto/update_automation_step_dto.js'
-import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
+import { CreateAutomationAction } from '#root/core/automations/actions/create_automation_action.js'
+import { CreateAutomationStepAction } from '#root/core/automations/actions/create_automation_step_action.js'
+import { GetAutomationAction } from '#root/core/automations/actions/get_automation_action.js'
+import { UpdateAutomationStepAction } from '#root/core/automations/actions/update_automation_step_action.js'
+import { CreateAutomationSchema } from '#root/core/automations/dto/create_automation_dto.js'
+import { CreateAutomationStepDto } from '#root/core/automations/dto/create_automation_step_dto.js'
+import { UpdateAutomationStepDto } from '#root/core/automations/dto/update_automation_step_dto.js'
+import { AutomationStepRepository } from '#root/core/automations/repositories/automation_step_repository.js'
 
 import type {
   Audience,
   AutomationStep,
   AutomationWithSteps,
-} from '@/database/database_schema_types.js'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+} from '#root/database/database_schema_types.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoInstance } from '@/shared/server/hono.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoInstance } from '#root/core/shared/server/hono.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * AutomationController handles API endpoints for managing automation workflows.

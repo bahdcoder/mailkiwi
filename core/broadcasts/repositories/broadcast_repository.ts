@@ -1,14 +1,14 @@
-import { type SQLWrapper, and, eq } from 'drizzle-orm'
+import { type SQLWrapper, and, eq } from '@kibamail/framework/mysql'
 import { alias } from 'drizzle-orm/mysql-core'
 
-import type { CreateBroadcastDto } from '@/broadcasts/dto/create_broadcast_dto.js'
+import type { CreateBroadcastDto } from '#root/core/broadcasts/dto/create_broadcast_dto.js'
 
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
 import type {
   Broadcast,
   EmailContent,
   UpdateSetBroadcastInput,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 import {
   abTestVariants,
   audiences,
@@ -16,15 +16,15 @@ import {
   contacts,
   emailContents,
   segments,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
-import { hasOne } from '@/database/utils/relationships.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { container } from '@/utils/typi.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { SegmentRepository } from '#root/core/audiences/repositories/segment_repository.js'
+import { SegmentBuilder } from '#root/core/audiences/utils/segment_builder/segment_builder.js'
+import { hasOne } from '#root/database/utils/relationships.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
+import { container } from '@kibamail/framework'
 import { DateTime } from 'luxon'
 
 /**

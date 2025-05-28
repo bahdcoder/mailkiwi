@@ -1,4 +1,4 @@
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
 import type { Redis } from 'ioredis'
 import type { Logger } from 'pino'
 import type { AVAILABLE_QUEUE_TYPE } from './config.js'

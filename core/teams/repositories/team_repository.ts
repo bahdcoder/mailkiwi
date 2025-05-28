@@ -1,6 +1,6 @@
-import { count, eq } from 'drizzle-orm'
+import { count, eq } from '@kibamail/framework/mysql'
 
-import type { CreateTeamDto } from '@/teams/dto/create_team_dto.js'
+import type { CreateTeamDto } from '#root/core/teams/dto/create_team_dto.js'
 
 import {
   broadcastGroups,
@@ -10,14 +10,22 @@ import {
   teamMemberships,
   teams,
   users,
-} from '@/database/schema.js'
-import { hasMany } from '@/database/utils/relationships.js'
+} from '#root/database/schema.js'
+import { hasMany } from '#root/database/utils/relationships.js'
 
-import { FREE_MONTHLY_CREDITS } from '@/app/env/app_env.js'
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { type AppEnvVariables, FREE_MONTHLY_CREDITS, appEnv } from '#root/core/app/env/app_env.js'
+import { makeDatabase, makeRedis } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 import { DateTime } from 'luxon'
-import type { DrizzleClient } from '@/database/client.js'
+import type { DrizzleClient } from '#root/database/client.js'
+import { TeamRepository as FrameworkTeamRepository } from '@kibamail/framework'
+import { Cache } from '#root/core/shared/cache/cache'
+
+export class TR extends FrameworkTeamRepository<typeof users, typeof teamMemberships, typeof teams, DrizzleClient, Cache, AppEnvVariables> {
+  constructor() {
+    super(teams, teamMemberships, users, makeDatabase(), new Cache(), appEnv)
+  }
+}
 
 /**
  * TeamRepository handles database operations for team management.

@@ -1,11 +1,11 @@
 import './composer.styles.css'
-import LinkMenu from '@pages/components/composer/components/link-menu/link-menu.jsx'
-import { TextMenu } from '@pages/components/composer/components/text-menu/text-menu.jsx'
-import { useTextmenuStates } from '@pages/components/composer/components/text-menu/use-text-menu-states.js'
-import { ButtonMenu } from '@pages/components/composer/extensions/Button/button-menu.jsx'
-import { ContainerMenu } from '@pages/components/composer/extensions/Container/container-menu.jsx'
-import ImageBlockMenu from '@pages/components/composer/extensions/ImageBlock/components/ImageBlockMenu.jsx'
-import type { ShouldShowProps } from '@pages/components/tiptap/menus/types.js'
+import LinkMenu from '#root/pages/components/composer/components/link-menu/link-menu.jsx'
+import { TextMenu } from '#root/pages/components/composer/components/text-menu/text-menu.jsx'
+import { useTextmenuStates } from '#root/pages/components/composer/components/text-menu/use-text-menu-states.js'
+import { ButtonMenu } from '#root/pages/components/composer/extensions/Button/button-menu.jsx'
+import { ContainerMenu } from '#root/pages/components/composer/extensions/Container/container-menu.jsx'
+import ImageBlockMenu from '#root/pages/components/composer/extensions/ImageBlock/components/ImageBlockMenu.jsx'
+import type { ShouldShowProps } from '#root/pages/components/tiptap/menus/types.js'
 import { type Editor, EditorContent } from '@tiptap/react'
 import React, { useCallback } from 'react'
 
@@ -65,17 +65,17 @@ export function Composer({ editor }: ComposerProps) {
   return (
     <div className="w-full flex items-center justify-center h-full">
       <div
-        className="flex-grow h-full p-6 overflow-y-auto w-composer-inter"
+        className="grow h-full p-6 overflow-y-auto w-composer-inter"
         ref={menuContainerRef}
       >
-        <div className="w-full max-w-[45rem] mx-auto h-full flex flex-col gap-2">
+        <div className="w-full max-w-180 mx-auto h-full flex flex-col gap-2">
           {/* TODO: Make this an auto expandable textarea */}
           {/* <textarea
-            className="text-4xl font-bold text-[var(--content-secondary)] placeholder:text-[var(--content-tertiary-inverse)] bg-transparent border-none focus:outline-none focus:border-none w-full w-composer-inter resize-none"
+            className="text-4xl font-bold text-(--content-secondary) placeholder:text-(--content-tertiary-inverse) bg-transparent border-none focus:outline-none focus:border-none w-full w-composer-inter resize-none"
             placeholder="Broadcast title"
           /> */}
 
-          <div className="w-full w-composer-content flex-grow p-8 bg-white shadow-[0px_16px_24px_-8px_var(--black-10)]">
+          <div className="w-full w-composer-content grow p-8 bg-white shadow-[0px_16px_24px_-8px_var(--black-10)]">
             <ComposerMenus container={menuContainerRef} editor={editor} />
             <EditorContent editor={editor} />
           </div>

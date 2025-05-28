@@ -1,13 +1,13 @@
-import { type SQLWrapper, and, eq, inArray, notInArray } from 'drizzle-orm'
+import { type SQLWrapper, and, eq, inArray, notInArray } from '@kibamail/framework/mysql'
 import { FieldSegmentBuilder } from './base_field_segment_builder.js'
 
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
+import type { CreateSegmentDto } from '#root/core/audiences/dto/segments/create_segment_dto.js'
 
-import { contacts, tagsOnContacts } from '@/database/schema.js'
+import { contacts, tagsOnContacts } from '#root/database/schema.js'
 
-import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import { E_OPERATION_FAILED } from '@kibamail/framework'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 export class TagsSegmentBuilder extends FieldSegmentBuilder {
   constructor(

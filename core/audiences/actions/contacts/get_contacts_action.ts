@@ -1,30 +1,30 @@
-import { type SQLWrapper, and, eq, inArray } from 'drizzle-orm'
+import { type SQLWrapper, and, eq, inArray } from '@kibamail/framework/mysql'
 
-import type { SearchContactsDto } from '@/audiences/dto/contacts/search_contacts_dto.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
+import type { SearchContactsDto } from '#root/core/audiences/dto/contacts/search_contacts_dto.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { SegmentRepository } from '#root/core/audiences/repositories/segment_repository.js'
+import { SegmentBuilder } from '#root/core/audiences/utils/segment_builder/segment_builder.js'
 
 import type {
   Audience,
   Contact,
   ContactWithProperties,
   Segment,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 import {
   ContactFilterGroup,
   contactProperties,
   contacts,
   tags,
   tagsOnContacts,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { Paginator } from '@/shared/utils/pagination/paginator.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { Paginator } from '#root/core/shared/utils/pagination/paginator.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class GetContactsAction {
   constructor(

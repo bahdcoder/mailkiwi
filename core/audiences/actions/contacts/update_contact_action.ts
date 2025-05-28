@@ -1,9 +1,12 @@
-import type { UpdateContactDto } from '@/audiences/dto/contacts/update_contact_dto.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import type { UpdateContactDto } from '#root/core/audiences/dto/contacts/update_contact_dto.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import type { Audience, ContactWithProperties } from '@/database/database_schema_types.js'
+import type {
+  Audience,
+  ContactWithProperties,
+} from '#root/database/database_schema_types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class UpdateContactAction {
   constructor(private contactRepository = container.make(ContactRepository)) {}

@@ -1,23 +1,23 @@
 import type { Readable } from 'node:stream'
-import { MinioClient } from '@/minio/minio_client.js'
+import { MinioClient } from '#root/core/minio/minio_client.js'
 import { faker } from '@faker-js/faker'
-import { like } from 'drizzle-orm'
+import { like } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
-import type { CreateContactExportDto } from '@/audiences/dto/contact_exports/create_contact_export_dto.js'
-import { ExportContactsJob } from '@/audiences/jobs/export_contacts_job.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { TagRepository } from '@/audiences/repositories/tag_repository.js'
+import type { CreateContactExportDto } from '#root/core/audiences/dto/contact_exports/create_contact_export_dto.js'
+import { ExportContactsJob } from '#root/core/audiences/jobs/export_contacts_job.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { TagRepository } from '#root/core/audiences/repositories/tag_repository.js'
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { FakeMinioClient } from '@/tests/mocks/container/minio_client_mock.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { FakeMinioClient } from '#root/core/tests/mocks/container/minio_client_mock.js'
 
-import { contacts, emails, tagsOnContacts } from '@/database/schema.js'
+import { contacts, emails, tagsOnContacts } from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@contacts exports job', () => {
   test('exports only contacts that match the filter groups criteria', async ({

@@ -1,26 +1,26 @@
 import dns from 'node:dns/promises'
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { describe, test, vi } from 'vitest'
 
-import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
-import { CheckSendingDomainDnsConfigurationJob } from '@/sending_domains/jobs/check_sending_domain_dns_configuration_job.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { CreateSendingDomainAction } from '#root/core/sending_domains/actions/create_sending_domain_action.js'
+import { CheckSendingDomainDnsConfigurationJob } from '#root/core/sending_domains/jobs/check_sending_domain_dns_configuration_job.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { DnsConfigurationTool } from '@/tools/dns/dns_configuration_tool.js'
+import { DnsConfigurationTool } from '#root/core/tools/dns/dns_configuration_tool.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
 
-import type { UpdateSendingDomain } from '@/database/database_schema_types.js'
-import { sendingDomains } from '@/database/schema.js'
+import type { UpdateSendingDomain } from '#root/database/database_schema_types.js'
+import { sendingDomains } from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '@/utils/typi.js'
-import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { container } from '@kibamail/framework'
+import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 describe('@sending-domains-dns Sending domain dns configuration check', () => {
   test('marks sending domain as verified when dns records are correctly configured', async ({

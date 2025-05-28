@@ -1,11 +1,11 @@
 import { Readable } from 'node:stream'
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { load as cheerioLoad } from 'cheerio'
 import iconv from 'iconv-lite'
 import { Joiner, Rewriter, Splitter } from 'mailsplit'
 
-import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
-import { stringFromReadableStream } from '@/shared/utils/string.js'
+import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
+import { stringFromReadableStream } from '#root/core/shared/utils/string.js'
 
 interface TrackedLink {
   url: string

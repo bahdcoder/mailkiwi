@@ -1,7 +1,7 @@
 import type {
   HTMLJsonBlock,
   UpdateWebsitePageDto,
-} from '@/websites/dto/update_website_page_dto.js'
+} from '#root/core/websites/dto/update_website_page_dto.js'
 import { type Cheerio, type CheerioAPI, load as cheerioLoad } from 'cheerio'
 
 export class GenerateWebsiteFromJsonTool {

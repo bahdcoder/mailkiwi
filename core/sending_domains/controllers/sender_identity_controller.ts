@@ -1,28 +1,28 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 
-import { sendingDomains } from '@/database/schema.js'
+import { sendingDomains } from '#root/database/schema.js'
 
-import { CreateSenderIdentityAction } from '@/sending_domains/actions/sender_identities/create_sender_identity_action.js'
-import { DeleteSenderIdentityAction } from '@/sending_domains/actions/sender_identities/delete_sender_identity_action.js'
-import { GenerateEmailVerificationCodeAction } from '@/sending_domains/actions/sender_identities/generate_email_verification_code_action.js'
-import { UpdateSenderIdentityAction } from '@/sending_domains/actions/sender_identities/update_sender_identity_action.js'
-import { VerifyEmailAction } from '@/sending_domains/actions/sender_identities/verify_email_action.js'
-import { CreateSenderIdentitySchema } from '@/sending_domains/dto/sender_identities/create_sender_identity_dto.js'
-import { UpdateSenderIdentitySchema } from '@/sending_domains/dto/sender_identities/update_sender_identity_dto.js'
-import { VerifySenderIdentityEmailSchema } from '@/sending_domains/dto/sender_identities/verify_sender_identity_email_dto.js'
-import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { CreateSenderIdentityAction } from '#root/core/sending_domains/actions/sender_identities/create_sender_identity_action.js'
+import { DeleteSenderIdentityAction } from '#root/core/sending_domains/actions/sender_identities/delete_sender_identity_action.js'
+import { GenerateEmailVerificationCodeAction } from '#root/core/sending_domains/actions/sender_identities/generate_email_verification_code_action.js'
+import { UpdateSenderIdentityAction } from '#root/core/sending_domains/actions/sender_identities/update_sender_identity_action.js'
+import { VerifyEmailAction } from '#root/core/sending_domains/actions/sender_identities/verify_email_action.js'
+import { CreateSenderIdentitySchema } from '#root/core/sending_domains/dto/sender_identities/create_sender_identity_dto.js'
+import { UpdateSenderIdentitySchema } from '#root/core/sending_domains/dto/sender_identities/update_sender_identity_dto.js'
+import { VerifySenderIdentityEmailSchema } from '#root/core/sending_domains/dto/sender_identities/verify_sender_identity_email_dto.js'
+import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 import type {
   SenderIdentity,
   SenderIdentityWithSendingDomain,
-} from '@/database/database_schema_types.js'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+} from '#root/database/database_schema_types.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 /**
  * SenderIdentityController manages email sender identities for marketing campaigns.

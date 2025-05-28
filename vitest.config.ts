@@ -1,4 +1,4 @@
-import tsconfigPaths from 'vite-tsconfig-paths'
+import { resolve } from 'node:path'
 import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -27,6 +27,17 @@ export default defineConfig({
     reporters: ['verbose'],
     retry: 1,
     environment: 'node',
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        maxThreads: 1,
+        minThreads: 1,
+      },
+    },
   },
-  plugins: [tsconfigPaths()],
+  resolve: {
+    alias: {
+      '#root': resolve(process.cwd()),
+    },
+  },
 })

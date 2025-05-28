@@ -1,10 +1,10 @@
 import { command } from '@drizzle-team/brocli'
-import { inArray, sql } from 'drizzle-orm'
+import { inArray, sql } from '@kibamail/framework/mysql'
 
-import type { InsertSendingSource } from '@/database/database_schema_types.js'
-import { sendingSources } from '@/database/schema.js'
+import type { InsertSendingSource } from '#root/database/database_schema_types.js'
+import { sendingSources } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 export const seedDevSendingSourcesCommand = command({
   name: 'seed_dev_sending_sources',

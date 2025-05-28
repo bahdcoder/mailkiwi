@@ -1,12 +1,12 @@
-import { CreateBroadcastGroupSchema } from '@/broadcasts/dto/create_broadcast_group_schema_dto.js'
-import { BroadcastGroupRepository } from '@/broadcasts/repositories/broadcast_group_repository.js'
+import { CreateBroadcastGroupSchema } from '#root/core/broadcasts/dto/create_broadcast_group_schema_dto.js'
+import { BroadcastGroupRepository } from '#root/core/broadcasts/repositories/broadcast_group_repository.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * BroadcastGroupController manages broadcast campaign grouping functionality.

@@ -6,9 +6,10 @@ SHELL := /bin/bash
 # Default target
 .DEFAULT_GOAL := help
 
-# docker-compose files
+# docker compose files
 COMPOSE_DEV := -f docker/compose.dev.yaml
 COMPOSE_CODER := -f docker/compose.coder.yaml
+COMPOSE_DEV_ESSENTIAL := -f docker/compose.dev.essential.yaml
 
 # Helper target to print available commands
 help:
@@ -23,20 +24,20 @@ help:
 # Build the application
 build:
 	@echo "Building the application..."
-	docker-compose $(COMPOSE_DEV) run --rm kibamail pnpm run build
+	docker compose $(COMPOSE_DEV) run --rm kibamail pnpm run build
 
 # Destroy the application environment
 down:
 	@echo "Destroying the application environment..."
-	docker-compose $(COMPOSE_DEV) down
+	docker compose $(COMPOSE_DEV) down
 
 coder.down:
 	@echo "Destroying the application environment..."
-	docker-compose $(COMPOSE_CODER) down
+	docker compose $(COMPOSE_CODER) down
 
-down-clean:
+down.clean:
 	@echo "Destroying the application environment and cleaning volumes..."
-	docker-compose $(COMPOSE_DEV) down -v
+	docker compose $(COMPOSE_DEV) down -v
 
 # Build only the app Docker image
 app.build:
@@ -63,16 +64,20 @@ run:
 		echo "Please provide a command using cmd='your command'"; \
 		exit 1; \
 	fi
-	docker-compose $(COMPOSE_DEV) run --rm kibamail pnpm $(cmd)
+	docker compose $(COMPOSE_DEV) run --rm kibamail pnpm $(cmd)
 
 # Start all services
 dev:
 	@echo "Starting all services..."
-	docker-compose $(COMPOSE_DEV) up --wait
+	docker compose $(COMPOSE_DEV) up --wait
+
+dev.essential:
+	@echo "starting all essential services..."
+	docker compose $(COMPOSE_DEV_ESSENTIAL) up --build --wait
 
 coder.dev:
 	@echo "Starting all services..."
-	docker-compose $(COMPOSE_CODER) up --wait
+	docker compose $(COMPOSE_CODER) up --wait
 
 api.dev:
 	pnpm dev

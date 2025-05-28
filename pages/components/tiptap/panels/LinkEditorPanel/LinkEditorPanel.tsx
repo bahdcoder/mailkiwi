@@ -1,7 +1,7 @@
-import { Button } from '@pages/components/tiptap/ui/Button/Button.jsx'
-import { Icon } from '@pages/components/tiptap/ui/Icon.jsx'
-import { Surface } from '@pages/components/tiptap/ui/Surface.jsx'
-import { Toggle } from '@pages/components/tiptap/ui/Toggle/Toggle.jsx'
+import { Button } from '#root/pages/components/tiptap/ui/Button/Button.jsx'
+import { Icon } from '#root/pages/components/tiptap/ui/Icon.jsx'
+import { Surface } from '#root/pages/components/tiptap/ui/Surface.jsx'
+import { Toggle } from '#root/pages/components/tiptap/ui/Toggle/Toggle.jsx'
 import { useCallback, useMemo, useState } from 'react'
 
 export type LinkEditorPanelProps = {
@@ -63,7 +63,7 @@ export const LinkEditorPanel = ({
           <Icon name="Link" className="flex-none text-black dark:text-white" />
           <input
             type="url"
-            className="flex-1 bg-transparent outline-none min-w-[12rem] text-black text-sm dark:text-white"
+            className="flex-1 bg-transparent outline-none min-w-48 text-black text-sm dark:text-white"
             placeholder="Enter URL"
             value={state.url}
             onChange={state.onChange}

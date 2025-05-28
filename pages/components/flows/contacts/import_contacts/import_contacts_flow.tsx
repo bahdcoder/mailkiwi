@@ -1,5 +1,5 @@
-import { StepsRenderer } from '@pages/components/flows/steps_renderer.jsx'
-import { CancelIcon } from '@pages/components/icons/cancel.svg.jsx'
+import { StepsRenderer } from '#root/pages/components/flows/steps_renderer.jsx'
+import { CancelIcon } from '#root/pages/components/icons/cancel.svg.jsx'
 import * as Dialog from '@radix-ui/react-dialog'
 import { FocusScope } from '@radix-ui/react-focus-scope'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
@@ -91,20 +91,20 @@ export function ImportContactsDialog({
                 Upload a CSV file to import contacts into your audience.
               </Dialog.Description>
             </VisuallyHidden>
-            <Dialog.Content className="w-screen h-screen p-6 lg:p-10 kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out [data-state='closed']:transform-[scale(95%)] [data-state='closed']:opacity-0 data-[state=open]:animate-[dialog-content-show_150ms_cubic-bezier(0.16,1,0.3,1)] data-[state=closed]:animate-[dialog-content-hide_100ms_cubic-bezier(0.16,1,0.3,1)] z-[2]">
+            <Dialog.Content className="w-screen h-screen p-6 lg:p-10 kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out [data-state='closed']:transform-[scale(95%)] [data-state='closed']:opacity-0 data-[state=open]:animate-[dialog-content-show_150ms_cubic-bezier(0.16,1,0.3,1)] data-[state=closed]:animate-[dialog-content-hide_100ms_cubic-bezier(0.16,1,0.3,1)] z-2">
               <div className="flex justify-end pb-6 lg:pb-10">
                 <Dialog.Close asChild>
                   <button
                     type="button"
                     aria-label="Close"
-                    className="hover:bg-[var(--kb-background-tertiary)]"
+                    className="hover:bg-(--kb-background-tertiary)"
                   >
                     <CancelIcon />
                   </button>
                 </Dialog.Close>
               </div>
 
-              <div className="w-full max-w-[40rem] mx-auto grid grid-cols-1 gap-y-2">
+              <div className="w-full max-w-160 mx-auto grid grid-cols-1 gap-y-2">
                 <StepsRenderer
                   current={step}
                   steps={{

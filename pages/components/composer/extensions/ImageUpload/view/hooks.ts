@@ -1,7 +1,7 @@
-import { useServerFormMutation } from '@pages/hooks/use_server_form_mutation.jsx'
+import { useServerFormMutation } from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { type DragEvent, useCallback, useEffect, useRef, useState } from 'react'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
   const [loading, setLoading] = useState(false)

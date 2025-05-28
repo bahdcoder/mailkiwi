@@ -1,9 +1,9 @@
-import { FilterGroupsSchema } from '@/audiences/dto/segments/create_segment_dto.js'
-import type { UpdateAutomationStepDto } from '@/automations/dto/update_automation_step_dto.js'
-import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
-import type { AutomationStep } from '@/database/database_schema_types.js'
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
-import { container } from '@/utils/typi.js'
+import { FilterGroupsSchema } from '#root/core/audiences/dto/segments/create_segment_dto.js'
+import type { UpdateAutomationStepDto } from '#root/core/automations/dto/update_automation_step_dto.js'
+import { AutomationStepRepository } from '#root/core/automations/repositories/automation_step_repository.js'
+import type { AutomationStep } from '#root/database/database_schema_types.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
+import { container } from '@kibamail/framework'
 import {
   type BaseIssue,
   type BaseSchema,

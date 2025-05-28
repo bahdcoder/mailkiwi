@@ -1,27 +1,27 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import type { Next } from 'hono'
 import { ConfirmEmailVerificationCodeSchema } from '../users/dto/confirm_email_verification_code_dto.js'
 import { SetUserNameSchema } from '../users/dto/set_user_name_dto.js'
 import { SetUserPasswordSchema } from '../users/dto/set_user_password_dto.js'
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
-import { CreateUserSchema } from '@/auth/users/dto/create_user_dto.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { RegisterUserAction } from '#root/core/auth/actions/register_user_action.js'
+import { CreateUserSchema } from '#root/core/auth/users/dto/create_user_dto.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { makeApp, makeDatabase } from '@/shared/container/index.js'
-import { VikeController } from '@/shared/controllers/vike_controller.js'
-import { middleware } from '@/shared/middleware/middleware_aliases.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import type { HonoContext } from '@/shared/server/types.js'
-import { Session } from '@/shared/sessions/sessions.js'
+import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
+import { middleware } from '#root/core/shared/middleware/middleware_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
+import { Session } from '#root/core/shared/sessions/sessions.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 /**
  * RegisterController handles the user registration process.
@@ -36,31 +36,20 @@ import { container } from '@/utils/typi.js'
  * users complete all necessary steps while maintaining security and
  * data integrity throughout the account creation process.
  */
-export class RegisterController extends VikeController {
+export class RegisterController extends BaseController {
   constructor(
     private userRepository = container.make(UserRepository),
     private app = makeApp(),
   ) {
     super()
 
-    this.app.defineRoutes(
-      [
-        ...this.vikePath(
-          route('auth_register'),
-          this.redirectToWelcomeIfAuthenticatedPage,
-        ),
-        ['POST', route('auth_register'), this.register.bind(this)],
-      ],
-      {
-        prefix: '',
-        middleware: [],
-      },
-    )
+    this.app.defineRoutes([['POST', route('auth_register'), this.register.bind(this)]], {
+      prefix: '',
+      middleware: [],
+    })
 
     this.app.defineRoutes(
       [
-        ...this.vikePath(route('auth_register_password'), this.passwordPage),
-        ...this.vikePath(route('auth_register_email_confirm'), this.page),
         ['POST', route('auth_register_password'), this.password.bind(this)],
         ['POST', route('auth_register_profile'), this.profile.bind(this)],
         ['POST', route('auth_register_email_confirm'), this.emailConfirm.bind(this)],
@@ -173,23 +162,6 @@ export class RegisterController extends VikeController {
     }
 
     return this.response(ctx).redirect(route('auth_register_password')).send()
-  }
-
-  /**
-   * Handles the password setup page rendering.
-   *
-   * Checks if the user already has a password set and redirects
-   * to the profile setup if they do, otherwise renders the
-   * password setup page.
-   */
-  passwordPage = async (ctx: HonoContext, next: Next) => {
-    const user = ctx.get('user')
-
-    if (user.password) {
-      return this.response(ctx).redirect(route('auth_register_profile')).send()
-    }
-
-    return this.page(ctx, next)
   }
 
   /**

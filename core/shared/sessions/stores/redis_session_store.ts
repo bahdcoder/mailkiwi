@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 
-import { makeRedis } from '@/shared/container/index.js'
+import { makeRedis } from '#root/core/shared/container/index.js'
 
-import { REDIS_KNOWN_KEYS } from '@/redis/redis_client.js'
+import { REDIS_KNOWN_KEYS } from '#root/core/redis/redis_client.js'
 
 export interface RedisSessionData {
   userId: string

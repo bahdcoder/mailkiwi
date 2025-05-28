@@ -1,7 +1,7 @@
-import { audiences, creditPurchases, emailSends } from '@/database/schema.js'
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { and, eq, gt, sql, sum } from 'drizzle-orm'
+import { audiences, creditPurchases, emailSends } from '#root/database/schema.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
+import { and, eq, gt, sql, sum } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 
 export class TeamCreditRepository extends BaseRepository {

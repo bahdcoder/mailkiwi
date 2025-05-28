@@ -1,15 +1,15 @@
-import { PasswordField } from '@pages/components/input/password-field.jsx'
+import { PasswordField } from '#root/pages/components/input/password-field.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 function ResetPasswordPage() {
   const { routeParams } = usePageContext()
@@ -20,7 +20,7 @@ function ResetPasswordPage() {
 
   if (isSuccess) {
     return (
-      <div className="w-full max-w-[25rem] mx-auto mt-24">
+      <div className="w-full max-w-100 mx-auto mt-24">
         <img
           src="/icons/email-send.svg"
           className="mb-4"
@@ -40,7 +40,7 @@ function ResetPasswordPage() {
   }
 
   return (
-    <div className="w-full max-w-[25rem] mx-auto mt-24">
+    <div className="w-full max-w-100 mx-auto mt-24">
       <Heading>Create a new password</Heading>
 
       <Text className="kb-content-tertiary mt-2">

@@ -1,5 +1,5 @@
-import { useApplicationLayoutContext } from '@pages/components/dashboard/layout/application-layout-context.jsx'
-import { SidebarContent } from '@pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
+import { useApplicationLayoutContext } from '#root/pages/components/dashboard/layout/application-layout-context.jsx'
+import { SidebarContent } from '#root/pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
 import cn from 'classnames'
 import { useEffect } from 'react'
 
@@ -17,7 +17,7 @@ export function LeftSidebar() {
 
   return (
     <nav
-      className={cn('flex flex-col box-border flex-shrink-0 px-2 duration-200')}
+      className={cn('flex flex-col box-border shrink-0 px-2 duration-200')}
       style={{
         width: `${sidebar.width}px`,
         transition: 'margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1)',

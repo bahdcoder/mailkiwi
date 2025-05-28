@@ -1,5 +1,5 @@
 import crypto from 'node:crypto'
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 
 export interface LinkMetadata {
   broadcastId?: string

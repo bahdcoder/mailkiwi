@@ -1,15 +1,15 @@
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { describe, test } from 'vitest'
 
-import { AllowedFilterFieldPickList } from '@/audiences/dto/segments/create_segment_dto.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { AllowedFilterFieldPickList } from '#root/core/audiences/dto/segments/create_segment_dto.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import {
   type ContactFilterCondition,
@@ -17,12 +17,12 @@ import {
   contacts,
   segments,
   tags,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@audience segments', () => {
   test('can create an audience segment', async ({ expect }) => {

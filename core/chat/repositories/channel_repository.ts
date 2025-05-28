@@ -1,19 +1,19 @@
-import { defaultChannels } from '@/cli/commands/chat/add_default_channels_comand.js'
-import { and, asc, desc, eq, gt, inArray, isNull, lt, sql } from 'drizzle-orm'
+import { defaultChannels } from '#root/cli/commands/chat/add_default_channels_comand.js'
+import { and, asc, desc, eq, gt, inArray, isNull, lt, sql } from '@kibamail/framework/mysql'
 import { MessageRepository } from './message_repository.js'
 
-import type { Channel, Message } from '@/database/database_schema_types.js'
+import type { Channel, Message } from '#root/database/database_schema_types.js'
 import {
   channelMemberships,
   channels,
   messageReactions,
   messages,
   users,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { Paginator } from '@/shared/utils/pagination/paginator.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
+import { Paginator } from '#root/core/shared/utils/pagination/paginator.js'
 
 export class ChannelRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {

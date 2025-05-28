@@ -1,17 +1,17 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 
 import type {
   InsertSenderIdentity,
   SenderIdentity,
   SenderIdentityWithSendingDomain,
   UpdateSenderIdentity,
-} from '@/database/database_schema_types.js'
-import { senderIdentities, sendingDomains } from '@/database/schema.js'
-import { belongsTo } from '@/database/utils/relationships.js'
+} from '#root/database/database_schema_types.js'
+import { senderIdentities, sendingDomains } from '#root/database/schema.js'
+import { belongsTo } from '#root/database/utils/relationships.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { ScryptTokenRepository } from '@/shared/repositories/scrypt_token_repository.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
+import { ScryptTokenRepository } from '#root/core/shared/repositories/scrypt_token_repository.js'
 
 /**
  * SenderIdentityRepository manages database operations for sender identities.

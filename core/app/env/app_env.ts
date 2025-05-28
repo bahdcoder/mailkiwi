@@ -1,9 +1,6 @@
-import { url, cleanEnv, host, port, str } from 'envalid'
+import { str } from 'envalid'
 
-import { makeEnvSecrets } from '@/shared/utils/env/make_env_secrets.js'
-import { makeExtraAppConfigurations } from '@/shared/utils/env/make_extra_app_configurations.js'
-import { mysqlDatabaseUrl } from '@/shared/utils/env/make_mysql_database_validator.js'
-import { redisDatabaseUrl } from '@/shared/utils/env/make_redis_url_validator.js'
+import { makeAppEnv } from '@kibamail/framework'
 
 export type AppEnvVariables = typeof appEnv
 
@@ -58,87 +55,31 @@ const TRACKING_HOST_NAME = 'clicks.kbmta.net'
 // But we will track bounces per minute and per hour per customer, and temporarily pause sending for a sender in some scenarios.
 // Pausing only pauses the queue of emails for this sender, but continues to receive email via smtp and http api.
 
-const EVENT_TRACKING_DOMAIN = 'e.kbmta.net'
+// const EVENT_TRACKING_DOMAIN = 'e.kbmta.net'
 
-const EU_EVENT_TRACKING_DOMAIN = 'eu.e.kbmta.net'
+// const EU_EVENT_TRACKING_DOMAIN = 'eu.e.kbmta.net'
 
-export const appEnv = makeExtraAppConfigurations(
-  makeEnvSecrets(
-    cleanEnv(process.env, {
-      // Http server
-      PORT: port(),
-      HOST: host(),
+export const appEnv = makeAppEnv(
+  {
+    MAILPIT_API_URL: str(),
 
-      // Encryption & security
-      APP_KEY: str(),
+    MTA_ACCESS_TOKEN: str(),
+    MTA_INJECTOR_URL: str(),
 
-      // Environment
-      NODE_ENV: str({
-        choices: ['development', 'test', 'production', 'staging'],
-        default: 'test',
-      }),
-      APP_URL: url(),
-      MAILPIT_API_URL: str(),
+    EVENT_TRACKING_DOMAIN: str(),
 
-      // Databases
-      REDIS_URL: redisDatabaseUrl(),
-      DATABASE_URL: mysqlDatabaseUrl(),
+    MMDB_DOWNLOAD_URL: str(),
 
-      // MTA SMTP
-      SMTP_HOST: host(),
-      SMTP_PORT: port(),
-      SMTP_USER: str(),
-      SMTP_PASS: str(),
-      SMTP_MAIL_FROM: str(),
+    ACME_DIRECTORY_URL: str(),
 
-      // MTA auth
-      MTA_ACCESS_TOKEN: str(),
-      MTA_INJECTOR_URL: str(),
+    COMMERCE_PROVIDER_STRIPE_SECRET_KEY: str(),
+    COMMERCE_PROVIDER_STRIPE_PUBLIC_KEY: str(),
 
-      // S3 file uploads
-      FILE_UPLOADS_ACCESS_KEY: str(),
-      FILE_UPLOADS_ACCESS_SECRET: str(),
-      FILE_UPLOADS_ENDPOINT: str(),
-      FILE_UPLOADS_PORT: port(),
-      FILE_UPLOADS_BUCKET: str(),
-      FILE_UPLOADS_REGION: str(),
+    COMMERCE_PROVIDER_PAYSTACK_SECRET_KEY: str(),
+    COMMERCE_PROVIDER_PAYSTACK_PUBLIC_KEY: str(),
 
-      // emails
-      EVENT_TRACKING_DOMAIN: str(),
-
-      // downloads
-      MMDB_DOWNLOAD_URL: str(),
-
-      // ssl certificates
-      ACME_DIRECTORY_URL: str(),
-
-      // commerce
-      COMMERCE_PROVIDER_STRIPE_SECRET_KEY: str(),
-      COMMERCE_PROVIDER_STRIPE_PUBLIC_KEY: str(),
-
-      COMMERCE_PROVIDER_PAYSTACK_SECRET_KEY: str(),
-      COMMERCE_PROVIDER_PAYSTACK_PUBLIC_KEY: str(),
-
-      // logging
-      LOG_LEVEL: str(),
-
-      // auth
-      OAUTH_GITHUB_CLIENT_ID: str(),
-      OAUTH_GITHUB_CLIENT_SECRET: str(),
-      OAUTH_GITHUB_CALLBACK_URL: str(),
-
-      OAUTH_GOOGLE_CLIENT_ID: str(),
-      OAUTH_GOOGLE_CLIENT_SECRET: str(),
-      OAUTH_GOOGLE_CALLBACK_URL: str(),
-
-      GOOGLE_FONTS_API_KEY: str(),
-
-      // assets
-      STORJ_ACCESS_GRANT: str(),
-      STORJ_ASSETS_PUBLIC_URL: str(),
-      ASSETS_URL: str(),
-    }),
-  ),
+    GOOGLE_FONTS_API_KEY: str(),
+  },
   {
     software: {
       shortName: SHORT_NAME,

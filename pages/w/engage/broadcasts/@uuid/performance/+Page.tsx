@@ -1,5 +1,5 @@
-import { Button } from '@pages/components/button/button.jsx'
-import { MetricCard } from '@pages/components/performance/metric-card.jsx'
+import { Button } from '#root/pages/components/button/button.jsx'
+import { MetricCard } from '#root/pages/components/performance/metric-card.jsx'
 import { Heading } from '@kibamail/owly/heading'
 import * as Tabs from '@kibamail/owly/tabs'
 import { Text } from '@kibamail/owly/text'
@@ -15,20 +15,20 @@ function LetterPerformancePage() {
 
         <Button>View recipients</Button>
       </div>
-      <div className="w-full rounded-2xl flex flex-col lg:flex-row border border-[var(--border-tertiary)] box-border">
-        <div className="w-full lg:w-1/4 p-6 border-b lg:border-b-0 lg:border-r box-border border-[var(--border-tertiary)]">
+      <div className="w-full rounded-2xl flex flex-col lg:flex-row border border-(--border-tertiary) box-border">
+        <div className="w-full lg:w-1/4 p-6 border-b lg:border-b-0 lg:border-r box-border border-(--border-tertiary)">
           <MetricCard
             rate={{ label: 'Emails delivered', value: '100%' }}
             value={{ label: 'Delivery rate', value: '97%' }}
           />
         </div>
-        <div className="w-full lg:w-1/4 p-6 border-b lg:border-b-0 lg:border-r box-border border-[var(--border-tertiary)]">
+        <div className="w-full lg:w-1/4 p-6 border-b lg:border-b-0 lg:border-r box-border border-(--border-tertiary)">
           <MetricCard
             rate={{ label: 'Open rate', value: '31.24%' }}
             value={{ label: 'Total email opens', value: '1,233' }}
           />
         </div>
-        <div className="w-full lg:w-1/4 p-6 border-b lg:border-b-0 lg:border-r box-border border-[var(--border-tertiary)]">
+        <div className="w-full lg:w-1/4 p-6 border-b lg:border-b-0 lg:border-r box-border border-(--border-tertiary)">
           <MetricCard
             rate={{ label: 'Click rate', value: '3.11%' }}
             value={{ label: 'Total link clicks', value: '2,103' }}
@@ -46,10 +46,10 @@ function LetterPerformancePage() {
         <div className="w-full flex flex-col gap-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="w-full flex items-center gap-2">
-              <Text className="kb-content-tertiary flex-shrink-0">Marked as spam</Text>
+              <Text className="kb-content-tertiary shrink-0">Marked as spam</Text>
 
-              <div className="w-full flex-grow flex items-center">
-                <div className="h-px w-full bg-[var(--border-tertiary)]" />
+              <div className="w-full grow flex items-center">
+                <div className="h-px w-full bg-(--border-tertiary)" />
               </div>
 
               <Text className="kb-content-secondary">2%</Text>
@@ -59,10 +59,10 @@ function LetterPerformancePage() {
         <div className="w-full flex flex-col gap-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="w-full flex items-center gap-2">
-              <Text className="kb-content-tertiary flex-shrink-0">Marked as spam</Text>
+              <Text className="kb-content-tertiary shrink-0">Marked as spam</Text>
 
-              <div className="w-full flex-grow flex items-center">
-                <div className="h-px w-full bg-[var(--border-tertiary)]" />
+              <div className="w-full grow flex items-center">
+                <div className="h-px w-full bg-(--border-tertiary)" />
               </div>
 
               <Text className="kb-content-secondary">2%</Text>

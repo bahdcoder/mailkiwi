@@ -1,16 +1,16 @@
-import { inArray } from 'drizzle-orm'
+import { inArray } from '@kibamail/framework/mysql'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
 import type {
   AutomationStepRunnerContext,
   AutomationStepRunnerContract,
-} from '@/automations/utils/automation_step_runners/automation_runner_contract.js'
+} from '#root/core/automations/utils/automation_step_runners/automation_runner_contract.js'
 
-import type { AutomationStep, Contact } from '@/database/database_schema_types.js'
-import { type ACTION_UPDATE_CONTACT_ATTRIBUTES, tags } from '@/database/schema.js'
+import type { AutomationStep, Contact } from '#root/database/database_schema_types.js'
+import { type ACTION_UPDATE_CONTACT_ATTRIBUTES, tags } from '#root/database/schema.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class UpdateContactAttributesAutomationStepRunner
   implements AutomationStepRunnerContract

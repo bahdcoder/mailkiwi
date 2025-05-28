@@ -1,11 +1,11 @@
-import { BroadcastGroupRepository } from '@/broadcasts/repositories/broadcast_group_repository.js'
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
-import { broadcastGroups } from '@/database/schema.js'
-import type { DefaultPageProps } from '@pages/types/page-context.js'
-import { PagePropsResolverContract } from '@/shared/controllers/page_props/page_props_resolver_contract.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import { container } from '@/utils/typi.js'
-import { eq } from 'drizzle-orm'
+import { BroadcastGroupRepository } from '#root/core/broadcasts/repositories/broadcast_group_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
+import { broadcastGroups } from '#root/database/schema.js'
+import type { DefaultPageProps } from '#root/pages/types/page-context.js'
+import { PagePropsResolverContract } from '#root/core/shared/controllers/page_props/page_props_resolver_contract.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import { container } from '@kibamail/framework'
+import { eq } from '@kibamail/framework/mysql'
 
 export class EngagePropsResolver extends PagePropsResolverContract {
   static get regex() {

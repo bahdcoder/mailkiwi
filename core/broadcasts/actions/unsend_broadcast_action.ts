@@ -1,12 +1,12 @@
 import type { Job } from 'bullmq'
 
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import type { BroadcastWithoutContent } from '@/database/database_schema_types.js'
+import type { BroadcastWithoutContent } from '#root/database/database_schema_types.js'
 
-import { Queue } from '@/shared/queue/queue.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class UnsendBroadcastAction {
   constructor(private broadcastRepository = container.make(BroadcastRepository)) {}

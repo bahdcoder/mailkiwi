@@ -1,25 +1,25 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { RunAutomationForContactJob } from '@/automations/jobs/run_automation_for_contact_job.js'
+import { RunAutomationForContactJob } from '#root/core/automations/jobs/run_automation_for_contact_job.js'
 
-import type { TagOnContact } from '@/database/database_schema_types.js'
+import type { TagOnContact } from '#root/database/database_schema_types.js'
 import {
   type TRIGGER_CONFIGURATION,
   automationSteps,
   automations,
   contactAutomationSteps,
   tagsOnContacts,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import type { AUTOMATION_STEP_SUB_TYPES_TRIGGER } from '@/database/types/automations.js'
+import type { AUTOMATION_STEP_SUB_TYPES_TRIGGER } from '#root/database/types/automations.js'
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { Queue } from '@/shared/queue/queue.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export interface TriggerAutomationsForContactJobPayload {
   contactId: string

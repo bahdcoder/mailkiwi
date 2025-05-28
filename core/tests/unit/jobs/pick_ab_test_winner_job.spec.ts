@@ -1,21 +1,21 @@
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
-import { SendAbTestBroadcastJob } from '@/broadcasts/jobs/send_ab_test_broadcast_job.js'
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { SendAbTestBroadcastJob } from '#root/core/broadcasts/jobs/send_ab_test_broadcast_job.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { createBroadcastForUser, createUser } from '#root/core/tests/mocks/auth/users.js'
 
-import { abTestVariants, contacts } from '@/database/schema.js'
+import { abTestVariants, contacts } from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { hoursToSeconds } from '@/utils/dates.js'
-import { container } from '@/utils/typi.js'
+import { hoursToSeconds } from '#root/core/utils/dates.js'
+import { container } from '@kibamail/framework'
 
 describe('@abtests Pick Test winner', () => {
   test('picks A/B test winner for click rate winning criteria', async ({ expect }) => {

@@ -1,12 +1,12 @@
 import type {
   SenderIdentity,
   UpdateSenderIdentity,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 
-import type { UpdateSenderIdentityDto } from '@/sending_domains/dto/sender_identities/update_sender_identity_dto.js'
-import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
+import type { UpdateSenderIdentityDto } from '#root/core/sending_domains/dto/sender_identities/update_sender_identity_dto.js'
+import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * Action for updating an existing sender identity.

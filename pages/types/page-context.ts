@@ -6,7 +6,7 @@ import type {
   TeamMembership,
   TeamWithMemberships,
   UserWithTeams,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 
 export interface DefaultPageProps<T = object> {
   engage: {

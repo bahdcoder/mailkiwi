@@ -1,25 +1,25 @@
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
-import { ReportBuilder } from '@/audiences/utils/report_builder/report_builder.js'
+import { ReportBuilder } from '#root/core/audiences/utils/report_builder/report_builder.js'
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createBroadcastForUser } from '@/tests/mocks/auth/users.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { createBroadcastForUser } from '#root/core/tests/mocks/auth/users.js'
 
-import type { InsertEmailSendEvent } from '@/database/database_schema_types.js'
+import type { InsertEmailSendEvent } from '#root/database/database_schema_types.js'
 import {
   contacts,
   emailSendEvents,
   emailSends,
   sendingSources,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
-import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { container } from '@kibamail/framework'
+import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 describe('@report-builder', () => {
   async function prepareBatchOfContactsForReport({

@@ -1,8 +1,8 @@
-import { ToolbarButton } from '@pages/components/composer/components/toolbar/toolbar.jsx'
-import { ToolbarContainer } from '@pages/components/composer/components/toolbar/toolbar.jsx'
-import { EditPencilIcon } from '@pages/components/icons/edit-pencil.svg.jsx'
-import { TrashIcon } from '@pages/components/icons/trash.svg.jsx'
-import type { MenuProps } from '@pages/components/tiptap/menus/types.js'
+import { ToolbarButton } from '#root/pages/components/composer/components/toolbar/toolbar.jsx'
+import { ToolbarContainer } from '#root/pages/components/composer/components/toolbar/toolbar.jsx'
+import { EditPencilIcon } from '#root/pages/components/icons/edit-pencil.svg.jsx'
+import { TrashIcon } from '#root/pages/components/icons/trash.svg.jsx'
+import type { MenuProps } from '#root/pages/components/tiptap/menus/types.js'
 import { Text } from '@kibamail/owly/text'
 import { BubbleMenu as BaseBubbleMenu, useEditorState } from '@tiptap/react'
 import React, { useCallback, useState } from 'react'
@@ -48,7 +48,7 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
       }}
     >
       <ToolbarContainer>
-        <div className="flex items-center px-2 border-r border-[var(--white-10)]">
+        <div className="flex items-center px-2 border-r border-(--white-10)">
           {presetLink ? (
             <p className="text-white text-sm">{presetLink?.name}</p>
           ) : (
@@ -56,7 +56,7 @@ export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="cursor-pointer text-white underline underline-offset-2 decoration-[var(--content-tertiary-inverse)]"
+              className="cursor-pointer text-white underline underline-offset-2 decoration-(--content-tertiary-inverse)"
             >
               <Text className="text-white">{link}</Text>
             </a>

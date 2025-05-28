@@ -1,26 +1,29 @@
 import { createSign, createVerify } from 'node:crypto'
-import { appEnv } from '@/app/env/app_env.js'
-import { eq } from 'drizzle-orm'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { refreshRedisDatabase } from '#root/core/tests/mocks/teams/teams.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
-import { sendingDomains } from '@/database/schema.js'
+import { sendingDomains } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { Encryption } from '@/shared/utils/encryption/encryption.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
+import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@domains', () => {
   test('can create unique sending domains for a team', async ({ expect }) => {
+    await refreshRedisDatabase()
+
     const { team, user } = await createUser()
 
     const name = `${cuid()}newsletter.kibamail.com`
@@ -43,7 +46,7 @@ describe('@domains', () => {
 
     const checkDnsJobs = await Queue.sending_domains().getJobs()
 
-    expect(checkDnsJobs[0]?.delay).toEqual(60000) // wait 60 seconds before running job
+    expect(checkDnsJobs[0]?.opts?.delay).toEqual(60000) // wait 60 seconds before running job
     expect(checkDnsJobs[0]?.data?.sendingDomainId).toEqual(domains[0].id)
 
     const [sendingDomain] = await container

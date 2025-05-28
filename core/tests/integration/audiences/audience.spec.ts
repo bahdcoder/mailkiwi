@@ -1,18 +1,18 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequest, makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequest, makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
-import { audiences, websites } from '@/database/schema.js'
+import { audiences, websites } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@audiences', () => {
   test('can create an audience only if authenticated', async ({ expect }) => {

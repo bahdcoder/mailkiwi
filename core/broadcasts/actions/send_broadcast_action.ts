@@ -1,15 +1,15 @@
 import type { Job } from 'bullmq'
 
-import { SendAbTestBroadcastJob } from '@/broadcasts/jobs/send_ab_test_broadcast_job.js'
-import { SendBroadcastJob } from '@/broadcasts/jobs/send_broadcast_job.js'
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { SendAbTestBroadcastJob } from '#root/core/broadcasts/jobs/send_ab_test_broadcast_job.js'
+import { SendBroadcastJob } from '#root/core/broadcasts/jobs/send_broadcast_job.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import type { BroadcastWithoutContent } from '@/database/database_schema_types.js'
+import type { BroadcastWithoutContent } from '#root/database/database_schema_types.js'
 
-import { BroadcastsQueue, Queue } from '@/shared/queue/queue.js'
+import { BroadcastsQueue, Queue } from '#root/core/shared/queue/queue.js'
 
-import { differenceInSeconds } from '@/utils/dates.js'
-import { container } from '@/utils/typi.js'
+import { differenceInSeconds } from '#root/core/utils/dates.js'
+import { container } from '@kibamail/framework'
 
 /**
  * SendBroadcastAction handles the scheduling and queuing of email broadcasts.

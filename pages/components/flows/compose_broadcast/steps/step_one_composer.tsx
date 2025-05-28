@@ -1,11 +1,11 @@
 import './styles.css'
-import { Composer } from '@pages/components/composer/composer.jsx'
-import { useTiptapEditor } from '@pages/components/composer/editor-state.jsx'
-import { useComposeBroadcastContext } from '@pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { Composer } from '#root/pages/components/composer/composer.jsx'
+import { useTiptapEditor } from '#root/pages/components/composer/editor-state.jsx'
+import { useComposeBroadcastContext } from '#root/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
 import { Spinner } from '@kibamail/owly/spinner'
 import { usePageContext } from 'vike-react/usePageContext'
-import type { BroadcastPageProps } from '@pages/types/broadcast-page-props.js'
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+import type { BroadcastPageProps } from '#root/pages/types/broadcast-page-props.js'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
 interface EditorSaveState {
   isSaving: boolean

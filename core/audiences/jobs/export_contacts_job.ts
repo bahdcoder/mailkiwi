@@ -1,31 +1,31 @@
 import { Readable } from 'node:stream'
-import { appEnv } from '@/app/env/app_env.js'
-import { makeMinioClient } from '@/minio/minio_client.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { makeMinioClient } from '#root/core/minio/minio_client.js'
 import { sentenceCase } from 'change-case'
 import { stringify as csvStringify } from 'csv-stringify'
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 
-import type { CreateContactExportDto } from '@/audiences/dto/contact_exports/create_contact_export_dto.js'
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
-import { SegmentBuilder } from '@/audiences/utils/segment_builder/segment_builder.js'
+import type { CreateContactExportDto } from '#root/core/audiences/dto/contact_exports/create_contact_export_dto.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
+import { SegmentBuilder } from '#root/core/audiences/utils/segment_builder/segment_builder.js'
 
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
 import type {
   Audience,
   Contact,
   ContactWithTags,
-} from '@/database/database_schema_types.js'
-import { contacts } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import { contacts } from '#root/database/schema.js'
 
-import { Mailer } from '@/shared/mailers/mailer.js'
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { Mailer } from '#root/core/shared/mailers/mailer.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export interface ExportContactsJobPayload {
   filterGroups: CreateContactExportDto['filterGroups']

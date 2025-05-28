@@ -1,13 +1,13 @@
-import { SlashIcon } from '@pages/components/icons/slash.svg.jsx'
-import { PageLayout } from '@pages/components/page/page-layout.jsx'
-import { ProductPageHeading } from '@pages/components/page/product-page-heading.jsx'
+import { SlashIcon } from '#root/pages/components/icons/slash.svg.jsx'
+import { PageLayout } from '#root/pages/components/page/page-layout.jsx'
+import { ProductPageHeading } from '#root/pages/components/page/product-page-heading.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import * as Tabs from '@kibamail/owly/tabs'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
 function SingleLetterLayout({ children }: React.PropsWithChildren) {
   const { urlPathname, routeParams } = usePageContextWithProps()
@@ -32,7 +32,7 @@ function SingleLetterLayout({ children }: React.PropsWithChildren) {
                 <div className="flex items-center text-sm mb-1">
                   <a
                     href={route('engage')}
-                    className="kb-content-tertiary hover:text-[var(--kb-content-secondary)]"
+                    className="kb-content-tertiary hover:text-(--kb-content-secondary)"
                   >
                     Broadcasts
                   </a>
@@ -52,7 +52,7 @@ function SingleLetterLayout({ children }: React.PropsWithChildren) {
         >
           <div className="w-full flex">
             <div className="w-full lg:w-auto">
-              <Tabs.List className="lg:w-[fit-content] gap-x-4">
+              <Tabs.List className="lg:w-fit gap-x-4">
                 <Tabs.Trigger asChild value="overview" className="px-0">
                   <a
                     href={route('engage_overview', {
@@ -74,7 +74,7 @@ function SingleLetterLayout({ children }: React.PropsWithChildren) {
                 <Tabs.Indicator />
               </Tabs.List>
             </div>
-            <div className="flex-grow hidden lg:block h-px bg-[var(--black-5)] w-full self-end" />
+            <div className="grow hidden lg:block h-px bg-(--black-5) w-full self-end" />
           </div>
         </ProductPageHeading>
         <div className="w-layout-container">{children}</div>

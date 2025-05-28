@@ -7,7 +7,7 @@ export function SlashesDivider() {
         .map((slash) => (
           <div
             key={slash}
-            className=" h-full w-px bg-[var(--border-tertiary)] transform rotate-45"
+            className=" h-full w-px bg-(--border-tertiary) transform rotate-45"
           />
         ))}
     </div>

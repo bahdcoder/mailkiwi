@@ -1,10 +1,10 @@
 import type { JSONContent } from '@tiptap/core'
 
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import type { BroadcastWithEmailContent } from '@/database/database_schema_types.js'
+import type { BroadcastWithEmailContent } from '#root/database/database_schema_types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 interface ValidationResult {
   url: string

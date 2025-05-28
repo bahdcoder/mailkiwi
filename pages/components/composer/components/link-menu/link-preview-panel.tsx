@@ -1,13 +1,13 @@
 // import {
 //   ToolbarButton,
 //   ToolbarContainer,
-// } from "@pages/components/composer/components/toolbar/toolbar.jsx"
-// import { EditPencilIcon } from "@pages/components/icons/edit-pencil.svg.jsx"
-// import { TrashIcon } from "@pages/components/icons/trash.svg.jsx"
-// import { Icon } from "@pages/components/tiptap/ui/Icon.jsx"
-// import { Surface } from "@pages/components/tiptap/ui/Surface.jsx"
-// import { Toolbar } from "@pages/components/tiptap/ui/Toolbar.jsx"
-// import Tooltip from "@pages/components/tiptap/ui/Tooltip/index.jsx"
+// } from "#root/pages/components/composer/components/toolbar/toolbar.jsx"
+// import { EditPencilIcon } from "#root/pages/components/icons/edit-pencil.svg.jsx"
+// import { TrashIcon } from "#root/pages/components/icons/trash.svg.jsx"
+// import { Icon } from "#root/pages/components/tiptap/ui/Icon.jsx"
+// import { Surface } from "#root/pages/components/tiptap/ui/Surface.jsx"
+// import { Toolbar } from "#root/pages/components/tiptap/ui/Toolbar.jsx"
+// import Tooltip from "#root/pages/components/tiptap/ui/Tooltip/index.jsx"
 // import { Text } from "@kibamail/owly/text"
 
 // export type LinkPreviewPanelProps = {
@@ -21,12 +21,12 @@
 
 //   return (
 //     <ToolbarContainer>
-//       <div className="flex items-center px-2 border-r border-[var(--white-10)]">
+//       <div className="flex items-center px-2 border-r border-(--white-10)">
 //         <a
 //           href={sanitizedLink}
 //           target="_blank"
 //           rel="noopener noreferrer"
-//           className="cursor-pointer text-white underline underline-offset-2 decoration-[var(--content-tertiary-inverse)]"
+//           className="cursor-pointer text-white underline underline-offset-2 decoration-(--content-tertiary-inverse)"
 //         >
 //           <Text className="kb-content-tertiary-inverse">{sanitizedLink}</Text>
 //         </a>

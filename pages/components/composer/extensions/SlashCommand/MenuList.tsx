@@ -137,9 +137,9 @@ export const MenuList = React.forwardRef((props: MenuListProps, ref) => {
                 key={command.name}
                 onClick={createCommandClickHandler(groupIndex, commandIndex)}
                 className={cn(
-                  'flex items-center w-full h-8 box-border p-2 gap-1 hover:bg-[var(--background-secondary)] cursor-pointer rounded-lg kb-reset transition ease-in-out duration-100',
+                  'flex items-center w-full h-8 box-border p-2 gap-1 hover:bg-(--background-secondary) cursor-pointer rounded-lg kb-reset transition ease-in-out duration-100',
                   {
-                    'bg-[var(--background-secondary)]':
+                    'bg-(--background-secondary)':
                       selectedGroupIndex === groupIndex &&
                       selectedCommandIndex === commandIndex,
                   },

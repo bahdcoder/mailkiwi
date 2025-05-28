@@ -1,4 +1,4 @@
-import { themeColors } from '@pages/components/tiptap/constants.js'
+import { themeColors } from '#root/pages/components/tiptap/constants.js'
 import { useCallback, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { Icon } from '../../ui/Icon.jsx'
@@ -45,7 +45,7 @@ export const ColorPicker = ({ color, onChange, onClear }: ColorPickerProps) => {
         onChange={handleColorUpdate}
         onBlur={handleColorChange}
       />
-      <div className="flex flex-wrap items-center gap-1 max-w-[15rem]">
+      <div className="flex flex-wrap items-center gap-1 max-w-60">
         {themeColors.map((currentColor) => (
           <ColorButton
             active={currentColor === color}

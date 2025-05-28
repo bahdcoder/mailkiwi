@@ -1,12 +1,12 @@
 import { randomBytes } from 'node:crypto'
 import { Secret } from '@poppinss/utils'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 
-import type { DrizzleClient } from '@/database/client.js'
-import { accessTokens } from '@/database/schema.js'
+import type { DrizzleClient } from '#root/database/client.js'
+import { accessTokens } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { ScryptTokenRepository } from '@/shared/repositories/scrypt_token_repository.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { ScryptTokenRepository } from '#root/core/shared/repositories/scrypt_token_repository.js'
 
 /**
  * AccessTokenRepository manages API keys for authentication and authorization.

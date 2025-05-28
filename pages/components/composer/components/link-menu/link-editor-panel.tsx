@@ -1,5 +1,5 @@
-import { CheckIcon } from '@pages/components/icons/check.svg.jsx'
-import { LinkIcon } from '@pages/components/icons/link.svg.jsx'
+import { CheckIcon } from '#root/pages/components/icons/check.svg.jsx'
+import { LinkIcon } from '#root/pages/components/icons/link.svg.jsx'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 import * as Popover from '@radix-ui/react-popover'
@@ -68,7 +68,7 @@ export function LinkEditorPanel({
           'w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md',
           {
             'bg-white bg-opacity-[0.08] text-white': initialUrl,
-            'hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]':
+            'hover:bg-white hover:bg-opacity-[0.08] text-(--content-tertiary-inverse)':
               !initialUrl,
           },
         )}
@@ -79,7 +79,7 @@ export function LinkEditorPanel({
       <Popover.Content
         align="center"
         sideOffset={10}
-        className="z-50 w-60 overflow-hidden border kb-border-tertiary rounded-xl p-1 shadow-[0px_16px_24px_-8px_var(--black-10)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-[var(--background-primary)]"
+        className="z-50 w-60 overflow-hidden border kb-border-tertiary rounded-xl p-1 shadow-[0px_16px_24px_-8px_var(--black-10)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-(--background-primary)"
       >
         <form onSubmit={onSubmit} method="post" action="">
           <TextField.Root
@@ -101,7 +101,7 @@ export function LinkEditorPanel({
               type="button"
               key={preset.name}
               onClick={() => onValidUrlSubmitted(preset.value)}
-              className="flex items-center justify-between w-full h-8 box-border p-2 gap-1 hover:bg-[var(--background-secondary)] cursor-pointer rounded-lg"
+              className="flex items-center justify-between w-full h-8 box-border p-2 gap-1 hover:bg-(--background-secondary) cursor-pointer rounded-lg"
             >
               <Text>{preset.name}</Text>
 

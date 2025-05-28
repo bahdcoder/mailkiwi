@@ -1,4 +1,4 @@
-import { banks } from '@/commerce/providers/paystack/helpers/get_banks.js'
+import { banks } from '#root/core/commerce/providers/paystack/helpers/get_banks.js'
 import {
   type InferInput,
   maxLength,

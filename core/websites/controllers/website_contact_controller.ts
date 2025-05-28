@@ -1,9 +1,9 @@
-import { UserSessionMiddleware } from '@/auth/middleware/user_session_middleware.js'
+import { UserSessionMiddleware } from '#root/core/auth/middleware/user_session_middleware.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * WebsiteContactController manages contact interactions on websites.

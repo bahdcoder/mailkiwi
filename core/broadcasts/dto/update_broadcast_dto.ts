@@ -1,4 +1,4 @@
-import { and, count, eq, inArray } from 'drizzle-orm'
+import { and, count, eq, inArray } from '@kibamail/framework/mysql'
 import {
   type InferInput,
   any,
@@ -27,12 +27,12 @@ import {
   segments,
   senderIdentities,
   sendingDomains,
-} from '@/database/schema.js'
+} from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
-import { isDateInPast } from '@/utils/dates.js'
-import { UUID_V1_REGEX } from '@/shared/utils/cuid/cuid.js'
+import { isDateInPast } from '#root/core/utils/dates.js'
+import { UUID_V1_REGEX } from '#root/core/shared/utils/cuid/cuid.js'
 
 /**
  * Common fields for email content validation.

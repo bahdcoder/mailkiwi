@@ -5,8 +5,8 @@ import {
   getMarkerEnd,
 } from 'react-flow-renderer'
 
-import { PlusIcon } from '@pages/components/icons/plus.svg.jsx'
-import type { EdgeElement } from '@pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import { PlusIcon } from '#root/pages/components/icons/plus.svg.jsx'
+import type { EdgeElement } from '#root/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 import { Button } from '@kibamail/owly/button'
 
 const [buttonWidth, buttonHeight] = [100, 40]
@@ -50,7 +50,7 @@ export function DefaultEdge(props: EdgeProps<EdgeElement['data']>) {
           <Button
             variant="primary"
             onClick={() => data?.onAddNodeCallback(id)}
-            className="kb-background-info border-[var(--black-5)] rounded-lg w-7 h-7 p-0 flex items-center justify-center"
+            className="kb-background-info border-(--black-5) rounded-lg w-7 h-7 p-0 flex items-center justify-center"
             style={{ pointerEvents: 'all' }}
           >
             <PlusIcon />

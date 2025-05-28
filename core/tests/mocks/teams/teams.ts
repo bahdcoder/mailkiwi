@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { sql } from 'drizzle-orm'
+import { sql } from '@kibamail/framework/mysql'
 import { createFakeEmailContent } from '../audiences/email_content.js'
 
 import {
@@ -34,11 +34,11 @@ import {
   users,
   websitePages,
   websites,
-} from '@/database/schema.js'
-import type { AUTOMATION_STEP_SUB_TYPES_TRIGGER } from '@/database/types/automations.js'
+} from '#root/database/schema.js'
+import type { AUTOMATION_STEP_SUB_TYPES_TRIGGER } from '#root/database/types/automations.js'
 
-import { makeDatabase, makeRedis } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase, makeRedis } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 export const refreshRedisDatabase = async () => {
   const redis = makeRedis()

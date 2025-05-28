@@ -1,38 +1,34 @@
-import { WEBSITES_DOMAIN, appEnv } from '@/app/env/app_env.js'
-import { InjectEmailAction } from '@/injector/actions/inject_email_action.js'
-import { InjectEmailSchemaDto } from '@/injector/dto/inject_email_dto.js'
-import { CreateContactSessionAction } from '@/websites/actions/create_contact_session_action.js'
-import { AddCustomWebsiteDomainSchema } from '@/websites/dto/add_custom_website_domain_dto.js'
-import { CreateContactSessionSchema } from '@/websites/dto/create_contact_session_dto.js'
-import { CreateWebsitePageSchema } from '@/websites/dto/create_website_page_dto.js'
-import { UpdateWebsiteSchema } from '@/websites/dto/update_website_dto.js'
-import { UpdateWebsitePageSchema } from '@/websites/dto/update_website_page_dto.js'
-import { CheckWebsiteDomainDnsConfiguration } from '@/websites/jobs/check_website_domain_dns_configuration_job.js'
-import { WebsitePageRepository } from '@/websites/repositories/website_page_repository.js'
-import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { CreateContactSessionAction } from '#root/core/websites/actions/create_contact_session_action.js'
+import { AddCustomWebsiteDomainSchema } from '#root/core/websites/dto/add_custom_website_domain_dto.js'
+import { CreateContactSessionSchema } from '#root/core/websites/dto/create_contact_session_dto.js'
+import { CreateWebsitePageSchema } from '#root/core/websites/dto/create_website_page_dto.js'
+import { UpdateWebsiteSchema } from '#root/core/websites/dto/update_website_dto.js'
+import { UpdateWebsitePageSchema } from '#root/core/websites/dto/update_website_page_dto.js'
+import { CheckWebsiteDomainDnsConfiguration } from '#root/core/websites/jobs/check_website_domain_dns_configuration_job.js'
+import { WebsitePageRepository } from '#root/core/websites/repositories/website_page_repository.js'
+import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
 import { DateTime } from 'luxon'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { GenerateWebsiteFromJsonTool } from '@/tools/website/generate_website_from_json_tool.js'
+import { GenerateWebsiteFromJsonTool } from '#root/core/tools/website/generate_website_from_json_tool.js'
 
 import {
   Audience,
   type Website,
   type WebsitePage,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { ContainerKey, makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import { Queue } from '@/shared/queue/queue.js'
-import type { HonoContext } from '@/shared/server/types.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
-import { Encryption } from '@/shared/utils/encryption/encryption.js'
-import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
+import { ContainerKey, makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
+import { SignedUrlManager } from '@kibamail/framework'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * WebsiteController manages website creation and rendering for landing pages.

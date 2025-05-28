@@ -1,5 +1,5 @@
-import { useApplicationLayoutContext } from '@pages/components/dashboard/layout/application-layout-context.jsx'
-import { SidebarContent } from '@pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
+import { useApplicationLayoutContext } from '#root/pages/components/dashboard/layout/application-layout-context.jsx'
+import { SidebarContent } from '#root/pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
 import cn from 'classnames'
 import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
@@ -61,31 +61,43 @@ export function FloatingSidebar() {
           className="absolute hidden lg:block h-[calc(100vh-6rem)] top-16 bg-transparent z-50 -left-2 w-6"
         />
       ) : null}
-      <button
-        type="button"
-        tabIndex={0}
-        onClick={ctx.isMobile ? undefined : hideFloatingSidebar}
-        onKeyDown={(e) =>
-          e.key === 'Escape' && hideFloatingSidebar(e as unknown as React.MouseEvent)
-        }
-        className={cn(
-          'w-full h-screen bg-[rgba(17,17,17,0.10)] transition-opacity ease-in-out duration-200 absolute top-0 pl-2 left-0 z-[5] py-6 flex items-center border-0',
-          {
-            'pointer-events-none opacity-0': !sidebar.floating,
-            'pointer-events-auto opacity-100': sidebar.floating,
-          },
-        )}
-      >
+      {ctx.isMobile ? (
+        <div
+          className={cn(
+            'w-full h-screen bg-[rgba(17,17,17,0.10)] transition-opacity ease-in-out duration-200 absolute top-0 pl-2 left-0 z-5 py-6 flex items-center',
+            {
+              'pointer-events-none opacity-0': !sidebar.floating,
+              'pointer-events-auto opacity-100': sidebar.floating,
+            },
+          )}
+        >
+          <button
+            type="button"
+            onClick={hideFloatingSidebar}
+            onKeyDown={(e) =>
+              e.key === 'Escape' && hideFloatingSidebar(e as unknown as React.MouseEvent)
+            }
+            tabIndex={0}
+            className="absolute w-[calc(100vw-256px)] right-0 h-screen bg-transparent border-0"
+          />
+        </div>
+      ) : (
         <button
           type="button"
+          tabIndex={0}
           onClick={hideFloatingSidebar}
           onKeyDown={(e) =>
             e.key === 'Escape' && hideFloatingSidebar(e as unknown as React.MouseEvent)
           }
-          tabIndex={0}
-          className="absolute lg:hidden w-[calc(100vw-256px)] right-0 h-screen bg-transparent border-0"
+          className={cn(
+            'w-full h-screen bg-[rgba(17,17,17,0.10)] transition-opacity ease-in-out duration-200 absolute top-0 pl-2 left-0 z-5 py-6 flex items-center border-0',
+            {
+              'pointer-events-none opacity-0': !sidebar.floating,
+              'pointer-events-auto opacity-100': sidebar.floating,
+            },
+          )}
         />
-      </button>
+      )}
       <div
         ref={menuRef}
         onMouseLeave={ctx.isMobile ? undefined : onMouseLeave}

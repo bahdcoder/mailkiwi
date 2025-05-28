@@ -7,15 +7,15 @@ import {
   WebsocketServerHandler,
 } from './websocket_server_handler.js'
 
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import type { UserWithChannelMemberships } from '@/database/database_schema_types.js'
+import type { UserWithChannelMemberships } from '#root/database/database_schema_types.js'
 
-import { makeLogger } from '@/shared/container/index.js'
-import type { HonoContext } from '@/shared/server/types.js'
-import { Session } from '@/shared/sessions/sessions.js'
+import { makeLogger } from '#root/core/shared/container/index.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
+import { Session } from '#root/core/shared/sessions/sessions.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class WebsocketServer {
   protected logger = makeLogger()

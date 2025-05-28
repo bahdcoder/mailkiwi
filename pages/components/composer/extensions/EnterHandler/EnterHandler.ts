@@ -1,4 +1,4 @@
-import { getDefaultStylesForNode } from '@pages/components/composer/themes/default-theme.js'
+import { getDefaultStylesForNode } from '#root/pages/components/composer/themes/default-theme.js'
 import { Extension } from '@tiptap/core'
 import { keymap } from '@tiptap/pm/keymap'
 

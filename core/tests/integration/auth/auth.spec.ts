@@ -1,25 +1,25 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { describe, test } from 'vitest'
 
-import { GithubDriver } from '@/auth/oauth2_drivers/github_driver.js'
-import { GoogleDriver } from '@/auth/oauth2_drivers/google_driver.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { GithubDriver } from '#root/core/auth/oauth2_drivers/github_driver.js'
+import { GoogleDriver } from '#root/core/auth/oauth2_drivers/google_driver.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequest, makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequest, makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
-import { oauth2Accounts, users } from '@/database/schema.js'
+import { oauth2Accounts, users } from '#root/database/schema.js'
 
-import { makeApp, makeDatabase } from '@/shared/container/index.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import { RedisSessionStore } from '@/shared/sessions/stores/redis_session_store.js'
-import { OtpGenerator } from '@/shared/tokens/otp_generator.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_session_store.js'
+import { OtpGenerator } from '#root/core/shared/tokens/otp_generator.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@auth user registration', () => {
   test('can register a new user account', async ({ expect }) => {
@@ -180,7 +180,7 @@ describe('@auth user registration', () => {
 
     expect(redisSessionsForUser).toHaveLength(1)
 
-    expect(loginResponse.headers.getSetCookie()?.[0]).toMatch('__Secure-session=')
+    expect(loginResponse.headers.getSetCookie()?.[0]).toMatch('session=')
   })
 })
 
@@ -384,7 +384,7 @@ describe('@oauth ', () => {
 
       const cookies = response.headers.getSetCookie()
 
-      expect(cookies?.[0]).toContain('__Secure-session=')
+      expect(cookies?.[0]).toContain('session=')
 
       const json = await response.json()
 
@@ -490,5 +490,547 @@ describe('@oauth ', () => {
     expect(json.payload.path).toEqual(route('auth_login'))
 
     container.restoreAll()
+  })
+})
+
+describe('@auth password change', () => {
+  test('user can successfully change their password', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const newPassword = 'NewPassword123'
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/passwords/change',
+      body: {
+        password: 'password',
+        newPassword,
+        confirmNewPassword: newPassword,
+      },
+    })
+
+    expect(response.status).toBe(200)
+
+    const json = await response.json()
+    expect(json.type).toBe('json')
+    expect(json.payload.message).toBe('Password changed successfully')
+
+    const loginResponse = await makeRequest('/auth/login', {
+      method: 'POST',
+      body: {
+        email: user.email,
+        password: newPassword,
+      },
+    })
+
+    expect(loginResponse.status).toBe(200)
+  })
+
+  test('user cannot change password with incorrect current password', async ({
+    expect,
+  }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/passwords/change',
+      body: {
+        password: 'wrong-password',
+        newPassword: 'NewPassword123',
+        confirmNewPassword: 'NewPassword123',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'Your current password is incorrect.',
+        field: 'password',
+      },
+    ])
+  })
+
+  test('user cannot change password when confirmation does not match', async ({
+    expect,
+  }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/passwords/change',
+      body: {
+        password: 'password',
+        newPassword: 'NewPassword123',
+        confirmNewPassword: 'DifferentPassword123',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'Please make sure your confirm password matches your new password.',
+        field: 'confirmNewPassword',
+      },
+    ])
+  })
+
+  test('new password must contain uppercase letter', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/passwords/change',
+      body: {
+        password: 'password',
+        newPassword: 'newpassword123',
+        confirmNewPassword: 'newpassword123',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message:
+          'Your new password must contain at least one capital letter for security',
+        field: 'newPassword',
+      },
+    ])
+  })
+
+  test('new password must contain lowercase letter', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/passwords/change',
+      body: {
+        password: 'password',
+        newPassword: 'NEWPASSWORD123',
+        confirmNewPassword: 'NEWPASSWORD123',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message:
+          'Your new password must contain at least one lowercase letter for security',
+        field: 'newPassword',
+      },
+    ])
+  })
+
+  test('new password must contain number', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/passwords/change',
+      body: {
+        password: 'password',
+        newPassword: 'NewPassword',
+        confirmNewPassword: 'NewPassword',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'Your new password must contain at least one number for security',
+        field: 'newPassword',
+      },
+    ])
+  })
+
+  test('current password is required', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/passwords/change',
+      body: {
+        newPassword: 'NewPassword123',
+        confirmNewPassword: 'NewPassword123',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'Current password is required',
+        field: 'password',
+      },
+    ])
+  })
+
+  test('new password is required', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/passwords/change',
+      body: {
+        password: 'password',
+        confirmNewPassword: 'NewPassword123',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'New password must be a text value',
+        field: 'newPassword',
+      },
+    ])
+  })
+
+  test('confirm new password is required', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/passwords/change',
+      body: {
+        password: 'password',
+        newPassword: 'NewPassword123',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'Please confirm your new password',
+        field: 'confirmNewPassword',
+      },
+    ])
+  })
+})
+
+describe('@auth email change', () => {
+  test('user can successfully change their email address', async ({ expect }) => {
+    const { user } = await createUser()
+    const newEmail = faker.internet.exampleEmail()
+
+    const MOCK_VERIFICATION_CODE = 123456
+
+    container.fake(OtpGenerator, {
+      generate() {
+        return MOCK_VERIFICATION_CODE
+      },
+    })
+
+    const initiateResponse = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/initiate',
+      body: {
+        email: newEmail,
+      },
+    })
+
+    expect(initiateResponse.status).toBe(200)
+
+    const initiateJson = await initiateResponse.json()
+    expect(initiateJson.type).toBe('json')
+    expect(initiateJson.payload.message).toBe(
+      'Verification code sent to your new email address',
+    )
+
+    const confirmResponse = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/confirm',
+      body: {
+        code: MOCK_VERIFICATION_CODE.toString(),
+      },
+    })
+
+    expect(confirmResponse.status).toBe(200)
+
+    const confirmJson = await confirmResponse.json()
+    expect(confirmJson.type).toBe('json')
+    expect(confirmJson.payload.message).toBe('Email address updated successfully')
+
+    const updatedUser = await container.make(UserRepository).findById(user.id)
+    expect(updatedUser?.email).toBe(newEmail)
+    expect(updatedUser?.unconfirmedEmail).toBeNull()
+    expect(updatedUser?.emailVerifiedAt).toBeDefined()
+
+    container.restoreAll()
+  })
+
+  test('user cannot initiate email change with same email', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/initiate',
+      body: {
+        email: user.email,
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'The new email address must be different from your current email.',
+        field: 'email',
+      },
+    ])
+  })
+
+  test('user cannot initiate email change with existing email', async ({ expect }) => {
+    const { user } = await createUser()
+    const { user: existingUser } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/initiate',
+      body: {
+        email: existingUser.email,
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'This email address is already in use by another account.',
+        field: 'email',
+      },
+    ])
+  })
+
+  test('user cannot confirm email change without initiating first', async ({
+    expect,
+  }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/confirm',
+      body: {
+        code: '123456',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'No email change request found. Please initiate an email change first.',
+        field: 'code',
+      },
+    ])
+  })
+
+  test('user cannot confirm email change with invalid code', async ({ expect }) => {
+    const { user } = await createUser()
+    const newEmail = faker.internet.exampleEmail()
+
+    const MOCK_VERIFICATION_CODE = 123456
+
+    container.fake(OtpGenerator, {
+      generate() {
+        return MOCK_VERIFICATION_CODE
+      },
+    })
+
+    await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/initiate',
+      body: {
+        email: newEmail,
+      },
+    })
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/confirm',
+      body: {
+        code: '999999',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'Invalid or expired verification code. Please try again.',
+        field: 'code',
+      },
+    ])
+
+    container.restoreAll()
+  })
+
+  test('user can cancel email change request', async ({ expect }) => {
+    const { user } = await createUser()
+    const newEmail = faker.internet.exampleEmail()
+
+    const MOCK_VERIFICATION_CODE = 123456
+
+    container.fake(OtpGenerator, {
+      generate() {
+        return MOCK_VERIFICATION_CODE
+      },
+    })
+
+    await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/initiate',
+      body: {
+        email: newEmail,
+      },
+    })
+
+    const cancelResponse = await makeRequestAsUser(user, {
+      method: 'DELETE',
+      path: '/auth/email/change/cancel',
+      body: {},
+    })
+
+    expect(cancelResponse.status).toBe(200)
+
+    const cancelJson = await cancelResponse.json()
+    expect(cancelJson.type).toBe('json')
+    expect(cancelJson.payload.message).toBe('Email change request cancelled successfully')
+
+    const updatedUser = await container.make(UserRepository).findById(user.id)
+    expect(updatedUser?.email).toBe(user.email)
+    expect(updatedUser?.unconfirmedEmail).toBeNull()
+
+    container.restoreAll()
+  })
+
+  test('user cannot cancel email change without pending request', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'DELETE',
+      path: '/auth/email/change/cancel',
+      body: {},
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'No email change request found to cancel.',
+      },
+    ])
+  })
+
+  test('email is required for initiate', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/initiate',
+      body: {},
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'Email must be a text value',
+        field: 'email',
+      },
+    ])
+  })
+
+  test('email must be valid format', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/initiate',
+      body: {
+        email: 'invalid-email',
+      },
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'Please provide a valid email address in the format example@domain.com',
+        field: 'email',
+      },
+    ])
+  })
+
+  test('verification code is required for confirm', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const response = await makeRequestAsUser(user, {
+      method: 'POST',
+      path: '/auth/email/change/confirm',
+      body: {},
+    })
+
+    expect(response.status).toBe(422)
+
+    const json = await response.json()
+    expect(json.payload.errors).toMatchObject([
+      {
+        message: 'Verification code is required',
+        field: 'code',
+      },
+    ])
+  })
+
+  test('verification code must be exactly 6 digits', async ({ expect }) => {
+    const { user } = await createUser()
+
+    const testCases = [
+      { code: '12345', description: 'too short' },
+      { code: '1234567', description: 'too long' },
+      { code: 'abcdef', description: 'non-numeric' },
+      { code: '12345a', description: 'mixed alphanumeric' },
+    ]
+
+    for (const testCase of testCases) {
+      const response = await makeRequestAsUser(user, {
+        method: 'POST',
+        path: '/auth/email/change/confirm',
+        body: {
+          code: testCase.code,
+        },
+      })
+
+      expect(response.status).toBe(422)
+
+      const json = await response.json()
+      expect(json.payload.errors).toMatchObject([
+        {
+          message: 'Verification code must be exactly 6 digits',
+          field: 'code',
+        },
+      ])
+    }
   })
 })

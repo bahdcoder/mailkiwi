@@ -11,14 +11,14 @@ import {
   unknown,
 } from 'valibot'
 
-import { AutomationStepRepository } from '@/automations/repositories/automation_step_repository.js'
+import { AutomationStepRepository } from '#root/core/automations/repositories/automation_step_repository.js'
 
 import {
   automationStepSubtypes,
   automationStepTypes,
-} from '@/database/types/automations.js'
+} from '#root/database/types/automations.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 async function automationStepIdRequirement(input: string): Promise<boolean> {
   if (!input) return true

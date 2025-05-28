@@ -1,13 +1,13 @@
 import { describe, test } from 'vitest'
 
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
+import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories/access_token_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@auth API Token Generation', () => {
   test('can generate an api token for api and smtp access', async ({ expect }) => {

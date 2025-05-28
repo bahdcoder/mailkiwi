@@ -1,19 +1,22 @@
-import * as CheckboxField from '@pages/components/checkbox-field/checkbox-field.jsx'
-import { useImportcontactsContext } from '@pages/components/flows/contacts/import_contacts/state/import_contacts_context.jsx'
-import { NavArrowLeftIcon } from '@pages/components/icons/nav-arrow-left.svg.jsx'
-import { type ComboboxItem, TagsCombobox } from '@pages/components/tags/tags_combobox.jsx'
+import * as CheckboxField from '#root/pages/components/checkbox-field/checkbox-field.jsx'
+import { useImportcontactsContext } from '#root/pages/components/flows/contacts/import_contacts/state/import_contacts_context.jsx'
+import { NavArrowLeftIcon } from '#root/pages/components/icons/nav-arrow-left.svg.jsx'
+import {
+  type ComboboxItem,
+  TagsCombobox,
+} from '#root/pages/components/tags/tags_combobox.jsx'
 import {
   type FormPayload,
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Text } from '@kibamail/owly/text'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as React from 'react'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 import { usePageContext } from 'vike-react/usePageContext'
 
 export function StepThreeImportSettings() {

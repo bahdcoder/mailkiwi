@@ -1,23 +1,23 @@
-import { WEBSITES_PATH } from '@/app/env/app_env.js'
-import { TagContactBasedOnResponseJob } from '@/forms/jobs/tag_contact_based_on_response_job.js'
-import { FormRepository } from '@/forms/repositories/form_repository.js'
-import { FormResponseRepository } from '@/forms/repositories/form_response_repository.js'
-import { FormResponseValidatorTool } from '@/forms/tools/form_response_validator_tool.js'
-import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { WEBSITES_PATH } from '#root/core/app/env/app_env.js'
+import { TagContactBasedOnResponseJob } from '#root/core/forms/jobs/tag_contact_based_on_response_job.js'
+import { FormRepository } from '#root/core/forms/repositories/form_repository.js'
+import { FormResponseRepository } from '#root/core/forms/repositories/form_response_repository.js'
+import { FormResponseValidatorTool } from '#root/core/forms/tools/form_response_validator_tool.js'
+import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { UserSessionMiddleware } from '@/auth/middleware/user_session_middleware.js'
+import { UserSessionMiddleware } from '#root/core/auth/middleware/user_session_middleware.js'
 
-import type { Audience, Form } from '@/database/database_schema_types.js'
+import type { Audience, Form } from '#root/database/database_schema_types.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import { Queue } from '@/shared/queue/queue.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class FormResponsesController extends BaseController {
   constructor(

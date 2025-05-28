@@ -1,0 +1,11 @@
+.w-composer-node-container {
+  @apply w-full border transition-[border-color] ease-in-out border-dashed p-2 duration-200;
+}
+
+.w-composer-node-container-active {
+  border-color: var(--border-focus);
+}
+
+.w-composer-node-container-inactive {
+  border-color: var(--border-tertiary);
+}

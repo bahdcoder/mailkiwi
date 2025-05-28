@@ -1,8 +1,8 @@
-import { CheckCircleIcon } from '@pages/components/icons/check-circle.svg.jsx'
-import { EyeClosedIcon } from '@pages/components/icons/eye-closed.svg.jsx'
-import { EyeIcon } from '@pages/components/icons/eye.svg.jsx'
-import { XMarkCircleIcon } from '@pages/components/icons/x-mark-circle.svg.jsx'
-import { usePasswordStrengthIndicator } from '@pages/components/input/hooks/use-password-strength-indicator.js'
+import { CheckCircleIcon } from '#root/pages/components/icons/check-circle.svg.jsx'
+import { EyeClosedIcon } from '#root/pages/components/icons/eye-closed.svg.jsx'
+import { EyeIcon } from '#root/pages/components/icons/eye.svg.jsx'
+import { XMarkCircleIcon } from '#root/pages/components/icons/x-mark-circle.svg.jsx'
+import { usePasswordStrengthIndicator } from '#root/pages/components/input/hooks/use-password-strength-indicator.js'
 import { Progress } from '@kibamail/owly/progress'
 import * as TextField from '@kibamail/owly/text-field'
 import { composeRefs } from '@radix-ui/react-compose-refs'
@@ -80,7 +80,7 @@ export const PasswordField = React.forwardRef<
         <TextField.Slot side="right">
           <button
             type="button"
-            className="kb-reset focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-[var(--border-focus)] rounded-sm"
+            className="kb-reset focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-(--border-focus) rounded-sm"
             aria-label={`${visible ? 'Hide' : 'Show'} password`}
             onClick={onTogglePasswordVisibilityClick}
           >
@@ -112,7 +112,7 @@ export const PasswordField = React.forwardRef<
       </TextField.Root>
 
       {strengthIndicator ? (
-        <div className="absolute top-[4.5rem] w-full">
+        <div className="absolute top-18 w-full">
           <Progress
             variant={indicator.variant}
             value={indicator.percentage}

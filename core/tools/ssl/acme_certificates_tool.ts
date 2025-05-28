@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import https from 'node:https'
 import { resolve } from 'node:path'
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import acme from 'acme-client'
 
 export class AcmeCertificatesTool {

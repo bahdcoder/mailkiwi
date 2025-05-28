@@ -1,9 +1,9 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { command } from '@drizzle-team/brocli'
 
-import { fonts as fontsTable } from '@/database/schema.js'
+import { fonts as fontsTable } from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger } from '@/shared/container/index.js'
+import { makeDatabase, makeLogger } from '#root/core/shared/container/index.js'
 
 type GoogleFont = {
   family: string

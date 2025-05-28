@@ -1,16 +1,16 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { ProcessMtaLogJob } from '@/kumologs/jobs/process_mta_log_job.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { ProcessMtaLogJob } from '#root/core/kumologs/jobs/process_mta_log_job.js'
 import { DateTime } from 'luxon'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import { Queue } from '@/shared/queue/queue.js'
-import type { HonoContext } from '@/shared/server/types.js'
-import type { MtaLog } from '@/shared/types/mta.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
+import type { MtaLog } from '#root/core/shared/types/mta.js'
 import {
   type DecodedSignature,
   SignedUrlManager,
-} from '@/shared/utils/links/signed_url_manager.js'
+} from '#root/core/shared/utils/links/signed_url_manager.js'
 
 /**
  * ClickTrackingController handles email link click tracking and redirects.

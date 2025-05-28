@@ -1,19 +1,19 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { setCookie } from 'hono/cookie'
 
-import { GithubDriver } from '@/auth/oauth2_drivers/github_driver.js'
-import { GoogleDriver } from '@/auth/oauth2_drivers/google_driver.js'
-import { Oauth2AccountsRepository } from '@/auth/users/repositories/oauth2_accounts_repository.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { GithubDriver } from '#root/core/auth/oauth2_drivers/github_driver.js'
+import { GoogleDriver } from '#root/core/auth/oauth2_drivers/google_driver.js'
+import { Oauth2AccountsRepository } from '#root/core/auth/users/repositories/oauth2_accounts_repository.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { oauth2Accounts } from '@/database/schema.js'
+import { oauth2Accounts } from '#root/database/schema.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { VikeController } from '@/shared/controllers/vike_controller.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 type Oauth2Params = {
   action: 'login' | 'register'
@@ -33,7 +33,7 @@ type Oauth2Params = {
  * access Kibamail without creating separate credentials, leveraging their
  * existing accounts with trusted providers.
  */
-export class Oauth2Controller extends VikeController {
+export class Oauth2Controller extends BaseController {
   constructor(
     protected app = makeApp(),
     protected userRepository = container.make(UserRepository),

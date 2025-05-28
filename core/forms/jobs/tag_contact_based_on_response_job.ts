@@ -1,12 +1,12 @@
-import { FormRepository } from '@/forms/repositories/form_repository.js'
-import { FormResponseRepository } from '@/forms/repositories/form_response_repository.js'
+import { FormRepository } from '#root/core/forms/repositories/form_repository.js'
+import { FormResponseRepository } from '#root/core/forms/repositories/form_response_repository.js'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export interface TagContactBasedOnResponseJobPayload {
   formResponseId: string

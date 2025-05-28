@@ -2,14 +2,14 @@ import './styles.css'
 import {
   ApplicationLayoutProvider,
   type SidebarState,
-} from '@pages/components/dashboard/layout/application-layout-context.jsx'
-import { DraggableSidebarResizer } from '@pages/components/dashboard/layout/sidebar/draggable-sidebar-resizer.jsx'
-import { FloatingSidebar } from '@pages/components/dashboard/layout/sidebar/floating-sidebar.jsx'
+} from '#root/pages/components/dashboard/layout/application-layout-context.jsx'
+import { DraggableSidebarResizer } from '#root/pages/components/dashboard/layout/sidebar/draggable-sidebar-resizer.jsx'
+import { FloatingSidebar } from '#root/pages/components/dashboard/layout/sidebar/floating-sidebar.jsx'
 import {
   DEFAULT_SIDEBAR_WIDTH,
   LeftSidebar,
-} from '@pages/components/dashboard/layout/sidebar/left-sidebar.jsx'
-import { Topbar } from '@pages/components/dashboard/layout/sidebar/topbar.jsx'
+} from '#root/pages/components/dashboard/layout/sidebar/left-sidebar.jsx'
+import { Topbar } from '#root/pages/components/dashboard/layout/sidebar/topbar.jsx'
 import cn from 'classnames'
 import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'

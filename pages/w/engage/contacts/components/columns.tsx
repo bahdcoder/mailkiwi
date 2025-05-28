@@ -1,5 +1,5 @@
-import { LabelIcon } from '@pages/components/icons/label.svg.jsx'
-import { PlusIcon } from '@pages/components/icons/plus.svg.jsx'
+import { LabelIcon } from '#root/pages/components/icons/label.svg.jsx'
+import { PlusIcon } from '#root/pages/components/icons/plus.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Checkbox } from '@kibamail/owly/checkbox'
 import { Text } from '@kibamail/owly/text'
@@ -7,7 +7,7 @@ import { type Column, type RowData, createColumnHelper } from '@tanstack/react-t
 import cn from 'classnames'
 import type * as React from 'react'
 
-import type { ContactWithTagsAndProperties } from '@/database/database_schema_types.js'
+import type { ContactWithTagsAndProperties } from '#root/database/database_schema_types.js'
 
 export const columnHelper = createColumnHelper<ContactWithTagsAndProperties>()
 
@@ -106,7 +106,7 @@ export const columns = [
               <Button
                 asChild
                 variant="secondary"
-                className={cn('flex-shrink-0 pointer-events-none', {
+                className={cn('shrink-0 pointer-events-none', {
                   'mr-4': idx === tags.length - 1,
                 })}
                 size="sm"
@@ -134,10 +134,10 @@ export const columns = [
     ),
     meta: {
       header: {
-        className: '!bg-[var(--background-hover)]',
+        className: 'bg-(--background-hover)!',
       },
       cell: {
-        className: '!bg-[var(--background-hover)] pr-0',
+        className: 'bg-(--background-hover)! pr-0',
       },
       style: {
         width: '320px',

@@ -1,25 +1,25 @@
-import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
-import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { ChannelRepository } from '#root/core/chat/repositories/channel_repository.js'
+import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { update } from 'tar'
 import { createFakeAbTestEmailContent } from '../audiences/email_content.js'
 
-import { AudienceRepository } from '@/audiences/repositories/audience_repository.js'
+import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
 
-import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { RegisterUserAction } from '@/auth/actions/register_user_action.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { RegisterUserAction } from '#root/core/auth/actions/register_user_action.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
-import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { CreateSendingDomainAction } from '#root/core/sending_domains/actions/create_sending_domain_action.js'
+import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import type {
   Team,
@@ -27,13 +27,13 @@ import type {
   User,
   Website,
   WebsiteWithPages,
-} from '@/database/database_schema_types.js'
-import { audiences, broadcastGroups, contacts } from '@/database/schema.js'
+} from '#root/database/database_schema_types.js'
+import { audiences, broadcastGroups, contacts } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export async function createBroadcastForUser(
   user: User,

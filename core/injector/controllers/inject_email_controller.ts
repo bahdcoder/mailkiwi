@@ -1,13 +1,13 @@
-import { InjectEmailAction } from '@/injector/actions/inject_email_action.js'
-import { InjectEmailSchema } from '@/injector/dto/inject_email_dto.js'
-import { AuthorizeInjectorApiKeyMiddleware } from '@/injector/middleware/authorize_injector_api_key_middleware.js'
-import { getDomainFromEmail } from '@/injector/utils/get_domain_from_email.js'
+import { InjectEmailAction } from '#root/core/injector/actions/inject_email_action.js'
+import { InjectEmailSchema } from '#root/core/injector/dto/inject_email_dto.js'
+import { AuthorizeInjectorApiKeyMiddleware } from '#root/core/injector/middleware/authorize_injector_api_key_middleware.js'
+import { getDomainFromEmail } from '#root/core/injector/utils/get_domain_from_email.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * InjectEmailController handles direct email injection into the sending system.

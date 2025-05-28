@@ -1,9 +1,9 @@
-import { AutomationRepository } from '@/automations/repositories/automation_repository.js'
-import type { DefaultPageProps } from '@pages/types/page-context.js'
-import { PagePropsResolverContract } from '@/shared/controllers/page_props/page_props_resolver_contract.js'
+import { AutomationRepository } from '#root/core/automations/repositories/automation_repository.js'
+import type { DefaultPageProps } from '#root/pages/types/page-context.js'
+import { PagePropsResolverContract } from '#root/core/shared/controllers/page_props/page_props_resolver_contract.js'
 
-import type { HonoContext } from '@/shared/server/types.js'
-import { container } from '@/utils/typi.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
+import { container } from '@kibamail/framework'
 
 export class FlowComposerPropsResolver extends PagePropsResolverContract {
   static get regex() {

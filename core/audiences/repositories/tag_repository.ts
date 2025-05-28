@@ -1,13 +1,13 @@
-import { type SQL, and, eq, or } from 'drizzle-orm'
+import { type SQL, and, eq, or } from '@kibamail/framework/mysql'
 
-import type { CreateTagDto } from '@/audiences/dto/tags/create_tag_dto.js'
+import type { CreateTagDto } from '#root/core/audiences/dto/tags/create_tag_dto.js'
 
-import type { DrizzleClient } from '@/database/client.js'
-import type { InsertTag, Tag } from '@/database/database_schema_types.js'
-import { tags } from '@/database/schema.js'
+import type { DrizzleClient } from '#root/database/client.js'
+import type { InsertTag, Tag } from '#root/database/database_schema_types.js'
+import { tags } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 export class TagRepository extends BaseRepository {
   constructor(protected database: DrizzleClient = makeDatabase()) {

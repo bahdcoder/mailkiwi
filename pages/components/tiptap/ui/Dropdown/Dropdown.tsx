@@ -1,4 +1,4 @@
-import { cn } from '@pages/components/tiptap/utils/index.js'
+import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import React from 'react'
 
 export const DropdownCategoryTitle = ({

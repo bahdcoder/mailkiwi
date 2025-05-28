@@ -1,16 +1,16 @@
-import { NavArrowRightIcon } from '@pages/components/icons/nav-arrow-right.svg.jsx'
+import { NavArrowRightIcon } from '#root/pages/components/icons/nav-arrow-right.svg.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
-import { navigate } from '@pages/utils/navigate.js'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
+import { navigate } from '#root/pages/utils/navigate.js'
 import { Button } from '@kibamail/owly/button'
 import * as Dialog from '@kibamail/owly/dialog'
 import * as TextField from '@kibamail/owly/text-field'
 import type React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 
 export interface CreateAutomationFlowProps extends React.PropsWithChildren {}

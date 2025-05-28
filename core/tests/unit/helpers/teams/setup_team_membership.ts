@@ -1,15 +1,15 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
 
-import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
-import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
+import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export const setupTeamMemberships = async (email?: string, role?: string) => {
   const { user, team } = await createUser()
@@ -28,7 +28,9 @@ export const setupTeamMemberships = async (email?: string, role?: string) => {
   const json = await response.json()
 
   const getInvite = async () => {
-    const invite = await container.make(TeamMembershipRepository).findById(json?.id)
+    const invite = await container
+      .make(TeamMembershipRepository)
+      .findById(json?.payload?.id)
 
     const teamWithMembers = await container.make(TeamRepository).findById(team.id)
 

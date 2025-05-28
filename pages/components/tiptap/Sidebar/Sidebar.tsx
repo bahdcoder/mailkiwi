@@ -1,4 +1,4 @@
-import { cn } from '@pages/components/tiptap/utils/index.js'
+import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import type { Editor } from '@tiptap/react'
 import { memo, useCallback } from 'react'
 import { TableOfContents } from '../TableOfContents/TableOfContents.jsx'
@@ -20,7 +20,7 @@ export const Sidebar = memo(
     }, [onClose])
 
     const windowClassName = cn(
-      'absolute top-0 left-0 bg-white lg:bg-white/30 lg:backdrop-blur-xl h-full lg:h-auto lg:relative z-[999] w-0 duration-300 transition-all',
+      'absolute top-0 left-0 bg-white lg:bg-white/30 lg:backdrop-blur-xl h-full lg:h-auto lg:relative z-999 w-0 duration-300 transition-all',
       'dark:bg-black lg:dark:bg-black/30',
       !isOpen && 'border-r-transparent',
       isOpen && 'w-80 border-r border-r-neutral-200 dark:border-r-neutral-800',

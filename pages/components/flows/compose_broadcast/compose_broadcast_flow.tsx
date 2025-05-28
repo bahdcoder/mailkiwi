@@ -1,13 +1,16 @@
-import { ComposeBroadcastTopBar } from '@pages/components/flows/compose_broadcast/components/compose_broadcast_top_bar.jsx'
-import { useGetBroadcastRecipientsCount } from '@pages/components/flows/compose_broadcast/hooks/use_get_broadcast_recipients_count.js'
-import { useSyncComposerContentToServer } from '@pages/components/flows/compose_broadcast/hooks/use_sync_composer_content_to_server.js'
-import { useValidateBroadcastContentMutation } from '@pages/components/flows/compose_broadcast/hooks/use_validate_broadcast_content_mutation.js'
-import { parseISODateToFormattedScheduleDate } from '@pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
-import { StepsRenderer } from '@pages/components/flows/steps_renderer.jsx'
-import { usePageContextWithProps, usePageProps } from '@pages/hooks/use_page_props.js'
-import { useServerQuery } from '@pages/hooks/use_server_query.js'
-import type { EngageBroadcastsComposerPageProps } from '@pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
-import { route } from '@/shared/routes/route_aliases.js'
+import { ComposeBroadcastTopBar } from '#root/pages/components/flows/compose_broadcast/components/compose_broadcast_top_bar.jsx'
+import { useGetBroadcastRecipientsCount } from '#root/pages/components/flows/compose_broadcast/hooks/use_get_broadcast_recipients_count.js'
+import { useSyncComposerContentToServer } from '#root/pages/components/flows/compose_broadcast/hooks/use_sync_composer_content_to_server.js'
+import { useValidateBroadcastContentMutation } from '#root/pages/components/flows/compose_broadcast/hooks/use_validate_broadcast_content_mutation.js'
+import { parseISODateToFormattedScheduleDate } from '#root/pages/components/flows/compose_broadcast/utils/format_schedule_date.js'
+import { StepsRenderer } from '#root/pages/components/flows/steps_renderer.jsx'
+import {
+  usePageContextWithProps,
+  usePageProps,
+} from '#root/pages/hooks/use_page_props.js'
+import { useServerQuery } from '#root/pages/hooks/use_server_query.js'
+import type { EngageBroadcastsComposerPageProps } from '#root/pages/w/engage/broadcasts/@uuid/composer/+Page.jsx'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 import dayjs from 'dayjs'
 import React from 'react'
 import { clientOnly } from 'vike-react/clientOnly'
@@ -98,7 +101,7 @@ export function ComposeBroadcastFlow() {
       <div className="w-screen h-screen px-2 pb-2 box-border kb-background-secondary fixed overflow-y-auto top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 focus:outline-none duration-300 ease-out">
         <div className="flex flex-col">
           <ComposeBroadcastTopBar />
-          <div className="flex flex-grow w-full h-[calc(100vh-4.25rem)] box-border border kb-border-tertiary rounded-xl kb-background-hover">
+          <div className="flex grow w-full h-[calc(100vh-4.25rem)] box-border border kb-border-tertiary rounded-xl kb-background-hover">
             <StepsRenderer
               current={step}
               steps={{

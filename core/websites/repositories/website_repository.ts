@@ -1,13 +1,15 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { and, eq } from 'drizzle-orm'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { and, eq } from '@kibamail/framework/mysql'
+import {Encryption} from '@kibamail/framework'
+import type {
+  InsertWebsite,
+  UpdateWebsite,
+} from '#root/database/database_schema_types.js'
+import { websitePages, websites } from '#root/database/schema.js'
+import { hasMany } from '#root/database/utils/relationships.js'
 
-import type { InsertWebsite, UpdateWebsite } from '@/database/database_schema_types.js'
-import { websitePages, websites } from '@/database/schema.js'
-import { hasMany } from '@/database/utils/relationships.js'
-
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
-import { Encryption } from '@/shared/utils/encryption/encryption.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 export class WebsiteRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {

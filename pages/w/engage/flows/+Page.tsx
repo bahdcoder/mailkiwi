@@ -1,5 +1,5 @@
-import { EmptyState } from '@pages/components/empty-state/empty_state.jsx'
-import { CreateAutomationFlow } from '@pages/components/flows/create_automation/create_automation_flow.jsx'
+import { EmptyState } from '#root/pages/components/empty-state/empty_state.jsx'
+import { CreateAutomationFlow } from '#root/pages/components/flows/create_automation/create_automation_flow.jsx'
 import { Button } from '@kibamail/owly/button'
 import * as Tabs from '@kibamail/owly/tabs'
 import { usePageContext } from 'vike-react/usePageContext'

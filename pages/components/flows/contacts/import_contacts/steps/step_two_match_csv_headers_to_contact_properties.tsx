@@ -1,14 +1,14 @@
-import { CreateCustomContactProperty } from '@pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx'
-import { CalendarIcon } from '@pages/components/icons/calendar.jsx'
-import { CheckCircleSolidIcon } from '@pages/components/icons/check-circle-solid.svg.jsx'
-import { CheckSquareIcon } from '@pages/components/icons/check-square.svg.jsx'
-import { HashTagIcon } from '@pages/components/icons/hashtag.svg.jsx'
-import { InfoCircleSolidIcon } from '@pages/components/icons/info-circle-solid.svg.jsx'
-import { MailIcon } from '@pages/components/icons/mail.svg.jsx'
-import { NavArrowRightIcon } from '@pages/components/icons/nav-arrow-right.svg.jsx'
-import { PlusIcon } from '@pages/components/icons/plus.svg.jsx'
-import { TextIcon } from '@pages/components/icons/text.svg.jsx'
-import { slugify } from '@pages/utils/slugify.js'
+import { CreateCustomContactProperty } from '#root/pages/components/flows/contacts/import_contacts/steps/components/create_custom_contact_property.jsx'
+import { CalendarIcon } from '#root/pages/components/icons/calendar.jsx'
+import { CheckCircleSolidIcon } from '#root/pages/components/icons/check-circle-solid.svg.jsx'
+import { CheckSquareIcon } from '#root/pages/components/icons/check-square.svg.jsx'
+import { HashTagIcon } from '#root/pages/components/icons/hashtag.svg.jsx'
+import { InfoCircleSolidIcon } from '#root/pages/components/icons/info-circle-solid.svg.jsx'
+import { MailIcon } from '#root/pages/components/icons/mail.svg.jsx'
+import { NavArrowRightIcon } from '#root/pages/components/icons/nav-arrow-right.svg.jsx'
+import { PlusIcon } from '#root/pages/components/icons/plus.svg.jsx'
+import { TextIcon } from '#root/pages/components/icons/text.svg.jsx'
+import { slugify } from '#root/pages/utils/slugify.js'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
@@ -509,7 +509,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
               key={match.column.name}
               className="flex flex-col md:flex-row items-start w-full md:gap-x-24"
             >
-              <Text className="flex-shrink-0 mb-6 md:mb-0 md:mt-2">
+              <Text className="shrink-0 mb-6 md:mb-0 md:mt-2">
                 Column {idx + 1}/{matches.length}
               </Text>
 
@@ -527,7 +527,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                 <div className="h-16 kb-background-secondary w-full flex flex-col justify-center relative">
                   <div className="absolute w-px border-l kb-border-tertiary  h-14 top-1 left-4" />
 
-                  <div className="w-full py-1 kb-background-secondary z-[1] flex items-center justify-between">
+                  <div className="w-full py-1 kb-background-secondary z-1 flex items-center justify-between">
                     <Text size="sm" className="hidden md:inline kb-content-secondary">
                       Matches to the following property on your Kibamail account:
                     </Text>
@@ -555,7 +555,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                   }
                 >
                   <Select.Trigger placeholder="Select a property" />
-                  <Select.Content className="z-[3]">
+                  <Select.Content className="z-3">
                     <Select.Item value="skip">None - Skip this column</Select.Item>
                     <Select.Separator />
 
@@ -569,7 +569,7 @@ export function StepTwoMatchCsvHeadersToContactProperties() {
                     <button
                       type="button"
                       value="create-new-property"
-                      className="kb-select-item kb-reset sticky bottom-0 bg-[var(--background-primary)]"
+                      className="kb-select-item kb-reset sticky bottom-0 bg-(--background-primary)"
                       onClick={() => {
                         onCreateNewProperty(match.column.name)
                       }}

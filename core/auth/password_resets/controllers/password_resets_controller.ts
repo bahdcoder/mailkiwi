@@ -1,17 +1,17 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 
-import { RequestPasswordResetSchema } from '@/auth/password_resets/dto/request_password_reset_dto.js'
-import { ResetPasswordSchema } from '@/auth/password_resets/dto/reset_password_dto.js'
-import { PasswordResetRepository } from '@/auth/password_resets/repositories/password_reset_repository.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { RequestPasswordResetSchema } from '#root/core/auth/password_resets/dto/request_password_reset_dto.js'
+import { ResetPasswordSchema } from '#root/core/auth/password_resets/dto/reset_password_dto.js'
+import { PasswordResetRepository } from '#root/core/auth/password_resets/repositories/password_reset_repository.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { makeApp } from '@/shared/container/index.js'
-import { VikeController } from '@/shared/controllers/vike_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * PasswordResetsController handles password recovery and reset functionality.
@@ -25,7 +25,7 @@ import { container } from '@/utils/typi.js'
  * to their accounts when they've forgotten their passwords, while maintaining
  * security and preventing unauthorized access.
  */
-export class PasswordResetsController extends VikeController {
+export class PasswordResetsController extends BaseController {
   constructor(
     protected app = makeApp(),
     protected passwordResetsRepository = container.make(PasswordResetRepository),
@@ -34,8 +34,6 @@ export class PasswordResetsController extends VikeController {
 
     this.app.defineRoutes(
       [
-        ...this.vikePath('forgot', this.redirectToWelcomeIfAuthenticatedPage),
-        ...this.vikePath('/reset/:token', this.redirectToWelcomeIfAuthenticatedPage),
         ['POST', 'forgot', this.request],
         ['POST', 'reset/:token', this.reset],
       ],

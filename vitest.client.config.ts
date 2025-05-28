@@ -1,4 +1,3 @@
-import tsconfigPaths from 'vite-tsconfig-paths'
 import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -23,5 +22,4 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['pages/**/*.spec.tsx', 'core/**/*.client.spec.tsx'],
   },
-  plugins: [tsconfigPaths()],
 })

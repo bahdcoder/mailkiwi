@@ -5,7 +5,7 @@ export interface ToolbarContainerProps extends React.PropsWithChildren {}
 
 export function ToolbarContainer({ children }: ToolbarContainerProps) {
   return (
-    <div className="flex items-center bg-[var(--background-inverse)] gap-0.5 box-border rounded-lg p-1 shadow[0px_2px_0px_0px_var(--white-5)_inset,_0px_1px_0px_0px_var(--black-10)] z-[10]">
+    <div className="flex items-center bg-(--background-inverse) gap-0.5 box-border rounded-lg p-1 shadow[0px_2px_0px_0px_var(--white-5)_inset,_0px_1px_0px_0px_var(--black-10)] z-10">
       {children}
     </div>
   )
@@ -17,7 +17,7 @@ export function ToolbarSection({
 }: React.PropsWithChildren<{ divider?: 'left' | 'right' | 'both' | 'none' }>) {
   return (
     <div
-      className={cn('flex box-border border-[var(--white-10)] px-1', {
+      className={cn('flex box-border border-(--white-10) px-1', {
         'border-l': divider === 'left',
         'border-r': divider === 'right',
         'border-l border-r': divider === 'both',
@@ -39,7 +39,7 @@ export function getToolbarClassNames(isActive: boolean) {
     'w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md hover:text-white',
     {
       'bg-white bg-opacity-[0.08] text-white': isActive,
-      'hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]':
+      'hover:bg-white hover:bg-opacity-[0.08] text-(--content-tertiary-inverse)':
         !isActive,
     },
   )
@@ -59,7 +59,7 @@ export function ToolbarButton({
         'w-6 h-6 flex cursor-pointer transition-[background-color] duration-100 ease-in-out items-center justify-center rounded-md hover:text-white',
         {
           'bg-white bg-opacity-[0.08] text-white': isActive,
-          'hover:bg-white hover:bg-opacity-[0.08] text-[var(--content-tertiary-inverse)]':
+          'hover:bg-white hover:bg-opacity-[0.08] text-(--content-tertiary-inverse)':
             !isActive,
         },
         className,

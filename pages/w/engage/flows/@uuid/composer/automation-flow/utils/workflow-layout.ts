@@ -1,5 +1,5 @@
-import type { AutomationElement } from '@pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
-import { cloneDeep } from '@pages/w/engage/flows/@uuid/composer/automation-flow/utils/clone_deep.js'
+import type { AutomationElement } from '#root/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+import { cloneDeep } from '#root/pages/w/engage/flows/@uuid/composer/automation-flow/utils/clone_deep.js'
 import dagre from 'dagre'
 import { Position, isNode } from 'react-flow-renderer'
 

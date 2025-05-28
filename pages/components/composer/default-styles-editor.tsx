@@ -1,4 +1,4 @@
-import { EditPencilIcon } from '@pages/components/icons/edit-pencil.svg.jsx'
+import { EditPencilIcon } from '#root/pages/components/icons/edit-pencil.svg.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
 import { Label } from '@kibamail/owly/text-field'
@@ -10,7 +10,7 @@ export function DefaultStylesEditor() {
 
   return (
     <div
-      className={cn('w-[16.25rem] h-full border-l transition-[border-color]', {
+      className={cn('w-65 h-full border-l transition-[border-color]', {
         'kb-border-tertiary': editingDefaultStyles,
         'border-transparent': !editingDefaultStyles,
       })}

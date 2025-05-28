@@ -1,13 +1,13 @@
-import { type SQLWrapper, and, eq, gte, like, lte } from 'drizzle-orm'
+import { type SQLWrapper, and, eq, gte, like, lte } from '@kibamail/framework/mysql'
 import type { AnyMySqlColumn } from 'drizzle-orm/mysql-core'
 import { DateTime } from 'luxon'
 import { FieldSegmentBuilder } from './base_field_segment_builder.js'
 
-import type { CreateSegmentDto } from '@/audiences/dto/segments/create_segment_dto.js'
+import type { CreateSegmentDto } from '#root/core/audiences/dto/segments/create_segment_dto.js'
 
-import { contacts } from '@/database/schema.js'
+import { contacts } from '#root/database/schema.js'
 
-import { E_OPERATION_FAILED } from '@/http/responses/errors.js'
+import { E_OPERATION_FAILED } from '@kibamail/framework'
 
 export class ActivitySegmentBuilder {
   constructor(

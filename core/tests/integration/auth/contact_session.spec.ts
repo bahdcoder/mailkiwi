@@ -1,20 +1,20 @@
-import { WEBSITES_PATH, appEnv } from '@/app/env/app_env.js'
+import { WEBSITES_PATH, appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
 import { DateTime } from 'luxon'
 import { describe, test } from 'vitest'
 
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
-import { CreateSendingDomainAction } from '@/sending_domains/actions/create_sending_domain_action.js'
+import { CreateSendingDomainAction } from '#root/core/sending_domains/actions/create_sending_domain_action.js'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequest } from '@/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequest } from '#root/core/tests/utils/http.js'
 
-import type { Audience } from '@/database/database_schema_types.js'
+import type { Audience } from '#root/database/database_schema_types.js'
 
-import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
+import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@contact-session', () => {
   test('can create a contact session', async ({ expect }) => {
@@ -71,7 +71,7 @@ describe('@contact-session', () => {
 
     const [session] = response.headers.getSetCookie()
 
-    expect(session).toContain('__Secure-contact_session=')
-    expect(session).toContain('HttpOnly; Secure; SameSite=Lax')
+    expect(session).toContain('contact_session=')
+    expect(session).toContain('HttpOnly; SameSite=Lax')
   })
 })

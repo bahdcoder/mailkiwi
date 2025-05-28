@@ -1,8 +1,8 @@
-import { ProcessMtaLogJob } from '@/kumologs/jobs/process_mta_log_job.js'
+import { ProcessMtaLogJob } from '#root/core/kumologs/jobs/process_mta_log_job.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
 /**
  * MtaLogsController handles mail transfer agent (MTA) log processing.

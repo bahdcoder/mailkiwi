@@ -12,7 +12,7 @@ import 'react-flow-renderer/dist/style.css'
 import type {
   AutomationElement,
   NodeElement,
-} from '@pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
+} from '#root/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 
 export interface AutomationProps {
   elements: AutomationElement[]
@@ -49,7 +49,7 @@ export const Automation = ({ elements }: AutomationProps) => {
           fitView
         >
           <Background
-            className="!z-[2]"
+            className="z-2!"
             variant={BackgroundVariant.Dots}
             color="var(--content-secondary)"
           />

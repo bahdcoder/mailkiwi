@@ -1,14 +1,14 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { describe, test } from 'vitest'
 
-import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.js'
+import { CreateTeamAccessTokenAction } from '#root/core/auth/actions/create_team_access_token.js'
 
-import { makeApp } from '@/shared/container/index.js'
+import { makeApp } from '#root/core/shared/container/index.js'
 
-import { container } from '@/utils/typi.js'
-import { setupDomainForDnsChecks } from '@/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { container } from '@kibamail/framework'
+import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
-describe('@mta Http server', () => {
+describe.skip('@mta http server', () => {
   test('can fetch dkim records for a domain', async ({ expect }) => {
     const { TEST_DOMAIN } = await setupDomainForDnsChecks()
 

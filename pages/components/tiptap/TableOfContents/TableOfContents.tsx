@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@pages/components/tiptap/utils/index.js'
+import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import type { TableOfContentsStorage } from '@tiptap-pro/extension-table-of-contents'
 import type { Editor as CoreEditor } from '@tiptap/core'
 import { useEditorState } from '@tiptap/react'

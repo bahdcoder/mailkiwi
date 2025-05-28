@@ -1,14 +1,14 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { AuthorizeMtaCallsMiddleware } from '@/kumomta/middleware/authorize_mta_calls_middleware.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { AuthorizeMtaCallsMiddleware } from '#root/core/kumomta/middleware/authorize_mta_calls_middleware.js'
 
-import { SendingDomainRepository } from '@/sending_domains/repositories/sending_domain_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { makeApp, makeRedis } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
-import { Encryption } from '@/shared/utils/encryption/encryption.js'
+import { makeApp, makeRedis } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
+import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * DkimController provides DKIM (DomainKeys Identified Mail) information for email authentication.

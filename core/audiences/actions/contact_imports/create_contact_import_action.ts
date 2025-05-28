@@ -1,14 +1,14 @@
 import { Readable } from 'node:stream'
-import { makeMinioClient } from '@/minio/minio_client.js'
-import { makeS3Client } from '@/minio/s3_client.js'
+import { makeMinioClient } from '#root/core/minio/minio_client.js'
+import { makeS3Client } from '#root/core/minio/s3_client.js'
 import mime from 'mime-types'
 
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
+import { ContactImportRepository } from '#root/core/audiences/repositories/contact_import_repository.js'
 
-import { readHeadersAndRowsFromCsvStream } from '@/shared/utils/csv/read_headers_and_rows_from_csv_stream.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { readHeadersAndRowsFromCsvStream } from '#root/core/shared/utils/csv/read_headers_and_rows_from_csv_stream.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 type HeaderMap = {
   email: string

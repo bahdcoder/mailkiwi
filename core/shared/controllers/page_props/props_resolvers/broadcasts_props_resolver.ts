@@ -1,10 +1,10 @@
-import { SegmentRepository } from '@/audiences/repositories/segment_repository.js'
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
-import { segments as segmentsTable } from '@/database/schema.js'
-import type { DefaultPageProps } from '@pages/types/page-context.js'
-import { PagePropsResolverContract } from '@/shared/controllers/page_props/page_props_resolver_contract.js'
-import { container } from '@/utils/typi.js'
-import { eq } from 'drizzle-orm'
+import { SegmentRepository } from '#root/core/audiences/repositories/segment_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
+import { segments as segmentsTable } from '#root/database/schema.js'
+import type { DefaultPageProps } from '#root/pages/types/page-context.js'
+import { PagePropsResolverContract } from '#root/core/shared/controllers/page_props/page_props_resolver_contract.js'
+import { container } from '@kibamail/framework'
+import { eq } from '@kibamail/framework/mysql'
 
 export class BroadcastsPropsResolver extends PagePropsResolverContract {
   static get regex() {

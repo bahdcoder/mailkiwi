@@ -1,8 +1,8 @@
 import {
   getStyleAttributeDefaultCommands,
   getStyleAttributeDefinition,
-} from '@pages/components/composer/extensions/NodeStyles/NodeStyles.js'
-import { getDefaultStylesForNode } from '@pages/components/composer/themes/default-theme.js'
+} from '#root/pages/components/composer/extensions/NodeStyles/NodeStyles.js'
+import { getDefaultStylesForNode } from '#root/pages/components/composer/themes/default-theme.js'
 import { OrderedList as BaseNumberedList } from '@tiptap/extension-ordered-list'
 
 declare module '@tiptap/core' {

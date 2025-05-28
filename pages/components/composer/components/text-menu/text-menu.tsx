@@ -1,18 +1,18 @@
-import { LinkEditorPanel } from '@pages/components/composer/components/link-menu/link-editor-panel.jsx'
-import { ContentTypeSelector } from '@pages/components/composer/components/text-menu/content-type-selector.jsx'
-import { FontSizePanel } from '@pages/components/composer/components/text-menu/font-size-panel.jsx'
-import { TextColorPanel } from '@pages/components/composer/components/text-menu/text-color-panel.jsx'
+import { LinkEditorPanel } from '#root/pages/components/composer/components/link-menu/link-editor-panel.jsx'
+import { ContentTypeSelector } from '#root/pages/components/composer/components/text-menu/content-type-selector.jsx'
+import { FontSizePanel } from '#root/pages/components/composer/components/text-menu/font-size-panel.jsx'
+import { TextColorPanel } from '#root/pages/components/composer/components/text-menu/text-color-panel.jsx'
 import {
   ToolbarButton,
   ToolbarContainer,
   ToolbarSection,
-} from '@pages/components/composer/components/toolbar/toolbar.jsx'
-import { BoldIcon } from '@pages/components/icons/bold.svg.jsx'
-import { CodeBlockIcon } from '@pages/components/icons/codeblock.svg.jsx'
-import { ItalicIcon } from '@pages/components/icons/italic.svg.jsx'
-import { LinkIcon } from '@pages/components/icons/link.svg.jsx'
-import { UnderlineIcon } from '@pages/components/icons/underline.svg.jsx'
-import type { ShouldShowProps } from '@pages/components/tiptap/menus/types.js'
+} from '#root/pages/components/composer/components/toolbar/toolbar.jsx'
+import { BoldIcon } from '#root/pages/components/icons/bold.svg.jsx'
+import { CodeBlockIcon } from '#root/pages/components/icons/codeblock.svg.jsx'
+import { ItalicIcon } from '#root/pages/components/icons/italic.svg.jsx'
+import { LinkIcon } from '#root/pages/components/icons/link.svg.jsx'
+import { UnderlineIcon } from '#root/pages/components/icons/underline.svg.jsx'
+import type { ShouldShowProps } from '#root/pages/components/tiptap/menus/types.js'
 import { BubbleMenu, type Editor } from '@tiptap/react'
 import type React from 'react'
 import type { Props as TippyProps } from 'tippy.js'
@@ -116,7 +116,7 @@ export function TextMenu({ editor, pluginKey, tippyProps, shouldShow }: TextMenu
     >
       <ToolbarContainer>
         {isInsideButton ? null : (
-          <div className="flex box-border border-r border-[var(--white-10)] pr-1">
+          <div className="flex box-border border-r border-(--white-10) pr-1">
             <ContentTypeSelector editor={editor} />
           </div>
         )}
@@ -145,7 +145,7 @@ export function TextMenu({ editor, pluginKey, tippyProps, shouldShow }: TextMenu
         </ToolbarSection>
 
         {isInsideButton ? null : (
-          <div className="flex box-border border-l border-[var(--white-10)] px-1">
+          <div className="flex box-border border-l border-(--white-10) px-1">
             <LinkEditorPanel onSubmit={onValidUrlSubmitted}>
               <button type="button">
                 <LinkIcon className="w-4 h-4" />

@@ -1,8 +1,8 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { removeTrailingSlash } from '@/pages/utils/remove_trailing_slash.js'
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { removeTrailingSlash } from '#root/pages/utils/remove_trailing_slash.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
 export class AssetController extends BaseController {
   protected ASSETS_STORAGE_URL(assetPath: string) {

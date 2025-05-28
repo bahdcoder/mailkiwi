@@ -1,6 +1,6 @@
-import { AccessTokenRepository } from '@/auth/acess_tokens/repositories/access_token_repository.js'
+import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories/access_token_repository.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class CreateTeamAccessTokenAction {
   constructor(private accessTokenRepository = container.make(AccessTokenRepository)) {}

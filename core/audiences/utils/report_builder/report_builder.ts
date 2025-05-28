@@ -4,13 +4,13 @@
 // 3. date ranges (start and end), without date range, would give results for all time events.
 // 4. specify if comparisms are needed, for example, compare date range with previous part of date range. if last 7 days is passed, compare with the 7 days before that period.
 // 5. aggregates (avg open rate, avg click rate, avg unsubscribe rate)
-import { type SQLWrapper, and, count, countDistinct, eq, sql } from 'drizzle-orm'
+import { type SQLWrapper, and, count, countDistinct, eq, sql } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 
-import type { EmailSendEvent } from '@/database/database_schema_types.js'
-import { emailSendEvents, emailSends } from '@/database/schema.js'
+import type { EmailSendEvent } from '#root/database/database_schema_types.js'
+import { emailSendEvents, emailSends } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 export class ReportBuilder {
   protected configuration: {

@@ -1,19 +1,24 @@
-import { WEBSITES_DOMAIN, appEnv } from '@/app/env/app_env.js'
-import { generateAcmeAccountIdentityCommand } from '@/cli/commands/generate_acme_account_identity.js'
-import { IssueSSLCertificateForWebsiteJob } from '@/websites/jobs/issue_ssl_certificate_for_website_job.js'
-import { WebsiteRepository } from '@/websites/repositories/website_repository.js'
+import { WEBSITES_DOMAIN, appEnv } from '#root/core/app/env/app_env.js'
+import { generateAcmeAccountIdentityCommand } from '#root/cli/commands/generate_acme_account_identity.js'
+import { IssueSSLCertificateForWebsiteJob } from '#root/core/websites/jobs/issue_ssl_certificate_for_website_job.js'
+import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
 import { faker } from '@faker-js/faker'
 import { DateTime } from 'luxon'
 import { describe, test } from 'vitest'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
 
-import { settings } from '@/database/schema.js'
+import { settings } from '#root/database/schema.js'
 
-import { makeApp, makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import { Encryption } from '@/shared/utils/encryption/encryption.js'
+import {
+  makeApp,
+  makeDatabase,
+  makeLogger,
+  makeRedis,
+} from '#root/core/shared/container/index.js'
+import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@website-ssl', () => {
   test.todo(

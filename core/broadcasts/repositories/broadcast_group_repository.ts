@@ -1,13 +1,13 @@
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 
 import {
   broadcastGroups as broadcastGroupsTable,
   broadcasts as broadcastsTable,
-} from '@/database/schema.js'
-import { hasMany } from '@/database/utils/relationships.js'
+} from '#root/database/schema.js'
+import { hasMany } from '#root/database/utils/relationships.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 export class BroadcastGroupRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {

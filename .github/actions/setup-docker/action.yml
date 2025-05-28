@@ -13,7 +13,7 @@ runs:
     - name: start docker services
       shell: bash
       run: |
-        make dev
+        make dev.essential
 
     - name: wait for docker services
       shell: bash

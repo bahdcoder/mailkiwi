@@ -1,7 +1,7 @@
 import { Queue as BullQueue } from 'bullmq'
 import { AVAILABLE_QUEUES } from './config.js'
 
-import { makeRedis } from '@/shared/container/index.js'
+import { makeRedis } from '#root/core/shared/container/index.js'
 
 export const BroadcastsQueue = () =>
   new BullQueue(AVAILABLE_QUEUES.broadcasts, {

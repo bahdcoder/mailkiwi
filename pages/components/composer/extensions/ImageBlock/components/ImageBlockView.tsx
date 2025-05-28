@@ -1,4 +1,4 @@
-import { cn } from '@pages/components/tiptap/utils/index.js'
+import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import type { Node } from '@tiptap/pm/model'
 import { type Editor, NodeViewWrapper } from '@tiptap/react'
 import { useCallback, useRef } from 'react'

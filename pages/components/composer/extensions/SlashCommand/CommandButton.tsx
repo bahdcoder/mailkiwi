@@ -1,5 +1,5 @@
-import { Icon } from '@pages/components/tiptap/ui/Icon.js'
-import { cn } from '@pages/components/tiptap/utils/index.js'
+import { Icon } from '#root/pages/components/tiptap/ui/Icon.js'
+import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import type { icons } from 'lucide-react'
 import { forwardRef } from 'react'
 

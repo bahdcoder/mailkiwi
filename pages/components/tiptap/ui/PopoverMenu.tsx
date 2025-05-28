@@ -1,4 +1,4 @@
-import { cn } from '@pages/components/tiptap/utils/index.js'
+import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import * as Popover from '@radix-ui/react-popover'
 import { icons } from 'lucide-react'
 import { forwardRef } from 'react'
@@ -45,14 +45,14 @@ export const Menu = ({
         // @ts-ignore
         <Popover.Portal className="z-9999">
           <Popover.Content asChild sideOffset={8}>
-            <Surface className="min-w-[15rem] p-2 flex flex-col gap-0.5 max-h-80 overflow-auto z-[9999]">
+            <Surface className="min-w-60 p-2 flex flex-col gap-0.5 max-h-80 overflow-auto z-9999">
               {children}
             </Surface>
           </Popover.Content>
         </Popover.Portal>
       ) : (
         <Popover.Content asChild sideOffset={8}>
-          <Surface className="min-w-[15rem] p-2 flex flex-col gap-0.5 max-h-80 overflow-auto z-[9999]">
+          <Surface className="min-w-60 p-2 flex flex-col gap-0.5 max-h-80 overflow-auto z-9999">
             {children}
           </Surface>
         </Popover.Content>

@@ -1,9 +1,9 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { type ServerType, serve } from '@hono/node-server'
 
-import { makeApp, makeLogger } from '@/shared/container/index.js'
+import { makeApp, makeLogger } from '#root/core/shared/container/index.js'
 
-import { sleep } from '@/utils/sleep.js'
+import { sleep } from '#root/core/utils/sleep.js'
 
 export async function createTestServer() {
   const app = makeApp()

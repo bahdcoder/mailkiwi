@@ -1,27 +1,27 @@
-import { CreateContactAction } from '@/audiences/actions/contacts/create_contact_action.js'
-import { GetContactsAction } from '@/audiences/actions/contacts/get_contacts_action.js'
-import { UpdateContactAction } from '@/audiences/actions/contacts/update_contact_action.js'
-import { AttachTagsToContactAction } from '@/audiences/actions/tags/attach_tags_to_contact_action.js'
-import { DetachTagsFromContactAction } from '@/audiences/actions/tags/detach_tags_from_contact_action.js'
-import { CreateContactSchema } from '@/audiences/dto/contacts/create_contact_dto.js'
-import { SearchContactsSchema } from '@/audiences/dto/contacts/search_contacts_dto.js'
-import { UpdateContactDto } from '@/audiences/dto/contacts/update_contact_dto.js'
-import { AttachTagsToContactDto } from '@/audiences/dto/tags/attach_tags_to_contact_dto.js'
-import { DetachTagsFromContactDto } from '@/audiences/dto/tags/detach_tags_from_contact_dto.js'
-import { ContactRepository } from '@/audiences/repositories/contact_repository.js'
+import { CreateContactAction } from '#root/core/audiences/actions/contacts/create_contact_action.js'
+import { GetContactsAction } from '#root/core/audiences/actions/contacts/get_contacts_action.js'
+import { UpdateContactAction } from '#root/core/audiences/actions/contacts/update_contact_action.js'
+import { AttachTagsToContactAction } from '#root/core/audiences/actions/tags/attach_tags_to_contact_action.js'
+import { DetachTagsFromContactAction } from '#root/core/audiences/actions/tags/detach_tags_from_contact_action.js'
+import { CreateContactSchema } from '#root/core/audiences/dto/contacts/create_contact_dto.js'
+import { SearchContactsSchema } from '#root/core/audiences/dto/contacts/search_contacts_dto.js'
+import { UpdateContactDto } from '#root/core/audiences/dto/contacts/update_contact_dto.js'
+import { AttachTagsToContactDto } from '#root/core/audiences/dto/tags/attach_tags_to_contact_dto.js'
+import { DetachTagsFromContactDto } from '#root/core/audiences/dto/tags/detach_tags_from_contact_dto.js'
+import { ContactRepository } from '#root/core/audiences/repositories/contact_repository.js'
 
 import type {
   Audience,
   Contact,
   ContactWithProperties,
-} from '@/database/database_schema_types.js'
+} from '#root/database/database_schema_types.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { VikeController } from '@/shared/controllers/vike_controller.js'
-import type { HonoInstance } from '@/shared/server/hono.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import type { HonoInstance } from '#root/core/shared/server/hono.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 /**
  * ContactController manages contact resources within audiences.
@@ -35,7 +35,7 @@ import { container } from '@/utils/typi.js'
  * provides comprehensive functionality for managing contact data, including personal
  * information, custom properties, tags, and engagement history.
  */
-export class ContactController extends VikeController {
+export class ContactController extends BaseController {
   constructor(private app: HonoInstance = makeApp()) {
     super()
 

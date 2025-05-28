@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import {
   type InferInput,
   checkAsync,
@@ -9,9 +9,9 @@ import {
   unknown,
 } from 'valibot'
 
-import { audiences, emails, tags } from '@/database/schema.js'
+import { audiences, emails, tags } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 export const UpdateAutomationStepDto = pipeAsync(
   objectAsync({

@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import {
   type InferInput,
@@ -20,9 +20,9 @@ import {
   uuid,
 } from 'valibot'
 
-import { audiences, senderIdentities, sendingDomains } from '@/database/schema.js'
+import { audiences, senderIdentities, sendingDomains } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
 /**
  * Schema for validating email content within a broadcast.

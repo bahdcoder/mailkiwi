@@ -1,21 +1,21 @@
-import { ChannelRepository } from '@/chat/repositories/channel_repository.js'
-import { MessageRepository } from '@/chat/repositories/message_repository.js'
-import { eq } from 'drizzle-orm'
+import { ChannelRepository } from '#root/core/chat/repositories/channel_repository.js'
+import { MessageRepository } from '#root/core/chat/repositories/message_repository.js'
+import { eq } from '@kibamail/framework/mysql'
 import type { Next } from 'hono'
 import type { NonOptional } from 'valibot'
 
-import type { Message } from '@/database/database_schema_types.js'
-import { channels } from '@/database/schema.js'
+import type { Message } from '#root/database/database_schema_types.js'
+import { channels } from '#root/database/schema.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { makeApp, makeDatabase } from '@/shared/container/index.js'
-import { VikeController } from '@/shared/controllers/vike_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 
-export class ChatController extends VikeController {
+export class ChatController extends BaseController {
   constructor(
     protected app = makeApp(),
     protected database = makeDatabase(),
@@ -24,23 +24,15 @@ export class ChatController extends VikeController {
   ) {
     super()
 
-    this.app.defineRoutes([...this.vikePath('/community', this.index)], {
+    this.app.defineRoutes([], {
       prefix: '',
       middleware: [],
     })
 
-    this.app.defineRoutes(
-      [
-        ...this.vikePath('/m/:messageId/replies/:replyId', this.reply),
-        ...this.vikePath('/m/:messageId/replies', this.replies),
-        ...this.vikePath('/m/:messageId', this.message),
-        ...this.vikePath('/', this.channel),
-      ],
-      {
-        prefix: '/community/:slug',
-        middleware: [],
-      },
-    )
+    this.app.defineRoutes([], {
+      prefix: '/community/:slug',
+      middleware: [],
+    })
   }
 
   protected getChannel = async (ctx: HonoContext) => {
@@ -99,10 +91,10 @@ export class ChatController extends VikeController {
     return publicChannels
   }
 
-  index = async (ctx: HonoContext, next: Next) => {
+  index = async (ctx: HonoContext) => {
     const publicChannels = await this.getChannels()
 
-    return this.page(ctx, next, { channels: publicChannels })
+    return this.response(ctx).json({ channels: publicChannels })
   }
 
   channel = async (ctx: HonoContext, next: Next) => {
@@ -118,7 +110,7 @@ export class ChatController extends VikeController {
       direction,
     )
 
-    return this.page(ctx, next, {
+    return this.response(ctx).json({
       channel,
       messages,
       channels: publicChannels,
@@ -128,7 +120,7 @@ export class ChatController extends VikeController {
   message = async (ctx: HonoContext, next: Next) => {
     const { messages, channel, messageId } = await this.getMessage(ctx)
 
-    return this.page(ctx, next, { messages, messageId, channel })
+    return this.response(ctx).json({ messages, messageId, channel })
   }
 
   getReplies = async (
@@ -167,7 +159,7 @@ export class ChatController extends VikeController {
 
     const replies = await this.getReplies(ctx, cursor, direction)
 
-    return this.page(ctx, next, replies)
+    return this.response(ctx).json({ cursor, replies })
   }
 
   reply = async (ctx: HonoContext, next: Next) => {
@@ -193,6 +185,6 @@ export class ChatController extends VikeController {
       message.id,
     )
 
-    return this.page(ctx, next, { replies, channel, messages })
+    return this.response(ctx).json(replies)
   }
 }

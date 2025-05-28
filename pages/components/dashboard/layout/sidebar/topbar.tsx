@@ -1,8 +1,8 @@
-import { useApplicationLayoutContext } from '@pages/components/dashboard/layout/application-layout-context.jsx'
-import { FooterMenuItems } from '@pages/components/dashboard/layout/footer-menu-items.jsx'
-import { SearchBoxTrigger } from '@pages/components/dashboard/layout/sidebar/search-box-trigger.jsx'
-import { WorkspacesDropdownMenu } from '@pages/components/dashboard/layout/workspace-dropdown-menu.jsx'
-import { SidebarExpandIcon } from '@pages/components/icons/sidebar-expand.svg.jsx'
+import { useApplicationLayoutContext } from '#root/pages/components/dashboard/layout/application-layout-context.jsx'
+import { FooterMenuItems } from '#root/pages/components/dashboard/layout/footer-menu-items.jsx'
+import { SearchBoxTrigger } from '#root/pages/components/dashboard/layout/sidebar/search-box-trigger.jsx'
+import { WorkspacesDropdownMenu } from '#root/pages/components/dashboard/layout/workspace-dropdown-menu.jsx'
+import { SidebarExpandIcon } from '#root/pages/components/icons/sidebar-expand.svg.jsx'
 import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 
@@ -47,7 +47,7 @@ export function Topbar() {
         <SidebarExpandIcon className="kb-content-tertiary-inverse" />
       </button>
 
-      <div className="ml-2 max-w-[8.25rem]">
+      <div className="ml-2 max-w-33">
         <WorkspacesDropdownMenu rootId="topbar-workspaces" />
       </div>
 

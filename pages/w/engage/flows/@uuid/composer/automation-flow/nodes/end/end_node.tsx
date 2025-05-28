@@ -1,4 +1,4 @@
-import { ProhibitionIcon } from '@pages/components/icons/prohibition.svg.jsx'
+import { ProhibitionIcon } from '#root/pages/components/icons/prohibition.svg.jsx'
 import { Badge } from '@kibamail/owly/badge'
 import { Text } from '@kibamail/owly/text'
 import { Handle, Position } from 'react-flow-renderer'

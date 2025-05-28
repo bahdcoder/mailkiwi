@@ -1,7 +1,7 @@
-import { mediaDocuments } from '@/database/schema.js'
+import { mediaDocuments } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { BaseRepository } from '@/shared/repositories/base_repository.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
 export class MediaDocumentRepository extends BaseRepository {
   constructor(protected database = makeDatabase()) {

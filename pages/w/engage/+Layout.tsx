@@ -1,9 +1,9 @@
-import { PageLayout } from '@pages/components/page/page-layout.jsx'
-import { ProductPageHeading } from '@pages/components/page/product-page-heading.jsx'
+import { PageLayout } from '#root/pages/components/page/page-layout.jsx'
+import { ProductPageHeading } from '#root/pages/components/page/product-page-heading.jsx'
 import * as Tabs from '@kibamail/owly/tabs'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 function EngageLayout({ children }: React.PropsWithChildren) {
   const { urlPathname, routeParams, engage } = usePageContext()
@@ -41,7 +41,7 @@ function EngageLayout({ children }: React.PropsWithChildren) {
         <ProductPageHeading>
           <div className="w-full flex">
             <div className="w-full lg:w-auto">
-              <Tabs.List className="lg:w-[fit-content] gap-x-4">
+              <Tabs.List className="lg:w-fit gap-x-4">
                 <Tabs.Trigger asChild value="broadcasts" className="px-0">
                   <a href={route('engage')}>Broadcasts</a>
                 </Tabs.Trigger>
@@ -54,7 +54,7 @@ function EngageLayout({ children }: React.PropsWithChildren) {
                 <Tabs.Indicator />
               </Tabs.List>
             </div>
-            <div className="flex-grow hidden lg:block h-px bg-[var(--black-5)] w-full self-end" />
+            <div className="grow hidden lg:block h-px bg-(--black-5) w-full self-end" />
           </div>
         </ProductPageHeading>
         <div className="w-layout-container">{children}</div>

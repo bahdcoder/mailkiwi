@@ -1,5 +1,5 @@
-import { Button } from '@pages/components/tiptap/ui/Button/Button.jsx'
-import { Panel } from '@pages/components/tiptap/ui/Panel/index.jsx'
+import { Button } from '#root/pages/components/tiptap/ui/Button/Button.jsx'
+import { Panel } from '#root/pages/components/tiptap/ui/Panel/index.jsx'
 import type { EmojiItem } from '@tiptap-pro/extension-emoji'
 import type { SuggestionKeyDownProps } from '@tiptap/suggestion'
 import React, {
@@ -97,7 +97,7 @@ const EmojiList = forwardRef(
     }
 
     return (
-      <Panel className="overflow-y-auto max-w-[18rem] max-h-[18rem]">
+      <Panel className="overflow-y-auto max-w-[18rem] max-h-72">
         {props.items.map((item: EmojiItem, index: number) => (
           <Button
             active={index === selectedIndex}

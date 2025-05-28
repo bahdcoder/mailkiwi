@@ -1,9 +1,9 @@
-import type { AutomationStep } from '@/database/database_schema_types.js'
-import type { AutomationStepSubType } from '@/database/types/automations.js'
-import { LabelIcon } from '@pages/components/icons/label.svg.jsx'
-import { MailIcon } from '@pages/components/icons/mail.svg.jsx'
-import { NetworkReverseIcon } from '@pages/components/icons/network-reverse.svg.jsx'
-import { TimerIcon } from '@pages/components/icons/timer.svg.jsx'
+import type { AutomationStep } from '#root/database/database_schema_types.js'
+import type { AutomationStepSubType } from '#root/database/types/automations.js'
+import { LabelIcon } from '#root/pages/components/icons/label.svg.jsx'
+import { MailIcon } from '#root/pages/components/icons/mail.svg.jsx'
+import { NetworkReverseIcon } from '#root/pages/components/icons/network-reverse.svg.jsx'
+import { TimerIcon } from '#root/pages/components/icons/timer.svg.jsx'
 import { Badge } from '@kibamail/owly/badge'
 import { Text } from '@kibamail/owly/text'
 import { Label } from '@radix-ui/react-dropdown-menu'
@@ -44,9 +44,9 @@ export function SkeletonNode({ step, children }: PropsWithChildren<SkeletonNodeP
     <div className="w-full h-full flex flex-col">
       <div className=" border-b pb-2 box-border border-black/5 w-full items-center flex justify-between">
         <div className="flex items-center gap-2">
-          {Icon ? <Icon className="!w-4 !h-4 font-medium kb-content-tertiary" /> : null}
+          {Icon ? <Icon className="w-4! h-4! font-medium kb-content-tertiary" /> : null}
 
-          <Text className="flex-shrink-0 text-sm">{nodeLabels[step.subtype]}</Text>
+          <Text className="shrink-0 text-sm">{nodeLabels[step.subtype]}</Text>
         </div>
 
         <Badge
@@ -57,7 +57,7 @@ export function SkeletonNode({ step, children }: PropsWithChildren<SkeletonNodeP
           {step.type.toLowerCase()}
         </Badge>
       </div>
-      <div className="flex-grow flex items-center py-2 box-border">{children}</div>
+      <div className="grow flex items-center py-2 box-border">{children}</div>
     </div>
   )
 }

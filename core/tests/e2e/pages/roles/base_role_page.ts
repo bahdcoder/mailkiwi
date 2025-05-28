@@ -1,7 +1,7 @@
+import { sleep } from '#root/core/utils/sleep'
 import type { Page } from '@playwright/test'
 
 export class BaseRolePage {
-  // offscreen-sidebar-dropdown-menu-trigger
   public readonly teamSwitchDropdownMenuTrigger = this.page.getByTestId(
     'offscreen-sidebar-dropdown-menu-trigger',
   )
@@ -13,8 +13,11 @@ export class BaseRolePage {
   constructor(public readonly page: Page) {}
 
   async switchToTeam(teamId: string) {
-    await this.teamSwitchDropdownMenuTrigger.click()
+    await this.teamSwitchDropdownMenuTrigger.focus()
 
-    await this.getTeamLink(teamId).click()
+    await this.page.waitForTimeout(1000)
+    await this.teamSwitchDropdownMenuTrigger.press('ArrowDown')
+
+    await this.getTeamLink(teamId).click({})
   }
 }

@@ -1,13 +1,13 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 
-import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
+import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
 
-import { Mailer } from '@/shared/mailers/mailer.js'
-import { BaseJob, type JobContext } from '@/shared/queue/abstract_job.js'
-import { AVAILABLE_QUEUES } from '@/shared/queue/config.js'
-import { SignedUrlManager } from '@/shared/utils/links/signed_url_manager.js'
+import { Mailer } from '#root/core/shared/mailers/mailer.js'
+import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
+import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
+import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export interface SendTeamMemberInviteJobPayload {
   inviteId: string

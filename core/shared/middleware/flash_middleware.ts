@@ -1,8 +1,8 @@
-import { appEnv } from '@/app/env/app_env.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import type { Next } from 'hono'
 import { deleteCookie, getCookie, setCookie, setSignedCookie } from 'hono/cookie'
 
-import type { HonoContext } from '@/shared/server/types.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
 export class FlashMiddleware {
   static FLASH_COOKIE_NAME = '__FLASH_MESSAGE'

@@ -1,14 +1,14 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import type { InjectEmailSchemaDto } from '@/injector/dto/inject_email_dto.js'
+import type { InjectEmailSchemaDto } from '#root/core/injector/dto/inject_email_dto.js'
 import { faker } from '@faker-js/faker'
 
-import type { EmailContentSchemaDto } from '@/content/dto/create_email_content_dto.js'
+import type { EmailContentSchemaDto } from '#root/core/content/dto/create_email_content_dto.js'
 
-import { getApiKeyForTeam } from '@/tests/utils/http.js'
+import { getApiKeyForTeam } from '#root/core/tests/utils/http.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 export function getDefaultEmailContentSchema(): EmailContentSchemaDto {
   return {

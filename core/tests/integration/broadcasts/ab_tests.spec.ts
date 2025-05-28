@@ -1,17 +1,17 @@
 import { faker } from '@faker-js/faker'
-import { asc, eq } from 'drizzle-orm'
+import { asc, eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
-import { BroadcastRepository } from '@/broadcasts/repositories/broadcast_repository.js'
+import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
 import {
   createFakeAbTestEmailContent,
   createFakeEmailContent,
-} from '@/tests/mocks/audiences/email_content.js'
-import { createBroadcastForUser, createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+} from '#root/core/tests/mocks/audiences/email_content.js'
+import { createBroadcastForUser, createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@broadcasts update broadcasts', () => {
   test('can update a broadcast with ab test variants', async ({ expect }) => {

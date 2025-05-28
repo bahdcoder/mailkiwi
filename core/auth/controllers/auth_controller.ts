@@ -1,17 +1,17 @@
-import { TeamRepository } from '@/teams/repositories/team_repository.js'
+import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { CreateTeamAccessTokenAction } from '@/auth/actions/create_team_access_token.js'
-import { LoginUserSchema } from '@/auth/users/dto/login_user_dto.js'
-import { UserRepository } from '@/auth/users/repositories/user_repository.js'
+import { CreateTeamAccessTokenAction } from '#root/core/auth/actions/create_team_access_token.js'
+import { LoginUserSchema } from '#root/core/auth/users/dto/login_user_dto.js'
+import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { makeApp } from '@/shared/container/index.js'
-import { VikeController } from '@/shared/controllers/vike_controller.js'
-import { route } from '@/shared/routes/route_aliases.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
+import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 /**
  * AuthController handles user authentication and API key management.
@@ -25,7 +25,7 @@ import { container } from '@/utils/typi.js'
  * manage user sessions, and provide secure access to the application. It supports both
  * browser-based authentication (login/logout) and programmatic API access (API keys).
  */
-export class AuthController extends VikeController {
+export class AuthController extends BaseController {
   constructor(
     private userRepository = container.make(UserRepository),
     private teamRepository = container.make(TeamRepository),
@@ -36,11 +36,7 @@ export class AuthController extends VikeController {
     // Define routes for browser-based authentication
     this.app.defineRoutes(
       [
-        // Serve the login page, redirecting to dashboard if already authenticated
-        ...this.vikePath('/login', this.redirectToWelcomeIfAuthenticatedPage),
-        // Handle login form submission
         ['POST', '/login', this.login],
-        // Handle logout requests
         ['POST', '/logout', this.logout],
       ],
       {

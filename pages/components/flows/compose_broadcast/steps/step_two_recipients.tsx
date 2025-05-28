@@ -1,11 +1,11 @@
-import { getProgressBarVariant } from '@pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
-import { DisplayedFilterCondition } from '@pages/components/filters/displayed-filter-conditions.jsx'
-import { SlashesDivider } from '@pages/components/flows/compose_broadcast/components/slashes_divider.jsx'
-import { useComposeBroadcastContext } from '@pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
-import { MinusIcon } from '@pages/components/icons/minus.svg.jsx'
-import { WarningTriangleSolidIcon } from '@pages/components/icons/warning-triangle-solid.svg.jsx'
-import { formatCount } from '@pages/utils/number_formatter.js'
-import type { FilterCondition } from '@pages/w/engage/contacts/components/filters.jsx'
+import { getProgressBarVariant } from '#root/pages/components/dashboard/layout/sidebar/sidebar-content.jsx'
+import { DisplayedFilterCondition } from '#root/pages/components/filters/displayed-filter-conditions.jsx'
+import { SlashesDivider } from '#root/pages/components/flows/compose_broadcast/components/slashes_divider.jsx'
+import { useComposeBroadcastContext } from '#root/pages/components/flows/compose_broadcast/state/compose_broadcast_context.jsx'
+import { MinusIcon } from '#root/pages/components/icons/minus.svg.jsx'
+import { WarningTriangleSolidIcon } from '#root/pages/components/icons/warning-triangle-solid.svg.jsx'
+import { formatCount } from '#root/pages/utils/number_formatter.js'
+import type { FilterCondition } from '#root/pages/w/engage/contacts/components/filters.jsx'
 import * as Alert from '@kibamail/owly/alert'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
@@ -14,8 +14,11 @@ import * as SelectField from '@kibamail/owly/select-field'
 import { Spinner } from '@kibamail/owly/spinner'
 import { Text } from '@kibamail/owly/text'
 import React from 'react'
-import type { BroadcastPageProps, Segment } from '@pages/types/broadcast-page-props.js'
-import { usePageContextWithProps } from '@pages/hooks/use_page_props.js'
+import type {
+  BroadcastPageProps,
+  Segment,
+} from '#root/pages/types/broadcast-page-props.js'
+import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
 export function StepTwoRecipients() {
   const {
@@ -83,7 +86,7 @@ export function StepTwoRecipients() {
 
           <SelectField.Trigger />
 
-          <SelectField.Content className="relative z-[50]">
+          <SelectField.Content className="relative z-50">
             <SelectField.Item value="all">All contacts</SelectField.Item>
             {segments.map((segment: Segment) => (
               <SelectField.Item key={segment.id} value={segment.id}>
@@ -96,7 +99,7 @@ export function StepTwoRecipients() {
 
       {filters && filters.length > 0 ? (
         <div className="mt-5 border border-dashed rounded-lg p-4 kb-border-tertiary">
-          <div className="flex flex-grow flex-wrap gap-4">
+          <div className="flex grow flex-wrap gap-4">
             <DisplayedFilterCondition readOnly filters={filters} />
           </div>
         </div>
@@ -115,7 +118,7 @@ export function StepTwoRecipients() {
         {!hasEnoughCredits ? (
           <>
             <div className="flex items-center gap-px">
-              <div className="w-full flex-grow">
+              <div className="w-full grow">
                 <Progress value={100} />
               </div>
               <MinusIcon className="transform rotate-90" />

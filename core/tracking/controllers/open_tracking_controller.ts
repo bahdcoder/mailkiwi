@@ -1,8 +1,8 @@
-import { appEnv } from '@/app/env/app_env.js'
-import { ClickTrackingController } from '@/tracking/controllers/click_tracking_controller.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
+import { ClickTrackingController } from '#root/core/tracking/controllers/click_tracking_controller.js'
 
-import { makeApp } from '@/shared/container/index.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
 /**
  * OpenTrackingController handles email open tracking via invisible pixels.

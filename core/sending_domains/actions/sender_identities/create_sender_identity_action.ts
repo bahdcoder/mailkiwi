@@ -1,9 +1,9 @@
-import type { SendingDomain } from '@/database/database_schema_types.js'
+import type { SendingDomain } from '#root/database/database_schema_types.js'
 
-import type { CreateSenderIdentityDto } from '@/sending_domains/dto/sender_identities/create_sender_identity_dto.js'
-import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
+import type { CreateSenderIdentityDto } from '#root/core/sending_domains/dto/sender_identities/create_sender_identity_dto.js'
+import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * Action for creating a new sender identity.

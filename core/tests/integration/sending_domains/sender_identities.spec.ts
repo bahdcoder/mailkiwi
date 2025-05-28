@@ -1,18 +1,21 @@
 import { faker } from '@faker-js/faker'
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
-import { SenderIdentityRepository } from '@/sending_domains/repositories/sender_identity_repository.js'
+import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
 
-import { createUser, setupSendingDomainForTeam } from '@/tests/mocks/auth/users.js'
-import { makeRequestAsUser } from '@/tests/utils/http.js'
+import {
+  createUser,
+  setupSendingDomainForTeam,
+} from '#root/core/tests/mocks/auth/users.js'
+import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
-import { senderIdentities } from '@/database/schema.js'
+import { senderIdentities } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
 
-import { container } from '@/utils/typi.js'
-import { OtpGenerator } from '@/shared/tokens/otp_generator.js'
+import { container } from '@kibamail/framework'
+import { OtpGenerator } from '#root/core/shared/tokens/otp_generator.js'
 
 describe('@sender-identities', () => {
   test('can create a sender identity for a team', async ({ expect }) => {

@@ -1,17 +1,17 @@
-import { CreateContactImportAction } from '@/audiences/actions/contact_imports/create_contact_import_action.js'
-import { UpdateContactImportSettingsAction } from '@/audiences/actions/contact_imports/update_contact_import_settings_action.js'
-import { UpdateContactImportSettingsSchema } from '@/audiences/dto/contact_imports/update_contact_import_settings_dto.js'
-import { ContactImportRepository } from '@/audiences/repositories/contact_import_repository.js'
+import { CreateContactImportAction } from '#root/core/audiences/actions/contact_imports/create_contact_import_action.js'
+import { UpdateContactImportSettingsAction } from '#root/core/audiences/actions/contact_imports/update_contact_import_settings_action.js'
+import { UpdateContactImportSettingsSchema } from '#root/core/audiences/dto/contact_imports/update_contact_import_settings_dto.js'
+import { ContactImportRepository } from '#root/core/audiences/repositories/contact_import_repository.js'
 
-import type { Audience } from '@/database/database_schema_types.js'
+import type { Audience } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { makeApp } from '@/shared/container/index.js'
-import { BaseController } from '@/shared/controllers/base_controller.js'
-import type { HonoContext } from '@/shared/server/types.js'
+import { makeApp } from '#root/core/shared/container/index.js'
+import { BaseController } from '#root/core/shared/controllers/base_controller.js'
+import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * ContactImportController handles the import of contacts from external files.

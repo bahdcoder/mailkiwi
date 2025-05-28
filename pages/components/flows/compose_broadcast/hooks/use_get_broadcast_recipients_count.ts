@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { usePageContext } from 'vike-react/usePageContext'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
 
 export function useGetBroadcastRecipientsCount(segmentId: string) {
   const { audience } = usePageContext()

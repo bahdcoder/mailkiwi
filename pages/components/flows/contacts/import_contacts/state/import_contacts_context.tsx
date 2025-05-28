@@ -1,6 +1,6 @@
 import { createContext } from '@radix-ui/react-context'
 
-import type { UpdateContactImportSettingsDto } from '@/audiences/dto/contact_imports/update_contact_import_settings_dto.js'
+import type { UpdateContactImportSettingsDto } from '#root/core/audiences/dto/contact_imports/update_contact_import_settings_dto.js'
 
 export type FormState = {
   contactImportId: string

@@ -3,19 +3,20 @@ import {
   Oauth2Methods,
   PageContainer,
   PageTitle,
-} from '@pages/components/auth/auth.jsx'
-import { FlashMessage } from '@pages/components/flash/flash_message.jsx'
-import { PasswordField } from '@pages/components/input/password-field.jsx'
+} from '#root/pages/components/auth/auth.jsx'
+import { FlashMessage } from '#root/pages/components/flash/flash_message.jsx'
+import { PasswordField } from '#root/pages/components/input/password-field.jsx'
 import {
   ServerForm,
   useServerFormMutation,
-} from '@pages/hooks/use_server_form_mutation.jsx'
+} from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { Button } from '@kibamail/owly/button'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
 import React from 'react'
 
-import { route } from '@/shared/routes/route_aliases.js'
+import { route } from '#root/core/shared/routes/route_aliases.js'
+import { usePageContext } from 'vike-react/usePageContext'
 
 interface LoginPageProps {
   teamInviteToken?: string
@@ -23,6 +24,8 @@ interface LoginPageProps {
 
 function LoginPage({ teamInviteToken }: LoginPageProps) {
   const isAnInvitedUser = teamInviteToken !== undefined
+
+  const props = usePageContext()
 
   const linkToRegisterPage = isAnInvitedUser
     ? `/auth/invites/${teamInviteToken}/`

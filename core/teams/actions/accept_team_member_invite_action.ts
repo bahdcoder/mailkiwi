@@ -1,12 +1,12 @@
 import { DateTime } from 'luxon'
 
-import { TeamMembershipRepository } from '@/teams/repositories/team_membership_repository.js'
+import { TeamMembershipRepository } from '#root/core/teams/repositories/team_membership_repository.js'
 
-import type { TeamMembership } from '@/database/database_schema_types.js'
+import type { TeamMembership } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '@/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { container } from '@/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class AcceptTeamMemberInviteAction {
   constructor(

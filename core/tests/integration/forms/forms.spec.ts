@@ -1,22 +1,22 @@
-import { WEBSITES_PATH } from '@/app/env/app_env.js'
-import { TagContactBasedOnResponseJob } from '@/forms/jobs/tag_contact_based_on_response_job.js'
-import { FormRepository } from '@/forms/repositories/form_repository.js'
+import { WEBSITES_PATH } from '#root/core/app/env/app_env.js'
+import { TagContactBasedOnResponseJob } from '#root/core/forms/jobs/tag_contact_based_on_response_job.js'
+import { FormRepository } from '#root/core/forms/repositories/form_repository.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { makeRequest, makeRequestAsUser } from '@/tests/utils/http.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { makeRequest, makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
-import type { InsertForm } from '@/database/database_schema_types.js'
-import { contacts, formResponses, forms } from '@/database/schema.js'
+import type { InsertForm } from '#root/database/database_schema_types.js'
+import { contacts, formResponses, forms } from '#root/database/schema.js'
 
-import { makeDatabase } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '@/utils/typi.js'
-import { survey } from '@/tests/integration/helpers/forms/survey.js'
+import { container } from '@kibamail/framework'
+import { survey } from '#root/core/tests/integration/helpers/forms/survey.js'
 
 describe('@forms', () => {
   test('can create a sign up form', async ({ expect }) => {

@@ -1,18 +1,18 @@
 import { faker } from '@faker-js/faker'
 import { describe, test } from 'vitest'
 
-import { RunAutomationForContactJob } from '@/automations/jobs/run_automation_for_contact_job.js'
-import { RunAutomationStepForContactJob } from '@/automations/jobs/run_automation_step_for_contact_job.js'
+import { RunAutomationForContactJob } from '#root/core/automations/jobs/run_automation_for_contact_job.js'
+import { RunAutomationStepForContactJob } from '#root/core/automations/jobs/run_automation_step_for_contact_job.js'
 
-import { createFakeContact } from '@/tests/mocks/audiences/contacts.js'
-import { createUser } from '@/tests/mocks/auth/users.js'
-import { seedAutomation } from '@/tests/mocks/teams/teams.js'
+import { createFakeContact } from '#root/core/tests/mocks/audiences/contacts.js'
+import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { seedAutomation } from '#root/core/tests/mocks/teams/teams.js'
 
-import { contacts } from '@/database/schema.js'
+import { contacts } from '#root/database/schema.js'
 
-import { makeDatabase, makeLogger, makeRedis } from '@/shared/container/index.js'
-import { Queue } from '@/shared/queue/queue.js'
-import { cuid } from '@/shared/utils/cuid/cuid.js'
+import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
+import { Queue } from '#root/core/shared/queue/queue.js'
+import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 describe('Run automation for contact job', () => {
   test('successfully runs an automation job for a contact by queueing next job', async ({
