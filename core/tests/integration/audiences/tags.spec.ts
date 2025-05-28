@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import { createUser } from '#root/core/tests/mocks/auth/users.js'

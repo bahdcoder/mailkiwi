@@ -5,15 +5,15 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1746331573717,
-      "tag": "0000_public_warstar",
+      "when": 1748433009348,
+      "tag": "0000_initialize_database",
       "breakpoints": true
     },
     {
-      "idx": 1,
+      "idx": 2,
       "version": "5",
-      "when": 1748023190877,
-      "tag": "0001_safe_wasp",
+      "when": 1748186778172,
+      "tag": "0002_many_scalphunter",
       "breakpoints": true
     }
   ]

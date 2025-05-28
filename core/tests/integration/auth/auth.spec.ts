@@ -1,6 +1,6 @@
 import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { describe, test } from 'vitest'
 
@@ -19,7 +19,7 @@ import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_sessi
 import { OtpGenerator } from '#root/core/shared/tokens/otp_generator.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@auth user registration', () => {
   test('can register a new user account', async ({ expect }) => {

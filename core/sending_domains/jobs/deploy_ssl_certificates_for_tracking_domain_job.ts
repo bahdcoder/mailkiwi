@@ -3,7 +3,7 @@ import { SendingDomainRepository } from '#root/core/sending_domains/repositories
 import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.js'
 import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export interface DeploySslCertificateForTrackingDomainJobPayload {
   sendingDomainId: string

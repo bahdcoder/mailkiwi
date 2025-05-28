@@ -1,4 +1,4 @@
-import { and, eq, isNotNull, sql } from 'drizzle-orm'
+import { and, eq, isNotNull, sql } from '@kibamail/framework/mysql'
 import { RunAutomationStepForContactJob } from './run_automation_step_for_contact_job.js'
 
 import type { Contact } from '#root/database/database_schema_types.js'

@@ -55,6 +55,7 @@ export const aliases = {
   settings_billing: w('settings/billing'),
 
   // teams
+  create_team: '/teams',
   teams_switch: '/teams/:teamId/switch',
 
   // error pages

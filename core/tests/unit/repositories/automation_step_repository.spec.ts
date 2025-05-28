@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import type { CreateAutomationStepDto } from '#root/core/automations/dto/create_automation_step_dto.js'
@@ -13,7 +13,7 @@ import { automationSteps } from '#root/database/schema.js'
 import { makeDatabase } from '#root/core/shared/container/index.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@automation-step-repository', () => {
   test('creates a standard automation step', async ({ expect }) => {

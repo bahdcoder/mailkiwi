@@ -1,6 +1,4 @@
-import { WEBSITES_DOMAIN, appEnv } from '#root/core/app/env/app_env.js'
-import { InjectEmailAction } from '#root/core/injector/actions/inject_email_action.js'
-import { InjectEmailSchemaDto } from '#root/core/injector/dto/inject_email_dto.js'
+import { appEnv } from '#root/core/app/env/app_env.js'
 import { CreateContactSessionAction } from '#root/core/websites/actions/create_contact_session_action.js'
 import { AddCustomWebsiteDomainSchema } from '#root/core/websites/dto/add_custom_website_domain_dto.js'
 import { CreateContactSessionSchema } from '#root/core/websites/dto/create_contact_session_dto.js'
@@ -22,17 +20,15 @@ import {
   type WebsitePage,
 } from '#root/database/database_schema_types.js'
 
-import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_UNAUTHORIZED, E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { ContainerKey, makeApp } from '#root/core/shared/container/index.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
-import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
-import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
-import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
+import { SignedUrlManager } from '@kibamail/framework'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * WebsiteController manages website creation and rendering for landing pages.

@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 
 import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
@@ -9,7 +9,7 @@ import { passwordResets, users } from '#root/database/schema.js'
 import { ScryptTokenRepository } from '#root/core/shared/repositories/scrypt_token_repository.js'
 import { TokenGenerator } from '#root/core/shared/tokens/token_generator.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class PasswordResetRepository extends ScryptTokenRepository {
   protected PASSWORD_RESETS_DEFAULT_EXPIRATION_TIME_IN_MINUTES = 15

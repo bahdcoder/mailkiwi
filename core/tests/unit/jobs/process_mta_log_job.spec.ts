@@ -14,7 +14,7 @@ import type { Audience } from '#root/database/database_schema_types.js'
 import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 import type { MtaLog } from '#root/core/shared/types/mta.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 const xForwardedFor = '66.249.93.66'

@@ -13,7 +13,7 @@ import {
   string,
 } from 'valibot'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { UUID_V1_REGEX } from '#root/core/shared/utils/cuid/cuid.js'
 import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 

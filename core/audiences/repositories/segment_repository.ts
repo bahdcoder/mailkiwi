@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 
 import type { DrizzleClient } from '#root/database/client.js'
 import type { InsertSegment } from '#root/database/database_schema_types.js'

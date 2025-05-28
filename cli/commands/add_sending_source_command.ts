@@ -3,7 +3,7 @@ import { CreateSendingSourceSchema } from '#root/core/settings/dtos/create_sendi
 import { command, string } from '@drizzle-team/brocli'
 import { parseAsync } from 'valibot'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export const addSendingSourceCommand = command({
   name: 'add_sending_source',

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import type { EmailContentVariant } from '../dto/update_broadcast_dto.js'
 
 import { EmailContentRepository } from '#root/core/content/repositories/email_content_repository.js'
@@ -10,7 +10,7 @@ import { abTestVariants } from '#root/database/schema.js'
 import { makeDatabase } from '#root/core/shared/container/index.js'
 import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class AbTestVariantRepository extends BaseRepository {
   constructor(

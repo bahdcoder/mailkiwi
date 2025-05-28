@@ -1,5 +1,5 @@
 import { command } from '@drizzle-team/brocli'
-import { inArray, sql } from 'drizzle-orm'
+import { inArray, sql } from '@kibamail/framework/mysql'
 
 import type { InsertSendingSource } from '#root/database/database_schema_types.js'
 import { sendingSources } from '#root/database/schema.js'

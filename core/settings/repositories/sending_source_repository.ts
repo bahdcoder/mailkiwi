@@ -1,4 +1,4 @@
-import { aliasedTableColumn, and, count, eq, sql } from 'drizzle-orm'
+import { aliasedTableColumn, and, count, eq, sql } from '@kibamail/framework/mysql'
 
 import {
   type InsertSendingSource,

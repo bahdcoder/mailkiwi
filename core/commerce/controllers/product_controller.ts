@@ -7,13 +7,13 @@ import { TeamRepository } from '#root/core/teams/repositories/team_repository.js
 
 import { type Audience, Product } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { makeApp } from '#root/core/shared/container/index.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * ProductController handles API endpoints for managing commerce products.

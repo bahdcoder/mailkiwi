@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
@@ -14,7 +14,7 @@ import { senderIdentities } from '#root/database/schema.js'
 
 import { makeDatabase } from '#root/core/shared/container/index.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { OtpGenerator } from '#root/core/shared/tokens/otp_generator.js'
 
 describe('@sender-identities', () => {

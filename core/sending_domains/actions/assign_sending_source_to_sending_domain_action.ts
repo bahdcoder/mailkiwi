@@ -4,7 +4,7 @@ import { SendingDomainRepository } from '#root/core/sending_domains/repositories
 
 import { SendingSource } from '#root/database/database_schema_types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class AssignSendingSourceToSendingDomainAction {
   constructor(

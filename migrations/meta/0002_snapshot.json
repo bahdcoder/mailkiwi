@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "e841a28b-db9f-44cc-82d2-75addac286c8",
-  "prevId": "2457b866-7f25-4bc7-986f-b111234e0ecd",
+  "id": "b09e31e1-612b-49cc-ba6c-6c6e205009ca",
+  "prevId": "e841a28b-db9f-44cc-82d2-75addac286c8",
   "tables": {
     "abTestVariants": {
       "name": "abTestVariants",
@@ -3852,6 +3852,30 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "newContactNotifications": {
+          "name": "newContactNotifications",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "accountSummaryNotifications": {
+          "name": "accountSummaryNotifications",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "changelogNewsletters": {
+          "name": "changelogNewsletters",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
         }
       },
       "indexes": {},

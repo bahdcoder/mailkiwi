@@ -4,13 +4,13 @@ import { CreateTeamAccessTokenAction } from '#root/core/auth/actions/create_team
 import { LoginUserSchema } from '#root/core/auth/users/dto/login_user_dto.js'
 import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { makeApp } from '#root/core/shared/container/index.js'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 /**

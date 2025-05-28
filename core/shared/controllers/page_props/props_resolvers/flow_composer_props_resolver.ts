@@ -3,7 +3,7 @@ import type { DefaultPageProps } from '#root/pages/types/page-context.js'
 import { PagePropsResolverContract } from '#root/core/shared/controllers/page_props/page_props_resolver_contract.js'
 
 import type { HonoContext } from '#root/core/shared/server/types.js'
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class FlowComposerPropsResolver extends PagePropsResolverContract {
   static get regex() {

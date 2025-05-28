@@ -15,7 +15,7 @@ import { makeLogger } from '#root/core/shared/container/index.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 import { Session } from '#root/core/shared/sessions/sessions.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class WebsocketServer {
   protected logger = makeLogger()

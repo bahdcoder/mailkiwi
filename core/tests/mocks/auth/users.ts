@@ -1,7 +1,7 @@
 import { ChannelRepository } from '#root/core/chat/repositories/channel_repository.js'
 import { WebsiteRepository } from '#root/core/websites/repositories/website_repository.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { update } from 'tar'
 import { createFakeAbTestEmailContent } from '../audiences/email_content.js'
@@ -33,7 +33,7 @@ import { audiences, broadcastGroups, contacts } from '#root/database/schema.js'
 import { makeDatabase } from '#root/core/shared/container/index.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export async function createBroadcastForUser(
   user: User,

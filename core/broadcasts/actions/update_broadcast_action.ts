@@ -9,7 +9,7 @@ import type { Broadcast } from '#root/database/database_schema_types.js'
 
 import { makeDatabase } from '#root/core/shared/container/index.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { DateTime } from 'luxon'
 
 export class UpdateBroadcastAction {

@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import { Secret } from '@poppinss/utils'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 
 import type { DrizzleClient } from '#root/database/client.js'
 import { accessTokens } from '#root/database/schema.js'

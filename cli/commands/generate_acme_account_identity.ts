@@ -5,7 +5,7 @@ import { command } from '@drizzle-team/brocli'
 import { AcmeCertificatesTool } from '#root/core/tools/ssl/acme_certificates_tool.js'
 
 import { makeLogger } from '#root/core/shared/container/index.js'
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export const generateAcmeAccountIdentityCommand = command({
   name: 'generate_acme_account_identity',

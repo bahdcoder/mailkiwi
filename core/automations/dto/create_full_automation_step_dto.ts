@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import {
   type InferInput,
   array,
@@ -30,7 +30,7 @@ import {
 
 import { makeDatabase } from '#root/core/shared/container/index.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 const configurationSchema = record(
   string(),

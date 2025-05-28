@@ -1,4 +1,4 @@
-import { asc, count } from 'drizzle-orm'
+import { asc, count } from '@kibamail/framework/mysql'
 import { ContactsConcern } from '../concerns/broadcast_contacts_concern.js'
 import { PickAbTestWinnerJob } from './pick_ab_test_winner_job.js'
 import { SendBroadcastToContact } from './send_broadcast_to_contact_job.js'
@@ -17,7 +17,7 @@ import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 
 import { hoursToSeconds } from '#root/core/utils/dates.js'
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * Payload for the SendAbTestBroadcastJob.

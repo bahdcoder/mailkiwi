@@ -5,7 +5,7 @@ import type { AutomationStepRunnerContract } from '#root/core/automations/utils/
 import type { AutomationStep, Contact } from '#root/database/database_schema_types.js'
 import type { ACTION_REMOVE_TAG_CONFIGURATION } from '#root/database/schema.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class RemoveTagAutomationStepRunner implements AutomationStepRunnerContract {
   constructor(

@@ -5,7 +5,7 @@ import type { HonoContext } from '#root/core/shared/server/types.js'
 import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_session_store.js'
 import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class Session {
   protected SESSION_COOKIE_NAME = 'session'

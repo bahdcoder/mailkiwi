@@ -1,4 +1,4 @@
-import { type SQLWrapper, and, eq } from 'drizzle-orm'
+import { type SQLWrapper, and, eq } from '@kibamail/framework/mysql'
 import { alias } from 'drizzle-orm/mysql-core'
 
 import type { CreateBroadcastDto } from '#root/core/broadcasts/dto/create_broadcast_dto.js'
@@ -24,7 +24,7 @@ import { SegmentBuilder } from '#root/core/audiences/utils/segment_builder/segme
 import { hasOne } from '#root/database/utils/relationships.js'
 import { makeDatabase } from '#root/core/shared/container/index.js'
 import { BaseRepository } from '#root/core/shared/repositories/base_repository.js'
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { DateTime } from 'luxon'
 
 /**

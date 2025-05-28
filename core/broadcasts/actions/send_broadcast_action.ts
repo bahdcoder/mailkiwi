@@ -9,7 +9,7 @@ import type { BroadcastWithoutContent } from '#root/database/database_schema_typ
 import { BroadcastsQueue, Queue } from '#root/core/shared/queue/queue.js'
 
 import { differenceInSeconds } from '#root/core/utils/dates.js'
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * SendBroadcastAction handles the scheduling and queuing of email broadcasts.

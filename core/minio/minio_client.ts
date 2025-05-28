@@ -2,7 +2,7 @@ import type { Readable } from 'node:stream'
 import { appEnv } from '#root/core/app/env/app_env.js'
 import { Client } from 'minio'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 type BucketName = 'contacts' | 'attachments' | 'emails' | 'media'
 

@@ -5,7 +5,7 @@ import { CreateTeamAccessTokenAction } from '#root/core/auth/actions/create_team
 
 import { makeApp } from '#root/core/shared/container/index.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 describe.skip('@mta http server', () => {

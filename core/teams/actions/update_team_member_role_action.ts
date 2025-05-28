@@ -4,9 +4,9 @@ import { TeamRepository } from '#root/core/teams/repositories/team_repository.js
 
 import type { TeamMembership } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class UpdateTeamMemberRoleAction {
   constructor(

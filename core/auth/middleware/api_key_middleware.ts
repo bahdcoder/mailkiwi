@@ -4,7 +4,7 @@ import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories
 
 import type { HonoContext } from '#root/core/shared/server/types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * ApiKeyMiddleware handles optional API key authentication for requests.

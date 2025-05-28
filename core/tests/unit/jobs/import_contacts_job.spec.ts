@@ -1,5 +1,5 @@
 import { appEnv } from '#root/core/app/env/app_env.js'
-import { asc, count, eq } from 'drizzle-orm'
+import { asc, count, eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import { ImportContactsJob } from '#root/core/audiences/jobs/import_contacts_job.js'
@@ -10,7 +10,7 @@ import { audiences, contacts, tagsOnContacts } from '#root/database/schema.js'
 
 import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { setupImport } from '#root/core/tests/integration/helpers/contacts/setup_imports.js'
 
 describe('@contacts import job', () => {

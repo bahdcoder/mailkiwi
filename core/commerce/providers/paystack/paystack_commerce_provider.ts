@@ -12,7 +12,7 @@ import { TeamRepository } from '#root/core/teams/repositories/team_repository.js
 import { makeHttpClient } from '#root/core/shared/http/http_client.js'
 import { commercePath, rootPath } from '#root/core/shared/utils/routes/root_path.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class PaystackCommerceProvider implements CommerceProviderContract {
   requiresExternalOnboarding = false

@@ -7,7 +7,7 @@ import { BaseJob, type JobContext } from '#root/core/shared/queue/abstract_job.j
 import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export interface CheckWebsiteDomainDnsConfigurationPayload {
   websiteId: string

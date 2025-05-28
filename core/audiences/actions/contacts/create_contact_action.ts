@@ -3,7 +3,7 @@ import { ContactRepository } from '#root/core/audiences/repositories/contact_rep
 
 import type { Audience } from '#root/database/database_schema_types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class CreateContactAction {
   constructor(private contactRepository = container.make(ContactRepository)) {}

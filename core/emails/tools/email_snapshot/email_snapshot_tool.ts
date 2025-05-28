@@ -3,7 +3,7 @@ import path from 'node:path'
 import mjml from 'mjml'
 import puppeteer, { KnownDevices } from 'puppeteer'
 
-import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_OPERATION_FAILED } from '@kibamail/framework'
 
 import { sleep } from '#root/core/utils/sleep.js'
 

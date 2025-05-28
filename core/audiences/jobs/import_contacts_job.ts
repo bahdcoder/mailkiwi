@@ -1,6 +1,6 @@
 import { makeS3Client } from '#root/core/minio/s3_client.js'
 import CsvParser from 'csv-parser'
-import { sql } from 'drizzle-orm'
+import { sql } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 
 import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
@@ -26,7 +26,7 @@ import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 import { guessValueType } from '#root/core/shared/utils/helpers/guess_value_type.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export interface ImportContactsJobPayload {
   contactImportId: string

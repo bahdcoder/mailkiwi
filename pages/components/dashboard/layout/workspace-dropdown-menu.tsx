@@ -1,10 +1,12 @@
 import { SignoutForm } from '#root/pages/components/dashboard/layout/signout-form.jsx'
+import { CreateWorkspaceFlow } from '#root/pages/components/flows/create_workspace/create_workspace_flow.jsx'
 import { CheckIcon } from '#root/pages/components/icons/check.svg.jsx'
 import { NavArrowDownIcon } from '#root/pages/components/icons/nav-arrow-down.svg.jsx'
 import { PlusIcon } from '#root/pages/components/icons/plus.svg.jsx'
 import { SettingsIcon } from '#root/pages/components/icons/settings.svg.jsx'
 import { UserPlusIcon } from '#root/pages/components/icons/user-plus.svg.jsx'
 import { UserIcon } from '#root/pages/components/icons/user.svg.jsx'
+import { useDialogInDropdownMenuItem } from '#root/pages/hooks/use_dialog_in_dropdown_menu_item.jsx'
 import { Text } from '@kibamail/owly/text'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import cn from 'classnames'
@@ -26,14 +28,25 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
     ...memberships.map((membership) => membership.team),
   ]
 
+  const {
+    dropdownOpen,
+    setDropdownOpen,
+    hasOpenDialog,
+    onCloseAutoFocus,
+    dropdownTriggerRef,
+    handleDialogItemSelect,
+    handleDialogItemOpenChange,
+  } = useDialogInDropdownMenuItem()
+
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root open={dropdownOpen} onOpenChange={setDropdownOpen}>
       <DropdownMenu.Trigger asChild>
         <button
           type="button"
           id={`${rootId}-dropdown-menu-trigger`}
           data-testid={`${rootId}-dropdown-menu-trigger`}
           className="grow flex items-center border transition ease-in-out border-transparent hover:bg-(--background-hover) focus:outline-none focus-within:border-(--border-focus) p-1 rounded-lg"
+          ref={dropdownTriggerRef}
         >
           <span className="grow flex items-center">
             <TeamAvatar name={team?.name} size="md" />
@@ -53,6 +66,8 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
         align="start"
         id={`${rootId}-dropdown-menu-content`}
         className="border workspaces-dropdown-menu kb-border-tertiary absolute rounded-xl p-1 shadow-[0px_16px_24px_-8px_var(--black-10)] kb-background-primary w-70 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 z-50"
+        hidden={hasOpenDialog}
+        onCloseAutoFocus={onCloseAutoFocus}
       >
         <DropdownMenu.RadioGroup value={team?.id}>
           {allUserTeams?.map((team) => (
@@ -73,10 +88,15 @@ export function WorkspacesDropdownMenu({ rootId }: WorkspacesDropdownMenuProps) 
           ))}
         </DropdownMenu.RadioGroup>
 
-        <DropdownMenu.Item className="p-2 flex items-center hover:bg-(--background-secondary) rounded-lg cursor-pointer">
-          <PlusIcon className="mr-1.5 w-5 h-5 kb-content-tertiary" />
-          <Text>New workspace</Text>
-        </DropdownMenu.Item>
+        <CreateWorkspaceFlow onOpenChange={handleDialogItemOpenChange}>
+          <DropdownMenu.Item
+            onSelect={handleDialogItemSelect}
+            className="p-2 flex items-center hover:bg-(--background-secondary) rounded-lg cursor-pointer"
+          >
+            <PlusIcon className="mr-1.5 w-5 h-5 kb-content-tertiary" />
+            <Text>New workspace</Text>
+          </DropdownMenu.Item>
+        </CreateWorkspaceFlow>
 
         <DropdownMenu.Separator className="my-1 h-px bg-(--black-5)" />
 

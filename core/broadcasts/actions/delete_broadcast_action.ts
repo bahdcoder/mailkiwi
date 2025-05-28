@@ -1,6 +1,6 @@
 import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcast_repository.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class DeleteBroadcastAction {
   constructor(

@@ -6,7 +6,7 @@ import type { BroadcastWithoutContent } from '#root/database/database_schema_typ
 
 import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class UnsendBroadcastAction {
   constructor(private broadcastRepository = container.make(BroadcastRepository)) {}

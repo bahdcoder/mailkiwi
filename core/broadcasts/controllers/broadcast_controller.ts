@@ -21,7 +21,7 @@ import type {
   BroadcastWithEmailContent,
 } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 
 import { makeApp } from '#root/core/shared/container/index.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller.js'
@@ -29,7 +29,7 @@ import type { HonoContext } from '#root/core/shared/server/types.js'
 
 import { RenderBroadcastContentAction } from '#root/core/broadcasts/actions/render_broadcast_content_action.js'
 import { TeamCreditRepository } from '#root/core/teams/repositories/team_credit_repository.js'
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 /**
  * BroadcastController handles API endpoints for managing email marketing campaigns.

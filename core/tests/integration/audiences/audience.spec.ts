@@ -1,6 +1,6 @@
 import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
-import { and, eq } from 'drizzle-orm'
+import { and, eq } from '@kibamail/framework/mysql'
 import { describe, test } from 'vitest'
 
 import { AudienceRepository } from '#root/core/audiences/repositories/audience_repository.js'
@@ -12,7 +12,7 @@ import { audiences, websites } from '#root/database/schema.js'
 
 import { makeDatabase } from '#root/core/shared/container/index.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@audiences', () => {
   test('can create an audience only if authenticated', async ({ expect }) => {

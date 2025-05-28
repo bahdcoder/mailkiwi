@@ -11,7 +11,7 @@ import {
   contacts,
 } from '#root/database/schema.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class SubscribeToAudienceAutomationStepRunner
   implements AutomationStepRunnerContract

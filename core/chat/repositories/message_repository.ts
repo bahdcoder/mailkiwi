@@ -1,4 +1,4 @@
-import { and, count, desc, eq, gt, isNull, lt } from 'drizzle-orm'
+import { and, count, desc, eq, gt, isNull, lt } from '@kibamail/framework/mysql'
 
 import { messageReactions, messages } from '#root/database/schema.js'
 

@@ -12,8 +12,8 @@ import type {
 
 import type { TeamWithMembers } from '#root/core/shared/types/team.js'
 
-declare module 'hono' {
-  interface ContextVariableMap {
+declare module '@kibamail/framework' {
+  interface ClientContextVariableOverrides {
     accessToken: AccessToken
     team: TeamWithMembers
     teamWithSendingDomains: TeamWithSendingDomains
@@ -22,12 +22,5 @@ declare module 'hono' {
     memberships: (TeamMembership & { team: Team | null })[]
     flash: string | undefined
     pageProps: Record<string, string | Record<string | Date>>
-  }
-
-  interface Context {
-    accessToken: AccessToken
-    team: TeamWithMembers
-    user: UserWithTeams
-    contact: Contact
   }
 }

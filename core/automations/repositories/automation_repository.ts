@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 
 import type { CreateAutomationDto } from '#root/core/automations/dto/create_automation_dto.js'
 

@@ -1,4 +1,4 @@
-import type { InferSelectModel } from 'drizzle-orm'
+import type { InferSelectModel } from '@kibamail/framework/mysql'
 import type { MySqlUpdateSetSource } from 'drizzle-orm/mysql-core'
 import type {
   abTestVariants,

@@ -3,8 +3,8 @@ import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcas
 import { segments as segmentsTable } from '#root/database/schema.js'
 import type { DefaultPageProps } from '#root/pages/types/page-context.js'
 import { PagePropsResolverContract } from '#root/core/shared/controllers/page_props/page_props_resolver_contract.js'
-import { container } from '#root/core/utils/typi.js'
-import { eq } from 'drizzle-orm'
+import { container } from '@kibamail/framework'
+import { eq } from '@kibamail/framework/mysql'
 
 export class BroadcastsPropsResolver extends PagePropsResolverContract {
   static get regex() {

@@ -5,7 +5,7 @@ import { appEnv } from '#root/core/app/env/app_env.js'
 import { S3Disk } from '#root/core/minio/s3_client.js'
 import { S3Client } from '@aws-sdk/client-s3'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { describe, test, vi } from 'vitest'
 
 import { CreateTagAction } from '#root/core/audiences/actions/tags/create_tag_action.js'
@@ -32,7 +32,7 @@ import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 export const setupImport = async (fileName: string, updateSettings = false) => {

@@ -19,7 +19,7 @@ import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 import type { MtaLog } from '#root/core/shared/types/mta.js'
 import { ipv4AdressFromIpAndPort } from '#root/core/shared/utils/string.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export interface ProcessMtaLogJobPayload {
   log: MtaLog

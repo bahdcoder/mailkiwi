@@ -1,7 +1,7 @@
 import dns from 'node:dns/promises'
 import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { describe, test, vi } from 'vitest'
 
@@ -15,7 +15,7 @@ import { createUser } from '#root/core/tests/mocks/auth/users.js'
 
 import type { UpdateSendingDomain } from '#root/database/database_schema_types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export const setupDomainForDnsChecks = async (
   domain?: string,

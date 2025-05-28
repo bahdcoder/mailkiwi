@@ -9,11 +9,11 @@ import { SendingDomainRepository } from '#root/core/sending_domains/repositories
 
 import type { Contact, Website } from '#root/database/database_schema_types.js'
 
-import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_OPERATION_FAILED } from '@kibamail/framework'
 
 import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manager.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class CreateContactSessionAction {
   async handle(

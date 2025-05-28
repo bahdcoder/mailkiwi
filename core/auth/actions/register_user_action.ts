@@ -3,11 +3,11 @@ import { DEFAULT_TEAM_NAME } from '#root/database/constants.js'
 
 import type { InsertUser } from '#root/database/database_schema_types.js'
 
-import { E_VALIDATION_FAILED } from '#root/core/http/responses/errors.js'
+import { E_VALIDATION_FAILED } from '@kibamail/framework'
 import { makeDatabase } from '#root/core/shared/container/index.js'
 import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class RegisterUserAction {
   constructor(private userRepository = container.make(UserRepository)) {}

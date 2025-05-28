@@ -3,7 +3,7 @@ import type { AccountInformation } from '#root/core/commerce/contracts/commerce_
 import { ProductRepository } from '#root/core/commerce/repositories/product_repository.js'
 import { CommerceProviderTool } from '#root/core/commerce/tools/commerce_provider_tool.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { describe, test, vi } from 'vitest'
 
@@ -25,7 +25,7 @@ import { products } from '#root/database/schema.js'
 import { makeApp, makeDatabase } from '#root/core/shared/container/index.js'
 
 import { sleep } from '#root/core/utils/sleep.js'
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@commerce', () => {
   const connectCommerceProvider = async (user: User, team: Team) => {

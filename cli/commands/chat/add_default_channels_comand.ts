@@ -1,7 +1,7 @@
 import { appEnv } from '#root/core/app/env/app_env.js'
 import { ChannelRepository } from '#root/core/chat/repositories/channel_repository.js'
 import { command } from '@drizzle-team/brocli'
-import { eq, inArray } from 'drizzle-orm'
+import { eq, inArray } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 
 import type { InsertChannel } from '#root/database/database_schema_types.js'
@@ -9,7 +9,7 @@ import { channels } from '#root/database/schema.js'
 
 import { makeDatabase, makeLogger } from '#root/core/shared/container/index.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export const defaultChannels: InsertChannel[] = [
   {

@@ -2,7 +2,7 @@ import { BroadcastRepository } from '#root/core/broadcasts/repositories/broadcas
 
 import type { Broadcast } from '#root/database/database_schema_types.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 export class GetBroadcastAction {
   constructor(private broadcastRepository = container.make(BroadcastRepository)) {}

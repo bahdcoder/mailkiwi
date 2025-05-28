@@ -18,7 +18,7 @@ import {
 } from '#root/core/shared/container/index.js'
 import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@website-ssl', () => {
   test.todo(

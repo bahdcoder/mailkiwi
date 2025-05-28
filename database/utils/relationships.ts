@@ -1,4 +1,4 @@
-import { type AnyColumn, type InferSelectModel, eq, getTableName } from 'drizzle-orm'
+import { type AnyColumn, type InferSelectModel, eq, getTableName } from '@kibamail/framework/mysql'
 import type { AnyMySqlTable, MySqlSelect } from 'drizzle-orm/mysql-core'
 
 import type { DrizzleClient } from '#root/database/client.js'

@@ -1,7 +1,7 @@
 import dns from 'node:dns/promises'
 import { appEnv } from '#root/core/app/env/app_env.js'
 import { faker } from '@faker-js/faker'
-import { eq } from 'drizzle-orm'
+import { eq } from '@kibamail/framework/mysql'
 import { DateTime } from 'luxon'
 import { describe, test, vi } from 'vitest'
 
@@ -19,7 +19,7 @@ import { sendingDomains } from '#root/database/schema.js'
 import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
 
 describe('@sending-domains-dns Sending domain dns configuration check', () => {

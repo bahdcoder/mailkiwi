@@ -16,7 +16,7 @@ import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container
 import { Queue } from '#root/core/shared/queue/queue.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-import { container } from '#root/core/utils/typi.js'
+import { container } from '@kibamail/framework'
 
 describe('@automations-trigger', () => {
   test('can trigger automations for a contact', async ({ expect }) => {
