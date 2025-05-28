@@ -8,6 +8,7 @@ import { TeamRepository } from '#root/core/teams/repositories/team_repository.js
 import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
 import { createUser } from '#root/core/tests/mocks/auth/users.js'
+import { refreshRedisDatabase } from '#root/core/tests/mocks/teams/teams.js'
 import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
 
 import { sendingDomains } from '#root/database/schema.js'
@@ -21,6 +22,8 @@ import { container } from '#root/core/utils/typi.js'
 
 describe('@domains', () => {
   test('can create unique sending domains for a team', async ({ expect }) => {
+    await refreshRedisDatabase()
+
     const { team, user } = await createUser()
 
     const name = `${cuid()}newsletter.kibamail.com`
@@ -43,7 +46,7 @@ describe('@domains', () => {
 
     const checkDnsJobs = await Queue.sending_domains().getJobs()
 
-    expect(checkDnsJobs[0]?.delay).toEqual(60000) // wait 60 seconds before running job
+    expect(checkDnsJobs[0]?.opts?.delay).toEqual(60000) // wait 60 seconds before running job
     expect(checkDnsJobs[0]?.data?.sendingDomainId).toEqual(domains[0].id)
 
     const [sendingDomain] = await container
