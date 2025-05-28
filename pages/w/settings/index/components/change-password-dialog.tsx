@@ -15,6 +15,7 @@ import { handleError, handleSuccess } from '#root/pages/utils/toast-helpers'
 export interface ChangePasswordDialogProps extends React.PropsWithChildren {}
 
 export function ChangePasswordDialog({ children }: ChangePasswordDialogProps) {
+  const [isDialogReallyOpen, setIsDialogReallyOpen] = useState(false)
   const { isPending, serverFormProps, error } = useServerFormMutation({
     method: 'POST',
     action: '/auth/passwords/change',
@@ -23,11 +24,12 @@ export function ChangePasswordDialog({ children }: ChangePasswordDialogProps) {
     },
     onSuccess() {
       handleSuccess('Your password has been updated successfully')
+      setIsDialogReallyOpen(false)
     },
   })
 
   return (
-    <Dialog.Root>
+    <Dialog.Root open={isDialogReallyOpen} onOpenChange={setIsDialogReallyOpen}>
       <Dialog.Trigger asChild>{children}</Dialog.Trigger>
       <Dialog.Content>
         <ServerForm {...serverFormProps}>

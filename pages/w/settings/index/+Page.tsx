@@ -34,8 +34,8 @@ function ProfilePage() {
       <Divider className="my-4" />
 
       <div className="flex flex-col gap-6 pt-5">
-        <div className="flex gap-5">
-          <div className="grid grid-cols-2 gap-4 flex-1">
+        <div className="flex sm:gap-5 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
             <TextField.Root
               name="firstName"
               placeholder="Max"
@@ -61,8 +61,8 @@ function ProfilePage() {
             </TextField.Root>
           </div>
 
-          <div className="flex items-end w-40 justify-end">
-            <Button variant="secondary" type="submit" onClick={() => ''}>
+          <div className="flex items-end justify-end">
+            <Button variant="secondary" type="submit" width="full">
               Change
             </Button>
           </div>

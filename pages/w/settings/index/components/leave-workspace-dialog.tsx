@@ -15,15 +15,14 @@ import { handleError, handleSuccess } from '#root/pages/utils/toast-helpers'
 export interface LeaveWorkspaceDialogProps extends React.PropsWithChildren {}
 
 export function LeaveWorkspaceDialog({ children }: LeaveWorkspaceDialogProps) {
+  const [isDialogReallyOpen, setIsDialogReallyOpen] = useState(false)
   const { user, team } = usePageContext()
   const { isPending, serverFormProps, error } = useServerFormMutation({
     method: 'DELETE',
     action: '/memberships/leave',
-    customHeaders: {
-      'X-Team-Id': team?.id,
-    },
     onSuccess() {
       handleSuccess('You’ve successfully left the workspace')
+      setIsDialogReallyOpen(false)
     },
     onError(error, variables, context) {
       handleError(error)
@@ -31,7 +30,7 @@ export function LeaveWorkspaceDialog({ children }: LeaveWorkspaceDialogProps) {
   })
 
   return (
-    <Dialog.Root>
+    <Dialog.Root open={isDialogReallyOpen} onOpenChange={setIsDialogReallyOpen}>
       <Dialog.Trigger asChild>{children}</Dialog.Trigger>
       <Dialog.Content>
         <ServerForm {...serverFormProps}>

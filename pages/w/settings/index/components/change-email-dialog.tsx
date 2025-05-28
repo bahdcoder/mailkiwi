@@ -21,7 +21,8 @@ interface ChangeEmailDialogProps extends React.PropsWithChildren {
 }
 
 export function ChangeEmailDialog({ user, children }: ChangeEmailDialogProps) {
-  const [showEmailForm, setShowEmailForm] = useState(true)
+  const [isDialogReallyOpen, setIsDialogReallyOpen] = useState(false)
+  const [step, setStep] = useState(0)
 
   const { isPending, serverFormProps, error, isSuccess } = useServerFormMutation({
     method: 'POST',
@@ -30,24 +31,29 @@ export function ChangeEmailDialog({ user, children }: ChangeEmailDialogProps) {
       handleEmailChangeError(error)
     },
     onSuccess() {
-      setShowEmailForm(false)
       handleSuccess(`Verification code has been sent to ${user?.email}`)
+      setStep(1)
     },
   })
 
-  const { isPending: isCancelling, serverFormProps: cancelFormProps } =
-    useServerFormMutation({
-      method: 'DELETE',
-      action: '/auth/email/change/cancel',
-      onError(error, variables, context) {
-        console.log(error, ':::::::::::; error :::::::::')
-        handleError(error)
-      },
-      onSuccess() {
-        // Refresh user data
-        handleSuccess('Reset email canceled')
-      },
-    })
+  const {
+    isPending: isCancelling,
+    serverFormProps: cancelFormProps,
+    isSuccess: canceled,
+  } = useServerFormMutation({
+    method: 'DELETE',
+    action: '/auth/email/change/cancel',
+    onError(error, variables, context) {
+      console.log(error, ':::::::::::; error :::::::::')
+      handleError(error)
+    },
+    onSuccess() {
+      // Refresh user data
+      setStep(0)
+      handleSuccess('Reset email canceled')
+      setIsDialogReallyOpen(false)
+    },
+  })
 
   const {
     isPending: confirming,
@@ -59,6 +65,8 @@ export function ChangeEmailDialog({ user, children }: ChangeEmailDialogProps) {
     action: '/auth/email/change/confirm',
     onSuccess(data, variables, context) {
       handleSuccess(data)
+      setStep(0)
+      setIsDialogReallyOpen(false)
     },
     onError(error, variables, context) {
       handleError(error)
@@ -66,10 +74,10 @@ export function ChangeEmailDialog({ user, children }: ChangeEmailDialogProps) {
   })
 
   return (
-    <Dialog.Root>
+    <Dialog.Root open={isDialogReallyOpen} onOpenChange={setIsDialogReallyOpen}>
       <Dialog.Trigger asChild>{children}</Dialog.Trigger>
 
-      {showEmailForm && !isSuccess ? (
+      {step === 0 && (
         <Dialog.Content>
           <ServerForm {...serverFormProps}>
             <Dialog.Header>
@@ -99,7 +107,8 @@ export function ChangeEmailDialog({ user, children }: ChangeEmailDialogProps) {
             </Dialog.Footer>
           </ServerForm>
         </Dialog.Content>
-      ) : (
+      )}
+      {step === 1 && (
         <Dialog.Content>
           <ServerForm {...confirmForm} className="mt-6">
             <Dialog.Header>
@@ -125,19 +134,17 @@ export function ChangeEmailDialog({ user, children }: ChangeEmailDialogProps) {
               </div>
             </Dialog.Header>
             <Dialog.Footer className="flex justify-center gap-10 py-8">
-              <Dialog.Close asChild disabled={confirming} className="flex-1">
-                <ServerForm {...cancelFormProps} className="inline flex-1">
-                  <Button
-                    type="submit"
-                    variant="tertiary"
-                    size="sm"
-                    loading={isCancelling}
-                    className="flex-1"
-                  >
-                    Cancel Email Change
-                  </Button>
-                </ServerForm>
-              </Dialog.Close>
+              <ServerForm {...cancelFormProps} className="inline flex-1">
+                <Button
+                  type="submit"
+                  variant="tertiary"
+                  size="sm"
+                  loading={isCancelling}
+                  className="flex-1"
+                >
+                  Cancel Email Change
+                </Button>
+              </ServerForm>
               <Button type="submit" loading={confirming} className="flex-1">
                 {confirming ? 'Verifying...' : 'Verify Email'}
               </Button>

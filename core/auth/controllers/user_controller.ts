@@ -154,7 +154,15 @@ export class UserController extends BaseController {
       ])
     }
 
-    await this.userRepository.initiateEmailChange(user.id, data.email)
+    const { emailVerificationCode } = await this.userRepository.initiateEmailChange(
+      user.id,
+      data.email,
+    )
+
+    if (appEnv.isDev) {
+      // Log verification code in development for testing
+      d({ emailVerificationCode })
+    }
 
     return this.response(ctx)
       .json({

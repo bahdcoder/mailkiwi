@@ -42,16 +42,14 @@ export function SidebarSettingsContent({ rootId }: SidebarContentProps) {
             </Text>
           </div>
 
-          {isMobile && (
-            <button
-              aria-label="Collapse sidebar"
-              className="kb-reset"
-              type="button"
-              onClick={setSidebarOffscreen}
-            >
-              <SidebarCollapseIcon className="kb-content-tertiary-inverse" />
-            </button>
-          )}
+          <button
+            aria-label="Collapse sidebar"
+            className="kb-reset block md:hidden"
+            type="button"
+            onClick={setSidebarOffscreen}
+          >
+            <SidebarCollapseIcon className="kb-content-tertiary-inverse" />
+          </button>
         </div>
 
         <div className="mt-4 mb-2.5">
