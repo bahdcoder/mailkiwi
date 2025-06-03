@@ -14,7 +14,6 @@ describe('@broadcast repository search and filtering', () => {
     const database = makeDatabase()
     const repository = container.make(BroadcastRepository)
 
-    // Create broadcasts with different statuses
     const draftBroadcast = await repository.create(
       {
         name: 'Draft Broadcast',
@@ -33,29 +32,24 @@ describe('@broadcast repository search and filtering', () => {
       team.id,
     )
 
-    // Update one broadcast to SENT status
     await database
       .update(broadcasts)
       .set({ status: 'SENT' })
       .where(eq(broadcasts.id, sentBroadcast.id))
 
-    // Test filtering by draft status
     const draftBroadcasts = await repository.findAllForTeam(team.id, { status: 'draft' })
     expect(draftBroadcasts).toHaveLength(1)
     expect(draftBroadcasts[0].id).toBe(draftBroadcast.id)
     expect(draftBroadcasts[0].status).toBe('DRAFT')
 
-    // Test filtering by sent status
     const sentBroadcasts = await repository.findAllForTeam(team.id, { status: 'sent' })
     expect(sentBroadcasts).toHaveLength(1)
     expect(sentBroadcasts[0].id).toBe(sentBroadcast.id)
     expect(sentBroadcasts[0].status).toBe('SENT')
 
-    // Test getting all broadcasts
     const allBroadcasts = await repository.findAllForTeam(team.id, { status: 'all' })
     expect(allBroadcasts).toHaveLength(2)
 
-    // Test filtering with no results
     const scheduledBroadcasts = await repository.findAllForTeam(team.id, {
       status: 'scheduled',
     })
@@ -66,7 +60,6 @@ describe('@broadcast repository search and filtering', () => {
     const { user, audience, broadcastGroupId, team } = await createUser()
     const repository = container.make(BroadcastRepository)
 
-    // Create broadcasts with different names
     await repository.create(
       {
         name: 'Newsletter Weekly Update',
@@ -94,28 +87,24 @@ describe('@broadcast repository search and filtering', () => {
       team.id,
     )
 
-    // Test searching for "Newsletter"
     const newsletterBroadcasts = await repository.findAllForTeam(team.id, {
       search: 'Newsletter',
     })
     expect(newsletterBroadcasts).toHaveLength(2)
     expect(newsletterBroadcasts.every((b) => b.name.includes('Newsletter'))).toBe(true)
 
-    // Test searching for "Product"
     const productBroadcasts = await repository.findAllForTeam(team.id, {
       search: 'Product',
     })
     expect(productBroadcasts).toHaveLength(1)
     expect(productBroadcasts[0].name).toBe('Product Launch Announcement')
 
-    // Test case-insensitive search
     const weeklyBroadcasts = await repository.findAllForTeam(team.id, {
       search: 'weekly',
     })
     expect(weeklyBroadcasts).toHaveLength(1)
     expect(weeklyBroadcasts[0].name).toBe('Newsletter Weekly Update')
 
-    // Test search with no results
     const noResultsBroadcasts = await repository.findAllForTeam(team.id, {
       search: 'NonExistentTerm',
     })
@@ -127,7 +116,6 @@ describe('@broadcast repository search and filtering', () => {
     const database = makeDatabase()
     const repository = container.make(BroadcastRepository)
 
-    // Create broadcasts
     const draftNewsletter = await repository.create(
       {
         name: 'Draft Newsletter',
@@ -146,7 +134,7 @@ describe('@broadcast repository search and filtering', () => {
       team.id,
     )
 
-    const draftProduct = await repository.create(
+    await repository.create(
       {
         name: 'Draft Product Update',
         audienceId: audience.id,
@@ -155,13 +143,11 @@ describe('@broadcast repository search and filtering', () => {
       team.id,
     )
 
-    // Update one newsletter to SENT status
     await database
       .update(broadcasts)
       .set({ status: 'SENT' })
       .where(eq(broadcasts.id, sentNewsletter.id))
 
-    // Test combining search and status filter
     const draftNewsletters = await repository.findAllForTeam(team.id, {
       search: 'Newsletter',
       status: 'draft',

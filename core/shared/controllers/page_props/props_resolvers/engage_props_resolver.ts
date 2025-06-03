@@ -19,7 +19,6 @@ export class EngagePropsResolver extends PagePropsResolverContract {
       .groups()
       .findAll(eq(broadcastGroups.teamId, team.id))
 
-    // Extract search and status query parameters from the URL
     const search = ctx.req.query('search')
     const status = ctx.req.query('status')
 
