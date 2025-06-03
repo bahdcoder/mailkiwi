@@ -4,7 +4,6 @@ import { Heading } from '@kibamail/owly/heading'
 import * as Tabs from '@kibamail/owly/tabs'
 import * as TextField from '@kibamail/owly/text-field'
 import * as React from 'react'
-import { usePageContext } from 'vike-react/usePageContext'
 
 import type {
   BroadcastGroup,
@@ -14,6 +13,7 @@ import type {
 import { EmptyState } from '#root/pages/components/empty-state/empty_state.jsx'
 import { CreateBroadcastFlow } from '#root/pages/components/flows/compose_broadcast/create_broadcast_flow.jsx'
 import { BroadcastRow } from '#root/pages/w/engage/components/broadcast_row.jsx'
+import { useBroadcasts } from '#root/pages/w/engage/hooks/use-broadcasts.jsx'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import { Button } from '@kibamail/owly/button'
 import type { DefaultPageProps } from '#root/pages/types/page-context.js'
@@ -31,19 +31,19 @@ export interface EngagePageProps extends DefaultPageProps {
 }
 
 function EngagePage() {
-  const { pageProps, urlParsed } = usePageContext()
+  const {
+    search,
+    setSearch,
+    currentSearch,
+    currentStatus,
+    groups,
+    getBroadcastsByGroup,
+    hasNoResults,
+    hasNoBroadcasts,
+  } = useBroadcasts()
 
-  const defaultTabValue = urlParsed?.search?.status ?? BroadcastStatusFilters.ALL
-
-  const { groups, broadcasts } = pageProps as EngagePageProps
-
-  function getBroadcastsByGroup(group: BroadcastGroup) {
-    return broadcasts.filter((broadcast) => broadcast.broadcastGroupId === group.id)
-  }
-
-  const noBroadcasts = broadcasts.length === 0
-
-  if (noBroadcasts) {
+  // Show empty state only when there are truly no broadcasts at all
+  if (hasNoBroadcasts) {
     return (
       <EmptyState title="No broadcasts yet" description="Try creating a new broadcast.">
         <CreateBroadcastFlow>
@@ -55,13 +55,32 @@ function EngagePage() {
 
   return (
     <Tabs.Content value="broadcasts" className="pt-6">
-      <Tabs.Root variant="primary" defaultValue={defaultTabValue} width={'full'}>
+      <Tabs.Root variant="primary" defaultValue={currentStatus} width={'full'}>
         <div className="w-full flex flex-col gap-y-2 lg:gap-y-0 lg:flex-row items-center lg:justify-between">
           <div className="w-full lg:max-w-72">
             <TextField.Root
               type="search"
               placeholder="Search broadcasts"
               className="w-search-broadcasts"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  const url = new URL(window.location.href)
+                  if (search) {
+                    url.searchParams.set('search', search)
+                  } else {
+                    url.searchParams.delete('search')
+                  }
+
+                  // Preserve status filter
+                  if (currentStatus && currentStatus !== 'all') {
+                    url.searchParams.set('status', currentStatus)
+                  }
+
+                  window.location.href = url.toString()
+                }
+              }}
             >
               <TextField.Slot side="left">
                 <SearchIcon />
@@ -72,16 +91,57 @@ function EngagePage() {
           <div className="w-full lg:w-auto">
             <Tabs.List className="lg:w-fit">
               <Tabs.Trigger value={BroadcastStatusFilters.ALL} asChild>
-                <a href={route('engage')}>All</a>
+                <a
+                  href={route(
+                    'engage',
+                    {},
+                    currentSearch ? { search: currentSearch } : {},
+                  )}
+                >
+                  All
+                </a>
               </Tabs.Trigger>
               <Tabs.Trigger value={BroadcastStatusFilters.SENT} asChild>
-                <a href={route('engage', {}, { status: 'sent' })}>Sent</a>
+                <a
+                  href={route(
+                    'engage',
+                    {},
+                    {
+                      status: 'sent',
+                      ...(currentSearch ? { search: currentSearch } : {}),
+                    },
+                  )}
+                >
+                  Sent
+                </a>
               </Tabs.Trigger>
               <Tabs.Trigger value={BroadcastStatusFilters.SCHEDULED} asChild>
-                <a href={route('engage', {}, { status: 'scheduled' })}>Scheduled</a>
+                <a
+                  href={route(
+                    'engage',
+                    {},
+                    {
+                      status: 'scheduled',
+                      ...(currentSearch ? { search: currentSearch } : {}),
+                    },
+                  )}
+                >
+                  Scheduled
+                </a>
               </Tabs.Trigger>
               <Tabs.Trigger value={BroadcastStatusFilters.DRAFT} asChild>
-                <a href={route('engage', {}, { status: 'draft' })}>Drafts</a>
+                <a
+                  href={route(
+                    'engage',
+                    {},
+                    {
+                      status: 'draft',
+                      ...(currentSearch ? { search: currentSearch } : {}),
+                    },
+                  )}
+                >
+                  Drafts
+                </a>
               </Tabs.Trigger>
               <Tabs.Indicator />
             </Tabs.List>
@@ -93,21 +153,28 @@ function EngagePage() {
           data-orientation="horizontal"
           role="tabpanel"
         >
-          {groups.map((group) => (
-            <div key={group.id} className="">
-              <Heading
-                size="sm"
-                className="px-2 font-display kb-content-brand capitalize"
-              >
-                {group?.name}
-              </Heading>
-              <div className="flex flex-col">
-                {getBroadcastsByGroup(group).map((broadcast) => (
-                  <BroadcastRow key={broadcast.id} broadcast={broadcast} />
-                ))}
+          {hasNoResults ? (
+            <EmptyState
+              title="No results found"
+              description="No broadcasts match your current search or filter criteria. Try adjusting your search terms or changing the status filter."
+            />
+          ) : (
+            groups.map((group) => (
+              <div key={group.id} className="">
+                <Heading
+                  size="sm"
+                  className="px-2 font-display kb-content-brand capitalize"
+                >
+                  {group?.name}
+                </Heading>
+                <div className="flex flex-col">
+                  {getBroadcastsByGroup(group).map((broadcast) => (
+                    <BroadcastRow key={broadcast.id} broadcast={broadcast} />
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </Tabs.Root>
     </Tabs.Content>

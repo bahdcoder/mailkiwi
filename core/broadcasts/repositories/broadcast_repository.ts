@@ -1,4 +1,4 @@
-import { type SQLWrapper, and, eq } from 'drizzle-orm'
+import { type SQLWrapper, and, eq, like, desc } from 'drizzle-orm'
 import { alias } from 'drizzle-orm/mysql-core'
 
 import type { CreateBroadcastDto } from '#root/core/broadcasts/dto/create_broadcast_dto.js'
@@ -221,12 +221,39 @@ export class BroadcastRepository extends BaseRepository {
     return this.findByIdWithAbTestVariants(id)
   }
 
-  async findAllForTeam(teamId: string) {
+  async findAllForTeam(
+    teamId: string,
+    options?: {
+      search?: string
+      status?: string
+    },
+  ) {
+    const conditions = [eq(broadcasts.teamId, teamId)]
+
+    if (options?.status && options.status !== 'all') {
+      const statusMap = {
+        draft: 'DRAFT',
+        sent: 'SENT',
+        scheduled: 'QUEUED_FOR_SENDING',
+      } as const
+
+      const dbStatus = statusMap[options.status as keyof typeof statusMap]
+      if (dbStatus) {
+        conditions.push(eq(broadcasts.status, dbStatus))
+      }
+    }
+
+    if (options?.search) {
+      const searchTerm = `%${options.search}%`
+      conditions.push(like(broadcasts.name, searchTerm))
+    }
+
     return this.database.query.broadcasts.findMany({
       with: {
         emailContent: true,
       },
-      where: eq(broadcasts.teamId, teamId),
+      where: and(...conditions),
+      orderBy: [desc(broadcasts.createdAt)],
     })
   }
 
