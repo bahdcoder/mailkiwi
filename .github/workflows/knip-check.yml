@@ -1,0 +1,25 @@
+name: knip check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  knip:
+    name: knip check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-pnpm
+      - uses: ./.github/actions/install-dependencies
+
+      - uses: ./.github/actions/run-command
+        with:
+          name: run knip check
+          command: pnpm knip
+
+
