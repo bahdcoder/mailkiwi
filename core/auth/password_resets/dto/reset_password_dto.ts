@@ -13,4 +13,4 @@ export const ResetPasswordSchema = object({
   passwordConfirm: password,
 })
 
-export type ResetPasswordDto = InferInput<typeof ResetPasswordSchema>
+type ResetPasswordDto = InferInput<typeof ResetPasswordSchema>

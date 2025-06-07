@@ -28,4 +28,4 @@ export const ChangePasswordSchema = object({
   confirmNewPassword: string('Please confirm your new password'),
 })
 
-export type ChangePasswordDto = InferInput<typeof ChangePasswordSchema>
+type ChangePasswordDto = InferInput<typeof ChangePasswordSchema>

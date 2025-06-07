@@ -8,7 +8,6 @@ import { EditImageInformationPanel } from '#root/pages/components/composer/exten
 import { CompAlignCenterIcon } from '#root/pages/components/icons/comp-align-center.svg.jsx'
 import { CompAlignLeftIcon } from '#root/pages/components/icons/comp-align-left.svg.jsx'
 import { CompAlignRightIcon } from '#root/pages/components/icons/comp-align-right.svg.jsx'
-import { EditPencilIcon } from '#root/pages/components/icons/edit-pencil.svg.jsx'
 import { LinkIcon } from '#root/pages/components/icons/link.svg.jsx'
 import { TrashIcon } from '#root/pages/components/icons/trash.svg.jsx'
 import type { MenuProps } from '#root/pages/components/tiptap/menus/types.js'
@@ -156,5 +155,3 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
     </BaseBubbleMenu>
   )
 }
-
-export default ImageBlockMenu

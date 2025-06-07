@@ -15,4 +15,4 @@ export const LoginUserSchema = object({
   password: string('Please enter your password'),
 })
 
-export type LoginUserDto = InferInput<typeof LoginUserSchema>
+type LoginUserDto = InferInput<typeof LoginUserSchema>

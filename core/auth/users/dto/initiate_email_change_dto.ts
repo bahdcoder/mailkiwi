@@ -18,4 +18,4 @@ export const InitiateEmailChangeSchema = object({
   ),
 })
 
-export type InitiateEmailChangeDto = InferInput<typeof InitiateEmailChangeSchema>
+type InitiateEmailChangeDto = InferInput<typeof InitiateEmailChangeSchema>

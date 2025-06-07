@@ -3,7 +3,7 @@ import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 
 import { sleep } from '#root/core/utils/sleep.js'
 
-export interface SendTransactionalEmailJobPayload {
+interface SendTransactionalEmailJobPayload {
   broadcastId: string
 }
 

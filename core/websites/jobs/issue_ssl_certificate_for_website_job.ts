@@ -10,7 +10,7 @@ import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
 import { container } from '#root/core/utils/typi.js'
 
-export interface IssueSSLCertificateForWebsiteJobPayload {
+interface IssueSSLCertificateForWebsiteJobPayload {
   websiteId: string
 }
 

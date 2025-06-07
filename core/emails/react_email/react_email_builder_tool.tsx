@@ -21,7 +21,7 @@ export interface ProsemirrorContent {
   marks?: Array<{ type: string }>
 }
 
-export type MetaDescriptor =
+type MetaDescriptor =
   | {
       charSet: 'utf-8'
     }
@@ -48,7 +48,7 @@ export type MetaDescriptor =
       [name: string]: string
     }
 
-export type MetaDescriptors = MetaDescriptor[]
+type MetaDescriptors = MetaDescriptor[]
 
 export class ReactEmailBuilderTool {
   protected marksOrder = ['underline', 'bold', 'italic', 'strike', 'link']

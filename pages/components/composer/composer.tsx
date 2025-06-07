@@ -4,7 +4,7 @@ import { TextMenu } from '#root/pages/components/composer/components/text-menu/t
 import { useTextmenuStates } from '#root/pages/components/composer/components/text-menu/use-text-menu-states.js'
 import { ButtonMenu } from '#root/pages/components/composer/extensions/Button/button-menu.jsx'
 import { ContainerMenu } from '#root/pages/components/composer/extensions/Container/container-menu.jsx'
-import ImageBlockMenu from '#root/pages/components/composer/extensions/ImageBlock/components/ImageBlockMenu.jsx'
+import { ImageBlockMenu } from '#root/pages/components/composer/extensions/ImageBlock/components/ImageBlockMenu.jsx'
 import type { ShouldShowProps } from '#root/pages/components/tiptap/menus/types.js'
 import { type Editor, EditorContent } from '@tiptap/react'
 import React, { useCallback } from 'react'

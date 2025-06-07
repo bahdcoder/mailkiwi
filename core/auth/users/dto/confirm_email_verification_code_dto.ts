@@ -20,6 +20,6 @@ export const ConfirmEmailVerificationCodeSchema = objectAsync({
   ),
 })
 
-export type ConfirmEmailVerificationCodeDto = InferInput<
+type ConfirmEmailVerificationCodeDto = InferInput<
   typeof ConfirmEmailVerificationCodeSchema
 >

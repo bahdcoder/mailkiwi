@@ -31,4 +31,4 @@ export const SetUserNameSchema = objectAsync({
   ),
 })
 
-export type SetUserNameDto = InferInput<typeof SetUserNameSchema>
+type SetUserNameDto = InferInput<typeof SetUserNameSchema>

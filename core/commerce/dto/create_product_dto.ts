@@ -63,4 +63,4 @@ export const CreateProductSchema = pipeAsync(
   }, 'You must provide "price" when "billingCycle" is "once"'),
 )
 
-export type CreateProductDto = InferInput<typeof CreateProductSchema>
+type CreateProductDto = InferInput<typeof CreateProductSchema>

@@ -22,7 +22,7 @@ import { container } from '#root/core/utils/typi.js'
  *
  * @property broadcastId - The unique identifier of the broadcast campaign
  */
-export interface SendBroadcastJobPayload {
+interface SendBroadcastJobPayload {
   broadcastId: string
 }
 

@@ -19,4 +19,4 @@ export const ConfirmEmailChangeSchema = object({
   ),
 })
 
-export type ConfirmEmailChangeDto = InferInput<typeof ConfirmEmailChangeSchema>
+type ConfirmEmailChangeDto = InferInput<typeof ConfirmEmailChangeSchema>

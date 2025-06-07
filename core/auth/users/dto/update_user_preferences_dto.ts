@@ -22,4 +22,4 @@ export const UpdateUserPreferencesSchema = object({
   changelogNewsletters: optional(boolean('Changelog newsletters must be true or false')),
 })
 
-export type UpdateUserPreferencesDto = InferInput<typeof UpdateUserPreferencesSchema>
+type UpdateUserPreferencesDto = InferInput<typeof UpdateUserPreferencesSchema>

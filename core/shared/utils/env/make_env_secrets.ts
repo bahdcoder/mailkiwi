@@ -1,6 +1,6 @@
 import { Secret } from '@poppinss/utils'
 
-export type NODE_ENV_OPTIONS =
+type NODE_ENV_OPTIONS =
   | 'development'
   | 'test'
   | 'production'

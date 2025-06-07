@@ -5,6 +5,8 @@ export default {
     // Main application entry points
     'core/app/start/server.ts',
 
+    'core/worker/start.ts',
+
     // CLI entry points
     'cli/cli_root.ts',
     'cli/cli_root_no_connections.ts',

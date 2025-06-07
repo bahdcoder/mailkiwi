@@ -45,7 +45,7 @@ export type Audience = InferSelectModel<typeof audiences>
 export type Website = InferSelectModel<typeof websites>
 export type WebsitePage = InferSelectModel<typeof websitePages>
 export type EmailSend = InferSelectModel<typeof emailSends>
-export type Email = InferSelectModel<typeof emails>
+type Email = InferSelectModel<typeof emails>
 export type Tag = InferSelectModel<typeof tags>
 export type Contact = InferSelectModel<typeof contacts>
 export type User = InferSelectModel<typeof users>
@@ -56,22 +56,22 @@ export type BroadcastGroup = InferSelectModel<typeof broadcastGroups>
 // Chat
 export type Message = InferSelectModel<typeof messages>
 export type Channel = InferSelectModel<typeof channels>
-export type ChannelMembership = InferSelectModel<typeof channelMemberships>
-export type MessageReaction = InferSelectModel<typeof messageReactions>
+type ChannelMembership = InferSelectModel<typeof channelMemberships>
+type MessageReaction = InferSelectModel<typeof messageReactions>
 
 export type BroadcastWithoutContent = Omit<
   Broadcast,
   'contentHtml' | 'contentText' | 'contentJson'
 >
-export type AccessToken = InferSelectModel<typeof accessTokens>
+type AccessToken = InferSelectModel<typeof accessTokens>
 export type Team = InferSelectModel<typeof teams>
 export type SendingDomain = InferSelectModel<typeof sendingDomains>
 export type SendingSource = InferSelectModel<typeof sendingSources>
 export type SenderIdentity = InferSelectModel<typeof senderIdentities>
 export type TeamMembership = InferSelectModel<typeof teamMemberships>
-export type Oauth2Account = InferSelectModel<typeof oauth2Accounts>
+type Oauth2Account = InferSelectModel<typeof oauth2Accounts>
 export type TagOnContact = InferSelectModel<typeof tagsOnContacts>
-export type FindUserByIdArgs = Parameters<
+type FindUserByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>['query']['users']['findFirst']
 >[0]
 
@@ -79,7 +79,7 @@ export type SenderIdentityWithSendingDomain = SenderIdentity & {
   sendingDomain: SendingDomain
 }
 
-export type FindAutomationByIdArgs = Parameters<
+type FindAutomationByIdArgs = Parameters<
   ReturnType<typeof makeDatabase>['query']['automations']['findFirst']
 >[0]
 
@@ -92,7 +92,7 @@ export type UpdateSetBroadcastInput = Omit<
   sendAt: string | undefined
 }
 export type UpdateSetTeamMembershipInput = MySqlUpdateSetSource<typeof teamMemberships>
-export type UpdateMediaDocument = MySqlUpdateSetSource<typeof mediaDocuments>
+type UpdateMediaDocument = MySqlUpdateSetSource<typeof mediaDocuments>
 
 export type MediaDocument = typeof mediaDocuments.$inferSelect
 export type ContactImport = typeof contactImports.$inferSelect
@@ -102,7 +102,7 @@ export type Segment = typeof segments.$inferSelect
 export type Product = typeof products.$inferSelect
 export type Form = typeof forms.$inferSelect
 export type FormResponse = typeof formResponses.$inferSelect
-export type PasswordReset = typeof passwordResets.$inferSelect
+type PasswordReset = typeof passwordResets.$inferSelect
 export type InsertSegment = typeof segments.$inferInsert
 export type InsertTag = typeof tags.$inferInsert
 export type InsertEmailSend = typeof emailSends.$inferInsert
@@ -118,26 +118,26 @@ export type InsertAbTestVariant = typeof abTestVariants.$inferInsert
 export type InsertProduct = typeof products.$inferInsert
 export type InsertWebsite = typeof websites.$inferInsert
 export type InsertForm = typeof forms.$inferInsert
-export type InsertBroadcastGroup = typeof broadcastGroups.$inferInsert
+type InsertBroadcastGroup = typeof broadcastGroups.$inferInsert
 
 // Chat
 export type InsertUser = typeof users.$inferInsert
 export type InsertMessage = typeof messages.$inferInsert
-export type InsertMessageReaction = typeof messageReactions.$inferInsert
+type InsertMessageReaction = typeof messageReactions.$inferInsert
 export type InsertChannel = typeof channels.$inferInsert
-export type InsertChannelMembership = typeof channelMemberships.$inferInsert
+type InsertChannelMembership = typeof channelMemberships.$inferInsert
 
-export type InsertPasswordReset = typeof passwordResets.$inferInsert
+type InsertPasswordReset = typeof passwordResets.$inferInsert
 
-export type UpdateAbTestVariant = MySqlUpdateSetSource<typeof abTestVariants>
+type UpdateAbTestVariant = MySqlUpdateSetSource<typeof abTestVariants>
 
 export type UpdateWebsite = MySqlUpdateSetSource<typeof websites>
 
 export type UpdateWebsitePage = MySqlUpdateSetSource<typeof websitePages>
 
-export type UpdateForm = MySqlUpdateSetSource<typeof forms>
+type UpdateForm = MySqlUpdateSetSource<typeof forms>
 
-export type UpdatePasswordReset = MySqlUpdateSetSource<typeof passwordResets>
+type UpdatePasswordReset = MySqlUpdateSetSource<typeof passwordResets>
 
 export type UpdateEmailSend = MySqlUpdateSetSource<typeof emailSends>
 export type UpdateSendingDomain = MySqlUpdateSetSource<typeof sendingDomains>
@@ -148,8 +148,8 @@ export type UpdateContactImport = MySqlUpdateSetSource<typeof contactImports>
 
 export type UpdateMessage = MySqlUpdateSetSource<typeof messages>
 export type UpdateChannel = MySqlUpdateSetSource<typeof channels>
-export type UpdateChannelMembership = MySqlUpdateSetSource<typeof channelMemberships>
-export type UpdateMessageReaction = MySqlUpdateSetSource<typeof messageReactions>
+type UpdateChannelMembership = MySqlUpdateSetSource<typeof channelMemberships>
+type UpdateMessageReaction = MySqlUpdateSetSource<typeof messageReactions>
 
 export type AutomationStep = typeof automationSteps.$inferSelect
 
@@ -158,13 +158,13 @@ export type EmailContent = typeof emailContents.$inferSelect
 export type AutomationWithSteps = typeof automations.$inferSelect & {
   steps: AutomationStep[]
 }
-export type NonNullableProperties<T> = {
+type NonNullableProperties<T> = {
   [P in keyof T]: NonNullable<T[P]>
 }
 
 export type ValidatedEmailContent = NonNullableProperties<EmailContent>
 
-export type EmailWithContent = Email & {
+type EmailWithContent = Email & {
   emailContent: EmailContent | null
 }
 
@@ -175,7 +175,7 @@ export type BroadcastWithEmailContent = Broadcast & {
   })[]
 }
 
-export type BroadcastWithSegment = Broadcast & {
+type BroadcastWithSegment = Broadcast & {
   segment: Segment
 }
 
@@ -186,7 +186,7 @@ export type BroadcastWithSegmentAndAbTestVariants = BroadcastWithSegment & {
 }
 
 export type UserWithTeams = User & { teams: Team[] }
-export type UserWithChannelMemberships = User & {
+type UserWithChannelMemberships = User & {
   channels: ChannelMembership[]
 }
 export type ContactWithTags = Contact & {
@@ -224,6 +224,6 @@ export type BroadcastGroupWithBroadcasts = BroadcastGroup & {
   broadcasts: Broadcast[]
 }
 
-export type SendingDomainWithSenderIdentities = SendingDomain & {
+type SendingDomainWithSenderIdentities = SendingDomain & {
   senderIdentities: SenderIdentity[]
 }

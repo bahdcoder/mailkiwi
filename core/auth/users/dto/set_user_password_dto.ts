@@ -24,4 +24,4 @@ export const SetUserPasswordSchema = objectAsync({
   ),
 })
 
-export type SetUserPasswordDto = InferInput<typeof SetUserPasswordSchema>
+type SetUserPasswordDto = InferInput<typeof SetUserPasswordSchema>

@@ -4,4 +4,4 @@ export const CreateContactSessionSchema = object({
   email: pipe(string(), email()),
 })
 
-export type CreateContactSessionDto = InferInput<typeof CreateContactSessionSchema>
+type CreateContactSessionDto = InferInput<typeof CreateContactSessionSchema>

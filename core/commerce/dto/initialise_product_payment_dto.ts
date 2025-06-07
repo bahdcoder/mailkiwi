@@ -4,6 +4,4 @@ export const InitialiseProductPaymentSchema = object({
   email: pipe(string(), email()),
 })
 
-export type InitialiseProductPaymentDto = InferInput<
-  typeof InitialiseProductPaymentSchema
->
+type InitialiseProductPaymentDto = InferInput<typeof InitialiseProductPaymentSchema>

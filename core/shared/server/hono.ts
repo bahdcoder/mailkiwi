@@ -31,7 +31,7 @@ if (isSentryEnabled()) {
   })
 }
 
-export type RouteOptions = {
+type RouteOptions = {
   middleware?: MiddlewareHandler[]
   prefix?: string
 }

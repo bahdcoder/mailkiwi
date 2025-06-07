@@ -9,7 +9,7 @@ import { Queue } from '#root/core/shared/queue/queue.js'
 
 import { container } from '#root/core/utils/typi.js'
 
-export interface CheckWebsiteDomainDnsConfigurationPayload {
+interface CheckWebsiteDomainDnsConfigurationPayload {
   websiteId: string
 }
 

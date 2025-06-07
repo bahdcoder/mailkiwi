@@ -24,4 +24,4 @@ export const CreateSendingSourceSchema = object({
   pool: picklist(['engage', 'send']),
 })
 
-export type CreateSendingSourceDto = InferInput<typeof CreateSendingSourceSchema>
+type CreateSendingSourceDto = InferInput<typeof CreateSendingSourceSchema>

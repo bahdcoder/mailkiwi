@@ -4,4 +4,4 @@ export const RequestPasswordResetSchema = object({
   email: pipe(string(), email()),
 })
 
-export type RequestPasswordResetDto = InferInput<typeof RequestPasswordResetSchema>
+type RequestPasswordResetDto = InferInput<typeof RequestPasswordResetSchema>

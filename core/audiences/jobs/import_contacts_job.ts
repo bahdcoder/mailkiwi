@@ -28,7 +28,7 @@ import { guessValueType } from '#root/core/shared/utils/helpers/guess_value_type
 
 import { container } from '#root/core/utils/typi.js'
 
-export interface ImportContactsJobPayload {
+interface ImportContactsJobPayload {
   contactImportId: string
 }
 

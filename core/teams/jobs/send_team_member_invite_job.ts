@@ -9,7 +9,7 @@ import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manag
 
 import { container } from '#root/core/utils/typi.js'
 
-export interface SendTeamMemberInviteJobPayload {
+interface SendTeamMemberInviteJobPayload {
   inviteId: string
 }
 

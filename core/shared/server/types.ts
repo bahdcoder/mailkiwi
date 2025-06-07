@@ -3,7 +3,7 @@ import type { Context as BaseHonoContext, Handler, MiddlewareHandler } from 'hon
 /**
  * Standard HTTP method strings
  */
-export type _HTTPMethods =
+type _HTTPMethods =
   | 'DELETE'
   | 'GET'
   | 'HEAD'

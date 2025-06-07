@@ -140,4 +140,4 @@ export const SendBroadcastSchema = objectAsync({
   ),
 })
 
-export type SendBroadcastDto = InferInput<typeof SendBroadcastSchema>
+type SendBroadcastDto = InferInput<typeof SendBroadcastSchema>

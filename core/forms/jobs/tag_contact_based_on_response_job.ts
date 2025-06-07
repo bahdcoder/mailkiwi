@@ -8,7 +8,7 @@ import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 
 import { container } from '#root/core/utils/typi.js'
 
-export interface TagContactBasedOnResponseJobPayload {
+interface TagContactBasedOnResponseJobPayload {
   formResponseId: string
 }
 

@@ -1,4 +1,4 @@
-export interface DeliveryResponse {
+interface DeliveryResponse {
   code: number
   enhanced_code: {
     class: number
@@ -9,16 +9,16 @@ export interface DeliveryResponse {
   command: string
 }
 
-export interface PeerAddress {
+interface PeerAddress {
   name: string
   addr: string
 }
 
-export interface SourceAddress {
+interface SourceAddress {
   address: string
 }
 
-export type Headers = {
+type Headers = {
   Subject?: string
   'X-Kibamail-Sending-Domain-ID'?: string
   'X-Kibamail-Message-ID'?: string

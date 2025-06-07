@@ -1,9 +1,9 @@
-export type MailerContact = {
+type MailerContact = {
   email: string
   name?: string
 }
 
-export type MailContent = {
+type MailContent = {
   html?: string
   text?: string | null
 }
@@ -22,8 +22,8 @@ export interface MailerDriverResponse {
   messageId: string
 }
 
-export type MailerDriverError = Error | null
+type MailerDriverError = Error | null
 
-export interface MailerDriver {
+interface MailerDriver {
   send(mail: MailObject): Promise<[MailerDriverResponse, MailerDriverError]>
 }

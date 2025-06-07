@@ -27,7 +27,7 @@ import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
 import { container } from '#root/core/utils/typi.js'
 
-export interface ExportContactsJobPayload {
+interface ExportContactsJobPayload {
   filterGroups: CreateContactExportDto['filterGroups']
   audienceId: string
   exportCreatedBy: string

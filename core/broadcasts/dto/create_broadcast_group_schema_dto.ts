@@ -15,4 +15,4 @@ export const CreateBroadcastGroupSchema = objectAsync({
   ),
 })
 
-export type CreateBroadcastGroupDto = InferInput<typeof CreateBroadcastGroupSchema>
+type CreateBroadcastGroupDto = InferInput<typeof CreateBroadcastGroupSchema>

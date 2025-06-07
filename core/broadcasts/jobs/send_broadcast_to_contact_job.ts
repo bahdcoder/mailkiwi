@@ -20,7 +20,7 @@ import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 
 import { container } from '#root/core/utils/typi.js'
 
-export interface SendBroadcastToContactPayload {
+interface SendBroadcastToContactPayload {
   broadcastId: string
   contactId: string
 }

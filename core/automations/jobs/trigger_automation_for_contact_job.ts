@@ -21,7 +21,7 @@ import { Queue } from '#root/core/shared/queue/queue.js'
 
 import { container } from '#root/core/utils/typi.js'
 
-export interface TriggerAutomationsForContactJobPayload {
+interface TriggerAutomationsForContactJobPayload {
   contactId: string
   trigger: AUTOMATION_STEP_SUB_TYPES_TRIGGER
 }

@@ -137,6 +137,3 @@ const EmailContentSchema = object({
 })
 
 export type EmailContentSchemaDto = InferInput<typeof EmailContentSchema>
-export type EmailContentCorneredStyle = InferInput<typeof CorneredStyleSchema>
-export type EmailSectionSchemaDto = InferInput<typeof EmailSectionSchema>
-export type EmailContentStyleSchemaDto = InferInput<typeof StyleSchema>

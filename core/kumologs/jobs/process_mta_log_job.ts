@@ -21,7 +21,7 @@ import { ipv4AdressFromIpAndPort } from '#root/core/shared/utils/string.js'
 
 import { container } from '#root/core/utils/typi.js'
 
-export interface ProcessMtaLogJobPayload {
+interface ProcessMtaLogJobPayload {
   log: MtaLog
 }
 
@@ -121,7 +121,7 @@ export class ProcessMtaLogJob extends BaseJob<ProcessMtaLogJobPayload> {
  * and applies different business rules to each type. For marketing emails, contact engagement metrics are
  * updated to enable features like re-engagement campaigns and audience segmentation.
  */
-export class LogTypeHandler {
+class LogTypeHandler {
   constructor(
     protected emailSendEventRepository: EmailSendEventRepository,
     protected sendingDomain: SendingDomain,

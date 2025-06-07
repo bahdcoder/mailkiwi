@@ -36,7 +36,7 @@ export const automationStepSubtypesRule = [
   'RULE_WAIT_FOR_TRIGGER',
 ] as const
 
-export const automationStepSubtypesEnd = ['END'] as const
+const automationStepSubtypesEnd = ['END'] as const
 
 export const automationStepTypes = ['TRIGGER', 'ACTION', 'RULE', 'END'] as const
 export const automationStepSubtypes = [

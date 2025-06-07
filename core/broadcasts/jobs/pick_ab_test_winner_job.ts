@@ -9,7 +9,7 @@ import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
  *
  * @property broadcastId - The unique identifier of the broadcast campaign
  */
-export interface PickAbTestWinnerJobPayload {
+interface PickAbTestWinnerJobPayload {
   broadcastId: string
 }
 

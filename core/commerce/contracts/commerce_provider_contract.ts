@@ -13,7 +13,7 @@ import type { Product } from '#root/database/database_schema_types.js'
  * This information is used during the commerce provider onboarding process
  * to configure automatic payouts to the team's bank account.
  */
-export interface PayoutInformation {
+interface PayoutInformation {
   bankCode: string
   accountNumber: string
 }

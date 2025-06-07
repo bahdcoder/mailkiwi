@@ -16,4 +16,4 @@ export const CreateUserSchema = object({
   ),
 })
 
-export type CreateUserDto = InferInput<typeof CreateUserSchema>
+type CreateUserDto = InferInput<typeof CreateUserSchema>

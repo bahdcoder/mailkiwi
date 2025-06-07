@@ -14,7 +14,7 @@ import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 import { Paginator } from '#root/core/shared/utils/pagination/paginator.js'
 
-export interface RunAutomationStepJobPayload {
+interface RunAutomationStepJobPayload {
   automationStepId: string
 }
 

@@ -12,7 +12,7 @@ import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
 
 import { makeDatabase } from '#root/core/shared/container/index.js'
 
-export type QueryModifierFn = (
+type QueryModifierFn = (
   // biome-ignore lint/suspicious/noExplicitAny: MySQL query types require any
   query: MySqlSelect<any, any, any>,
   // biome-ignore lint/suspicious/noExplicitAny: MySQL query types require any
@@ -22,7 +22,7 @@ type CursorControls = {
   previous: string | undefined
   next: string | undefined
 }
-export type CursorResultsModifierFn = (
+type CursorResultsModifierFn = (
   // biome-ignore lint/suspicious/noExplicitAny: Generic row type
   rows: any[],
   originalCursorResults: CursorControls,

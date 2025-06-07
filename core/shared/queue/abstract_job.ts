@@ -37,7 +37,7 @@ export abstract class BaseJob<T extends object = object> {
   abstract failed(ctx: JobContext<T>): Promise<void>
 }
 
-export type AbstractJobType<T extends object = object> = {
+type AbstractJobType<T extends object = object> = {
   new: () => BaseJob<T>
   id: string
   queue: AVAILABLE_QUEUE_TYPE
