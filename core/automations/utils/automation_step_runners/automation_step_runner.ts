@@ -10,6 +10,8 @@ import type { AutomationStep, Contact } from '#root/database/database_schema_typ
 import { contactAutomationSteps } from '#root/database/schema.js'
 
 import { E_OPERATION_FAILED } from '#root/core/http/responses/errors.js'
+import { SubscribeToAudienceAutomationStepRunner } from './actions/action_subscribe_to_audience_runner.js'
+import { UpdateContactAttributesAutomationStepRunner } from './actions/action_update_contact_attributes_runner.js'
 
 /**
  * AutomationStepRunner is the central orchestrator for executing automation workflow steps.
@@ -53,6 +55,8 @@ export class AutomationStepRunner {
     ACTION_ADD_TAG: AddTagAutomationStepRunner,
     ACTION_SEND_EMAIL: SendEmailAutomationStepRunner,
     ACTION_REMOVE_TAG: RemoveTagAutomationStepRunner,
+    ACTION_SUBSCRIBE_TO_AUDIENCE: SubscribeToAudienceAutomationStepRunner,
+    ACTION_UPDATE_CONTACT_ATTRIBUTES: UpdateContactAttributesAutomationStepRunner,
   }
 
   constructor(private automationStep: AutomationStep) {}

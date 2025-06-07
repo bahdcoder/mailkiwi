@@ -156,3 +156,5 @@ export const ImageBlockMenu = ({ editor, appendTo }: MenuProps): JSX.Element => 
     </BaseBubbleMenu>
   )
 }
+
+export default ImageBlockMenu
