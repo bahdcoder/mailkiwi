@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "2457b866-7f25-4bc7-986f-b111234e0ecd",
+  "id": "12b6e5c0-6564-4df4-8365-5613482d8173",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -3761,6 +3761,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "unconfirmedEmail": {
+          "name": "unconfirmedEmail",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "firstName": {
           "name": "firstName",
           "type": "varchar(80)",
@@ -3845,6 +3852,30 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "newContactNotifications": {
+          "name": "newContactNotifications",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "accountSummaryNotifications": {
+          "name": "accountSummaryNotifications",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "changelogNewsletters": {
+          "name": "changelogNewsletters",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
         }
       },
       "indexes": {},

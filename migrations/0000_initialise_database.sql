@@ -513,6 +513,7 @@ CREATE TABLE `teams` (
 CREATE TABLE `users` (
 	`id` binary(16) NOT NULL,
 	`email` varchar(80) NOT NULL,
+	`unconfirmedEmail` varchar(80),
 	`firstName` varchar(80),
 	`lastName` varchar(80),
 	`avatarUrl` varchar(256),
@@ -525,6 +526,9 @@ CREATE TABLE `users` (
 	`lastLoggedInAt` timestamp,
 	`lastPasswordResetAt` timestamp,
 	`lastLoggedInProvider` enum('password','github','google'),
+	`newContactNotifications` boolean DEFAULT true,
+	`accountSummaryNotifications` boolean DEFAULT true,
+	`changelogNewsletters` boolean DEFAULT true,
 	CONSTRAINT `users_id` PRIMARY KEY(`id`),
 	CONSTRAINT `users_email_unique` UNIQUE(`email`)
 );
