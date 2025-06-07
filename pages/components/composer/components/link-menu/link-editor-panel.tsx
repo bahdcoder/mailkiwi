@@ -18,7 +18,7 @@ export const linkPresets = [
   },
 ]
 
-export interface LinkEditorPanelProps extends PropsWithChildren {
+interface LinkEditorPanelProps extends PropsWithChildren {
   initialUrl?: string
   onSubmit?: (href: string) => void
 }

@@ -5,7 +5,7 @@ import { SkeletonNode } from '../skeleton_node.jsx'
 import { Text } from '@kibamail/owly/text'
 import { Badge } from '@kibamail/owly/badge'
 
-export interface ActionAddTagNodeProps {
+interface ActionAddTagNodeProps {
   data: NodeElement['data']
 }
 

@@ -3,7 +3,7 @@ import { NewContactPropertyForm } from '#root/pages/w/engage/contacts/components
 import { Button } from '@kibamail/owly/button'
 import * as React from 'react'
 
-export type NewContactPropertyProps = Record<string, never>
+type NewContactPropertyProps = Record<string, never>
 
 export function NewContactProperty(_props: NewContactPropertyProps) {
   const [open, setOpen] = React.useState(false)

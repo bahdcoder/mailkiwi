@@ -10,7 +10,7 @@ import { useDialogInDropdownMenuItem } from '#root/pages/hooks/use_dialog_in_dro
 import { Text } from '@kibamail/owly/text'
 import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
-export interface ProductPageHeadingProps extends React.PropsWithChildren {
+interface ProductPageHeadingProps extends React.PropsWithChildren {
   header?: React.ReactNode
 }
 

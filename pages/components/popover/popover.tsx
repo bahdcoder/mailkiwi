@@ -23,10 +23,4 @@ const PopoverTrigger = Popover.Trigger
 const PopoverArrow = Popover.Arrow
 const PopoverPortal = Popover.Portal
 
-export {
-  PopoverContent as Content,
-  PopoverRoot as Root,
-  PopoverTrigger as Trigger,
-  PopoverArrow as Arrow,
-  PopoverPortal as Portal,
-}
+export { PopoverContent as Content, PopoverRoot as Root, PopoverTrigger as Trigger }

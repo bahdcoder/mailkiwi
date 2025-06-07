@@ -33,7 +33,7 @@ const CreateCustomContactProperty = clientOnly(() =>
   ).then(({ CreateCustomContactProperty }) => CreateCustomContactProperty),
 )
 
-export interface NewContactPropertyFormProps {
+interface NewContactPropertyFormProps {
   property?: KnownAudienceProperty | null
   open: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>

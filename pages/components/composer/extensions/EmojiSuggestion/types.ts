@@ -1,6 +1,6 @@
 import type { EmojiItem } from '@tiptap-pro/extension-emoji'
 
-export interface Command {
+interface Command {
   name: string
 }
 

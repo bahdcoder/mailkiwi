@@ -35,8 +35,7 @@ const StepThreeImportSettings = clientOnly(() =>
   ),
 )
 
-export interface ImportContactsDialogProps
-  extends React.ComponentProps<typeof Dialog.Root> {
+interface ImportContactsDialogProps extends React.ComponentProps<typeof Dialog.Root> {
   audienceId: string
   onImportCompleted?: () => void
 }

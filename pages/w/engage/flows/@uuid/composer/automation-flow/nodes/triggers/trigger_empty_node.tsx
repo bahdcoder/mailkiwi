@@ -2,7 +2,7 @@ import type { NodeElement } from '#root/pages/w/engage/flows/@uuid/composer/auto
 import classNames from 'classnames'
 import { Handle, Position } from 'react-flow-renderer'
 
-export interface TriggerEmptyNodeProps {
+interface TriggerEmptyNodeProps {
   data: NodeElement['data']
 }
 

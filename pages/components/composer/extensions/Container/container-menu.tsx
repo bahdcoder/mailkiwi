@@ -24,7 +24,7 @@ import { useCallback } from 'react'
 import { sticky } from 'tippy.js'
 import 'tippy.js/animations/scale.css'
 
-export interface ContainerMenuProps {
+interface ContainerMenuProps {
   editor: Editor
   appendTo?: React.RefObject<HTMLElement>
 }
@@ -66,8 +66,11 @@ const ContainerMenuActions: ContainerMenuAction[] = [
 ]
 
 export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
-  const { isFullWidth, isLeftAlign, isCenterAlign, isRightAlign, isFilled } =
-    useContainerMenuStates(editor)
+  const containerNode = editor.state.selection.$anchor.node()
+  const styles = containerNode.attrs.styles
+
+  const isFullWidth = styles?.width === '100%'
+  const isFilled = styles?.['background-color'] !== undefined
 
   const getReferenceClientRect = useCallback(() => {
     const renderContainer = getRenderContainer(editor, 'node-container')
@@ -85,7 +88,7 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
     return null
   }
 
-  const Container = editor.state.selection.$anchor.node()
+  const Container = containerNode
 
   function onValidUrlSubmitted(href: string) {
     editor
@@ -212,19 +215,4 @@ export function ContainerMenu({ editor, appendTo }: ContainerMenuProps) {
       </ToolbarContainer>
     </BubbleMenu>
   )
-}
-
-export function useContainerMenuStates(editor: Editor) {
-  const isInsideContainer = editor.isActive('container')
-  const Container = editor.state.selection.$anchor.node()
-  const styles = Container.attrs.styles
-
-  return {
-    isInsideContainer,
-    isFilled: styles?.['background-color'] !== undefined,
-    isFullWidth: styles?.width === '100%',
-    isLeftAlign: styles?.['text-align'] === 'left',
-    isRightAlign: styles?.['text-align'] === 'right',
-    isCenterAlign: styles?.['text-align'] === 'center',
-  }
 }

@@ -1,7 +1,7 @@
 import cn from 'classnames'
 import type React from 'react'
 
-export interface ToolbarContainerProps extends React.PropsWithChildren {}
+interface ToolbarContainerProps extends React.PropsWithChildren {}
 
 export function ToolbarContainer({ children }: ToolbarContainerProps) {
   return (
@@ -28,8 +28,7 @@ export function ToolbarSection({
   )
 }
 
-export interface ToolbarButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ToolbarButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isActive?: boolean
   as?: 'button' | 'span'
 }

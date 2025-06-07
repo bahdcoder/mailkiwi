@@ -13,7 +13,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 
-export interface CreateAutomationFlowProps extends React.PropsWithChildren {}
+interface CreateAutomationFlowProps extends React.PropsWithChildren {}
 
 export function CreateAutomationFlow({ children }: CreateAutomationFlowProps) {
   const { audience } = usePageContext()

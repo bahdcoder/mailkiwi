@@ -1,4 +1,4 @@
-export type ContentTypePickerOption = {
+type ContentTypePickerOption = {
   label: string
   id: string
   type: 'option'
@@ -8,7 +8,7 @@ export type ContentTypePickerOption = {
   icon: React.ReactNode
 }
 
-export type ContentTypePickerCategory = {
+type ContentTypePickerCategory = {
   id: string
   label: string
   type: 'category'

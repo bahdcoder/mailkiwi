@@ -11,7 +11,7 @@ import type { Editor } from '@tiptap/core'
 import { useEditorState } from '@tiptap/react'
 import React from 'react'
 
-export interface ContentTypeSelectorProps {
+interface ContentTypeSelectorProps {
   editor: Editor
 }
 

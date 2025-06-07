@@ -3,7 +3,7 @@ import { Text } from '@kibamail/owly/text'
 import classNames from 'classnames'
 import { Handle, Position } from 'react-flow-renderer'
 
-export interface ActionUpdateContactAttributesNodeProps {
+interface ActionUpdateContactAttributesNodeProps {
   data: NodeElement['data']
 }
 

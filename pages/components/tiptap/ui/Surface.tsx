@@ -1,7 +1,7 @@
 import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import { type HTMLProps, forwardRef } from 'react'
 
-export type SurfaceProps = HTMLProps<HTMLDivElement> & {
+type SurfaceProps = HTMLProps<HTMLDivElement> & {
   withShadow?: boolean
   withBorder?: boolean
 }

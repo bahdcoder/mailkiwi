@@ -10,7 +10,7 @@ import type { ContactWithTagsAndProperties } from '#root/database/database_schem
 
 import { formatCount } from '#root/pages/utils/number_formatter.js'
 
-export interface PaginationProps {
+interface PaginationProps {
   table: Table<ContactWithTagsAndProperties>
 }
 

@@ -5,7 +5,7 @@ import {
 import { getDefaultStylesForNode } from '#root/pages/components/composer/themes/default-theme.js'
 import { Node, mergeAttributes } from '@tiptap/core'
 
-export interface ParagraphOptions {
+interface ParagraphOptions {
   /**
    * The HTML attributes for a paragraph node.
    * @default {}

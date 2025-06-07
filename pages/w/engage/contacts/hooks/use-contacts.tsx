@@ -27,7 +27,7 @@ import dayjs from 'dayjs'
 import { DefaultPageProps } from '#root/pages/types/page-context.js'
 import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
-export interface ServerContactsPageProps {
+interface ServerContactsPageProps {
   contacts: { data: ContactWithTagsAndProperties[]; total: number }
   tags: Tag[]
 }

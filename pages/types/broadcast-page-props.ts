@@ -13,7 +13,7 @@ export interface Segment {
   }
 }
 
-export interface Broadcast {
+interface Broadcast {
   id: string
   name: string
   emailContent?: {

@@ -32,9 +32,7 @@ export {
   DropdownMenuRoot as Root,
   DropdownMenuTrigger as Trigger,
   DropdownMenuItem as Item,
-  DropdownMenuGroup as Group,
   DropdownMenuLabel as Label,
   DropdownMenuSeparator as Separator,
-  DropdownMenuArrow as Arrow,
   DropdownMenuPortal as Portal,
 }

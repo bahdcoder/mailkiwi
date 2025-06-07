@@ -7,7 +7,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { useServerFormMutation } from '#root/pages/hooks/use_server_form_mutation.jsx'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 
-export interface UseSyncComposerContentToServerProps {
+interface UseSyncComposerContentToServerProps {
   currentStep: number
   setStep: React.Dispatch<React.SetStateAction<number>>
   mutationOptions?: Omit<

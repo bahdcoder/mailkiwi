@@ -9,7 +9,7 @@ import { composeRefs } from '@radix-ui/react-compose-refs'
 import cn from 'classnames'
 import React, { useEffect } from 'react'
 
-export interface PasswordFieldProps
+interface PasswordFieldProps
   extends React.ComponentPropsWithoutRef<typeof TextField.Root> {
   strengthIndicator?: boolean
 }

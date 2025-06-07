@@ -13,7 +13,7 @@ import type { Editor } from '@tiptap/core'
 import cn from 'classnames'
 import type React from 'react'
 
-export interface TextColorPanelProps extends React.PropsWithChildren {
+interface TextColorPanelProps extends React.PropsWithChildren {
   editor: Editor
 }
 

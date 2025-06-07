@@ -24,7 +24,7 @@ import { useCallback } from 'react'
 import { sticky } from 'tippy.js'
 import 'tippy.js/animations/scale.css'
 
-export interface ButtonMenuProps {
+interface ButtonMenuProps {
   editor: Editor
   appendTo?: React.RefObject<HTMLElement>
 }
@@ -66,8 +66,11 @@ const buttonMenuActions: ButtonMenuAction[] = [
 ]
 
 export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
-  const { isFullWidth, isLeftAlign, isCenterAlign, isRightAlign, isFilled } =
-    useButtonMenuStates(editor)
+  const buttonNode = editor.state.selection.$anchor.node()
+  const styles = buttonNode.attrs.styles
+
+  const isFullWidth = styles?.width === '100%'
+  const isFilled = styles?.['background-color'] !== undefined
 
   const getReferenceClientRect = useCallback(() => {
     const renderContainer = getRenderContainer(editor, 'node-button')
@@ -220,19 +223,4 @@ export function ButtonMenu({ editor, appendTo }: ButtonMenuProps) {
       </ToolbarContainer>
     </BubbleMenu>
   )
-}
-
-export function useButtonMenuStates(editor: Editor) {
-  const isInsideButton = editor.isActive('button')
-  const button = editor.state.selection.$anchor.node()
-  const styles = button.attrs.styles
-
-  return {
-    isInsideButton,
-    isFilled: styles?.['background-color'] !== undefined,
-    isFullWidth: styles?.width === '100%',
-    isLeftAlign: styles?.['text-align'] === 'left',
-    isRightAlign: styles?.['text-align'] === 'right',
-    isCenterAlign: styles?.['text-align'] === 'center',
-  }
 }

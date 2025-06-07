@@ -2,7 +2,7 @@ import { convertToReactStyles } from '#root/pages/components/composer/utils/conv
 import { NodeViewContent, type NodeViewProps, NodeViewWrapper } from '@tiptap/react'
 import cn from 'classnames'
 
-export type ButtonNodeViewProps = NodeViewProps
+type ButtonNodeViewProps = NodeViewProps
 
 export function ButtonNodeView(props: ButtonNodeViewProps) {
   const { textAlign, ...styles } = convertToReactStyles(props.node.attrs.styles)

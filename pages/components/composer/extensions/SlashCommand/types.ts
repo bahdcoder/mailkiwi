@@ -1,5 +1,4 @@
 import type { Editor } from '@tiptap/core'
-import { icons } from 'lucide-react'
 import type React from 'react'
 
 export interface Group {
@@ -8,7 +7,7 @@ export interface Group {
   commands: Command[]
 }
 
-export interface Command {
+interface Command {
   name: string
   label: string
   description: string

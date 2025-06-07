@@ -7,7 +7,7 @@ import { Label } from '@kibamail/owly/text-field'
 import type { Editor } from '@tiptap/core'
 import React from 'react'
 
-export interface FontSizePanelProps {
+interface FontSizePanelProps {
   editor: Editor
 }
 

@@ -1,6 +1,6 @@
 import { Node } from '@tiptap/core'
 
-export enum ColumnLayout {
+enum ColumnLayout {
   SidebarLeft = 'sidebar-left',
   SidebarRight = 'sidebar-right',
   TwoColumn = 'two-column',

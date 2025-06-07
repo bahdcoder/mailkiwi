@@ -230,7 +230,7 @@ function TextFilterInput({ id, label }: TextFilterInputProps) {
   return <TextFilterInputForm onSubmit={onFormSubmit} id={id} label={label} />
 }
 
-export interface TextFilterInputFormProps extends TextFilterInputProps {
+interface TextFilterInputFormProps extends TextFilterInputProps {
   defaultValue?: string
   onSubmit: (value: string) => void
   onCancel?: () => void

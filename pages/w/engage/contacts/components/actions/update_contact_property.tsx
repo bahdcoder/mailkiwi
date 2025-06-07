@@ -2,7 +2,7 @@ import { NewContactPropertyForm } from '#root/pages/w/engage/contacts/components
 
 import type { KnownAudienceProperty } from '#root/database/schema.js'
 
-export interface UpdateContactPropertyProps {
+interface UpdateContactPropertyProps {
   property: KnownAudienceProperty | null
   setProperty: React.Dispatch<React.SetStateAction<KnownAudienceProperty | null>>
 }

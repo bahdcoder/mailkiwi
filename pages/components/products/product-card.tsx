@@ -12,5 +12,3 @@ function ProductCard({ ...linkProps }: ProductCardProps) {
     />
   )
 }
-
-export { ProductCard as Root }

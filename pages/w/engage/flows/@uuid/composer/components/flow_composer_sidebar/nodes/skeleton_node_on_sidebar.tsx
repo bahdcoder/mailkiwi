@@ -6,7 +6,7 @@ import type { AutomationStep } from '#root/database/database_schema_types.js'
 import { Text } from '@kibamail/owly/text'
 import { nodeLabels } from '#root/pages/w/engage/flows/@uuid/composer/automation-flow/nodes/skeleton_node.jsx'
 
-export interface SkeletonNodeOnSidebarProps {
+interface SkeletonNodeOnSidebarProps {
   step: AutomationStep
 }
 

@@ -14,7 +14,7 @@ import type {
   NodeElement,
 } from '#root/pages/w/engage/flows/@uuid/composer/automation-flow/types/elements.js'
 
-export interface AutomationProps {
+interface AutomationProps {
   elements: AutomationElement[]
 }
 

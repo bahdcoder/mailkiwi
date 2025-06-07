@@ -17,7 +17,7 @@ export function PageContainer({ children }: React.PropsWithChildren) {
   )
 }
 
-export interface PageTitleProps {
+interface PageTitleProps {
   title?: string | React.ReactNode
   description?: string | React.ReactNode
 }

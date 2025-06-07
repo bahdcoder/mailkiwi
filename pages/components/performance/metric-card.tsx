@@ -1,7 +1,7 @@
 import { Text } from '@kibamail/owly/text'
 import React from 'react'
 
-export interface MetricCardProps {
+interface MetricCardProps {
   rate: {
     label: string
     value?: string

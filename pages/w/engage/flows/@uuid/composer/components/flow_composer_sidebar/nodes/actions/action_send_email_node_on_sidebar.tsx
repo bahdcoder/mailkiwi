@@ -3,7 +3,7 @@ import { SkeletonNodeOnSidebar } from '../skeleton_node_on_sidebar.jsx'
 
 import * as TextField from '@kibamail/owly/text-field'
 
-export interface ActionSendEmailNodeOnSidebarProps {
+interface ActionSendEmailNodeOnSidebarProps {
   step: AutomationStep
 }
 

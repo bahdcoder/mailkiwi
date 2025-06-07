@@ -8,7 +8,7 @@ import * as Select from '@kibamail/owly/select-field'
 import * as TextField from '@kibamail/owly/text-field'
 import type * as React from 'react'
 
-export interface CreateCustomContactPropertyProps extends React.PropsWithChildren {
+interface CreateCustomContactPropertyProps extends React.PropsWithChildren {
   open: boolean
   onOpenChange: (open: boolean) => void
 

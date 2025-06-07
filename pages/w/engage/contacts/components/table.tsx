@@ -1,7 +1,7 @@
 import cn from 'classnames'
 import React from 'react'
 
-export interface TableProps extends React.ElementRef<'table'> {}
+interface TableProps extends React.ElementRef<'table'> {}
 
 const Table = React.forwardRef<TableProps, React.ComponentProps<'table'>>(
   ({ children, className, ...props }, ref) => {

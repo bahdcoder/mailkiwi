@@ -7,7 +7,7 @@ import { createContext } from '@radix-ui/react-context'
 import React, { type PropsWithChildren } from 'react'
 import type { EdgeElement, NodeElement } from '../types/elements.js'
 
-export interface AutomationFlowContextState {
+interface AutomationFlowContextState {
   automationSteps: AutomationStep[]
   selectedNode: NodeElement | null
   selectedEdge: EdgeElement | null

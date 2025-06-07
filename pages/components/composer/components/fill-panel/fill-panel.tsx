@@ -7,7 +7,7 @@ import React from 'react'
 import { HexColorPicker } from 'react-colorful'
 
 export type FillValue = { type: 'image' | 'color'; value: string | undefined }
-export interface FillPanelProps extends React.PropsWithChildren {
+interface FillPanelProps extends React.PropsWithChildren {
   allowImageFills?: boolean
   value?: string
   sideOffset?: number

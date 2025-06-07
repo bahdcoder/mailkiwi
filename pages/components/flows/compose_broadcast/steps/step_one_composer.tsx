@@ -7,16 +7,6 @@ import { usePageContext } from 'vike-react/usePageContext'
 import type { BroadcastPageProps } from '#root/pages/types/broadcast-page-props.js'
 import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
-interface EditorSaveState {
-  isSaving: boolean
-  isError: boolean
-  errorMessage: string | undefined
-  lastSavedSuccessfullyAt: Date | undefined
-}
-interface StepOneComposerProps {
-  onEditorSaveStateChanged: (state: Partial<EditorSaveState>) => void
-}
-
 export function StepOneComposer() {
   const { pageProps } = usePageContextWithProps<BroadcastPageProps>()
 

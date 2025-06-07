@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query'
 import React from 'react'
 
-export interface ServerSubmissionResponse<TResponse = Record<'path' | string, unknown>> {
+interface ServerSubmissionResponse<TResponse = Record<'path' | string, unknown>> {
   type: 'redirect' | 'json'
   payload: TResponse
   success: boolean
@@ -28,7 +28,7 @@ export type FormPayload = Record<
   | Record<string, unknown>[]
 >
 
-export interface UseServerFormMutationProps<TResponse = Record<'path' | string, unknown>>
+interface UseServerFormMutationProps<TResponse = Record<'path' | string, unknown>>
   extends Omit<
     MutationOptions<
       ServerSubmissionResponse<TResponse>,
@@ -163,15 +163,14 @@ export function useServerFormMutation<T extends Record<'path' | string, unknown>
   }
 }
 
-export type ServerFormProps<TResponse = unknown> =
-  React.FormHTMLAttributes<HTMLFormElement> & {
-    mutate: UseMutationResult<
-      ServerSubmissionResponse<TResponse>,
-      ServerSubmissionResponse,
-      FormPayload,
-      unknown
-    >['mutate']
-  }
+type ServerFormProps<TResponse = unknown> = React.FormHTMLAttributes<HTMLFormElement> & {
+  mutate: UseMutationResult<
+    ServerSubmissionResponse<TResponse>,
+    ServerSubmissionResponse,
+    FormPayload,
+    unknown
+  >['mutate']
+}
 
 export const ServerForm = React.forwardRef<
   React.ElementRef<'form'>,

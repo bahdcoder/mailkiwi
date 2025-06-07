@@ -6,7 +6,7 @@ import type { Editor as CoreEditor } from '@tiptap/core'
 import { useEditorState } from '@tiptap/react'
 import { memo } from 'react'
 
-export type TableOfContentsProps = {
+type TableOfContentsProps = {
   editor: CoreEditor
   onItemClick?: () => void
 }

@@ -10,7 +10,7 @@ import { Label } from '@radix-ui/react-dropdown-menu'
 import type { PropsWithChildren } from 'react'
 import { icons } from '../components/add-node-dialog.jsx'
 
-export interface SkeletonNodeProps {
+interface SkeletonNodeProps {
   step: AutomationStep
 }
 

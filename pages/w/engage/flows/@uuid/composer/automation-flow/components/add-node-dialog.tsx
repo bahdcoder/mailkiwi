@@ -68,7 +68,7 @@ export const icons: Partial<
   RULE_WAIT_FOR_TRIGGER: TimerIcon,
 }
 
-export interface AddNodeDialogProps {
+interface AddNodeDialogProps {
   open: boolean
   setOpen: (open: boolean) => void
   allowedTypes: AutomationStepType[]

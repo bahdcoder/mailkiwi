@@ -4,7 +4,7 @@ import { Handle, Position } from 'react-flow-renderer'
 import { SkeletonNode } from '../skeleton_node.jsx'
 import { Badge } from '@kibamail/owly/badge'
 
-export interface ActionRemoveTagNodeProps {
+interface ActionRemoveTagNodeProps {
   data: NodeElement['data']
 }
 

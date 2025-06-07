@@ -8,7 +8,7 @@ import * as TextField from '@kibamail/owly/text-field'
 import type { Editor } from '@tiptap/core'
 import React from 'react'
 
-export interface EditImageInformationPanelProps {
+interface EditImageInformationPanelProps {
   editor: Editor
 }
 

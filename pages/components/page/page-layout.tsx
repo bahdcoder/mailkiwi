@@ -1,6 +1,6 @@
 import type React from 'react'
 
-export interface PageLayoutProps {
+interface PageLayoutProps {
   children?: React.ReactNode
 }
 

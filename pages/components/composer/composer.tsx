@@ -55,7 +55,7 @@ function ComposerMenus({ editor, container }: ComposerMenusProps) {
   )
 }
 
-export interface ComposerProps {
+interface ComposerProps {
   editor: Editor
 }
 

@@ -3,7 +3,7 @@ import { Badge } from '@kibamail/owly/badge'
 import { Text } from '@kibamail/owly/text'
 import { Handle, Position } from 'react-flow-renderer'
 
-export type EndNodeProps = Record<string, never>
+type EndNodeProps = Record<string, never>
 
 export function EndNode(props: EndNodeProps) {
   return (

@@ -5,8 +5,7 @@ import * as RadioGroup from '@radix-ui/react-radio-group'
 import cn from 'classnames'
 import type React from 'react'
 
-export interface RadioGroupCardItemProps
-  extends React.HtmlHTMLAttributes<HTMLDivElement> {
+interface RadioGroupCardItemProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
   title?: string
   description?: string
   checked?: boolean

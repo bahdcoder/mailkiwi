@@ -1,7 +1,7 @@
 import { useReducer, useRef } from 'react'
 
 // Define actions as an enum for clarity and type safety
-export enum FileUploadActionType {
+enum FileUploadActionType {
   Open = 'OPEN',
   SetFiles = 'FILES.SET',
   DeleteFile = 'FILE.DELETE',

@@ -1,10 +1,10 @@
 import { cn } from '#root/pages/components/tiptap/utils/index.js'
 import React from 'react'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'ghost'
-export type ButtonSize = 'medium' | 'small' | 'icon' | 'iconSmall'
+type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'ghost'
+type ButtonSize = 'medium' | 'small' | 'icon' | 'iconSmall'
 
-export type ButtonProps = {
+type ButtonProps = {
   variant?: ButtonVariant
   active?: boolean
   activeClassname?: string

@@ -18,9 +18,9 @@ import { DefaultPageProps } from '#root/pages/types/page-context.js'
 import type { BroadcastGroupWithBroadcasts } from '#root/database/database_schema_types.js'
 import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
-export interface CreateBroadcastFlowProps extends React.PropsWithChildren {}
+interface CreateBroadcastFlowProps extends React.PropsWithChildren {}
 
-export interface PageProps {
+interface PageProps {
   groups: BroadcastGroupWithBroadcasts[]
 }
 

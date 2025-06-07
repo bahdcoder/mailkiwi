@@ -2,7 +2,7 @@ import { convertToReactStyles } from '#root/pages/components/composer/utils/conv
 import { NodeViewContent, type NodeViewProps, NodeViewWrapper } from '@tiptap/react'
 import cn from 'classnames'
 
-export type ContainerNodeViewProps = NodeViewProps
+type ContainerNodeViewProps = NodeViewProps
 
 export function ContainerNodeView(props: ContainerNodeViewProps) {
   const { background, ...styles } = convertToReactStyles(props.node.attrs.styles)

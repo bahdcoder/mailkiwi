@@ -4,7 +4,7 @@ import { Handle, Position } from 'react-flow-renderer'
 import { SkeletonNode } from '../skeleton_node.jsx'
 import { Text } from '@kibamail/owly/text'
 
-export interface RuleIfElseNodeProps {
+interface RuleIfElseNodeProps {
   data: NodeElement['data']
 }
 

@@ -21,7 +21,7 @@ import type { Audience } from '#root/database/database_schema_types.js'
 import { route } from '#root/core/shared/routes/route_aliases.js'
 import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 
-export interface SaveFilterAsSegmentFormProps extends React.PropsWithChildren {
+interface SaveFilterAsSegmentFormProps extends React.PropsWithChildren {
   filterGroups: CreateSegmentDto['filterGroups']
   onSuccess?: () => void
 }

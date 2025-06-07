@@ -51,10 +51,7 @@ interface DeepCloneOptions {
  * @param options - Cloning options
  * @returns A deep clone of the original value
  */
-export function deepClone<T extends Cloneable>(
-  value: T,
-  options: DeepCloneOptions = {},
-): T {
+function deepClone<T extends Cloneable>(value: T, options: DeepCloneOptions = {}): T {
   const {
     preservePrototype = false,
     copyNonEnumerable = false,

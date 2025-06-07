@@ -9,7 +9,7 @@ import {
 } from '#root/pages/components/composer/extensions/index.js'
 import type { Editor } from '@tiptap/react'
 
-export const isTableGripSelected = (node: HTMLElement) => {
+const isTableGripSelected = (node: HTMLElement) => {
   let container = node
 
   while (container && !['TD', 'TH'].includes(container.tagName)) {

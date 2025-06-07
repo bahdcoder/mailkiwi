@@ -17,7 +17,7 @@ import { BubbleMenu, type Editor } from '@tiptap/react'
 import type React from 'react'
 import type { Props as TippyProps } from 'tippy.js'
 
-export interface TextMenuProps {
+interface TextMenuProps {
   editor: Editor
   pluginKey: string
   tippyProps?: Partial<TippyProps>
