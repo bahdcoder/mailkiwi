@@ -8,52 +8,52 @@ export const BroadcastsQueue = () =>
     connection: makeRedis(),
   })
 
-export const AbTestsBroadcastsQueue = () =>
+const AbTestsBroadcastsQueue = () =>
   new BullQueue(AVAILABLE_QUEUES.abtests_broadcasts, {
     connection: makeRedis(),
   })
 
-export const AutomationsQueue = () =>
+const AutomationsQueue = () =>
   new BullQueue(AVAILABLE_QUEUES.automations, {
     connection: makeRedis(),
   })
 
-export const AccountsQueue = () =>
+const AccountsQueue = () =>
   new BullQueue(AVAILABLE_QUEUES.accounts, {
     connection: makeRedis(),
   })
 
-export const TransactionalQueue = () =>
+const TransactionalQueue = () =>
   new BullQueue(AVAILABLE_QUEUES.transactional, {
     connection: makeRedis(),
   })
 
-export const SendingDomainsQueue = () =>
+const SendingDomainsQueue = () =>
   new BullQueue(AVAILABLE_QUEUES.sending_domains, {
     connection: makeRedis(),
   })
 
-export const ContactsQueue = () =>
+const ContactsQueue = () =>
   new BullQueue(AVAILABLE_QUEUES.contacts, {
     connection: makeRedis(),
   })
 
-export const MtaLogsQueue = () =>
+const MtaLogsQueue = () =>
   new BullQueue(AVAILABLE_QUEUES.mta_logs, {
     connection: makeRedis(),
   })
 
-export const WebsitesQueue = () =>
+const WebsitesQueue = () =>
   new BullQueue(AVAILABLE_QUEUES.websites, {
     connection: makeRedis(),
   })
 
-export const AuthQueue = () =>
+const AuthQueue = () =>
   new BullQueue(AVAILABLE_QUEUES.auth, {
     connection: makeRedis(),
   })
 
-export class Queues {
+class Queues {
   broadcasts = BroadcastsQueue
   abTestsBroadcasts = AbTestsBroadcastsQueue
   automations = AutomationsQueue

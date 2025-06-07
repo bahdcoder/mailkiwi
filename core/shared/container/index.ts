@@ -15,7 +15,6 @@ export enum ContainerKey {
 
   // Configs
   env = 'env',
-  config = 'config',
 
   // version
   version = 'version',
@@ -25,12 +24,6 @@ export enum ContainerKey {
   redis = 'redis',
   database = 'database',
   databaseConnection = 'databaseConnection',
-
-  // Frontend assets
-  viteManifestFile = 'viteManifestFile',
-
-  // functions
-  vikeRenderPage = 'vikeRenderPage',
 }
 
 export const makeApp = () => container.singleton<HonoInstance>(ContainerKey.app)

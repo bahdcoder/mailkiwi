@@ -18,12 +18,12 @@ export function guessValueType(value: any) {
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: Function needs to handle any value type
-export function isValueABoolean(value: any) {
+function isValueABoolean(value: any) {
   return value === true || value === false
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: Function needs to handle any value type
-export function isValueANumber(value: any) {
+function isValueANumber(value: any) {
   if (!Number.isNaN(value) && value !== '' && typeof value !== 'boolean') {
     const parsedValue = Number.parseFloat(value)
     if (!Number.isNaN(parsedValue)) {
@@ -38,7 +38,7 @@ export function isValueANumber(value: any) {
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: Function needs to handle any value type
-export function isValueADateType(value: any) {
+function isValueADateType(value: any) {
   if (typeof value !== 'string') {
     return false
   }

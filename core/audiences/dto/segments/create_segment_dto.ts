@@ -51,7 +51,7 @@ const AllowedFilterFieldPickList = picklist(allowedFilterFields)
 
 export type AllowedFilterFieldPickList = typeof AllowedFilterFieldPickList
 
-export const FilterConditionSchema = object({
+const FilterConditionSchema = object({
   field: pipe(
     string(),
     check(
@@ -81,7 +81,7 @@ export const FilterConditionSchema = object({
   value: union([string(), array(string()), number(), array(number())]),
 })
 
-export const FilterConditionGroupSchema = object({
+const FilterConditionGroupSchema = object({
   type: picklist(['AND', 'OR']),
   conditions: array(FilterConditionSchema),
 })

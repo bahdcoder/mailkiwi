@@ -5,7 +5,7 @@ export interface BroadcastStatusProps {
   status?: Broadcast['status']
 }
 
-export const broadcastStatusNames: Record<
+const broadcastStatusNames: Record<
   NonNullable<Broadcast['status']>,
   {
     variant: BadgeProps['variant']

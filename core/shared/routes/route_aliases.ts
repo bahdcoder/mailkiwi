@@ -120,4 +120,4 @@ export function route(
   return `${path}${queryString ? `?${queryString}` : ''}`
 }
 
-export function wRoute() {}
+function wRoute() {}

@@ -20,17 +20,17 @@ import { audiences } from '#root/database/schema.js'
 
 import { makeDatabase } from '#root/core/shared/container/index.js'
 
-export const QuestionEnabledConditionSchema = object({
+const QuestionEnabledConditionSchema = object({
   questionId: pipe(string(), uuid()),
   answer: string(),
   operator: picklist(['equal', 'includes']),
 })
 
-export const FieldType = picklist(['email', 'text', 'number', 'date', 'select'])
+const FieldType = picklist(['email', 'text', 'number', 'date', 'select'])
 
 export const Appearance = picklist(['popover', 'inline', 'floating', 'fullscreen'])
 
-export const AutoTaggingAutomationSchema = object({
+const AutoTaggingAutomationSchema = object({
   option: string(),
   tagId: array(pipe(string(), uuid())),
 })
@@ -45,7 +45,7 @@ export const FieldSchema = object({
   autoTagging: optional(pipe(array(AutoTaggingAutomationSchema), maxLength(2))),
 })
 
-export const CreateFormObjectSchema = object({
+const CreateFormObjectSchema = object({
   name: string(),
   type: picklist(['signup', 'survey']),
   fields: pipe(array(FieldSchema), minLength(1), maxLength(10)),
@@ -53,7 +53,7 @@ export const CreateFormObjectSchema = object({
   audienceId: pipe(string(), uuid()),
 })
 
-export function checkIfSurveyHasOnlySelectTypes(
+function checkIfSurveyHasOnlySelectTypes(
   form: InferInput<typeof CreateFormObjectSchema>,
 ) {
   if (form.type === 'survey') {
@@ -67,7 +67,7 @@ export function checkIfSurveyHasOnlySelectTypes(
   return true
 }
 
-export function checkIfFirstQuestionsHasAnyConditions(
+function checkIfFirstQuestionsHasAnyConditions(
   form: InferInput<typeof CreateFormObjectSchema>,
 ) {
   if (!form.fields[0].conditions) {
@@ -76,9 +76,7 @@ export function checkIfFirstQuestionsHasAnyConditions(
   return form.fields[0].conditions.length === 0
 }
 
-export function checkIfFormSignupHasEmailField(
-  form: InferInput<typeof CreateFormObjectSchema>,
-) {
+function checkIfFormSignupHasEmailField(form: InferInput<typeof CreateFormObjectSchema>) {
   if (!form.type) {
     return true
   }
@@ -107,7 +105,7 @@ export const signupFormMustHaveAnEmailFieldCheck = check(
   'The form must have an "email" field if the type is "signup".',
 )
 
-export const signUpFormMustHaveKnownFieldsCheck = checkAsync(
+const signUpFormMustHaveKnownFieldsCheck = checkAsync(
   async (form: InferInput<typeof CreateFormObjectSchema>) => {
     if (form.type !== 'signup') {
       return true

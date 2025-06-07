@@ -7,7 +7,7 @@ import { redisDatabaseUrl } from '#root/core/shared/utils/env/make_redis_url_val
 
 export type AppEnvVariables = typeof appEnv
 
-export const SHORT_NAME = 'kibamail'
+const SHORT_NAME = 'kibamail'
 
 export const FREE_MONTHLY_CREDITS = 10_000
 
@@ -16,20 +16,20 @@ export const FREE_MONTHLY_CREDITS = 10_000
 // They eventually get fed into a kafka topic that multiple services will consume.
 
 // The SPF configuration for this domain must point to (include) spf.kbmta.net, which further includes all our sending subnets and ip addresses.
-export const BOUNCE_HOST_NAME = 'mail.kbmta.net'
+const BOUNCE_HOST_NAME = 'mail.kbmta.net'
 
 // This is where we host the SPF DNS entry.
 // All our subnets and IP addresses for email sending must be configured as a TXT record on this domain.
 // All our domains like mail.kbmta.net, kb-mkg.kbmta.net, kibamail.com etc. must include this domain in its SPF record.
-export const SPF_HOST_NAME = 'spf.kbmta.net'
+const SPF_HOST_NAME = 'spf.kbmta.net'
 
 // This is where we host the transactional email server.
 // All inbound transactional emails will go through here, including those sent via HTTP api.
-export const SMTP_HOST_NAME = 'send.kbmta.net'
+const SMTP_HOST_NAME = 'send.kbmta.net'
 
 // This is where we host the marketing email server.
 // All inbound marketing emails will go through here, including those sent via HTTP api.
-export const SMTP_MARKETING_HOST_NAME = 'engage.kbmta.net'
+const SMTP_MARKETING_HOST_NAME = 'engage.kbmta.net'
 
 // This is the main domain of all newsletters on the platform.
 // Customers will get a subdomain on this domain.
@@ -37,8 +37,6 @@ export const SMTP_MARKETING_HOST_NAME = 'engage.kbmta.net'
 export const WEBSITES_DOMAIN = 'kibasites.com'
 
 export const WEBSITES_PATH = '__websites'
-
-export const COMMERCE_WEBSITE_DOMAIN = WEBSITES_DOMAIN
 
 // This is the default subdomain customers will use when configuring the `Return-Path` DNS entry.
 // Example: Google uses our infrastructure to send emails, so they'll configure the following dns entry:

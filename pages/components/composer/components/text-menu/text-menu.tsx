@@ -33,7 +33,7 @@ type TextMenuAction = {
   isActive: (editor: Editor) => boolean
 }
 
-export const textMenuActions: TextMenuAction[] = [
+const textMenuActions: TextMenuAction[] = [
   {
     id: 'bold',
     name: 'Bold',

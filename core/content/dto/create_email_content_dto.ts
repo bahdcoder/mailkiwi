@@ -67,21 +67,21 @@ type Element = {
 // grid => <mj-section></mj-section>
 // grid-item => <mj-column></mj-column>
 
-export const CorneredStyleSchema = object({
+const CorneredStyleSchema = object({
   top: number(),
   right: number(),
   bottom: number(),
   left: number(),
 })
 
-export const CorneredFlexibleStyleSchema = object({
+const CorneredFlexibleStyleSchema = object({
   top: string(),
   right: string(),
   bottom: string(),
   left: string(),
 })
 
-export const StyleSchema = object({
+const StyleSchema = object({
   width: optional(string()),
   verticalAlign: optional(string()),
   horizontalAlign: optional(string()),
@@ -101,7 +101,7 @@ export const StyleSchema = object({
   'min-height': optional(number()),
 })
 
-export const PropertiesSchema = object({
+const PropertiesSchema = object({
   href: optional(
     object({
       url: string(),
@@ -109,7 +109,7 @@ export const PropertiesSchema = object({
   ),
 })
 
-export const EmailSectionSchema = object({
+const EmailSectionSchema = object({
   // These are all base types, and blocks are a construction of base types combined together.
   name: pipe(string(), nonEmpty(), minLength(3), maxLength(30)),
   value: optional(string()),
@@ -130,7 +130,7 @@ export const EmailSectionSchema = object({
   // Content could be anything really, but we use this validation schema to limit what could be passed to the backend.
 }) as GenericSchema<Element>
 
-export const EmailContentSchema = object({
+const EmailContentSchema = object({
   sections: array(EmailSectionSchema),
   wrapper: object({ styles: StyleSchema }), // the inner container
   container: object({ styles: StyleSchema }), // the outer container

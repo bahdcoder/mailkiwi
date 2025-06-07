@@ -3,7 +3,7 @@ import type { Node, ResolvedPos } from '@tiptap/pm/model'
 import type { Selection, Transaction } from '@tiptap/pm/state'
 import { CellSelection, type Rect, TableMap } from '@tiptap/pm/tables'
 
-export const isRectSelected = (rect: Rect) => (selection: CellSelection) => {
+const isRectSelected = (rect: Rect) => (selection: CellSelection) => {
   const map = TableMap.get(selection.$anchorCell.node(-1))
   const start = selection.$anchorCell.start(-1)
   const cells = map.cellsInRect(rect)
@@ -20,12 +20,12 @@ export const isRectSelected = (rect: Rect) => (selection: CellSelection) => {
   return true
 }
 
-export const findTable = (selection: Selection) =>
+const findTable = (selection: Selection) =>
   findParentNode(
     (node) => node.type.spec.tableRole && node.type.spec.tableRole === 'table',
   )(selection)
 
-export const isCellSelection = (selection: Selection): selection is CellSelection =>
+const isCellSelection = (selection: Selection): selection is CellSelection =>
   selection instanceof CellSelection
 
 export const isColumnSelected = (columnIndex: number) => (selection: Selection) => {
@@ -143,7 +143,7 @@ export const getCellsInRow = (rowIndex: number | number[]) => (selection: Select
   return null
 }
 
-export const getCellsInTable = (selection: Selection) => {
+const getCellsInTable = (selection: Selection) => {
   const table = findTable(selection)
 
   if (table) {
@@ -166,7 +166,7 @@ export const getCellsInTable = (selection: Selection) => {
   return null
 }
 
-export const findParentNodeClosestToPos = (
+const findParentNodeClosestToPos = (
   $pos: ResolvedPos,
   predicate: (node: Node) => boolean,
 ) => {
@@ -186,7 +186,7 @@ export const findParentNodeClosestToPos = (
   return null
 }
 
-export const findCellClosestToPos = ($pos: ResolvedPos) => {
+const findCellClosestToPos = ($pos: ResolvedPos) => {
   const predicate = (node: Node) =>
     node.type.spec.tableRole && /cell/i.test(node.type.spec.tableRole)
 
@@ -239,7 +239,7 @@ export const selectColumn = select('column')
 
 export const selectRow = select('row')
 
-export const selectTable = (tr: Transaction) => {
+const selectTable = (tr: Transaction) => {
   const table = findTable(tr.selection)
 
   if (table) {

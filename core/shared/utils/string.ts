@@ -3,7 +3,7 @@ import type { Readable } from 'node:stream'
 import { base64 } from '@poppinss/utils'
 import { v1, v4 } from 'uuid'
 
-export function fromEmailToDomain(email: string) {
+function fromEmailToDomain(email: string) {
   return email?.split('@')?.[1]
 }
 
@@ -30,6 +30,6 @@ export function stringFromReadableStream(stream: Readable): Promise<string> {
   })
 }
 
-export default {
+const stringUtils = {
   fromEmailToDomain,
 }

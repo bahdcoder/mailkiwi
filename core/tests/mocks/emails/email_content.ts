@@ -10,7 +10,7 @@ import { getApiKeyForTeam } from '#root/core/tests/utils/http.js'
 import { makeApp } from '#root/core/shared/container/index.js'
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-export function getDefaultEmailContentSchema(): EmailContentSchemaDto {
+function getDefaultEmailContentSchema(): EmailContentSchemaDto {
   return {
     sections: [],
     container: {

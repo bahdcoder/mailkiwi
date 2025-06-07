@@ -8,7 +8,7 @@ import { BubbleMenu as BaseBubbleMenu, useEditorState } from '@tiptap/react'
 import React, { useCallback, useState } from 'react'
 import { LinkEditorPanel, linkPresets } from './link-editor-panel.jsx'
 
-export const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
+const LinkMenu = ({ editor, appendTo }: MenuProps): JSX.Element => {
   const { link, target } = useEditorState({
     editor,
     selector: (ctx) => {

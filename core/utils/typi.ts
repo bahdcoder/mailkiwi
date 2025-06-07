@@ -5,7 +5,7 @@ export type Constructor<T = unknown, Args extends any[] = any[]> = new (
   ...args: Args
 ) => T
 
-export class Container {
+class Container {
   private instances: Map<string | Constructor, unknown> = new Map()
   private singletons: Map<string | Constructor, unknown> = new Map()
   private fakes: Map<string | Constructor, unknown> = new Map()

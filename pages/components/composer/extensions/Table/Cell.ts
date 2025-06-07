@@ -3,7 +3,7 @@ import { Plugin } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { getCellsInColumn, isRowSelected, selectRow } from './utils.js'
 
-export interface TableCellOptions {
+interface TableCellOptions {
   HTMLAttributes: Record<string, string | number | boolean>
 }
 

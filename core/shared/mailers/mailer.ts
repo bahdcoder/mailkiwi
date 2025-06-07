@@ -5,7 +5,7 @@ import type { MailObject, MailerDriverResponse } from './mailer_types.js'
 
 import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 
-export class MailerClass {
+class MailerClass {
   // a transport must be created for the team making this mail send call.
   // we decrypt the api key for this sender and we invoke the smtp server
   // using the team api key and username credentials.
