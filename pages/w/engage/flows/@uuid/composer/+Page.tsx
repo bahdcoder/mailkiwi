@@ -1,7 +1,6 @@
 import { usePageContextWithProps } from '#root/pages/hooks/use_page_props.js'
 import { Flow } from './automation-flow/automation-flow-builder.jsx'
 
-import './flow_composer_styles.css'
 import type { AutomationWithSteps } from '#root/database/database_schema_types.js'
 import { CancelIcon } from '#root/pages/components/icons/cancel.svg.jsx'
 import { EditPencilIcon } from '#root/pages/components/icons/edit-pencil.svg.jsx'

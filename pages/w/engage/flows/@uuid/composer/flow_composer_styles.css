@@ -1,4 +1,0 @@
-/* We will attribute React flow in our docs, Github readme and website. As this is a non technical consumer product, we don't want to expose them to technical terms that may be techical terms, so we hide attribute in the app itself. */
-.react-flow__attribution {
-  display: none !important;
-}

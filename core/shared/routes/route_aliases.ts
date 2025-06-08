@@ -10,6 +10,10 @@ function engage(path: string) {
   return w(`engage/${path}`)
 }
 
+function send(path: string) {
+  return w(`send/${path}`)
+}
+
 export const aliases = {
   // email/password registration
   auth_register: '/auth/register',
@@ -96,6 +100,8 @@ export const aliases = {
 
   // flows
   add_automation_step: '/audiences/:audienceId/automations/:automationId/steps',
+
+  send_onboarding: send('onboarding'),
 } as const
 
 export function route(

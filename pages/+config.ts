@@ -24,4 +24,5 @@ const config: Config = {
     'sendingDomains',
   ],
   bodyAttributes: { style: '--w-sidebar-width: 260px' },
+  prerender: false,
 }

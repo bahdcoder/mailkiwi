@@ -21,13 +21,14 @@
 
 @import "tailwindcss" layer(base);
 
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap")
-  layer(base);
-
 @plugin "tailwindcss-animate";
 
 @theme inline {
-  --font-sans: var(--font-manrope);
+  --font-sans: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI (Custom)", Roboto,
+    "Helvetica Neue", "Open Sans (Custom)", system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  --font-mono: "Fira Mono", "Dank Mono", "Inconsolata", monospace;
+  --default-mono-font-family: var(--font-mono);
 }
 
 @layer base {
