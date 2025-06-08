@@ -10,10 +10,12 @@ interface AutomationFlowContextState {
   steps: AutomationStep[]
 }
 
-const [AutomationFlowContextProvider, useAutomationFlowContext] =
-  createContext<AutomationFlowContextState>('AutomationFlowBuilder', {
+const [AutomationFlowContextProvider] = createContext<AutomationFlowContextState>(
+  'AutomationFlowBuilder',
+  {
     steps: [],
-  })
+  },
+)
 
 export function AutomationFlowProvider({ children }: PropsWithChildren) {
   const {
@@ -23,8 +25,4 @@ export function AutomationFlowProvider({ children }: PropsWithChildren) {
   return (
     <AutomationFlowContextProvider steps={[]}>{children}</AutomationFlowContextProvider>
   )
-}
-
-export function useAutomationFlowBuilder() {
-  return useAutomationFlowContext('AutomationFlowBuilder')
 }

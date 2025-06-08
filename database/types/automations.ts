@@ -7,7 +7,7 @@ export const automationStepSubtypesTriggerMap = {
   TRIGGER_API_MANUAL: 'TRIGGER_API_MANUAL',
 } as const
 
-export const automationStepSubtypesTrigger = [
+const automationStepSubtypesTrigger = [
   automationStepSubtypesTriggerMap.TRIGGER_EMPTY,
   automationStepSubtypesTriggerMap.TRIGGER_CONTACT_SUBSCRIBED,
   automationStepSubtypesTriggerMap.TRIGGER_CONTACT_UNSUBSCRIBED,
@@ -19,7 +19,7 @@ export const automationStepSubtypesTrigger = [
 export type AUTOMATION_STEP_SUB_TYPES_TRIGGER =
   (typeof automationStepSubtypesTrigger)[number]
 
-export const automationStepSubtypesAction = [
+const automationStepSubtypesAction = [
   'ACTION_EMPTY',
   'ACTION_SEND_EMAIL',
   'ACTION_ADD_TAG',
@@ -29,7 +29,7 @@ export const automationStepSubtypesAction = [
   'ACTION_UPDATE_CONTACT_ATTRIBUTES',
 ] as const
 
-export const automationStepSubtypesRule = [
+const automationStepSubtypesRule = [
   'RULE_IF_ELSE',
   'RULE_WAIT_FOR_DURATION',
   'RULE_PERCENTAGE_SPLIT',
@@ -45,10 +45,3 @@ export const automationStepSubtypes = [
   ...automationStepSubtypesRule,
   ...automationStepSubtypesEnd,
 ] as const
-
-export type AutomationStepType = 'TRIGGERS' | 'ACTIONS' | 'RULES'
-export type AutomationStepSubType =
-  | (typeof automationStepSubtypesRule)[number]
-  | (typeof automationStepSubtypesTrigger)[number]
-  | (typeof automationStepSubtypesAction)[number]
-  | 'END'
