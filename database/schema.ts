@@ -243,7 +243,7 @@ export const accessTokens = mysqlTable('accessTokens', {
   teamId: primaryKeyCuid('teamId').references(() => teams.id),
   name: varchar('name', { length: 32 }),
   accessKey: varchar('accessKey', { length: 255 }),
-  capabilities: json('capabilities').$type<string[]>(),
+  capabilities: json('capabilities').$type<'full' | 'send' | 'engage'[]>(),
   accessSecret: varchar('accessSecret', { length: 255 }).notNull(),
   createdAt: timestamp('createdAt').defaultNow().notNull(),
   lastUsedAt: timestamp('lastUsedAt').defaultNow().notNull(),

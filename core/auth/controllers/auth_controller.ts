@@ -12,6 +12,7 @@ import type { HonoContext } from '#root/core/shared/server/types.js'
 
 import { container } from '#root/core/utils/typi.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller'
+import { CreateTeamAccessTokenSchema } from '../dto/create_team_access_token_dto.js'
 
 /**
  * AuthController handles user authentication and API key management.
@@ -45,7 +46,6 @@ export class AuthController extends BaseController {
       },
     )
 
-    // Define routes for API key management
     this.app.defineRoutes([['POST', '/api-keys', this.createApiKey.bind(this)]], {
       prefix: 'auth',
     })
@@ -69,14 +69,13 @@ export class AuthController extends BaseController {
    * @returns JSON response containing the newly generated API key
    */
   async createApiKey(ctx: HonoContext) {
-    // Generate a new API key for the current team
+    const data = await this.validate(ctx, CreateTeamAccessTokenSchema)
+
     const { apiKey } = await container
       .make(CreateTeamAccessTokenAction)
-      .handle(ctx.get('team').id)
+      .handle(ctx.get('team').id, data)
 
-    // Return the API key to the client
-    // Note: This is the only time the full API key will be visible
-    return ctx.json({ apiKey })
+    return this.response(ctx).json({ apiKey }).send()
   }
 
   /**

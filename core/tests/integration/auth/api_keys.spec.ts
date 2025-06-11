@@ -1,13 +1,7 @@
 import { describe, test } from 'vitest'
 
-import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
-
-import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories/access_token_repository.js'
-
 import { createUser } from '#root/core/tests/mocks/auth/users.js'
 import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
-
-import { container } from '#root/core/utils/typi.js'
 
 describe('@auth API Token Generation', () => {
   test('can generate an api token for api and smtp access', async ({ expect }) => {
@@ -16,6 +10,10 @@ describe('@auth API Token Generation', () => {
     const response = await makeRequestAsUser(user, {
       method: 'POST',
       path: '/auth/api-keys',
+      body: {
+        name: 'My API Key',
+        capabilities: ['full'],
+      },
     })
 
     const json = await response.json()
