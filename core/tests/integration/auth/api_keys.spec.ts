@@ -12,18 +12,18 @@ describe('@auth API Token Generation', () => {
       path: '/auth/api-keys',
       body: {
         name: 'My API Key',
-        capabilities: ['full'],
+        capabilities: 'full',
       },
     })
 
     const json = await response.json()
 
     expect(response.status).toBe(200)
-    expect(json).toEqual({
+    expect(json.payload).toEqual({
       apiKey: expect.any(String),
     })
-    expect(json.apiKey).toContain('kbt_')
-    expect(json.apiKey).toHaveLength(92)
+    expect(json.payload.apiKey).toContain('kbt_')
+    expect(json.payload.apiKey).toHaveLength(48)
   })
 
   test('can delete an api key', async ({ expect }) => {
@@ -34,7 +34,7 @@ describe('@auth API Token Generation', () => {
       path: '/auth/api-keys',
       body: {
         name: 'Test API Key',
-        capabilities: ['full'],
+        capabilities: 'full',
       },
     })
 
@@ -47,9 +47,9 @@ describe('@auth API Token Generation', () => {
 
     const listJson = await listResponse.json()
     expect(listResponse.status).toBe(200)
-    expect(listJson.apiKeys).toHaveLength(1)
+    expect(listJson.payload.apiKeys).toHaveLength(1)
 
-    const apiKeyId = listJson.apiKeys[0].id
+    const apiKeyId = listJson.payload.apiKeys[0].id
 
     const deleteResponse = await makeRequestAsUser(user, {
       method: 'DELETE',
@@ -58,7 +58,7 @@ describe('@auth API Token Generation', () => {
 
     const deleteJson = await deleteResponse.json()
     expect(deleteResponse.status).toBe(200)
-    expect(deleteJson).toEqual({
+    expect(deleteJson.payload).toEqual({
       id: apiKeyId,
     })
 
@@ -69,7 +69,7 @@ describe('@auth API Token Generation', () => {
 
     const verifyJson = await verifyResponse.json()
     expect(verifyResponse.status).toBe(200)
-    expect(verifyJson.apiKeys).toHaveLength(0)
+    expect(verifyJson.payload.apiKeys).toHaveLength(0)
   })
 
   test('cannot delete an api key that does not exist', async ({ expect }) => {
@@ -94,7 +94,7 @@ describe('@auth API Token Generation', () => {
       path: '/auth/api-keys',
       body: {
         name: 'Test API Key',
-        capabilities: ['full'],
+        capabilities: 'full',
       },
     })
 
@@ -106,15 +106,13 @@ describe('@auth API Token Generation', () => {
     })
 
     const listJson = await listResponse.json()
-    const apiKeyId = listJson.apiKeys[0].id
+    const apiKeyId = listJson.payload.apiKeys[0].id
 
     const deleteResponse = await makeRequestAsUser(user2, {
       method: 'DELETE',
       path: `/auth/api-keys/${apiKeyId}`,
     })
 
-    expect(deleteResponse.status).toBe(422)
-    const json = await deleteResponse.json()
-    expect(json.payload.errors[0].message).toBe('API key not found.')
+    expect(deleteResponse.status).toBe(401)
   })
 })

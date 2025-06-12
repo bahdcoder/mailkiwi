@@ -1,9 +1,11 @@
 import { eq } from 'drizzle-orm'
 
-import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories/access_token_repository.js'
 import { CreateTeamAccessTokenAction } from '#root/core/auth/actions/create_team_access_token.js'
 import { DeleteTeamAccessTokenAction } from '#root/core/auth/actions/delete_team_access_token.js'
 import { CreateTeamAccessTokenSchema } from '#root/core/auth/dto/create_team_access_token_dto.js'
+import { DeleteTeamAccessTokenSchema } from '#root/core/auth/dto/delete_team_access_token_dto.js'
+
+import { AccessTokenRepository } from '#root/core/auth/acess_tokens/repositories/access_token_repository.js'
 
 import { accessTokens } from '#root/database/schema.js'
 
@@ -132,6 +134,10 @@ export class ApiKeysController extends BaseController {
 
     const id = ctx.req.param('id')
     const teamId = ctx.get('team')?.id
+
+    await this.validate(ctx, DeleteTeamAccessTokenSchema, {
+      id,
+    })
 
     const apiKey = await this.accessTokenRepository
       .accesstokens()
