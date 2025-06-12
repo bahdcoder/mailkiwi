@@ -5,7 +5,7 @@ function SettingsAccount() {
     <SettingsContainer
       title="Account"
       description="Manage your account information"
-    ></SettingsContainer>
+    />
   )
 }
 

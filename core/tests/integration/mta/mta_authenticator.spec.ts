@@ -7,6 +7,8 @@ import { makeApp } from '#root/core/shared/container/index.js'
 
 import { container } from '#root/core/utils/typi.js'
 import { setupDomainForDnsChecks } from '#root/core/tests/unit/helpers/domains/setup_domain_for_dns_checks.js'
+import { ApiKeyCapability } from '#root/core/auth/dto/create_team_access_token_dto'
+import { faker } from '@faker-js/faker'
 
 describe.skip('@mta http server', () => {
   test('can fetch dkim records for a domain', async ({ expect }) => {
@@ -53,7 +55,10 @@ describe.skip('@mta http server', () => {
   test('can authenticate smtp credentials', async ({ expect }) => {
     const { team } = await setupDomainForDnsChecks()
 
-    const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(team.id)
+    const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(team.id, {
+      name: faker.lorem.words(3),
+      capabilities: ApiKeyCapability.Full,
+    })
 
     const app = makeApp()
 
@@ -74,7 +79,10 @@ describe.skip('@mta http server', () => {
   test('authenticating with wrong credentials fails', async ({ expect }) => {
     const { team } = await setupDomainForDnsChecks()
 
-    const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(team.id)
+    const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(team.id, {
+      name: faker.lorem.words(3),
+      capabilities: ApiKeyCapability.Full,
+    })
 
     const app = makeApp()
 

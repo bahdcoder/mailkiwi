@@ -242,6 +242,7 @@ export const accessTokens = mysqlTable('accessTokens', {
   userId: primaryKeyCuid('userId').references(() => users.id),
   teamId: primaryKeyCuid('teamId').references(() => teams.id),
   name: varchar('name', { length: 32 }),
+  preview: varchar('preview', { length: 32 }),
   accessKey: varchar('accessKey', { length: 255 }),
   capabilities: json('capabilities').$type<'full' | 'send' | 'engage'[]>(),
   accessSecret: varchar('accessSecret', { length: 255 }).notNull(),

@@ -33,6 +33,7 @@ import { TagController } from '#root/core/audiences/controllers/tag_controller.j
 import { TeamController } from '#root/core/teams/controllers/team_controller.js'
 import { TeamMembershipController } from '#root/core/teams/controllers/team_membership_controller.js'
 
+import { ApiKeysController } from '#root/core/auth/controllers/api_keys_controller.js'
 import { AuthController } from '#root/core/auth/controllers/auth_controller.js'
 import { Oauth2Controller } from '#root/core/auth/controllers/oauth2_controller.js'
 import { RegisterController } from '#root/core/auth/controllers/register_controller.js'
@@ -166,6 +167,7 @@ export class Ignitor {
     container.resolve(BroadcastController)
     container.resolve(TagController)
     container.resolve(AutomationController)
+    container.resolve(ApiKeysController)
     container.resolve(AuthController)
     container.resolve(Oauth2Controller)
     container.resolve(RegisterController)

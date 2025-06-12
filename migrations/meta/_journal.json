@@ -8,6 +8,13 @@
       "when": 1749292282075,
       "tag": "0000_initialise_database",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1749666649329,
+      "tag": "0001_add_preview_to_access_tokens_table",
+      "breakpoints": true
     }
   ]
 }

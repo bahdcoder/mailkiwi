@@ -14,29 +14,46 @@ import { route } from '#root/core/shared/routes/route_aliases.js'
 import { ArrowUpRightIcon } from '#root/pages/components/icons/arrow-up-right.svg.jsx'
 import { CopyIcon } from '#root/pages/components/icons/copy.svg.jsx'
 import * as Alert from '@kibamail/owly/alert'
-import { CheckCircleIcon } from '../../../components/icons/check-circle.svg.jsx'
+import { WarningCircleSolidIcon } from '#root/pages/components/icons/warning-circle-solid.svg.jsx'
+import { toast } from 'sonner'
 
 interface CreateWorkspaceFlowProps {
   children: React.ReactNode
   onOpenChange?: (open: boolean) => void
+  onApiKeyCreated?: () => void
 }
 
-export function CreateApiKeyDialog({ children, onOpenChange }: CreateWorkspaceFlowProps) {
+export function CreateApiKeyDialog({
+  children,
+  onOpenChange,
+  onApiKeyCreated,
+}: CreateWorkspaceFlowProps) {
   const [open, setOpen] = useState(false)
-  const { serverFormProps, isPending, error, ServerErrorsList, isSuccess, data } =
+  const { serverFormProps, isPending, error, ServerErrorsList, isSuccess, data, reset } =
     useServerFormMutation<{
       apiKey: string
     }>({
       action: route('create_api_key'),
-      async onSuccess(response) {
-        console.log({ response })
-        // window.location.reload();
+      onSuccess() {
+        onApiKeyCreated?.()
       },
     })
 
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen)
     onOpenChange?.(newOpen)
+
+    if (!newOpen) {
+      setTimeout(() => {
+        reset()
+      }, 1000)
+    }
+  }
+
+  function onCopyClick() {
+    navigator.clipboard.writeText(data?.payload?.apiKey ?? '')
+
+    toast.success('API key copied to clipboard!')
   }
 
   const capabilities = ['full', 'engage', 'send']
@@ -70,84 +87,94 @@ export function CreateApiKeyDialog({ children, onOpenChange }: CreateWorkspaceFl
         </div>
 
         {isSuccess ? (
-          <div className="px-5 pb-5">
-            <TextField.Root
-              autoFocus
-              value={data?.payload?.apiKey}
-              readOnly
-              className="[&>input]:overflow-hidden"
-            >
-              <TextField.Slot side="right">
-                <button type="button" className="cursor-pointer">
-                  <TextField.HintIcon>
-                    <CopyIcon />
-                  </TextField.HintIcon>
-                </button>
-              </TextField.Slot>
-            </TextField.Root>
-          </div>
-        ) : (
-          <ServerForm {...serverFormProps}>
+          <>
             <div className="px-5 pb-5">
-              <TextField.Root placeholder="Your api key name" name="name" required>
-                <TextField.Label>API key name</TextField.Label>
-                {error?.errorsMap?.name ? (
-                  <TextField.Error>{error?.errorsMap?.name}</TextField.Error>
-                ) : null}
+              <TextField.Root
+                autoFocus
+                readOnly
+                onClick={onCopyClick}
+                className="cursor-pointer [&_input]:cursor-pointer [&_input]:overflow-hidden"
+                value={data?.payload?.apiKey}
+              >
+                <TextField.Slot side="right">
+                  <button type="button" className="cursor-pointer" onClick={onCopyClick}>
+                    <TextField.HintIcon>
+                      <CopyIcon />
+                    </TextField.HintIcon>
+                  </button>
+                </TextField.Slot>
               </TextField.Root>
+
+              <div className="my-4">
+                <Alert.Root variant="info">
+                  <Alert.Icon>
+                    <WarningCircleSolidIcon />
+                  </Alert.Icon>
+
+                  <div className="w-full flex flex-col">
+                    <Alert.Title>
+                      Please copy your api key and store in a safe place. You'll only be
+                      able to see it once.
+                    </Alert.Title>
+                  </div>
+                </Alert.Root>
+              </div>
             </div>
 
-            <div className="px-5 pb-5">
-              <SelectField.Root defaultValue={capabilities?.[0]} name="capabilities">
-                <SelectField.Label>Choose api key permissions</SelectField.Label>
-                <SelectField.Trigger className="capitalize" />
-                <SelectField.Content className="z-50 relative">
-                  {capabilities?.map((capability) => (
-                    <SelectField.Item
-                      key={capability}
-                      value={capability}
-                      className="capitalize"
-                    >
-                      {capability}
-                    </SelectField.Item>
-                  ))}
-                </SelectField.Content>
-                {error?.errorsMap?.capabilities ? (
-                  <SelectField.Error>{error?.errorsMap?.capabilities}</SelectField.Error>
-                ) : null}
-              </SelectField.Root>
-            </div>
-
-            {ServerErrorsList}
-            <Dialog.Footer className="flex justify-between">
-              <Dialog.Close asChild disabled={isPending}>
-                <Button variant="secondary">Close</Button>
+            <Dialog.Footer className="flex justify-end">
+              <Dialog.Close asChild type="button">
+                <Button>Done</Button>
               </Dialog.Close>
-              <Button type="submit" loading={isPending}>
-                Create api key
-              </Button>
             </Dialog.Footer>
-          </ServerForm>
-        )}
-
-        <div className="px-5 pb-8">
-          <Alert.Root variant="success">
-            <div className="w-full flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Alert.Icon>
-                  <CheckCircleIcon />
-                </Alert.Icon>
-                <Alert.Title className="font-medium">
-                  API key created successfully
-                </Alert.Title>
+          </>
+        ) : (
+          <>
+            <ServerForm {...serverFormProps}>
+              <div className="px-5 pb-5">
+                <TextField.Root placeholder="Your api key name" name="name" required>
+                  <TextField.Label>API key name</TextField.Label>
+                  {error?.errorsMap?.name ? (
+                    <TextField.Error>{error?.errorsMap?.name}</TextField.Error>
+                  ) : null}
+                </TextField.Root>
               </div>
 
-              <Button size="sm" variant="secondary">
-                Copy api key
-              </Button>
-            </div>
-          </Alert.Root>
-        </div>
+              <div className="px-5 pb-5">
+                <SelectField.Root defaultValue={capabilities?.[0]} name="capabilities">
+                  <SelectField.Label>Choose api key permissions</SelectField.Label>
+                  <SelectField.Trigger className="capitalize" />
+                  <SelectField.Content className="z-50 relative">
+                    {capabilities?.map((capability) => (
+                      <SelectField.Item
+                        key={capability}
+                        value={capability}
+                        className="capitalize"
+                      >
+                        {capability}
+                      </SelectField.Item>
+                    ))}
+                  </SelectField.Content>
+                  {error?.errorsMap?.capabilities ? (
+                    <SelectField.Error>
+                      {error?.errorsMap?.capabilities}
+                    </SelectField.Error>
+                  ) : null}
+                </SelectField.Root>
+              </div>
+
+              {ServerErrorsList}
+
+              <Dialog.Footer className="flex justify-between">
+                <Dialog.Close asChild disabled={isPending}>
+                  <Button variant="secondary">Close</Button>
+                </Dialog.Close>
+                <Button type="submit" loading={isPending}>
+                  Create api key
+                </Button>
+              </Dialog.Footer>
+            </ServerForm>
+          </>
+        )}
       </Dialog.Content>
     </Dialog.Root>
   )

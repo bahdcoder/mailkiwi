@@ -13,6 +13,8 @@ import { RedisSessionStore } from '#root/core/shared/sessions/stores/redis_sessi
 import { getAuthenticationHeaders } from '#root/core/shared/utils/auth/get_auth_headers.js'
 
 import { container } from '#root/core/utils/typi.js'
+import { ApiKeyCapability } from '#root/core/auth/dto/create_team_access_token_dto'
+import { faker } from '@faker-js/faker'
 
 export async function makeRequest(
   path: string,
@@ -69,7 +71,10 @@ export async function getCookieSessionForUser(user: User) {
 }
 
 export async function getApiKeyForTeam(teamId: string) {
-  const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(teamId)
+  const { apiKey } = await container.make(CreateTeamAccessTokenAction).handle(teamId, {
+    name: faker.lorem.words(3),
+    capabilities: ApiKeyCapability.Full,
+  })
 
   return `Bearer ${apiKey}`
 }

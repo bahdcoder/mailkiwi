@@ -25,8 +25,6 @@ import * as TextField from '@kibamail/owly/text-field'
 import { flexRender } from '@tanstack/react-table'
 import cn from 'classnames'
 import * as React from 'react'
-import { usePageContext } from 'vike-react/usePageContext'
-import type { PageContext } from 'vike/types'
 
 import type { Segment, Tag } from '#root/database/database_schema_types.js'
 import { EmptyState } from '#root/pages/components/empty-state/empty_state.jsx'
@@ -36,7 +34,6 @@ import {
   type PageContextWithPageProps,
   usePageContextWithProps,
 } from '#root/pages/hooks/use_page_props.js'
-import { DefaultPageContext } from '#root/pages/types/page-context.js'
 
 const filterOperationLabels: Record<string, string> = {
   eq: 'Is',

@@ -30,10 +30,14 @@ export class AccessTokenRepository extends ScryptTokenRepository {
   // Do not change any of the below protected values, as it will break all existing and generated access tokens
   protected opaqueAccessTokenPrefix = 'kbt_'
   protected keyPairDelimiter = ':'
-  protected bytesSize = 16
+  protected bytesSize = 8
 
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
+  }
+
+  accesstokens() {
+    return this.crud(accessTokens)
   }
 
   /**
@@ -87,11 +91,14 @@ export class AccessTokenRepository extends ScryptTokenRepository {
 
     const apiKey = `${this.opaqueAccessTokenPrefix}${keyPairBase64}`
 
+    const preview = apiKey.slice(0, 8)
+
     const id = this.cuid()
 
     await this.database.insert(accessTokens).values({
       ...(type === 'user' ? { userId: ownerId } : { teamId: ownerId }),
       name,
+      preview,
       accessKey,
       capabilities,
       accessSecret: hashedAccessSecret,

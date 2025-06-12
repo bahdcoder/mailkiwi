@@ -16,7 +16,7 @@ export function SettingsContainer({
   description,
 }: PropsWithChildren<SettingsContainerProps>) {
   return (
-    <div className="w-full flex flex-col max-w-2xl mx-auto py-12">
+    <div className="w-full flex flex-col max-w-4xl mx-auto py-12">
       <div
         className={cn('flex flex-col gap-1 border-b kb-border-tertiary', {
           'pb-8': !actions,
@@ -32,7 +32,7 @@ export function SettingsContainer({
         ) : null}
       </div>
 
-      <div className="mt-12">{children}</div>
+      <div className="mt-6">{children}</div>
     </div>
   )
 }

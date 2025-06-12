@@ -8,7 +8,7 @@ import {
   string,
 } from 'valibot'
 
-enum Capability {
+export enum ApiKeyCapability {
   Full = 'full',
   Send = 'send',
   Engage = 'engage',
@@ -20,7 +20,7 @@ export const CreateTeamAccessTokenSchema = object({
     nonEmpty('Please provide a name for your workspace'),
     maxLength(32, 'Name must be less than 32 characters'),
   ),
-  capabilities: enum_(Capability, 'Please select a valid capability'),
+  capabilities: enum_(ApiKeyCapability, 'Please select a valid capability'),
 })
 
 export type CreateTeamAccessTokenDto = InferInput<typeof CreateTeamAccessTokenSchema>

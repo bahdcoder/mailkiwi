@@ -48,7 +48,7 @@ function SettingsLayout({ children }: PropsWithChildren) {
       </div>
 
       <div className="flex flex-col flex-grow">
-        <div className="flex grow w-full h-[calc(100vh-1rem)] box-border border kb-border-tertiary rounded-xl kb-background-hover">
+        <div className="flex grow w-full h-[calc(100vh-1rem)] box-border border kb-border-tertiary rounded-xl kb-background-secondary">
           {children}
         </div>
       </div>
