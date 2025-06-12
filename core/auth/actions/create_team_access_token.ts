@@ -10,7 +10,7 @@ export class CreateTeamAccessTokenAction {
     const { apiKey } = await this.accessTokenRepository.create(
       teamId,
       'team',
-      [data?.capabilities] as unknown as 'full' | 'send' | 'engage'[],
+      [data?.capabilities] as ('full' | 'send' | 'engage')[],
       data?.name,
     )
 

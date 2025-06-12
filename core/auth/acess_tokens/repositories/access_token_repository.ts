@@ -77,7 +77,7 @@ export class AccessTokenRepository extends ScryptTokenRepository {
   async create(
     ownerId: string,
     type: 'user' | 'team',
-    capabilities: 'full' | 'send' | 'engage'[],
+    capabilities: ('full' | 'send' | 'engage')[],
     name = 'onboarding',
   ) {
     const accessKey = this.getRandomBytes()

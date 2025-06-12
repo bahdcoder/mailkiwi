@@ -3,7 +3,6 @@
 import { InfisicalSDK } from '@infisical/sdk'
 import { spawn } from 'node:child_process'
 import consola from 'consola'
-import { writeFileSync } from 'node:fs'
 
 /**
  * ArgumentParser class for parsing command-line arguments.
@@ -363,14 +362,6 @@ class Application {
       })
 
       const env = this.environmentManager.secretsToEnv(secrets)
-
-      let q = ''
-
-      for (const s of secrets) {
-        q += `${s.secretKey}=${s.secretValue}\n`
-      }
-
-      writeFileSync('.env', q)
 
       exitCode = await this.environmentManager.executeCommand(
         this.config.command,
