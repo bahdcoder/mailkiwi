@@ -7,5 +7,3 @@ export const DeleteTeamAccessTokenSchema = object({
     nonEmpty('API key not found.'),
   ),
 })
-
-export type DeleteTeamAccessTokenDto = InferInput<typeof DeleteTeamAccessTokenSchema>

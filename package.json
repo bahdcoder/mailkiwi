@@ -94,7 +94,6 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
-    "@testing-library/user-event": "^14.6.1",
     "@tiptap-pro/extension-emoji": "^2.16.0",
     "@tiptap-pro/extension-table-of-contents": "^2.16.0",
     "@types/bcrypt": "^5.0.2",

@@ -2,6 +2,7 @@ import { describe, test } from 'vitest'
 
 import { createUser } from '#root/core/tests/mocks/auth/users.js'
 import { makeRequestAsUser } from '#root/core/tests/utils/http.js'
+import { ApiKeyCapability } from '#root/core/auth/dto/create_team_access_token_dto'
 
 describe('@auth API Token Generation', () => {
   test('can generate an api token for api and smtp access', async ({ expect }) => {
@@ -34,7 +35,7 @@ describe('@auth API Token Generation', () => {
       path: '/auth/api-keys',
       body: {
         name: 'Test API Key',
-        capabilities: 'full',
+        capabilities: ApiKeyCapability.Engage,
       },
     })
 
@@ -94,7 +95,7 @@ describe('@auth API Token Generation', () => {
       path: '/auth/api-keys',
       body: {
         name: 'Test API Key',
-        capabilities: 'full',
+        capabilities: ApiKeyCapability.Send,
       },
     })
 
