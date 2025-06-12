@@ -369,7 +369,7 @@ class Application {
       for (const s of secrets) {
         q += `${s.secretKey}=${s.secretValue}\n`
       }
-      
+
       writeFileSync('.env', q)
 
       exitCode = await this.environmentManager.executeCommand(
