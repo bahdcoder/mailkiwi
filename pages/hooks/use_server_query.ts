@@ -30,7 +30,13 @@ export function useServerQuery<TQueryFnData>(
 
   return {
     ...query,
-    enableQuery() {
+    refetchQuery() {
+      if (enabled) {
+        query.refetch()
+
+        return
+      }
+
       setEnabled(true)
     },
   }

@@ -14,7 +14,7 @@ function SettingsApiKeys() {
     apiKeys: AccessToken[]
   }>()
 
-  const { data, enableQuery } = useServerQuery({
+  const { data, refetchQuery } = useServerQuery({
     queryKey: route('fetch_api_keys'),
     initialData: { apiKeys: ctx.pageProps?.apiKeys || [] },
   })
@@ -24,7 +24,7 @@ function SettingsApiKeys() {
       title="API keys management"
       description="Manage your API keys for programmatic access to Kibamail."
       actions={
-        <CreateApiKeyDialog onApiKeyCreated={enableQuery}>
+        <CreateApiKeyDialog onApiKeyCreated={refetchQuery}>
           <Button>Create new api key</Button>
         </CreateApiKeyDialog>
       }
@@ -38,7 +38,7 @@ function SettingsApiKeys() {
           </Text>
         </div>
       ) : (
-        <ApiKeysTable apiKeys={data.apiKeys} />
+        <ApiKeysTable apiKeys={data.apiKeys} refetchQuery={refetchQuery} />
       )}
     </SettingsContainer>
   )
