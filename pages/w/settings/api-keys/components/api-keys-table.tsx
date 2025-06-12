@@ -10,14 +10,12 @@ import {
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime.js'
 import * as React from 'react'
-import { toast } from 'sonner'
 
 import type { AccessToken } from '#root/database/database_schema_types.js'
-import { DeleteConfirmationDialog } from '#root/pages/components/dialogs/delete-confirmation-dialog.js'
 import * as Dropdown from '#root/pages/components/dropdown/dropdown.js'
-import { MoreVertIcon } from '#root/pages/components/icons/more-vert.svg.js'
-import { useServerFormMutation } from '#root/pages/hooks/use_server_form_mutation.js'
-import * as Table from '#root/pages/w/engage/contacts/components/table.js'
+import { MoreVertIcon } from '#root/pages/components/icons/more-vert.svg.jsx'
+import { useDeleteEntity } from '#root/pages/hooks/use_delete_entity.jsx'
+import * as Table from '#root/pages/w/engage/contacts/components/table.jsx'
 
 dayjs.extend(relativeTime)
 
@@ -36,7 +34,7 @@ interface ApiKeyActionsMenuProps {
 function ApiKeyActionsMenu({ apiKey, onDeleteClick }: ApiKeyActionsMenuProps) {
   const [dropdownOpen, setDropdownOpen] = React.useState(false)
 
-  const handleDeleteClick = () => {
+  const onDelete = () => {
     onDeleteClick(apiKey)
     setDropdownOpen(false)
   }
@@ -51,7 +49,7 @@ function ApiKeyActionsMenu({ apiKey, onDeleteClick }: ApiKeyActionsMenuProps) {
 
       <Dropdown.Content align="end">
         <Dropdown.Item
-          onSelect={handleDeleteClick}
+          onSelect={onDelete}
           className="p-2 flex items-center hover:bg-(--background-secondary) rounded-lg cursor-pointer text-red-600 hover:text-red-700"
         >
           <Text>Delete</Text>
@@ -62,36 +60,11 @@ function ApiKeyActionsMenu({ apiKey, onDeleteClick }: ApiKeyActionsMenuProps) {
 }
 
 export function ApiKeysTable({ apiKeys, refetchQuery }: ApiKeysTableProps) {
-  const [apiKeyToDelete, setApiKeyToDelete] = React.useState<AccessToken | null>(null)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
-
-  const handleDeleteClick = React.useCallback((apiKey: AccessToken) => {
-    setApiKeyToDelete(apiKey)
-    setIsDeleteDialogOpen(true)
-  }, [])
-
-  const deleteApiKeyMutation = useServerFormMutation<{ id: string }>({
-    method: 'DELETE',
-    action: `/auth/api-keys/${apiKeyToDelete?.id}`,
-    onSuccess() {
-      toast.success(
-        `API key "${apiKeyToDelete?.name || 'Untitled'}" has been deleted successfully.`,
-      )
-      setIsDeleteDialogOpen(false)
-      setApiKeyToDelete(null)
-
-      refetchQuery()
-    },
-    onError() {
-      toast.error('Failed to delete API key. Please try again.')
-    },
+  const { onDelete, deleteDialog } = useDeleteEntity<AccessToken>({
+    entity: 'API key',
+    route: '/auth/api-keys',
+    refetchQuery,
   })
-
-  const handleDeleteConfirm = () => {
-    if (apiKeyToDelete) {
-      deleteApiKeyMutation.mutate({})
-    }
-  }
 
   const columns = React.useMemo(
     () => [
@@ -181,10 +154,7 @@ export function ApiKeysTable({ apiKeys, refetchQuery }: ApiKeysTableProps) {
         id: 'actions',
         header: () => null,
         cell: (info) => (
-          <ApiKeyActionsMenu
-            apiKey={info.row.original}
-            onDeleteClick={handleDeleteClick}
-          />
+          <ApiKeyActionsMenu apiKey={info.row.original} onDeleteClick={onDelete} />
         ),
         meta: {
           style: {
@@ -194,7 +164,7 @@ export function ApiKeysTable({ apiKeys, refetchQuery }: ApiKeysTableProps) {
         },
       }),
     ],
-    [handleDeleteClick],
+    [onDelete],
   )
 
   const table = useReactTable({
@@ -243,16 +213,7 @@ export function ApiKeysTable({ apiKeys, refetchQuery }: ApiKeysTableProps) {
       </div>
 
       {/* Shared Delete Confirmation Dialog */}
-      <DeleteConfirmationDialog
-        open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-        itemName={apiKeyToDelete?.name || 'Untitled'}
-        itemType="API key"
-        onConfirm={handleDeleteConfirm}
-        isLoading={deleteApiKeyMutation.isPending}
-      >
-        <div />
-      </DeleteConfirmationDialog>
+      {deleteDialog}
     </>
   )
 }
