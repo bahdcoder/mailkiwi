@@ -1,6 +1,5 @@
 import { TeamRepository } from '#root/core/teams/repositories/team_repository.js'
 
-import { CreateTeamAccessTokenAction } from '#root/core/auth/actions/create_team_access_token.js'
 import { LoginUserSchema } from '#root/core/auth/users/dto/login_user_dto.js'
 import { UserRepository } from '#root/core/auth/users/repositories/user_repository.js'
 
@@ -14,16 +13,14 @@ import { container } from '#root/core/utils/typi.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller'
 
 /**
- * AuthController handles user authentication and API key management.
+ * AuthController handles user authentication.
  *
  * This controller is responsible for core authentication functionality including:
  * 1. User login with email/password credentials
  * 2. User logout and session management
- * 3. API key generation for programmatic access
  *
  * The controller integrates with Kibamail's authentication system to validate credentials,
- * manage user sessions, and provide secure access to the application. It supports both
- * browser-based authentication (login/logout) and programmatic API access (API keys).
+ * manage user sessions, and provide secure access to the application.
  */
 export class AuthController extends BaseController {
   constructor(
@@ -44,39 +41,6 @@ export class AuthController extends BaseController {
         middleware: [],
       },
     )
-
-    // Define routes for API key management
-    this.app.defineRoutes([['POST', '/api-keys', this.createApiKey.bind(this)]], {
-      prefix: 'auth',
-    })
-  }
-
-  /**
-   * Creates a new API key for the current team.
-   *
-   * This endpoint generates a secure API key that can be used for programmatic
-   * access to the Kibamail API. The API key is associated with the current team
-   * and inherits the permissions of the team.
-   *
-   * API keys are essential for integrating Kibamail with external systems and
-   * automating workflows without requiring user interaction. They're commonly used for:
-   * - Custom integrations with other marketing tools
-   * - Automated data imports/exports
-   * - Scheduled campaign management
-   * - Webhook authentication
-   *
-   * @param ctx - The Hono request context containing the current team
-   * @returns JSON response containing the newly generated API key
-   */
-  async createApiKey(ctx: HonoContext) {
-    // Generate a new API key for the current team
-    const { apiKey } = await container
-      .make(CreateTeamAccessTokenAction)
-      .handle(ctx.get('team').id)
-
-    // Return the API key to the client
-    // Note: This is the only time the full API key will be visible
-    return ctx.json({ apiKey })
   }
 
   /**

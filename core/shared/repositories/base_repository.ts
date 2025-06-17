@@ -15,6 +15,7 @@ import { cuid } from '#root/core/shared/utils/cuid/cuid.js'
 import { Encryption } from '#root/core/shared/utils/encryption/encryption.js'
 
 import { container } from '#root/core/utils/typi.js'
+import { E_OPERATION_FAILED } from '#root/core/http/responses/errors'
 
 type ObjectWithNullable<T> = { [K in keyof T]: T[K] | null | undefined }
 
@@ -56,7 +57,12 @@ export class BaseRepository {
     ) as T
   }
 
-  crud<Table extends AnyMySqlTable & { id: AnyMySqlColumn }>(table: Table) {
+  crud<
+    Table extends AnyMySqlTable & {
+      id: AnyMySqlColumn
+      teamId?: AnyMySqlColumn
+    },
+  >(table: Table) {
     const database = makeDatabase()
 
     const self = this
@@ -76,6 +82,16 @@ export class BaseRepository {
       },
       async findAll(conditions?: SQLWrapper) {
         return database.select().from(table).where(and(conditions))
+      },
+      async findAllForTeam(teamId: string, conditions?: SQLWrapper) {
+        if (table.teamId) {
+          return database
+            .select()
+            .from(table)
+            .where(and(eq(table.teamId, teamId), and(conditions)))
+        }
+
+        throw E_OPERATION_FAILED(`Table ${table._?.name} does not have a teamId column.`)
       },
       async bulkCreate(payload: Table['$inferInsert'][]) {
         const values = payload.map((value) => ({

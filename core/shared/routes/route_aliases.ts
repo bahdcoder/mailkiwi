@@ -14,6 +14,10 @@ function send(path: string) {
   return w(`send/${path}`)
 }
 
+function settings(path: string) {
+  return w(`settings/${path}`)
+}
+
 export const aliases = {
   // email/password registration
   auth_register: '/auth/register',
@@ -101,7 +105,14 @@ export const aliases = {
   // flows
   add_automation_step: '/audiences/:audienceId/automations/:automationId/steps',
 
+  // send
   send_onboarding: send('onboarding'),
+
+  // settings
+  settings_account: settings('account'),
+  settings_api_keys: settings('api-keys'),
+  create_api_key: '/auth/api-keys',
+  fetch_api_keys: '/auth/api-keys',
 } as const
 
 export function route(

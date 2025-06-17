@@ -1,4 +1,5 @@
 import { type UseQueryOptions, useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 
 export function useServerQuery<TQueryFnData>(
   queryOptions: Omit<UseQueryOptions<TQueryFnData, unknown, TQueryFnData>, 'queryKey'> & {
@@ -7,8 +8,9 @@ export function useServerQuery<TQueryFnData>(
   },
 ) {
   const { queryKey, ...restQueryOptions } = queryOptions
+  const [enabled, setEnabled] = useState(false)
 
-  return useQuery({
+  const query = useQuery({
     queryKey: [queryKey],
     async queryFn() {
       const response = await fetch(queryKey, {
@@ -22,7 +24,20 @@ export function useServerQuery<TQueryFnData>(
 
       return json.payload
     },
-    enabled: false,
+    enabled,
     ...restQueryOptions,
   })
+
+  return {
+    ...query,
+    refetchQuery() {
+      if (enabled) {
+        query.refetch()
+
+        return
+      }
+
+      setEnabled(true)
+    },
+  }
 }

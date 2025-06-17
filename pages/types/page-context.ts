@@ -30,10 +30,6 @@ export interface DefaultPageProps<T = object> {
   flash: string
 }
 
-export type DefaultPageContext = {
-  pageProps: DefaultPageProps
-}
-
 declare global {
   namespace Vike {
     interface PageContext extends DefaultPageProps {}

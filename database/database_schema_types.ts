@@ -83,6 +83,7 @@ export type Segment = typeof segments.$inferSelect
 export type Product = typeof products.$inferSelect
 export type Form = typeof forms.$inferSelect
 export type FormResponse = typeof formResponses.$inferSelect
+export type AccessToken = typeof accessTokens.$inferSelect
 
 export type InsertSegment = typeof segments.$inferInsert
 export type InsertTag = typeof tags.$inferInsert

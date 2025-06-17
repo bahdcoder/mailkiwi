@@ -41,10 +41,7 @@ function SendOnboardingPage() {
             title="Send a test email"
             description={`We'll send an email to your registered email address using your created api key.`}
           >
-            <SdkCodeSnippets
-              footer={<Button>Send email</Button>}
-              sdks={sdks}
-            ></SdkCodeSnippets>
+            <SdkCodeSnippets footer={<Button>Send email</Button>} sdks={sdks} />
           </OnboardingStep>
 
           <OnboardingStep

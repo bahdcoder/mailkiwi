@@ -30,10 +30,14 @@ export class AccessTokenRepository extends ScryptTokenRepository {
   // Do not change any of the below protected values, as it will break all existing and generated access tokens
   protected opaqueAccessTokenPrefix = 'kbt_'
   protected keyPairDelimiter = ':'
-  protected bytesSize = 16
+  protected bytesSize = 8
 
   constructor(protected database: DrizzleClient = makeDatabase()) {
     super()
+  }
+
+  accesstokens() {
+    return this.crud(accessTokens)
   }
 
   /**
@@ -70,42 +74,36 @@ export class AccessTokenRepository extends ScryptTokenRepository {
    * @param capabilities - The permissions granted to this token
    * @returns Object containing the API key, name, and ID
    */
-  async create(ownerId: string, type: 'user' | 'team', capabilities: string[]) {
-    // Generate random values for the access key and secret
+  async create(
+    ownerId: string,
+    type: 'user' | 'team',
+    capabilities: ('full' | 'send' | 'engage')[],
+    name = 'onboarding',
+  ) {
     const accessKey = this.getRandomBytes()
     const accessSecret = this.getRandomBytes()
 
-    // Hash the secret for secure storage
-    // The original secret is never stored in the database
     const hashedAccessSecret = await this.hash(accessSecret)
 
-    // Create a human-readable name from the first 8 characters of the access key
-    // This helps users identify their tokens in the UI
-    const name = accessKey.slice(0, 8)
-
-    // Combine the access key and secret into a single token
-    // This is the value that will be provided to the client
     const keyPairBase64 = Buffer.from(
       `${accessKey}${this.keyPairDelimiter}${accessSecret}`,
     ).toString('base64')
 
-    // Add the prefix to identify this as a Kibamail token
     const apiKey = `${this.opaqueAccessTokenPrefix}${keyPairBase64}`
 
-    // Generate a unique ID for the token record
+    const preview = apiKey.slice(0, 8)
+
     const id = this.cuid()
 
-    // Store the token information in the database
-    // Note that we store the hashed secret, not the original secret
     await this.database.insert(accessTokens).values({
       ...(type === 'user' ? { userId: ownerId } : { teamId: ownerId }),
       name,
+      preview,
       accessKey,
       capabilities,
       accessSecret: hashedAccessSecret,
     })
 
-    // Return the API key and metadata to the caller
     return {
       apiKey,
       name,

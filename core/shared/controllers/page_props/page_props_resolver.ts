@@ -7,6 +7,7 @@ import { BroadcastsPropsResolver } from '#root/core/shared/controllers/page_prop
 import { EngageContactsPropsResolver } from '#root/core/shared/controllers/page_props/props_resolvers/engage_contacts_props_resolver.js'
 import { EngagePropsResolver } from '#root/core/shared/controllers/page_props/props_resolvers/engage_props_resolver.js'
 import { FlowComposerPropsResolver } from '#root/core/shared/controllers/page_props/props_resolvers/flow_composer_props_resolver.js'
+import { SettingsApiKeysPropsResolver } from './props_resolvers/settings/api_keys_props_resolver.js'
 
 export class PagePropsResolver {
   protected resolvers: Array<{
@@ -17,6 +18,9 @@ export class PagePropsResolver {
     EngagePropsResolver,
     EngageContactsPropsResolver,
     FlowComposerPropsResolver,
+
+    // settings
+    SettingsApiKeysPropsResolver,
   ]
 
   handle = async (ctx: HonoContext, defaultPageProps: DefaultPageProps) => {
