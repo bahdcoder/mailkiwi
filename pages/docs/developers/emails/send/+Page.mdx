@@ -1,0 +1,252 @@
+# Send emails
+
+Send transactional emails programmatically using KibaMail's API. This guide covers basic email sending, attachments, scheduling, tagging, and custom headers.
+
+## 1. Basic Email Sending
+
+Send a simple email with required fields. You'll need your API token and the recipient's email address.
+
+### Required Parameters
+
+- `from` - Sender email address (must be verified in your KibaMail account)
+- `to` - Recipient email address
+- `subject` - Email subject line
+- `html` or `text` - Email content (at least one is required)
+
+import { SdkCodeSnippets } from '#root/pages/components/sdk-code-snippets/sdk-code-snippets'
+
+<SdkCodeSnippets
+  sdks={[
+    {
+      name: 'Node.js',
+      code: `<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token punctuation">{</span> KibaMail <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'@kibamail/sdk'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> kibamail <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KibaMail</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">apiKey</span><span class="token operator">:</span> <span class="token string">'your-api-key-here'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> kibamail<span class="token punctuation">.</span>emails<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">from</span><span class="token operator">:</span> <span class="token string">'sender@yourdomain.com'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">to</span><span class="token operator">:</span> <span class="token string">'recipient@example.com'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">subject</span><span class="token operator">:</span> <span class="token string">'Welcome to KibaMail!'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">html</span><span class="token operator">:</span> <span class="token string">'&lt;h1&gt;Hello World!&lt;/h1&gt;&lt;p&gt;This is your first email.&lt;/p&gt;'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">text</span><span class="token operator">:</span> <span class="token string">'Hello World! This is your first email.'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Email sent:'</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>`
+    },
+    {
+      name: 'Python',
+      code: `<pre class="language-python"><code class="language-python"><span class="token keyword">from</span> kibamail <span class="token keyword">import</span> KibaMail
+
+client <span class="token operator">=</span> KibaMail<span class="token punctuation">(</span>api_key<span class="token operator">=</span><span class="token string">'your-api-key-here'</span><span class="token punctuation">)</span>
+
+result <span class="token operator">=</span> client<span class="token punctuation">.</span>emails<span class="token punctuation">.</span>send<span class="token punctuation">(</span>
+    <span class="token builtin">from</span><span class="token operator">=</span><span class="token string">'sender@yourdomain.com'</span><span class="token punctuation">,</span>
+    to<span class="token operator">=</span><span class="token string">'recipient@example.com'</span><span class="token punctuation">,</span>
+    subject<span class="token operator">=</span><span class="token string">'Welcome to KibaMail!'</span><span class="token punctuation">,</span>
+    html<span class="token operator">=</span><span class="token string">'&lt;h1&gt;Hello World!&lt;/h1&gt;&lt;p&gt;This is your first email.&lt;/p&gt;'</span><span class="token punctuation">,</span>
+    text<span class="token operator">=</span><span class="token string">'Hello World! This is your first email.'</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Email sent: </span><span class="token interpolation"><span class="token punctuation">{</span>result<span class="token punctuation">.</span><span class="token builtin">id</span><span class="token punctuation">}</span></span><span class="token string">'</span></span><span class="token punctuation">)</span></code></pre>`
+    },
+    {
+      name: 'PHP',
+      code: `<pre class="language-php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+<span class="token keyword">require_once</span> <span class="token string single-quoted-string">'vendor/autoload.php'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">use</span> <span class="token package">KibaMail<span class="token punctuation">\\</span>Client</span><span class="token punctuation">;</span>
+
+<span class="token variable">$kibamail</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Client</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'your-api-key-here'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token variable">$result</span> <span class="token operator">=</span> <span class="token variable">$kibamail</span><span class="token operator">-></span><span class="token property">emails</span><span class="token operator">-></span><span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token string single-quoted-string">'from'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'sender@yourdomain.com'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'to'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'recipient@example.com'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'subject'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'Welcome to KibaMail!'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'html'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'&lt;h1&gt;Hello World!&lt;/h1&gt;&lt;p&gt;This is your first email.&lt;/p&gt;'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'text'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'Hello World! This is your first email.'</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">echo</span> <span class="token string double-quoted-string">"Email sent: "</span> <span class="token operator">.</span> <span class="token variable">$result</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span></code></pre>`
+    },
+    {
+      name: 'cURL',
+      code: `<pre class="language-bash"><code class="language-bash"><span class="token function">curl</span> <span class="token parameter variable">-X</span> POST https://api.kibamail.com/v1/emails/send <span class="token punctuation">\\</span>
+  <span class="token parameter variable">-H</span> <span class="token string">"Authorization: Bearer your-api-key-here"</span> <span class="token punctuation">\\</span>
+  <span class="token parameter variable">-H</span> <span class="token string">"Content-Type: application/json"</span> <span class="token punctuation">\\</span>
+  <span class="token parameter variable">-d</span> <span class="token string">'{
+    "from": "sender@yourdomain.com",
+    "to": "recipient@example.com",
+    "subject": "Welcome to KibaMail!",
+    "html": "&lt;h1&gt;Hello World!&lt;/h1&gt;&lt;p&gt;This is your first email.&lt;/p&gt;",
+    "text": "Hello World! This is your first email."
+  }'</span></code></pre>`
+    }
+  ]}
+  footer="Replace 'your-api-key-here' with your actual KibaMail API key from your dashboard."
+/>
+
+## 2. Sending with Attachments
+
+Attach files to your emails by providing file data as base64 encoded strings. Supported file types include PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, and GIF with a maximum size of 25MB per attachment.
+
+<SdkCodeSnippets
+  sdks={[
+    {
+      name: 'Node.js',
+      code: `<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> <span class="token punctuation">{</span> KibaMail <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'@kibamail/sdk'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> kibamail <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KibaMail</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">apiKey</span><span class="token operator">:</span> <span class="token string">'your-api-key-here'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Read file and convert to base64</span>
+<span class="token keyword">const</span> fileContent <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">readFileSync</span><span class="token punctuation">(</span><span class="token string">'./document.pdf'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> base64Content <span class="token operator">=</span> fileContent<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">'base64'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> kibamail<span class="token punctuation">.</span>emails<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">from</span><span class="token operator">:</span> <span class="token string">'sender@yourdomain.com'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">to</span><span class="token operator">:</span> <span class="token string">'recipient@example.com'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">subject</span><span class="token operator">:</span> <span class="token string">'Document Attached'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">html</span><span class="token operator">:</span> <span class="token string">'&lt;p&gt;Please find the attached document.&lt;/p&gt;'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">attachments</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token literal-property property">filename</span><span class="token operator">:</span> <span class="token string">'document.pdf'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">content</span><span class="token operator">:</span> base64Content<span class="token punctuation">,</span>
+      <span class="token literal-property property">contentType</span><span class="token operator">:</span> <span class="token string">'application/pdf'</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>`
+    },
+    {
+      name: 'Python',
+      code: `<pre class="language-python"><code class="language-python"><span class="token keyword">import</span> base64
+<span class="token keyword">from</span> kibamail <span class="token keyword">import</span> KibaMail
+
+client <span class="token operator">=</span> KibaMail<span class="token punctuation">(</span>api_key<span class="token operator">=</span><span class="token string">'your-api-key-here'</span><span class="token punctuation">)</span>
+
+<span class="token comment"># Read and encode file</span>
+<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'document.pdf'</span><span class="token punctuation">,</span> <span class="token string">'rb'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token builtin">file</span><span class="token punctuation">:</span>
+    file_content <span class="token operator">=</span> base64<span class="token punctuation">.</span>b64encode<span class="token punctuation">(</span><span class="token builtin">file</span><span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">'utf-8'</span><span class="token punctuation">)</span>
+
+result <span class="token operator">=</span> client<span class="token punctuation">.</span>emails<span class="token punctuation">.</span>send<span class="token punctuation">(</span>
+    <span class="token builtin">from</span><span class="token operator">=</span><span class="token string">'sender@yourdomain.com'</span><span class="token punctuation">,</span>
+    to<span class="token operator">=</span><span class="token string">'recipient@example.com'</span><span class="token punctuation">,</span>
+    subject<span class="token operator">=</span><span class="token string">'Document Attached'</span><span class="token punctuation">,</span>
+    html<span class="token operator">=</span><span class="token string">'&lt;p&gt;Please find the attached document.&lt;/p&gt;'</span><span class="token punctuation">,</span>
+    attachments<span class="token operator">=</span><span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            <span class="token string">'filename'</span><span class="token punctuation">:</span> <span class="token string">'document.pdf'</span><span class="token punctuation">,</span>
+            <span class="token string">'content'</span><span class="token punctuation">:</span> file_content<span class="token punctuation">,</span>
+            <span class="token string">'content_type'</span><span class="token punctuation">:</span> <span class="token string">'application/pdf'</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">)</span></code></pre>`
+    },
+    {
+      name: 'PHP',
+      code: `<pre class="language-php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+<span class="token keyword">require_once</span> <span class="token string single-quoted-string">'vendor/autoload.php'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">use</span> <span class="token package">KibaMail<span class="token punctuation">\\</span>Client</span><span class="token punctuation">;</span>
+
+<span class="token variable">$kibamail</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Client</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'your-api-key-here'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Read and encode file</span>
+<span class="token variable">$fileContent</span> <span class="token operator">=</span> <span class="token function">base64_encode</span><span class="token punctuation">(</span><span class="token function">file_get_contents</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'document.pdf'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token variable">$result</span> <span class="token operator">=</span> <span class="token variable">$kibamail</span><span class="token operator">-></span><span class="token property">emails</span><span class="token operator">-></span><span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token string single-quoted-string">'from'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'sender@yourdomain.com'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'to'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'recipient@example.com'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'subject'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'Document Attached'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'html'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'&lt;p&gt;Please find the attached document.&lt;/p&gt;'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'attachments'</span> <span class="token operator">=></span> <span class="token punctuation">[</span>
+        <span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'filename'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'document.pdf'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'content'</span> <span class="token operator">=></span> <span class="token variable">$fileContent</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'content_type'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'application/pdf'</span>
+        <span class="token punctuation">]</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span></code></pre>`
+    }
+  ]}
+  footer="Supported file types: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, GIF. Max size: 25MB per attachment."
+/>
+
+## 3. Schedule an Email
+
+Schedule emails to be sent at a specific time in the future. Use the `scheduledAt` parameter with an ISO 8601 timestamp.
+
+<SdkCodeSnippets
+  sdks={[
+    {
+      name: 'Node.js',
+      code: `<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token punctuation">{</span> KibaMail <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'@kibamail/sdk'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> kibamail <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KibaMail</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">apiKey</span><span class="token operator">:</span> <span class="token string">'your-api-key-here'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Schedule email for 1 hour from now</span>
+<span class="token keyword">const</span> scheduledTime <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span>Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">60</span> <span class="token operator">*</span> <span class="token number">60</span> <span class="token operator">*</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> kibamail<span class="token punctuation">.</span>emails<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">from</span><span class="token operator">:</span> <span class="token string">'sender@yourdomain.com'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">to</span><span class="token operator">:</span> <span class="token string">'recipient@example.com'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">subject</span><span class="token operator">:</span> <span class="token string">'Scheduled Email'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">html</span><span class="token operator">:</span> <span class="token string">'&lt;p&gt;This email was scheduled to be sent later.&lt;/p&gt;'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">scheduledAt</span><span class="token operator">:</span> scheduledTime<span class="token punctuation">.</span><span class="token function">toISOString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Email scheduled:'</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>`
+    },
+    {
+      name: 'Python',
+      code: `<pre class="language-python"><code class="language-python"><span class="token keyword">from</span> datetime <span class="token keyword">import</span> datetime<span class="token punctuation">,</span> timedelta
+<span class="token keyword">from</span> kibamail <span class="token keyword">import</span> KibaMail
+
+client <span class="token operator">=</span> KibaMail<span class="token punctuation">(</span>api_key<span class="token operator">=</span><span class="token string">'your-api-key-here'</span><span class="token punctuation">)</span>
+
+<span class="token comment"># Schedule email for 1 hour from now</span>
+scheduled_time <span class="token operator">=</span> datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> timedelta<span class="token punctuation">(</span>hours<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+result <span class="token operator">=</span> client<span class="token punctuation">.</span>emails<span class="token punctuation">.</span>send<span class="token punctuation">(</span>
+    <span class="token builtin">from</span><span class="token operator">=</span><span class="token string">'sender@yourdomain.com'</span><span class="token punctuation">,</span>
+    to<span class="token operator">=</span><span class="token string">'recipient@example.com'</span><span class="token punctuation">,</span>
+    subject<span class="token operator">=</span><span class="token string">'Scheduled Email'</span><span class="token punctuation">,</span>
+    html<span class="token operator">=</span><span class="token string">'&lt;p&gt;This email was scheduled to be sent later.&lt;/p&gt;'</span><span class="token punctuation">,</span>
+    scheduled_at<span class="token operator">=</span>scheduled_time<span class="token punctuation">.</span>isoformat<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Email scheduled: </span><span class="token interpolation"><span class="token punctuation">{</span>result<span class="token punctuation">.</span><span class="token builtin">id</span><span class="token punctuation">}</span></span><span class="token string">'</span></span><span class="token punctuation">)</span></code></pre>`
+    },
+    {
+      name: 'PHP',
+      code: `<pre class="language-php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+<span class="token keyword">require_once</span> <span class="token string single-quoted-string">'vendor/autoload.php'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">use</span> <span class="token package">KibaMail<span class="token punctuation">\\</span>Client</span><span class="token punctuation">;</span>
+
+<span class="token variable">$kibamail</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Client</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'your-api-key-here'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Schedule email for 1 hour from now</span>
+<span class="token variable">$scheduledTime</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">DateTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">DateInterval</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'PT1H'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token variable">$result</span> <span class="token operator">=</span> <span class="token variable">$kibamail</span><span class="token operator">-></span><span class="token property">emails</span><span class="token operator">-></span><span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token string single-quoted-string">'from'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'sender@yourdomain.com'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'to'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'recipient@example.com'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'subject'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'Scheduled Email'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'html'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'&lt;p&gt;This email was scheduled to be sent later.&lt;/p&gt;'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'scheduled_at'</span> <span class="token operator">=></span> <span class="token variable">$scheduledTime</span><span class="token operator">-></span><span class="token function">format</span><span class="token punctuation">(</span><span class="token class-name">DateTime</span><span class="token operator">::</span><span class="token constant">ISO8601</span><span class="token punctuation">)</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">echo</span> <span class="token string double-quoted-string">"Email scheduled: "</span> <span class="token operator">.</span> <span class="token variable">$result</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span></code></pre>`
+    }
+  ]}
+  footer="Scheduled emails can be cancelled before they are sent using the email ID returned from this API call."
+/>

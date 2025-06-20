@@ -1,8 +1,9 @@
+import vike from 'vike/plugin'
+import mdx from '@mdx-js/rollup'
 import { resolve } from 'node:path'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 // import { sentryVitePlugin } from '@sentry/vite-plugin'
-import vike from 'vike/plugin'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
@@ -10,6 +11,7 @@ export default defineConfig({
     vike(),
     react(),
     tailwindcss(),
+    mdx(),
     // ...(mode === 'build'
     //   ? [
     //       sentryVitePlugin({

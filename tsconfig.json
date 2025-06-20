@@ -24,6 +24,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["./core/**/*.ts", "./core/**/*.tsx", "./**/*.ts", "./**/*.tsx", "env.d.ts"],
+  "include": [
+    "./core/**/*.ts",
+    "./core/**/*.tsx",
+    "./**/*.ts",
+    "./**/*.tsx",
+    "env.d.ts",
+    "./**/*.mdx"
+  ],
   "exclude": ["node_modules", "build", "vitest.config.ts", "vite.config.ts"]
 }
