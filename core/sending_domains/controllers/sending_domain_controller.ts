@@ -52,6 +52,6 @@ export class SendingDomainController extends BaseController {
       .make(CreateSendingDomainAction)
       .handle(data, team.id)
 
-    return ctx.json(sendingDomain)
+    return this.response(ctx).json(sendingDomain).send()
   }
 }

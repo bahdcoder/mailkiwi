@@ -135,6 +135,11 @@ export const appEnv = makeExtraAppConfigurations(
       STORJ_ACCESS_GRANT: str(),
       STORJ_ASSETS_PUBLIC_URL: str(),
       ASSETS_URL: str(),
+
+      // namecheap
+      NAMECHEAP_API_KEY: str(),
+      NAMECHEAP_API_USERNAME: str(),
+      NAMECHEAP_API_IP_ADDRESS: str(),
     }),
   ),
   {

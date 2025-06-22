@@ -3,6 +3,7 @@ import type React from 'react'
 import { Toaster } from 'sonner'
 import { ErrorBoundary } from '@sentry/react'
 import { usePageContext } from 'vike-react/usePageContext'
+import { DeveloperTools } from './components/developer-tools/developer-tools.jsx'
 
 /**
  * Error fallback component displayed when an error occurs in the application.
@@ -40,6 +41,7 @@ function RootLayout({ children }: React.PropsWithChildren) {
           {children}
         </div>
       </ErrorBoundary>
+      <DeveloperTools />
     </>
   )
 }

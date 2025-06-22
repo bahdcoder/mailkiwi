@@ -2,8 +2,6 @@ import { SendingSourceRepository } from '#root/core/settings/repositories/sendin
 
 import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository.js'
 
-import { SendingSource } from '#root/database/database_schema_types.js'
-
 import { container } from '#root/core/utils/typi.js'
 
 export class AssignSendingSourceToSendingDomainAction {

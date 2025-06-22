@@ -91,8 +91,8 @@ export function ApiKeysTable({ apiKeys, refetchQuery }: ApiKeysTableProps) {
           </Text>
         ),
         cell: (info) => (
-          <Badge variant="neutral" className="font-mono text-xs">
-            {info.getValue()}••••••••••••••••••••
+          <Badge variant="neutral" className="font-mono text-xs !w-[350px] inline-block">
+            {info.getValue()}•••••••••••••••••••••••••••••
           </Badge>
         ),
         meta: {

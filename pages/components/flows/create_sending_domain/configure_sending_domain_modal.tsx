@@ -1,0 +1,78 @@
+import * as Dialog from '@kibamail/owly/dialog'
+import { Button } from '@kibamail/owly/button'
+import { Text } from '@kibamail/owly/text'
+import type React from 'react'
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
+import { CancelIcon } from '#root/pages/components/icons/cancel.svg.jsx'
+import { Heading } from '@kibamail/owly/heading'
+import { Badge } from '@kibamail/owly/badge'
+import { SlashesDivider } from '../compose_broadcast/components/slashes_divider.jsx'
+
+interface ConfigureSendingDomainProps {
+  open: boolean
+  sendingDomainId: string
+  onOpenChange: (open: boolean) => void
+}
+
+export function ConfigureSendingDomain({
+  open,
+  onOpenChange,
+  sendingDomainId,
+}: ConfigureSendingDomainProps) {
+  return (
+    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Content className="max-w-none max-h-none top-0 left-0 transform-none rounded-none w-full overflow-auto">
+        <VisuallyHidden>
+          <Dialog.Header>
+            <Dialog.Title>Configure sending domain</Dialog.Title>
+            <Dialog.Description>
+              Configure DNS records for your sending domain
+            </Dialog.Description>
+          </Dialog.Header>
+        </VisuallyHidden>
+
+        <div className="w-full h-18 flex items-center justify-end px-6 lg:px-12">
+          <Dialog.Close asChild>
+            <Button variant="secondary">
+              <CancelIcon />
+            </Button>
+          </Dialog.Close>
+        </div>
+
+        <div className="w-full max-w-3xl mt-12 mx-auto">
+          <Heading>Configure your domain name</Heading>
+          <Text className="kb-content-tertiary">
+            Head to your DNS provider and add DKIM and Return-Path DNS record to verify
+            your domain and ensure effective delivery.
+          </Text>
+
+          <div className="mt-6 flex items-center gap-3 pb-6 border-b border-(--border-tertiary)">
+            <Button>Verify records</Button>
+
+            <Button variant="tertiary">Send instructions to a developer</Button>
+          </div>
+
+          <div className="pt-6 pb-1 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Text className="kb-content-tertiary">send-4.katifrantz.com</Text>
+
+              <Badge size="sm" variant="neutral">
+                Not started
+              </Badge>
+            </div>
+
+            <Text className="kb-content-tertiary">Last verified 2 minutes ago</Text>
+          </div>
+
+          <SlashesDivider count={90} />
+        </div>
+
+        {/* <Dialog.Footer className="flex justify-end">
+          <Dialog.Close asChild>
+            <Button variant="secondary">Close</Button>
+          </Dialog.Close>
+        </Dialog.Footer> */}
+      </Dialog.Content>
+    </Dialog.Root>
+  )
+}

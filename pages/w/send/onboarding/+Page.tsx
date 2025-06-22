@@ -4,12 +4,47 @@ import { OnboardingStep } from './components/onboarding-step.jsx'
 import { Button } from '@kibamail/owly/button'
 import { SdkCodeSnippets } from '#root/pages/components/sdk-code-snippets/sdk-code-snippets.jsx'
 import { useData } from 'vike-react/useData'
+import { usePageContext } from 'vike-react/usePageContext'
+import { useGenerateApiKey } from './hooks/use-generate-api-key.jsx'
+import { useSendTestEmail } from './hooks/use-send-test-email.jsx'
+import { PasswordField } from '#root/pages/components/input/password-field.jsx'
+import { CopyIcon } from '#root/pages/components/icons/copy.svg.jsx'
+import { CheckCircleSolidIcon } from '#root/pages/components/icons/check-circle-solid.svg.jsx'
+import * as TextField from '@kibamail/owly/text-field'
+import * as Alert from '@kibamail/owly/alert'
+import React from 'react'
+import { CreateSendingDomainFlow } from '#root/pages/components/flows/create_sending_domain/create_sending_domain_flow.jsx'
+import { route } from '#root/core/shared/routes/route_aliases'
 
 function SendOnboardingPage() {
   const { email, sdks } = useData<{
     email: string
     sdks: { name: string; code: string }[]
   }>()
+  const { team } = usePageContext()
+  const {
+    generateApiKey,
+    copyApiKey,
+    isPending,
+    data: apiKeyData,
+    isSuccess: isGeneratedApiKeySuccess,
+  } = useGenerateApiKey(`${team.name} onboarding`, 'full')
+
+  const {
+    sendTestEmail,
+    isPending: isSendingTestEmail,
+    isSuccess: isTestEmailSent,
+  } = useSendTestEmail()
+
+  let percentageCompleted = 0
+
+  if (isGeneratedApiKeySuccess) {
+    percentageCompleted = percentageCompleted + 33
+  }
+
+  if (isTestEmailSent) {
+    percentageCompleted = percentageCompleted + 51
+  }
 
   return (
     <div className="w-full flex justify-center">
@@ -25,23 +60,67 @@ function SendOnboardingPage() {
         <div className="mt-6 flex flex-col w-full gap-8 relative">
           <div className="h-1" />
           <div className="absolute w-px h-full left-[7.5px] bg-(--border-tertiary)">
-            <div className="kb-background-info w-px" style={{ height: '75%' }} />
+            <div
+              className="kb-background-info w-px transition-all duration-500 ease-out"
+              style={{ height: `${percentageCompleted}%` }}
+            />
           </div>
           <OnboardingStep
             title="Generate an api key"
             description="Your api key may be used to send emails using an SDK, SMTP or interact
           with our API."
-            completed
+            completed={isGeneratedApiKeySuccess}
           >
-            <Button>Generate api key</Button>
+            {!apiKeyData?.payload?.apiKey ? (
+              <Button onClick={generateApiKey} disabled={isPending}>
+                {isPending ? 'Generating...' : 'Generate api key'}
+              </Button>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <PasswordField
+                  readOnly
+                  strengthIndicator={false}
+                  value={apiKeyData.payload.apiKey}
+                >
+                  <TextField.Label>API Key</TextField.Label>
+                </PasswordField>
+                <Button onClick={copyApiKey} variant="secondary">
+                  <CopyIcon className="w-4 h-4 mr-2" />
+                  Copy API key
+                </Button>
+              </div>
+            )}
           </OnboardingStep>
 
           <OnboardingStep
-            completed
             title="Send a test email"
             description={`We'll send an email to your registered email address using your created api key.`}
+            completed={isTestEmailSent}
           >
-            <SdkCodeSnippets footer={<Button>Send email</Button>} sdks={sdks} />
+            <SdkCodeSnippets
+              footer={
+                isTestEmailSent ? (
+                  <Alert.Root variant="success">
+                    <Alert.Icon>
+                      <CheckCircleSolidIcon />
+                    </Alert.Icon>
+                    <Alert.Title>
+                      Test email sent successfully! Check your email inbox to see the
+                      received email.
+                    </Alert.Title>
+                  </Alert.Root>
+                ) : (
+                  <Button
+                    onClick={sendTestEmail}
+                    loading={isSendingTestEmail}
+                    disabled={!isGeneratedApiKeySuccess}
+                  >
+                    Send your first email
+                  </Button>
+                )
+              }
+              sdks={sdks}
+            />
           </OnboardingStep>
 
           <OnboardingStep
@@ -51,8 +130,12 @@ function SendOnboardingPage() {
             }
           >
             <div className="flex gap-4 items-center">
-              <Button disabled>Add a sending domain</Button>
-              <Button variant="tertiary">I'll do this later</Button>
+              <CreateSendingDomainFlow product="send">
+                <Button disabled={!isTestEmailSent}>Add a sending domain</Button>
+              </CreateSendingDomainFlow>
+              <Button variant="tertiary" asChild>
+                <a href={route('send')}>I'll do this later</a>
+              </Button>
             </div>
           </OnboardingStep>
 

@@ -49,9 +49,9 @@ export function CreateWorkspaceFlow({
 
         <div className="px-5 pt-2 pb-4">
           <Text className="kb-content-secondary text-sm leading-relaxed">
-            Workspaces help you organize your email campaigns and contacts. Each workspace
-            has its own audiences, broadcasts, and team members, keeping your projects
-            separate and organized.
+            With a verified sending domain, you can send emails that represent your
+            business and follows best email practices. Add your domain and follow
+            configuration steps to start sending emails using this domain.
           </Text>
         </div>
 

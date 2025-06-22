@@ -3,6 +3,7 @@ import { count, eq } from 'drizzle-orm'
 import type { CreateTeamDto } from '#root/core/teams/dto/create_team_dto.js'
 
 import {
+  accessTokens,
   broadcastGroups,
   creditGrantMandates,
   creditPurchases,
@@ -274,8 +275,12 @@ export class TeamRepository extends BaseRepository {
         return broadcastGroupsCount.count > 0
       },
       async send() {
-        // TODO: Check if user has added sending domain.
-        return false
+        const [apiKeysCount] = await self.database
+          .select({ count: count() })
+          .from(accessTokens)
+          .where(eq(accessTokens.teamId, teamId))
+
+        return apiKeysCount.count > 0
       },
     }
   }

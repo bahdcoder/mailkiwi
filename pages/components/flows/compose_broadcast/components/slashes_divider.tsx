@@ -1,7 +1,11 @@
-export function SlashesDivider() {
+interface SlashesDividerProps {
+  count?: number
+}
+
+export function SlashesDivider({ count = 60 }: SlashesDividerProps) {
   return (
     <div className="w-full flex gap-2 h-6 overflow-x-hidden my-5">
-      {new Array(60)
+      {new Array(count)
         .fill(0)
         .map((_, idx) => idx)
         .map((slash) => (
