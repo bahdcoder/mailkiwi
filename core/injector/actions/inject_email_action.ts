@@ -12,6 +12,7 @@ import { makeHttpClient } from '#root/core/shared/http/http_client.js'
 import { generateMessageIdForDomain } from '#root/core/shared/utils/string.js'
 
 import { container } from '#root/core/utils/typi.js'
+import { makeLogger } from '#root/core/shared/container/index'
 
 /**
  * InjectEmailAction is responsible for preparing and injecting emails into the Mail Transfer Agent (MTA).
@@ -49,6 +50,7 @@ export class InjectEmailAction {
    * @returns Object containing the results of the email injection
    */
   async handle(payload: InjectEmailSchemaDto, sendingDomain: SendingDomain) {
+    const logger = makeLogger()
     type Injection = {
       messageId: string
       recipient: InjectEmailSchemaDto['recipients'][number]
@@ -142,7 +144,7 @@ export class InjectEmailAction {
       // The custom headers (X-Kibamail-*) are critical for the entire tracking system,
       // connecting email events back to specific sends, broadcasts, and contacts
       const injectEmailPayload = {
-        envelope_sender: `bounces@${sendingDomain.returnPathSubDomain}.${sendingDomain.name}`,
+        envelope_sender: `bounces+${id}@${sendingDomain.returnPathSubDomain}.${sendingDomain.name}`,
         recipients: [recipient],
         content: {
           from: payload.from,
@@ -205,6 +207,8 @@ export class InjectEmailAction {
               recipient: injection.recipient,
             }
           } catch (error) {
+            logger.error(`[${injection.messageId}] failed to inject email:`, error)
+
             return false
           }
         }

@@ -26,7 +26,6 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
 
   async handle({
     database,
-    redis,
     payload,
   }: JobContext<CheckSendingDomainDnsConfigurationJobPayload>) {
     const sendingDomainRepository = container.make(SendingDomainRepository)
@@ -44,35 +43,12 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
         .forDomain(sendingDomain.name)
         .resolve(sendingDomain)
 
-    const databaseCalls = []
-
-    if (dkimConfigured) {
-      databaseCalls.push(
-        database.update(sendingDomains).set({
-          dkimVerifiedAt: new Date(),
-        }),
-      )
-    }
-
-    if (returnPathCnameConfigured) {
-      databaseCalls.push(
-        database.update(sendingDomains).set({
-          returnPathDomainVerifiedAt: new Date(),
-        }),
-      )
-    }
-
-    if (trackingCnameConfigured) {
-      databaseCalls.push(
-        database.update(sendingDomains).set({
-          trackingDomainVerifiedAt: new Date(),
-        }),
-      )
-    }
-
-    // todo: if tracking cname configured, trigger DeploySslCertificateForTrackingDomainJob.
-
-    await Promise.all(databaseCalls)
+    await database.update(sendingDomains).set({
+      recordsLastVerifiedAt: new Date(),
+      returnPathDomainVerifiedAt: returnPathCnameConfigured ? new Date() : null,
+      dkimVerifiedAt: dkimConfigured ? new Date() : null,
+      trackingDomainVerifiedAt: trackingCnameConfigured ? new Date() : null,
+    })
 
     if (returnPathCnameConfigured && dkimConfigured) {
       await container
@@ -88,7 +64,7 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
         payload,
         {
           delay: 30 * 1000, // wait 30 seconds to try again.
-          attempts: 100, // keep attempting for as long as needed, for now.
+          attempts: 500, // keep attempting for as long as needed, for now.
         },
       )
     }

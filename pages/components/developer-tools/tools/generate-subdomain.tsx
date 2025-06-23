@@ -2,6 +2,7 @@ import { Button } from '@kibamail/owly/button'
 import * as SelectField from '@kibamail/owly/select-field'
 import { Text } from '@kibamail/owly/text'
 import * as TextField from '@kibamail/owly/text-field'
+import * as Alert from '@kibamail/owly/alert'
 import {
   ServerForm,
   useServerFormMutation,
@@ -9,6 +10,7 @@ import {
 import type React from 'react'
 import { Heading } from '@kibamail/owly/heading'
 import { toast } from 'sonner'
+import { CheckCircleSolidIcon } from '#root/pages/components/icons/check-circle-solid.svg.jsx'
 
 interface SubdomainResponse extends Record<string, unknown> {
   id: string
@@ -20,7 +22,7 @@ interface SubdomainResponse extends Record<string, unknown> {
 }
 
 export function GenerateSubdomain() {
-  const { serverFormProps, isPending, error, ServerErrorsList } =
+  const { serverFormProps, isPending, error, ServerErrorsList, isSuccess, data } =
     useServerFormMutation<SubdomainResponse>({
       action: '/developer-tools/dns/generate-subdomain',
       async onSuccess(response) {
@@ -81,11 +83,22 @@ export function GenerateSubdomain() {
 
           {ServerErrorsList}
 
-          <div className="flex gap-3">
-            <Button type="submit" loading={isPending} className="flex-1">
-              Generate Subdomain
-            </Button>
-          </div>
+          {isSuccess && data?.payload ? (
+            <Alert.Root variant="success">
+              <Alert.Icon>
+                <CheckCircleSolidIcon />
+              </Alert.Icon>
+              <Alert.Title>
+                Successfully generated subdomain: {data.payload.fullDomain}
+              </Alert.Title>
+            </Alert.Root>
+          ) : (
+            <div className="flex gap-3">
+              <Button type="submit" loading={isPending} className="flex-1">
+                Generate Subdomain
+              </Button>
+            </div>
+          )}
         </div>
       </ServerForm>
     </div>

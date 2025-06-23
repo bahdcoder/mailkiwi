@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 export function useServerQuery<TQueryFnData>(
   queryOptions: Omit<UseQueryOptions<TQueryFnData, unknown, TQueryFnData>, 'queryKey'> & {
-    queryKey: string
+    queryKey: string[] | string
     initialData?: TQueryFnData
   },
 ) {
@@ -11,9 +11,9 @@ export function useServerQuery<TQueryFnData>(
   const [enabled, setEnabled] = useState(false)
 
   const query = useQuery({
-    queryKey: [queryKey],
+    queryKey: Array.isArray(queryKey) ? queryKey : [queryKey],
     async queryFn() {
-      const response = await fetch(queryKey, {
+      const response = await fetch(Array.isArray(queryKey) ? queryKey?.[0] : queryKey, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

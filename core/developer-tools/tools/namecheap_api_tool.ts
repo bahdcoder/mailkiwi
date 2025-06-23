@@ -14,7 +14,7 @@ type DomainHost = {
   Type: string
 }
 
-type NewDomainRecord = {
+export type NewDomainRecord = {
   name: string
   type: string
   address: string
@@ -87,8 +87,6 @@ export class NamecheapApiTool {
       SLD,
       TLD,
     })
-
-    d({ hosts: hosts?.response?.[0]?.DomainDNSGetHostsResult })
 
     return (
       hosts?.response?.[0]?.DomainDNSGetHostsResult?.[0]?.host?.map(({ $ }) => $) || []

@@ -2,10 +2,12 @@ import { CreateSubdomainAction } from '#root/core/developer-tools/actions/create
 import { CreateDnsRecordAction } from '#root/core/developer-tools/actions/create_dns_record_action.js'
 import { GetSubdomainsAction } from '#root/core/developer-tools/actions/get_subdomains_action.js'
 import { GetDnsRecordsAction } from '#root/core/developer-tools/actions/get_dns_records_action.js'
+import { GetDomainHostsAction } from '#root/core/developer-tools/actions/get_domain_hosts_action.js'
 import { CreateSubdomainSchema } from '#root/core/developer-tools/dtos/create_subdomain_dto.js'
 import { CreateDnsRecordSchema } from '#root/core/developer-tools/dtos/create_dns_record_dto.js'
+import { GetDomainHostsSchema } from '#root/core/developer-tools/dtos/get_domain_hosts_dto.js'
 
-import { makeApp } from '#root/core/shared/container/index.js'
+import { makeApp, makeLogger } from '#root/core/shared/container/index.js'
 import { BaseController } from '#root/core/shared/controllers/base_controller.js'
 import type { HonoContext } from '#root/core/shared/server/types.js'
 import type { HonoInstance } from '#root/core/shared/server/hono.js'
@@ -31,6 +33,7 @@ export class DnsController extends BaseController {
         ['POST', '/configure-dns-records', this.configureDnsRecords.bind(this)],
         ['GET', '/dns-records', this.getDnsRecords.bind(this)],
         ['GET', '/domains/:domainId/dns-records', this.getDnsRecordsForDomain.bind(this)],
+        ['POST', '/view-domain-hosts', this.viewDomainHosts.bind(this)],
       ],
       {
         prefix: 'developer-tools/dns',
@@ -49,9 +52,16 @@ export class DnsController extends BaseController {
 
     const data = await this.validate(ctx, CreateSubdomainSchema)
 
-    const subdomain = await container.resolve(CreateSubdomainAction).handle(data)
+    const [result, error] = await container.resolve(CreateSubdomainAction).handle(data)
 
-    return this.response(ctx).json(subdomain, 201).send()
+    if (error) {
+      makeLogger().error(error)
+      console.error('Failed to create developer tools subdomain record:', error)
+
+      return this.response(ctx).json({ error: error.message }, 400).send()
+    }
+
+    return this.response(ctx).json(result, 201).send()
   }
 
   /**
@@ -109,5 +119,27 @@ export class DnsController extends BaseController {
     const records = await container.resolve(GetDnsRecordsAction).handle(domainId)
 
     return ctx.json(records)
+  }
+
+  /**
+   * Retrieves all domain hosts for a specific domain using Namecheap API.
+   *
+   * Fetches all DNS records (hosts) for the specified domain from Namecheap
+   * and returns them in a structured format for viewing.
+   */
+  async viewDomainHosts(ctx: HonoContext) {
+    this.ensureCanManage(ctx)
+
+    const data = await this.validate(ctx, GetDomainHostsSchema)
+
+    const hosts = await container.resolve(GetDomainHostsAction).handle(data.domain)
+
+    if (hosts === null) {
+      return this.response(ctx)
+        .json({ error: 'Failed to fetch domain hosts' }, 400)
+        .send()
+    }
+
+    return this.response(ctx).json(hosts).send()
   }
 }

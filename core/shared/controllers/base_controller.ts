@@ -41,6 +41,7 @@ import { SignedUrlManager } from '#root/core/shared/utils/links/signed_url_manag
 import { AutomationRepository } from '#root/core/automations/repositories/automation_repository.js'
 import { type Constructor, container } from '#root/core/utils/typi.js'
 import { SenderIdentityRepository } from '#root/core/sending_domains/repositories/sender_identity_repository.js'
+import { SendingDomainRepository } from '#root/core/sending_domains/repositories/sending_domain_repository'
 
 type ControllerParams =
   | 'importId'
@@ -55,6 +56,7 @@ type ControllerParams =
   | 'channelId'
   | 'automationId'
   | 'senderIdentityId'
+  | 'sendingDomainId'
 
 interface ResponseConfiguration {
   type: 'redirect' | 'json'
@@ -334,6 +336,7 @@ export class BaseController extends FlashController {
       channelId: ChannelRepository,
       automationId: AutomationRepository,
       senderIdentityId: SenderIdentityRepository,
+      sendingDomainId: SendingDomainRepository,
     } as const
 
     type GenericRepository = {

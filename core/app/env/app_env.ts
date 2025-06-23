@@ -20,7 +20,7 @@ const BOUNCE_HOST_NAME = 'mail.kbmta.net'
 
 // This is where we host the SPF DNS entry.
 // All our subnets and IP addresses for email sending must be configured as a TXT record on this domain.
-// All our domains like mail.kbmta.net, kb-mkg.kbmta.net, kibamail.com etc. must include this domain in its SPF record.
+// All our domains like mail.kbmta.net, engage.kbmta.net, kibamail.com, send.kbmta.net etc. must include this domain in its SPF record.
 const SPF_HOST_NAME = 'spf.kbmta.net'
 
 // This is where we host the transactional email server.
@@ -43,9 +43,9 @@ export const WEBSITES_PATH = '__websites'
 // kb.google.com. IN CNAME mail.kbmta.net
 const DEFAULT_BOUNCE_SUBDOMAIN = 'kb'
 
-const DEFAULT_TRACKING_SUBDOMAIN = 'clicks'
+const DEFAULT_TRACKING_SUBDOMAIN = 'e'
 
-const TRACKING_HOST_NAME = 'clicks.kbmta.net'
+const TRACKING_HOST_NAME = 'e.kbmta.net'
 
 // We will be the first users of our email infrastructure.
 // Our SAAS customers will receive emails from support@kibamail.com. The Return-Path for this email will be kb.kibamail.com, and bounces will return to bounces@kb.kibamail.com
@@ -55,10 +55,6 @@ const TRACKING_HOST_NAME = 'clicks.kbmta.net'
 // All bounces will be fed into kafka and processed at a later time with some low priority background workers.
 // But we will track bounces per minute and per hour per customer, and temporarily pause sending for a sender in some scenarios.
 // Pausing only pauses the queue of emails for this sender, but continues to receive email via smtp and http api.
-
-const EVENT_TRACKING_DOMAIN = 'e.kbmta.net'
-
-const EU_EVENT_TRACKING_DOMAIN = 'eu.e.kbmta.net'
 
 export const appEnv = makeExtraAppConfigurations(
   makeEnvSecrets(

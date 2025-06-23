@@ -337,6 +337,8 @@ export const sendingDomains = mysqlTable('sendingDomains', {
     () => sendingSources.id,
   ),
 
+  recordsLastVerifiedAt: timestamp('recordsLastVerifiedAt'),
+
   // Marketing email sending sources (primary and secondary/fallback)
   // Used for sending bulk marketing campaigns ('engage' product)
   engageSendingSourceId: primaryKeyCuid('engageSendingSourceId').references(
@@ -1207,48 +1209,6 @@ export const senderIdentities = mysqlTable('senderIdentities', {
   updatedAt: timestamp('updatedAt'),
 })
 
-/**
- * Developer Tools - Domain Management Tables
- *
- * These tables support the developer tools functionality for managing
- * subdomains and DNS records for development and testing purposes.
- */
-
-/**
- * DeveloperTools Domains table - Manages generated subdomains.
- *
- * This table stores information about subdomains generated through the
- * developer tools interface. Each domain represents a subdomain that
- * has been created for testing or development purposes.
- */
-export const developerTools__domains = mysqlTable('developerTools__domains', {
-  id,
-  externalId: varchar('externalId', { length: 255 }).notNull(),
-  subdomain: varchar('subdomain', { length: 100 }).notNull(),
-  domain: mysqlEnum('domain', ['kibamail.xyz', 'kibamail.online']).notNull(),
-  createdAt: timestamp('createdAt').defaultNow().notNull(),
-  updatedAt: timestamp('updatedAt'),
-})
-
-/**
- * DeveloperTools Domain Records table - Manages DNS records for domains.
- *
- * This table stores DNS records associated with developer tool domains.
- * Each record represents a DNS entry (A, CNAME, TXT, etc.) that has been
- * configured for a specific domain.
- */
-export const developerTools__domainRecords = mysqlTable('developerTools__domainRecords', {
-  id,
-  developerTools__domainsId: primaryKeyCuid('developerTools__domainsId')
-    .references(() => developerTools__domains.id)
-    .notNull(),
-  recordType: mysqlEnum('recordType', ['A', 'AAAA', 'CNAME', 'MX', 'TXT']).notNull(),
-  recordName: varchar('recordName', { length: 255 }).notNull(),
-  recordValue: text('recordValue').notNull(),
-  createdAt: timestamp('createdAt').defaultNow().notNull(),
-  updatedAt: timestamp('updatedAt'),
-})
-
 /* --------------------------- */
 /*      Table relations        */
 /* --------------------------- */
@@ -1273,20 +1233,3 @@ export const senderIdentityRelations = relations(senderIdentities, ({ one }) => 
     references: [sendingDomains.id],
   }),
 }))
-
-export const developerToolsDomainsRelations = relations(
-  developerTools__domains,
-  ({ many }) => ({
-    domainRecords: many(developerTools__domainRecords),
-  }),
-)
-
-export const developerToolsDomainRecordsRelations = relations(
-  developerTools__domainRecords,
-  ({ one }) => ({
-    domain: one(developerTools__domains, {
-      fields: [developerTools__domainRecords.developerTools__domainsId],
-      references: [developerTools__domains.id],
-    }),
-  }),
-)

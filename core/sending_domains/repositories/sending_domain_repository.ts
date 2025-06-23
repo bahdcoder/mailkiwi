@@ -174,4 +174,12 @@ export class SendingDomainRepository extends BaseRepository {
         sendingDomain.trackingDomainVerifiedAt,
     }
   }
+
+  async delete(sendingDomainId: string) {
+    await this.database
+      .delete(sendingDomains)
+      .where(eq(sendingDomains.id, sendingDomainId))
+
+    return { id: sendingDomainId }
+  }
 }

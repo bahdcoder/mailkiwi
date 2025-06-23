@@ -13,6 +13,7 @@ import {
 } from './components/sheet.jsx'
 import { GenerateSubdomain } from './tools/generate-subdomain.jsx'
 import { ConfigureDnsRecords } from './tools/configure-dns-records.jsx'
+import { ViewDomainRecords } from './tools/view-domain-records.jsx'
 
 export function DeveloperTools() {
   const [selectedTool, setSelectedTool] = useState('')
@@ -23,15 +24,15 @@ export function DeveloperTools() {
         <Button className="fixed bottom-4 right-4">Developer tools</Button>
       </SheetTrigger>
       <SheetContent className="bg-white">
-        <SheetHeader>
+        <SheetHeader className="px-12">
           <SheetTitle>Kibamail developer tools</SheetTitle>
           <SheetDescription>
             A suite of tools to enable to test and develop kibamail features easily.
           </SheetDescription>
         </SheetHeader>
 
-        <div className="px-4 py-6">
-          <div className="max-w-md">
+        <div className="p-12">
+          <div className="">
             <SelectField.Root value={selectedTool} onValueChange={setSelectedTool}>
               <SelectField.Label>Select a developer tool</SelectField.Label>
               <SelectField.Trigger />
@@ -51,6 +52,9 @@ export function DeveloperTools() {
                 <SelectField.Item value="configure-dns-records">
                   Configure dns records
                 </SelectField.Item>
+                <SelectField.Item value="view-domain-records">
+                  View all domain records
+                </SelectField.Item>
               </SelectField.Content>
             </SelectField.Root>
           </div>
@@ -59,6 +63,7 @@ export function DeveloperTools() {
             <div className="mt-6">
               {selectedTool === 'generate-subdomain' && <GenerateSubdomain />}
               {selectedTool === 'configure-dns-records' && <ConfigureDnsRecords />}
+              {selectedTool === 'view-domain-records' && <ViewDomainRecords />}
             </div>
           )}
         </div>

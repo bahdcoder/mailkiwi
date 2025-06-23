@@ -200,6 +200,7 @@
     "@tiptap/react": "^2.11.2",
     "@tiptap/starter-kit": "^2.11.2",
     "@tiptap/suggestion": "^2.11.2",
+    "@tszen/trycatch": "^0.1.0",
     "acme-client": "^5.4.0",
     "bullmq": "^5.12.10",
     "change-case": "^5.4.4",

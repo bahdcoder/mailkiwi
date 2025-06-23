@@ -117,6 +117,7 @@ export const aliases = {
 
   // sending domains
   create_sending_domain: '/sending_domains',
+  fetch_sending_domains: '/sending_domains',
 } as const
 
 export function route(

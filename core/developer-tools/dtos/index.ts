@@ -8,3 +8,7 @@ export {
   type SetDomainHostsDto,
   type DomainHostRecord,
 } from './set_domain_hosts_dto.js'
+export {
+  GetDomainHostsSchema,
+  type GetDomainHostsDto,
+} from './get_domain_hosts_dto.js'
