@@ -69,15 +69,7 @@ export class SendingDomainRepository extends BaseRepository {
       .where(eq(sendingDomains.teamId, teamId))
   }
 
-  async getDomainWithDkim(domain: string, refreshCache?: boolean) {
-    const cache = this.cache.namespace('domains')
-
-    if (refreshCache) {
-      await cache.clear(domain)
-    }
-
-    await cache.clear(domain)
-
+  async getDomainWithDkim(domain: string) {
     const primarySendingSource = aliasedTable(sendingSources, 'primarySendingSource')
 
     const secondarySendingSource = aliasedTable(sendingSources, 'secondarySendingSource')
@@ -146,15 +138,13 @@ export class SendingDomainRepository extends BaseRepository {
   }
 
   async findByDomain(domain: string) {
-    return this.cache.namespace('domains').get(domain, async () => {
-      const [sendingDomain] = await this.database
-        .select()
-        .from(sendingDomains)
-        .where(eq(sendingDomains.name, domain))
-        .limit(1)
+    const [sendingDomain] = await this.database
+      .select()
+      .from(sendingDomains)
+      .where(eq(sendingDomains.name, domain))
+      .limit(1)
 
-      return sendingDomain
-    })
+    return sendingDomain
   }
 
   async getSendingDomainForTeam(teamId: string, product: 'engage' | 'send' = 'engage') {

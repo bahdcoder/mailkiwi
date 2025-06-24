@@ -6,16 +6,23 @@ import {
   ServerForm,
   useServerFormMutation,
 } from '#root/pages/hooks/use_server_form_mutation.jsx'
+import { toast } from 'sonner'
 import type React from 'react'
 
 export function ConfigureDnsRecords() {
   const { serverFormProps, isPending, error, ServerErrorsList } = useServerFormMutation<{
     success: boolean
   }>({
-    action: '/developer-tools/dns/configure-dns-records', // This would be the actual API endpoint
-    async onSuccess(data) {
-      // Handle success - could show a toast or update UI
-      console.log('DNS records configured:', data)
+    action: '/developer-tools/dns/configure-dns-records',
+    async onSuccess() {
+      toast.success('DNS records configured successfully', {
+        description: 'Your DNS records have been set up and are now active.',
+      })
+    },
+    onError(error) {
+      toast.error('Failed to configure DNS records', {
+        description: error?.message || 'Please check your input and try again.',
+      })
     },
   })
 

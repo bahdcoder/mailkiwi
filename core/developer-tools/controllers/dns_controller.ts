@@ -56,7 +56,6 @@ export class DnsController extends BaseController {
 
     if (error) {
       makeLogger().error(error)
-      console.error('Failed to create developer tools subdomain record:', error)
 
       return this.response(ctx).json({ error: error.message }, 400).send()
     }
@@ -93,7 +92,6 @@ export class DnsController extends BaseController {
 
     if (error) {
       makeLogger().error(error)
-      console.error(error)
 
       return this.response(ctx).json({ error: error.message }, 400).send()
     }

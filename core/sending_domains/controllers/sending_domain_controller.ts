@@ -83,13 +83,14 @@ export class SendingDomainController extends BaseController {
     let sendingDomain = await this.ensureExists<SendingDomain>(ctx, 'sendingDomainId')
 
     if (shouldPerformCheck === 'true') {
-      await new CheckSendingDomainDnsConfigurationJob().handle({
+      await new CheckSendingDomainDnsConfigurationJob().check({
         database: makeDatabase(),
         redis: makeRedis(),
         logger: makeLogger(),
         payload: {
           sendingDomainId: sendingDomain.id,
         },
+        sendingDomain,
       })
     }
 

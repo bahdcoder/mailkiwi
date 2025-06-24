@@ -1,42 +1,75 @@
 import { Badge } from '@kibamail/owly/badge'
 import { Button } from '@kibamail/owly/button'
 import { Heading } from '@kibamail/owly/heading'
-import { Text } from '@kibamail/owly/text'
 import type { SendingDomain } from '#root/database/database_schema_types'
+import { InfoCircleIcon } from '#root/pages/components/icons/info-circle.svg.jsx'
 import { CheckCircleIcon } from '#root/pages/components/icons/check-circle.svg.jsx'
 import { DomainActionsMenu } from '#root/pages/components/flows/create_sending_domain/components/domain-actions-menu.jsx'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { route } from '#root/core/shared/routes/route_aliases'
+import React from 'react'
 
 interface DomainCardProps {
   domain: SendingDomain
-  onConfigure?: (domainId: string) => void
-  onVerify?: (domainId: string) => void
   onDomainDeleted?: () => void
+  onConfigure?: (domainId: string) => void
 }
 
-export function DomainCard({
-  domain,
-  onConfigure,
-  onVerify,
-  onDomainDeleted,
-}: DomainCardProps) {
-  const getDkimStatus = () => {
+export function DomainCard({ domain, onConfigure, onDomainDeleted }: DomainCardProps) {
+  const queryClient = useQueryClient()
+  const sendingDomainsQueryKey = [route('fetch_sending_domains')]
+
+  const verifyRecordsMutation = useMutation({
+    async mutationFn() {
+      const response = await fetch(`/sending_domains/${domain.id}?check=true`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const json = await response.json()
+      return json.payload as SendingDomain
+    },
+    onSuccess(updatedDomain: SendingDomain) {
+      queryClient.setQueryData(
+        sendingDomainsQueryKey,
+        (oldData: { sendingDomains: SendingDomain[] } | undefined) => {
+          if (!oldData) return oldData
+
+          return {
+            ...oldData,
+            sendingDomains: oldData.sendingDomains.map((domain) =>
+              domain.id === updatedDomain.id ? updatedDomain : domain,
+            ),
+          }
+        },
+      )
+    },
+  })
+
+  function getDkimStatus() {
     return domain.dkimVerifiedAt ? 'success' : 'pending'
   }
 
-  const getReturnPathStatus = () => {
+  function getReturnPathStatus() {
     return domain.returnPathDomainVerifiedAt ? 'success' : 'pending'
   }
 
-  const getTrackingStatus = () => {
+  function getTrackingStatus() {
     return domain.trackingDomainVerifiedAt ? 'success' : 'pending'
   }
 
-  const isFullyVerified = () => {
+  function isFullyVerified() {
     return (
       domain.dkimVerifiedAt &&
       domain.returnPathDomainVerifiedAt &&
       domain.trackingDomainVerifiedAt
     )
+  }
+
+  function onVerify() {
+    verifyRecordsMutation.mutate()
   }
 
   return (
@@ -46,7 +79,7 @@ export function DomainCard({
           <div className="flex items-center gap-4 mb-4">
             <Heading size="xs">{domain.name}</Heading>
             <Badge variant="neutral" size="sm" className="uppercase text-xs">
-              {domain.product}
+              {domain.product === 'send' ? 'SEND - TRANSACTIONAL' : 'ENGAGE - MARKETING'}
             </Badge>
           </div>
 
@@ -55,40 +88,49 @@ export function DomainCard({
               variant={getDkimStatus() === 'success' ? 'success' : 'warning'}
               size="sm"
             >
-              DKIM: {getDkimStatus() === 'success' ? 'Verified' : 'Pending'}
+              Dkim {getDkimStatus() === 'success' ? 'verified' : 'pending'}{' '}
+              {getDkimStatus() === 'success' ? <CheckCircleIcon /> : <InfoCircleIcon />}
             </Badge>
 
             <Badge
               variant={getReturnPathStatus() === 'success' ? 'success' : 'warning'}
               size="sm"
             >
-              Return Path: {getReturnPathStatus() === 'success' ? 'Verified' : 'Pending'}
+              Return path {getReturnPathStatus() === 'success' ? 'verified' : 'pending'}{' '}
+              {getReturnPathStatus() === 'success' ? (
+                <CheckCircleIcon />
+              ) : (
+                <InfoCircleIcon />
+              )}
             </Badge>
 
             <Badge
               variant={getTrackingStatus() === 'success' ? 'success' : 'warning'}
               size="sm"
             >
-              Tracking: {getTrackingStatus() === 'success' ? 'Verified' : 'Pending'}
+              Tracking records{' '}
+              {getTrackingStatus() === 'success' ? 'verified' : 'pending'}{' '}
+              {getTrackingStatus() === 'success' ? (
+                <CheckCircleIcon />
+              ) : (
+                <InfoCircleIcon />
+              )}
             </Badge>
           </div>
-
-          {isFullyVerified() && (
-            <Text className="kb-content-success text-sm">
-              ✓ Domain is fully configured and ready for sending
-            </Text>
-          )}
         </div>
 
         <div className="flex gap-2 ml-4">
           <Button variant="secondary" onClick={() => onConfigure?.(domain.id)}>
-            Configure records
+            {isFullyVerified() ? 'View' : 'Configure'} records
           </Button>
 
           {!isFullyVerified() && (
-            <Button variant="primary" onClick={() => onVerify?.(domain.id)}>
-              <CheckCircleIcon />
-              Verify domain
+            <Button
+              variant="primary"
+              onClick={onVerify}
+              loading={verifyRecordsMutation.isPending}
+            >
+              Verify records
             </Button>
           )}
 

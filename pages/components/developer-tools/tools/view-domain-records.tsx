@@ -33,9 +33,6 @@ export function ViewDomainRecords() {
   const { serverFormProps, isPending, error, ServerErrorsList, isSuccess, data } =
     useServerFormMutation<DomainHostsResponse>({
       action: '/developer-tools/dns/view-domain-hosts',
-      onError(error) {
-        console.error('Failed to fetch domain hosts:', error)
-      },
     })
 
   return (

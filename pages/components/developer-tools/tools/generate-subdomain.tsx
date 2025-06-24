@@ -37,7 +37,6 @@ export function GenerateSubdomain() {
         }
       },
       onError(error) {
-        console.error('Failed to generate subdomain:', error)
         toast.error('Failed to generate subdomain', {
           description: 'Please check your input and try again.',
         })

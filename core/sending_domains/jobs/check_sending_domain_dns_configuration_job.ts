@@ -10,6 +10,8 @@ import { AVAILABLE_QUEUES } from '#root/core/shared/queue/config.js'
 import { Queue } from '#root/core/shared/queue/queue.js'
 
 import { container } from '#root/core/utils/typi.js'
+import type { SendingDomain } from '#root/database/database_schema_types'
+import { eq } from 'drizzle-orm'
 
 interface CheckSendingDomainDnsConfigurationJobPayload {
   sendingDomainId: string
@@ -24,9 +26,39 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
     return AVAILABLE_QUEUES.sending_domains
   }
 
+  async check({
+    database,
+    sendingDomain,
+  }: JobContext<CheckSendingDomainDnsConfigurationJobPayload> & {
+    sendingDomain: SendingDomain
+  }) {
+    const { returnPathCnameConfigured, dkimConfigured, trackingCnameConfigured } =
+      await container
+        .make(DnsResolverTool)
+        .forDomain(sendingDomain.name)
+        .resolve(sendingDomain)
+
+    await database
+      .update(sendingDomains)
+      .set({
+        recordsLastVerifiedAt: new Date(),
+        returnPathDomainVerifiedAt: returnPathCnameConfigured ? new Date() : null,
+        dkimVerifiedAt: dkimConfigured ? new Date() : null,
+        trackingDomainVerifiedAt: trackingCnameConfigured ? new Date() : null,
+      })
+      .where(eq(sendingDomains.id, sendingDomain.id))
+
+    return {
+      returnPathCnameConfigured,
+      dkimConfigured,
+      trackingCnameConfigured,
+    }
+  }
+
   async handle({
     database,
     payload,
+    ...rest
   }: JobContext<CheckSendingDomainDnsConfigurationJobPayload>) {
     const sendingDomainRepository = container.make(SendingDomainRepository)
     const sendingDomain = await sendingDomainRepository.findById(payload.sendingDomainId)
@@ -38,24 +70,19 @@ export class CheckSendingDomainDnsConfigurationJob extends BaseJob<CheckSendingD
     }
 
     const { returnPathCnameConfigured, dkimConfigured, trackingCnameConfigured } =
-      await container
-        .make(DnsResolverTool)
-        .forDomain(sendingDomain.name)
-        .resolve(sendingDomain)
-
-    await database.update(sendingDomains).set({
-      recordsLastVerifiedAt: new Date(),
-      returnPathDomainVerifiedAt: returnPathCnameConfigured ? new Date() : null,
-      dkimVerifiedAt: dkimConfigured ? new Date() : null,
-      trackingDomainVerifiedAt: trackingCnameConfigured ? new Date() : null,
-    })
+      await this.check({
+        database,
+        payload,
+        sendingDomain,
+        ...rest,
+      })
 
     if (returnPathCnameConfigured && dkimConfigured) {
       await container
         .make(AssignSendingSourceToSendingDomainAction)
         .handle(sendingDomain.id)
 
-      await sendingDomainRepository.getDomainWithDkim(sendingDomain.name, true)
+      await sendingDomainRepository.getDomainWithDkim(sendingDomain.name)
     }
 
     if (!returnPathCnameConfigured || !dkimConfigured || !trackingCnameConfigured) {

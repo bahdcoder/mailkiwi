@@ -7,6 +7,8 @@ import { Text } from '@kibamail/owly/text'
 import { usePageContextWithProps } from '#root/pages/hooks/use_page_props'
 import { route } from '#root/core/shared/routes/route_aliases'
 import { useServerQuery } from '#root/pages/hooks/use_server_query'
+import { useServerFormMutation } from '#root/pages/hooks/use_server_form_mutation.jsx'
+import { useQueryClient } from '@tanstack/react-query'
 import type { SendingDomain } from '#root/database/database_schema_types'
 import { DomainCard } from './components/domain-card.jsx'
 import { useState } from 'react'
@@ -19,6 +21,8 @@ function SettingsDomains() {
   const [configureModalOpen, setConfigureModalOpen] = useState(false)
   const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null)
 
+  console.log('@ctx.pageProps?.sendingDomains', ctx.pageProps?.sendingDomains)
+
   const { data, refetchQuery } = useServerQuery({
     queryKey: route('fetch_sending_domains'),
     initialData: { sendingDomains: ctx.pageProps?.sendingDomains || [] },
@@ -27,10 +31,6 @@ function SettingsDomains() {
   function handleConfigure(domainId: string) {
     setSelectedDomainId(domainId)
     setConfigureModalOpen(true)
-  }
-
-  function onVerify(domainId: string) {
-    console.log('Verify domain:', domainId)
   }
 
   function onConfigureModalClose() {
@@ -63,7 +63,6 @@ function SettingsDomains() {
               <DomainCard
                 key={domain.id}
                 domain={domain}
-                onVerify={onVerify}
                 onConfigure={handleConfigure}
                 onDomainDeleted={refetchQuery}
               />

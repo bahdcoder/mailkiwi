@@ -42,8 +42,6 @@ export function ConfigureSendingDomain({
     enabled: sendingDomainId !== undefined,
   })
 
-  console.log('Sending domain data:', data)
-
   function onOpenChange(open: boolean) {
     onDialogOpenChange(open)
 
@@ -55,6 +53,26 @@ export function ConfigureSendingDomain({
   function onVerifyRecords() {
     setCheckRecords(true)
     refetchQuery()
+  }
+
+  function isFullyVerified() {
+    return Boolean(
+      data?.dkimVerifiedAt &&
+        data?.returnPathDomainVerifiedAt &&
+        data?.trackingDomainVerifiedAt,
+    )
+  }
+
+  function isPartiallyVerified() {
+    return Boolean(
+      data?.dkimVerifiedAt ||
+        data?.returnPathDomainVerifiedAt ||
+        data?.trackingDomainVerifiedAt,
+    )
+  }
+
+  function hasPerformedAtLeastOneCheck() {
+    return Boolean(data?.recordsLastVerifiedAt)
   }
 
   return (
@@ -88,20 +106,34 @@ export function ConfigureSendingDomain({
           </Text>
 
           <div className="mt-6 flex items-center gap-3 pb-6 border-b border-(--border-tertiary)">
-            <Button onClick={onVerifyRecords} loading={isFetching}>
+            <Button
+              loading={isFetching}
+              onClick={onVerifyRecords}
+              disabled={isFullyVerified()}
+            >
               Verify records
             </Button>
 
-            <Button variant="tertiary">Send instructions to a developer</Button>
+            <Button variant="tertiary" disabled={isFullyVerified()}>
+              Send instructions to a developer
+            </Button>
           </div>
 
           <div className="pt-6 pb-1 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Text className="kb-content-tertiary">{data?.name}</Text>
 
-              <Badge size="sm" variant="neutral">
-                Not started
-              </Badge>
+              {isFullyVerified() ? (
+                <Badge size="sm" variant="success">
+                  Verified
+                </Badge>
+              ) : null}
+
+              {hasPerformedAtLeastOneCheck() && !isFullyVerified() ? (
+                <Badge size="sm" variant="warning">
+                  Pending
+                </Badge>
+              ) : null}
             </div>
 
             <Text className="kb-content-tertiary">
