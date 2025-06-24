@@ -12,7 +12,7 @@ export function ConfigureDnsRecords() {
   const { serverFormProps, isPending, error, ServerErrorsList } = useServerFormMutation<{
     success: boolean
   }>({
-    action: '/api/developer-tools/configure-dns-records', // This would be the actual API endpoint
+    action: '/developer-tools/dns/configure-dns-records', // This would be the actual API endpoint
     async onSuccess(data) {
       // Handle success - could show a toast or update UI
       console.log('DNS records configured:', data)
@@ -44,7 +44,7 @@ export function ConfigureDnsRecords() {
             <SelectField.Root defaultValue="A" name="recordType">
               <SelectField.Label>Record Type</SelectField.Label>
               <SelectField.Trigger />
-              <SelectField.Content className="z-50 relative">
+              <SelectField.Content className="z-100 relative">
                 <SelectField.Item value="A">A Record</SelectField.Item>
                 <SelectField.Item value="AAAA">AAAA Record</SelectField.Item>
                 <SelectField.Item value="CNAME">CNAME Record</SelectField.Item>

@@ -89,7 +89,14 @@ export class DnsController extends BaseController {
 
     const data = await this.validate(ctx, CreateDnsRecordSchema)
 
-    const record = await container.resolve(CreateDnsRecordAction).handle(data)
+    const [record, error] = await container.resolve(CreateDnsRecordAction).handle(data)
+
+    if (error) {
+      makeLogger().error(error)
+      console.error(error)
+
+      return this.response(ctx).json({ error: error.message }, 400).send()
+    }
 
     return this.response(ctx).json(record, 201).send()
   }

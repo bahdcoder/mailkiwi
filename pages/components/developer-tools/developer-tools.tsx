@@ -23,7 +23,7 @@ export function DeveloperTools() {
       <SheetTrigger asChild>
         <Button className="fixed bottom-4 right-4">Developer tools</Button>
       </SheetTrigger>
-      <SheetContent className="bg-white">
+      <SheetContent className="bg-white overflow-y-auto">
         <SheetHeader className="px-12">
           <SheetTitle>Kibamail developer tools</SheetTitle>
           <SheetDescription>

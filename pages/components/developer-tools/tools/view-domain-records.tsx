@@ -66,7 +66,7 @@ export function ViewDomainRecords() {
 
           {ServerErrorsList}
 
-          {isSuccess && data?.payload ? (
+          {isSuccess && data?.payload && (
             <Alert.Root variant="success">
               <Alert.Icon>
                 <CheckCircleSolidIcon />
@@ -76,13 +76,13 @@ export function ViewDomainRecords() {
                 {data.payload.domain}
               </Alert.Title>
             </Alert.Root>
-          ) : (
-            <div className="flex gap-3">
-              <Button type="submit" loading={isPending} className="flex-1">
-                Fetch Domain Records
-              </Button>
-            </div>
           )}
+
+          <div className="flex gap-3">
+            <Button type="submit" loading={isPending} className="flex-1">
+              Fetch Domain Records
+            </Button>
+          </div>
         </div>
       </ServerForm>
 
@@ -108,7 +108,7 @@ export function ViewDomainRecords() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Text className="font-medium">{host.name || '@'}</Text>
-                      <Badge variant={host.isActive ? 'success' : 'neutral'}>
+                      <Badge size="sm" variant={host.isActive ? 'success' : 'neutral'}>
                         {host.type}
                       </Badge>
                       {!host.isActive && <Badge variant="warning">Inactive</Badge>}
@@ -119,14 +119,6 @@ export function ViewDomainRecords() {
                   <div>
                     <Text className="kb-content-secondary break-all">{host.address}</Text>
                   </div>
-
-                  {host.mxPref && (
-                    <div>
-                      <Text className="text-xs kb-content-tertiary">
-                        MX Priority: {host.mxPref}
-                      </Text>
-                    </div>
-                  )}
 
                   {host.friendlyName && (
                     <div>

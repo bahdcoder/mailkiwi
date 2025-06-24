@@ -121,12 +121,19 @@ export class NamecheapApiTool {
     existingHosts: DomainHost[],
     newRecords: NewDomainRecord[],
   ) {
-    const existingHostParams = existingHosts.map((host, index) =>
+    const filteredExistingHosts = existingHosts.filter((existingHost) => {
+      return !newRecords.some(
+        (newRecord) =>
+          existingHost.Name === newRecord.name && existingHost.Type === newRecord.type,
+      )
+    })
+
+    const existingHostParams = filteredExistingHosts.map((host, index) =>
       this.formatExistingHostForApi(host, index + 1),
     )
 
     const newHostParams = newRecords.map((record, index) =>
-      this.formatNewRecordForApi(record, existingHosts.length + index + 1),
+      this.formatNewRecordForApi(record, filteredExistingHosts.length + index + 1),
     )
 
     return [...existingHostParams, ...newHostParams]
