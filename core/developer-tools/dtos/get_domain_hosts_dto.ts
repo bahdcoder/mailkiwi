@@ -6,5 +6,3 @@ export const GetDomainHostsSchema = object({
     nonEmpty('Please provide a domain name'),
   ),
 })
-
-export type GetDomainHostsDto = InferInput<typeof GetDomainHostsSchema>

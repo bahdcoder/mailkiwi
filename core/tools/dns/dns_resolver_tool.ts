@@ -51,7 +51,6 @@ export class DnsResolverTool {
     publicKey: string,
     dkimSubDomain: string,
   ) {
-    d({ txtRecords })
     return txtRecords.find(
       (record) =>
         record ===
