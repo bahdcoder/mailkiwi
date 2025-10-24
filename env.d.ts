@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference path="./namecheap.d.ts" />
 
 interface ImportMetaEnv {
   /**

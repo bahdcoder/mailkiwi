@@ -9,6 +9,7 @@ import { ImportContactsJob } from '#root/core/audiences/jobs/import_contacts_job
 import { makeDatabase, makeLogger, makeRedis } from '#root/core/shared/container/index.js'
 import type { BaseJob, JobHandlerResponse } from '#root/core/shared/queue/abstract_job.js'
 import { container } from '#root/core/utils/typi.js'
+import { CheckSendingDomainDnsConfigurationJob } from '../sending_domains/jobs/check_sending_domain_dns_configuration_job.js'
 
 export class WorkerIgnitor extends Ignitor {
   private workers: Worker<object, JobHandlerResponse | undefined, string>[] = []
@@ -27,6 +28,10 @@ export class WorkerIgnitor extends Ignitor {
     this.registerJob(ImportContactsJob.id, ImportContactsJob)
     this.registerJob(SendBroadcastToContact.id, SendBroadcastToContact)
     this.registerJob(SendTransactionalEmailJob.id, SendTransactionalEmailJob)
+    this.registerJob(
+      CheckSendingDomainDnsConfigurationJob.id,
+      CheckSendingDomainDnsConfigurationJob,
+    )
   }
 
   private registerJob(id: string, job: new () => BaseJob<object>) {

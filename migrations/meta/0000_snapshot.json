@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "12b6e5c0-6564-4df4-8365-5613482d8173",
+  "id": "5bd609d1-a638-44ff-bb0a-edc176bcb0c5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "abTestVariants": {
@@ -106,6 +106,13 @@
         },
         "name": {
           "name": "name",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "preview": {
+          "name": "preview",
           "type": "varchar(32)",
           "primaryKey": false,
           "notNull": false,
@@ -3193,6 +3200,13 @@
         "secondarySendingSourceId": {
           "name": "secondarySendingSourceId",
           "type": "binary(16)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "recordsLastVerifiedAt": {
+          "name": "recordsLastVerifiedAt",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

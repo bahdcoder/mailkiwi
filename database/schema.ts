@@ -337,6 +337,8 @@ export const sendingDomains = mysqlTable('sendingDomains', {
     () => sendingSources.id,
   ),
 
+  recordsLastVerifiedAt: timestamp('recordsLastVerifiedAt'),
+
   // Marketing email sending sources (primary and secondary/fallback)
   // Used for sending bulk marketing campaigns ('engage' product)
   engageSendingSourceId: primaryKeyCuid('engageSendingSourceId').references(

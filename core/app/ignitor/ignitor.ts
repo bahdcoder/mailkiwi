@@ -69,6 +69,8 @@ import { createRedisDatabaseInstance } from '#root/core/redis/redis_client.js'
 
 import { container } from '#root/core/utils/typi.js'
 import { AssetController } from '#root/core/assets/controllers/asset_controller.js'
+import { DnsController } from '#root/core/developer-tools/controllers/dns_controller'
+import { InjectTestEmailController } from '#root/core/injector/controllers/inject_test_email_controller'
 
 export class Ignitor {
   public app: HonoInstance
@@ -203,6 +205,8 @@ export class Ignitor {
     container.resolve(MediaDocumentController)
 
     container.resolve(AssetController)
+    container.resolve(DnsController)
+    container.resolve(InjectTestEmailController)
   }
 
   async shutdown() {

@@ -111,8 +111,13 @@ export const aliases = {
   // settings
   settings_account: settings('account'),
   settings_api_keys: settings('api-keys'),
+  settings_domains: settings('domains'),
   create_api_key: '/auth/api-keys',
   fetch_api_keys: '/auth/api-keys',
+
+  // sending domains
+  create_sending_domain: '/sending_domains',
+  fetch_sending_domains: '/sending_domains',
 } as const
 
 export function route(

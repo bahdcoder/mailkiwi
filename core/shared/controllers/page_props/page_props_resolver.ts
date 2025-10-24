@@ -8,6 +8,7 @@ import { EngageContactsPropsResolver } from '#root/core/shared/controllers/page_
 import { EngagePropsResolver } from '#root/core/shared/controllers/page_props/props_resolvers/engage_props_resolver.js'
 import { FlowComposerPropsResolver } from '#root/core/shared/controllers/page_props/props_resolvers/flow_composer_props_resolver.js'
 import { SettingsApiKeysPropsResolver } from './props_resolvers/settings/api_keys_props_resolver.js'
+import { SettingsSendingDomainsPropsResolver } from './props_resolvers/settings/sending_domains_props_resolver.js'
 
 export class PagePropsResolver {
   protected resolvers: Array<{
@@ -21,6 +22,7 @@ export class PagePropsResolver {
 
     // settings
     SettingsApiKeysPropsResolver,
+    SettingsSendingDomainsPropsResolver,
   ]
 
   handle = async (ctx: HonoContext, defaultPageProps: DefaultPageProps) => {

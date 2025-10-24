@@ -9,6 +9,7 @@ function fromEmailToDomain(email: string) {
 
 export function generateMessageIdForDomain(domain: string) {
   const id = v1()
+
   return { id, messageId: `<${`${id}@${domain}`}>` }
 }
 

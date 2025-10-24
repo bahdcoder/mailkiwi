@@ -6,6 +6,7 @@ import { Text } from '@kibamail/owly/text'
 import { SubmenuItemLink } from '#root/pages/components/dashboard/layout/submenu-item-link.jsx'
 import { UserIcon } from '#root/pages/components/icons/user.svg.jsx'
 import { LockIcon } from '#root/pages/components/icons/lock.svg.jsx'
+import { DnsIcon } from '#root/pages/components/icons/dns.svg.jsx'
 
 function SettingsLayout({ children }: PropsWithChildren) {
   return (
@@ -43,6 +44,10 @@ function SettingsLayout({ children }: PropsWithChildren) {
           <SubmenuItemLink href={route('settings_api_keys')}>
             <LockIcon className="w-5 h-5" />
             <Text className="kb-content-secondary font-medium">API keys</Text>
+          </SubmenuItemLink>
+          <SubmenuItemLink href={route('settings_domains')}>
+            <DnsIcon className="w-5 h-5" />
+            <Text className="kb-content-secondary font-medium">Domains</Text>
           </SubmenuItemLink>
         </div>
       </div>

@@ -1,1 +1,0 @@
-ALTER TABLE `accessTokens` ADD `preview` varchar(32);
